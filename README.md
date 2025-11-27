@@ -3,12 +3,6 @@
     <img src="./.resources/froststrap-full-light.png#gh-light-mode-only" width="700">
 </p>
 
-> [!CAUTION]
-> This repository, [RealMeddsam/Froststrap](./) and our [Official Website](https://froststrap.github.io) are the **Only Official Sources** for downloading Froststrap.  
-> Any other websites (e.g., `froststrap.com`) claiming to own Froststrap are not **affiliated** with us and potentially unsafe.  
-> Downloading from unofficial sources is not recommended.
->
-> This repository was created after losing access to a previous GitHub account.
 
 <div align="center">
 
@@ -25,6 +19,13 @@ Encountered a bug or issue? [Submit an issue](https://github.com/RealMeddsam/Fro
 
 
 </div>
+
+> [!CAUTION]
+> This repository, [RealMeddsam/Froststrap](./) and our [Official Website](https://froststrap.github.io) are the **Only Official Sources** for downloading Froststrap.  
+> Any other websites (e.g., `froststrap.com`) claiming to own Froststrap are not **affiliated** with us and potentially unsafe.  
+> Downloading from unofficial sources is not recommended.
+>
+> This repository was created after losing access to a previous GitHub account.
 
 ---
 
