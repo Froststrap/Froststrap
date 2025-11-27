@@ -1,14 +1,14 @@
-> [!CAUTION]
-> This repository, [Meddsam/Froststrap](https://github.com/Meddsam/Froststrap) and our [Official Website](https://realmeddsam.github.io/Froststrap-Website/) are the **Only Official Sources** for downloading Froststrap.  
-> Any other websites (e.g., `Froststrap.com`) claiming to own Froststrap are not **affiliated** with us and potentially unsafe.  
-> Downloading from unofficial sources is not recommended.
->
-> This repository was created after losing access to a previous GitHub account.
-
 <p align="center">
     <img src="./.resources/froststrap-full-dark.png#gh-dark-mode-only" width="700">
     <img src="./.resources/froststrap-full-light.png#gh-light-mode-only" width="700">
 </p>
+
+> [!CAUTION]
+> This repository, [RealMeddsam/Froststrap](./) and our [Official Website](https://froststrap.github.io) are the **Only Official Sources** for downloading Froststrap.  
+> Any other websites (e.g., `froststrap.com`) claiming to own Froststrap are not **affiliated** with us and potentially unsafe.  
+> Downloading from unofficial sources is not recommended.
+>
+> This repository was created after losing access to a previous GitHub account.
 
 <div align="center">
 
@@ -99,8 +99,10 @@ Encountered a bug or issue? [Submit an issue](https://github.com/RealMeddsam/Fro
 
 ## Licensing
 
-THis project is under **dual licensing**.
-Everything **Nix related** (managed by Invra) is licensed by **Unlicense**, whilst all **other code** is **MIT**.
+This project is under **dual licensing**.
+Everything **Nix related** (managed by Invra) is licensed by **Unlicense**, whilst all **other code** is **GPLv3-or-later**.
+
+Please note all MIT licensed code has been relicensed from **MIT**.
 
 ---
 
