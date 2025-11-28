@@ -184,6 +184,15 @@ namespace Bloxstrap.Integrations
                 _accounts = new();
                 NoAccountsFound?.Invoke();
             }
+
+            if (_accounts.Any())
+            {
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(3000);
+                    await ValidateAllAccountsAsync();
+                });
+            }
         }
 
         public void SaveAccounts()
@@ -1457,6 +1466,95 @@ namespace Bloxstrap.Integrations
             return _accounts.FirstOrDefault(acc =>
                 acc.Username.Equals(identifier, StringComparison.OrdinalIgnoreCase) ||
                 acc.UserId.ToString() == identifier);
+        }
+
+        public async Task<bool> ValidateAccountAsync(AltAccount account)
+        {
+            const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateAccount";
+
+            try
+            {
+                string decryptedCookie = UnprotectString(account.SecurityToken);
+
+                if (string.IsNullOrEmpty(decryptedCookie))
+                {
+                    App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: No valid cookie found");
+                    return false;
+                }
+
+                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
+                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", decryptedCookie, "/", ".roblox.com"));
+
+                using var client = new HttpClient(handler);
+
+                var response = await client.GetAsync("https://users.roblox.com/v1/users/authenticated");
+
+                bool isValid = response.StatusCode == HttpStatusCode.OK;
+
+                App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: {(isValid ? "Valid" : "Invalid")} (Status: {response.StatusCode})");
+
+                return isValid;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_VALIDATE, ex);
+                return false;
+            }
+        }
+
+        public async Task ValidateAllAccountsAsync()
+        {
+            const string LOG_IDENT_VALIDATE_ALL = $"{LOG_IDENT}::ValidateAllAccounts";
+
+            App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, "Starting validation of all accounts...");
+
+            var invalidAccounts = new List<AltAccount>();
+
+            foreach (var account in _accounts.ToList())
+            {
+                bool isValid = await ValidateAccountAsync(account);
+
+                if (!isValid)
+                {
+                    invalidAccounts.Add(account);
+                    App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, $"Account {account.Username} is invalid and will be removed");
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, $"Account {account.Username} is valid, continuing to next account");
+                }
+            }
+
+            foreach (var invalidAccount in invalidAccounts)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    var result = Frontend.ShowMessageBox(
+                        $"Account '{invalidAccount.DisplayName}' (@{invalidAccount.Username}) is no longer valid and will be removed.\n\nReason: Cookie expired or invalid",
+                        MessageBoxImage.Warning,
+                        MessageBoxButton.OK
+                    );
+
+                    RemoveAccount(invalidAccount);
+                });
+            }
+
+            if (invalidAccounts.Count > 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, $"Removed {invalidAccounts.Count} invalid accounts");
+
+                if (ActiveAccount != null && invalidAccounts.Any(acc => acc.UserId == ActiveAccount.UserId))
+                {
+                    ActiveAccount = _accounts.FirstOrDefault();
+                    ActiveAccountChanged?.Invoke(ActiveAccount);
+                }
+
+                SaveAccounts();
+            }
+            else
+            {
+                App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, "All accounts are valid");
+            }
         }
     }
 }
