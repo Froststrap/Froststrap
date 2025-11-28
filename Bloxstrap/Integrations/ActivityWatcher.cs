@@ -351,15 +351,15 @@
                                     await Task.Delay(25);
                                 }
 
-                                if (!isInactivityTimeout)
+                                if (isInactivityTimeout)
                                 {
-                                    App.Logger.WriteLine(LOG_IDENT, "No inactivity timeout detected - attempting auto-rejoin");
+                                    App.Logger.WriteLine(LOG_IDENT, "Inactivity timeout found, attempting auto-rejoin");
                                     Data.RejoinServer();
                                     OnAutoRejoinTriggered?.Invoke(this, Data);
                                 }
                                 else
                                 {
-                                    App.Logger.WriteLine(LOG_IDENT, "Skipping auto-rejoin due to inactivity timeout");
+                                    App.Logger.WriteLine(LOG_IDENT, "No inactivity timeout found.");
                                 }
                             }
                             catch (Exception ex)

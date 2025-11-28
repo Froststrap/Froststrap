@@ -328,6 +328,13 @@ namespace Bloxstrap
             if (_launchMode != LaunchMode.Player)
                 await mutex.ReleaseAsync();
 
+            if (_launchMode == LaunchMode.Player)
+            {
+                // await because some peoples pc are so ass that roblox opens before this finishes causing an error due to the event
+                if (App.Settings.Prop.MultiInstanceLaunching)
+                    await LaunchMultiInstanceWatcher();
+            }
+
             if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
             {
                 if (!App.LaunchSettings.QuietFlag.Active)
@@ -716,7 +723,7 @@ namespace Bloxstrap
             }
         }
 
-        private static void LaunchMultiInstanceWatcher()
+        private static async Task LaunchMultiInstanceWatcher()
         {
             const string LOG_IDENT = "Bootstrapper::LaunchMultiInstanceWatcher";
 
@@ -737,7 +744,7 @@ namespace Bloxstrap
                     App.Logger.WriteLine(LOG_IDENT, "Mutex ROBLOX_singletonEvent already exists, skipping creation");
                 }
                 else
-                {                    
+                {
                     _multiInstanceMutex2 = new Mutex(true, "ROBLOX_singletonEvent");
                     App.Logger.WriteLine(LOG_IDENT, "Created multi-instance mutex: ROBLOX_singletonEvent");
                 }
@@ -780,11 +787,9 @@ namespace Bloxstrap
             using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-MultiInstanceWatcherInitialisationFinished");
             Process.Start(Paths.Process, "-multiinstancewatcher");
 
-            bool initSuccess = initEventHandle.WaitOne(TimeSpan.FromSeconds(2));
-            if (initSuccess)
-                App.Logger.WriteLine(LOG_IDENT, "Initialisation finished signalled, continuing.");
-            else
-                App.Logger.WriteLine(LOG_IDENT, "Did not receive the initialisation finished signal, continuing.");
+            await Task.Run(() => initEventHandle.WaitOne(TimeSpan.FromSeconds(2)));
+
+            App.Logger.WriteLine(LOG_IDENT, "Multi-instance watcher initialization completed");
         }
 
         // Cleanup starts in watcher not here
@@ -792,69 +797,50 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "Bootstrapper::CleanupMultiInstanceResources";
 
-            bool processesStillRunning = false;
             try
             {
-                int robloxProcessCount = Process.GetProcesses().Count(x => x.ProcessName == "RobloxPlayerBeta");
+                int count = Process.GetProcesses().Count(x => x.ProcessName is "RobloxPlayerBeta");
+                count -= 1;
 
-                bool bloxstrapMutexExists = false;
-                try
+                if (count > 0)
                 {
-                    using (var mutex = Mutex.OpenExisting(MutexName))
-                    {
-                        bloxstrapMutexExists = true;
-                    }
-                }
-                catch (WaitHandleCannotBeOpenedException)
-                {
-                    bloxstrapMutexExists = false;
-                }
-                catch (Exception mutexEx)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Error checking for launching mutex: {mutexEx.Message}");
-                    bloxstrapMutexExists = true;
-                }
-
-                processesStillRunning = (robloxProcessCount > 0) || bloxstrapMutexExists;
-
-                if (processesStillRunning)
-                {
-                    string reason = bloxstrapMutexExists ? "Launching mutex exists" : $"Roblox processes still running ({robloxProcessCount} instances)";
-                    App.Logger.WriteLine(LOG_IDENT, $"{reason}, skipping mutex disposal");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "No Roblox processes running and no launching mutex found, proceeding with mutex disposal");
+                    App.Logger.WriteLine(LOG_IDENT, $"Skipping cleanup - {count} Roblox process(es) still running");
+                    return;
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Error checking for running processes: {ex.Message}");
-                processesStillRunning = true;
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return;
             }
 
-            if (!processesStillRunning)
-            {
-                try
-                {
-                    if (_multiInstanceMutex1 != null)
-                    {
-                        _multiInstanceMutex1.Dispose();
-                        _multiInstanceMutex1 = null;
-                        App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonMutex");
-                    }
+            bool launchingMutex = Utilities.DoesMutexExist(MutexName);
 
-                    if (_multiInstanceMutex2 != null)
-                    {
-                        _multiInstanceMutex2.Dispose();
-                        _multiInstanceMutex2 = null;
-                        App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonEvent");
-                    }
-                }
-                catch (Exception ex)
+            if (launchingMutex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping cleanup, currently launching roblox");
+                return;
+            }
+
+            try
+            {
+                if (_multiInstanceMutex1 != null)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Error disposing mutexes: {ex.Message}");
+                    _multiInstanceMutex1.Dispose();
+                    _multiInstanceMutex1 = null;
+                    App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonMutex");
                 }
+
+                if (_multiInstanceMutex2 != null)
+                {
+                    _multiInstanceMutex2.Dispose();
+                    _multiInstanceMutex2 = null;
+                    App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonEvent");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Error disposing mutexes: {ex.Message}");
             }
 
             if (App.Settings.Prop.Error773Fix)
@@ -951,12 +937,6 @@ namespace Bloxstrap
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
 
             SetStatus(Strings.Bootstrapper_Status_Starting);
-
-            if (_launchMode == LaunchMode.Player)
-            {
-                if (App.Settings.Prop.MultiInstanceLaunching)
-                    LaunchMultiInstanceWatcher();
-            }
 
             string[] Names = { App.RobloxPlayerAppName, App.RobloxAnselAppName, App.RobloxStudioAppName };
             string ResolvedName = null!;

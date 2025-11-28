@@ -62,7 +62,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 // Let editing TextBox handle Ctrl+C normally
                 if (DataGrid.CurrentCell.IsValid &&
                     DataGrid.CurrentCell.Column is DataGridBoundColumn &&
-                    DataGrid.IsKeyboardFocusWithin &&
                     DataGrid.CurrentColumn.GetCellContent(DataGrid.CurrentItem) is TextBox)
                 {
                     return;
@@ -255,7 +254,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 ReloadList();
         }
 
-        private void ShowAddDialog()
+        private async void ShowAddDialog()
         {
             App.FrostRPC?.SetDialog("Add FastFlag");
 
@@ -268,9 +267,9 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 return;
 
             if (dialog.Tabs.SelectedIndex == 0)
-                AddSingle(dialog.FlagNameTextBox.Text.Trim(), dialog.FlagValueComboBox.Text);
+                await AddSingle(dialog.FlagNameTextBox.Text.Trim(), dialog.FlagValueComboBox.Text);
             else if (dialog.Tabs.SelectedIndex == 1)
-                ImportJSON(dialog.JsonTextBox.Text);
+                await ImportJSON(dialog.JsonTextBox.Text);
         }
 
         private void AdvancedSettings_Click(object sender, RoutedEventArgs e)
@@ -420,7 +419,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             ReloadList();
         }
 
-        private void AddSingle(string name, string value)
+        private async Task AddSingle(string name, string value)
         {
             double? val = null;
 
@@ -471,12 +470,36 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 entry = _fastFlagList.FirstOrDefault(x => x.Name == name);
             }
 
+            var remoteManager = new RemoteDataManager();
+            await remoteManager.LoadData();
+            var base64Flags = DecodeBase64Flags(remoteManager.Prop.AllowedFastFlags);
+
+            if (!base64Flags.Contains(name))
+            {
+                if (Frontend.ShowMessageBox($"'{name}' is not in roblox allowlist and won't work.\n\nRemove it now?", MessageBoxImage.Warning, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    App.FastFlags.SetValue(name, null);
+
+                    if (entry != null)
+                    {
+                        _fastFlagList.Remove(entry);
+                    }
+                    else
+                    {
+                        ReloadList();
+                    }
+
+                    UpdateTotalFlagsCount();
+                    return;
+                }
+            }
+
             DataGrid.SelectedItem = entry;
             DataGrid.ScrollIntoView(entry);
             UpdateTotalFlagsCount();
         }
 
-        private void ImportJSON(string json)
+        private async Task ImportJSON(string json)
         {
             Dictionary<string, object>? list = null;
 
@@ -576,6 +599,22 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
             App.FastFlags.suspendUndoSnapshot = false;
 
+            var remoteManager = new RemoteDataManager();
+            await remoteManager.LoadData();
+            var base64Flags = DecodeBase64Flags(remoteManager.Prop.AllowedFastFlags);
+
+            var invalidFlags = list.Keys.Where(flag => !base64Flags.Contains(flag)).ToList();
+            if (invalidFlags.Any())
+            {
+                if (Frontend.ShowMessageBox($"{invalidFlags.Count} imported flags are not in the allowlist and won't work.\n\nRemove them now?", MessageBoxImage.Warning, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    foreach (var flagName in invalidFlags)
+                    {
+                        App.FastFlags.SetValue(flagName, null);
+                    }
+                }
+            }
+
             ClearSearch();
         }
 
@@ -625,7 +664,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             e.Handled = true;
         }
 
-        private void Editor_Drop(object sender, DragEventArgs e)
+        private async void Editor_Drop(object sender, DragEventArgs e)
         {
             DragOverlay.Visibility = Visibility.Collapsed;
 
@@ -649,7 +688,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 try
                 {
                     string content = File.ReadAllText(file);
-                    ImportJSON(content);
+                    await ImportJSON(content);
                 }
                 catch (Exception ex)
                 {

@@ -140,11 +140,11 @@
                 </controls:OptionControl>
 
                 <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}" Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}">
-                    <ui:ToggleSwitch IsChecked="{Binding BlockRobloxRecording, Mode=TwoWay}" />
+                    <ui:ToggleSwitch IsChecked="{Binding DisableRobloxRecording, Mode=TwoWay}" />
                 </controls:OptionControl>
 
                 <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}" Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}">
-                    <ui:ToggleSwitch IsChecked="{Binding BlockRobloxScreenshots, Mode=TwoWay}" />
+                    <ui:ToggleSwitch IsChecked="{Binding DisableRobloxScreenshots, Mode=TwoWay}" />
                 </controls:OptionControl>
 
             </StackPanel>
