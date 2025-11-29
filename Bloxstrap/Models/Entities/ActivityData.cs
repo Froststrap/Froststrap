@@ -1,4 +1,4 @@
-﻿using Bloxstrap.Models.APIs;
+using Bloxstrap.Models.APIs;
 using CommunityToolkit.Mvvm.Input;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -92,7 +92,7 @@ namespace Bloxstrap.Models.Entities
 
         public string GetInviteDeeplink(bool launchData = true)
         {
-            const string baseUrl = "https://realmeddsam.github.io/Froststrap-Website/invite";
+            const string baseUrl = "https://froststrap.github.io/invite";
 
             var queryParts = new List<string>
             {
