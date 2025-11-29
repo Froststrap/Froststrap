@@ -20,14 +20,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ProcessPriorityOption SelectedPriority
         {
             get => App.Settings.Prop.SelectedProcessPriority;
-            set
-            {
-                if (App.Settings.Prop.SelectedProcessPriority != value)
-                {
-                    App.Settings.Prop.SelectedProcessPriority = value;
-                    OnPropertyChanged(nameof(SelectedPriority));
-                }
-            }
+            set => App.Settings.Prop.SelectedProcessPriority = value;
         }
 
         public bool MultiInstances
@@ -211,14 +204,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public RobloxIcon SelectedRobloxIcon
         {
             get => App.Settings.Prop.SelectedRobloxIcon;
-            set
-            {
-                if (App.Settings.Prop.SelectedRobloxIcon != value)
-                {
-                    App.Settings.Prop.SelectedRobloxIcon = value;
-                    OnPropertyChanged(nameof(SelectedRobloxIcon));
-                }
-            }
+            set => App.Settings.Prop.SelectedRobloxIcon = value;
         }
 
         public ObservableCollection<RobloxIconEntry> RobloxIcons { get; set; } = new();

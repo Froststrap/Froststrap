@@ -436,38 +436,11 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="Enums.Theme.Dark" xml:space="preserve">
     <value>Dark</value>
   </data>
-  <data name="Enums.Theme.NewDark" xml:space="preserve">
-    <value>New Dark</value>
-  </data>
   <data name="Enums.Theme.Light" xml:space="preserve">
     <value>Light</value>
   </data>
-  <data name="Enums.Theme.Forest" xml:space="preserve">
-    <value>Forest</value>
-  </data>
   <data name="Enums.Theme.Froststrap" xml:space="preserve">
     <value>Froststrap</value>
-  </data>
-  <data name="Enums.Theme.Midnight" xml:space="preserve">
-    <value>Midnight</value>
-  </data>
-  <data name="Enums.Theme.RedBlue" xml:space="preserve">
-    <value>Red Blue</value>
-  </data>
-  <data name="Enums.Theme.Aqua" xml:space="preserve">
-    <value>Aqua</value>
-  </data>
-  <data name="Enums.Theme.PurpleMoon" xml:space="preserve">
-    <value>Purple Moon</value>
-  </data>
-  <data name="Enums.Theme.CottonCandy" xml:space="preserve">
-    <value>Cotton Candy</value>
-  </data>
-  <data name="Enums.Theme.Yellow" xml:space="preserve">
-    <value>Yellow</value>
-  </data>
-  <data name="Enums.Theme.Cyan" xml:space="preserve">
-    <value>Cyan</value>
   </data>
   <data name="Enums.Theme.Pink" xml:space="preserve">
     <value>Pink</value>
@@ -477,9 +450,6 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   </data>
   <data name="Enums.Theme.Orange" xml:space="preserve">
     <value>Orange</value>
-  </data>
-  <data name="Enums.Theme.Red" xml:space="preserve">
-    <value>Red</value>
   </data>
   <data name="Enums.Theme.Blue" xml:space="preserve">
     <value>Blue</value>
@@ -2079,7 +2049,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Export Settings</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
-    <value>Clean FastFlag List</value>
+    <value>Clean List</value>
   </data>
   <data name="Common.LookingFor" xml:space="preserve">
     <value>Looking For</value>

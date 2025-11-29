@@ -4,8 +4,10 @@ using Bloxstrap.UI.Elements.Settings;
 using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -155,7 +157,13 @@ namespace Bloxstrap.UI.ViewModels.Settings
             PopulateCustomThemes();
             ApplySavedCustomFont();
             UpdateFontVisibility();
+
+            InitializeGradientStops();
+
+            GradientAngle = App.Settings.Prop.GradientAngle;
         }
+
+        public ObservableCollection<GradientStops> GradientStops { get; } = new ObservableCollection<GradientStops>();
 
         public IEnumerable<Theme> Themes { get; } = Enum.GetValues(typeof(Theme)).Cast<Theme>();
 
@@ -164,13 +172,82 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => App.Settings.Prop.Theme;
             set
             {
+                if (App.Settings.Prop.Theme == value) return;
+
                 App.Settings.Prop.Theme = value;
+
+                if (value == Theme.Custom && GradientStops.Count == 0)
+                {
+                    ApplyDefaultGradientStops();
+                }
+
                 ((MainWindow)Window.GetWindow(_page)!).ApplyTheme();
                 OnPropertyChanged(nameof(CustomGlobalThemeExpanded));
             }
         }
 
         public bool CustomGlobalThemeExpanded => App.Settings.Prop.Theme == Theme.Custom;
+
+        public double GradientAngle
+        {
+            get => App.Settings.Prop.GradientAngle;
+            set
+            {
+                if (Math.Abs(App.Settings.Prop.GradientAngle - value) < 0.001) return;
+
+                App.Settings.Prop.GradientAngle = value;
+
+                var window = Window.GetWindow(_page);
+                if (window != null)
+                {
+                    ((MainWindow)window).ApplyTheme();
+                }
+
+                OnPropertyChanged(nameof(GradientAngle));
+            }
+        }
+
+        public void ResetGradientStops()
+        {
+            GradientStops.Clear();
+            ApplyDefaultGradientStops();
+            App.Settings.Prop.CustomGradientStops = GradientStops.ToList();
+
+            var window = Window.GetWindow(_page);
+            if (window != null)
+            {
+                ((MainWindow)window).ApplyTheme();
+            }
+        }
+
+        private void InitializeGradientStops()
+        {
+            if (App.Settings.Prop.CustomGradientStops != null && App.Settings.Prop.CustomGradientStops.Any())
+            {
+                foreach (var stop in App.Settings.Prop.CustomGradientStops)
+                    GradientStops.Add(stop);
+            }
+            else if (App.Settings.Prop.Theme == Theme.Custom)
+            {
+                ApplyDefaultGradientStops();
+            }
+        }
+
+        private void ApplyDefaultGradientStops()
+        {
+            var defaultStops = new List<GradientStops>
+            {
+                new GradientStops { Offset = 0.0, Color = "#4D5560" },
+                new GradientStops { Offset = 0.5, Color = "#383F47" },
+                new GradientStops { Offset = 1.0, Color = "#252A30" }
+            };
+
+            GradientStops.Clear();
+            foreach (var stop in defaultStops)
+                GradientStops.Add(stop);
+
+            App.Settings.Prop.CustomGradientStops = defaultStops;
+        }
 
         public static List<string> Languages => Locale.GetLanguages();
 

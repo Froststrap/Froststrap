@@ -158,14 +158,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public TrayDoubleClickAction SelectedDoubleClickAction
         {
             get => App.Settings.Prop.DoubleClickAction;
-            set
-            {
-                if (App.Settings.Prop.DoubleClickAction != value)
-                {
-                    App.Settings.Prop.DoubleClickAction = value;
-                    OnPropertyChanged(nameof(SelectedDoubleClickAction));
-                }
-            }
+            set => App.Settings.Prop.DoubleClickAction = value;
         }
 
         public bool DiscordActivityEnabled

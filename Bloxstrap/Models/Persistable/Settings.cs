@@ -62,6 +62,13 @@ namespace Bloxstrap.Models.Persistable
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconBloxstrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.Mica;
         public string? SelectedCustomTheme { get; set; } = null;
+        public List<GradientStops> CustomGradientStops { get; set; } = new()
+        {
+            new GradientStops { Offset = 0.0, Color = "#4D5560" },
+            new GradientStops { Offset = 0.5, Color = "#383F47" },
+            new GradientStops { Offset = 1.0, Color = "#252A30" }
+        };
+        public double GradientAngle { get; set; } = 0;
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public string DownloadingStringFormat { get; set; } = Strings.Bootstrapper_Status_Downloading + " {0} - {1}MB / {2}MB";

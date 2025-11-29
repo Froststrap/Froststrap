@@ -2523,15 +2523,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Aqua.
-        /// </summary>
-        public static string Enums_Theme_Aqua {
-            get {
-                return ResourceManager.GetString("Enums.Theme.Aqua", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Blue.
         /// </summary>
         public static string Enums_Theme_Blue {
@@ -2541,38 +2532,11 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cotton Candy.
-        /// </summary>
-        public static string Enums_Theme_CottonCandy {
-            get {
-                return ResourceManager.GetString("Enums.Theme.CottonCandy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cyan.
-        /// </summary>
-        public static string Enums_Theme_Cyan {
-            get {
-                return ResourceManager.GetString("Enums.Theme.Cyan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Dark.
         /// </summary>
         public static string Enums_Theme_Dark {
             get {
                 return ResourceManager.GetString("Enums.Theme.Dark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Forest.
-        /// </summary>
-        public static string Enums_Theme_Forest {
-            get {
-                return ResourceManager.GetString("Enums.Theme.Forest", resourceCulture);
             }
         }
         
@@ -2604,24 +2568,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Midnight.
-        /// </summary>
-        public static string Enums_Theme_Midnight {
-            get {
-                return ResourceManager.GetString("Enums.Theme.Midnight", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New Dark.
-        /// </summary>
-        public static string Enums_Theme_NewDark {
-            get {
-                return ResourceManager.GetString("Enums.Theme.NewDark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Orange.
         /// </summary>
         public static string Enums_Theme_Orange {
@@ -2645,42 +2591,6 @@ namespace Bloxstrap.Resources {
         public static string Enums_Theme_Purple {
             get {
                 return ResourceManager.GetString("Enums.Theme.Purple", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Purple Moon.
-        /// </summary>
-        public static string Enums_Theme_PurpleMoon {
-            get {
-                return ResourceManager.GetString("Enums.Theme.PurpleMoon", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Red.
-        /// </summary>
-        public static string Enums_Theme_Red {
-            get {
-                return ResourceManager.GetString("Enums.Theme.Red", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Red Blue.
-        /// </summary>
-        public static string Enums_Theme_RedBlue {
-            get {
-                return ResourceManager.GetString("Enums.Theme.RedBlue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Yellow.
-        /// </summary>
-        public static string Enums_Theme_Yellow {
-            get {
-                return ResourceManager.GetString("Enums.Theme.Yellow", resourceCulture);
             }
         }
         
@@ -4241,7 +4151,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clean FastFlag List.
+        ///   Looks up a localized string similar to Clean List.
         /// </summary>
         public static string Menu_FastFlagEditor_CleanList {
             get {

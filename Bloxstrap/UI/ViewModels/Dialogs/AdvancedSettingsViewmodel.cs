@@ -13,11 +13,8 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             get => App.Settings.Prop.SelectedCopyFormat;
             set
             {
-                if (App.Settings.Prop.SelectedCopyFormat != value)
-                {
-                    App.Settings.Prop.SelectedCopyFormat = value;
-                    OnPropertyChanged(nameof(SelectedCopyFormat));
-                }
+                App.Settings.Prop.SelectedCopyFormat = value;
+                OnPropertyChanged(nameof(SelectedCopyFormat));
             }
         }
 
@@ -28,12 +25,9 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             get => App.Settings.Prop.CtrlCJsonFormat;
             set
             {
-                if (App.Settings.Prop.CtrlCJsonFormat != value)
-                {
-                    App.Settings.Prop.CtrlCJsonFormat = value;
-                    OnPropertyChanged(nameof(ShowCtrlCJsonFormatSetting));
-                    CtrlCJsonFormatChanged?.Invoke(this, EventArgs.Empty);
-                }
+                App.Settings.Prop.CtrlCJsonFormat = value;
+                OnPropertyChanged(nameof(ShowCtrlCJsonFormatSetting));
+                CtrlCJsonFormatChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -42,12 +36,9 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             get => App.Settings.Prop.ShowPresetColumn;
             set
             {
-                if (App.Settings.Prop.ShowPresetColumn != value)
-                {
-                    App.Settings.Prop.ShowPresetColumn = value;
-                    OnPropertyChanged(nameof(ShowPresetColumnSetting));
-                    ShowPresetColumnChanged?.Invoke(this, EventArgs.Empty);
-                }
+                App.Settings.Prop.ShowPresetColumn = value;
+                OnPropertyChanged(nameof(ShowPresetColumnSetting));
+                ShowPresetColumnChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -56,12 +47,9 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             get => App.Settings.Prop.ShowFlagCount;
             set
             {
-                if (App.Settings.Prop.ShowFlagCount != value)
-                {
-                    App.Settings.Prop.ShowFlagCount = value;
-                    OnPropertyChanged(nameof(ShowFlagCount));
-                    ShowFlagCountChanged?.Invoke(this, EventArgs.Empty);
-                }
+                App.Settings.Prop.ShowFlagCount = value;
+                OnPropertyChanged(nameof(ShowFlagCount));
+                ShowFlagCountChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -70,11 +58,8 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             get => App.Settings.Prop.UseAltManually;
             set
             {
-                if (App.Settings.Prop.UseAltManually != value)
-                {
-                    App.Settings.Prop.UseAltManually = value;
-                    OnPropertyChanged(nameof(UseAltManually));
-                }
+                App.Settings.Prop.UseAltManually = value;
+                OnPropertyChanged(nameof(UseAltManually));
             }
         }
 

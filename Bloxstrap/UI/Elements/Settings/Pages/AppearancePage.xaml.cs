@@ -1,6 +1,8 @@
 ﻿using Bloxstrap.UI.ViewModels.Settings;
+using Microsoft.Win32;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Bloxstrap.UI.Elements.Settings.Pages
 {
@@ -73,6 +75,69 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             viewModel.OnPropertyChanged(nameof(viewModel.SelectedCustomTheme));
             viewModel.OnPropertyChanged(nameof(viewModel.SelectedCustomThemeName));
         }
+
+        private void UpdateGradientTheme()
+        {
+            if (DataContext is AppearanceViewModel vm)
+            {
+                App.Settings.Prop.CustomGradientStops = vm.GradientStops.ToList();
+                ((MainWindow)Window.GetWindow(this)!).ApplyTheme();
+            }
+        }
+
+        private void OnAddGradientStop_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not AppearanceViewModel vm) return;
+
+            vm.GradientStops.Add(new GradientStops { Offset = 0.5, Color = "#000000" });
+            UpdateGradientTheme();
+        }
+
+        private void OnRemoveGradientStop_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button { Tag: GradientStops stop } ||
+                DataContext is not AppearanceViewModel vm) return;
+
+            vm.GradientStops.Remove(stop);
+            UpdateGradientTheme();
+        }
+
+        private void OnChangeGradientColor_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is not Button { Tag: GradientStops stop } ||
+                DataContext is not AppearanceViewModel vm) return;
+
+            var dialog = new System.Windows.Forms.ColorDialog();
+            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+
+            var color = dialog.Color;
+            stop.Color = $"#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
+            UpdateGradientTheme();
+        }
+
+        private void OnGradientSliderReleased(object sender, MouseButtonEventArgs e)
+        {
+            UpdateGradientTheme();
+        }
+
+        private void OnGradientColorHexChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is not TextBox { DataContext: GradientStops stop } ||
+                DataContext is not AppearanceViewModel vm) return;
+
+            if (IsValidHexColor(stop.Color))
+                UpdateGradientTheme();
+        }
+
+        private void OnResetGradient_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not AppearanceViewModel vm) return;
+
+            vm.ResetGradientStops();
+            UpdateGradientTheme();
+        }
+
+        private static bool IsValidHexColor(string color) => !string.IsNullOrWhiteSpace(color) && color.StartsWith("#") && color.Length >= 7;
 
         private void MoveUp_Click(object sender, RoutedEventArgs e)
         {
