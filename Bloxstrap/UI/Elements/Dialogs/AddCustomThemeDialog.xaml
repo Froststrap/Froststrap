@@ -20,21 +20,13 @@
      SizeToContent="Height"
      WindowStartupLocation="CenterScreen"
      mc:Ignorable="d">
-    <Grid>
+    <Grid Background="{DynamicResource WindowBackgroundGradient}">
         <Grid>
-            <Grid.Background>
-                <DynamicResource ResourceKey="WindowBackgroundGradient" />
-            </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-
-            <Grid x:Name="ImageBackgroundLayer" Panel.ZIndex="-1" Visibility="{Binding IsImageMode, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="3">
-                <Border Background="{DynamicResource WindowBackgroundImage}" />
-                <Border Background="{DynamicResource WindowBackgroundBlackOverlay}" />
-            </Grid>
 
             <ui:TitleBar
                  Title="{x:Static resources:Strings.CustomTheme_Add_Title}"

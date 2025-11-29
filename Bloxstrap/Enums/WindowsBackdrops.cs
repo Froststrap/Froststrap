@@ -1,6 +1,6 @@
 ﻿namespace Bloxstrap.Enums
 {
-    public enum UIBackgroundType
+    public enum WindowsBackdrops
     {
         Mica,
         Aero,

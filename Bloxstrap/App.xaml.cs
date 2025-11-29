@@ -179,14 +179,14 @@ namespace Bloxstrap
             });
         }
 
-        private static void ApplyBackdropToAllWindows(UIBackgroundType backdropType)
+        private static void ApplyBackdropToAllWindows(WindowsBackdrops backdropType)
         {
             var wpfBackdrop = backdropType switch
             {
-                UIBackgroundType.None => BackgroundType.None,
-                UIBackgroundType.Mica => BackgroundType.Mica,
-                UIBackgroundType.Acrylic => BackgroundType.Acrylic,
-                UIBackgroundType.Aero => BackgroundType.Aero,
+                WindowsBackdrops.None => BackgroundType.None,
+                WindowsBackdrops.Mica => BackgroundType.Mica,
+                WindowsBackdrops.Acrylic => BackgroundType.Acrylic,
+                WindowsBackdrops.Aero => BackgroundType.Aero,
                 _ => BackgroundType.None
             };
 

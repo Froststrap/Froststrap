@@ -60,24 +60,12 @@ namespace Bloxstrap.Models.Persistable
         // Appearance Page
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.CustomFluentDialog;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconBloxstrap;
-        public UIBackgroundType SelectedBackdrop { get; set; } = UIBackgroundType.Mica;
+        public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.Mica;
         public string? SelectedCustomTheme { get; set; } = null;
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public string DownloadingStringFormat { get; set; } = Strings.Bootstrapper_Status_Downloading + " {0} - {1}MB / {2}MB";
         public Theme Theme { get; set; } = Theme.Default;
-        public List<GradientStopData> CustomGradientStops { get; set; } = new()
-        {
-            new GradientStopData { Offset = 0.0, Color = "#4D5560" },
-            new GradientStopData { Offset = 0.5, Color = "#383F47" },
-            new GradientStopData { Offset = 1.0, Color = "#252A30" }
-        };
-        public Point GradientStartPoint { get; set; } = new Point(1, 1);
-        public Point GradientEndPoint { get; set; } = new Point(0, 0);
-        public string ImageBackgroundPath { get; set; } = string.Empty;
-        public CustomBackgroundMode BackgroundMode { get; set; } = CustomBackgroundMode.Gradient;
-        public BackgroundImageStretchMode BackgroundImageStretch { get; set; } = BackgroundImageStretchMode.Fill;
-        public double BlackOverlayOpacity { get; set; } = 0.2;
         public string? CustomFontPath { get; set; } = null;
         public List<string> NavigationOrder { get; set; } = new List<string>();
         public bool IsNavigationOrderLocked { get; set; } = true;

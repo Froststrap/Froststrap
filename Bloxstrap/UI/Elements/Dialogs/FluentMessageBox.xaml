@@ -20,10 +20,7 @@
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="Mica"
         WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.Background>
-            <DynamicResource ResourceKey="WindowBackgroundGradient" />
-        </Grid.Background>
+    <Grid Background="{DynamicResource WindowBackgroundGradient}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="41*"/>
             <ColumnDefinition Width="82*"/>
@@ -34,11 +31,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
-        <Grid x:Name="ImageBackgroundLayer" Panel.ZIndex="-1" Visibility="{Binding IsImageMode, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.RowSpan="3" Grid.ColumnSpan="3">
-            <Border Background="{DynamicResource WindowBackgroundImage}" />
-            <Border Background="{DynamicResource WindowBackgroundBlackOverlay}" />
-        </Grid>
 
         <ui:TitleBar Grid.ColumnSpan="3" Padding="8" x:Name="RootTitleBar" Title="Froststrap" ShowMinimize="False" ShowMaximize="False" CanMaximize="False" KeyboardNavigation.TabNavigation="None" VerticalAlignment="Center" />
 

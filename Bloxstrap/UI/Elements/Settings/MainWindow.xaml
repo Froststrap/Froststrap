@@ -29,12 +29,6 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="ImageBackgroundLayer" Grid.RowSpan="3" Panel.ZIndex="-1" Visibility="{Binding IsImageMode, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="False">
-            <Image x:Name="AnimatedGifBackground" Visibility="Collapsed" IsHitTestVisible="False" />
-            <Border x:Name="StaticImageBackground" Background="{DynamicResource WindowBackgroundImage}" IsHitTestVisible="False" />
-            <Border Background="{DynamicResource WindowBackgroundBlackOverlay}" IsHitTestVisible="False" />
-        </Grid>
-
         <ui:Snackbar
             x:Name="AlreadyRunningSnackbar"
             Title="{x:Static resources:Strings.Menu_AlreadyRunning_Title}"

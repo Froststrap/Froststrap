@@ -86,14 +86,14 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
-    <PackageReference Include="Markdig" Version="0.43.0" />
-    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.250">
+    <PackageReference Include="Markdig" Version="0.44.0" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.257">
       <!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
     <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 	<PackageReference Include="AvalonEdit" Version="6.3.1.120" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-	<PackageReference Include="PuppeteerExtraSharp" Version="3.0.1" />
+	<PackageReference Include="PuppeteerExtraSharp" Version="3.0.2" />
 	<PackageReference Include="PuppeteerSharp" Version="20.2.4" />
     <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />

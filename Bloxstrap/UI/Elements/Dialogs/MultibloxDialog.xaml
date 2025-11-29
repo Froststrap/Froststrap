@@ -16,11 +16,7 @@
         WindowBackdropType="Mica"
         WindowStartupLocation="CenterOwner">
 
-    <Grid>
-        <Grid.Background>
-            <DynamicResource ResourceKey="WindowBackgroundGradient" />
-        </Grid.Background>
-
+    <Grid Background="{DynamicResource WindowBackgroundGradient}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

@@ -20,7 +20,7 @@
         ExtendsContentIntoTitleBar="True"
         WindowStartupLocation="CenterScreen">
 
-    <Grid>
+    <Grid Background="{DynamicResource WindowBackgroundGradient}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
