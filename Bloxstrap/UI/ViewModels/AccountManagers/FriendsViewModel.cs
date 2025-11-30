@@ -447,9 +447,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     return;
                 }
 
-                var mainWindow = Application.Current.MainWindow as MainWindow;
-                mainWindow?.ShowLoading($"Joining {friend.DisplayName}'s game...");
-
                 try
                 {
                     await mgr.LaunchAccountToPlaceAsync(mgr.ActiveAccount, placeId.Value, gameInstanceId);
@@ -460,10 +457,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 {
                     App.Logger.WriteLine(LOG_IDENT_JOIN_FRIEND, $"Exception during launch: {ex.Message}");
                     Frontend.ShowMessageBox($"Failed to join {friend.DisplayName}'s game: {ex.Message}", MessageBoxImage.Error);
-                }
-                finally
-                {
-                    mainWindow?.HideLoading();
                 }
             }
             catch (Exception ex)

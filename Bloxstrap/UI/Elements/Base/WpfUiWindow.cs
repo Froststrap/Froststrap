@@ -11,6 +11,7 @@ namespace Bloxstrap.UI.Elements.Base
 {
     public abstract class WpfUiWindow : UiWindow
     {
+        // I could add animated backgrounds, its easy but its hella gay i need to add a seperate image control :/
         private readonly IThemeService _themeService = new ThemeService();
 
         public WpfUiWindow()
