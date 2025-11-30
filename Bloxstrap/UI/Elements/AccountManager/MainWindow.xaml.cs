@@ -19,17 +19,6 @@ namespace Bloxstrap.UI.Elements.AccountManagers
             App.Logger.WriteLine("MainWindow", "Initializing account manager window");
         }
 
-        public void ShowLoading(string message = "Loading...")
-        {
-            LoadingOverlayText.Text = message;
-            LoadingOverlay.Visibility = Visibility.Visible;
-        }
-
-        public void HideLoading()
-        {
-            LoadingOverlay.Visibility = Visibility.Collapsed;
-        }
-
         #region INavigationWindow methods
 
         public Frame GetFrame() => RootFrame;

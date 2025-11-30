@@ -10,12 +10,12 @@
              mc:Ignorable="d"
              Title="Account Manager"
              Background="{ui:ThemeResource ApplicationBackgroundBrush}"
-             MinWidth="740"
-             Width="850"
-             Height="500"
+             Width="1000"
+             Height="675"
              ExtendsContentIntoTitleBar="True"
              WindowBackdropType="Mica"
              WindowStartupLocation="CenterScreen">
+
     <Grid Background="{DynamicResource ApplicationBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -43,44 +43,6 @@
             </ui:NavigationStore>
 
             <Frame x:Name="RootFrame" Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" />
-        </Grid>
-
-        <Grid x:Name="LoadingOverlay"
-            Visibility="Collapsed"
-            Background="#A0000000"
-            Panel.ZIndex="9999"
-            Grid.RowSpan="3"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Background="{DynamicResource NormalDarkAndLightBackground}"
-                    CornerRadius="16"
-                    Padding="32"
-                    Effect="{DynamicResource ControlShadow}">
-                    <StackPanel HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Orientation="Vertical">
-
-                        <!-- Loading Text -->
-                        <TextBlock x:Name="LoadingOverlayText"
-                        Text="Loading..."
-                        FontSize="22"
-                        FontWeight="SemiBold"
-                        Margin="0,0,0,20"
-                        HorizontalAlignment="Center"
-                        Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-
-                        <ui:ProgressRing
-                            IsIndeterminate="True"
-                            Width="60"
-                            Height="60"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Margin="0,10,0,0" />
-                    </StackPanel>
-                </Border>
-            </Grid>
         </Grid>
     </Grid>
 </base:WpfUiWindow>

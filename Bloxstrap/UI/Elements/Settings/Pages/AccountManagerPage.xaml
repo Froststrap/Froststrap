@@ -45,7 +45,9 @@
                     Grid.Row="2"
                     Margin="0,0,0,16"
                     Padding="12"
-                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    Background="{DynamicResource PrimaryBackgroundColor}"
+                    BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderThickness="1"
                     CornerRadius="8">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -134,10 +136,13 @@
                     </Grid>
                 </Border>
 
-                <TabControl Grid.Row="2" Margin="0,0,0,16" Visibility="{Binding ShouldShowGames, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TabControl Grid.Row="3" Margin="0,0,0,16">
                     <TabItem Header="Friends">
                         <!-- Friends Section (Reused squire dot ui cuz too lazy to make my own) -->
-                        <Border Padding="12" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                        <Border Padding="12" 
+                            Background="{DynamicResource PrimaryBackgroundColor}"
+                            BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderThickness="1">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -235,7 +240,10 @@
 
                     <TabItem Header="Games">
                         <!--  Launch Section  -->
-                        <Border Padding="16" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                        <Border Padding="16"
+                            Background="{DynamicResource PrimaryBackgroundColor}"
+                            BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderThickness="1">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
@@ -502,12 +510,13 @@
 
                 <!--  Games Section  -->
                 <Border
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Margin="0,0,0,16"
                     Padding="16"
-                    Background="{DynamicResource ControlFillColorDefaultBrush}"
-                    CornerRadius="8"
-                    Visibility="{Binding ShouldShowGames, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    Background="{DynamicResource PrimaryBackgroundColor}"
+                    BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+                    BorderThickness="1"
+                    CornerRadius="8">
                     <StackPanel>
                         <StackPanel Grid.Column="0" Margin="0,-4,0,8" Orientation="Horizontal">
                             <TextBlock Margin="0,0,4,0" VerticalAlignment="Center" Text="Region:" />

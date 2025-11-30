@@ -23,7 +23,9 @@
             Grid.Row="0"
             Margin="0,0,0,16"
             Padding="16"
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Background="{DynamicResource PrimaryBackgroundColor}"
+            BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderThickness="1"
             CornerRadius="8">
             <Grid>
                 <Grid.RowDefinitions>
@@ -120,7 +122,9 @@
         <Border
             Grid.Row="1"
             Padding="16"
-            Background="{DynamicResource ControlFillColorDefaultBrush}"
+            Background="{DynamicResource PrimaryBackgroundColor}"
+            BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+            BorderThickness="1"
             CornerRadius="8">
             <Grid>
                 <Grid.RowDefinitions>

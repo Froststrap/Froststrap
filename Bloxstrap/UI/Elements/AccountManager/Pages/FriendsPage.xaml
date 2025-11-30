@@ -15,100 +15,98 @@
 
     <Grid>
         <!-- Lowkey since we doing everything in its own tab, we can add here more stuff like bulk unfriend etc etc -->
-        <Border Padding="12" Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <Grid Margin="8,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
-                    <TextBlock VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Text="Friends" />
-                </StackPanel>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                <TextBlock VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Text="Friends" />
+                <TextBlock VerticalAlignment="Center" Text="Filter:" Margin="8,4,8,0" />
+                <ComboBox Width="100" ItemsSource="{Binding FriendFilters}" SelectedItem="{Binding SelectedFriendFilter}" />
+                <ui:Button Margin="8,0,0,0" Command="{Binding RefreshFriendsCommand}" Content="Refresh" />
+            </StackPanel>
 
-                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12">
-                    <TextBlock VerticalAlignment="Center" Text="Filter:" Margin="0,0,8,0" />
-                    <ComboBox Width="100" ItemsSource="{Binding FriendFilters}" SelectedItem="{Binding SelectedFriendFilter}" />
-                    <ui:Button Margin="8,0,0,0" Command="{Binding RefreshFriendsCommand}" Content="Refresh" />
-                </StackPanel>
+            <ItemsControl ItemsSource="{Binding FilteredFriends}" Grid.Row="2" HorizontalAlignment="Stretch">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid HorizontalAlignment="Stretch" VerticalAlignment="Top" Columns="7"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                <ItemsControl ItemsSource="{Binding FilteredFriends}" Grid.Row="2" HorizontalAlignment="Stretch">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid HorizontalAlignment="Stretch" VerticalAlignment="Top" Columns="6"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="0,4"
+                            Padding="8"
+                            Width="120"
+                            Background="{DynamicResource PrimaryBackgroundColor}"
+                            BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="6">
+                            <StackPanel>
+                                <Grid>
                             <Border
-                                    Margin="4"
-                                    Padding="8"
-                                    Width="120"
-                                    Background="{DynamicResource ControlFillColorDefaultBrush}"
-                                    CornerRadius="6">
-                                <StackPanel>
-                                    <Grid>
-                                        <Border
-                                                Width="64"
-                                                Height="64"
-                                                Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                                                CornerRadius="32">
-                                            <Image 
-                                                    ClipToBounds="True" 
-                                                    Source="{Binding AvatarUrl, TargetNullValue={x:Null}, FallbackValue={x:Null}}" 
-                                                    Stretch="UniformToFill" />
-                                        </Border>
-                                        <Border
-                                                Width="16"
-                                                Height="16"
-                                                Margin="0,0,16,0"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Bottom"
-                                                Background="{Binding StatusColor}"
-                                                BorderBrush="{DynamicResource ApplicationBackgroundBrush}"
-                                                BorderThickness="2"
-                                                CornerRadius="8"
-                                                ToolTip="{Binding LastLocation}">
-                                            <Border.Effect>
-                                                <DropShadowEffect BlurRadius="4" Opacity="0.6" ShadowDepth="0" />
-                                            </Border.Effect>
-                                        </Border>
-                                    </Grid>
-
-                                    <TextBlock
-                                            Margin="0,6,0,0"
-                                            FontSize="12"
-                                            FontWeight="SemiBold"
-                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                            Text="{Binding DisplayName}"
-                                            TextTrimming="CharacterEllipsis" />
-
-                                    <TextBlock
-                                            Margin="0,2,0,0"
-                                            FontSize="10"
-                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="{Binding LastLocation}"
-                                            ToolTip="{Binding LastLocation}"
-                                            TextTrimming="CharacterEllipsis" />
-
-                                    <ui:Button
-                                            Margin="0,8,0,0"
-                                            HorizontalAlignment="Stretch"
-                                            Appearance="Primary"
-                                            Command="{Binding DataContext.JoinFriendCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"
-                                            Height="30"
-                                            IsEnabled="{Binding IsOnline}">
-                                        <ui:SymbolIcon Filled="True" Symbol="Play24" FontSize="16" />
-                                    </ui:Button>
-                                </StackPanel>
+                                Width="64"
+                                Height="64"
+                                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                CornerRadius="32">
+                                <Image 
+                                    ClipToBounds="True" 
+                                    Source="{Binding AvatarUrl, TargetNullValue={x:Null}, FallbackValue={x:Null}}" 
+                                    Stretch="UniformToFill" />
                             </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
-        </Border>
+                            <Border
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,16,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Background="{Binding StatusColor}"
+                                BorderBrush="{DynamicResource ApplicationBackgroundBrush}"
+                                BorderThickness="2"
+                                CornerRadius="8"
+                                ToolTip="{Binding LastLocation}">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="4" Opacity="0.6" ShadowDepth="0" />
+                                </Border.Effect>
+                            </Border>
+                                </Grid>
+
+                                <TextBlock
+                                    Margin="0,6,0,0"
+                                    FontSize="12"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{Binding DisplayName}"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                <TextBlock
+                                    Margin="0,2,0,0"
+                                    FontSize="10"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    Text="{Binding LastLocation}"
+                                    ToolTip="{Binding LastLocation}"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                <ui:Button
+                                    Margin="0,8,0,0"
+                                    HorizontalAlignment="Stretch"
+                                    Appearance="Primary"
+                                    Command="{Binding DataContext.JoinFriendCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                    CommandParameter="{Binding}"
+                                    Height="30"
+                                    IsEnabled="{Binding IsOnline}">
+                            <ui:SymbolIcon Filled="True" Symbol="Play24" FontSize="16" />
+                                </ui:Button>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
 
         <Grid Panel.ZIndex="999" Visibility="{Binding IsPresenceLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border Background="#A0000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />

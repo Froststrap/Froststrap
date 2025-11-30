@@ -245,7 +245,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             var openFileDialog = new OpenFileDialog
             {
-                Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg",
+                Filter = "Image Files (*.png;*.jpg;*.jpeg*.gif;)|*.png;*.jpg;*.jpeg;*.gif",
                 Multiselect = false
             };
 

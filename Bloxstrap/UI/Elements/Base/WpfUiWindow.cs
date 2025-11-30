@@ -88,7 +88,6 @@ namespace Bloxstrap.UI.Elements.Base
         {
             if (string.IsNullOrEmpty(App.Settings.Prop.BackgroundImagePath) || !File.Exists(App.Settings.Prop.BackgroundImagePath))
             {
-                App.Logger.WriteLine("WpfUiWindow", "Empty/Null image path or image dosent exist in path");
                 return;
             }
 
@@ -119,7 +118,7 @@ namespace Bloxstrap.UI.Elements.Base
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("WpfUiWindow", $"exception when changing to image: {ex.Message}");
+                App.Logger.WriteLine("WpfUiWindow", $"Exception when changing to image: {ex.Message}");
             }
         }
 
