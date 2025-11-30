@@ -138,14 +138,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(CustomIconLocation));
         }
 
-        public IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues(typeof(WindowsBackdrops)).Cast<WindowsBackdrops>();
-
-        public WindowsBackdrops SelectedBackdrop
-        {
-            get => App.Settings.Prop.SelectedBackdrop;
-            set => App.Settings.Prop.SelectedBackdrop = value;
-        }
-
         public AppearanceViewModel(Page page)
         {
             _page = page;
@@ -158,8 +150,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             UpdateFontVisibility();
 
             InitializeGradientStops();
-
-            GradientAngle = App.Settings.Prop.GradientAngle;
         }
 
         public ObservableCollection<GradientStops> GradientStops { get; } = new ObservableCollection<GradientStops>();
@@ -171,8 +161,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => App.Settings.Prop.Theme;
             set
             {
-                if (App.Settings.Prop.Theme == value) return;
-
                 App.Settings.Prop.Theme = value;
 
                 if (value == Theme.Custom && GradientStops.Count == 0)
@@ -192,17 +180,128 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => App.Settings.Prop.GradientAngle;
             set
             {
-                if (Math.Abs(App.Settings.Prop.GradientAngle - value) < 0.001) return;
-
                 App.Settings.Prop.GradientAngle = value;
 
-                var window = Window.GetWindow(_page);
-                if (window != null)
-                {
-                    ((MainWindow)window).ApplyTheme();
-                }
+                ((MainWindow)Window.GetWindow(_page)!).ApplyTheme();
 
                 OnPropertyChanged(nameof(GradientAngle));
+            }
+        }
+
+        public IEnumerable<BackgroundMode> BackgroundTypes { get; } = Enum.GetValues(typeof(BackgroundMode)).Cast<BackgroundMode>();
+
+        public BackgroundMode BackgroundType
+        {
+            get => App.Settings.Prop.BackgroundType;
+            set
+            {
+                App.Settings.Prop.BackgroundType = value;
+
+                if (value == BackgroundMode.Gradient && GradientStops.Count == 0)
+                {
+                    ApplyDefaultGradientStops();
+                }
+
+                if (value == BackgroundMode.Image)
+                {
+                    if (!string.IsNullOrEmpty(App.Settings.Prop.BackgroundImagePath) &&  !File.Exists(App.Settings.Prop.BackgroundImagePath))
+                    {
+                        App.Settings.Prop.BackgroundImagePath = null;
+                    }
+                }
+
+                ((MainWindow)Window.GetWindow(_page)!).ApplyTheme();
+                OnPropertyChanged(nameof(IsGradientMode));
+                OnPropertyChanged(nameof(IsImageMode));
+            }
+        }
+
+        public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
+        public bool IsImageMode => BackgroundType == BackgroundMode.Image;
+
+        public IEnumerable<BackgroundStretch> BackgroundStretches { get; } = Enum.GetValues(typeof(BackgroundStretch)).Cast<BackgroundStretch>();
+
+        public BackgroundStretch BackgroundStretch
+        {
+            get => App.Settings.Prop.BackgroundStretch;
+            set
+            {
+                App.Settings.Prop.BackgroundStretch = value;
+                ((MainWindow)Window.GetWindow(_page)!).ApplyTheme();
+            }
+        }
+
+        public double BackgroundOpacity
+        {
+            get => App.Settings.Prop.BackgroundOpacity * 100;
+            set
+            {
+                double newOpacity = value / 100.0;
+                App.Settings.Prop.BackgroundOpacity = newOpacity;
+            }
+        }
+
+        public void SelectBackgroundImage()
+        {
+            var openFileDialog = new OpenFileDialog
+            {
+                Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg",
+                Multiselect = false
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                SetBackgroundImage(openFileDialog.FileName);
+            }
+        }
+
+        private void SetBackgroundImage(string sourcePath)
+        {
+            try
+            {
+                string destinationPath = Path.Combine(Paths.Base, "CustomAppThemeBackground" + Path.GetExtension(sourcePath));
+
+                if (File.Exists(destinationPath))
+                {
+                    File.Delete(destinationPath);
+                }
+
+                File.Copy(sourcePath, destinationPath);
+
+                App.Settings.Prop.BackgroundImagePath = destinationPath;
+
+                ((MainWindow)Window.GetWindow(_page)!).ApplyTheme();
+            }
+            catch (Exception ex)
+            {
+                Frontend.ShowMessageBox(
+                    $"Failed to set background image: {ex.Message}",
+                    MessageBoxImage.Error,
+                    MessageBoxButton.OK
+                );
+            }
+        }
+
+        public void ClearBackgroundImage()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(App.Settings.Prop.BackgroundImagePath) && File.Exists(App.Settings.Prop.BackgroundImagePath))
+                {
+                    File.Delete(App.Settings.Prop.BackgroundImagePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Frontend.ShowMessageBox(
+                    $"Failed to clear background image: {ex.Message}",
+                    MessageBoxImage.Error,
+                    MessageBoxButton.OK
+                );
+            }
+            finally
+            {
+                App.Settings.Prop.BackgroundImagePath = null;
             }
         }
 
@@ -212,11 +311,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             ApplyDefaultGradientStops();
             App.Settings.Prop.CustomGradientStops = GradientStops.ToList();
 
-            var window = Window.GetWindow(_page);
-            if (window != null)
-            {
-                ((MainWindow)window).ApplyTheme();
-            }
+            ((MainWindow)Window.GetWindow(_page)!).ApplyTheme();
         }
 
         private void InitializeGradientStops()
@@ -282,6 +377,14 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             get => App.Settings.Prop.BootstrapperIcon;
             set => App.Settings.Prop.BootstrapperIcon = value;
+        }
+
+        public IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues(typeof(WindowsBackdrops)).Cast<WindowsBackdrops>();
+
+        public WindowsBackdrops SelectedBackdrop
+        {
+            get => App.Settings.Prop.SelectedBackdrop;
+            set => App.Settings.Prop.SelectedBackdrop = value;
         }
 
         public string Title

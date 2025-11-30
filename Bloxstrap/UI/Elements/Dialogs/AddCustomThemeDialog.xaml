@@ -20,7 +20,7 @@
      SizeToContent="Height"
      WindowStartupLocation="CenterScreen"
      mc:Ignorable="d">
-    <Grid Background="{DynamicResource WindowBackgroundGradient}">
+    <Grid Background="{DynamicResource ApplicationBackground}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

@@ -115,7 +115,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             UpdateGradientTheme();
         }
 
-        private void OnGradientSliderReleased(object sender, MouseButtonEventArgs e)
+        private void OnSliderReleased(object sender, MouseButtonEventArgs e)
         {
             UpdateGradientTheme();
         }
@@ -270,6 +270,18 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     );
                 }
             }
+        }
+
+        private void OnSelectBackgroundImage_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not AppearanceViewModel vm) return;
+            vm.SelectBackgroundImage();
+        }
+
+        private void OnClearBackgroundImage_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not AppearanceViewModel vm) return;
+            vm.ClearBackgroundImage();
         }
 
         private static bool IsValidHexColor(string color) => !string.IsNullOrWhiteSpace(color) && color.StartsWith("#") && color.Length >= 7;

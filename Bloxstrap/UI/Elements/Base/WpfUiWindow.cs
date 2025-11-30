@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Mvvm.Contracts;
@@ -26,61 +27,125 @@ namespace Bloxstrap.UI.Elements.Base
             _themeService.SetTheme(finalTheme == Enums.Theme.Light ? ThemeType.Light : ThemeType.Dark);
             _themeService.SetSystemAccent();
 
+            Application.Current.Resources["ApplicationBackground"] = null;
+
+            this.Background = null;
+
             if (finalTheme == Enums.Theme.Custom)
             {
-                Application.Current.Resources["WindowBackgroundGradient"] = null;
-
-                double angle = App.Settings.Prop.GradientAngle;
-                double angleRad = angle * Math.PI / 180.0;
-
-                double startX = 0.5 + 0.5 * Math.Cos(angleRad + Math.PI);
-                double startY = 0.5 + 0.5 * Math.Sin(angleRad + Math.PI);
-                double endX = 0.5 + 0.5 * Math.Cos(angleRad);
-                double endY = 0.5 + 0.5 * Math.Sin(angleRad);
-
-                var customBrush = new LinearGradientBrush
+                if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
                 {
-                    StartPoint = new Point(startX, startY),
-                    EndPoint = new Point(endX, endY)
-                };
-
-                foreach (var stop in App.Settings.Prop.CustomGradientStops.OrderBy(s => s.Offset))
+                    ApplyGradientBackground();
+                }
+                else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
                 {
-                    try
-                    {
-                        var color = (Color)ColorConverter.ConvertFromString(stop.Color);
-                        customBrush.GradientStops.Add(new GradientStop(color, stop.Offset));
-                    }
-                    catch { }
+                    ApplyImageBackground();
                 }
 
-                Application.Current.Resources["WindowBackgroundGradient"] = customBrush;
-
-                Application.Current.Resources["NewTextEditorBackground"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#59000000"));
-                Application.Current.Resources["NewTextEditorForeground"] = new SolidColorBrush(Colors.White);
-                Application.Current.Resources["NewTextEditorLink"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3A9CEA"));
-                Application.Current.Resources["PrimaryBackgroundColor"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#19000000"));
-                Application.Current.Resources["NormalDarkAndLightBackground"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0FFFFFFF"));
-                Application.Current.Resources["ControlFillColorDefault"] = (Color)ColorConverter.ConvertFromString("#19000000");
+                ApplyCustomThemeResources();
             }
             else
             {
-                var dict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/UI/Style/{Enum.GetName(finalTheme)}.xaml") };
-                Application.Current.Resources.MergedDictionaries[customThemeIndex] = dict;
-
-                Application.Current.Resources["WindowBackgroundGradient"] = null;
-                Application.Current.Resources.Remove("NewTextEditorBackground");
-                Application.Current.Resources.Remove("NewTextEditorForeground");
-                Application.Current.Resources.Remove("NewTextEditorLink");
-                Application.Current.Resources.Remove("PrimaryBackgroundColor");
-                Application.Current.Resources.Remove("NormalDarkAndLightBackground");
-                Application.Current.Resources.Remove("ControlFillColorDefault");
+                ApplyStandardTheme(finalTheme, customThemeIndex);
             }
 
 #if QA_BUILD
     this.BorderBrush = System.Windows.Media.Brushes.Red;
     this.BorderThickness = new Thickness(4);
 #endif
+        }
+
+        private void ApplyGradientBackground()
+        {
+            double angle = App.Settings.Prop.GradientAngle;
+            double angleRad = angle * Math.PI / 180.0;
+
+            double startX = 0.5 + 0.5 * Math.Cos(angleRad + Math.PI);
+            double startY = 0.5 + 0.5 * Math.Sin(angleRad + Math.PI);
+            double endX = 0.5 + 0.5 * Math.Cos(angleRad);
+            double endY = 0.5 + 0.5 * Math.Sin(angleRad);
+
+            var customBrush = new LinearGradientBrush
+            {
+                StartPoint = new Point(startX, startY),
+                EndPoint = new Point(endX, endY)
+            };
+
+            foreach (var stop in App.Settings.Prop.CustomGradientStops.OrderBy(s => s.Offset))
+            {
+                try
+                {
+                    var color = (Color)ColorConverter.ConvertFromString(stop.Color);
+                    customBrush.GradientStops.Add(new GradientStop(color, stop.Offset));
+                }
+                catch { }
+            }
+
+            Application.Current.Resources["ApplicationBackground"] = customBrush;
+        }
+
+        private void ApplyImageBackground()
+        {
+            if (string.IsNullOrEmpty(App.Settings.Prop.BackgroundImagePath) || !File.Exists(App.Settings.Prop.BackgroundImagePath))
+            {
+                App.Settings.Prop.BackgroundType = BackgroundMode.Gradient;
+                ApplyTheme();
+                return;
+            }
+
+            try
+            {
+                var imageSource = new BitmapImage();
+                imageSource.BeginInit();
+                imageSource.CacheOption = BitmapCacheOption.OnLoad;
+                imageSource.UriSource = new Uri(App.Settings.Prop.BackgroundImagePath);
+                imageSource.EndInit();
+                imageSource.Freeze();
+
+                var imageBrush = new ImageBrush
+                {
+                    ImageSource = imageSource,
+                    Stretch = App.Settings.Prop.BackgroundStretch switch
+                    {
+                        BackgroundStretch.None => Stretch.None,
+                        BackgroundStretch.Fill => Stretch.Fill,
+                        BackgroundStretch.Uniform => Stretch.Uniform,
+                        BackgroundStretch.UniformToFill => Stretch.UniformToFill,
+                        _ => Stretch.UniformToFill
+                    },
+                    Opacity = App.Settings.Prop.BackgroundOpacity
+                };
+
+                Application.Current.Resources["ApplicationBackground"] = imageBrush;
+            }
+            catch (Exception)
+            {
+                App.Settings.Prop.BackgroundType = BackgroundMode.Gradient;
+                ApplyTheme();
+            }
+        }
+
+        private void ApplyCustomThemeResources()
+        {
+            Application.Current.Resources["NewTextEditorBackground"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#59000000"));
+            Application.Current.Resources["NewTextEditorForeground"] = new SolidColorBrush(Colors.White);
+            Application.Current.Resources["NewTextEditorLink"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3A9CEA"));
+            Application.Current.Resources["PrimaryBackgroundColor"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#19000000"));
+            Application.Current.Resources["NormalDarkAndLightBackground"] = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0FFFFFFF"));
+            Application.Current.Resources["ControlFillColorDefault"] = (Color)ColorConverter.ConvertFromString("#19000000");
+        }
+
+        private void ApplyStandardTheme(Enums.Theme finalTheme, int customThemeIndex)
+        {
+            var dict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/UI/Style/{Enum.GetName(finalTheme)}.xaml") };
+            Application.Current.Resources.MergedDictionaries[customThemeIndex] = dict;
+
+            Application.Current.Resources.Remove("NewTextEditorBackground");
+            Application.Current.Resources.Remove("NewTextEditorForeground");
+            Application.Current.Resources.Remove("NewTextEditorLink");
+            Application.Current.Resources.Remove("PrimaryBackgroundColor");
+            Application.Current.Resources.Remove("NormalDarkAndLightBackground");
+            Application.Current.Resources.Remove("ControlFillColorDefault");
         }
 
         protected override void OnSourceInitialized(EventArgs e)

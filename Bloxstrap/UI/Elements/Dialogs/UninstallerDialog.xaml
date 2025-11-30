@@ -21,7 +21,7 @@
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="Mica"
         WindowStartupLocation="CenterScreen">
-    <Grid Background="{DynamicResource WindowBackgroundGradient}">
+    <Grid Background="{DynamicResource ApplicationBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

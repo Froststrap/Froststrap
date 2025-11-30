@@ -20,7 +20,7 @@
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="Mica"
         WindowStartupLocation="CenterScreen">
-    <Grid Background="{DynamicResource WindowBackgroundGradient}">
+    <Grid Background="{DynamicResource ApplicationBackground}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="41*"/>
             <ColumnDefinition Width="82*"/>

@@ -35,51 +35,93 @@
                 </Grid>
             </ui:CardExpander.Header>
 
-            <StackPanel Margin="0,0,0,0" VerticalAlignment="Top" Visibility="{Binding IsGradientMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,4">
-                    <TextBlock Text="Gradient Stops:" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <StackPanel>
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Background Mode:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <ComboBox ItemsSource="{Binding BackgroundTypes}" SelectedItem="{Binding BackgroundType, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
                 </StackPanel>
 
-                <ItemsControl ItemsSource="{Binding GradientStops}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,2" HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="110"/>
-                                    <ColumnDefinition Width="110"/>
-                                    <ColumnDefinition Width="100"/>
-                                </Grid.ColumnDefinitions>
+                <Separator Margin="0,8"/>
 
-                                <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="4,0,4,0" Grid.Column="0"/>
-                                <Slider Minimum="0" Maximum="1" Value="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewMouseLeftButtonUp="OnGradientSliderReleased" TickFrequency="0.01" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="2" Margin="4,8,4,8" Grid.Column="1"/>
-                                <TextBlock Text="{Binding Offset, StringFormat=F2}" VerticalAlignment="Center" Margin="8,0,8,0" Width="30" Grid.Column="2"/>
-                                <TextBox Text="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="0,0,8,0" VerticalAlignment="Center" TextChanged="OnGradientColorHexChanged" Grid.Column="3" MinWidth="100"/>
-                                <Button Content="Color Picker" Margin="0,0,4,0" Tag="{Binding}" HorizontalAlignment="Stretch" Click="OnChangeGradientColor_Click" Grid.Column="4"/>
-                                <Button Content="Remove" Margin="0,0,0,0" Tag="{Binding}" HorizontalAlignment="Stretch" Click="OnRemoveGradientStop_Click" Grid.Column="5"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <Grid Margin="0,12,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" Grid.Column="0">
-                        <Button Content="Export Gradient" Click="OnExportGradient_Click" Margin="4"/>
-                        <Button Content="Import Gradient" Click="OnImportGradient_Click" Margin="4"/>
+                <StackPanel Visibility="{Binding IsGradientMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,4">
+                        <TextBlock Text="Gradient Stops:" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Grid.Column="2">
-                        <TextBlock Text="Gradient Angle:" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                        <TextBox Text="{Binding GradientAngle, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="50" Margin="4"/>
-                        <Button Content="Reset to Default" Click="OnResetGradient_Click" Margin="4" />
-                        <Button Content="Add Gradient Color" Click="OnAddGradientStop_Click" Margin="4"/>
+
+                    <ItemsControl ItemsSource="{Binding GradientStops}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2" HorizontalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="4,0,4,0" Grid.Column="0"/>
+                                    <Slider Minimum="0" Maximum="1" Value="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewMouseLeftButtonUp="OnSliderReleased" TickFrequency="0.01" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="2" Margin="4,8,4,8" Grid.Column="1"/>
+                                    <TextBlock Text="{Binding Offset, StringFormat=F2}" VerticalAlignment="Center" Margin="8,0,8,0" Width="30" Grid.Column="2"/>
+                                    <TextBox Text="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="0,0,8,0" VerticalAlignment="Center" TextChanged="OnGradientColorHexChanged" Grid.Column="3" MinWidth="100"/>
+                                    <Button Content="Color Picker" Margin="0,0,4,0" Tag="{Binding}" HorizontalAlignment="Stretch" Click="OnChangeGradientColor_Click" Grid.Column="4"/>
+                                    <Button Content="Remove" Margin="0,0,0,0" Tag="{Binding}" HorizontalAlignment="Stretch" Click="OnRemoveGradientStop_Click" Grid.Column="5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Grid Margin="0,12,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" Grid.Column="0">
+                            <Button Content="Export Gradient" Click="OnExportGradient_Click" Margin="4"/>
+                            <Button Content="Import Gradient" Click="OnImportGradient_Click" Margin="4"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Grid.Column="2">
+                            <TextBlock Text="Gradient Angle:" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                            <TextBox Text="{Binding GradientAngle, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="50" Margin="4"/>
+                            <Button Content="Reset to Default" Click="OnResetGradient_Click" Margin="4" />
+                            <Button Content="Add Gradient Color" Click="OnAddGradientStop_Click" Margin="4"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+
+                <StackPanel Visibility="{Binding IsImageMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0,12,0,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,12">
+                        <TextBlock Text="Background Image:" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                     </StackPanel>
-                </Grid>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Button Content="Select Image" Click="OnSelectBackgroundImage_Click" Margin="0,0,8,0"/>
+                        <Button Content="Clear Image" Click="OnClearBackgroundImage_Click" Margin="8,0,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,12,0,0">
+                        <TextBlock Text="Image Stretch:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <ComboBox ItemsSource="{Binding BackgroundStretches}" SelectedItem="{Binding BackgroundStretch, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,12,0,0">
+                        <TextBlock Text="Image Opacity:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <Slider Minimum="0" Maximum="100" Value="{Binding BackgroundOpacity, Mode=TwoWay}" PreviewMouseLeftButtonUp="OnSliderReleased" TickFrequency="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"/>
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </ui:CardExpander>
 

@@ -23,7 +23,7 @@
         <converters:RangeConverter x:Key="ValidationConverter" From="0" />
     </ui:UiWindow.Resources>
 
-    <Grid Background="{DynamicResource WindowBackgroundGradient}">
+    <Grid Background="{DynamicResource ApplicationBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

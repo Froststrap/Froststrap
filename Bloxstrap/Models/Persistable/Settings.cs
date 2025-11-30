@@ -68,6 +68,10 @@ namespace Bloxstrap.Models.Persistable
             new GradientStops { Offset = 1.0, Color = "#252A30" }
         };
         public double GradientAngle { get; set; } = 0;
+        public BackgroundMode BackgroundType { get; set; } = BackgroundMode.Gradient;
+        public string? BackgroundImagePath { get; set; }
+        public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.UniformToFill;
+        public double BackgroundOpacity { get; set; } = 1.0;
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public string DownloadingStringFormat { get; set; } = Strings.Bootstrapper_Status_Downloading + " {0} - {1}MB / {2}MB";
