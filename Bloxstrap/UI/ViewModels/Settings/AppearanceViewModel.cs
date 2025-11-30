@@ -302,6 +302,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             finally
             {
                 App.Settings.Prop.BackgroundImagePath = null;
+                ((MainWindow)Window.GetWindow(_page)!).ApplyTheme();
             }
         }
 

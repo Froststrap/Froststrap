@@ -88,8 +88,7 @@ namespace Bloxstrap.UI.Elements.Base
         {
             if (string.IsNullOrEmpty(App.Settings.Prop.BackgroundImagePath) || !File.Exists(App.Settings.Prop.BackgroundImagePath))
             {
-                App.Settings.Prop.BackgroundType = BackgroundMode.Gradient;
-                ApplyTheme();
+                App.Logger.WriteLine("WpfUiWindow", "Empty/Null image path or image dosent exist in path");
                 return;
             }
 
@@ -118,10 +117,9 @@ namespace Bloxstrap.UI.Elements.Base
 
                 Application.Current.Resources["ApplicationBackground"] = imageBrush;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                App.Settings.Prop.BackgroundType = BackgroundMode.Gradient;
-                ApplyTheme();
+                App.Logger.WriteLine("WpfUiWindow", $"exception when changing to image: {ex.Message}");
             }
         }
 
