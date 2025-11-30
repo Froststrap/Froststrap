@@ -56,7 +56,7 @@ namespace Bloxstrap
 
         public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);
 
-        public static bool IsStudioVisible => !String.IsNullOrEmpty(App.RobloxState.Prop.Studio.VersionGuid);
+        public static bool IsStudioVisible => !String.IsNullOrEmpty(RobloxState.Prop.Studio.VersionGuid);
 
         public static readonly MD5 MD5Provider = MD5.Create();
 
@@ -209,7 +209,7 @@ namespace Bloxstrap
 
         public void ApplyCustomFontToWindow(Window window)
         {
-            var fontPath = App.Settings.Prop.CustomFontPath;
+            var fontPath = Settings.Prop.CustomFontPath;
             if (string.IsNullOrWhiteSpace(fontPath) || !File.Exists(fontPath))
                 return;
 
@@ -459,7 +459,7 @@ namespace Bloxstrap
                     Terminate();
                 }
 
-                Task.Run(App.RemoteData.LoadData); // ok
+                Task.Run(RemoteData.LoadData); // ok
 
                 Settings.Load();
                 State.Load();
@@ -470,10 +470,10 @@ namespace Bloxstrap
                 // to fix error System.IO.IOException: No se encuentra el recurso 'ui/style/.xaml'.
                 // when i put in installer dosent work
                 // if i try to fix in wpfuiwindow also dosent work
-                if (App.Settings.Prop.Theme > Enums.Theme.Custom)
+                if (Settings.Prop.Theme > Enums.Theme.Custom)
                 {
-                    App.Settings.Prop.Theme = Enums.Theme.Dark;
-                    App.Settings.Save();
+                    Settings.Prop.Theme = Enums.Theme.Dark;
+                    Settings.Save();
                 }
 
                 if (Settings.Prop.AllowCookieAccess)

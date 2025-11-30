@@ -128,7 +128,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             if (!UserExcludedProcesses.Contains(cleanName, StringComparer.OrdinalIgnoreCase))
             {
                 UserExcludedProcesses.Add(cleanName);
-                App.Settings.Save();
                 OnPropertyChanged(nameof(UserExcludedProcesses));
                 NewProcessName = "";
             }
@@ -141,7 +140,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             if (item != null)
             {
                 UserExcludedProcesses.Remove(item);
-                App.Settings.Save();
                 OnPropertyChanged(nameof(UserExcludedProcesses));
                 SelectedProcess = "";
                 EditProcessName = "";
@@ -166,7 +164,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             if (index >= 0)
             {
                 UserExcludedProcesses[index] = cleanNewName;
-                App.Settings.Save();
                 OnPropertyChanged(nameof(UserExcludedProcesses));
                 SelectedProcess = cleanNewName;
                 EditProcessName = cleanNewName;

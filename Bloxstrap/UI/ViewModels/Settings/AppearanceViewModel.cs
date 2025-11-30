@@ -65,7 +65,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             if (action == "Choose")
             {
-                var dialog = new Microsoft.Win32.OpenFileDialog
+                var dialog = new OpenFileDialog
                 {
                     Filter = "Font files (*.ttf;*.otf)|*.ttf;*.otf|All files (*.*)|*.*"
                 };
@@ -80,7 +80,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         {
                             FontManager.ApplyFontGlobally(fontFamily);
                             App.Settings.Prop.CustomFontPath = fontPath;
-                            App.Settings.Save();
 
                             UpdateFontVisibility();
 

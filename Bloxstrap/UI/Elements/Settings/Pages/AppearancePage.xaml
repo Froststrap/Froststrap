@@ -48,29 +48,38 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="140"/>
-                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="110"/>
                                     <ColumnDefinition Width="100"/>
                                 </Grid.ColumnDefinitions>
 
                                 <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="4,0,4,0" Grid.Column="0"/>
                                 <Slider Minimum="0" Maximum="1" Value="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PreviewMouseLeftButtonUp="OnGradientSliderReleased" TickFrequency="0.01" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="2" Margin="4,8,4,8" Grid.Column="1"/>
                                 <TextBlock Text="{Binding Offset, StringFormat=F2}" VerticalAlignment="Center" Margin="8,0,8,0" Width="30" Grid.Column="2"/>
-                                <TextBox Text="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="130" Margin="0,0,8,0" VerticalAlignment="Center" TextChanged="OnGradientColorHexChanged" Grid.Column="3" MinWidth="100"/>
-                                <Button Content="Color" Width="75" Margin="0,0,4,0" Tag="{Binding}" Click="OnChangeGradientColor_Click" Grid.Column="4"/>
-                                <Button Content="Remove" Width="95" Margin="0,0,4,0" Tag="{Binding}" Click="OnRemoveGradientStop_Click" Grid.Column="5"/>
+                                <TextBox Text="{Binding Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="0,0,8,0" VerticalAlignment="Center" TextChanged="OnGradientColorHexChanged" Grid.Column="3" MinWidth="100"/>
+                                <Button Content="Color Picker" Margin="0,0,4,0" Tag="{Binding}" HorizontalAlignment="Stretch" Click="OnChangeGradientColor_Click" Grid.Column="4"/>
+                                <Button Content="Remove" Margin="0,0,0,0" Tag="{Binding}" HorizontalAlignment="Stretch" Click="OnRemoveGradientStop_Click" Grid.Column="5"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,0">
+                <Grid Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                        <Button Content="Export Gradient" Click="OnExportGradient_Click" Margin="4"/>
+                        <Button Content="Import Gradient" Click="OnImportGradient_Click" Margin="4"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="2">
                         <TextBlock Text="Gradient Angle:" VerticalAlignment="Center" Margin="0,0,4,0"/>
                         <TextBox Text="{Binding GradientAngle, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="50" Margin="4"/>
                         <Button Content="Reset to Default" Click="OnResetGradient_Click" Margin="4" />
                         <Button Content="Add Gradient Color" Click="OnAddGradientStop_Click" Margin="4"/>
                     </StackPanel>
-                </StackPanel>
+                </Grid>
             </StackPanel>
         </ui:CardExpander>
 

@@ -1,11 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace Bloxstrap.Models.Persistable
 {
     public class Settings
     {
-        // uh
+        // Fishstrap feature to use private channel.
         public bool AllowCookieAccess { get; set; } = false;
 
         // Integration Page

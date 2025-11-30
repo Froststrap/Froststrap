@@ -134,7 +134,142 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             if (DataContext is not AppearanceViewModel vm) return;
 
             vm.ResetGradientStops();
+            vm.GradientAngle = 0;
             UpdateGradientTheme();
+        }
+
+        private void OnExportGradient_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not AppearanceViewModel vm) return;
+
+            var saveDialog = new SaveFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json|Text Files (*.txt)|*.txt",
+                DefaultExt = ".json",
+                FileName = "Froststrap Gradient Background"
+            };
+
+            if (saveDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var gradientData = new
+                    {
+                        GradientStops = vm.GradientStops.Select(gs => new { gs.Offset, gs.Color }).ToList(),
+                        GradientAngle = vm.GradientAngle,
+                        Version = App.Version
+                    };
+
+                    string json = JsonSerializer.Serialize(gradientData, new JsonSerializerOptions
+                    {
+                        WriteIndented = true
+                    });
+
+                    File.WriteAllText(saveDialog.FileName, json);
+
+                    Frontend.ShowMessageBox(
+                        "Gradient exported successfully!",
+                        MessageBoxImage.Information,
+                        MessageBoxButton.OK
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Frontend.ShowMessageBox(
+                        $"Failed to export gradient: {ex.Message}",
+                        MessageBoxImage.Error,
+                        MessageBoxButton.OK
+                    );
+                }
+            }
+        }
+
+        private void OnImportGradient_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is not AppearanceViewModel vm) return;
+
+            var openDialog = new OpenFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json|Text Files (*.txt)|*.txt",
+                Multiselect = false
+            };
+
+            if (openDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    string json = File.ReadAllText(openDialog.FileName);
+                    using var document = JsonDocument.Parse(json);
+                    var root = document.RootElement;
+
+                    if (!root.TryGetProperty("GradientStops", out var stopsElement) ||
+                        stopsElement.GetArrayLength() == 0)
+                    {
+                        throw new InvalidDataException("Invalid gradient file format.");
+                    }
+
+                    var gradientStops = new List<GradientStops>();
+                    foreach (var stopElement in stopsElement.EnumerateArray())
+                    {
+                        if (stopElement.TryGetProperty("Offset", out var offsetElement) &&
+                            stopElement.TryGetProperty("Color", out var colorElement) &&
+                            offsetElement.ValueKind == JsonValueKind.Number &&
+                            colorElement.ValueKind == JsonValueKind.String)
+                        {
+                            var offset = offsetElement.GetDouble();
+                            var color = colorElement.GetString()!;
+
+                            if (offset < 0 || offset > 1 || !IsValidHexColor(color))
+                            {
+                                throw new InvalidDataException("Invalid gradient stop data.");
+                            }
+
+                            gradientStops.Add(new GradientStops { Offset = offset, Color = color });
+                        }
+                        else
+                        {
+                            throw new InvalidDataException("Invalid gradient stop format.");
+                        }
+                    }
+
+                    double gradientAngle = vm.GradientAngle;
+                    if (root.TryGetProperty("GradientAngle", out var angleElement) &&
+                        angleElement.ValueKind == JsonValueKind.Number)
+                    {
+                        var angle = angleElement.GetDouble();
+                        if (angle >= 0 && angle <= 360)
+                        {
+                            gradientAngle = angle;
+                        }
+                    }
+
+                    vm.GradientStops.Clear();
+                    foreach (var stop in gradientStops)
+                    {
+                        vm.GradientStops.Add(stop);
+                    }
+
+                    vm.GradientAngle = gradientAngle;
+                    App.Settings.Prop.CustomGradientStops = vm.GradientStops.ToList();
+                    App.Settings.Prop.GradientAngle = gradientAngle;
+
+                    UpdateGradientTheme();
+
+                    Frontend.ShowMessageBox(
+                        "Gradient imported successfully!",
+                        MessageBoxImage.Information,
+                        MessageBoxButton.OK
+                    );
+                }
+                catch (Exception ex)
+                {
+                    Frontend.ShowMessageBox(
+                        $"Failed to import gradient: {ex.Message}",
+                        MessageBoxImage.Error,
+                        MessageBoxButton.OK
+                    );
+                }
+            }
         }
 
         private static bool IsValidHexColor(string color) => !string.IsNullOrWhiteSpace(color) && color.StartsWith("#") && color.Length >= 7;

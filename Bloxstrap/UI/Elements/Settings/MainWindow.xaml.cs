@@ -169,7 +169,6 @@ namespace Bloxstrap.UI.Elements.Settings
                 .ToList();
 
             App.Settings.Prop.NavigationOrder = order;
-            App.State.Save();
         }
 
         private void ReorderNavigationItemsFromSettings()
@@ -254,7 +253,6 @@ namespace Bloxstrap.UI.Elements.Settings
             RebuildNavigationItems();
 
             App.Settings.Prop.NavigationOrder.Clear();
-            App.State.Save();
         }
 
         public int MoveNavigationItem(NavigationItem item, int direction)
