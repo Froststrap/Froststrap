@@ -40,6 +40,16 @@ namespace Bloxstrap.UI.ViewModels.Settings
             }
         }
 
+        public bool FramerateUncap
+        {
+            get
+            {
+                string? value = App.GlobalSettings.GetPresets("Rendering.FramerateCap");
+                return int.TryParse(value, out int framerate) && framerate > 240;
+            }
+            set => App.GlobalSettings.SetPresets("Rendering.FramerateCap", value ? "9999" : "-1");
+        }
+
         public bool Error773Fix
         {
             get => App.Settings.Prop.Error773Fix;

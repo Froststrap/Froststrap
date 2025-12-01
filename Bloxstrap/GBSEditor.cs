@@ -8,9 +8,14 @@ namespace Bloxstrap
         // Fishstrap GBSEditor converted into a remote config version
         public XDocument? Document { get; set; } = null!;
 
+        public Dictionary<string, string> PresetPaths = new()
+        {
+            { "Rendering.FramerateCap", "{UserSettings}/int[@name='FramerateCap']" }
+        };
+
         public Dictionary<string, string> RootPaths = new()
         {
-            { "UserSettings", "//Item[@class='UserGameSettings']/Properties" },
+            { "UserSettings", "//Item[@class='UserGameSettings']/Properties" }
         };
 
         public bool Loaded { get; set; } = false;
@@ -266,6 +271,38 @@ namespace Bloxstrap
                 App.Logger.WriteLine("GBSEditor::ImportSettings", $"Failed to import settings: {ex.Message}");
                 return false;
             }
+        }
+
+        public void SetPresets(string prefix, object? value)
+        {
+            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix)))
+                SetValues(pair.Value, value);
+        }
+
+        public string? GetPresets(string prefix)
+        {
+            if (!PresetPaths.ContainsKey(prefix))
+                return null;
+
+            return GetValues(PresetPaths[prefix]);
+        }
+
+        public void SetValues(string path, object? value)
+        {
+            path = ResolvePath(path);
+
+            XElement? element = Document?.XPathSelectElement(path);
+            if (element is null)
+                return;
+
+            element.Value = value?.ToString()!;
+        }
+
+        public string? GetValues(string path)
+        {
+            path = ResolvePath(path);
+
+            return Document?.XPathSelectElement(path)?.Value;
         }
     }
 }

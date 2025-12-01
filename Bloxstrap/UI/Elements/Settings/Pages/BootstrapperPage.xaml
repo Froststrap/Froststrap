@@ -65,6 +65,12 @@
             </ComboBox>
         </controls:OptionControl>
 
+        <controls:OptionControl
+            Header="Uncap FPS"
+            Description="Unlock your fps to go above 240">
+            <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding FramerateUncap, Mode=TwoWay}" />
+        </controls:OptionControl>
+
         <ui:CardExpander
             Margin="0,8,0,0"
             IsExpanded="{Binding Path=MultiInstances, Mode=OneWay}"
