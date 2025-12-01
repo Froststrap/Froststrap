@@ -59,11 +59,12 @@
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" PageType="{x:Type pages:BehaviourPage}" Icon="PlaySettings20" IconSize="20" Tag="bootstrapper" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Mods_Title}" PageType="{x:Type pages:ModsPage}" Icon="WrenchScrewdriver20" IconSize="20" Tag="mods" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" IconSize="20" Tag="fastflags" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="EditSettings20" IconSize="20" Tag="fastflagEditor" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" PageType="{x:Type pages:AppearancePage}" Icon="PaintBrush24" IconSize="20" Tag="appearance" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" PageType="{x:Type pages:RegionSelectorPage}" Icon="Earth24" IconSize="20" Tag="regionselector" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" PageType="{x:Type pages:RobloxSettingsPage}" Icon="SquareHintApps24" IconSize="20" Tag="RobloxSettings" FontWeight="Medium" x:Name="gbs" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Common_Shortcuts}" PageType="{x:Type pages:ShortcutsPage}" Icon="Apps28" IconSize="20" Tag="shortcuts" FontWeight="Medium" />
+
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="EditSettings20" IconSize="20" Tag="fastflagEditor" FontWeight="Medium" Visibility="Collapsed" />
                 </ui:NavigationCompact.Items>
                 <ui:NavigationCompact.Footer>
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" PageType="{x:Type pages:AccountManagerPage}" Icon="People24" IconSize="20" Tag="altmanager" FontWeight="Medium" />

@@ -28,6 +28,11 @@
         <TextBlock Grid.Row="0" Margin="0,0,0,16" Text="{x:Static resources:Strings.Menu_FastFlagEditor_Description}" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal">
+            <ui:Button 
+                Icon="ArrowLeft48" 
+                Content="{x:Static resources:Strings.Menu_FastFlagEditor_Back}" 
+                Click="BackButton_Click" 
+                Margin="0,0,8,12" />
             <ui:Button
                 Margin="0,0,8,12"
                 Click="AddButton_Click"

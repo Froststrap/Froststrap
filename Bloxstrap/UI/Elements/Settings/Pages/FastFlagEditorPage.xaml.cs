@@ -245,6 +245,12 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 : Visibility.Collapsed;
         }
 
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Window.GetWindow(this) is INavigationWindow window)
+                window.Navigate(typeof(FastFlagsPage));
+        }
+
         private void ClearSearch(bool refresh = true)
         {
             SearchTextBox.Text = "";
