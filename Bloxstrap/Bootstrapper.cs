@@ -739,9 +739,9 @@ namespace Bloxstrap
                     App.Logger.WriteLine(LOG_IDENT, "Created multi-instance mutex: ROBLOX_singletonMutex");
                 }
 
-                if (Utilities.DoesMutexExist("ROBLOX_singletonEvent"))
+                if (Utilities.DoesMutexExist("ROBLOX_singletonEvent") || Utilities.DoesEventExist("ROBLOX_singletonEvent"))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Mutex ROBLOX_singletonEvent already exists, skipping creation");
+                    App.Logger.WriteLine(LOG_IDENT, "Mutex ROBLOX_singletonEvent already exists");
                 }
                 else
                 {

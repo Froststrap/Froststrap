@@ -148,6 +148,23 @@ namespace Bloxstrap
             }
         }
 
+        public static bool DoesEventExist(string name)
+        {
+            try
+            {
+                using (EventWaitHandle.OpenExisting(name)) { }
+                return true;
+            }
+            catch (WaitHandleCannotBeOpenedException)
+            {
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
+            }
+        }
+
         public static void KillBackgroundUpdater()
         {
             using EventWaitHandle handle = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-BackgroundUpdaterKillEvent");
