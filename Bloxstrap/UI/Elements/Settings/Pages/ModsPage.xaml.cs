@@ -1,21 +1,28 @@
-﻿using Bloxstrap.Integrations;
-using Bloxstrap.RobloxInterfaces;
+﻿using Bloxstrap.RobloxInterfaces;
 using Bloxstrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using System.Drawing.Drawing2D;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bloxstrap.UI.Elements.Settings.Pages
 {
-    /// <summary>
-    /// Interaction logic for ModsPage.xaml
-    /// </summary>
     public partial class ModsPage
     {
         private ModsViewModel ViewModel;
@@ -24,325 +31,57 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
         public ModsPage()
         {
             InitializeComponent();
+
             ViewModel = new ModsViewModel();
             DataContext = ViewModel;
-            App.FrostRPC?.SetPage("Mods");
 
-            InitializePreview();
-            IncludeModificationsCheckBox.IsChecked = true;
-
-            SolidColorTextBox.Text = "#FFFFFF";
+            // initialize controls state
+            SolidColorTextBox.Text = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
         }
 
-
-        // Preserve the font files in mappings.json so they dont get deleting after generating the mod, its in resources
-        private async void ModGenerator_Click(object sender, RoutedEventArgs e)
-        {
-            const string LOG_IDENT = "UI::ModGenerator";
-            var overallSw = Stopwatch.StartNew();
-
-            GenerateModButton.IsEnabled = false;
-
-            DownloadStatusText.Text = "Starting mod generation...";
-            App.Logger?.WriteLine(LOG_IDENT, "Mod generation started.");
-
-            try
-            {
-                var (luaPackagesZip, extraTexturesZip, contentTexturesZip, versionHash, version) =
-                    await Deployment.DownloadForModGenerator();
-
-                App.Logger?.WriteLine(LOG_IDENT, $"DownloadForModGenerator returned. Version: {version} ({versionHash})");
-
-                string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
-
-                string luaPackagesDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages");
-                string extraTexturesDir = Path.Combine(froststrapTemp, "ExtraContent", "textures");
-                string contentTexturesDir = Path.Combine(froststrapTemp, "content", "textures");
-
-                void SafeExtract(string zipPath, string targetDir)
-                {
-                    if (Directory.Exists(targetDir))
-                    {
-                        try { Directory.Delete(targetDir, true); }
-                        catch (Exception ex)
-                        {
-                            App.Logger?.WriteException(LOG_IDENT, ex);
-                            throw;
-                        }
-                    }
-
-                    Directory.CreateDirectory(targetDir);
-
-                    using (var archive = ZipFile.OpenRead(zipPath))
-                    {
-                        foreach (var entry in archive.Entries)
-                        {
-                            if (string.IsNullOrEmpty(entry.FullName) || entry.FullName.EndsWith("/") || entry.FullName.EndsWith("\\"))
-                                continue;
-
-                            string destinationPath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
-
-                            if (!destinationPath.StartsWith(Path.GetFullPath(targetDir), StringComparison.OrdinalIgnoreCase))
-                                throw new IOException($"Entry {entry.FullName} is trying to extract outside of {targetDir}");
-
-                            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
-                            entry.ExtractToFile(destinationPath, overwrite: true);
-                        }
-                    }
-                }
-
-                DownloadStatusText.Text = "Extracting ZIPs...";
-                App.Logger?.WriteLine(LOG_IDENT, "Extracting downloaded ZIPs...");
-
-                SafeExtract(luaPackagesZip, luaPackagesDir);
-                SafeExtract(extraTexturesZip, extraTexturesDir);
-                SafeExtract(contentTexturesZip, contentTexturesDir);
-
-                App.Logger?.WriteLine(LOG_IDENT, "Extraction complete.");
-
-                var assembly = Assembly.GetExecutingAssembly();
-                Dictionary<string, string[]> mappings;
-                using (var stream = assembly.GetManifestResourceStream("Bloxstrap.Resources.mappings.json"))
-                using (var reader = new StreamReader(stream!))
-                {
-                    string json = await reader.ReadToEndAsync();
-                    mappings = JsonSerializer.Deserialize<Dictionary<string, string[]>>(json)!;
-                }
-                App.Logger?.WriteLine(LOG_IDENT, $"Loaded mappings.json with {mappings.Count} top-level entries.");
-
-                DownloadStatusText.Text = "Recoloring images...";
-
-                bool colorCursors = CursorsCheckBox?.IsChecked == true;
-                bool colorShiftlock = ShiftlockCheckBox?.IsChecked == true;
-                bool colorEmoteWheel = EmoteWheelCheckBox?.IsChecked == true;
-                bool colorVoiceChat = VoiceChatCheckBox?.IsChecked == true;
-
-                App.Logger?.WriteLine(LOG_IDENT, $"Using solid color for recolor: {_solidColor}");
-
-                App.Logger?.WriteLine(LOG_IDENT, "Starting RecolorAllPngs...");
-                ModGenerator.RecolorAllPngs(froststrapTemp, _solidColor, colorCursors, colorShiftlock, colorEmoteWheel, colorVoiceChat);
-                App.Logger?.WriteLine(LOG_IDENT, "RecolorAllPngs finished.");
-
-                DownloadStatusText.Text = "Cleaning up unnecessary files...";
-                var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-                foreach (var entry in mappings.Values)
-                {
-                    string fullPath = Path.Combine(froststrapTemp, Path.Combine(entry));
-                    preservePaths.Add(fullPath);
-                }
-
-                if (colorCursors)
-                {
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\IBeamCursor.png"));
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowCursor.png"));
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowFarCursor.png"));
-                }
-
-                if (colorShiftlock)
-                {
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\MouseLockedCursor.png"));
-                }
-
-                if (colorEmoteWheel)
-                {
-                    string emotesDir = Path.Combine(froststrapTemp, @"content\textures\ui\Emotes\Large");
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@2x.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@3x.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedLine.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@2x.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@3x.png"));
-                }
-
-                if (colorVoiceChat)
-                {
-                    var voiceChatMappings = new Dictionary<string, (string BaseDir, string[] Files)>
-                    {
-                        ["VoiceChat"] = (
-                            @"content\textures\ui\VoiceChat",
-                            new[]
-                            {"Blank.png","Blank@2x.png","Blank@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png"}
-                        ),
-                        ["SpeakerNew"] = (
-                            @"content\textures\ui\VoiceChat\SpeakerNew",
-                            new[]
-                            {"Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png"}
-                        ),
-                        ["SpeakerLight"] = (
-                            @"content\textures\ui\VoiceChat\SpeakerLight",
-                            new[]
-                            {"Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png"}
-                        ),
-                        ["SpeakerDark"] = (
-                            @"content\textures\ui\VoiceChat\SpeakerDark",
-                            new[]
-                            {"Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png"}
-                        ),
-                        ["RedSpeakerLight"] = (
-                            @"content\textures\ui\VoiceChat\RedSpeakerLight",
-                            new[]
-                            {"Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png"}
-                        ),
-                        ["RedSpeakerDark"] = (
-                            @"content\textures\ui\VoiceChat\RedSpeakerDark",
-                            new[]
-                            {"Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png"}
-                        ),
-                        ["New"] = (
-                            @"content\textures\ui\VoiceChat\New",
-                            new[]
-                            {"Error.png","Error@2x.png","Error@3x.png", "Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Blank.png","Blank@2x.png","Blank@3x.png"}
-                        ),
-                        ["MicLight"] = (
-                            @"content\textures\ui\VoiceChat\MicLight",
-                            new[]
-                            {"Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png"}
-                        ),
-                        ["MicDark"] = (
-                            @"content\textures\ui\VoiceChat\MicDark",
-                            new[]
-                            {"Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png"}
-                        )
-                    };
-
-                    foreach (var mapping in voiceChatMappings.Values)
-                    {
-                        string baseDir = Path.Combine(froststrapTemp, mapping.BaseDir);
-                        foreach (var file in mapping.Files)
-                        {
-                            preservePaths.Add(Path.Combine(baseDir, file));
-                        }
-                    }
-                }
-
-                void DeleteExcept(string dir)
-                {
-                    foreach (var file in Directory.GetFiles(dir))
-                    {
-                        if (!preservePaths.Contains(file))
-                        {
-                            try { File.Delete(file); } catch { /* ignore */ }
-                        }
-                    }
-
-                    foreach (var subDir in Directory.GetDirectories(dir))
-                    {
-                        if (!preservePaths.Contains(subDir))
-                        {
-                            try
-                            {
-                                DeleteExcept(subDir);
-                                if (Directory.Exists(subDir) && !Directory.EnumerateFileSystemEntries(subDir).Any())
-                                    Directory.Delete(subDir);
-                            }
-                            catch { /* ignore */ }
-                        }
-                    }
-                }
-
-                if (Directory.Exists(luaPackagesDir)) DeleteExcept(luaPackagesDir);
-                if (Directory.Exists(extraTexturesDir)) DeleteExcept(extraTexturesDir);
-                if (Directory.Exists(contentTexturesDir)) DeleteExcept(contentTexturesDir);
-
-                string infoPath = Path.Combine(froststrapTemp, "info.json");
-                var infoData = new
-                {
-                    FroststrapVersion = App.Version,
-                    CreatedUsing = "Froststrap",
-                    RobloxVersion = version,
-                    RobloxVersionHash = versionHash,
-                    OptionsUsed = new
-                    {
-                        ColorCursors = colorCursors,
-                        ColorShiftlock = colorShiftlock,
-                        ColorVoicechat = colorVoiceChat,
-                        ColorEmoteWheel = colorEmoteWheel,
-                    },
-                    ColorsUsed = new
-                    {
-                        SolidColor = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}"
-                    }
-                };
-
-                string infoJson = JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true });
-                await File.WriteAllTextAsync(infoPath, infoJson);
-
-                if (IncludeModificationsCheckBox.IsChecked == true)
-                {
-                    if (!Directory.Exists(Paths.Modifications))
-                        Directory.CreateDirectory(Paths.Modifications);
-
-                    int copiedFiles = 0;
-                    foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
-                    {
-                        if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
-                            continue;
-
-                        string relativePath = Path.GetRelativePath(froststrapTemp, file);
-                        string destPath = Path.Combine(Paths.Modifications, relativePath);
-                        Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
-                        File.Copy(file, destPath, overwrite: true);
-                        copiedFiles++;
-                    }
-
-                    DownloadStatusText.Text = $"Mod files copied to {Paths.Modifications}";
-                    App.Logger?.WriteLine(LOG_IDENT, $"Copied {copiedFiles} files to {Paths.Modifications}");
-                }
-                else
-                {
-                    var saveDialog = new SaveFileDialog
-                    {
-                        FileName = "FroststrapMod.zip",
-                        Filter = "ZIP Archives (*.zip)|*.zip",
-                        Title = "FroststrapMod"
-                    };
-
-                    if (saveDialog.ShowDialog() == true)
-                    {
-                        ModGenerator.ZipResult(froststrapTemp, saveDialog.FileName);
-                        DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
-                        App.Logger?.WriteLine(LOG_IDENT, $"Mod zip created at {saveDialog.FileName}");
-                    }
-                    else
-                    {
-                        DownloadStatusText.Text = "Save cancelled by user.";
-                        App.Logger?.WriteLine(LOG_IDENT, "User cancelled save dialog.");
-                    }
-                }
-
-                overallSw.Stop();
-                App.Logger?.WriteLine(LOG_IDENT, $"Mod generation completed successfully in {overallSw.ElapsedMilliseconds} ms.");
-            }
-            catch (Exception ex)
-            {
-                DownloadStatusText.Text = $"Error: {ex.Message}";
-                App.Logger?.WriteException(LOG_IDENT, ex);
-            }
-            finally
-            {
-                GenerateModButton.IsEnabled = true;
-            }
-        }
-
+        // Update color from textbox (basic, tolerant)
         private void OnSolidColorChanged(object sender, TextChangedEventArgs e)
         {
             try
             {
-                string colorHex = SolidColorTextBox.Text.Trim();
-                if (!colorHex.StartsWith("#"))
-                    colorHex = "#" + colorHex;
-
-                _solidColor = ColorTranslator.FromHtml(colorHex);
-                _ = UpdatePreviewAsync();
+                string hex = SolidColorTextBox.Text.Trim();
+                if (!hex.StartsWith("#")) hex = "#" + hex;
+                // allow 6 or 8 digit hex
+                var col = System.Drawing.ColorTranslator.FromHtml(hex);
+                _solidColor = col;
             }
             catch
             {
-                // Invalid color format, ignore
+                // ignore invalid input until user provides valid value
             }
         }
 
-        private void OnChangeSolidColor_Click(object sender, RoutedEventArgs e)
+    private string ExtractEmbeddedScriptToTemp()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+              string resourceName = "Bloxstrap.Resources.mod_generator.py";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            {
+                if (stream == null)
+                    throw new Exception($"Could not find embedded resource '{resourceName}'. Check the namespace.");
+
+                string tempScriptPath = Path.Combine(Path.GetTempPath(), "Froststrap", $"gen_{Guid.NewGuid()}.py");
+
+                Directory.CreateDirectory(Path.GetDirectoryName(tempScriptPath));
+
+                using (FileStream fileStream = new FileStream(tempScriptPath, FileMode.Create, FileAccess.Write))
+                {
+                    stream.CopyTo(fileStream);
+                }
+
+                return tempScriptPath;
+            }
+        }
+
+        // I hate python so much
+        private async void OnChangeSolidColor_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new System.Windows.Forms.ColorDialog
             {
@@ -351,242 +90,336 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 Color = _solidColor
             };
 
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            _solidColor = dlg.Color;
+            string hexColorString = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+            SolidColorTextBox.Text = hexColorString;
+
+            await Task.Run(async () =>
             {
-                _solidColor = dlg.Color;
-                SolidColorTextBox.Text = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
-                _ = UpdatePreviewAsync();
-            }
+                const string LOG_IDENT = "ModsPage::OnChangeSolidColor_Click";
+                string stagePath = Path.Combine(Path.GetTempPath(), "Froststrap", "FontStage");
+                string tempScriptPath = null;
+
+                string output = string.Empty;
+                string errors = string.Empty;
+
+                try
+                {
+                    await Dispatcher.InvokeAsync(() => FontRenderStatusText.Text = "Locating and extracting fonts...");
+
+                    string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+                    if (!Directory.Exists(froststrapTemp))
+                    {
+                        throw new DirectoryNotFoundException($"Froststrap temp folder missing: {froststrapTemp}");
+                    }
+
+                    var zips = Directory.GetFiles(froststrapTemp, "extracontent-luapackages-*.zip");
+                    if (zips.Length == 0)
+                    {
+                        throw new FileNotFoundException("No luapackages zip found in temp.");
+                    }
+                    string chosenZip = zips.OrderByDescending(f => File.GetCreationTimeUtc(f)).First();
+
+                    if (Directory.Exists(stagePath)) Directory.Delete(stagePath, true);
+                    Directory.CreateDirectory(stagePath);
+
+                    using (var archive = ZipFile.OpenRead(chosenZip))
+                    {
+                        var ttfEntries = archive.Entries
+                            .Where(en => en.FullName.Replace('\\', '/')
+                            .IndexOf("packages/_index/buildericons/buildericons/font/", StringComparison.OrdinalIgnoreCase) >= 0
+                                     && en.FullName.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase));
+
+                        if (!ttfEntries.Any()) throw new Exception("No TTF files found inside the LuaPackages zip.");
+
+                        foreach (var entry in ttfEntries)
+                        {
+                            string destFile = Path.Combine(stagePath, Path.GetFileName(entry.FullName));
+                            entry.ExtractToFile(destFile, true);
+                        }
+                    }
+
+                    await Dispatcher.InvokeAsync(() => FontRenderStatusText.Text = "Preparing script...");
+                    tempScriptPath = ExtractEmbeddedScriptToTemp();
+
+                    await Dispatcher.InvokeAsync(() => FontRenderStatusText.Text = "Running script...");
+
+                    string hexColorArg = hexColorString.TrimStart('#');
+                    string arguments = $"\"{tempScriptPath}\" --path \"{stagePath}\" --color {hexColorArg}";
+
+                    ProcessStartInfo start = new ProcessStartInfo
+                    {
+                        FileName = "python",
+                        Arguments = arguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    };
+
+                    using (Process process = Process.Start(start))
+                    {
+                        process.WaitForExit();
+
+                        output = process.StandardOutput.ReadToEnd();
+                        errors = process.StandardError.ReadToEnd();
+
+                        if (process.ExitCode != 0)
+                        {
+                            string pythonCrashDetails = string.IsNullOrWhiteSpace(errors)
+                                ? "No specific error details were captured. Check standard output for clues."
+                                : $"Python Traceback: {errors.Trim()}";
+
+                            throw new Exception($"Python script failed with Exit Code {process.ExitCode}. {pythonCrashDetails}");
+                        }
+                    }
+
+                    await Dispatcher.InvokeAsync(() => FontRenderStatusText.Text = "Moving fonts...");
+
+                    string finalDest = Path.Combine(Paths.Modifications, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
+                    Directory.CreateDirectory(finalDest);
+
+                    var convertedFiles = Directory.GetFiles(stagePath, "*.otf");
+
+                    if (convertedFiles.Length == 0)
+                    {
+                        string pythonErrorDetails = string.IsNullOrWhiteSpace(errors)
+                            ? "No specific error details were captured from Python's error stream."
+                            : $"Python reported (may not be a full traceback): {errors.Trim()}";
+
+                        throw new Exception(
+                            $"CRITICAL FAILURE: Python exited successfully (Code 0), but did not generate the required **.otf** font files in the staging folder: '{stagePath}'. " +
+                            $"The script likely failed due to an internal issue. {pythonErrorDetails}"
+                        );
+                    }
+
+                    foreach (var file in convertedFiles)
+                    {
+                        File.Copy(file, Path.Combine(finalDest, Path.GetFileName(file)), true);
+                    }
+
+                    await Dispatcher.InvokeAsync(() => FontRenderStatusText.Text = $"Success! Colored fonts installed. Output: {output.Trim()}");
+                }
+                catch (Exception ex)
+                {
+                    await Dispatcher.InvokeAsync(() => FontRenderStatusText.Text = $"Error: {ex.Message}");
+                    App.Logger?.WriteException(LOG_IDENT, ex);
+                }
+                finally
+                {
+                    try { if (Directory.Exists(stagePath)) Directory.Delete(stagePath, true); } catch { /* ignore locks */ }
+                    try { if (tempScriptPath != null && File.Exists(tempScriptPath)) File.Delete(tempScriptPath); } catch { /* ignore locks */ }
+                }
+            });
         }
 
-        private Bitmap? _sheetOriginalBitmap = null;
-        private CancellationTokenSource? _previewCts;
-        private readonly List<SpriteDef> _previewSprites = ParseHardcodedSpriteList();
-
-        private void InitializePreview()
+        // Tries to display font glyphs in preview
+        // Doesn't work right now :/
+        private async void RenderFromDownloadedZipButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadEmbeddedPreviewSheet();
-            PopulateSpriteSelector();
-            _ = UpdatePreviewAsync();
-        }
-
-        private void LoadEmbeddedPreviewSheet()
-        {
+            const string LOG_IDENT = "ModsPage::RenderFromDownloadedZipButton_Click";
             try
             {
-                var asm = Assembly.GetExecutingAssembly();
-                string? resName = asm.GetManifestResourceNames()
-                    .FirstOrDefault(n => n.EndsWith(".png", StringComparison.OrdinalIgnoreCase) && n.Contains("Bloxstrap.Resources"));
-                if (resName == null)
-                    resName = asm.GetManifestResourceNames().FirstOrDefault(n => n.EndsWith(".png", StringComparison.OrdinalIgnoreCase));
-                if (resName == null) return;
-                using var rs = asm.GetManifestResourceStream(resName);
-                if (rs == null) return;
-                using var src = new Bitmap(rs);
-                _sheetOriginalBitmap?.Dispose();
-                _sheetOriginalBitmap = new Bitmap(src.Width, src.Height, PixelFormat.Format32bppArgb);
-                using (var g = Graphics.FromImage(_sheetOriginalBitmap)) g.DrawImage(src, 0, 0, src.Width, src.Height);
+                FontRenderStatusText.Text = "Locating downloaded luapackages...";
+                string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+                if (!Directory.Exists(froststrapTemp))
+                {
+                    FontRenderStatusText.Text = "No Froststrap temp folder found.";
+                    App.Logger?.WriteLine(LOG_IDENT, $"Temp folder missing: {froststrapTemp}");
+                    return;
+                }
+
+                var zips = Directory.GetFiles(froststrapTemp, "extracontent-luapackages-*.zip");
+                if (zips.Length == 0)
+                {
+                    FontRenderStatusText.Text = "No luapackages zip found in Froststrap temp.";
+                    App.Logger?.WriteLine(LOG_IDENT, "No matching zip found.");
+                    return;
+                }
+
+                string chosenZip = zips.OrderByDescending(f => File.GetCreationTimeUtc(f)).First();
+                App.Logger?.WriteLine(LOG_IDENT, $"Using zip: {chosenZip}");
+                FontRenderStatusText.Text = "Rendering fonts from downloaded zip...";
+
+                var tempFiles = new List<string>();
+                var renderedBitmaps = new List<System.Drawing.Bitmap>();
+
+                try
+                {
+                    using var archive = ZipFile.OpenRead(chosenZip);
+
+                    var ttfEntries = archive.Entries
+                        .Where(en => en.FullName.Replace('\\', '/')
+                            .IndexOf("Packages/_Index/BuilderIcons/BuilderIcons/Font/", StringComparison.OrdinalIgnoreCase) >= 0
+                                     && en.FullName.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                        .OrderBy(en => en.FullName, StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+
+                    if (ttfEntries.Count == 0)
+                    {
+                        FontRenderStatusText.Text = "No BuilderIcons ttf files found inside zip.";
+                        App.Logger?.WriteLine(LOG_IDENT, "No matching ttf entries inside zip.");
+                        return;
+                    }
+
+                    foreach (var entry in ttfEntries)
+                    {
+                        string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + "_" + Path.GetFileName(entry.FullName));
+                        tempFiles.Add(tempPath);
+
+                        App.Logger?.WriteLine(LOG_IDENT, $"Extracting {entry.FullName} -> {tempPath}");
+                        using (var entryStream = entry.Open())
+                        using (var fs = new FileStream(tempPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            await entryStream.CopyToAsync(fs).ConfigureAwait(false);
+                        }
+
+                        try
+                        {
+                            var bmp = await Task.Run(() => RenderFontGlyphGrid(tempPath, glyphPixelSize: 48, cols: 16, rows: 6, startCodepoint: 0xE000));
+                            if (bmp != null) renderedBitmaps.Add(bmp);
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger?.WriteException(LOG_IDENT, ex);
+                        }
+                    }
+
+                    if (renderedBitmaps.Count == 0)
+                    {
+                        FontRenderStatusText.Text = "Failed to render any fonts.";
+                        App.Logger?.WriteLine(LOG_IDENT, "Rendered bitmaps list empty after processing entries.");
+                        return;
+                    }
+
+                    System.Drawing.Bitmap finalBitmap;
+                    if (renderedBitmaps.Count == 1)
+                    {
+                        finalBitmap = renderedBitmaps[0];
+                    }
+                    else
+                    {
+                        finalBitmap = ComposeVertical(renderedBitmaps[0], renderedBitmaps[1], spacing: 8);
+
+                        renderedBitmaps[0].Dispose();
+                        renderedBitmaps[1].Dispose();
+                    }
+
+                    var bi = BitmapToImageSource(finalBitmap);
+                    await Dispatcher.InvokeAsync(() => FontPreview.Source = bi);
+
+                    finalBitmap.Dispose();
+
+                    FontRenderStatusText.Text = "Font render complete.";
+                    App.Logger?.WriteLine(LOG_IDENT, "Font rendering from zip completed.");
+                }
+                finally
+                {
+                    foreach (var tf in tempFiles)
+                    {
+                        try { if (File.Exists(tf)) File.Delete(tf); } catch { /* ignore */ }
+                    }
+
+                    foreach (var rb in renderedBitmaps) try { rb.Dispose(); } catch { }
+                }
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModsPage::LoadEmbeddedPreviewSheet", ex);
+                FontRenderStatusText.Text = $"Error: {ex.Message}";
+                App.Logger?.WriteException("ModsPage::RenderFromDownloadedZipButton_Click", ex);
             }
         }
 
-        public record SpriteDef(string Name, int X, int Y, int W, int H);
-
-        private static List<SpriteDef> ParseHardcodedSpriteList()
+        private System.Drawing.Bitmap RenderFontGlyphGrid(string fontFilePath, int glyphPixelSize = 48, int cols = 16, int rows = 6, int startCodepoint = 0xE000)
         {
-            string[] lines = new[]
-            {
-                "like_off 0x0 72x72","rocket_off 74x0 72x72","heart_on 148x0 72x72","trophy_off 222x0 72x72","heart_off 296x0 72x72","report_off 370x0 72x72",
-                "dislike_off 0x74 72x72","music 74x74 72x72","player_count 148x74 72x72","selfview_on 222x74 72x72","notification_off 296x74 72x72","send 370x74 72x72",
-                "like_on 0x148 72x72","robux 74x148 72x72","backpack_on 148x148 72x72","report_on 222x148 72x72","search 296x148 72x72","notification_on 370x148 72x72",
-                "dislike_on 0x222 72x72","chat_on 74x222 72x72","backpack_off 148x222 72x72","fingerprint 222x222 72x72","roblox 296x222 72x72","roblox_studio 370x222 72x72",
-                "notepad 0x296 72x72","chat_off 74x296 72x72","close 148x296 72x72","add 222x296 72x72","sync 296x296 72x72","pin 370x296 72x72",
-                "picture 0x370 72x72","enlarge 74x370 72x72","headset_locked 148x370 72x72","friends_off 222x370 72x72","friends_on 296x370 72x72","person_camera 370x370 72x72"
-            };
+            byte[] fontData = File.ReadAllBytes(fontFilePath);
+            IntPtr data = Marshal.AllocCoTaskMem(fontData.Length);
+            Marshal.Copy(fontData, 0, data, fontData.Length);
 
-            var list = new List<SpriteDef>();
-            foreach (var l in lines)
-            {
-                var parts = l.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length < 3) continue;
-                string name = parts[0];
-                var coords = parts[1].Split('x');
-                int x = int.Parse(coords[0]);
-                int y = int.Parse(coords[1]);
-                var size = parts[2].Split('x');
-                int w = int.Parse(size[0]);
-                int h = int.Parse(size[1]);
-                list.Add(new SpriteDef(name, x, y, w, h));
-            }
-            return list;
-        }
-
-        private void PopulateSpriteSelector()
-        {
-            SpriteSelector.ItemsSource = _previewSprites.Select(s => s.Name).ToList();
-            if (SpriteSelector.Items.Count > 0) SpriteSelector.SelectedIndex = 0;
-        }
-
-        private async Task UpdatePreviewAsync()
-        {
-            _previewCts?.Cancel();
-            _previewCts = new CancellationTokenSource();
-            var ct = _previewCts.Token;
+            var pfc = new PrivateFontCollection();
 
             try
             {
-                if (_sheetOriginalBitmap == null) return;
-                byte[] sheetBytes;
-                using (var ms = new MemoryStream())
+                pfc.AddMemoryFont(data, fontData.Length);
+
+                if (pfc.Families.Length == 0)
                 {
-                    _sheetOriginalBitmap.Save(ms, ImageFormat.Png);
-                    sheetBytes = ms.ToArray();
+                    App.Logger?.WriteLine("RenderFontGlyphGrid", "No font families found in file.");
+                    return new System.Drawing.Bitmap(1, 1);
                 }
 
-                var bmp = await Task.Run(() =>
+                var family = pfc.Families[0];
+
+                using var font = new System.Drawing.Font(family, glyphPixelSize, System.Drawing.FontStyle.Regular, GraphicsUnit.Pixel);
+                int cellW = glyphPixelSize * 2;
+                int cellH = glyphPixelSize * 2;
+                var bmp = new System.Drawing.Bitmap(cols * cellW, rows * cellH, PixelFormat.Format32bppArgb);
+
+                using (var g = Graphics.FromImage(bmp))
                 {
-                    if (ct.IsCancellationRequested) return (Bitmap?)null;
+                    g.Clear(System.Drawing.Color.Transparent);
 
-                    try
+                    g.TextRenderingHint = TextRenderingHint.AntiAlias;
+                    g.CompositingQuality = CompositingQuality.HighQuality;
+                    g.SmoothingMode = SmoothingMode.HighQuality;
+
+                    using var brush = new SolidBrush(System.Drawing.Color.FromArgb(255, _solidColor.R, _solidColor.G, _solidColor.B));
+                    var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+
+                    for (int r = 0; r < rows; r++)
                     {
-                        using var ms2 = new MemoryStream(sheetBytes);
-                        using var sheetCopy = new Bitmap(ms2);
-                        var result = RenderPreviewSheet(sheetCopy, _solidColor);
-                        return result;
+                        for (int c = 0; c < cols; c++)
+                        {
+                            int codepoint = startCodepoint + r * cols + c;
+                            string text;
+                            try
+                            {
+                                text = char.ConvertFromUtf32(codepoint);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+
+                            var rect = new RectangleF(c * cellW, r * cellH, cellW, cellH);
+                            g.DrawString(text, font, brush, rect, sf);
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        App.Logger?.WriteException("ModsPage::UpdatePreviewAsync(Task)", ex);
-                        return (Bitmap?)null;
-                    }
-                }, ct).ConfigureAwait(false);
+                }
 
-                if (bmp == null) return;
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    SheetPreview.Source = BitmapToImageSource(bmp);
-                    UpdateSpritePreviewFromBitmap(bmp);
-                });
-
-                bmp.Dispose();
-            }
-            catch (OperationCanceledException)
-            {
-                // Ignore cancellation
+                return bmp;
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModsPage::UpdatePreviewAsync", ex);
-            }
-        }
-
-        private Bitmap RenderPreviewSheet(Bitmap sheetBmp, Color solidColor)
-        {
-            if (sheetBmp == null) throw new InvalidOperationException("sheetBmp is null.");
-
-            var output = new Bitmap(sheetBmp.Width, sheetBmp.Height, PixelFormat.Format32bppArgb);
-            using (var g = Graphics.FromImage(output))
-            {
-                g.CompositingMode = CompositingMode.SourceOver;
-                g.CompositingQuality = CompositingQuality.HighQuality;
-                g.SmoothingMode = SmoothingMode.HighQuality;
-                g.DrawImage(sheetBmp, 0, 0);
-            }
-
-            try
-            {
-                foreach (var def in _previewSprites)
-                {
-                    if (def.W <= 0 || def.H <= 0) continue;
-                    var rect = new Rectangle(def.X, def.Y, def.W, def.H);
-
-                    using (var cropped = sheetBmp.Clone(rect, PixelFormat.Format32bppArgb))
-                    using (var recolored = ApplyMaskPreview(cropped, solidColor))
-                    using (var g = Graphics.FromImage(output))
-                    {
-                        g.CompositingMode = CompositingMode.SourceOver;
-                        g.DrawImage(recolored, rect);
-                    }
-                }
+                App.Logger?.WriteException("RenderFontGlyphGrid", ex);
+                return new System.Drawing.Bitmap(100, 100);
             }
             finally
             {
-                // Clean up if needed
+                pfc.Dispose();
+                Marshal.FreeCoTaskMem(data);
             }
-
-            return output;
         }
 
-        private Bitmap ApplyMaskPreview(Bitmap original, Color solidColor)
+        private System.Drawing.Bitmap ComposeVertical(System.Drawing.Bitmap top, System.Drawing.Bitmap bottom, int spacing = 0)
         {
-            if (original.Width == 0 || original.Height == 0)
-                return new Bitmap(original);
+            int width = Math.Max(top.Width, bottom.Width);
+            int height = top.Height + spacing + bottom.Height;
 
-            var recolored = new Bitmap(original.Width, original.Height, PixelFormat.Format32bppArgb);
-            var rect = new Rectangle(0, 0, original.Width, original.Height);
-            BitmapData srcData = original.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData dstData = recolored.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-
-            unsafe
-            {
-                byte* srcPtr = (byte*)srcData.Scan0;
-                byte* dstPtr = (byte*)dstData.Scan0;
-                int bytesPerPixel = 4;
-
-                for (int y = 0; y < original.Height; y++)
-                {
-                    for (int x = 0; x < original.Width; x++)
-                    {
-                        int idx = y * srcData.Stride + x * bytesPerPixel;
-                        byte a = srcPtr[idx + 3];
-
-                        if (a <= 5)
-                        {
-                            dstPtr[idx] = 0;
-                            dstPtr[idx + 1] = 0;
-                            dstPtr[idx + 2] = 0;
-                            dstPtr[idx + 3] = 0;
-                            continue;
-                        }
-
-                        float alphaFactor = a / 255f;
-                        dstPtr[idx] = (byte)(solidColor.B * alphaFactor);
-                        dstPtr[idx + 1] = (byte)(solidColor.G * alphaFactor);
-                        dstPtr[idx + 2] = (byte)(solidColor.R * alphaFactor);
-                        dstPtr[idx + 3] = a;
-                    }
-                }
-            }
-
-            original.UnlockBits(srcData);
-            recolored.UnlockBits(dstData);
-            return recolored;
+            var outBmp = new System.Drawing.Bitmap(width, height, PixelFormat.Format32bppArgb);
+            using var g = Graphics.FromImage(outBmp);
+            g.Clear(System.Drawing.Color.Transparent);
+            g.CompositingQuality = CompositingQuality.HighQuality;
+            g.SmoothingMode = SmoothingMode.HighQuality;
+            g.DrawImage(top, new Rectangle(0, 0, top.Width, top.Height));
+            g.DrawImage(bottom, new Rectangle(0, top.Height + spacing, bottom.Width, bottom.Height));
+            return outBmp;
         }
 
-        private void UpdateSpritePreviewFromBitmap(Bitmap sheetBmp)
-        {
-            if (SpriteSelector.SelectedItem == null) { SpritePreview.Source = null; return; }
-
-            string sel = SpriteSelector.SelectedItem.ToString()!;
-            var def = _previewSprites.FirstOrDefault(s => string.Equals(s.Name, sel, StringComparison.OrdinalIgnoreCase));
-            if (def == null) { SpritePreview.Source = null; return; }
-
-            using (var cropped = new Bitmap(def.W, def.H, PixelFormat.Format32bppArgb))
-            {
-                using (var g = Graphics.FromImage(cropped))
-                {
-                    g.DrawImage(sheetBmp, new Rectangle(0, 0, def.W, def.H), new Rectangle(def.X, def.Y, def.W, def.H), GraphicsUnit.Pixel);
-                }
-
-                SpritePreview.Source = BitmapToImageSource(cropped);
-            }
-        }
-
-        private BitmapImage BitmapToImageSource(Bitmap bmp)
+        private BitmapImage BitmapToImageSource(System.Drawing.Bitmap bmp)
         {
             using var ms = new MemoryStream();
             bmp.Save(ms, ImageFormat.Png);
@@ -598,18 +431,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             bi.EndInit();
             bi.Freeze();
             return bi;
-        }
-
-        private void OnSpriteSelectorChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (SheetPreview.Source is BitmapImage bi)
-            {
-                _ = UpdatePreviewAsync();
-            }
-            else
-            {
-                _ = UpdatePreviewAsync();
-            }
         }
     }
 }
