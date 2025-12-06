@@ -14,7 +14,6 @@
 using Bloxstrap.Integrations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Bloxstrap.UI.Elements.AccountManagers;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -65,11 +64,12 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [ObservableProperty]
         private bool _hasFriends = false;
 
-        private static AccountManager? _accountManager;
         private long _lastActiveUserId = 0;
 
         private CancellationTokenSource? _friendsRefreshCts;
         private System.Timers.Timer? _presenceUpdateTimer;
+
+        private AccountManager Manager => AccountManager.Shared;
 
         public FriendsViewModel()
         {
@@ -77,7 +77,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
 
             InitializePresenceTimer();
-            _ = RefreshFriends();
+            // InitializePresenceTimer alread calls refresh friendsso no need to add it here
         }
 
         private void InitializePresenceTimer()
@@ -338,10 +338,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 using var client = new HttpClient();
                 string url = $"https://games.roblox.com/v1/games/multiget-place-details?placeIds={placeId}";
 
-                var mgr = GetAccountManager();
-                if (mgr?.ActiveAccount != null)
+                var activeAccount = Manager.ActiveAccount;
+                if (activeAccount != null)
                 {
-                    string? cookie = mgr.GetRoblosecurityForUser(mgr.ActiveAccount.UserId);
+                    string? cookie = Manager.GetRoblosecurityForUser(activeAccount.UserId);
                     if (!string.IsNullOrEmpty(cookie))
                     {
                         client.DefaultRequestHeaders.Add("Cookie", $".ROBLOSECURITY={cookie}");
@@ -409,8 +409,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     return;
                 }
 
-                var mgr = GetAccountManager();
-                if (mgr?.ActiveAccount is null)
+                var activeAccount = Manager.ActiveAccount;
+                if (activeAccount is null)
                 {
                     Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                     return;
@@ -422,7 +422,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     return;
                 }
 
-                var presenceData = await FetchPresenceForUsersAsync(mgr.ActiveAccount.UserId, new List<long> { friend.Id }, CancellationToken.None);
+                var presenceData = await FetchPresenceForUsersAsync(activeAccount.UserId, new List<long> { friend.Id }, CancellationToken.None);
 
                 if (presenceData == null || !presenceData.TryGetValue(friend.Id, out var friendPresence) || friendPresence == null)
                 {
@@ -449,7 +449,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                 try
                 {
-                    await mgr.LaunchAccountToPlaceAsync(mgr.ActiveAccount, placeId.Value, gameInstanceId);
+                    await Manager.LaunchAccountToPlaceAsync(activeAccount, placeId.Value, gameInstanceId);
 
                     App.Logger.WriteLine(LOG_IDENT_JOIN_FRIEND, $"Successfully launched game to join {friend.DisplayName} in instance {gameInstanceId}");
                 }
@@ -490,7 +490,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
-        // The total friend amount isnt the same as in acc info because some users are banned/api related issues
         private async Task FetchFriendsAsync(long userId, CancellationToken token = default)
         {
             const string LOG_IDENT_FRIENDS = $"{LOG_IDENT}::FetchFriends";
@@ -510,13 +509,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 if (userId == 0)
                 {
                     App.Logger.WriteLine(LOG_IDENT_FRIENDS, "UserId is 0, skipping friends fetch");
-                    return;
-                }
-
-                var mgr = GetAccountManager();
-                if (mgr == null)
-                {
-                    App.Logger.WriteLine(LOG_IDENT_FRIENDS, "Account manager unavailable.");
                     return;
                 }
 
@@ -655,7 +647,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             var result = new Dictionary<long, string?>();
             if (userIds == null || userIds.Count == 0) return result;
 
-            const int batchSize = 100; // limit userids per request
+            const int batchSize = 100;
             try
             {
                 for (int i = 0; i < userIds.Count; i += batchSize)
@@ -670,10 +662,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                     using var req = new HttpRequestMessage(HttpMethod.Get, url);
 
-                    var mgr = GetAccountManager();
-                    if (mgr?.ActiveAccount != null)
+                    var activeAccount = Manager.ActiveAccount;
+                    if (activeAccount != null)
                     {
-                        string? cookie = mgr.GetRoblosecurityForUser(mgr.ActiveAccount.UserId);
+                        string? cookie = Manager.GetRoblosecurityForUser(activeAccount.UserId);
                         if (!string.IsNullOrWhiteSpace(cookie))
                             req.Headers.TryAddWithoutValidation("Cookie", $".ROBLOSECURITY={cookie}");
                     }
@@ -684,7 +676,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     if (!resp.IsSuccessStatusCode)
                     {
                         App.Logger.WriteLine($"{LOG_IDENT}::GetAvatarUrlsBulkAsync", $"Thumbnail batch request failed: {(int)resp.StatusCode}");
-                        // leave batch ids as null
                         continue;
                     }
 
@@ -702,10 +693,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                                 {
                                     long tid = tidElem.GetInt64();
                                     string? img = imgElem.GetString();
-                                    if (result.ContainsKey(tid))
-                                        result[tid] = string.IsNullOrWhiteSpace(img) ? null : img;
-                                    else
-                                        result[tid] = string.IsNullOrWhiteSpace(img) ? null : img;
+                                    result[tid] = string.IsNullOrWhiteSpace(img) ? null : img;
                                 }
                             }
                         }
@@ -713,7 +701,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     catch (Exception ex)
                     {
                         App.Logger.WriteLine($"{LOG_IDENT}::GetAvatarUrlsBulkAsync", $"Failed parsing thumbnail response: {ex.Message}");
-                        // on parse failure leave batch entries as null
                     }
                 }
             }
@@ -780,8 +767,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                             {
                                 Id = id.Value,
                                 DisplayName = !string.IsNullOrEmpty(displayName) ? displayName : name ?? id.Value.ToString(),
-                                IsOnline = false, // This will be updated later via presence API
-                                PresenceType = 0  // This will be updated later via presence API
+                                IsOnline = false,
+                                PresenceType = 0
                             });
                             processedCount++;
                         }
@@ -821,8 +808,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 var json = JsonSerializer.Serialize(requestBody);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var mgr = GetAccountManager();
-                string? cookie = mgr?.GetRoblosecurityForUser(userId);
+                string? cookie = Manager.GetRoblosecurityForUser(userId);
                 if (!string.IsNullOrEmpty(cookie))
                 {
                     client.DefaultRequestHeaders.TryAddWithoutValidation("Cookie", $".ROBLOSECURITY={cookie}");
@@ -907,23 +893,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         partial void OnSelectedFriendFilterChanged(string value)
         {
             FilterFriends();
-        }
-
-        private AccountManager? GetAccountManager()
-        {
-            try
-            {
-                if (_accountManager == null)
-                {
-                    _accountManager = new AccountManager();
-                }
-                return _accountManager;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine($"{LOG_IDENT}::GetAccountManager", $"Exception: {ex.Message}");
-                return null;
-            }
         }
 
         private async Task CheckForAccountChangeAsync()

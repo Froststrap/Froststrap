@@ -39,9 +39,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border
-                            Margin="0,4"
+                            Margin="0,4,4,4"
                             Padding="8"
-                            Width="120"
                             Background="{DynamicResource PrimaryBackgroundColor}"
                             BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
                             BorderThickness="1"

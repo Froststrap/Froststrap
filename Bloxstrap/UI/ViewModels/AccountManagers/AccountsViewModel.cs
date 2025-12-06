@@ -66,34 +66,17 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [ObservableProperty]
         private string _selectedAddMethod = "Quick Sign-In";
 
-        private AccountManager? _accountManager;
-
-        private AccountManager? GetManager()
-        {
-            if (_accountManager != null)
-                return _accountManager;
-
-            try
-            {
-                _accountManager = new AccountManager();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine($"{LOG_IDENT}::GetManager", $"Exception: {ex.Message}");
-            }
-            return _accountManager;
-        }
+        private AccountManager Manager => AccountManager.Shared;
 
         public static long? GetActiveUserId()
         {
             try
             {
-                var manager = new AccountManager();
-                return manager.ActiveAccount?.UserId;
+                return AccountManager.Shared.ActiveAccount?.UserId;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("AccountsViewModel::GetActiveUserId", $"Exception: {ex.Message}");
+                App.Logger.WriteLine($"{LOG_IDENT}::GetActiveUserId", $"Exception: {ex.Message}");
                 return null;
             }
         }
@@ -125,15 +108,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         {
             Accounts.Clear();
 
-            var mgr = GetManager();
-            if (mgr == null)
-            {
-                CurrentUserDisplayName = "Not Available";
-                CurrentUserUsername = "Account manager unavailable";
-                CurrentUserAvatarUrl = "";
-                IsAccountInformationVisible = false;
-                return;
-            }
+            var mgr = Manager;
 
             // Load all accounts
             var accountTasks = mgr.Accounts.Select(async acc =>
@@ -276,13 +251,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
             }
 
-            var mgr = GetManager();
-            if (mgr == null)
-            {
-                Frontend.ShowMessageBox("Account manager is not available.", MessageBoxImage.Error);
-                return;
-            }
-
+            var mgr = Manager;
             bool isSameAccount = mgr.ActiveAccount?.UserId == SelectedAccount.Id;
 
             var backendAccount = mgr.Accounts.FirstOrDefault(acc => acc.UserId == SelectedAccount.Id);
@@ -304,13 +273,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [RelayCommand]
         private async Task AddAccount()
         {
-            var mgr = GetManager();
-            if (mgr == null)
-            {
-                Frontend.ShowMessageBox("Account manager is not available.", MessageBoxImage.Error);
-                return;
-            }
-
+            var mgr = Manager;
             AltAccount? newAccount = null;
 
             try
@@ -378,13 +341,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [RelayCommand]
         private async Task DeleteAccount(Account? account)
         {
-            var mgr = GetManager();
-            if (mgr == null)
-            {
-                Frontend.ShowMessageBox("Account manager is not available.", MessageBoxImage.Error);
-                return;
-            }
-
+            var mgr = Manager;
             var target = account ?? SelectedAccount;
             if (target is null)
             {
@@ -443,9 +400,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [RelayCommand]
         private void SignOut()
         {
-            var mgr = GetManager();
-            if (mgr == null) return;
-
+            var mgr = Manager;
             mgr.SetActiveAccount(null);
             CurrentUserDisplayName = "Not Logged In";
             CurrentUserUsername = "";
