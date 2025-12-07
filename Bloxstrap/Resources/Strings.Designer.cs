@@ -3872,24 +3872,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change what the Save and Launch button launches..
-        /// </summary>
-        public static string Menu_Channel_SaveAndLaunchOption_Description {
-            get {
-                return ResourceManager.GetString("Menu.Channel.SaveAndLaunchOption.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save And Launch Options.
-        /// </summary>
-        public static string Menu_Channel_SaveAndLaunchOption_Title {
-            get {
-                return ResourceManager.GetString("Menu.Channel.SaveAndLaunchOption.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Fetching latest deploy info, please wait....
         /// </summary>
         public static string Menu_Channel_Switcher_Fetching {

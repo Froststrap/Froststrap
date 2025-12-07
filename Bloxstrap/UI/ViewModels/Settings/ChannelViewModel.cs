@@ -18,12 +18,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public IEnumerable<SaveAndLaunch> SaveAndLaunchs => Enum.GetValues(typeof(SaveAndLaunch)).Cast<SaveAndLaunch>();
 
-        public SaveAndLaunch SaveAndLaunch
-        {
-            get => App.Settings.Prop.SaveAndLaunchMode;
-            set => App.Settings.Prop.SaveAndLaunchMode = value;
-        }
-
         public bool IsRobloxInstallationMissing => String.IsNullOrEmpty(App.RobloxState.Prop.Player.VersionGuid) && String.IsNullOrEmpty(App.RobloxState.Prop.Studio.VersionGuid);
 
         private async Task LoadChannelDeployInfo(string channel)

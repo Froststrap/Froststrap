@@ -24,6 +24,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
     public record FriendInfo(long Id, string DisplayName, string? AvatarUrl, int PresenceType, string LastLocation, string StatusColor, string PlayingGameName)
     {
         public bool IsOnline => PresenceType == 2;
+        public bool IsSelected { get; set; }
     }
 
     public record PlaceDetails(string name, string builder, bool hasVerifiedBadge, long universeId);
@@ -64,10 +65,35 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [ObservableProperty]
         private bool _hasFriends = false;
 
+        [ObservableProperty]
+        private bool _isBulkMode = false;
+
+        [ObservableProperty]
+        private ObservableCollection<FriendInfo> _selectedFriends = new();
+
+        [ObservableProperty]
+        private bool _isUnfriending = false;
+
+        [ObservableProperty]
+        private string _bulkActionStatus = "";
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExecuteBulkUnfriendCommand))]
+        private int _selectedFriendsCount = 0;
+
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ExecuteBulkUnfriendCommand))]
+        [NotifyPropertyChangedFor(nameof(IsBulkUnfriendEnabled))]
+        private bool _isRefreshing = false;
+
+        public bool IsBulkUnfriendEnabled => SelectedFriendsCount > 0 && !IsUnfriending && !IsRefreshing;
+
         private long _lastActiveUserId = 0;
 
         private CancellationTokenSource? _friendsRefreshCts;
         private System.Timers.Timer? _presenceUpdateTimer;
+        private bool _isPresenceTimerPaused = false;
 
         private AccountManager Manager => AccountManager.Shared;
 
@@ -77,7 +103,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
 
             InitializePresenceTimer();
-            // InitializePresenceTimer alread calls refresh friendsso no need to add it here
         }
 
         private void InitializePresenceTimer()
@@ -87,6 +112,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             {
                 try
                 {
+                    if (_isPresenceTimerPaused) return;
                     await CheckForAccountChangeAsync();
                     await CheckPresenceAsync();
                 }
@@ -101,6 +127,9 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             _ = CheckForAccountChangeAsync();
             _ = CheckPresenceAsync();
         }
+
+        private void PausePresenceTimer() => _isPresenceTimerPaused = true;
+        private void ResumePresenceTimer() => _isPresenceTimerPaused = false;
 
         private async Task CheckPresenceAsync()
         {
@@ -125,7 +154,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
             }
 
-            if (IsPresenceLoading)
+            if (IsPresenceLoading || IsRefreshing)
                 return;
 
             try
@@ -208,7 +237,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                                 displayLocation,
                                 statusColor,
                                 playingGameName
-                            );
+                            )
+                            {
+                                IsSelected = friend.IsSelected
+                            };
                             updatedFriends.Add(newFriend);
                         }
                         catch (Exception ex)
@@ -329,6 +361,83 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
+        private async Task<bool> UnfriendSingleUserAsync(long userId, long targetUserId, string cookie)
+        {
+            const string LOG_IDENT_SINGLE_UNFRIEND = $"{LOG_IDENT}::UnfriendSingleUserAsync";
+
+            try
+            {
+                using var client = new HttpClient();
+
+                string url = $"https://friends.roblox.com/v1/users/{targetUserId}/unfriend";
+
+                var accountManager = Manager;
+                string? csrfToken = await accountManager.GetCsrfTokenAsync(cookie);
+
+                if (string.IsNullOrEmpty(csrfToken))
+                {
+                    App.Logger.WriteLine(LOG_IDENT_SINGLE_UNFRIEND, $"Failed to get CSRF token for user {targetUserId}");
+                    return false;
+                }
+
+                client.DefaultRequestHeaders.Add("Cookie", $".ROBLOSECURITY={cookie}");
+                client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", csrfToken!);
+
+                var response = await client.PostAsync(url, null);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_SINGLE_UNFRIEND, $"Successfully unfriended user {targetUserId}");
+                    return true;
+                }
+                else
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    App.Logger.WriteLine(LOG_IDENT_SINGLE_UNFRIEND, $"Failed to unfriend user {targetUserId}: {response.StatusCode} - {responseBody}");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT_SINGLE_UNFRIEND, $"Exception unfriending user {targetUserId}: {ex.Message}");
+                return false;
+            }
+        }
+
+        private void ClearAllSelections()
+        {
+            foreach (var friend in Friends)
+                friend.IsSelected = false;
+
+            foreach (var friend in FilteredFriends)
+                friend.IsSelected = false;
+
+            SelectedFriends.Clear();
+            SelectedFriendsCount = 0;
+
+            OnPropertyChanged(nameof(SelectedFriendsCount));
+            OnPropertyChanged(nameof(IsBulkUnfriendEnabled));
+        }
+
+        private void UpdateSelectionsFromFriends()
+        {
+            if (!IsBulkMode) return;
+
+            SelectedFriends.Clear();
+
+            foreach (var friend in FilteredFriends.Where(f => f.IsSelected))
+            {
+                SelectedFriends.Add(friend);
+            }
+
+            SelectedFriendsCount = SelectedFriends.Count;
+            BulkActionStatus = $"Select friends to unfriend ({SelectedFriendsCount} selected)";
+
+            OnPropertyChanged(nameof(SelectedFriendsCount));
+            OnPropertyChanged(nameof(IsBulkUnfriendEnabled));
+        }
+
+
         private async Task<PlaceDetails?> FetchPlaceDetailsAsync(long placeId)
         {
             const string LOG_IDENT_PLACE_DETAILS = $"{LOG_IDENT}::FetchPlaceDetails";
@@ -350,7 +459,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                 var response = await client.GetAsync(url);
 
-                if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     App.Logger.WriteLine(LOG_IDENT_PLACE_DETAILS, $"Unauthorized access to place details for {placeId}. Authentication may be required.");
                     return null;
@@ -496,6 +605,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             try
             {
+                IsRefreshing = true;
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     Friends.Clear();
@@ -516,7 +626,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                 var friendsData = await FetchFriendsListAsync(userId, token);
 
-                // only show "No friends found" when API returns zero friends
                 if (!friendsData.Any())
                 {
                     await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -562,7 +671,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                     avatarUrls.TryGetValue(friend.Id, out var avatarUrl);
 
-                    int presenceType = 0; // Default to offline
+                    int presenceType = 0;
                     string lastLocation = "Offline";
                     string playingGameName = "";
 
@@ -635,6 +744,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
             finally
             {
+                IsRefreshing = false;
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
                     IsPresenceLoading = false;
@@ -867,6 +977,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
             }
 
+            var selectedFriendIds = Friends.Where(f => f.IsSelected).Select(f => f.Id).ToHashSet();
+
             var filtered = SelectedFriendFilter switch
             {
                 "Online" => Friends.Where(f => f.PresenceType == 2).ToList(),
@@ -875,6 +987,11 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 "Offline" => Friends.Where(f => f.PresenceType != 1 && f.PresenceType != 2 && f.PresenceType != 3).ToList(),
                 _ => Friends.ToList()
             };
+
+            foreach (var friend in filtered)
+            {
+                friend.IsSelected = selectedFriendIds.Contains(friend.Id);
+            }
 
             var ordered = filtered
                 .OrderByDescending(f => f.PresenceType == 3)
@@ -888,11 +1005,200 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 FilteredFriends.Add(friend);
 
             HasFriends = FilteredFriends.Any();
+
+            if (IsBulkMode)
+            {
+                UpdateSelectionsFromFriends();
+            }
         }
 
         partial void OnSelectedFriendFilterChanged(string value)
         {
             FilterFriends();
+
+            if (IsBulkMode)
+            {
+                ClearAllSelections();
+                BulkActionStatus = "Select friends to unfriend (0 selected)";
+            }
+        }
+
+        [RelayCommand]
+        private async Task StartBulkUnfriend()
+        {
+            SelectedFriendFilter = "All";
+            IsBulkMode = true;
+            ClearAllSelections();
+            BulkActionStatus = "Loading friends...";
+
+            PausePresenceTimer();
+
+            await RefreshFriends();
+
+            BulkActionStatus = "Select friends to unfriend (0 selected)";
+        }
+
+        [RelayCommand]
+        private void CancelBulkUnfriend()
+        {
+            IsBulkMode = false;
+            ClearAllSelections();
+            BulkActionStatus = "";
+
+            ResumePresenceTimer();
+        }
+
+        [RelayCommand(CanExecute = nameof(CanExecuteBulkUnfriend))]
+        private async Task ExecuteBulkUnfriend()
+        {
+            const string LOG_IDENT_BULK_UNFRIEND = $"{LOG_IDENT}::ExecuteBulkUnfriend";
+
+            if (SelectedFriendsCount == 0)
+                return;
+
+            try
+            {
+                IsUnfriending = true;
+                BulkActionStatus = $"Unfriending {SelectedFriendsCount} friends...";
+
+                var activeUserId = AccountsViewModel.GetActiveUserId();
+                if (activeUserId == null)
+                {
+                    BulkActionStatus = "No active account";
+                    IsUnfriending = false;
+                    return;
+                }
+
+                var activeAccount = Manager.ActiveAccount;
+                if (activeAccount == null)
+                {
+                    BulkActionStatus = "No active account";
+                    IsUnfriending = false;
+                    return;
+                }
+
+                string? cookie = Manager.GetRoblosecurityForUser(activeAccount.UserId);
+                if (string.IsNullOrEmpty(cookie))
+                {
+                    BulkActionStatus = "Authentication required";
+                    IsUnfriending = false;
+                    return;
+                }
+
+                var result = Frontend.ShowMessageBox(
+                    $"Are you sure you want to unfriend {SelectedFriendsCount} friend(s)?\n\nThis action cannot be undone.",
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.YesNo
+                );
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    BulkActionStatus = "Cancelled";
+                    IsUnfriending = false;
+                    return;
+                }
+
+                int successful = 0;
+                int failed = 0;
+                int current = 0;
+
+                foreach (var friend in SelectedFriends.ToList())
+                {
+                    current++;
+                    BulkActionStatus = $"Processing {current}/{SelectedFriendsCount}: {friend.DisplayName}";
+
+                    bool success = await UnfriendSingleUserAsync(activeAccount.UserId, friend.Id, cookie);
+
+                    if (success)
+                    {
+                        successful++;
+                    }
+                    else
+                    {
+                        failed++;
+                    }
+
+                    await Task.Delay(500);
+                }
+
+                ClearAllSelections();
+
+                await RefreshFriends();
+
+                BulkActionStatus = $"Completed: {successful} successful, {failed} failed";
+
+                if (successful > 0)
+                {
+                    await Task.Delay(2000);
+                    IsBulkMode = false;
+                    BulkActionStatus = "";
+                    ResumePresenceTimer();
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT_BULK_UNFRIEND, $"Exception: {ex.Message}");
+                BulkActionStatus = $"Error: {ex.Message}";
+            }
+            finally
+            {
+                IsUnfriending = false;
+            }
+        }
+
+        [RelayCommand]
+        private void ToggleFriendSelection(FriendInfo friend)
+        {
+            if (!IsBulkMode || friend == null) return;
+
+            friend.IsSelected = friend.IsSelected;
+
+            var mainFriend = Friends.FirstOrDefault(f => f.Id == friend.Id);
+            if (mainFriend != null)
+            {
+                mainFriend.IsSelected = friend.IsSelected;
+            }
+
+            UpdateSelectionsFromFriends();
+        }
+
+        private bool CanExecuteBulkUnfriend() => SelectedFriendsCount > 0 && !IsUnfriending && !IsRefreshing;
+
+        [RelayCommand]
+        private async Task ToggleSelectAll()
+        {
+            if (!IsBulkMode || !FilteredFriends.Any())
+                return;
+
+            var allSelected = FilteredFriends.All(f => f.IsSelected);
+
+            if (!allSelected)
+            {
+                var result = Frontend.ShowMessageBox(
+                    $"Are you sure you want to select all {FilteredFriends.Count} friends?",
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo
+                );
+
+                if (result != MessageBoxResult.Yes)
+                    return;
+
+                foreach (var friend in FilteredFriends)
+                {
+                    friend.IsSelected = true;
+                }
+            }
+            else
+            {
+                foreach (var friend in FilteredFriends)
+                {
+                    friend.IsSelected = false;
+                }
+            }
+
+            UpdateSelectionsFromFriends();
+
+            OnPropertyChanged(nameof(FilteredFriends));
         }
 
         private async Task CheckForAccountChangeAsync()

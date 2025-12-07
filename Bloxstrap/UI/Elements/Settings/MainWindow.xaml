@@ -61,13 +61,13 @@
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" IconSize="20" Tag="fastflags" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" PageType="{x:Type pages:AppearancePage}" Icon="PaintBrush24" IconSize="20" Tag="appearance" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" PageType="{x:Type pages:RegionSelectorPage}" Icon="Earth24" IconSize="20" Tag="regionselector" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" PageType="{x:Type pages:RobloxSettingsPage}" Icon="SquareHintApps24" IconSize="20" Tag="RobloxSettings" FontWeight="Medium" x:Name="gbs" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" PageType="{x:Type pages:RobloxSettingsPage}" Icon="SquareHintApps24" IconSize="20" Tag="robloxsettings" FontWeight="Medium" x:Name="gbs" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Common_Shortcuts}" PageType="{x:Type pages:ShortcutsPage}" Icon="Apps28" IconSize="20" Tag="shortcuts" FontWeight="Medium" />
 
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="EditSettings20" IconSize="20" Tag="fastflagEditor" FontWeight="Medium" Visibility="Collapsed" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="EditSettings20" IconSize="20" Tag="fastflageditor" FontWeight="Medium" Visibility="Collapsed" />
                 </ui:NavigationCompact.Items>
                 <ui:NavigationCompact.Footer>
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" PageType="{x:Type pages:AccountManagerPage}" Icon="People24" IconSize="20" Tag="altmanager" FontWeight="Medium" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" Icon="People24" IconSize="20" Tag="accountmanager"  Command="{Binding OpenAccountManagerCommand, Mode=OneTime}" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Common_Settings}" PageType="{x:Type pages:ChannelPage}" Icon="Settings20" IconSize="20" Tag="channel" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_About_Title}" Icon="WeatherSnowflake48" IconSize="21" Margin="0,0,0,12" Command="{Binding OpenAboutCommand, Mode=OneTime}" FontWeight="Medium" />
                 </ui:NavigationCompact.Footer>

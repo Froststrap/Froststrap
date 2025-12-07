@@ -337,7 +337,7 @@ namespace Bloxstrap.Integrations
             return $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request={requestType}&placeId={placeId}{jobSegment}{teleportSegment}";
         }
 
-        private async Task<string?> GetCsrfTokenAsync(string securityCookie)
+        public async Task<string?> GetCsrfTokenAsync(string securityCookie)
         {
             const string LOG_IDENT_CSRF = $"{LOG_IDENT}::GetCsrfToken";
 

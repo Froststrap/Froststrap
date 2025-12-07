@@ -36,6 +36,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                     App.State.Prop.TestModeWarningShown = true;
                 }
+
                 App.LaunchSettings.TestModeFlag.Active = value;
             }
         }
@@ -95,10 +96,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             SaveSettings();
             if (!App.LaunchSettings.TestModeFlag.Active) // test mode already launches an instance
-                if (App.Settings.Prop.SaveAndLaunchMode == SaveAndLaunch.RobloxStudio)
-                    LaunchHandler.LaunchRoblox(LaunchMode.Studio);
-                else if (App.Settings.Prop.SaveAndLaunchMode == SaveAndLaunch.RobloxPlayer)
-                    LaunchHandler.LaunchRoblox(LaunchMode.Player);
+                LaunchHandler.LaunchRoblox(LaunchMode.Player);
 
             App.FrostRPC?.Dispose();
             CloseWindow();
@@ -119,7 +117,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             Process.Start(startInfo);
 
-            Application.Current.Shutdown();
+            App.FrostRPC?.Dispose();
+            CloseWindow();
         }
     }
 }
