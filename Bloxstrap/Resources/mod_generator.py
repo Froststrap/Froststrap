@@ -95,12 +95,8 @@ def convert_ttf_to_colr(file_path, rgb_color):
 
     try:
         input_path = Path(file_path)
-
-        script_dir = Path(__file__).resolve().parent
-
-        output_filename = input_path.with_suffix(".otf").name
-
-        output_path = script_dir / output_filename
+        
+        output_path = input_path.with_suffix(".otf")
 
         print(f"Processing: {input_path.name} -> COLR ({r},{g},{b})")
 
@@ -138,7 +134,14 @@ def convert_ttf_to_colr(file_path, rgb_color):
 
         # Save
         font.save(output_path)
-        print(f" -> Success! Saved to: {output_path}")
+        print(f" -> Success! Saved OTF to: {output_path}")
+        
+        # Delete original TTF file
+        try:
+            os.remove(input_path)
+            print(f" -> Deleted original TTF: {input_path.name}")
+        except Exception as e:
+            print(f" -> Warning: Could not delete TTF file: {e}")
 
     except Exception as e:
         print(f" -> Error processing {file_path}: {e}")
@@ -184,17 +187,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    final_color = None
-
-    if args.color:
-        try:
-            final_color = hex_to_rgb(args.color)
-        except ValueError as e:ok 
-            print(f"Argument Error: {e}")
-            sys.exit(1)
-    else:
-        # Launch Interactive Menu
-        final_color = get_user_color_choice()
-
+    try:
+        final_color = hex_to_rgb(args.color)
+    except ValueError as e:
+        print(f"Argument Error: {e}")
+        sys.exit(1)
+    
     # Run Process
     process_directory(args.path, final_color)

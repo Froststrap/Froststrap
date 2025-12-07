@@ -472,9 +472,49 @@
                             <TextBlock
                                 x:Name="FontRenderStatusText"
                                 Margin="12,4,0,0"
-                                VerticalAlignment="Center"
+                                TextWrapping="Wrap"
                                 Foreground="{StaticResource TextFillColorTertiaryBrush}" />
                         </StackPanel>
+
+                        <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="13"
+                        Text="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions}" />
+                        <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                            <CheckBox
+                            x:Name="CursorsCheckBox"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Cursor}" />
+                            <CheckBox
+                            x:Name="ShiftlockCheckBox"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Shiftlock}" />
+                            <CheckBox
+                            x:Name="VoiceChatCheckBox"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_VoiceChat}" />
+                            <CheckBox
+                            x:Name="EmoteWheelCheckBox"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_EmoteWheel}" />
+                        </StackPanel>
+
+                        <StackPanel
+                        Margin="0,0,0,8"
+                        HorizontalAlignment="Left"
+                        Orientation="Horizontal">
+                            <Button
+                            x:Name="GenerateModButton"
+                            Click="ModGenerator_Click"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_GenerateMod}" />
+                            <CheckBox
+                            x:Name="IncludeModificationsCheckBox"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_CopyToModsFolder}" />
+                        </StackPanel>
+
+                        <TextBlock
+                        x:Name="DownloadStatusText"
+                        Margin="0,6,0,0"
+                        FontWeight="Bold"
+                        TextWrapping="Wrap" />
 
                     </StackPanel>
                 </Grid>

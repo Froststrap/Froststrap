@@ -10,7 +10,6 @@ using System.Windows.Media.Imaging;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Shell;
-using static Bloxstrap.UI.Elements.Settings.Pages.ModsPage;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
@@ -308,7 +307,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 });
         }
 
-        #region Custom Cursor Set Related Code
+        #region Custom Cursor Set
         public ObservableCollection<CustomCursorSet> CustomCursorSets { get; } = new();
 
         private int _selectedCustomCursorSetIndex;
@@ -377,9 +376,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             NotifyCursorVisibilities();
         }
-        #endregion
 
-        #region Button Logic
         private void LoadCustomCursorSets()
         {
             CustomCursorSets.Clear();
@@ -891,9 +888,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(ChooseCustomCursorVisibility));
             OnPropertyChanged(nameof(DeleteCustomCursorVisibility));
         }
-#endregion
 
-        #region Preview Images
         private void UpdateCursorPathProperty(string fileName, string path)
         {
             switch (fileName)
@@ -1075,9 +1070,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 return null!;
             }
         }
-#endregion
 
-        #region Button Visibility
         public Visibility AddShiftlockCursorVisibility => GetCursorAddVisibility("MouseLockedCursor.png");
         public Visibility DeleteShiftlockCursorVisibility => GetCursorDeleteVisibility("MouseLockedCursor.png");
         public Visibility AddArrowCursorVisibility => GetCursorAddVisibility("ArrowCursor.png");

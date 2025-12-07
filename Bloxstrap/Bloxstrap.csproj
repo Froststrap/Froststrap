@@ -38,6 +38,7 @@
     <EmbeddedResource Include="Resources\FroststrapPowerPlans\FroststrapLowLatency.pow" />
     <EmbeddedResource Include="Resources\FroststrapPowerPlans\FroststrapMaximumFPS.pow" />
     <EmbeddedResource Include="Resources\mappings.json" />
+    <EmbeddedResource Include="Resources\mod_generator.py" />
     <EmbeddedResource Include="Resources\PreviewForMod.png" />
     <EmbeddedResource Include="UI\Style\Editor-Theme-Blue.xshd" />
     <EmbeddedResource Include="UI\Style\Editor-Theme-Custom.xshd" />
