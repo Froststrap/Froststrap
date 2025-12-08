@@ -417,29 +417,6 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Margin="0,0,0,12">
-
-                        <TextBlock
-                            Margin="0,0,0,8"
-                            FontSize="14"
-                            Text="{x:Static resources:Strings.Menu_Mods_ModGenerator_SheetPreview}" />
-
-                        <Border
-                            Padding="8"
-                            Background="{DynamicResource NormalDarkAndLightBackground}"
-                            CornerRadius="8">
-
-                            <ScrollViewer
-                                Height="360"
-                                HorizontalScrollBarVisibility="Auto"
-                                VerticalScrollBarVisibility="Auto">
-
-                                <Image
-                                    x:Name="FontPreview"
-                                    RenderOptions.BitmapScalingMode="HighQuality"
-                                    Stretch="Uniform" />
-                            </ScrollViewer>
-                        </Border>
-
                         <StackPanel
                             Orientation="Horizontal"
                             Margin="0,8,0,0"
@@ -462,18 +439,6 @@
                                 x:Name="ChangeColorButton"
                                 Click="OnChangeSolidColor_Click"
                                 Content="{x:Static resources:Strings.Common_Color}" />
-
-                            <ui:Button
-                                x:Name="RenderFromDownloadedZipButton"
-                                Margin="12,0,0,0"
-                                Click="RenderFromDownloadedZipButton_Click"
-                                Content="Render glyphs from downloaded luapackages" />
-
-                            <TextBlock
-                                x:Name="FontRenderStatusText"
-                                Margin="12,4,0,0"
-                                TextWrapping="Wrap"
-                                Foreground="{StaticResource TextFillColorTertiaryBrush}" />
                         </StackPanel>
 
                         <TextBlock

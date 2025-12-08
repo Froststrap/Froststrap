@@ -134,14 +134,7 @@ def convert_ttf_to_colr(file_path, rgb_color):
 
         # Save
         font.save(output_path)
-        print(f" -> Success! Saved OTF to: {output_path}")
-        
-        # Delete original TTF file
-        try:
-            os.remove(input_path)
-            print(f" -> Deleted original TTF: {input_path.name}")
-        except Exception as e:
-            print(f" -> Warning: Could not delete TTF file: {e}")
+        print(f" -> Success! Saved to: {output_path}")
 
     except Exception as e:
         print(f" -> Error processing {file_path}: {e}")
@@ -187,11 +180,17 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    try:
-        final_color = hex_to_rgb(args.color)
-    except ValueError as e:
-        print(f"Argument Error: {e}")
-        sys.exit(1)
+    final_color = None
+
+    if args.color:
+        try:
+            final_color = hex_to_rgb(args.color)
+        except ValueError as e:
+            print(f"Argument Error: {e}")
+            sys.exit(1)
+    else:
+        # Launch Interactive Menu
+        final_color = get_user_color_choice()
     
     # Run Process
     process_directory(args.path, final_color)
