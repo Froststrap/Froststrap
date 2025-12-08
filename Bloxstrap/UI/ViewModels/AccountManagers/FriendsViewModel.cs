@@ -27,8 +27,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         public bool IsSelected { get; set; }
     }
 
-    public record PlaceDetails(string name, string builder, bool hasVerifiedBadge, long universeId);
-
     public class FriendData
     {
         public long Id { get; set; }

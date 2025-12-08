@@ -18,12 +18,9 @@ using CommunityToolkit.Mvvm.Input;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.Text.Json;
-using System.Threading;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
