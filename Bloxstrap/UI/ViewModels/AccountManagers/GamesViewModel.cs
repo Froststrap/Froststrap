@@ -1631,10 +1631,19 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [RelayCommand]
         private async Task JoinPrivateServer(string accessCode)
         {
+            const string LOG_IDENT_JOIN = $"{LOG_IDENT}::JoinPrivateServer";
+
             try
             {
                 if (string.IsNullOrWhiteSpace(accessCode))
                     return;
+
+                var mgr = AccountManager.Shared;
+                if (mgr?.ActiveAccount is null)
+                {
+                    Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                    return;
+                }
 
                 if (!long.TryParse(PlaceId, out long placeId) || placeId == 0)
                 {
@@ -1642,22 +1651,15 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     return;
                 }
 
-                var uri = $"roblox://experiences/start?placeId={placeId}&accessCode={Uri.EscapeDataString(accessCode)}";
+                PlaceId = placeId.ToString();
+                mgr.SetCurrentPlaceId(PlaceId);
+                mgr.SetCurrentServerInstanceId(accessCode);
 
-                try
-                {
-                    var psi = new ProcessStartInfo(uri) { UseShellExecute = true };
-                    Process.Start(psi);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine($"{LOG_IDENT}::JoinPrivateServer::LaunchUri", $"Failed to launch roblox uri: {ex.Message}");
-                    Frontend.ShowMessageBox("Failed to launch Roblox. Make sure Roblox is installed and the roblox:// protocol is registered.", MessageBoxImage.Error);
-                }
+                await mgr.LaunchAccountToPlaceAsync(mgr.ActiveAccount, placeId, accessCode);
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine($"{LOG_IDENT}::JoinPrivateServer", $"Exception: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT_JOIN, $"Exception: {ex.Message}");
                 Frontend.ShowMessageBox($"Failed to join server: {ex.Message}", MessageBoxImage.Error);
             }
             finally

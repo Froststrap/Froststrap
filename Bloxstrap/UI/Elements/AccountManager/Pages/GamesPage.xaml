@@ -642,7 +642,7 @@
         <Grid
             x:Name="PrivateServersModal"
             Panel.ZIndex="1100"
-            Visibility="Collapsed">
+            Visibility="{Binding IsPrivateServersModalOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Border Background="#A0000000" />
 
             <Border
