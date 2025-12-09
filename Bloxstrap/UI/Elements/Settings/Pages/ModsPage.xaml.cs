@@ -13,6 +13,7 @@
 
 using Bloxstrap.Integrations;
 using Bloxstrap.UI.ViewModels.Settings;
+using Microsoft.Win32;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.IO.Compression;
@@ -33,7 +34,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             InitializeComponent();
 
             ViewModel = new ModsViewModel();
-            DataContext = this;
+            DataContext = ViewModel;
 
             IncludeModificationsCheckBox.IsChecked = true;
 
@@ -353,10 +354,28 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     }
 
                     DownloadStatusText.Text = $"Mod generation completed! Copied {copiedFiles} files to Modifications folder.";
+                    App.Logger?.WriteLine(LOG_IDENT, $"Copied {copiedFiles} files to {Paths.Modifications}");
                 }
                 else
                 {
-                    DownloadStatusText.Text = "Mod generation completed!";
+                    var saveDialog = new SaveFileDialog
+                    {
+                        FileName = "FroststrapMod.zip",
+                        Filter = "ZIP Archives (*.zip)|*.zip",
+                        Title = "FroststrapMod"
+                    };
+
+                    if (saveDialog.ShowDialog() == true)
+                    {
+                        ModGenerator.ZipResult(froststrapTemp, saveDialog.FileName);
+                        DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
+                        App.Logger?.WriteLine(LOG_IDENT, $"Mod zip created at {saveDialog.FileName}");
+                    }
+                    else
+                    {
+                        DownloadStatusText.Text = "Save cancelled by user.";
+                        App.Logger?.WriteLine(LOG_IDENT, "User cancelled save dialog.");
+                    }
                 }
 
                 App.Logger?.WriteLine(LOG_IDENT, $"Mod generation finished in {overallSw.Elapsed.TotalSeconds:0.00}s");
