@@ -11,16 +11,16 @@
  *               of the Nix ecosystem. 
  */
 
-
 using Bloxstrap.Integrations;
-using Bloxstrap.RobloxInterfaces;
 using Bloxstrap.UI.ViewModels.Settings;
-using Microsoft.Win32;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.IO.Compression;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using Color = System.Drawing.Color;
 
 namespace Bloxstrap.UI.Elements.Settings.Pages
 {
@@ -28,18 +28,43 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
     {
         private ModsViewModel ViewModel;
         private Color _solidColor = Color.White;
-
         public ModsPage()
         {
             InitializeComponent();
 
             ViewModel = new ModsViewModel();
-            DataContext = ViewModel;
+            DataContext = this;
 
             IncludeModificationsCheckBox.IsChecked = true;
 
-            // initialize controls state
             SolidColorTextBox.Text = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+            LoadFontFiles();
+        }
+
+        private string[] _fontFiles = Array.Empty<string>();
+
+        private async void LoadFontFiles()
+        {
+            string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+            string fontDir = Path.Combine(froststrapTemp, @"LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
+            if (!Directory.Exists(fontDir))
+                return;
+
+            _fontFiles = Directory.GetFiles(fontDir, "*.ttf");
+            FontSelectorComboBox.ItemsSource = _fontFiles.Select(f => Path.GetFileName(f));
+
+            if (_fontFiles.Length > 0)
+                FontSelectorComboBox.SelectedIndex = 0;
+        }
+
+        private async void FontSelectorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (FontSelectorComboBox.SelectedIndex < 0 || FontSelectorComboBox.SelectedIndex >= _fontFiles.Length)
+                return;
+
+            string selectedFont = _fontFiles[FontSelectorComboBox.SelectedIndex];
+            await LoadGlyphPreviewsAsync(selectedFont);
         }
 
         private async void ModGenerator_Click(object sender, RoutedEventArgs e)
@@ -319,47 +344,26 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     int copiedFiles = 0;
                     foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
                     {
-                        if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
-                            continue;
-
                         string relativePath = Path.GetRelativePath(froststrapTemp, file);
-                        string destPath = Path.Combine(Paths.Modifications, relativePath);
-                        Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
-                        File.Copy(file, destPath, overwrite: true);
+                        string targetPath = Path.Combine(Paths.Modifications, relativePath);
+
+                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+                        File.Copy(file, targetPath, overwrite: true);
                         copiedFiles++;
                     }
 
-                    DownloadStatusText.Text = $"Mod files copied to {Paths.Modifications}";
-                    App.Logger?.WriteLine(LOG_IDENT, $"Copied {copiedFiles} files to {Paths.Modifications}");
+                    DownloadStatusText.Text = $"Mod generation completed! Copied {copiedFiles} files to Modifications folder.";
                 }
                 else
                 {
-                    var saveDialog = new SaveFileDialog
-                    {
-                        FileName = "FroststrapMod.zip",
-                        Filter = "ZIP Archives (*.zip)|*.zip",
-                        Title = "FroststrapMod"
-                    };
-
-                    if (saveDialog.ShowDialog() == true)
-                    {
-                        ModGenerator.ZipResult(froststrapTemp, saveDialog.FileName);
-                        DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
-                        App.Logger?.WriteLine(LOG_IDENT, $"Mod zip created at {saveDialog.FileName}");
-                    }
-                    else
-                    {
-                        DownloadStatusText.Text = "Save cancelled by user.";
-                        App.Logger?.WriteLine(LOG_IDENT, "User cancelled save dialog.");
-                    }
+                    DownloadStatusText.Text = "Mod generation completed!";
                 }
 
-                overallSw.Stop();
-                App.Logger?.WriteLine(LOG_IDENT, $"Mod generation completed successfully in {overallSw.ElapsedMilliseconds} ms.");
+                App.Logger?.WriteLine(LOG_IDENT, $"Mod generation finished in {overallSw.Elapsed.TotalSeconds:0.00}s");
             }
             catch (Exception ex)
             {
-                DownloadStatusText.Text = $"Error: {ex.Message}";
+                DownloadStatusText.Text = $"Mod generation failed: {ex.Message}";
                 App.Logger?.WriteException(LOG_IDENT, ex);
             }
             finally
@@ -368,24 +372,23 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             }
         }
 
-        // Update color from textbox (basic, tolerant)
         private void OnSolidColorChanged(object sender, TextChangedEventArgs e)
         {
             try
             {
                 string hex = SolidColorTextBox.Text.Trim();
                 if (!hex.StartsWith("#")) hex = "#" + hex;
-                // allow 6 or 8 digit hex
+
                 var col = ColorTranslator.FromHtml(hex);
                 _solidColor = col;
+
             }
             catch
             {
-                // ignore invalid input until user provides valid value
+                // ignore invalid input
             }
         }
 
-        // I hate python so much
         private async void OnChangeSolidColor_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new System.Windows.Forms.ColorDialog
@@ -399,8 +402,86 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 return;
 
             _solidColor = dlg.Color;
-            string hexColorString = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
-            SolidColorTextBox.Text = hexColorString;
+            SolidColorTextBox.Text = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+        }
+
+        private async Task LoadGlyphPreviewsAsync(string fontPath)
+        {
+            const string LOG_IDENT = "UI::LoadGlyphPreviewAsync";
+            App.Logger?.WriteLine(LOG_IDENT, $"Loading glyph previews for font: {fontPath}");
+
+            var glyphGeometries = new ConcurrentBag<Geometry>();
+            var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 4);
+
+            try
+            {
+                var typeface = new GlyphTypeface(new Uri(fontPath));
+                var tasks = typeface.CharacterToGlyphMap.Values.Select(async glyphIndex =>
+                {
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                        var geometry = typeface.GetGlyphOutline(glyphIndex, 40, 40);
+
+                        var bounds = geometry.Bounds;
+                        var translate = new TranslateTransform(
+                            (50 - bounds.Width) / 2 - bounds.X,
+                            (50 - bounds.Height) / 2 - bounds.Y
+                        );
+                        geometry.Transform = translate;
+
+                        glyphGeometries.Add(geometry);
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
+
+                await Task.WhenAll(tasks);
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    GlyphGrid.ItemsSource = glyphGeometries;
+                });
+
+                App.Logger?.WriteLine(LOG_IDENT, $"Loaded {glyphGeometries.Count} glyph previews.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        private async void LoadGlyphsButton_Click(object sender, RoutedEventArgs e)
+        {
+            const string LOG_IDENT = "UI::LoadGlyphsButton";
+            try
+            {
+                string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+                string fontDir = Path.Combine(froststrapTemp, @"LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
+                if (!Directory.Exists(fontDir))
+                {
+                    App.Logger?.WriteLine(LOG_IDENT, $"Font directory not found: {fontDir}");
+                    return;
+                }
+
+                var fontFiles = Directory.GetFiles(fontDir, "*.ttf");
+                if (fontFiles.Length == 0)
+                {
+                    App.Logger?.WriteLine(LOG_IDENT, "No .ttf font files found in font directory.");
+                    return;
+                }
+
+                string fontFile = fontFiles.First();
+                await LoadGlyphPreviewsAsync(fontFile);
+                App.Logger?.WriteLine(LOG_IDENT, $"Glyphs loaded from {fontFile}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException(LOG_IDENT, ex);
+            }
         }
     }
 }

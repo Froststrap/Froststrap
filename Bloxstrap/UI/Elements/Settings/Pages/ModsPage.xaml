@@ -441,6 +441,51 @@
                                 Content="{x:Static resources:Strings.Common_Color}" />
                         </StackPanel>
 
+                        <!-- Glyph Preview -->
+                        <TextBlock
+                          Margin="0,12,0,4"
+                          FontWeight="Bold"
+                          Text="Font Preview" />
+
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <ui:Button
+                                Content="Load Glyphs"
+                                Margin="0,8,8,0" 
+                                Width="120"
+                                Click="LoadGlyphsButton_Click" />
+
+                            <ComboBox 
+                                x:Name="FontSelectorComboBox" 
+                                Width="200" 
+                                SelectionChanged="FontSelectorComboBox_SelectionChanged"/>
+                        </StackPanel>
+
+                        <ScrollViewer Height="260" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="GlyphGrid">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="52" Height="52" Margin="4"
+                                            Padding="4"
+                                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                            BorderThickness="1"
+                                            CornerRadius="6">
+                                            <Viewbox Stretch="Uniform">
+                                                <Path Data="{Binding}" 
+                                                  Fill="White"/>
+                                            </Viewbox>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
                         <TextBlock
                         Margin="0,0,0,8"
                         FontSize="13"
