@@ -110,7 +110,7 @@
         <TabControl Margin="0,16,0,0">
 
             <!-- PRESET MOD TAB -->
-            <TabItem FontWeight="Bold" Header="Preset Mod">
+            <TabItem Header="Preset Mod">
                 <StackPanel Margin="8">
 
                     <!-- Header -->
@@ -336,13 +336,14 @@
                                         Grid.Column="0"
                                         Margin="0,8,4,0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
                                         <ui:Button
                                             Grid.Column="0"
                                             Height="32"
+                                            HorizontalAlignment="Stretch"
                                             Margin="0,0,4,0"
                                             Command="{Binding AddCustomCursorSetCommand}"
                                             Content="{x:Static resources:Strings.Common_New}"
@@ -351,6 +352,7 @@
                                         <ui:Button
                                             Grid.Column="1"
                                             Height="32"
+                                            HorizontalAlignment="Stretch"
                                             Margin="4,0,0,0"
                                             Appearance="Danger"
                                             Command="{Binding DeleteCustomCursorSetCommand}"
@@ -406,7 +408,6 @@
 
             <!-- MOD GENERATOR TAB -->
             <TabItem
-                FontWeight="Bold"
                 Header="{x:Static resources:Strings.Menu_Mods_ModGenerator_Title}">
 
                 <Grid Margin="8,12">
@@ -416,41 +417,18 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <StackPanel Margin="0,0,0,12">
-                        <StackPanel
-                            Orientation="Horizontal"
-                            Margin="0,8,0,0"
-                            VerticalAlignment="Center">
-
-                            <TextBlock
-                                Margin="0,0,8,0"
-                                VerticalAlignment="Center"
-                                Text="Solid Color:" />
-
-                            <TextBox
-                                x:Name="SolidColorTextBox"
-                                Width="80"
-                                Margin="0,0,8,0"
-                                Text="#FFFFFF"
-                                VerticalContentAlignment="Center"
-                                TextChanged="OnSolidColorChanged" />
-
-                            <ui:Button
-                                x:Name="ChangeColorButton"
-                                Click="OnChangeSolidColor_Click"
-                                Content="{x:Static resources:Strings.Common_Color}" />
-                        </StackPanel>
-
+                    <StackPanel Margin="0,0,0,4">
                         <!-- Glyph Preview -->
                         <TextBlock
-                          Margin="0,12,0,4"
+                          Margin="0,0,0,4"
                           FontWeight="Bold"
+                          FontSize="20"
                           Text="Font Preview" />
 
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,8">
                             <ui:Button
                                 Content="Load Glyphs"
-                                Margin="0,8,8,0" 
+                                Margin="0,0,8,0" 
                                 Width="120"
                                 Click="LoadGlyphsButton_Click" />
 
@@ -477,8 +455,7 @@
                                             BorderThickness="1"
                                             CornerRadius="6">
                                             <Viewbox Stretch="Uniform">
-                                                <Path Data="{Binding}" 
-                                                  Fill="White"/>
+                                                <Path Data="{Binding Data}" Margin="0,0,10,8" Fill="{Binding ColorBrush}"/>
                                             </Viewbox>
                                         </Border>
                                     </DataTemplate>
@@ -486,38 +463,54 @@
                             </ItemsControl>
                         </ScrollViewer>
 
-                        <TextBlock
-                        Margin="0,0,0,8"
-                        FontSize="13"
-                        Text="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions}" />
-                        <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
-                            <CheckBox
-                            x:Name="CursorsCheckBox"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Cursor}" />
-                            <CheckBox
-                            x:Name="ShiftlockCheckBox"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Shiftlock}" />
-                            <CheckBox
-                            x:Name="VoiceChatCheckBox"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_VoiceChat}" />
-                            <CheckBox
-                            x:Name="EmoteWheelCheckBox"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_EmoteWheel}" />
-                        </StackPanel>
-
                         <StackPanel
-                        Margin="0,0,0,8"
+                        Margin="0,8"
                         HorizontalAlignment="Left"
                         Orientation="Horizontal">
                             <Button
                             x:Name="GenerateModButton"
                             Click="ModGenerator_Click"
                             Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_GenerateMod}" />
+
                             <CheckBox
                             x:Name="IncludeModificationsCheckBox"
                             Margin="8,0,0,0"
                             VerticalAlignment="Center"
                             Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_CopyToModsFolder}" />
+
+                            <TextBlock
+                                Margin="8,0"
+                                VerticalAlignment="Center"
+                                Text="Solid Color:" />
+
+                            <TextBox
+                                x:Name="SolidColorTextBox"
+                                Width="80"
+                                Margin="0,0,8,0"
+                                Text="#FFFFFF"
+                                VerticalContentAlignment="Center"
+                                TextChanged="OnSolidColorChanged" />
+
+                            <ui:Button
+                                x:Name="ChangeColorButton"
+                                Click="OnChangeSolidColor_Click"
+                                Content="{x:Static resources:Strings.Common_Color}" />
+
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
+                            <CheckBox
+                            x:Name="CursorsCheckBox" Margin="4,0"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Cursor}" />
+                            <CheckBox
+                            x:Name="ShiftlockCheckBox" Margin="4,0"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Shiftlock}" />
+                            <CheckBox
+                            x:Name="VoiceChatCheckBox" Margin="4,0"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_VoiceChat}" />
+                            <CheckBox
+                            x:Name="EmoteWheelCheckBox" Margin="4,0"
+                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_EmoteWheel}" />
                         </StackPanel>
 
                         <TextBlock

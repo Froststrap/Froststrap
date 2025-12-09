@@ -14,7 +14,7 @@
 using Bloxstrap.Integrations;
 using Bloxstrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
-using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO.Compression;
 using System.Reflection;
@@ -29,6 +29,8 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
     {
         private ModsViewModel ViewModel;
         private Color _solidColor = Color.White;
+        private List<GlyphItem> _glyphItems = new List<GlyphItem>();
+
         public ModsPage()
         {
             InitializeComponent();
@@ -47,12 +49,16 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
         private async void LoadFontFiles()
         {
             string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
-            string fontDir = Path.Combine(froststrapTemp, @"LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+            string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
 
             if (!Directory.Exists(fontDir))
                 return;
 
-            _fontFiles = Directory.GetFiles(fontDir, "*.ttf");
+            _fontFiles = Directory.GetFiles(fontDir)
+                .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                           f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
             FontSelectorComboBox.ItemsSource = _fontFiles.Select(f => Path.GetFileName(f));
 
             if (_fontFiles.Length > 0)
@@ -401,6 +407,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 var col = ColorTranslator.FromHtml(hex);
                 _solidColor = col;
 
+                UpdateGlyphColors();
             }
             catch
             {
@@ -422,6 +429,8 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
             _solidColor = dlg.Color;
             SolidColorTextBox.Text = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+
+            UpdateGlyphColors();
         }
 
         private async Task LoadGlyphPreviewsAsync(string fontPath)
@@ -429,17 +438,30 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             const string LOG_IDENT = "UI::LoadGlyphPreviewAsync";
             App.Logger?.WriteLine(LOG_IDENT, $"Loading glyph previews for font: {fontPath}");
 
-            var glyphGeometries = new ConcurrentBag<Geometry>();
+            var glyphItems = new List<GlyphItem>();
             var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 4);
+
+            // Create the initial brush
+            var colorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
+                _solidColor.A, _solidColor.R, _solidColor.G, _solidColor.B));
+            colorBrush.Freeze();
 
             try
             {
                 var typeface = new GlyphTypeface(new Uri(fontPath));
-                var tasks = typeface.CharacterToGlyphMap.Values.Select(async glyphIndex =>
+
+                // Get all character codes sorted in DESCENDING order using LINQ
+                var characterCodes = typeface.CharacterToGlyphMap.Keys
+                    .OrderByDescending(c => c)
+                    .ToList();
+
+                // Process in reverse sorted order
+                var tasks = characterCodes.Select(async characterCode =>
                 {
                     await semaphore.WaitAsync();
                     try
                     {
+                        var glyphIndex = typeface.CharacterToGlyphMap[characterCode];
                         var geometry = typeface.GetGlyphOutline(glyphIndex, 40, 40);
 
                         var bounds = geometry.Bounds;
@@ -449,7 +471,16 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                         );
                         geometry.Transform = translate;
 
-                        glyphGeometries.Add(geometry);
+                        var item = new GlyphItem
+                        {
+                            Data = geometry,
+                            ColorBrush = colorBrush
+                        };
+
+                        lock (glyphItems)
+                        {
+                            glyphItems.Add(item);
+                        }
                     }
                     finally
                     {
@@ -459,12 +490,14 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
                 await Task.WhenAll(tasks);
 
+                _glyphItems = glyphItems;
+
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    GlyphGrid.ItemsSource = glyphGeometries;
+                    GlyphGrid.ItemsSource = _glyphItems;
                 });
 
-                App.Logger?.WriteLine(LOG_IDENT, $"Loaded {glyphGeometries.Count} glyph previews.");
+                App.Logger?.WriteLine(LOG_IDENT, $"Loaded {_glyphItems.Count} glyph previews.");
             }
             catch (Exception ex)
             {
@@ -472,27 +505,61 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             }
         }
 
+        private void UpdateGlyphColors()
+        {
+            if (_glyphItems == null || _glyphItems.Count == 0)
+                return;
+
+            var newBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
+                _solidColor.A, _solidColor.R, _solidColor.G, _solidColor.B));
+            newBrush.Freeze();
+
+            foreach (var item in _glyphItems)
+            {
+                item.ColorBrush = newBrush;
+            }
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                var collection = GlyphGrid.ItemsSource as ICollectionView;
+                if (collection != null)
+                {
+                    collection.Refresh();
+                }
+                else
+                {
+                    GlyphGrid.ItemsSource = null;
+                    GlyphGrid.ItemsSource = _glyphItems;
+                }
+            });
+        }
+
         private async void LoadGlyphsButton_Click(object sender, RoutedEventArgs e)
         {
             const string LOG_IDENT = "UI::LoadGlyphsButton";
+
+            string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+            string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
+            if (!Directory.Exists(fontDir))
+            {
+                App.Logger?.WriteLine(LOG_IDENT, $"Font directory not found: {fontDir}");
+                return;
+            }
+
+            var fontFiles = Directory.GetFiles(fontDir)
+                .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                           f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            if (fontFiles.Length == 0)
+            {
+                App.Logger?.WriteLine(LOG_IDENT, "No .ttf or .otf font files found in font directory.");
+                return;
+            }
+
             try
             {
-                string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
-                string fontDir = Path.Combine(froststrapTemp, @"LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
-
-                if (!Directory.Exists(fontDir))
-                {
-                    App.Logger?.WriteLine(LOG_IDENT, $"Font directory not found: {fontDir}");
-                    return;
-                }
-
-                var fontFiles = Directory.GetFiles(fontDir, "*.ttf");
-                if (fontFiles.Length == 0)
-                {
-                    App.Logger?.WriteLine(LOG_IDENT, "No .ttf font files found in font directory.");
-                    return;
-                }
-
                 string fontFile = fontFiles.First();
                 await LoadGlyphPreviewsAsync(fontFile);
                 App.Logger?.WriteLine(LOG_IDENT, $"Glyphs loaded from {fontFile}");
@@ -502,5 +569,11 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 App.Logger?.WriteException(LOG_IDENT, ex);
             }
         }
+    }
+
+    public class GlyphItem
+    {
+        public Geometry Data { get; set; } = null!;
+        public SolidColorBrush ColorBrush { get; set; } = null!;
     }
 }
