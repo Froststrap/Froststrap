@@ -2064,7 +2064,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Pause Voxelizer</value>
   </data>
   <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
-    <value>Changes the game’s sky to a solid gray color. Note: This may not work in every game.</value>
+    <value>Changes the game’s sky to a solid gray color. Note: this will not work in games that have a custom skybox added by the developer.</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
     <value>Drag to adjust mesh detail for performance or quality.</value>

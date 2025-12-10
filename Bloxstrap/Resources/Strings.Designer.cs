@@ -4449,7 +4449,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changes the game’s sky to a solid gray color. Note: This may not work in every game..
+        ///   Looks up a localized string similar to Changes the game’s sky to a solid gray color. Note: this will not work in games that have a custom skybox added by the developer..
         /// </summary>
         public static string Menu_FastFlags_Presets_GraySky_Description {
             get {
