@@ -71,6 +71,13 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 return;
 
             string selectedFont = _fontFiles[FontSelectorComboBox.SelectedIndex];
+
+            if (!File.Exists(selectedFont))
+            {
+                App.Logger?.WriteLine("UI", $"Selected font file no longer exists: {selectedFont}");
+                return;
+            }
+
             await LoadGlyphPreviewsAsync(selectedFont);
         }
 
@@ -462,6 +469,26 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             const string LOG_IDENT = "UI::LoadGlyphPreviewAsync";
             App.Logger?.WriteLine(LOG_IDENT, $"Loading glyph previews for font: {fontPath}");
 
+            if (!File.Exists(fontPath))
+            {
+                App.Logger?.WriteLine(LOG_IDENT, $"Font file does not exist: {fontPath}");
+                return;
+            }
+
+            try
+            {
+                var fileInfo = new FileInfo(fontPath);
+                if (fileInfo.Length == 0)
+                {
+                    App.Logger?.WriteLine(LOG_IDENT, $"Font file is empty: {fontPath}");
+                    return;
+                }
+            }
+            catch
+            {
+                // If we can't check file info, continue anyway
+            }
+
             var glyphItems = new List<GlyphItem>();
             var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 4);
 
@@ -472,7 +499,16 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
             try
             {
-                var typeface = new GlyphTypeface(new Uri(fontPath));
+                GlyphTypeface typeface;
+                try
+                {
+                    typeface = new GlyphTypeface(new Uri(fontPath));
+                }
+                catch (Exception ex)
+                {
+                    App.Logger?.WriteLine(LOG_IDENT, $"Failed to create GlyphTypeface from {fontPath}: {ex.Message}");
+                    return;
+                }
 
                 // Get all character codes sorted in DESCENDING order using LINQ
                 var characterCodes = typeface.CharacterToGlyphMap.Keys
@@ -485,8 +521,21 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     await semaphore.WaitAsync();
                     try
                     {
-                        var glyphIndex = typeface.CharacterToGlyphMap[characterCode];
-                        var geometry = typeface.GetGlyphOutline(glyphIndex, 40, 40);
+                        if (!typeface.CharacterToGlyphMap.TryGetValue(characterCode, out ushort glyphIndex))
+                        {
+                            return;
+                        }
+
+                        Geometry geometry;
+                        try
+                        {
+                            geometry = typeface.GetGlyphOutline(glyphIndex, 40, 40);
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger?.WriteLine(LOG_IDENT, $"Failed to get glyph outline for character {characterCode}: {ex.Message}");
+                            return;
+                        }
 
                         var bounds = geometry.Bounds;
                         var translate = new TranslateTransform(
@@ -526,6 +575,11 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             catch (Exception ex)
             {
                 App.Logger?.WriteException(LOG_IDENT, ex);
+
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    GlyphGrid.ItemsSource = null;
+                });
             }
         }
 
