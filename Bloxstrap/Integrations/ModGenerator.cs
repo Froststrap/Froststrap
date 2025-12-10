@@ -66,7 +66,6 @@ namespace Bloxstrap.Integrations
 
                 try
                 {
-                    App.Logger?.WriteLine(LOG_IDENT, $"Recoloring '{relativePath}'");
                     SafeRecolorImage(fullPath, solidColor);
                 }
                 catch (Exception ex)
@@ -175,7 +174,14 @@ namespace Bloxstrap.Integrations
                 {
                     string arguments = $"--path \"{fontSourceDir}\" --color {hexColorArg}";
 
-                    var result = await PythonLauncher.ExecuteScriptAsync(tempScriptPath, arguments, Path.GetDirectoryName(tempScriptPath));
+                    string? workingDirectory = Path.GetDirectoryName(tempScriptPath);
+                    if (string.IsNullOrEmpty(workingDirectory))
+                    {
+                        workingDirectory = Environment.CurrentDirectory;
+                        App.Logger?.WriteLine(LOG_IDENT, $"Warning: Could not get directory from tempScriptPath, using current directory: {workingDirectory}");
+                    }
+
+                    var result = await PythonLauncher.ExecuteScriptAsync(tempScriptPath, arguments, workingDirectory);
 
                     if (!string.IsNullOrEmpty(result.Output))
                         App.Logger?.WriteLine(LOG_IDENT, $"Python output: {result.Output}");
@@ -395,7 +401,7 @@ namespace Bloxstrap.Integrations
 
         public static async Task<(string luaPackagesZip, string extraTexturesZip, string contentTexturesZip, string versionHash, string version)> DownloadForModGenerator(bool overwrite = false)
         {
-            const string LOG_IDENT = "Deployment::DownloadForModGenerator";
+            const string LOG_IDENT = "ModGenerator::DownloadForModGenerator";
 
             try
             {
@@ -411,6 +417,32 @@ namespace Bloxstrap.Integrations
                 // Base Froststrap temp folder
                 string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
                 Directory.CreateDirectory(froststrapTemp);
+
+                var allZipFiles = Directory.GetFiles(froststrapTemp, "*.zip");
+                int deletedCount = 0;
+
+                foreach (var zipFile in allZipFiles)
+                {
+                    string fileName = Path.GetFileName(zipFile);
+
+                    if (!fileName.Contains(versionHash))
+                    {
+                        try
+                        {
+                            File.Delete(zipFile);
+                            deletedCount++;
+                            App.Logger.WriteLine(LOG_IDENT, $"Deleted old zip file with different hash: {fileName}");
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete old zip file {fileName}: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Keeping zip file with current hash: {fileName}");
+                    }
+                }
 
                 // URLs
                 string luaPackagesUrl = $"https://setup.rbxcdn.com/version-{versionHash}-extracontent-luapackages.zip";

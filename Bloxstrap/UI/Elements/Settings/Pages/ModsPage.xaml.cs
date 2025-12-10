@@ -397,7 +397,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                                 }
                             }
 
-                            DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
+                            SetStatus($"Mod generated successfully! Saved to: {saveDialog.FileName}");
                             Log($"Mod zip created at {saveDialog.FileName}");
                         }
                         else
