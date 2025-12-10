@@ -360,6 +360,9 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                         int copiedFiles = 0;
                         foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
                         {
+                            if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                                continue;
+
                             string relativePath = Path.GetRelativePath(froststrapTemp, file);
                             string targetPath = Path.Combine(Paths.Modifications, relativePath);
 
@@ -373,27 +376,35 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     }
                     else
                     {
-                        App.Current.Dispatcher.Invoke(() =>
+                        var saveDialog = new SaveFileDialog
                         {
-                            var saveDialog = new SaveFileDialog
-                            {
-                                FileName = "FroststrapMod.zip",
-                                Filter = "ZIP Archives (*.zip)|*.zip",
-                                Title = "FroststrapMod"
-                            };
+                            FileName = "FroststrapMod.zip",
+                            Filter = "ZIP Archives (*.zip)|*.zip",
+                            Title = "FroststrapMod"
+                        };
 
-                            if (saveDialog.ShowDialog() == true)
+                        if (saveDialog.ShowDialog() == true)
+                        {
+                            using (var zip = new ZipArchive(new FileStream(saveDialog.FileName, FileMode.Create), ZipArchiveMode.Create))
                             {
-                                ModGenerator.ZipResult(froststrapTemp, saveDialog.FileName);
-                                DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
-                                Log($"Mod zip created at {saveDialog.FileName}");
+                                foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
+                                {
+                                    if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                                        continue;
+
+                                    string relativePath = Path.GetRelativePath(froststrapTemp, file);
+                                    zip.CreateEntryFromFile(file, relativePath);
+                                }
                             }
-                            else
-                            {
-                                DownloadStatusText.Text = "Save cancelled by user.";
-                                Log("User cancelled save dialog.");
-                            }
-                        });
+
+                            DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
+                            Log($"Mod zip created at {saveDialog.FileName}");
+                        }
+                        else
+                        {
+                            DownloadStatusText.Text = "Save cancelled by user.";
+                            Log("User cancelled save dialog.");
+                        }
                     }
 
                     Log($"Mod generation finished in {overallSw.Elapsed.TotalSeconds:0.00}s");
