@@ -80,320 +80,333 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             var overallSw = Stopwatch.StartNew();
 
             GenerateModButton.IsEnabled = false;
-
             DownloadStatusText.Text = "Starting mod generation...";
             App.Logger?.WriteLine(LOG_IDENT, "Mod generation started.");
 
+            bool colorCursors = CursorsCheckBox?.IsChecked == true;
+            bool colorShiftlock = ShiftlockCheckBox?.IsChecked == true;
+            bool colorEmoteWheel = EmoteWheelCheckBox?.IsChecked == true;
+            bool colorVoiceChat = VoiceChatCheckBox?.IsChecked == true;
+            bool includeModifications = IncludeModificationsCheckBox?.IsChecked == true;
+            var solidColor = _solidColor;
+
             try
             {
-                var (luaPackagesZip, extraTexturesZip, contentTexturesZip, versionHash, version) =
-                    await ModGenerator.DownloadForModGenerator();
-
-                App.Logger?.WriteLine(LOG_IDENT, $"DownloadForModGenerator returned. Version: {version} ({versionHash})");
-
-                string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
-
-                string luaPackagesDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages");
-                string extraTexturesDir = Path.Combine(froststrapTemp, "ExtraContent", "textures");
-                string contentTexturesDir = Path.Combine(froststrapTemp, "content", "textures");
-
-                void SafeExtract(string zipPath, string targetDir)
+                await Task.Run(async () =>
                 {
-                    if (Directory.Exists(targetDir))
+                    void SetStatus(string text) => App.Current.Dispatcher.Invoke(() => DownloadStatusText.Text = text);
+                    void Log(string text) => App.Logger?.WriteLine(LOG_IDENT, text);
+
+                    SetStatus("Downloading required packages...");
+                    var (luaPackagesZip, extraTexturesZip, contentTexturesZip, versionHash, version) =
+                        await ModGenerator.DownloadForModGenerator();
+
+                    Log($"DownloadForModGenerator returned. Version: {version} ({versionHash})");
+
+                    string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+
+                    string luaPackagesDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages");
+                    string extraTexturesDir = Path.Combine(froststrapTemp, "ExtraContent", "textures");
+                    string contentTexturesDir = Path.Combine(froststrapTemp, "content", "textures");
+
+                    void SafeExtract(string zipPath, string targetDir)
                     {
-                        try { Directory.Delete(targetDir, true); }
-                        catch (Exception ex)
+                        if (string.IsNullOrWhiteSpace(zipPath) || !File.Exists(zipPath))
+                            return;
+
+                        if (Directory.Exists(targetDir))
                         {
-                            App.Logger?.WriteException(LOG_IDENT, ex);
-                            throw;
-                        }
-                    }
-
-                    Directory.CreateDirectory(targetDir);
-
-                    using (var archive = ZipFile.OpenRead(zipPath))
-                    {
-                        foreach (var entry in archive.Entries)
-                        {
-                            if (string.IsNullOrEmpty(entry.FullName) || entry.FullName.EndsWith("/") || entry.FullName.EndsWith("\\"))
-                                continue;
-
-                            string destinationPath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
-
-                            if (!destinationPath.StartsWith(Path.GetFullPath(targetDir), StringComparison.OrdinalIgnoreCase))
-                                throw new IOException($"Entry {entry.FullName} is trying to extract outside of {targetDir}");
-
-                            Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
-                            entry.ExtractToFile(destinationPath, overwrite: true);
-                        }
-                    }
-                }
-
-                DownloadStatusText.Text = "Extracting ZIPs...";
-                App.Logger?.WriteLine(LOG_IDENT, "Extracting downloaded ZIPs...");
-
-                SafeExtract(luaPackagesZip, luaPackagesDir);
-                SafeExtract(extraTexturesZip, extraTexturesDir);
-                SafeExtract(contentTexturesZip, contentTexturesDir);
-
-                App.Logger?.WriteLine(LOG_IDENT, "Extraction complete.");
-
-                var assembly = Assembly.GetExecutingAssembly();
-                Dictionary<string, string[]> mappings;
-                using (var stream = assembly.GetManifestResourceStream("Bloxstrap.Resources.mappings.json"))
-                using (var reader = new StreamReader(stream!))
-                {
-                    string json = await reader.ReadToEndAsync();
-                    mappings = JsonSerializer.Deserialize<Dictionary<string, string[]>>(json)!;
-                }
-                App.Logger?.WriteLine(LOG_IDENT, $"Loaded mappings.json with {mappings.Count} top-level entries.");
-
-                DownloadStatusText.Text = "Recoloring images...";
-
-                bool colorCursors = CursorsCheckBox?.IsChecked == true;
-                bool colorShiftlock = ShiftlockCheckBox?.IsChecked == true;
-                bool colorEmoteWheel = EmoteWheelCheckBox?.IsChecked == true;
-                bool colorVoiceChat = VoiceChatCheckBox?.IsChecked == true;
-
-                App.Logger?.WriteLine(LOG_IDENT, $"Using solid color for recolor: {_solidColor}");
-
-                App.Logger?.WriteLine(LOG_IDENT, "Starting RecolorAllPngs...");
-                ModGenerator.RecolorAllPngs(froststrapTemp, _solidColor, colorCursors, colorShiftlock, colorEmoteWheel, colorVoiceChat);
-                App.Logger?.WriteLine(LOG_IDENT, "RecolorAllPngs finished.");
-
-                // you need to have python and install fonttools to recolor fonts
-                try
-                {
-                    DownloadStatusText.Text = "Recoloring fonts...";
-                    App.Logger?.WriteLine(LOG_IDENT, "Starting font recoloring...");
-
-                    await ModGenerator.RecolorFontsAsync(froststrapTemp, _solidColor);
-                    App.Logger?.WriteLine(LOG_IDENT, "Font recoloring finished.");
-
-                    ModGenerator.UpdateBuilderIconsJson(froststrapTemp);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger?.WriteException(LOG_IDENT, ex);
-                    DownloadStatusText.Text += "Font recoloring failed but continuing";
-                }
-
-                DownloadStatusText.Text = "Cleaning up unnecessary files...";
-                var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-                foreach (var entry in mappings.Values)
-                {
-                    string fullPath = Path.Combine(froststrapTemp, Path.Combine(entry));
-                    preservePaths.Add(fullPath);
-                }
-
-                preservePaths.Add(Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\BuilderIcons.json"));
-
-                string builderIconsFontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
-                if (Directory.Exists(builderIconsFontDir))
-                {
-                    preservePaths.Add(builderIconsFontDir);
-                    var fontFiles = Directory.GetFiles(builderIconsFontDir, "*.*");
-                    foreach (var fontFile in fontFiles)
-                    {
-                        preservePaths.Add(fontFile);
-                    }
-                }
-
-                if (colorCursors)
-                {
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\IBeamCursor.png"));
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowCursor.png"));
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowFarCursor.png"));
-                }
-
-                if (colorShiftlock)
-                {
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\MouseLockedCursor.png"));
-                }
-
-                if (colorEmoteWheel)
-                {
-                    string emotesDir = Path.Combine(froststrapTemp, @"content\textures\ui\Emotes\Large");
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@2x.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@3x.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedLine.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@2x.png"));
-                    preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@3x.png"));
-                }
-
-                if (colorVoiceChat)
-                {
-                    var voiceChatMappings = new Dictionary<string, (string BaseDir, string[] Files)>
-                    {
-                        ["VoiceChat"] = (
-                            @"content\textures\ui\VoiceChat",
-                            new[]
-                            {"Blank.png","Blank@2x.png","Blank@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png"}
-                        ),
-                        ["SpeakerNew"] = (
-                            @"content\textures\ui\VoiceChat\SpeakerNew",
-                            new[]
-                            {"Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png"}
-                        ),
-                        ["SpeakerLight"] = (
-                            @"content\textures\ui\VoiceChat\SpeakerLight",
-                            new[]
-                            {"Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png"}
-                        ),
-                        ["SpeakerDark"] = (
-                            @"content\textures\ui\VoiceChat\SpeakerDark",
-                            new[]
-                            {"Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png"}
-                        ),
-                        ["RedSpeakerLight"] = (
-                            @"content\textures\ui\VoiceChat\RedSpeakerLight",
-                            new[]
-                            {"Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png"}
-                        ),
-                        ["RedSpeakerDark"] = (
-                            @"content\textures\ui\VoiceChat\RedSpeakerDark",
-                            new[]
-                            {"Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png"}
-                        ),
-                        ["New"] = (
-                            @"content\textures\ui\VoiceChat\New",
-                            new[]
-                            {"Error.png","Error@2x.png","Error@3x.png", "Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Blank.png","Blank@2x.png","Blank@3x.png"}
-                        ),
-                        ["MicLight"] = (
-                            @"content\textures\ui\VoiceChat\MicLight",
-                            new[]
-                            {"Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png"}
-                        ),
-                        ["MicDark"] = (
-                            @"content\textures\ui\VoiceChat\MicDark",
-                            new[]
-                            {"Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png"}
-                        )
-                    };
-
-                    foreach (var mapping in voiceChatMappings.Values)
-                    {
-                        string baseDir = Path.Combine(froststrapTemp, mapping.BaseDir);
-                        foreach (var file in mapping.Files)
-                        {
-                            preservePaths.Add(Path.Combine(baseDir, file));
-                        }
-                    }
-                }
-
-                void DeleteExcept(string dir)
-                {
-                    foreach (var file in Directory.GetFiles(dir))
-                    {
-                        if (!preservePaths.Contains(file))
-                        {
-                            try { File.Delete(file); } catch { /* ignore */ }
-                        }
-                    }
-
-                    foreach (var subDir in Directory.GetDirectories(dir))
-                    {
-                        if (!preservePaths.Contains(subDir))
-                        {
-                            try
+                            try { Directory.Delete(targetDir, true); }
+                            catch (Exception ex)
                             {
-                                DeleteExcept(subDir);
-                                if (Directory.Exists(subDir) && !Directory.EnumerateFileSystemEntries(subDir).Any())
-                                    Directory.Delete(subDir);
+                                App.Logger?.WriteException(LOG_IDENT, ex);
+                                throw;
                             }
-                            catch { /* ignore */ }
+                        }
+
+                        Directory.CreateDirectory(targetDir);
+
+                        using (var archive = ZipFile.OpenRead(zipPath))
+                        {
+                            foreach (var entry in archive.Entries)
+                            {
+                                if (string.IsNullOrEmpty(entry.FullName) || entry.FullName.EndsWith("/") || entry.FullName.EndsWith("\\"))
+                                    continue;
+
+                                string destinationPath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
+
+                                if (!destinationPath.StartsWith(Path.GetFullPath(targetDir), StringComparison.OrdinalIgnoreCase))
+                                    throw new IOException($"Entry {entry.FullName} is trying to extract outside of {targetDir}");
+
+                                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
+                                entry.ExtractToFile(destinationPath, overwrite: true);
+                            }
                         }
                     }
-                }
 
-                var otfFiles = Directory.GetFiles(froststrapTemp, "*.otf", SearchOption.TopDirectoryOnly);
+                    SetStatus("Extracting ZIPs...");
+                    Log("Extracting downloaded ZIPs...");
 
-                foreach (var otfFile in otfFiles)
-                {
-                    File.Delete(otfFile);
-                }
+                    SafeExtract(luaPackagesZip, luaPackagesDir);
+                    SafeExtract(extraTexturesZip, extraTexturesDir);
+                    SafeExtract(contentTexturesZip, contentTexturesDir);
 
-                if (Directory.Exists(luaPackagesDir)) DeleteExcept(luaPackagesDir);
-                if (Directory.Exists(extraTexturesDir)) DeleteExcept(extraTexturesDir);
-                if (Directory.Exists(contentTexturesDir)) DeleteExcept(contentTexturesDir);
+                    Log("Extraction complete.");
 
-                string infoPath = Path.Combine(froststrapTemp, "info.json");
-                var infoData = new
-                {
-                    FroststrapVersion = App.Version,
-                    CreatedUsing = "Froststrap",
-                    RobloxVersion = version,
-                    RobloxVersionHash = versionHash,
-                    OptionsUsed = new
+                    var assembly = Assembly.GetExecutingAssembly();
+                    Dictionary<string, string[]> mappings;
+                    using (var stream = assembly.GetManifestResourceStream("Bloxstrap.Resources.mappings.json"))
+                    using (var reader = new StreamReader(stream!))
                     {
-                        ColorCursors = colorCursors,
-                        ColorShiftlock = colorShiftlock,
-                        ColorVoicechat = colorVoiceChat,
-                        ColorEmoteWheel = colorEmoteWheel,
-                    },
-                    ColorsUsed = new
-                    {
-                        SolidColor = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}"
+                        string json = await reader.ReadToEndAsync();
+                        mappings = JsonSerializer.Deserialize<Dictionary<string, string[]>>(json)!;
                     }
-                };
+                    Log($"Loaded mappings.json with {mappings.Count} top-level entries.");
 
-                string infoJson = JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true });
-                await File.WriteAllTextAsync(infoPath, infoJson);
+                    SetStatus("Recoloring images...");
 
-                if (IncludeModificationsCheckBox.IsChecked == true)
-                {
-                    if (!Directory.Exists(Paths.Modifications))
-                        Directory.CreateDirectory(Paths.Modifications);
+                    Log($"Using solid color for recolor: {solidColor}");
 
-                    int copiedFiles = 0;
-                    foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
+                    Log("Starting RecolorAllPngs...");
+                    ModGenerator.RecolorAllPngs(froststrapTemp, solidColor, colorCursors, colorShiftlock, colorEmoteWheel, colorVoiceChat);
+                    Log("RecolorAllPngs finished.");
+
+                    try
                     {
-                        string relativePath = Path.GetRelativePath(froststrapTemp, file);
-                        string targetPath = Path.Combine(Paths.Modifications, relativePath);
+                        SetStatus("Recoloring fonts...");
+                        Log("Starting font recoloring...");
 
-                        Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
-                        File.Copy(file, targetPath, overwrite: true);
-                        copiedFiles++;
+                        await ModGenerator.RecolorFontsAsync(froststrapTemp, solidColor);
+                        Log("Font recoloring finished.");
+
+                        ModGenerator.UpdateBuilderIconsJson(froststrapTemp);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger?.WriteException(LOG_IDENT, ex);
+                        SetStatus("Font recoloring failed but continuing");
                     }
 
-                    DownloadStatusText.Text = $"Mod generation completed! Copied {copiedFiles} files to Modifications folder.";
-                    App.Logger?.WriteLine(LOG_IDENT, $"Copied {copiedFiles} files to {Paths.Modifications}");
-                }
-                else
-                {
-                    var saveDialog = new SaveFileDialog
+                    SetStatus("Cleaning up unnecessary files...");
+                    var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var entry in mappings.Values)
                     {
-                        FileName = "FroststrapMod.zip",
-                        Filter = "ZIP Archives (*.zip)|*.zip",
-                        Title = "FroststrapMod"
+                        string fullPath = Path.Combine(froststrapTemp, Path.Combine(entry));
+                        preservePaths.Add(fullPath);
+                    }
+
+                    preservePaths.Add(Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\BuilderIcons.json"));
+
+                    string builderIconsFontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+                    if (Directory.Exists(builderIconsFontDir))
+                    {
+                        preservePaths.Add(builderIconsFontDir);
+                        var fontFiles = Directory.GetFiles(builderIconsFontDir, "*.*");
+                        foreach (var fontFile in fontFiles)
+                        {
+                            preservePaths.Add(fontFile);
+                        }
+                    }
+
+                    if (colorCursors)
+                    {
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\IBeamCursor.png"));
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowCursor.png"));
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowFarCursor.png"));
+                    }
+
+                    if (colorShiftlock)
+                    {
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\MouseLockedCursor.png"));
+                    }
+
+                    if (colorEmoteWheel)
+                    {
+                        string emotesDir = Path.Combine(froststrapTemp, @"content\textures\ui\Emotes\Large");
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@2x.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@3x.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedLine.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@2x.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@3x.png"));
+                    }
+
+                    if (colorVoiceChat)
+                    {
+                        var voiceChatMappings = new Dictionary<string, (string BaseDir, string[] Files)>
+                        {
+                            ["VoiceChat"] = (
+                                @"content\textures\ui\VoiceChat",
+                                new[]
+                                {"Blank.png","Blank@2x.png","Blank@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png"}
+                            ),
+                            ["SpeakerNew"] = (
+                                @"content\textures\ui\VoiceChat\SpeakerNew",
+                                new[]
+                                {"Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png"}
+                            ),
+                            ["SpeakerLight"] = (
+                                @"content\textures\ui\VoiceChat\SpeakerLight",
+                                new[]
+                                {"Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png"}
+                            ),
+                            ["SpeakerDark"] = (
+                                @"content\textures\ui\VoiceChat\SpeakerDark",
+                                new[]
+                                {"Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png"}
+                            ),
+                            ["RedSpeakerLight"] = (
+                                @"content\textures\ui\VoiceChat\RedSpeakerLight",
+                                new[]
+                                {"Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png"}
+                            ),
+                            ["RedSpeakerDark"] = (
+                                @"content\textures\ui\VoiceChat\RedSpeakerDark",
+                                new[]
+                                {"Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png"}
+                            ),
+                            ["New"] = (
+                                @"content\textures\ui\VoiceChat\New",
+                                new[]
+                                {"Error.png","Error@2x.png","Error@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Blank.png","Blank@2x.png","Blank@3x.png"}
+                            ),
+                            ["MicLight"] = (
+                                @"content\textures\ui\VoiceChat\MicLight",
+                                new[]
+                                {"Error.png","Error@2x.png","Error@3x.png","Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png"}
+                            ),
+                            ["MicDark"] = (
+                                @"content\textures\ui\VoiceChat\MicDark",
+                                new[]
+                                {"Muted.png","Muted@2x.png","Muted@3x.png","Unmuted0.png","Unmuted0@2x.png","Unmuted0@3x.png","Unmuted20.png","Unmuted20@2x.png","Unmuted20@3x.png","Unmuted40.png","Unmuted40@2x.png","Unmuted40@3x.png","Unmuted60.png","Unmuted60@2x.png","Unmuted60@3x.png","Unmuted80.png","Unmuted80@2x.png","Unmuted80@3x.png","Unmuted100.png","Unmuted100@2x.png","Unmuted100@3x.png","Error.png","Error@2x.png","Error@3x.png"}
+                            )
+                        };
+
+                        foreach (var mapping in voiceChatMappings.Values)
+                        {
+                            string baseDir = Path.Combine(froststrapTemp, mapping.BaseDir);
+                            foreach (var file in mapping.Files)
+                            {
+                                preservePaths.Add(Path.Combine(baseDir, file));
+                            }
+                        }
+                    }
+
+                    void DeleteExcept(string dir)
+                    {
+                        foreach (var file in Directory.GetFiles(dir))
+                        {
+                            if (!preservePaths.Contains(file))
+                            {
+                                try { File.Delete(file); } catch { /* ignore */ }
+                            }
+                        }
+
+                        foreach (var subDir in Directory.GetDirectories(dir))
+                        {
+                            if (!preservePaths.Contains(subDir))
+                            {
+                                try
+                                {
+                                    DeleteExcept(subDir);
+                                    if (Directory.Exists(subDir) && !Directory.EnumerateFileSystemEntries(subDir).Any())
+                                        Directory.Delete(subDir);
+                                }
+                                catch { /* ignore */ }
+                            }
+                        }
+                    }
+
+                    var otfFiles = Directory.GetFiles(froststrapTemp, "*.otf", SearchOption.TopDirectoryOnly);
+
+                    foreach (var otfFile in otfFiles)
+                    {
+                        File.Delete(otfFile);
+                    }
+
+                    if (Directory.Exists(luaPackagesDir)) DeleteExcept(luaPackagesDir);
+                    if (Directory.Exists(extraTexturesDir)) DeleteExcept(extraTexturesDir);
+                    if (Directory.Exists(contentTexturesDir)) DeleteExcept(contentTexturesDir);
+
+                    string infoPath = Path.Combine(froststrapTemp, "info.json");
+                    var infoData = new
+                    {
+                        FroststrapVersion = App.Version,
+                        CreatedUsing = "Froststrap",
+                        RobloxVersion = version,
+                        RobloxVersionHash = versionHash,
+                        OptionsUsed = new
+                        {
+                            ColorCursors = colorCursors,
+                            ColorShiftlock = colorShiftlock,
+                            ColorVoicechat = colorVoiceChat,
+                            ColorEmoteWheel = colorEmoteWheel,
+                        },
+                        ColorsUsed = new
+                        {
+                            SolidColor = $"#{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}"
+                        }
                     };
 
-                    if (saveDialog.ShowDialog() == true)
+                    string infoJson = JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true });
+                    await File.WriteAllTextAsync(infoPath, infoJson);
+
+                    if (includeModifications)
                     {
-                        ModGenerator.ZipResult(froststrapTemp, saveDialog.FileName);
-                        DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
-                        App.Logger?.WriteLine(LOG_IDENT, $"Mod zip created at {saveDialog.FileName}");
+                        if (!Directory.Exists(Paths.Modifications))
+                            Directory.CreateDirectory(Paths.Modifications);
+
+                        int copiedFiles = 0;
+                        foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
+                        {
+                            string relativePath = Path.GetRelativePath(froststrapTemp, file);
+                            string targetPath = Path.Combine(Paths.Modifications, relativePath);
+
+                            Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+                            File.Copy(file, targetPath, overwrite: true);
+                            copiedFiles++;
+                        }
+
+                        SetStatus($"Mod generation completed! Copied {copiedFiles} files to Modifications folder.");
+                        Log($"Copied {copiedFiles} files to {Paths.Modifications}");
                     }
                     else
                     {
-                        DownloadStatusText.Text = "Save cancelled by user.";
-                        App.Logger?.WriteLine(LOG_IDENT, "User cancelled save dialog.");
-                    }
-                }
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            var saveDialog = new SaveFileDialog
+                            {
+                                FileName = "FroststrapMod.zip",
+                                Filter = "ZIP Archives (*.zip)|*.zip",
+                                Title = "FroststrapMod"
+                            };
 
-                App.Logger?.WriteLine(LOG_IDENT, $"Mod generation finished in {overallSw.Elapsed.TotalSeconds:0.00}s");
+                            if (saveDialog.ShowDialog() == true)
+                            {
+                                ModGenerator.ZipResult(froststrapTemp, saveDialog.FileName);
+                                DownloadStatusText.Text = $"Mod generated successfully! Saved to: {saveDialog.FileName}";
+                                Log($"Mod zip created at {saveDialog.FileName}");
+                            }
+                            else
+                            {
+                                DownloadStatusText.Text = "Save cancelled by user.";
+                                Log("User cancelled save dialog.");
+                            }
+                        });
+                    }
+
+                    Log($"Mod generation finished in {overallSw.Elapsed.TotalSeconds:0.00}s");
+                });
             }
             catch (Exception ex)
             {
-                DownloadStatusText.Text = $"Mod generation failed: {ex.Message}";
+                App.Current.Dispatcher.Invoke(() => DownloadStatusText.Text = $"Mod generation failed: {ex.Message}");
                 App.Logger?.WriteException(LOG_IDENT, ex);
             }
             finally
             {
-                GenerateModButton.IsEnabled = true;
+                App.Current.Dispatcher.Invoke(() => GenerateModButton.IsEnabled = true);
             }
         }
 
