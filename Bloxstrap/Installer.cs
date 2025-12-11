@@ -30,9 +30,9 @@ namespace Bloxstrap
 
         public bool ImportSettings =
             Directory.Exists(Path.Combine(Paths.LocalAppData, "Bloxstrap")) ||
-            Directory.Exists(Path.Combine(Paths.LocalAppData, "Voidstrap")) ||
+            Directory.Exists(Path.Combine(Paths.LocalAppData, "Fishstrap")) ||
             Directory.Exists(Path.Combine(Paths.LocalAppData, "Lunastrap")) ||
-            Directory.Exists(Path.Combine(Paths.LocalAppData, "Fishstrap"));
+            Directory.Exists(Path.Combine(Paths.LocalAppData, "Luczystrap"));
 
         public bool IsImplicitInstall = false;
 
@@ -46,7 +46,6 @@ namespace Bloxstrap
             "CustomThemes", // from feature/custom-bootstrappers
             "Modifications",
             "Settings.json",
-            "Mods" // why tf does voidstrap have diffrent names for stuff bro
         };
 
         public void DoInstall()
@@ -561,15 +560,20 @@ namespace Bloxstrap
         {
             if (ImportSource == ImportSettingsFrom.None)
             {
+                string settingsPath = Path.Combine(InstallLocation, "Settings.json");
+                if (File.Exists(settingsPath))
+                {
+                    App.Settings.Load(false);
+                }
                 return;
             }
 
             string sourceDir = ImportSource switch
             {
                 ImportSettingsFrom.Bloxstrap => Path.Combine(Paths.LocalAppData, "Bloxstrap"),
-                ImportSettingsFrom.Voidstrap => Path.Combine(Paths.LocalAppData, "Voidstrap"),
                 ImportSettingsFrom.Fishstrap => Path.Combine(Paths.LocalAppData, "Fishstrap"),
                 ImportSettingsFrom.Lunastrap => Path.Combine(Paths.LocalAppData, "Lunastrap"),
+                ImportSettingsFrom.Luczystrap => Path.Combine(Paths.LocalAppData, "Luczystrap"),
                 _ => throw new ArgumentOutOfRangeException(nameof(ImportSource), "Invalid import source")
             };
 
@@ -583,14 +587,6 @@ namespace Bloxstrap
             {
                 string actualSourceFile = fileName;
                 string actualDestFile = fileName;
-
-                if (ImportSource == ImportSettingsFrom.Voidstrap)
-                {
-                    if (fileName == "Settings.json")
-                        actualSourceFile = "AppSettings.json";
-                    if (fileName == "Modifications")
-                        actualDestFile = "Mods";
-                }
 
                 string sourcePath = Path.Combine(sourceDir, actualSourceFile);
                 string destinationPath = Path.Combine(InstallLocation, actualDestFile);

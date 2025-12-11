@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
@@ -32,6 +30,23 @@ namespace Bloxstrap.UI.ViewModels.Installer
                 OnPropertyChanged(nameof(DataFoundMessageVisibility));
             }
         }
+
+        private List<ImportSettingsFrom> _availableImportSources = new();
+        public List<ImportSettingsFrom> AvailableImportSources
+        {
+            get => _availableImportSources;
+            set
+            {
+                _availableImportSources = value;
+                OnPropertyChanged(nameof(AvailableImportSources));
+                OnPropertyChanged(nameof(ImportSettingsEnabled));
+                OnPropertyChanged(nameof(ShowNotFound)); // Update this too
+            }
+        }
+
+        public bool ImportSettingsEnabled => AvailableImportSources.Count > 1;
+
+        public bool ShowNotFound => AvailableImportSources.Count <= 1;
 
         public Visibility DataFoundMessageVisibility => installer.ExistingDataPresent ? Visibility.Visible : Visibility.Collapsed;
 
@@ -66,18 +81,6 @@ namespace Bloxstrap.UI.ViewModels.Installer
             }
         }
 
-        public bool ImportSettingsEnabled
-        {
-            get
-            {
-                return Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Bloxstrap")) ||
-                       Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Voidstrap")) ||
-                       Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fishstrap"));
-            }
-        }
-
-        public bool ShowNotFound => !ImportSettingsEnabled;
-
         public ICommand BrowseInstallLocationCommand => new RelayCommand(BrowseInstallLocation);
 
         public ICommand ResetInstallLocationCommand => new RelayCommand(ResetInstallLocation);
@@ -94,57 +97,39 @@ namespace Bloxstrap.UI.ViewModels.Installer
             }
         }
 
-        public Array ImportSourceOptions => Enum.GetValues(typeof(ImportSettingsFrom));
-
         public InstallViewModel()
         {
             _originalInstallLocation = installer.InstallLocation;
+            UpdateAvailableImportSources();
+
+            OnPropertyChanged(nameof(SelectedImportSource));
         }
 
-        public bool ValidateImportSource()
+        private void UpdateAvailableImportSources()
         {
-            if (!ImportSettings)
-                return true; // Import disabled, no validation needed
+            var availableSources = new List<ImportSettingsFrom> { ImportSettingsFrom.None };
 
-            if (SelectedImportSource == ImportSettingsFrom.None)
-            {
-                installer.InstallLocationError = "";
-                OnPropertyChanged(nameof(ErrorMessage));
-                SetCanContinueEvent?.Invoke(this, true);
-                return true;
-            }
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
-            string folderPath = SelectedImportSource switch
-            {
-                ImportSettingsFrom.Bloxstrap => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Bloxstrap"),
-                ImportSettingsFrom.Voidstrap => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Voidstrap"),
-                ImportSettingsFrom.Fishstrap => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Fishstrap"),
-                ImportSettingsFrom.Lunastrap => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Lunastrap"),
-                _ => string.Empty
-            };
+            if (Directory.Exists(Path.Combine(localAppData, "Bloxstrap")))
+                availableSources.Add(ImportSettingsFrom.Bloxstrap);
 
-            if (string.IsNullOrEmpty(folderPath) || !Directory.Exists(folderPath))
-            {
-                installer.InstallLocationError = $"Selected import source folder not found: {SelectedImportSource}";
-                OnPropertyChanged(nameof(ErrorMessage));
-                SetCanContinueEvent?.Invoke(this, false);
-                return false;
-            }
+            if (Directory.Exists(Path.Combine(localAppData, "Fishstrap")))
+                availableSources.Add(ImportSettingsFrom.Fishstrap);
 
-            // Clear previous error and enable continue button
-            installer.InstallLocationError = "";
-            OnPropertyChanged(nameof(ErrorMessage));
-            SetCanContinueEvent?.Invoke(this, true);
-            return true;
+            if (Directory.Exists(Path.Combine(localAppData, "Lunastrap")))
+                availableSources.Add(ImportSettingsFrom.Lunastrap);
+
+            if (Directory.Exists(Path.Combine(localAppData, "Luczystrap")))
+                availableSources.Add(ImportSettingsFrom.Luczystrap);
+
+            AvailableImportSources = availableSources;
+
+            SelectedImportSource = ImportSettingsFrom.None;
         }
 
         public bool DoInstall()
         {
-            if (!ValidateImportSource())
-            {
-                return false; // Block navigation if import source invalid
-            }
-
             if (!installer.CheckInstallLocation())
             {
                 SetCanContinueEvent?.Invoke(this, false);
@@ -173,6 +158,6 @@ namespace Bloxstrap.UI.ViewModels.Installer
             OnPropertyChanged(nameof(InstallLocation));
         }
 
-        private void OpenFolder() => System.Diagnostics.Process.Start("explorer.exe", Paths.Base);
+        private void OpenFolder() => Process.Start("explorer.exe", Paths.Base);
     }
 }

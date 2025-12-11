@@ -65,9 +65,15 @@
             Header="Import Settings From"
             Description="Choose which application's settings to import into this installation.">
                 <ComboBox Width="120"
-              ItemsSource="{Binding ImportSourceOptions}"
-              SelectedItem="{Binding SelectedImportSource, Mode=TwoWay}"
-              IsEnabled="{Binding ImportSettingsEnabled, Mode=OneWay}" />
+                    ItemsSource="{Binding AvailableImportSources}"
+                    SelectedItem="{Binding SelectedImportSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    IsEnabled="{Binding ImportSettingsEnabled, Mode=OneWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </controls:OptionControl>
 
         </Grid>

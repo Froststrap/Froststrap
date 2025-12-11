@@ -5,7 +5,7 @@
         None,
         Bloxstrap,
         Fishstrap,
-        Voidstrap,
-        Lunastrap
+        Lunastrap,
+        Luczystrap
     }
 }
