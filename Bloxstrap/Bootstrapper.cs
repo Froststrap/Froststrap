@@ -1678,60 +1678,70 @@ namespace Bloxstrap
 
             string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content\\fonts\\families");
 
-            if (File.Exists(Paths.CustomFont))
+            var fontTask = Task.Run(() =>
             {
-                App.Logger.WriteLine(LOG_IDENT, "Begin font check");
-
-                Directory.CreateDirectory(modFontFamiliesFolder);
-
-                const string path = "rbxasset://fonts/CustomFont.ttf";
-
-                // lets make sure the content/fonts/families path exists in the version directory
-                string contentFolder = Path.Combine(_latestVersionDirectory, "content");
-                Directory.CreateDirectory(contentFolder);
-
-                string fontsFolder = Path.Combine(contentFolder, "fonts");
-                Directory.CreateDirectory(fontsFolder);
-
-                string familiesFolder = Path.Combine(fontsFolder, "families");
-                Directory.CreateDirectory(familiesFolder);
-
-                foreach (string jsonFilePath in Directory.GetFiles(familiesFolder))
+                if (File.Exists(Paths.CustomFont))
                 {
-                    string jsonFilename = Path.GetFileName(jsonFilePath);
-                    string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
+                    App.Logger.WriteLine(LOG_IDENT, "Begin font check");
 
-                    if (File.Exists(modFilepath))
-                        continue;
+                    Directory.CreateDirectory(modFontFamiliesFolder);
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Setting font for {jsonFilename}");
+                    const string path = "rbxasset://fonts/CustomFont.ttf";
 
-                    var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
+                    // lets make sure the content/fonts/families path exists in the version directory
+                    string contentFolder = Path.Combine(_latestVersionDirectory, "content");
+                    Directory.CreateDirectory(contentFolder);
 
-                    if (fontFamilyData is null)
-                        continue;
+                    string fontsFolder = Path.Combine(contentFolder, "fonts");
+                    Directory.CreateDirectory(fontsFolder);
 
-                    bool shouldWrite = false;
+                    string familiesFolder = Path.Combine(fontsFolder, "families");
+                    Directory.CreateDirectory(familiesFolder);
 
-                    foreach (var fontFace in fontFamilyData.Faces)
+                    var jsonFiles = Directory.GetFiles(familiesFolder);
+
+                    // Process font files in parallel (up to 4 at a time)
+                    Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
                     {
-                        if (fontFace.AssetId != path)
+                        string jsonFilename = Path.GetFileName(jsonFilePath);
+                        string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
+
+                        if (File.Exists(modFilepath))
+                            return;
+
+                        App.Logger.WriteLine(LOG_IDENT, $"Setting font for {jsonFilename}");
+
+                        var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
+
+                        if (fontFamilyData is null)
+                            return;
+
+                        bool shouldWrite = false;
+
+                        foreach (var fontFace in fontFamilyData.Faces)
                         {
-                            fontFace.AssetId = path;
-                            shouldWrite = true;
+                            if (fontFace.AssetId != path)
+                            {
+                                fontFace.AssetId = path;
+                                shouldWrite = true;
+                            }
                         }
-                    }
 
-                    if (shouldWrite)
-                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
+                        if (shouldWrite)
+                            File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
+                    });
+
+                    App.Logger.WriteLine(LOG_IDENT, "End font check");
                 }
+                else if (Directory.Exists(modFontFamiliesFolder))
+                {
+                    Directory.Delete(modFontFamiliesFolder, true);
+                }
+            });
 
-                App.Logger.WriteLine(LOG_IDENT, "End font check");
-            }
-            else if (Directory.Exists(modFontFamiliesFolder))
-            {
-                Directory.Delete(modFontFamiliesFolder, true);
-            }
+            // Process regular file modifications with limited concurrency
+            var fileTasks = new List<Task<bool>>();
+            using var semaphore = new SemaphoreSlim(8); // Limit concurrent file operations
 
             foreach (string file in Directory.GetFiles(Paths.Modifications, "*.*", SearchOption.AllDirectories))
             {
@@ -1759,28 +1769,52 @@ namespace Bloxstrap
                 string fileModFolder = Path.Combine(Paths.Modifications, relativeFile);
                 string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
 
-                if (File.Exists(fileVersionFolder) && MD5Hash.FromFile(fileModFolder) == MD5Hash.FromFile(fileVersionFolder))
+                fileTasks.Add(Task.Run(async () =>
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
-                    continue;
-                }
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                        if (File.Exists(fileVersionFolder))
+                        {
+                            // Check hashes in parallel
+                            var hashTask = Task.Run(() => MD5Hash.FromFile(fileModFolder));
+                            var existingHashTask = Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
 
-                Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+                            if (await hashTask == await existingHashTask)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
+                                return true;
+                            }
+                        }
 
-                Filesystem.AssertReadOnly(fileVersionFolder);
-                try
-                {
-                    File.Copy(fileModFolder, fileVersionFolder, true);
-                    Filesystem.AssertReadOnly(fileVersionFolder);
-                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
-                    App.Logger.WriteException(LOG_IDENT, ex);
-                    success = false;
-                }
+                        Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+
+                        Filesystem.AssertReadOnly(fileVersionFolder);
+                        try
+                        {
+                            File.Copy(fileModFolder, fileVersionFolder, true);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                            return false;
+                        }
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                }));
             }
+
+            var fileResults = await Task.WhenAll(fileTasks);
+            success = success && fileResults.All(r => r);
+
+            await fontTask;
 
             // the manifest is primarily here to keep track of what files have been
             // deleted from the modifications folder, so that we know when to restore the original files from the downloaded packages
