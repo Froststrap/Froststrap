@@ -365,17 +365,40 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                             Directory.CreateDirectory(Paths.Modifications);
 
                         int copiedFiles = 0;
-                        foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
+
+                        var itemsToCopy = new List<string>
                         {
-                            if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                            Path.Combine(froststrapTemp, "ExtraContent"),
+                            Path.Combine(froststrapTemp, "content"),
+                            Path.Combine(froststrapTemp, "info.json")
+                        };
+
+                        foreach (var item in itemsToCopy)
+                        {
+                            if (!File.Exists(item) && !Directory.Exists(item))
                                 continue;
 
-                            string relativePath = Path.GetRelativePath(froststrapTemp, file);
+                            string relativePath = Path.GetRelativePath(froststrapTemp, item);
                             string targetPath = Path.Combine(Paths.Modifications, relativePath);
 
-                            Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
-                            File.Copy(file, targetPath, overwrite: true);
-                            copiedFiles++;
+                            if (File.Exists(item))
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+                                File.Copy(item, targetPath, overwrite: true);
+                                copiedFiles++;
+                            }
+                            else if (Directory.Exists(item))
+                            {
+                                foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
+                                {
+                                    string fileRelativePath = Path.GetRelativePath(froststrapTemp, file);
+                                    string fileTargetPath = Path.Combine(Paths.Modifications, fileRelativePath);
+
+                                    Directory.CreateDirectory(Path.GetDirectoryName(fileTargetPath)!);
+                                    File.Copy(file, fileTargetPath, overwrite: true);
+                                    copiedFiles++;
+                                }
+                            }
                         }
 
                         SetStatus($"Mod generation completed! Copied {copiedFiles} files to Modifications folder.");
@@ -394,13 +417,31 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                         {
                             using (var zip = new ZipArchive(new FileStream(saveDialog.FileName, FileMode.Create), ZipArchiveMode.Create))
                             {
-                                foreach (var file in Directory.GetFiles(froststrapTemp, "*", SearchOption.AllDirectories))
+                                var itemsToInclude = new List<string>
                                 {
-                                    if (Path.GetExtension(file).Equals(".zip", StringComparison.OrdinalIgnoreCase))
+                                    Path.Combine(froststrapTemp, "ExtraContent"),
+                                    Path.Combine(froststrapTemp, "content"),
+                                    Path.Combine(froststrapTemp, "info.json")
+                                };
+
+                                foreach (var item in itemsToInclude)
+                                {
+                                    if (!File.Exists(item) && !Directory.Exists(item))
                                         continue;
 
-                                    string relativePath = Path.GetRelativePath(froststrapTemp, file);
-                                    zip.CreateEntryFromFile(file, relativePath);
+                                    if (File.Exists(item))
+                                    {
+                                        string relativePath = Path.GetRelativePath(froststrapTemp, item);
+                                        zip.CreateEntryFromFile(item, relativePath);
+                                    }
+                                    else if (Directory.Exists(item))
+                                    {
+                                        foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
+                                        {
+                                            string relativePath = Path.GetRelativePath(froststrapTemp, file);
+                                            zip.CreateEntryFromFile(file, relativePath);
+                                        }
+                                    }
                                 }
                             }
 
@@ -413,8 +454,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                             Log("User cancelled save dialog.");
                         }
                     }
-
-                    Log($"Mod generation finished in {overallSw.Elapsed.TotalSeconds:0.00}s");
                 });
             }
             catch (Exception ex)
