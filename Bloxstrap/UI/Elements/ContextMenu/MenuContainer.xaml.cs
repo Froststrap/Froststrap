@@ -130,11 +130,11 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                 _serverInformationWindow.Activate();
         }
 
-        public void ShowGameInformationWindow()
+        public void ShowGameInformationWindow(long placeId, long universeId)
         {
             if (_gameInformationWindow is null)
             {
-                _gameInformationWindow = new(_watcher);
+                _gameInformationWindow = new GameInformation(placeId, universeId);
                 _gameInformationWindow.Closed += (_, _) => _gameInformationWindow = null;
             }
 
@@ -187,7 +187,22 @@ namespace Bloxstrap.UI.Elements.ContextMenu
         }
 
         private void ServerDetailsMenuItem_Click(object sender, RoutedEventArgs e) => ShowServerInformationWindow();
-        private void GameInformaionMenuItem_Click(object sender, RoutedEventArgs e) => ShowGameInformationWindow();
+        private void GameInformaionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            long placeId = _activityWatcher?.Data?.PlaceId ?? 0;
+            long universeId = _activityWatcher?.Data?.UniverseId ?? 0;
+
+            if (placeId == 0)
+            {
+                Frontend.ShowMessageBox(
+                    "Not currently in a game. Please join a game first to view game information.",
+                    MessageBoxImage.Error
+                );
+                return;
+            }
+
+            ShowGameInformationWindow(placeId, universeId);
+        }
 
         private void CleanMemoryMenuItem_Click(object sender, RoutedEventArgs e)
         {

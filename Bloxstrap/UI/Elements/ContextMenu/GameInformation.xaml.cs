@@ -7,9 +7,9 @@ namespace Bloxstrap.UI.Elements.ContextMenu
     /// </summary>
     public partial class GameInformation
     {
-        public GameInformation(Watcher watcher)
+        public GameInformation(long placeId, long universeId)
         {
-            DataContext = new GameInformationViewModel(watcher);
+            DataContext = new GameInformationViewModel(placeId, universeId);
             InitializeComponent();
         }
     }

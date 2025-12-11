@@ -96,10 +96,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             SaveSettings();
             if (!App.LaunchSettings.TestModeFlag.Active) // test mode already launches an instance
-                LaunchHandler.LaunchRoblox(LaunchMode.Player);
-
-            App.FrostRPC?.Dispose();
-            CloseWindow();
+                Process.Start(Paths.Application, "-player");
         }
 
         private async void RestartApp()

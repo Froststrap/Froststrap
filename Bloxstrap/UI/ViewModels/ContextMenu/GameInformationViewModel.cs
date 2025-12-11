@@ -1,5 +1,4 @@
-﻿using Bloxstrap.Integrations;
-using Bloxstrap.UI.ViewModels.Settings;
+﻿using Bloxstrap.UI.ViewModels.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -10,8 +9,8 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
 {
     internal partial class GameInformationViewModel : ObservableObject
     {
-        private readonly Watcher _watcher;
-        private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
+        private readonly long _placeId;
+        private readonly long _universeId;
 
         [ObservableProperty]
         private string _gameName = "Loading...";
@@ -61,18 +60,20 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
         [ObservableProperty]
         private bool _hasSubplaces;
 
-        public GameInformationViewModel(Watcher watcher)
+        public GameInformationViewModel(long placeId, long universeId)
         {
-            _watcher = watcher;
+            _placeId = placeId;
 
-            if (_activityWatcher?.Data != null && _activityWatcher.InGame)
+            _universeId = universeId;
+
+            if (_placeId > 0)
             {
                 _ = LoadGameInformationAsync();
             }
             else
             {
                 HasError = true;
-                ErrorMessage = "Not currently in a game";
+                ErrorMessage = "No Game Found.";
                 IsDataLoading = false;
             }
         }
@@ -86,18 +87,12 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
                 IsDataLoading = true;
                 HasError = false;
 
-                if (_activityWatcher?.Data == null)
+                if (_placeId == 0)
                 {
-                    throw new InvalidOperationException("No game activity data available");
+                    throw new InvalidOperationException("No place ID provided");
                 }
 
-                long universeId = _activityWatcher.Data.UniverseId;
-                long placeId = _activityWatcher.Data.PlaceId;
-
-                if (universeId == 0 && placeId != 0)
-                {
-                    universeId = await GetUniverseIdFromPlaceId(placeId);
-                }
+                long universeId = _universeId;
 
                 if (universeId == 0)
                 {
@@ -105,9 +100,13 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
                 }
 
                 await LoadUniverseDetailsAsync(universeId);
-
                 await LoadSubplacesAsync(universeId);
 
+                string thumbnailUrl = await GetPlaceThumbnailUrlAsync(_placeId);
+                if (!string.IsNullOrEmpty(thumbnailUrl))
+                {
+                    GameThumbnail = await LoadBitmapFromUrlAsync(thumbnailUrl);
+                }
             }
             catch (Exception ex)
             {
@@ -118,22 +117,6 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
             finally
             {
                 IsDataLoading = false;
-            }
-        }
-
-        private async Task<long> GetUniverseIdFromPlaceId(long placeId)
-        {
-            const string LOG_IDENT = "GameInformationViewModel::GetUniverseIdFromPlaceId";
-
-            try
-            {
-                var placeDetails = await FetchPlaceDetailsAsync(placeId);
-                return placeDetails?.universeId ?? 0L;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Error getting universe ID: {ex.Message}");
-                return 0L;
             }
         }
 
@@ -290,31 +273,6 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
             }
         }
 
-        private async Task<PlaceDetails?> FetchPlaceDetailsAsync(long placeId)
-        {
-            try
-            {
-                using var client = new HttpClient();
-                string url = $"https://games.roblox.com/v1/games/multiget-place-details?placeIds={placeId}";
-
-                var response = await client.GetAsync(url);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    return null;
-                }
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var placeDetailsArray = JsonSerializer.Deserialize<List<PlaceDetails>>(responseContent);
-
-                return placeDetailsArray?.FirstOrDefault();
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
         private string GetGenreName(string? genre)
         {
             if (string.IsNullOrEmpty(genre))
@@ -344,17 +302,17 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
         [RelayCommand]
         private void CopyGameLink()
         {
-            if (_activityWatcher?.Data?.PlaceId != null)
-            {
-                string gameUrl = $"https://www.roblox.com/games/{_activityWatcher.Data.PlaceId}";
-                Clipboard.SetDataObject(gameUrl);
-            }
+
+            string gameUrl = $"https://www.roblox.com/games/{_placeId}";
+            Clipboard.SetDataObject(gameUrl);
+
+            Frontend.ShowMessageBox(
+            "Copied game link successfully.",
+            MessageBoxImage.Information
+            );
         }
 
         [RelayCommand]
-        private async Task RefreshInformation()
-        {
-            await LoadGameInformationAsync();
-        }
+        private async Task RefreshInformation() => await LoadGameInformationAsync();
     }
 }
