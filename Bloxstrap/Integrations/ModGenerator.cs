@@ -21,7 +21,7 @@ namespace Bloxstrap.Integrations
 {
     public static class ModGenerator
     {
-        public static void RecolorAllPngs(string rootDir, Color solidColor, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false, bool recolorVoiceChat = false)
+        public static void RecolorAllPngs(string rootDir, Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false, bool recolorVoiceChat = false)
         {
             const string LOG_IDENT = "UI::Recolor";
 
@@ -31,25 +31,13 @@ namespace Bloxstrap.Integrations
                 return;
             }
 
-            var assembly = Assembly.GetExecutingAssembly();
-            using var stream = assembly.GetManifestResourceStream("Bloxstrap.Resources.mappings.json");
-            if (stream == null)
-            {
-                App.Logger?.WriteLine(LOG_IDENT, "mappings.json embedded resource not found");
-                return;
-            }
-
-            using var reader = new StreamReader(stream);
-            var json = reader.ReadToEnd();
-
-            var mappings = JsonSerializer.Deserialize<Dictionary<string, string[]>>(json);
             if (mappings == null || mappings.Count == 0)
             {
-                App.Logger?.WriteLine(LOG_IDENT, "mappings.json parsed but empty");
+                App.Logger?.WriteLine(LOG_IDENT, "mappings is null or empty");
                 return;
             }
 
-            App.Logger?.WriteLine(LOG_IDENT, $"Loaded {mappings.Count} valid entries from mappings.json");
+            App.Logger?.WriteLine(LOG_IDENT, $"Loaded {mappings.Count} valid entries from mappings");
             App.Logger?.WriteLine(LOG_IDENT, "RecolorAllPngs started.");
 
             foreach (var kv in mappings)
@@ -521,6 +509,68 @@ namespace Bloxstrap.Integrations
                 App.Logger.WriteException(LOG_IDENT, ex);
                 throw;
             }
+        }
+
+        public static async Task<Dictionary<string, string[]>> LoadMappingsAsync()
+        {
+            const string LOG_IDENT = "ModGenerator::LoadMappingsAsync";
+
+            try
+            {
+                var remoteData = await Task.Run(() => App.RemoteData.Prop);
+
+                if (remoteData?.Mappings != null && remoteData.Mappings.Count > 0)
+                {
+                    App.Logger?.WriteLine(LOG_IDENT, $"Loaded {remoteData.Mappings.Count} mappings from remote data");
+                    return remoteData.Mappings;
+                }
+                else
+                {
+                    App.Logger?.WriteLine(LOG_IDENT, "No mappings in remote data, falling back to embedded resource");
+                    return await LoadEmbeddedMappingsAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteLine(LOG_IDENT, $"Failed to load remote mappings: {ex.Message}");
+                return await LoadEmbeddedMappingsAsync();
+            }
+        }
+
+        private static async Task<Dictionary<string, string[]>> LoadEmbeddedMappingsAsync()
+        {
+            const string LOG_IDENT = "ModGenerator::LoadEmbeddedMappingsAsync";
+
+            try
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+                using (var stream = assembly.GetManifestResourceStream("Bloxstrap.Resources.mappings.json"))
+                {
+                    if (stream == null)
+                    {
+                        App.Logger?.WriteLine(LOG_IDENT, "Embedded mappings.json not found");
+                        return new Dictionary<string, string[]>();
+                    }
+
+                    using (var reader = new StreamReader(stream))
+                    {
+                        string json = await reader.ReadToEndAsync();
+                        var mappings = JsonSerializer.Deserialize<Dictionary<string, string[]>>(json);
+
+                        if (mappings != null)
+                        {
+                            App.Logger?.WriteLine(LOG_IDENT, $"Loaded {mappings.Count} mappings from embedded resource");
+                            return mappings;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException(LOG_IDENT, ex);
+            }
+
+            return new Dictionary<string, string[]>();
         }
 
         public static void ZipResult(string sourceDir, string outputZip)

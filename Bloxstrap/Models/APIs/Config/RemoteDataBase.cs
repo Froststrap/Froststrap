@@ -24,5 +24,8 @@ namespace Bloxstrap.Models.APIs.Config
 
         [JsonPropertyName("projectDownloadLink")]
         public string ProjectDownloadLink { get; set; } = "https://github.com/RealMeddsam/Froststrap/releases";
+
+        [JsonPropertyName("mappings")]
+        public Dictionary<string, string[]> Mappings { get; set; } = new Dictionary<string, string[]>();
     }
 }

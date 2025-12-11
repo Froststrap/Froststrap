@@ -160,22 +160,22 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
                     Log("Extraction complete.");
 
-                    var assembly = Assembly.GetExecutingAssembly();
-                    Dictionary<string, string[]> mappings;
-                    using (var stream = assembly.GetManifestResourceStream("Bloxstrap.Resources.mappings.json"))
-                    using (var reader = new StreamReader(stream!))
+                    SetStatus("Loading mappings...");
+                    Dictionary<string, string[]> mappings = await ModGenerator.LoadMappingsAsync();
+
+                    if (mappings == null || mappings.Count == 0)
                     {
-                        string json = await reader.ReadToEndAsync();
-                        mappings = JsonSerializer.Deserialize<Dictionary<string, string[]>>(json)!;
+                        throw new Exception("Failed to load mappings. No mappings available.");
                     }
-                    Log($"Loaded mappings.json with {mappings.Count} top-level entries.");
+
+                    Log($"Loaded mappings with {mappings.Count} top-level entries.");
 
                     SetStatus("Recoloring images...");
 
                     Log($"Using solid color for recolor: {solidColor}");
 
                     Log("Starting RecolorAllPngs...");
-                    ModGenerator.RecolorAllPngs(froststrapTemp, solidColor, colorCursors, colorShiftlock, colorEmoteWheel, colorVoiceChat);
+                    ModGenerator.RecolorAllPngs(froststrapTemp, solidColor, mappings, colorCursors, colorShiftlock, colorEmoteWheel, colorVoiceChat);
                     Log("RecolorAllPngs finished.");
 
                     try
@@ -647,11 +647,5 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 App.Logger?.WriteException(LOG_IDENT, ex);
             }
         }
-    }
-
-    public class GlyphItem
-    {
-        public Geometry Data { get; set; } = null!;
-        public SolidColorBrush ColorBrush { get; set; } = null!;
     }
 }
