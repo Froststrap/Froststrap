@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
@@ -28,6 +29,21 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => App.Settings.Prop.MultiInstanceLaunching;
             set
             {
+                if (value)
+                {
+                    var result = Frontend.ShowMessageBox(
+                        "Roblox stated that multi-instance launching is considered an exploit, but it isn't bannable.\n\n" +
+                        "Are you sure you want to enable multi-instance launching?",
+                        MessageBoxImage.Warning,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result != MessageBoxResult.Yes)
+                    {
+                        return;
+                    }
+                }
+
                 App.Settings.Prop.MultiInstanceLaunching = value;
 
                 if (!value)
