@@ -394,15 +394,11 @@
                                                 Content="{x:Static resources:Strings.Common_Rename}"
                                                 Icon="Edit28" />
                                         </Grid>
-
                                     </StackPanel>
-
                                 </Grid>
                             </ui:CardExpander>
-
                         </StackPanel>
                     </ui:CardExpander>
-
                 </StackPanel>
             </TabItem>
 
@@ -418,19 +414,14 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Margin="0,0,0,4">
-                        <!-- Glyph Preview -->
-                        <TextBlock
-                          Margin="0,0,0,4"
-                          FontWeight="Bold"
-                          FontSize="20"
-                          Text="Font Preview" />
 
+                        <!-- Glyph Preview -->
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,8">
-                            <ui:Button
-                                Content="Load Glyphs"
-                                Margin="0,0,8,0" 
-                                Width="120"
-                                Click="LoadGlyphsButton_Click" />
+                            <TextBlock
+                                Margin="0,0,12,0"
+                                FontWeight="Bold"
+                                FontSize="20"
+                                Text="Font Preview" />
 
                             <ComboBox 
                                 x:Name="FontSelectorComboBox" 

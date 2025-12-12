@@ -25,7 +25,7 @@ namespace Bloxstrap.Models.APIs.Config
         public string? ThumbnailUrl { get; set; }
 
         [JsonPropertyName("modtype")]
-        public ModType ModType { get; set; } = ModType.Mod; // Default to Mod
+        public ModType ModType { get; set; } = ModType.Mod;
 
         [JsonIgnore]
         private BitmapImage? _thumbnailImage;

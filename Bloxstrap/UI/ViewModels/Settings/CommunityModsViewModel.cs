@@ -264,8 +264,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     }
                 });
 
-                App.Logger.WriteLine($"CommunityModsViewModel::ExtractCustomThemeAsync",
-                    $"Extracted custom theme '{themeName}' to {themeDir}");
+                App.Logger.WriteLine($"CommunityModsViewModel::ExtractCustomThemeAsync", $"Extracted custom theme '{themeName}' to {themeDir}");
             }
             catch (Exception ex)
             {

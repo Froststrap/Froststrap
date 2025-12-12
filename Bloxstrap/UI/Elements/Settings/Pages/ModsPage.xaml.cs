@@ -17,7 +17,6 @@ using Microsoft.Win32;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO.Compression;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -52,17 +51,79 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
 
             if (!Directory.Exists(fontDir))
-                return;
+            {
+                Directory.CreateDirectory(fontDir);
+            }
 
             _fontFiles = Directory.GetFiles(fontDir)
                 .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
                            f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
                 .ToArray();
 
+
+            // download font previews from our repo if you have yet to generate a mod
+            if (_fontFiles.Length == 0)
+            {
+                try
+                {
+                    App.Logger?.WriteLine("UI", "No font files found in temp folder, downloading from GitHub...");
+
+                    string[] fontUrls = {
+                        "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
+                        "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
+                    };
+
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+                        foreach (var url in fontUrls)
+                        {
+                            try
+                            {
+                                string fileName = Path.GetFileName(url);
+                                string filePath = Path.Combine(fontDir, fileName);
+
+                                App.Logger?.WriteLine("UI", $"Downloading font: {fileName}");
+
+                                var response = await httpClient.GetAsync(url);
+                                response.EnsureSuccessStatusCode();
+
+                                var fontData = await response.Content.ReadAsByteArrayAsync();
+                                await File.WriteAllBytesAsync(filePath, fontData);
+
+                                App.Logger?.WriteLine("UI", $"Successfully downloaded: {fileName}");
+                            }
+                            catch (Exception ex)
+                            {
+                                App.Logger?.WriteException("UI", ex);
+                            }
+                        }
+                    }
+
+                    _fontFiles = Directory.GetFiles(fontDir)
+                        .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                                   f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
+                        .ToArray();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger?.WriteException("UI", ex);
+                }
+            }
+
             FontSelectorComboBox.ItemsSource = _fontFiles.Select(f => Path.GetFileName(f));
 
             if (_fontFiles.Length > 0)
+            {
                 FontSelectorComboBox.SelectedIndex = 0;
+
+                string selectedFont = _fontFiles[FontSelectorComboBox.SelectedIndex];
+                if (File.Exists(selectedFont))
+                {
+                    await LoadGlyphPreviewsAsync(selectedFont);
+                }
+            }
         }
 
         private async void FontSelectorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -370,6 +431,8 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                             Path.Combine(froststrapTemp, "info.json")
                         };
 
+                        string fontsPath = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
                         foreach (var item in itemsToCopy)
                         {
                             if (!File.Exists(item) && !Directory.Exists(item))
@@ -388,6 +451,12 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                             {
                                 foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
                                 {
+                                    if (file.StartsWith(fontsPath, StringComparison.OrdinalIgnoreCase) &&
+                                        file.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        continue;
+                                    }
+
                                     string fileRelativePath = Path.GetRelativePath(froststrapTemp, file);
                                     string fileTargetPath = Path.Combine(Paths.Modifications, fileRelativePath);
 
@@ -421,6 +490,8 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                                     Path.Combine(froststrapTemp, "info.json")
                                 };
 
+                                string fontsPath = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
                                 foreach (var item in itemsToInclude)
                                 {
                                     if (!File.Exists(item) && !Directory.Exists(item))
@@ -435,6 +506,12 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                                     {
                                         foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
                                         {
+                                            if (file.StartsWith(fontsPath, StringComparison.OrdinalIgnoreCase) &&
+                                                file.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                continue;
+                                            }
+
                                             string relativePath = Path.GetRelativePath(froststrapTemp, file);
                                             zip.CreateEntryFromFile(file, relativePath);
                                         }
@@ -646,42 +723,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     GlyphGrid.ItemsSource = _glyphItems;
                 }
             });
-        }
-
-        private async void LoadGlyphsButton_Click(object sender, RoutedEventArgs e)
-        {
-            const string LOG_IDENT = "UI::LoadGlyphsButton";
-
-            string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
-            string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
-
-            if (!Directory.Exists(fontDir))
-            {
-                App.Logger?.WriteLine(LOG_IDENT, $"Font directory not found: {fontDir}");
-                return;
-            }
-
-            var fontFiles = Directory.GetFiles(fontDir)
-                .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
-                           f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
-                .ToArray();
-
-            if (fontFiles.Length == 0)
-            {
-                App.Logger?.WriteLine(LOG_IDENT, "No .ttf or .otf font files found in font directory.");
-                return;
-            }
-
-            try
-            {
-                string fontFile = fontFiles.First();
-                await LoadGlyphPreviewsAsync(fontFile);
-                App.Logger?.WriteLine(LOG_IDENT, $"Glyphs loaded from {fontFile}");
-            }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException(LOG_IDENT, ex);
-            }
         }
     }
 }

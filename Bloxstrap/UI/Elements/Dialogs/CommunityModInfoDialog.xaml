@@ -31,7 +31,7 @@
             CanMaximize="False"
             ShowMaximize="False"
             Icon="pack://application:,,,/Bloxstrap.ico"
-            KeyboardNavigation.TabNavigation="None"
+            Padding="8"
             ShowMinimize="False" />
 
         <ScrollViewer Grid.Row="1" Margin="8" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">

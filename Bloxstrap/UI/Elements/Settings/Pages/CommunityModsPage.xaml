@@ -45,7 +45,7 @@
                 </ui:TextBox>
             </StackPanel>
 
-            <ItemsControl ItemsSource="{Binding Mods}">
+            <ItemsControl ItemsSource="{Binding Mods}" Grid.Row="1">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal"/>

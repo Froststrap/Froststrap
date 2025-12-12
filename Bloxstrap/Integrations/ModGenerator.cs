@@ -11,7 +11,6 @@
  *               of the Nix ecosystem. 
  */
 
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO.Compression;
@@ -180,19 +179,6 @@ namespace Bloxstrap.Integrations
                     }
 
                     App.Logger?.WriteLine(LOG_IDENT, $"Font recoloring successful!");
-
-                    foreach (var ttfFile in ttfFiles)
-                    {
-                        try
-                        {
-                            File.Delete(ttfFile);
-                            App.Logger?.WriteLine(LOG_IDENT, $"Deleted TTF file: {Path.GetFileName(ttfFile)}");
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger?.WriteLine(LOG_IDENT, $"Warning: Could not delete TTF file: {ex.Message}");
-                        }
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -220,7 +206,6 @@ namespace Bloxstrap.Integrations
 
                 if (File.Exists(exePath))
                 {
-                    App.Logger?.WriteLine(LOG_IDENT, $"Using cached mod-generator.exe at: {exePath}");
                     return exePath;
                 }
 
