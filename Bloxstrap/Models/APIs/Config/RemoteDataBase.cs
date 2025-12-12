@@ -27,5 +27,8 @@ namespace Bloxstrap.Models.APIs.Config
 
         [JsonPropertyName("mappings")]
         public Dictionary<string, string[]> Mappings { get; set; } = new Dictionary<string, string[]>();
+
+        [JsonPropertyName("communityMods")]
+        public List<CommunityMod> CommunityMods { get; set; } = new List<CommunityMod>();
     }
 }

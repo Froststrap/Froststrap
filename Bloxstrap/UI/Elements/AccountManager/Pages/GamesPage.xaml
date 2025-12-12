@@ -192,7 +192,7 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Appearance="Primary" Command="{Binding LaunchRobloxCommand}" IconFilled="True">
+                                    <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Appearance="Primary" Command="{Binding LaunchRobloxCommand}">
                                         <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" />
                                     </ui:Button>
 

@@ -58,6 +58,7 @@
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" PageType="{x:Type pages:IntegrationsPage}" Icon="Add28" IconSize="20" Tag="integrations" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" PageType="{x:Type pages:BehaviourPage}" Icon="PlaySettings20" IconSize="20" Tag="bootstrapper" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Mods_Title}" PageType="{x:Type pages:ModsPage}" Icon="WrenchScrewdriver20" IconSize="20" Tag="mods" FontWeight="Medium" />
+                    <ui:NavigationItem Content="Community Mods" PageType="{x:Type pages:CommunityModsPage}" Icon="BuildingShop24" IconSize="20" Tag="communitymods" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" IconSize="20" Tag="fastflags" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" PageType="{x:Type pages:AppearancePage}" Icon="PaintBrush24" IconSize="20" Tag="appearance" FontWeight="Medium" />
                     <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" PageType="{x:Type pages:RegionSelectorPage}" Icon="Earth24" IconSize="20" Tag="regionselector" FontWeight="Medium" />

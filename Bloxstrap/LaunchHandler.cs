@@ -252,7 +252,7 @@ namespace Bloxstrap
                 App.Terminate(ErrorCode.ERROR_FILE_NOT_FOUND);
             }
 
-            if (App.Settings.Prop.ConfirmLaunches && Mutex.TryOpenExisting("ROBLOX_singletonMutex", out var _) && Mutex.TryOpenExisting("ROBLOX_singletonEvent", out var _) && !App.Settings.Prop.MultiInstanceLaunching)
+            if (App.Settings.Prop.ConfirmLaunches && Mutex.TryOpenExisting("ROBLOX_singletonMutex", out var _) && !App.Settings.Prop.MultiInstanceLaunching)
             {
                 var result = Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
 

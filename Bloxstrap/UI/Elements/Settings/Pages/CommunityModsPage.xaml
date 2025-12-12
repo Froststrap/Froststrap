@@ -1,0 +1,138 @@
+<ui:UiPage x:Class="Bloxstrap.UI.Elements.Settings.Pages.CommunityModsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:converters="clr-namespace:Bloxstrap.UI.Converters"
+      mc:Ignorable="d" 
+      d:DesignHeight="900" d:DesignWidth="800"
+      Title="Community Mods"
+      Scrollable="True">
+
+    <Grid>
+        <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Background="{DynamicResource NormalDarkAndLightBackground}">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ui:ProgressRing IsIndeterminate="True" Width="60" Height="60"/>
+                <TextBlock Text="Loading community mods..." 
+                         Margin="0,12,0,0"
+                         FontSize="14"/>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"> 
+            <TextBlock Text="{Binding ErrorMessage}"
+                         FontWeight="SemiBold"
+                         Foreground="#FF4444"
+                         TextWrapping="Wrap"/>
+            <ui:Button Content="Retry"
+                         Margin="0,8,0,0"
+                         Command="{Binding RefreshModsCommand}"/>
+        </StackPanel>
+
+        <Grid Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0">
+                <ui:TextBox PlaceholderText="Search mods..." Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,12,0">
+                    <ui:TextBox.InputBindings>
+                        <KeyBinding Key="Enter" Command="{Binding SearchModsCommand}"/>
+                    </ui:TextBox.InputBindings>
+                </ui:TextBox>
+            </StackPanel>
+
+            <ScrollViewer Grid.Row="1"
+                         VerticalScrollBarVisibility="Auto" Margin="0,8,0,0">
+                <ItemsControl ItemsSource="{Binding Mods}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="280"
+                                    Margin="4,0"
+                                    Background="{DynamicResource NormalDarkAndLightBackground}"
+                                    CornerRadius="8">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="140"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Border Grid.Row="0"
+                                            CornerRadius="8,8,0,0">
+                                        <Grid>
+                                            <Image Source="{Binding ThumbnailImage}"
+                                                   Stretch="UniformToFill"/>
+
+                                            <ui:ProgressRing
+                                                Visibility="{Binding IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                IsIndeterminate="True"
+                                                Width="24"
+                                                Height="24"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <TextBlock Grid.Row="1"
+                                               Text="{Binding Name}"
+                                               FontWeight="SemiBold"
+                                               FontSize="18"
+                                               Margin="12,12,12,4"
+                                               TextTrimming="CharacterEllipsis"/>
+
+                                    <TextBlock Grid.Row="2"
+                                               Text="{Binding Author, StringFormat='By {0}'}"
+                                               Foreground="{StaticResource TextFillColorSecondaryBrush}"
+                                               Margin="12,0,12,4"
+                                               TextTrimming="CharacterEllipsis"/>
+
+                                    <Grid Grid.Row="3" Margin="8">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <ui:ProgressBar Grid.ColumnSpan="2" Grid.Row="1"
+                                            Margin="0,8"
+                                            Value="{Binding DownloadProgress}" 
+                                            Maximum="100"
+                                            Height="6"
+                                            Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                        <ui:Button Grid.Column="0" Grid.Row="0"
+                                            Height="34" 
+                                            HorizontalAlignment="Stretch" 
+                                            Appearance="Primary" 
+                                            Command="{Binding DownloadCommand}" 
+                                            CommandParameter="{Binding}">
+                                            <StackPanel Orientation="Horizontal">
+                                                <ui:SymbolIcon Filled="True" FontSize="18" Margin="0,0,4,0" Symbol="ArrowDownload24" />
+                                                <TextBlock Text="Download" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                                            </StackPanel>
+                                        </ui:Button>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</ui:UiPage>

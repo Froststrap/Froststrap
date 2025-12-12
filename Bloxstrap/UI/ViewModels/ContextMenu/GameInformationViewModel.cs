@@ -1,5 +1,4 @@
-﻿using Bloxstrap.UI.ViewModels.Settings;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
@@ -7,6 +6,7 @@ using System.Windows;
 
 namespace Bloxstrap.UI.ViewModels.ContextMenu
 {
+    public record PlaceInfo(long Id, long UniverseId, string Name, string? ThumbnailUrl);
     internal partial class GameInformationViewModel : ObservableObject
     {
         private readonly long _placeId;
