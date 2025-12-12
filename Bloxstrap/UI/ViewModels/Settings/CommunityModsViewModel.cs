@@ -134,7 +134,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     modsToDisplay = _allMods.Where(mod =>
                         mod.Name.ToLower().Contains(query) ||
                         (mod.HexCode?.ToLower()?.Contains(query) ?? false) ||
-                        (mod.Author?.ToLower()?.Contains(query) ?? false)
+                        (mod.Author?.ToLower()?.Contains(query) ?? false) ||
+                        mod.ModTypeDisplay.ToLower().Contains(query)
                     ).ToList();
                 }
 
@@ -184,16 +185,29 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                 mod.DownloadProgress = 100;
 
-                await ExtractModToModificationsAsync(tempFile, mod.Name);
+                switch (mod.ModType)
+                {
+                    case ModType.Misc:
+                    case ModType.Mod:
+                        await ExtractModToModificationsAsync(tempFile, mod.Name);
+                        Frontend.ShowMessageBox(
+                            $"Mod '{mod.Name}' installed successfully!",
+                            MessageBoxImage.Information,
+                            MessageBoxButton.OK
+                        );
+                        App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed mod: {mod.Name}");
+                        break;
 
-                Frontend.ShowMessageBox(
-                    $"Mod '{mod.Name}' installed successfully!",
-                    MessageBoxImage.Information,
-                    MessageBoxButton.OK
-                );
-
-                App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync",
-                    $"Installed mod: {mod.Name}");
+                    case ModType.CustomTheme:
+                        await ExtractCustomThemeAsync(tempFile, mod.Name);
+                        Frontend.ShowMessageBox(
+                            $"Custom theme '{mod.Name}' installed successfully!",
+                            MessageBoxImage.Information,
+                            MessageBoxButton.OK
+                        );
+                        App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed custom theme: {mod.Name}");
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -211,6 +225,51 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 mod.DownloadProgress = 0;
 
                 await CleanupTempFileAsync(tempFile);
+            }
+        }
+
+        private async Task ExtractCustomThemeAsync(string zipPath, string themeName)
+        {
+            if (!File.Exists(zipPath))
+                throw new FileNotFoundException("Theme file not found", zipPath);
+
+            try
+            {
+                var themesDir = Paths.CustomThemes;
+                Directory.CreateDirectory(themesDir);
+
+                var themeDir = Path.Combine(themesDir, themeName);
+                if (Directory.Exists(themeDir))
+                {
+                    Directory.Delete(themeDir, true);
+                }
+
+                Directory.CreateDirectory(themeDir);
+
+                await Task.Run(() =>
+                {
+                    using var archive = ZipFile.OpenRead(zipPath);
+
+                    foreach (var entry in archive.Entries)
+                    {
+                        if (string.IsNullOrEmpty(entry.Name)) continue;
+
+                        var destinationPath = Path.Combine(themeDir, entry.FullName);
+                        var destinationDir = Path.GetDirectoryName(destinationPath);
+
+                        if (!string.IsNullOrEmpty(destinationDir))
+                            Directory.CreateDirectory(destinationDir);
+
+                        entry.ExtractToFile(destinationPath, overwrite: true);
+                    }
+                });
+
+                App.Logger.WriteLine($"CommunityModsViewModel::ExtractCustomThemeAsync",
+                    $"Extracted custom theme '{themeName}' to {themeDir}");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to extract custom theme '{themeName}': {ex.Message}", ex);
             }
         }
 

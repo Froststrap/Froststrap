@@ -11,8 +11,7 @@
       Scrollable="True">
 
     <Grid>
-        <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-              Background="{DynamicResource NormalDarkAndLightBackground}">
+        <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ui:ProgressRing IsIndeterminate="True" Width="60" Height="60"/>
                 <TextBlock Text="Loading community mods..." 
@@ -46,99 +45,101 @@
                 </ui:TextBox>
             </StackPanel>
 
-            <ScrollViewer Grid.Row="1"
-                         VerticalScrollBarVisibility="Auto" Margin="0,8,0,0">
-                <ItemsControl ItemsSource="{Binding Mods}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel Orientation="Horizontal"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
+            <ItemsControl ItemsSource="{Binding Mods}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Width="280"
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="280"
                                     Margin="4"
                                     Background="{DynamicResource NormalDarkAndLightBackground}"
-                                    CornerRadius="8">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="140"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
+                                    CornerRadius="4">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="140"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
 
-                                    <Border Grid.Row="0" CornerRadius="8,8,0,0">
-                                        <Grid>
-                                            <Viewbox Stretch="UniformToFill"
+                                <Border Grid.Row="0" CornerRadius="8,8,0,0">
+                                    <Grid>
+                                        <Viewbox Stretch="UniformToFill"
                                                      StretchDirection="Both"
                                                      HorizontalAlignment="Center"
                                                      VerticalAlignment="Center">
-                                                <Image Source="{Binding ThumbnailImage}" RenderOptions.BitmapScalingMode="HighQuality"/>
-                                            </Viewbox>
-    
-                                            <ui:ProgressRing
+                                            <Image Source="{Binding ThumbnailImage}" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </Viewbox>
+
+                                        <ui:ProgressRing
                                                 Visibility="{Binding IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"
                                                 IsIndeterminate="True"
                                                 Width="24"
                                                 Height="24"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </Border>
+                                    </Grid>
+                                </Border>
 
-                                    <TextBlock Grid.Row="1"
+                                <TextBlock Grid.Row="1"
                                                Text="{Binding Name}"
-                                               FontWeight="SemiBold"
+                                               FontWeight="Bold"
                                                FontSize="18"
-                                               Margin="12,12,12,4"
+                                               Margin="12,4,12,0"
                                                TextTrimming="CharacterEllipsis"/>
 
-                                    <TextBlock Grid.Row="2"
-                                               Text="{Binding Author, StringFormat='By {0}'}"
-                                               Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                                               Margin="12,0,12,4"
-                                               TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Grid.Row="2" Foreground="{StaticResource TextFillColorSecondaryBrush}" Margin="12,0,12,4" TextTrimming="CharacterEllipsis">
+                                    <TextBlock.Inlines>
+                                        <Run Text="Made By:"/>
+                                        <Run Text="{Binding Author}"/>
+                                        <Run Text=" | "/>
+                                        <Run Text="Mod Type:"/>
+                                        <Run Text="{Binding ModTypeDisplay, Mode=OneWay}" />
+                                    </TextBlock.Inlines>
+                                </TextBlock>
 
-                                    <Grid Grid.Row="3" Margin="8">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                <Grid Grid.Row="4" Margin="8">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                        <ui:ProgressBar Grid.ColumnSpan="2" Grid.Row="1"
+                                    <ui:ProgressBar Grid.ColumnSpan="2" Grid.Row="1"
                                             Margin="0,8"
                                             Value="{Binding DownloadProgress}" 
                                             Maximum="100"
                                             Height="6"
                                             Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                                        <ui:Button Grid.Column="0" Grid.Row="0"
+                                    <ui:Button Grid.Column="0" Grid.Row="0"
                                             Height="34" 
                                             HorizontalAlignment="Stretch" 
                                             Appearance="Primary" 
                                             Command="{Binding DownloadCommand}" 
                                             CommandParameter="{Binding}">
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:SymbolIcon Filled="True" FontSize="18" Margin="0,0,4,0" Symbol="ArrowDownload24" />
-                                                <TextBlock Text="Download" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                                            </StackPanel>
-                                        </ui:Button>
-                                        <ui:Button Grid.Row="0" Grid.Column="1" Height="34" Margin="4,0,0,0" Appearance="Secondary" Command="{Binding ShowInfoCommand}" CommandParameter="{Binding}">
-                                            <ui:SymbolIcon FontSize="18" Symbol="Info24" />
-                                        </ui:Button>
-                                    </Grid>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ui:SymbolIcon Filled="True" FontSize="18" Margin="0,0,4,0" Symbol="ArrowDownload24" />
+                                            <TextBlock Text="Download" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
+                                        </StackPanel>
+                                    </ui:Button>
+                                    <ui:Button Grid.Row="0" Grid.Column="1" Height="34" Margin="4,0,0,0" Appearance="Secondary" Command="{Binding ShowInfoCommand}" CommandParameter="{Binding}">
+                                        <ui:SymbolIcon FontSize="18" Symbol="Info24" />
+                                    </ui:Button>
                                 </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </Grid>
 </ui:UiPage>

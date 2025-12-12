@@ -83,13 +83,13 @@
                        Margin="0,2,0,4"/>
 
                         <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code: {0}'}"
-                       FontSize="14"
+                       FontSize="14" Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}"
                        Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>
                 </Grid>
 
 
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Text="Preview"
                        FontSize="18"
                        FontWeight="Bold"
