@@ -155,31 +155,28 @@ namespace Bloxstrap.Integrations
 
                 App.Logger?.WriteLine(LOG_IDENT, $"Found {ttfFiles.Length} TTF files to recolor");
 
-                string tempScriptPath = ExtractEmbeddedScriptToTemp();
+                // font recoloring requires downloading the exe from our private repo
+                string exePath = await DownloadModGeneratorExeAsync();
+
                 string hexColorArg = $"#{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}".TrimStart('#');
 
                 try
                 {
-                    string arguments = $"--path \"{fontSourceDir}\" --color {hexColorArg}";
+                    string arguments = $"--path \"{fontSourceDir}\" --color {hexColorArg} --bootstrapper Froststrap";
 
-                    string? workingDirectory = Path.GetDirectoryName(tempScriptPath);
-                    if (string.IsNullOrEmpty(workingDirectory))
-                    {
-                        workingDirectory = Environment.CurrentDirectory;
-                        App.Logger?.WriteLine(LOG_IDENT, $"Warning: Could not get directory from tempScriptPath, using current directory: {workingDirectory}");
-                    }
+                    string workingDirectory = Path.GetDirectoryName(exePath) ?? Environment.CurrentDirectory;
 
-                    var result = await PythonLauncher.ExecuteScriptAsync(tempScriptPath, arguments, workingDirectory);
+                    var result = await ExecuteExeAsync(exePath, arguments, workingDirectory);
 
                     if (!string.IsNullOrEmpty(result.Output))
-                        App.Logger?.WriteLine(LOG_IDENT, $"Python output: {result.Output}");
+                        App.Logger?.WriteLine(LOG_IDENT, $"Mod-generator output: {result.Output}");
 
                     if (!string.IsNullOrEmpty(result.Errors))
-                        App.Logger?.WriteLine(LOG_IDENT, $"Python errors: {result.Errors}");
+                        App.Logger?.WriteLine(LOG_IDENT, $"Mod-generator errors: {result.Errors}");
 
                     if (result.ExitCode != 0)
                     {
-                        throw new Exception($"Python script failed with Exit Code {result.ExitCode}. {result.Errors}");
+                        throw new Exception($"Mod-generator failed with Exit Code {result.ExitCode}. {result.Errors}");
                     }
 
                     App.Logger?.WriteLine(LOG_IDENT, $"Font recoloring successful!");
@@ -197,9 +194,10 @@ namespace Bloxstrap.Integrations
                         }
                     }
                 }
-                finally
+                catch (Exception ex)
                 {
-                    try { if (File.Exists(tempScriptPath)) File.Delete(tempScriptPath); } catch { }
+                    App.Logger?.WriteLine(LOG_IDENT, $"Error executing mod-generator.exe: {ex.Message}");
+                    throw;
                 }
             }
             catch (Exception ex)
@@ -209,47 +207,128 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        private static string ExtractEmbeddedScriptToTemp()
+        private static async Task<string> DownloadModGeneratorExeAsync()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            string resourceName = "Bloxstrap.Resources.mod_generator.py";
-
-            using (Stream? stream = assembly.GetManifestResourceStream(resourceName))
-            {
-                if (stream == null)
-                    throw new Exception($"Could not find embedded resource '{resourceName}'. Check the namespace.");
-
-                string tempScriptPath = Path.Combine(Path.GetTempPath(), "Froststrap", $"gen_{Guid.NewGuid()}.py");
-
-                string directoryPath = Path.Combine(Path.GetTempPath(), "Froststrap");
-                Directory.CreateDirectory(directoryPath);
-
-                using (FileStream fileStream = new FileStream(tempScriptPath, FileMode.Create, FileAccess.Write))
-                {
-                    stream.CopyTo(fileStream);
-                }
-
-                return tempScriptPath;
-            }
-        }
-
-        public static void UpdateBuilderIconsJson(string froststrapTemp)
-        {
-            string jsonPath = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\BuilderIcons.json");
-
-            if (!File.Exists(jsonPath))
-                return;
+            const string LOG_IDENT = "ModGenerator::DownloadModGeneratorExeAsync";
 
             try
             {
-                string content = File.ReadAllText(jsonPath);
-                content = content.Replace(".ttf", ".otf");
-                File.WriteAllText(jsonPath, content);
-                App.Logger?.WriteLine("ModGenerator", $"Updated BuilderIcons.json: Changed .ttf to .otf");
+                string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
+                Directory.CreateDirectory(cacheDir);
+
+                string exePath = Path.Combine(cacheDir, "mod-generator.exe");
+
+                if (File.Exists(exePath))
+                {
+                    App.Logger?.WriteLine(LOG_IDENT, $"Using cached mod-generator.exe at: {exePath}");
+                    return exePath;
+                }
+
+                App.Logger?.WriteLine(LOG_IDENT, "Downloading mod-generator.exe from GitHub...");
+
+                string releasesApiUrl = "https://api.github.com/repos/Froststrap/mod-generator/releases/latest";
+
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.0");
+
+                    var releaseJson = await httpClient.GetStringAsync(releasesApiUrl);
+                    using var releaseDoc = JsonDocument.Parse(releaseJson);
+                    var assets = releaseDoc.RootElement.GetProperty("assets");
+
+                    string? downloadUrl = null;
+
+                    foreach (var asset in assets.EnumerateArray())
+                    {
+                        string name = asset.GetProperty("name").GetString() ?? "";
+
+                        if (name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
+                            name.Equals("mod-generator.exe", StringComparison.OrdinalIgnoreCase) ||
+                            name.Equals("mod-generator-win.exe", StringComparison.OrdinalIgnoreCase))
+                        {
+                            downloadUrl = asset.GetProperty("browser_download_url").GetString();
+                            break;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(downloadUrl))
+                    {
+                        downloadUrl = "https://github.com/Froststrap/mod-generator/releases/latest/download/mod_generator.exe";
+                    }
+
+                    App.Logger?.WriteLine(LOG_IDENT, $"Downloading from: {downloadUrl}");
+
+                    using (var response = await httpClient.GetAsync(downloadUrl))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        using (var fs = new FileStream(exePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                        {
+                            await response.Content.CopyToAsync(fs);
+                        }
+                    }
+
+                    App.Logger?.WriteLine(LOG_IDENT, $"Downloaded mod-generator.exe to: {exePath}");
+
+                    return exePath;
+                }
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModGenerator::UpdateBuilderIconsJson", ex);
+                App.Logger?.WriteException(LOG_IDENT, ex);
+                throw new Exception($"Failed to download mod-generator.exe: {ex.Message}");
+            }
+        }
+
+        private static async Task<(int ExitCode, string Output, string Errors)> ExecuteExeAsync(
+            string exePath,
+            string arguments = "",
+            string workingDirectory = "")
+        {
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = exePath,
+                Arguments = arguments,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            if (!string.IsNullOrEmpty(workingDirectory))
+                startInfo.WorkingDirectory = workingDirectory;
+
+            using (var process = Process.Start(startInfo))
+            {
+                if (process == null)
+                    throw new Exception($"Failed to start mod-generator.exe process.");
+
+                var outputTask = process.StandardOutput.ReadToEndAsync();
+                var errorTask = process.StandardError.ReadToEndAsync();
+
+                await process.WaitForExitAsync();
+
+                string output = await outputTask;
+                string errors = await errorTask;
+
+                return (process.ExitCode, output, errors);
+            }
+        }
+
+        public static void CleanupModGeneratorCache()
+        {
+            try
+            {
+                string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
+                if (Directory.Exists(cacheDir))
+                {
+                    Directory.Delete(cacheDir, true);
+                    App.Logger?.WriteLine("ModGenerator", "Cleaned up mod-generator cache");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException("ModGenerator::CleanupModGeneratorCache", ex);
             }
         }
 
@@ -327,62 +406,6 @@ namespace Bloxstrap.Integrations
                     if (attempts > 5)
                         throw;
                     Thread.Sleep(50);
-                }
-            }
-        }
-
-        public static class PythonLauncher
-        {
-            public static async Task<(int ExitCode, string Output, string Errors)> ExecuteScriptAsync(
-                string scriptPath,
-                string arguments = "",
-                string workingDirectory = "")
-            {
-                var pythonExecutables = new[] { "python", "python3", "py" };
-                Process? process = null;
-                Exception? lastException = null;
-
-                foreach (var pythonExe in pythonExecutables)
-                {
-                    try
-                    {
-                        var startInfo = new ProcessStartInfo
-                        {
-                            FileName = pythonExe,
-                            Arguments = $"\"{scriptPath}\" {arguments}",
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true,
-                            CreateNoWindow = true
-                        };
-
-                        if (!string.IsNullOrEmpty(workingDirectory))
-                            startInfo.WorkingDirectory = workingDirectory;
-
-                        process = Process.Start(startInfo);
-                        break;
-                    }
-                    catch (Win32Exception ex) when (ex.NativeErrorCode == 2)
-                    {
-                        lastException = ex;
-                        continue;
-                    }
-                }
-
-                if (process == null)
-                    throw new Exception($"Failed to start Python process. Tried: {string.Join(", ", pythonExecutables)}. Make sure Python is installed.", lastException);
-
-                using (process)
-                {
-                    var outputTask = process.StandardOutput.ReadToEndAsync();
-                    var errorTask = process.StandardError.ReadToEndAsync();
-
-                    await process.WaitForExitAsync();
-
-                    string output = await outputTask;
-                    string errors = await errorTask;
-
-                    return (process.ExitCode, output, errors);
                 }
             }
         }

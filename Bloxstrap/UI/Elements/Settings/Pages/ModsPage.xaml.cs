@@ -185,8 +185,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
                         await ModGenerator.RecolorFontsAsync(froststrapTemp, solidColor);
                         Log("Font recoloring finished.");
-
-                        ModGenerator.UpdateBuilderIconsJson(froststrapTemp);
                     }
                     catch (Exception ex)
                     {
@@ -203,8 +201,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                         preservePaths.Add(fullPath);
                     }
 
-                    preservePaths.Add(Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\BuilderIcons.json"));
-
+                    // this is only needed for preview
                     string builderIconsFontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
                     if (Directory.Exists(builderIconsFontDir))
                     {
