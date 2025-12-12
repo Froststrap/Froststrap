@@ -126,6 +126,7 @@
                                                 <TextBlock Text="Download" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
                                             </StackPanel>
                                         </ui:Button>
+                                        <ui:Button Grid.Row="0" Grid.Column="1" Icon="Info24" Height="34" Margin="4,0,0,0" Appearance="Secondary" Command="{Binding ShowInfoCommand}" CommandParameter="{Binding}" />
                                     </Grid>
                                 </Grid>
                             </Border>

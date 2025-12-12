@@ -15,8 +15,8 @@ namespace Bloxstrap.Models.APIs.Config
         [JsonPropertyName("download")]
         public string DownloadUrl { get; set; } = null!;
 
-        [JsonPropertyName("description")]
-        public string? Description { get; set; }
+        [JsonPropertyName("hexcode")]
+        public string? HexCode { get; set; }
 
         [JsonPropertyName("author")]
         public string? Author { get; set; }
@@ -59,5 +59,8 @@ namespace Bloxstrap.Models.APIs.Config
 
         [ObservableProperty]
         private IAsyncRelayCommand? _downloadCommand;
+
+        [ObservableProperty]
+        private IRelayCommand? _showInfoCommand;
     }
 }

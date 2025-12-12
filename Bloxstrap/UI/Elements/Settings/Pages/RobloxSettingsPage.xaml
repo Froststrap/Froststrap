@@ -39,6 +39,8 @@
                     Grid.Column="0"
                     HorizontalAlignment="Stretch"
                     IsSnapToTickEnabled="True"
+                    AutoToolTipPlacement="TopLeft" 
+                    AutoToolTipPrecision="1"
                     Maximum="{Binding MaxValue}"
                     Minimum="{Binding MinValue}"
                     TickFrequency="{Binding Step}"
@@ -46,8 +48,8 @@
 
                 <TextBlock
                     Grid.Column="1"
-                    Width="33"
-                    Margin="4,0,0,0"
+                    Width="18"
+                    Margin="6,0,0,0"
                     HorizontalAlignment="Right"
                     Text="{Binding Value}"
                     TextAlignment="Right" />

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Bloxstrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Windows;
@@ -43,6 +44,19 @@ namespace Bloxstrap.UI.ViewModels.Settings
         }
 
         [RelayCommand]
+        private void ShowModInfo(CommunityMod mod)
+        {
+            if (mod == null) return;
+
+            var dialog = new CommunityModInfoDialog(mod)
+            {
+                Owner = Application.Current.MainWindow
+            };
+
+            var result = dialog.ShowDialog();
+        }
+
+        [RelayCommand]
         private async Task LoadModsAsync()
         {
             try
@@ -71,6 +85,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     foreach (var mod in _allMods)
                     {
                         mod.DownloadCommand = DownloadModCommand;
+                        mod.ShowInfoCommand = ShowModInfoCommand;
                         Mods.Add(mod);
                     }
                 });
@@ -118,7 +133,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     var query = SearchQuery.ToLower();
                     modsToDisplay = _allMods.Where(mod =>
                         mod.Name.ToLower().Contains(query) ||
-                        (mod.Description?.ToLower()?.Contains(query) ?? false) ||
+                        (mod.HexCode?.ToLower()?.Contains(query) ?? false) ||
                         (mod.Author?.ToLower()?.Contains(query) ?? false)
                     ).ToList();
                 }
