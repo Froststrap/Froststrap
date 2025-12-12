@@ -112,13 +112,22 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 }
             }
 
-            FontSelectorComboBox.ItemsSource = _fontFiles.Select(f => Path.GetFileName(f));
+            var displayNames = _fontFiles
+                .Select(f => Path.GetFileNameWithoutExtension(f))
+                .Select(f => f.Replace("BuilderIcons-", ""))
+                .Distinct()
+                .OrderBy(f => f)
+                .ToArray();
 
-            if (_fontFiles.Length > 0)
+            FontSelectorComboBox.ItemsSource = displayNames;
+
+            if (_fontFiles.Length > 0 && displayNames.Length > 0)
             {
                 FontSelectorComboBox.SelectedIndex = 0;
 
-                string selectedFont = _fontFiles[FontSelectorComboBox.SelectedIndex];
+                string selectedDisplayName = (string)FontSelectorComboBox.SelectedItem;
+                string selectedFont = FindFontFile(selectedDisplayName, _fontFiles);
+
                 if (File.Exists(selectedFont))
                 {
                     await LoadGlyphPreviewsAsync(selectedFont);
@@ -126,14 +135,33 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             }
         }
 
+        private string FindFontFile(string displayName, string[] fontFiles)
+        {
+            string? otfFile = fontFiles.FirstOrDefault(f =>
+                Path.GetFileNameWithoutExtension(f) == $"BuilderIcons-{displayName}" &&
+                f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase));
+
+            if (otfFile != null)
+                return otfFile;
+            string? ttfFile = fontFiles.FirstOrDefault(f =>
+                Path.GetFileNameWithoutExtension(f) == $"BuilderIcons-{displayName}" &&
+                f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase));
+
+            return ttfFile ?? fontFiles.FirstOrDefault() ?? string.Empty;
+        }
+
         private async void FontSelectorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (FontSelectorComboBox.SelectedIndex < 0 || FontSelectorComboBox.SelectedIndex >= _fontFiles.Length)
+            if (FontSelectorComboBox.SelectedIndex < 0 || FontSelectorComboBox.SelectedItem == null)
                 return;
 
-            string selectedFont = _fontFiles[FontSelectorComboBox.SelectedIndex];
+            string? selectedDisplayName = FontSelectorComboBox.SelectedItem as string;
+            if (string.IsNullOrEmpty(selectedDisplayName))
+                return;
 
-            if (!File.Exists(selectedFont))
+            string selectedFont = FindFontFile(selectedDisplayName, _fontFiles);
+
+            if (string.IsNullOrEmpty(selectedFont) || !File.Exists(selectedFont))
             {
                 App.Logger?.WriteLine("UI", $"Selected font file no longer exists: {selectedFont}");
                 return;
@@ -425,7 +453,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                         int copiedFiles = 0;
 
                         var itemsToCopy = new List<string>
-                        {
+                                    {
                             Path.Combine(froststrapTemp, "ExtraContent"),
                             Path.Combine(froststrapTemp, "content"),
                             Path.Combine(froststrapTemp, "info.json")
