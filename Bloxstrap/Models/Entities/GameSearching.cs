@@ -32,7 +32,6 @@ namespace Bloxstrap.Models.Entities
             try
             {
                 string requestUrl = $"{SearchApiUrl}?searchQuery={Uri.EscapeDataString(searchQuery)}&sessionid=0&pageType=Game";
-                App.Logger.WriteLine(LOG_IDENT, $"Fetching search results for query: {searchQuery}");
 
                 var response = await _client.GetAsync(requestUrl).ConfigureAwait(false);
                 if (!response.IsSuccessStatusCode)
@@ -96,8 +95,6 @@ namespace Bloxstrap.Models.Entities
                         taken++;
                     }
                 }
-
-                App.Logger.WriteLine(LOG_IDENT, $"Found {results.Count} search result(s) for query: {searchQuery}");
             }
             catch (Exception ex)
             {
