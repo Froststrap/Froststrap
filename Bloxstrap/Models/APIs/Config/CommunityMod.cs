@@ -78,8 +78,8 @@ namespace Bloxstrap.Models.APIs.Config
         [JsonIgnore]
         public string ModTypeDisplay => ModType switch
         {
-            ModType.Misc => "Miscellaneous",
-            ModType.Mod => "Mod",
+            ModType.Misc => "Misc Mod",
+            ModType.Mod => "Color Mod",
             ModType.CustomTheme => "Custom Theme",
             _ => "Unknown"
         };

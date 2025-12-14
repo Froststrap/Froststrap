@@ -11,11 +11,10 @@
     xmlns:resources="clr-namespace:Bloxstrap.Resources"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Mod Information"
-    Width="605"
-    Height="500"
+    Width="750"
+    Height="250"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
-    ResizeMode="CanResize"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
 
@@ -33,103 +32,100 @@
             Icon="pack://application:,,,/Bloxstrap.ico"
             Padding="8"
             ShowMinimize="False" />
+        
+        <Grid Grid.Row="1" Margin="8" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="260"/>
+            </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Row="1" Margin="8" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="275"/>
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0"
+            <Border Grid.Column="0"
             CornerRadius="8"
             Margin="0,0,16,0">
-                    <Grid>
-                        <Image Source="{Binding Mod.ThumbnailImage}"
-                   Stretch="Uniform"
+                <Grid>
+                    <Image Source="{Binding Mod.ThumbnailImage}"
+                   Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"/>
 
-                        <ui:ProgressRing
+                    <ui:ProgressRing
                 Visibility="{Binding Mod.IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"
                 IsIndeterminate="True"
                 Width="24"
                 Height="24"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"/>
-                    </Grid>
-                </Border>
+                </Grid>
+            </Border>
 
-                <Grid Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0">
-                        <TextBlock Text="{Binding Mod.Name}"
-                       FontSize="24"
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="{Binding Mod.Name}"
+                       FontSize="28"
                        FontWeight="Bold"
                        TextWrapping="Wrap"/>
 
-                        <TextBlock Text="{Binding Mod.Author, StringFormat='By {0}'}"
-                       FontSize="16"
+                    <TextBlock Text="{Binding Mod.ModType, StringFormat='Mod Type: {0}'}"
+                       FontSize="14"
                        TextWrapping="Wrap"
-                       Foreground="{StaticResource TextFillColorSecondaryBrush}"
-                       Margin="0,2,0,4"/>
-
-                        <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code: {0}'}"
-                       FontSize="14" Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}"
                        Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+
+                    <TextBlock Text="{Binding Mod.Author, StringFormat='Made By: {0}'}"
+                       FontSize="12"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+
+                    <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code: {0}'}"
+                       FontSize="12" Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
+
+                    <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="Preview"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Margin="0,0,0,8"/>
+
+                        <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding GlyphItems}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Width="52" Height="52" Margin="4"
+                                         Padding="4"
+                                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                         BorderThickness="1"
+                                         CornerRadius="6">
+                                            <Viewbox Stretch="Uniform">
+                                                <Path Data="{Binding Data}" Margin="0,0,10,8" Fill="{Binding ColorBrush}"/>
+                                            </Viewbox>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+
+                        <ui:ProgressRing
+                     Visibility="{Binding IsLoadingGlyphs, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     IsIndeterminate="True"
+                     Width="40"
+                     Height="40"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Margin="0,16,0,0"/>
                     </StackPanel>
-                </Grid>
-
-
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="Preview"
-                       FontSize="18"
-                       FontWeight="Bold"
-                       Margin="0,0,0,8"/>
-
-                    <ScrollViewer Height="260" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding GlyphItems}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Width="52" Height="52" Margin="4"
-                                    Padding="4"
-                                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="6">
-                                        <Viewbox Stretch="Uniform">
-                                            <Path Data="{Binding Data}" Fill="{Binding ColorBrush}"/>
-                                        </Viewbox>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-
-                    <ui:ProgressRing
-                Visibility="{Binding IsLoadingGlyphs, Converter={StaticResource BooleanToVisibilityConverter}}"
-                IsIndeterminate="True"
-                Width="40"
-                Height="40"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Margin="0,16,0,0"/>
                 </StackPanel>
             </Grid>
-        </ScrollViewer>
+        </Grid>
     </Grid>
 </base:WpfUiWindow>

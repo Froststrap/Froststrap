@@ -54,8 +54,8 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Width="280"
-                                    Margin="4"
+                        <Border Width="265"
+                                    Margin="8"
                                     Background="{DynamicResource NormalDarkAndLightBackground}"
                                     CornerRadius="4">
                             <Grid>
