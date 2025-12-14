@@ -37,7 +37,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0">
+            <StackPanel Grid.Row="0" Margin="0,0,0,12">
                 <ui:TextBox PlaceholderText="Search mods..." Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,12,0">
                     <ui:TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding SearchModsCommand}"/>
@@ -54,8 +54,8 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Width="265"
-                                    Margin="8"
+                        <Border Width="271"
+                                    Margin="4"
                                     Background="{DynamicResource NormalDarkAndLightBackground}"
                                     CornerRadius="4">
                             <Grid>

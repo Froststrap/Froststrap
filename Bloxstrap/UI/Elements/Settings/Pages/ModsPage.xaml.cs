@@ -16,6 +16,7 @@ using Bloxstrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Drawing;
+using ICSharpCode.SharpZipLib.Zip;
 using System.IO.Compression;
 using System.Windows;
 using System.Windows.Controls;
@@ -222,30 +223,18 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
                         Directory.CreateDirectory(targetDir);
 
-                        using (var archive = ZipFile.OpenRead(zipPath))
-                        {
-                            foreach (var entry in archive.Entries)
-                            {
-                                if (string.IsNullOrEmpty(entry.FullName) || entry.FullName.EndsWith("/") || entry.FullName.EndsWith("\\"))
-                                    continue;
-
-                                string destinationPath = Path.GetFullPath(Path.Combine(targetDir, entry.FullName));
-
-                                if (!destinationPath.StartsWith(Path.GetFullPath(targetDir), StringComparison.OrdinalIgnoreCase))
-                                    throw new IOException($"Entry {entry.FullName} is trying to extract outside of {targetDir}");
-
-                                Directory.CreateDirectory(Path.GetDirectoryName(destinationPath)!);
-                                entry.ExtractToFile(destinationPath, overwrite: true);
-                            }
-                        }
+                        // Fast extraction using SharpZipLib (sequential but handles all compression methods)
+                        new FastZip().ExtractZip(zipPath, targetDir, null);
                     }
 
                     SetStatus("Extracting ZIPs...");
                     Log("Extracting downloaded ZIPs...");
 
-                    SafeExtract(luaPackagesZip, luaPackagesDir);
-                    SafeExtract(extraTexturesZip, extraTexturesDir);
-                    SafeExtract(contentTexturesZip, contentTexturesDir);
+                    Parallel.Invoke(
+                        () => SafeExtract(luaPackagesZip, luaPackagesDir),
+                        () => SafeExtract(extraTexturesZip, extraTexturesDir),
+                        () => SafeExtract(contentTexturesZip, contentTexturesDir)
+                    );
 
                     Log("Extraction complete.");
 
