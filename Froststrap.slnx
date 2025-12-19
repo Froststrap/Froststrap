@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Bloxstrap/Bloxstrap.csproj" />
+  <Project Path="Froststrap.AvaloniaUI/Froststrap.AvaloniaUI.csproj" />
   <Project Path="wpfui/src/Wpf.Ui/Wpf.Ui.csproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
