@@ -190,28 +190,25 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                 mod.DownloadProgress = 100;
 
-                switch (mod.ModType)
+                if (mod.IsCustomTheme)
                 {
-                    case ModType.Misc:
-                    case ModType.Mod:
-                        await ExtractModToModificationsAsync(tempFile, mod.Name);
-                        Frontend.ShowMessageBox(
-                            $"Mod '{mod.Name}' installed successfully!",
-                            MessageBoxImage.Information,
-                            MessageBoxButton.OK
-                        );
-                        App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed mod: {mod.Name}");
-                        break;
-
-                    case ModType.CustomTheme:
-                        await ExtractCustomThemeAsync(tempFile, mod.Name);
-                        Frontend.ShowMessageBox(
-                            $"Custom theme '{mod.Name}' installed successfully!",
-                            MessageBoxImage.Information,
-                            MessageBoxButton.OK
-                        );
-                        App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed custom theme: {mod.Name}");
-                        break;
+                    await ExtractCustomThemeAsync(tempFile, mod.Name);
+                    Frontend.ShowMessageBox(
+                        $"Custom theme '{mod.Name}' installed successfully!\n\nThe theme has been saved to your Custom Themes folder and will be available in the Themes settings.",
+                        MessageBoxImage.Information,
+                        MessageBoxButton.OK
+                    );
+                    App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed custom theme: {mod.Name}");
+                }
+                else
+                {
+                    await ExtractModToModificationsAsync(tempFile, mod.Name);
+                    Frontend.ShowMessageBox(
+                        $"Mod '{mod.Name}' installed successfully!\n\nThe mod has been applied to your Modifications folder and will be used the next time you launch Roblox.",
+                        MessageBoxImage.Information,
+                        MessageBoxButton.OK
+                    );
+                    App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed mod: {mod.Name}");
                 }
             }
             catch (Exception ex)

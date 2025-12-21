@@ -2,8 +2,11 @@
 {
     public enum ModType
     {
-        Misc = 0,
-        Mod = 1,
-        CustomTheme = 2
+        MiscMod = 0,
+        ColorMod = 1,
+        SkyBox = 2,
+        Cursor = 3,
+        AvatarEditor = 4,
+        CustomTheme = 5
     }
 }

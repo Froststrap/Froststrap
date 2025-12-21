@@ -116,31 +116,49 @@
             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
             Text="{x:Static resources:Strings.Menu_GBSEditor_Description}" />
 
+        <Grid Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <ui:CardAction
+        Grid.Column="0"
+        Margin="0,0,4,0"
+        Command="{Binding ImportCommand}"
+        Icon="FolderAdd24">
+
+                <TextBlock FontSize="14" Text="Import Roblox Settings" />
+            </ui:CardAction>
+
+            <ui:CardAction
+        Grid.Column="1"
+        Margin="4,0,0,0"
+        VerticalAlignment="Top"
+        Command="{Binding OpenRobloxFolderCommand}"
+        Icon="Folder24">
+
+                <TextBlock FontSize="14" Text="Open Roblox Folder" TextWrapping="Wrap" />
+            </ui:CardAction>
+
+            <ui:CardAction
+        Grid.Column="2"
+        Margin="4,0,0,0"
+        Command="{Binding ExportCommand}"
+        Icon="Save24">
+
+                <TextBlock FontSize="14" Text="Export Roblox Settings" TextWrapping="Wrap" />
+            </ui:CardAction>
+        </Grid>
+
         <controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
             <ui:ToggleSwitch
                 Margin="5,0,0,0"
                 Padding="10,5,10,5"
                 IsChecked="{Binding ReadOnly}" />
         </controls:OptionControl>
-
-        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-            <ui:Button
-                Margin="0,0,8,0"
-                Content="Export Roblox Settings"
-                Icon="Save24"
-                Command="{Binding ExportCommand}" />
-            <ui:Button
-                Margin="0,0,8,0"
-                Content="Import Roblox Settings"
-                Icon="FolderAdd24"
-                Command="{Binding ImportCommand}" />
-            <ui:Button
-                Margin="0,0,8,0"
-                Content="Open Roblox Folder"
-                Icon="Folder24"
-                Command="{Binding OpenRobloxFolderCommand}" />
-        </StackPanel>
-
+        
         <ItemsControl ItemsSource="{Binding Sections}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
