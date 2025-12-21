@@ -81,7 +81,7 @@
                        Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
 
                 <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code: {0}'}"
-                       FontSize="12" Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       FontSize="12" Visibility="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}"
                        Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
 
                 <Grid Margin="0,8,0,4">
@@ -114,7 +114,7 @@
                     </ui:Button>
                 </Grid>
 
-                <StackPanel Visibility="{Binding Mod.IsMod, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Visibility="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Text="Preview"
                             FontSize="14"
                             FontWeight="Bold"

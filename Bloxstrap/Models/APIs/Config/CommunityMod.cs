@@ -70,6 +70,9 @@ namespace Bloxstrap.Models.APIs.Config
         public bool IsCustomTheme => ModType == ModType.CustomTheme;
 
         [JsonIgnore]
+        public bool IsColorMod => ModType == ModType.ColorMod;
+
+        [JsonIgnore]
         public string ModTypeDisplay => ModType switch
         {
             ModType.MiscMod => "Misc Mod",
