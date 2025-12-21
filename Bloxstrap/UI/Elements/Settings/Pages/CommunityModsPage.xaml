@@ -20,7 +20,7 @@
             </StackPanel>
         </Grid>
 
-        <StackPanel Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center"> 
+        <StackPanel Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="{Binding ErrorMessage}"
                          FontWeight="SemiBold"
                          Foreground="#FF4444"
@@ -33,8 +33,8 @@
         <Grid Visibility="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Margin="0,0,0,12">
@@ -45,7 +45,63 @@
                 </ui:TextBox>
             </StackPanel>
 
-            <ItemsControl ItemsSource="{Binding Mods}" Grid.Row="1">
+            <ScrollViewer Grid.Row="1" 
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled"
+                          Margin="0,0,0,16">
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton 
+                        Content="All"
+                        IsChecked="{Binding ShowAll}"
+                        Margin="4,0"
+                        Padding="12,6"
+                        Command="{Binding FilterAllCommand}"/>
+
+                    <ToggleButton 
+                        Content="Color Mods"
+                        IsChecked="{Binding ShowColorMods}"
+                        Margin="4,0"
+                        Padding="12,6"
+                        Command="{Binding FilterColorModsCommand}"/>
+
+                    <ToggleButton 
+                        Content="Custom Themes"
+                        IsChecked="{Binding ShowCustomThemes}"
+                        Margin="4,0"
+                        Padding="12,6"
+                        Command="{Binding FilterCustomThemesCommand}"/>
+
+                    <ToggleButton 
+                        Content="Misc Mods"
+                        IsChecked="{Binding ShowMiscMods}"
+                        Margin="4,0"
+                        Padding="12,6"
+                        Command="{Binding FilterMiscModsCommand}"/>
+
+                    <ToggleButton 
+                        Content="SkyBox"
+                        IsChecked="{Binding ShowSkyBox}"
+                        Margin="4,0"
+                        Padding="12,6"
+                        Command="{Binding FilterSkyBoxCommand}"/>
+
+                    <ToggleButton 
+                        Content="Cursor"
+                        IsChecked="{Binding ShowCursor}"
+                        Margin="4,0"
+                        Padding="12,6"
+                        Command="{Binding FilterCursorCommand}"/>
+
+                    <ToggleButton 
+                        Content="Avatar Editor"
+                        IsChecked="{Binding ShowAvatarEditor}"
+                        Margin="4,0"
+                        Padding="12,6"
+                        Command="{Binding FilterAvatarEditorCommand}"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <ItemsControl ItemsSource="{Binding Mods}" Grid.Row="2">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal"/>
@@ -98,7 +154,7 @@
                                         <Run Text="Made By:"/>
                                         <Run Text="{Binding Author}"/>
                                         <Run Text=" | "/>
-                                        <Run Text="Mod Type:"/>
+                                        <Run Text="Type:"/>
                                         <Run Text="{Binding ModTypeDisplay, Mode=OneWay}" />
                                     </TextBlock.Inlines>
                                 </TextBlock>
