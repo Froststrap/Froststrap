@@ -70,7 +70,7 @@
                        FontWeight="Bold"
                        TextWrapping="Wrap"/>
 
-                    <TextBlock Text="{Binding Mod.ModType, StringFormat='Mod Type: {0}'}"
+                    <TextBlock Text="{Binding Mod.ModTypeDisplay, StringFormat='Mod Type: {0}'}"
                        FontSize="14"
                        TextWrapping="Wrap"
                        Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
