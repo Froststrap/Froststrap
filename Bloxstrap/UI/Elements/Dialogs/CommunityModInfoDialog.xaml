@@ -12,7 +12,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Mod Information"
     Width="750"
-    Height="250"
+    Height="290"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ExtendsContentIntoTitleBar="True"
     WindowStartupLocation="CenterOwner"
@@ -33,7 +33,7 @@
             Padding="8"
             ShowMinimize="False" />
         
-        <Grid Grid.Row="1" Margin="8" >
+        <Grid Grid.Row="1" Margin="8,8,8,4" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="260"/>
@@ -46,7 +46,7 @@
                     <Image Source="{Binding Mod.ThumbnailImage}"
                    Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"
                    HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+                   VerticalAlignment="Top"/>
 
                     <ui:ProgressRing
                 Visibility="{Binding Mod.IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -102,7 +102,7 @@
                                     <DataTemplate>
                                         <Border Width="52" Height="52" Margin="4"
                                          Padding="4"
-                                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                         Background="{DynamicResource PrimaryBackgroundColor}"
                                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                                          BorderThickness="1"
                                          CornerRadius="6">

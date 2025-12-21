@@ -223,7 +223,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
                         Directory.CreateDirectory(targetDir);
 
-                        // Fast extraction using SharpZipLib (sequential but handles all compression methods)
                         new FastZip().ExtractZip(zipPath, targetDir, null);
                     }
 

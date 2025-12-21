@@ -65,6 +65,11 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 HasError = false;
                 ErrorMessage = string.Empty;
 
+                if (App.RemoteData.LoadedState == GenericTriState.Unknown)
+                {
+                    await App.RemoteData.WaitUntilDataFetched();
+                }
+
                 var remoteMods = App.RemoteData.Prop.CommunityMods;
 
                 if (remoteMods?.Any() != true)
