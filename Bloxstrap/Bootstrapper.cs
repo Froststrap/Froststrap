@@ -1764,51 +1764,97 @@ namespace Bloxstrap
                 if (relativeFile.EndsWith(".lock"))
                     continue;
 
-                modFolderFiles.Add(relativeFile);
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+                bool isDeleteOperation = fileNameWithoutExt.EndsWith("_Delete");
 
-                string fileModFolder = Path.Combine(Paths.Modifications, relativeFile);
-                string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
-
-                fileTasks.Add(Task.Run(async () =>
+                if (isDeleteOperation)
                 {
-                    await semaphore.WaitAsync();
-                    try
-                    {
-                        if (File.Exists(fileVersionFolder))
-                        {
-                            // Check hashes in parallel
-                            var hashTask = Task.Run(() => MD5Hash.FromFile(fileModFolder));
-                            var existingHashTask = Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+                    string directory = Path.GetDirectoryName(relativeFile) ?? "";
+                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
+                    string originalExtension = Path.GetExtension(relativeFile);
+                    string originalFileName = Path.Combine(directory, originalFileNameWithoutDelete + originalExtension);
 
-                            if (await hashTask == await existingHashTask)
+                    string originalFileVersionPath = Path.Combine(_latestVersionDirectory, originalFileName);
+
+                    modFolderFiles.Add(relativeFile);
+
+                    fileTasks.Add(Task.Run(async () =>
+                    {
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            if (File.Exists(originalFileVersionPath))
                             {
-                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
+                                Filesystem.AssertReadOnly(originalFileVersionPath);
+                                File.Delete(originalFileVersionPath);
+                                App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} has been deleted from the version folder");
+                                return true;
+                            }
+                            else
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} not found in version folder, nothing to delete");
                                 return true;
                             }
                         }
-
-                        Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-
-                        Filesystem.AssertReadOnly(fileVersionFolder);
-                        try
-                        {
-                            File.Copy(fileModFolder, fileVersionFolder, true);
-                            Filesystem.AssertReadOnly(fileVersionFolder);
-                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
-                            return true;
-                        }
                         catch (Exception ex)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete file ({originalFileName})");
                             App.Logger.WriteException(LOG_IDENT, ex);
                             return false;
                         }
-                    }
-                    finally
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    }));
+                }
+                else
+                {
+                    modFolderFiles.Add(relativeFile);
+
+                    string fileModFolder = Path.Combine(Paths.Modifications, relativeFile);
+                    string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
+
+                    fileTasks.Add(Task.Run(async () =>
                     {
-                        semaphore.Release();
-                    }
-                }));
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            if (File.Exists(fileVersionFolder))
+                            {
+                                var hashTask = Task.Run(() => MD5Hash.FromFile(fileModFolder));
+                                var existingHashTask = Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+
+                                if (await hashTask == await existingHashTask)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
+                                    return true;
+                                }
+                            }
+
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            try
+                            {
+                                File.Copy(fileModFolder, fileVersionFolder, true);
+                                Filesystem.AssertReadOnly(fileVersionFolder);
+                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
+                                return true;
+                            }
+                            catch (Exception ex)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
+                                App.Logger.WriteException(LOG_IDENT, ex);
+                                return false;
+                            }
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    }));
+                }
             }
 
             var fileResults = await Task.WhenAll(fileTasks);
@@ -1827,30 +1873,62 @@ namespace Bloxstrap
                 if (modFolderFiles.Contains(fileLocation))
                     continue;
 
-                var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && fileLocation.StartsWith(x.Value));
-                string packageName = packageMapEntry.Key;
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+                bool isDeleteOperation = fileNameWithoutExt.EndsWith("_Delete");
 
-                // package doesn't exist, likely mistakenly placed file
-                if (String.IsNullOrEmpty(packageName))
+                if (isDeleteOperation)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed as a mod but does not belong to a package");
+                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
+                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
+                    string originalExtension = Path.GetExtension(fileLocation);
+                    string originalFileName = Path.Combine(directory, originalFileNameWithoutDelete + originalExtension);
 
-                    string versionFileLocation = Path.Combine(_latestVersionDirectory, fileLocation);
+                    var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && originalFileName.StartsWith(x.Value));
+                    string packageName = packageMapEntry.Key;
 
-                    if (File.Exists(versionFileLocation))
-                        File.Delete(versionFileLocation);
+                    // package doesn't exist, likely mistakenly placed file
+                    if (String.IsNullOrEmpty(packageName))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} was removed but does not belong to a package");
+                        continue;
+                    }
 
-                    continue;
+                    string fileName = originalFileName.Substring(packageMapEntry.Value.Length);
+
+                    if (!fileRestoreMap.ContainsKey(packageName))
+                        fileRestoreMap[packageName] = new();
+
+                    fileRestoreMap[packageName].Add(fileName);
+
+                    App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} was removed, restoring from {packageName}");
                 }
+                else
+                {
+                    var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && fileLocation.StartsWith(x.Value));
+                    string packageName = packageMapEntry.Key;
 
-                string fileName = fileLocation.Substring(packageMapEntry.Value.Length);
+                    // package doesn't exist, likely mistakenly placed file
+                    if (String.IsNullOrEmpty(packageName))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed but does not belong to a package");
 
-                if (!fileRestoreMap.ContainsKey(packageName))
-                    fileRestoreMap[packageName] = new();
+                        string versionFileLocation = Path.Combine(_latestVersionDirectory, fileLocation);
 
-                fileRestoreMap[packageName].Add(fileName);
+                        if (File.Exists(versionFileLocation))
+                            File.Delete(versionFileLocation);
 
-                App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed as a mod, restoring from {packageName}");
+                        continue;
+                    }
+
+                    string fileName = fileLocation.Substring(packageMapEntry.Value.Length);
+
+                    if (!fileRestoreMap.ContainsKey(packageName))
+                        fileRestoreMap[packageName] = new();
+
+                    fileRestoreMap[packageName].Add(fileName);
+
+                    App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed, restoring from {packageName}");
+                }
             }
 
             foreach (var entry in fileRestoreMap)
