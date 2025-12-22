@@ -16,8 +16,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set => App.Settings.Prop.CheckForUpdates = value;
         }
 
-        public IEnumerable<SaveAndLaunch> SaveAndLaunchs => Enum.GetValues(typeof(SaveAndLaunch)).Cast<SaveAndLaunch>();
-
         public bool IsRobloxInstallationMissing => String.IsNullOrEmpty(App.RobloxState.Prop.Player.VersionGuid) && String.IsNullOrEmpty(App.RobloxState.Prop.Studio.VersionGuid);
 
         private async Task LoadChannelDeployInfo(string channel)

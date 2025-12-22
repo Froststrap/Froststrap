@@ -14,6 +14,7 @@
     MaxWidth="750"
     MaxHeight="290"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+    ResizeMode="NoResize"
     ExtendsContentIntoTitleBar="True"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">

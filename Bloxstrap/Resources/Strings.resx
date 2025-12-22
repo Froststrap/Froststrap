@@ -376,7 +376,7 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
     <value>Froststrap (Opaque)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.CustomFluentDialog" xml:space="preserve">
+  <data name="Enums.BootstrapperStyle.FroststrapDialog" xml:space="preserve">
     <value>Froststrap</value>
   </data>
   <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">

@@ -2190,15 +2190,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap.
-        /// </summary>
-        public static string Enums_BootstrapperStyle_CustomFluentDialog {
-            get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.CustomFluentDialog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Froststrap (Glass).
         /// </summary>
         public static string Enums_BootstrapperStyle_FluentAeroDialog {
@@ -2213,6 +2204,15 @@ namespace Bloxstrap.Resources {
         public static string Enums_BootstrapperStyle_FluentDialog {
             get {
                 return ResourceManager.GetString("Enums.BootstrapperStyle.FluentDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap.
+        /// </summary>
+        public static string Enums_BootstrapperStyle_FroststrapDialog {
+            get {
+                return ResourceManager.GetString("Enums.BootstrapperStyle.FroststrapDialog", resourceCulture);
             }
         }
         

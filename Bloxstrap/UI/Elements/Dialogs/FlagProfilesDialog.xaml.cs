@@ -135,67 +135,30 @@ namespace Bloxstrap.UI.Elements.Dialogs
                     return;
                 }
 
-                CopyFormatMode format = App.Settings.Prop.SelectedCopyFormat;
-
-                if (format == CopyFormatMode.Format1)
-                {
-                    string json = JsonSerializer.Serialize(flags, new JsonSerializerOptions { WriteIndented = true });
-                    Clipboard.SetDataObject(json);
-                }
-                else if (format == CopyFormatMode.Format2)
-                {
-                    var groupedFlags = flags
-                        .GroupBy(kvp =>
-                        {
-                            var match = Regex.Match(kvp.Key, @"^[A-Z]+[a-z]*");
-                            return match.Success ? match.Value : "Other";
-                        })
-                        .OrderBy(g => g.Key);
-
-                    var formattedJson = new StringBuilder();
-                    formattedJson.AppendLine("{");
-
-                    int totalItems = flags.Count;
-                    int writtenItems = 0;
-                    int groupIndex = 0;
-
-                    foreach (var group in groupedFlags)
+                var groupedFlags = flags
+                    .GroupBy(kvp =>
                     {
-                        if (groupIndex > 0)
-                            formattedJson.AppendLine();
+                        var match = Regex.Match(kvp.Key, @"^[A-Z]+[a-z]*");
+                        return match.Success ? match.Value : "Other";
+                    })
+                    .OrderBy(g => g.Key);
 
-                        var sortedGroup = group
-                            .OrderByDescending(kvp => kvp.Key.Length + (kvp.Value?.ToString()?.Length ?? 0));
+                var formattedJson = new StringBuilder();
+                formattedJson.AppendLine("{");
 
-                        foreach (var kvp in sortedGroup)
-                        {
-                            writtenItems++;
-                            bool isLast = (writtenItems == totalItems);
-                            string line = $"    \"{kvp.Key}\": \"{kvp.Value}\"";
+                int totalItems = flags.Count;
+                int writtenItems = 0;
+                int groupIndex = 0;
 
-                            if (!isLast)
-                                line += ",";
-
-                            formattedJson.AppendLine(line);
-                        }
-
-                        groupIndex++;
-                    }
-
-                    formattedJson.AppendLine("}");
-                    Clipboard.SetText(formattedJson.ToString());
-                }
-                else if (format == CopyFormatMode.Format3)
+                foreach (var group in groupedFlags)
                 {
-                    var sortedFlags = flags.OrderBy(kvp => kvp.Key);
+                    if (groupIndex > 0)
+                        formattedJson.AppendLine();
 
-                    var formattedJson = new StringBuilder();
-                    formattedJson.AppendLine("{");
+                    var sortedGroup = group
+                        .OrderByDescending(kvp => kvp.Key.Length + (kvp.Value?.ToString()?.Length ?? 0));
 
-                    int totalItems = flags.Count;
-                    int writtenItems = 0;
-
-                    foreach (var kvp in sortedFlags)
+                    foreach (var kvp in sortedGroup)
                     {
                         writtenItems++;
                         bool isLast = (writtenItems == totalItems);
@@ -207,36 +170,11 @@ namespace Bloxstrap.UI.Elements.Dialogs
                         formattedJson.AppendLine(line);
                     }
 
-                    formattedJson.AppendLine("}");
-                    Clipboard.SetText(formattedJson.ToString());
+                    groupIndex++;
                 }
-                else if (format == CopyFormatMode.Format4)
-                {
-                    var sortedFlags = flags.OrderByDescending(kvp =>
-                        $"    \"{kvp.Key}\": \"{kvp.Value}\"".Length
-                    );
 
-                    var formattedJson = new StringBuilder();
-                    formattedJson.AppendLine("{");
-
-                    int totalItems = flags.Count;
-                    int writtenItems = 0;
-
-                    foreach (var kvp in sortedFlags)
-                    {
-                        writtenItems++;
-                        bool isLast = (writtenItems == totalItems);
-                        string line = $"    \"{kvp.Key}\": \"{kvp.Value}\"";
-
-                        if (!isLast)
-                            line += ",";
-
-                        formattedJson.AppendLine(line);
-                    }
-
-                    formattedJson.AppendLine("}");
-                    Clipboard.SetText(formattedJson.ToString());
-                }
+                formattedJson.AppendLine("}");
+                Clipboard.SetText(formattedJson.ToString());
             }
             catch (Exception ex)
             {

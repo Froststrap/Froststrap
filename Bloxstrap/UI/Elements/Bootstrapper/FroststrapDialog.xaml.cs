@@ -8,11 +8,11 @@ using System.Windows.Threading;
 namespace Bloxstrap.UI.Elements.Bootstrapper
 {
     /// <summary>
-    /// Interaction logic for CustomFluentDialog.xaml
+    /// Interaction logic for FroststrapDialog.xaml
     /// </summary>
-    public partial class CustomFluentDialog : IBootstrapperDialog
+    public partial class FroststrapDialog : IBootstrapperDialog
     {
-        private readonly CustomFluentDialogViewModel _viewModel;
+        private readonly FroststrapDialogViewModel _viewModel;
 
         public Bloxstrap.Bootstrapper? Bootstrapper { get; set; }
 
@@ -92,11 +92,11 @@ namespace Bloxstrap.UI.Elements.Bootstrapper
         }
         #endregion
 
-        public CustomFluentDialog()
+        public FroststrapDialog()
         {
             InitializeComponent();
 
-            _viewModel = new CustomFluentDialogViewModel(this);
+            _viewModel = new FroststrapDialogViewModel(this);
             DataContext = _viewModel;
             Title = App.Settings.Prop.BootstrapperTitle;
             Icon = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();

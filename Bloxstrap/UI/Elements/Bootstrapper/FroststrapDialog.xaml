@@ -1,5 +1,5 @@
 ﻿<base:WpfUiWindow
-    x:Class="Bloxstrap.UI.Elements.Bootstrapper.CustomFluentDialog"
+    x:Class="Bloxstrap.UI.Elements.Bootstrapper.FroststrapDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="clr-namespace:Bloxstrap.UI.Elements.Base"

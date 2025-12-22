@@ -50,14 +50,12 @@ namespace Bloxstrap.Models.Persistable
 
         // FastFlag Editor/Settings Related
         public bool UseFastFlagManager { get; set; } = true;
-        public CopyFormatMode SelectedCopyFormat { get; set; } = CopyFormatMode.Format1;
-        public bool CtrlCJsonFormat { get; set; } = false;
         public bool ShowPresetColumn { get; set; } = false;
         public bool ShowFlagCount { get; set; } = true;
         public bool UseAltManually { get; set; } = true;
 
         // Appearance Page
-        public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.CustomFluentDialog;
+        public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FroststrapDialog;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconBloxstrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.Mica;
         public string? SelectedCustomTheme { get; set; } = null;

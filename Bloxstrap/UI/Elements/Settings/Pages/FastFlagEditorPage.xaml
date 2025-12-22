@@ -127,7 +127,6 @@
         CanUserDeleteRows="False"
         CanUserReorderColumns="False"
         CellEditEnding="DataGrid_CellEditEnding"
-        PreviewKeyDown="DataGrid_PreviewKeyDown"
         GridLinesVisibility="Horizontal"
         HeadersVisibility="Column">
                 
