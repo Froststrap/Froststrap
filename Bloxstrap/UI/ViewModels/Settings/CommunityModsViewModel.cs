@@ -303,7 +303,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 {
                     await ExtractCustomThemeAsync(tempFile, mod.Name);
                     Frontend.ShowMessageBox(
-                        $"Custom theme '{mod.Name}' installed successfully!\n\nThe theme has been saved to your Custom Themes folder and will be available in the Themes settings.",
+                        $"Custom theme '{mod.Name}' installed successfully!\n\nThe theme has been saved to your Custom Themes folder and will be available in Custom Launchers.",
                         MessageBoxImage.Information,
                         MessageBoxButton.OK
                     );
@@ -311,12 +311,34 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 }
                 else
                 {
-                    await ExtractModToModificationsAsync(tempFile, mod.Name);
+                    bool hasExistingMods = Directory.Exists(Paths.Modifications) &&
+                                          (Directory.GetFiles(Paths.Modifications).Any() ||
+                                           Directory.GetDirectories(Paths.Modifications)
+                                               .Any(dir => !dir.EndsWith("ClientSettings", StringComparison.OrdinalIgnoreCase)));
+
+                    if (hasExistingMods)
+                    {
+                        var result = Frontend.ShowMessageBox(
+                            "Existing mods found in the Modifications folder.\n\n" +
+                            $"Would you like to delete existing mods before installing '{mod.Name}'?",
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo
+                        );
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            await CleanModificationsDirectoryAsync();
+                        }
+                    }
+
+                    await ExtractZipAsync(tempFile);
+
                     Frontend.ShowMessageBox(
-                        $"Mod '{mod.Name}' installed successfully!\n\nThe mod has been applied to your Modifications folder and will be used the next time you launch Roblox.",
+                        $"Mod '{mod.Name}' installed successfully!",
                         MessageBoxImage.Information,
                         MessageBoxButton.OK
                     );
+
                     App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed mod: {mod.Name}");
                 }
             }
