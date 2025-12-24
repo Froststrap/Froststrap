@@ -126,7 +126,7 @@
                                     Height="30"
                                     IsEnabled="{Binding IsOnline}"
                                     Visibility="{Binding DataContext.IsBulkMode, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                                    <ui:SymbolIcon Filled="True" Symbol="Play24" FontSize="16" />
+                                    <ui:SymbolIcon Filled="True" Symbol="Play24" FontSize="16" Foreground="White" />
                                 </ui:Button>
 
                                 <ToggleButton

@@ -30,7 +30,9 @@ namespace Bloxstrap.Models.Persistable
         public bool ConfirmLaunches { get; set; } = true;
         public bool AutoCloseCrashHandler { get; set; } = false;
         public MemoryCleanerInterval MemoryCleanerInterval { get; set; } = MemoryCleanerInterval.Never;
-        public ObservableCollection<string> UserExcludedProcesses { get; set; } = new ObservableCollection<string> { "robloxplayerbeta" };
+        public ObservableCollection<string> UserExcludedProcesses { get; set; } = new();
+        public int RobloxTrimIntervalSeconds { get; set; } = 60;
+        public bool EnableRobloxTrim { get; set; } = true;
         public string Locale { get; set; } = "nil";
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = new List<string>();

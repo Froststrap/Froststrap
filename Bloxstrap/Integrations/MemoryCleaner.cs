@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Timers;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Bloxstrap.Integrations
 {
@@ -9,6 +10,7 @@ namespace Bloxstrap.Integrations
         private const string LOG_IDENT = "MemoryCleaner";
 
         private System.Timers.Timer? _cleanupTimer;
+        private System.Timers.Timer? _robloxTrimTimer;
         private bool _isCleaning = false;
         private readonly object _cleanupLock = new object();
 
@@ -18,7 +20,6 @@ namespace Bloxstrap.Integrations
         [DllImport("psapi.dll", SetLastError = true)]
         private static extern int EmptyWorkingSet(IntPtr hProcess);
 
-
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern IntPtr GetCurrentProcess();
 
@@ -27,6 +28,8 @@ namespace Bloxstrap.Integrations
             "system", "csrss", "wininit", "winlogon", "services", "lsass",
             "smss", "svchost", "explorer", "taskhostw", "dwm", "ctfmon"
         };
+
+        private readonly HashSet<string> _robloxProcessNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "robloxplayerbeta", "robloxstudiobeta" };
 
         public MemoryCleaner()
         {
@@ -40,6 +43,7 @@ namespace Bloxstrap.Integrations
             try
             {
                 UpdateTimer();
+                UpdateRobloxTrimTimer();
                 App.Logger.WriteLine(LOG_IDENT_INIT, "Memory cleaner initialized");
             }
             catch (Exception ex)
@@ -69,6 +73,66 @@ namespace Bloxstrap.Integrations
             _cleanupTimer.Start();
 
             App.Logger.WriteLine($"{LOG_IDENT}::UpdateTimer", $"Timer started with {interval} interval");
+        }
+
+        private void UpdateRobloxTrimTimer()
+        {
+            _robloxTrimTimer?.Stop();
+            _robloxTrimTimer?.Dispose();
+            _robloxTrimTimer = null;
+
+            if (!App.Settings.Prop.EnableRobloxTrim || App.Settings.Prop.RobloxTrimIntervalSeconds <= 0)
+            {
+                App.Logger.WriteLine($"{LOG_IDENT}::UpdateRobloxTrimTimer", "Roblox-specific trimming disabled");
+                return;
+            }
+
+            int intervalSeconds = App.Settings.Prop.RobloxTrimIntervalSeconds;
+
+            _robloxTrimTimer = new System.Timers.Timer();
+            _robloxTrimTimer.Interval = intervalSeconds * 1000;
+            _robloxTrimTimer.Elapsed += OnRobloxTrimTimerElapsed;
+            _robloxTrimTimer.AutoReset = true;
+            _robloxTrimTimer.Start();
+
+            App.Logger.WriteLine($"{LOG_IDENT}::UpdateRobloxTrimTimer", $"Roblox trim timer started with {intervalSeconds} second interval");
+        }
+
+        private void OnRobloxTrimTimerElapsed(object? sender, ElapsedEventArgs e)
+        {
+            const string LOG_IDENT_TIMER = $"{LOG_IDENT}::OnRobloxTrimTimerElapsed";
+
+            try
+            {
+                if (_isCleaning)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_TIMER, "Cleanup already in progress, skipping Roblox trim...");
+                    return;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT_TIMER, "Roblox trim timer elapsed, trimming Roblox processes");
+
+                lock (_cleanupLock)
+                {
+                    _isCleaning = true;
+                }
+
+                try
+                {
+                    TrimRobloxProcesses();
+                }
+                finally
+                {
+                    lock (_cleanupLock)
+                    {
+                        _isCleaning = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT_TIMER, $"Exception: {ex.Message}");
+            }
         }
 
         private void OnCleanupTimerElapsed(object? sender, ElapsedEventArgs e)
@@ -110,7 +174,6 @@ namespace Bloxstrap.Integrations
                 App.Logger.WriteLine(LOG_IDENT_CLEAN, $"Total memory before cleanup: {FormatBytes(beforeMemory)}");
 
                 CleanStandbyList();
-
                 CleanProcessWorkingSets();
 
                 long afterMemory = GetTotalMemoryUsage();
@@ -133,6 +196,159 @@ namespace Bloxstrap.Integrations
                     _isCleaning = false;
                 }
             }
+        }
+
+        public void TrimRobloxProcesses()
+        {
+            const string LOG_IDENT_ROBLOX = $"{LOG_IDENT}::TrimRobloxProcesses";
+
+            try
+            {
+                int robloxProcessesFound = 0;
+                int robloxProcessesTrimmed = 0;
+                long totalRobloxMemoryFreed = 0;
+
+                foreach (var process in Process.GetProcesses())
+                {
+                    try
+                    {
+                        string processName = process.ProcessName.ToLower();
+
+                        if (_robloxProcessNames.Contains(processName) && !process.HasExited)
+                        {
+                            robloxProcessesFound++;
+
+                            long beforeMemory = process.WorkingSet64;
+                            App.Logger.WriteLine(LOG_IDENT_ROBLOX,
+                                $"Found Roblox process: {process.ProcessName} (PID: {process.Id}) using {FormatBytes(beforeMemory)}");
+
+                            if (TrimRobloxProcessMemory(process))
+                            {
+                                process.Refresh();
+                                long afterMemory = process.WorkingSet64;
+                                long memoryFreed = beforeMemory - afterMemory;
+
+                                if (memoryFreed > 0)
+                                {
+                                    robloxProcessesTrimmed++;
+                                    totalRobloxMemoryFreed += memoryFreed;
+
+                                    App.Logger.WriteLine(LOG_IDENT_ROBLOX,
+                                        $"Trimmed Roblox process {process.ProcessName}: {FormatBytes(memoryFreed)} freed");
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT_ROBLOX, $"Error processing Roblox process: {ex.Message}");
+                    }
+                    finally
+                    {
+                        process.Dispose();
+                    }
+                }
+
+                App.Logger.WriteLine(LOG_IDENT_ROBLOX,
+                    $"Roblox trimming complete: {robloxProcessesTrimmed}/{robloxProcessesFound} processes trimmed, " +
+                    $"total freed: {FormatBytes(totalRobloxMemoryFreed)}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT_ROBLOX, $"Exception trimming Roblox processes: {ex.Message}");
+            }
+        }
+
+        private bool TrimRobloxProcessMemory(Process process)
+        {
+            const string LOG_IDENT_ROBLOX_TRIM = $"{LOG_IDENT}::TrimRobloxProcessMemory";
+
+            try
+            {
+                if (process.HasExited)
+                    return false;
+
+                if (!process.Responding)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_ROBLOX_TRIM,
+                        $"Roblox process {process.ProcessName} (PID: {process.Id}) is not responding");
+                    return false;
+                }
+
+                bool success = true;
+
+                try
+                {
+                    SetProcessWorkingSetSize(process.Handle, (IntPtr)(-1), (IntPtr)(-1));
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_ROBLOX_TRIM,
+                        $"SetProcessWorkingSetSize failed for {process.ProcessName}: {ex.Message}");
+                    success = false;
+                }
+
+                try
+                {
+                    EmptyWorkingSet(process.Handle);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_ROBLOX_TRIM,
+                        $"EmptyWorkingSet failed for {process.ProcessName}: {ex.Message}");
+                    success = false;
+                }
+
+                Thread.Sleep(50);
+
+                return success;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT_ROBLOX_TRIM,
+                    $"Failed to trim Roblox process {process.ProcessName} (PID: {process.Id}): {ex.Message}");
+                return false;
+            }
+        }
+
+        public void TrimRobloxNow()
+        {
+            const string LOG_IDENT_MANUAL = $"{LOG_IDENT}::TrimRobloxNow";
+
+            lock (_cleanupLock)
+            {
+                if (_isCleaning)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_MANUAL, "Cleanup already in progress, skipping manual Roblox trim");
+                    return;
+                }
+
+                _isCleaning = true;
+            }
+
+            try
+            {
+                App.Logger.WriteLine(LOG_IDENT_MANUAL, "Manual Roblox memory trim requested");
+                TrimRobloxProcesses();
+                OnRobloxTrimmed?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT_MANUAL, $"Exception during manual Roblox trim: {ex.Message}");
+                OnCleanupError?.Invoke(this, ex.Message);
+            }
+            finally
+            {
+                lock (_cleanupLock)
+                {
+                    _isCleaning = false;
+                }
+            }
+        }
+
+        public void RefreshRobloxTimer()
+        {
+            UpdateRobloxTrimTimer();
         }
 
         private void CleanStandbyList()
@@ -218,6 +434,9 @@ namespace Bloxstrap.Integrations
                     return false;
 
                 string processName = process.ProcessName.ToLower();
+
+                if (_robloxProcessNames.Contains(processName))
+                    return false;
 
                 if (_criticalProcesses.Contains(processName))
                     return false;
@@ -329,6 +548,8 @@ namespace Bloxstrap.Integrations
             {
                 _cleanupTimer?.Stop();
                 _cleanupTimer?.Dispose();
+                _robloxTrimTimer?.Stop();
+                _robloxTrimTimer?.Dispose();
                 App.Logger.WriteLine(LOG_IDENT_DISPOSE, "Memory cleaner disposed");
             }
             catch (Exception ex)
@@ -339,5 +560,6 @@ namespace Bloxstrap.Integrations
 
         public event EventHandler<long>? OnMemoryCleaned;
         public event EventHandler<string>? OnCleanupError;
+        public event EventHandler? OnRobloxTrimmed;
     }
 }

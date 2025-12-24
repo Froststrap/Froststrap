@@ -211,6 +211,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
             try
             {
                 _watcher.MemoryCleaner?.CleanMemory();
+                _watcher.MemoryCleaner?.TrimRobloxProcesses();
             }
             catch (Exception ex)
             {
@@ -255,18 +256,12 @@ namespace Bloxstrap.UI.Elements.ContextMenu
         {
             try
             {
-                var processes = Process.GetProcessesByName(App.ProjectName);
-                foreach (var proc in processes)
-                {
-                    proc.Kill();
-                    proc.WaitForExit();
-                }
-
+                _watcher.Dispose();
                 this.Close();
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox($"Failed to close Froststrap: {ex.Message}", MessageBoxImage.Error);
+                Frontend.ShowMessageBox($"Failed to stop Froststrap watcher: {ex.Message}", MessageBoxImage.Error);
             }
         }
     }

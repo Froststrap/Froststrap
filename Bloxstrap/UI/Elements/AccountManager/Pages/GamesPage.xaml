@@ -193,7 +193,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <ui:Button Grid.Column="0" HorizontalAlignment="Stretch" Appearance="Primary" Command="{Binding LaunchRobloxCommand}">
-                                        <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" />
+                                        <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" Foreground="White" />
                                     </ui:Button>
 
                                     <ui:Button
@@ -202,7 +202,7 @@
                         Appearance="Primary"
                         Command="{Binding AutoFindAndJoinSelectedCommand}"
                         IconFilled="True">
-                                        <ui:SymbolIcon FontSize="20" Symbol="Earth32" />
+                                        <ui:SymbolIcon FontSize="20" Symbol="Earth32" Foreground="White" />
                                     </ui:Button>
                                 </Grid>
                             </StackPanel>
@@ -256,7 +256,7 @@
                                                     Command="{Binding DataContext.LaunchSubplaceCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                     CommandParameter="{Binding Id}"
                                                     IconFilled="True">
-                                                                    <ui:SymbolIcon Filled="True" FontSize="18" Symbol="Play24" />
+                                                                    <ui:SymbolIcon Filled="True" FontSize="18" Symbol="Play24" Foreground="White" />
                                                                 </ui:Button>
                                                             </Grid>
                                                         </Border>
@@ -375,7 +375,7 @@
                                             Command="{Binding DataContext.LaunchContinuePlayingGameCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding RootPlaceId}"
                                             IconFilled="True">
-                                                            <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" />
+                                                            <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" Foreground="White" />
                                                         </ui:Button>
 
                                                         <ui:Button
@@ -385,7 +385,7 @@
                                             Command="{Binding DataContext.AutoFindAndJoinContinuePlayingGameCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding RootPlaceId}"
                                             IconFilled="True">
-                                                            <ui:SymbolIcon FontSize="20" Symbol="Earth32" />
+                                                            <ui:SymbolIcon FontSize="20" Symbol="Earth32" Foreground="White" />
                                                         </ui:Button>
                                                     </Grid>
                                                 </StackPanel>
@@ -510,10 +510,7 @@
                                             Command="{Binding DataContext.LaunchDiscoveryPageGameCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding RootPlaceId}"
                                             IconFilled="True">
-                                                            <ui:SymbolIcon
-                                                Filled="True"
-                                                FontSize="20"
-                                                Symbol="Play24" />
+                                                            <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" Foreground="White" />
                                                         </ui:Button>
 
                                                         <ui:Button
@@ -523,7 +520,7 @@
                                             Command="{Binding DataContext.AutoFindAndJoinServerCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding RootPlaceId}"
                                             IconFilled="True">
-                                                            <ui:SymbolIcon FontSize="20" Symbol="Earth32" />
+                                                            <ui:SymbolIcon FontSize="20" Symbol="Earth32" Foreground="White" />
                                                         </ui:Button>
                                                     </Grid>
                                                 </StackPanel>
@@ -609,11 +606,11 @@
                                                         <ui:Button
                                             Grid.Column="0"
                                             HorizontalAlignment="Stretch"
-                                            Appearance="Primary"
+                                            Appearance="Primary" 
                                             Command="{Binding DataContext.LaunchFavoriteGameCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding RootPlaceId}"
                                             IconFilled="True">
-                                                            <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" />
+                                                            <ui:SymbolIcon Filled="True" FontSize="20" Symbol="Play24" Foreground="White" />
                                                         </ui:Button>
 
                                                         <ui:Button
@@ -623,7 +620,7 @@
                                             Command="{Binding DataContext.AutoFindAndJoinFavoriteGameCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding RootPlaceId}"
                                             IconFilled="True">
-                                                            <ui:SymbolIcon FontSize="20" Symbol="Earth32" />
+                                                            <ui:SymbolIcon FontSize="20" Symbol="Earth32" Foreground="White" />
                                                         </ui:Button>
                                                     </Grid>
                                                 </StackPanel>
@@ -718,9 +715,7 @@
                                                        Appearance="Primary"
                                                        Command="{Binding DataContext.JoinPrivateServerCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                        CommandParameter="{Binding AccessCode}">
-                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                        <ui:SymbolIcon Filled="True" Symbol="Play24" />
-                                                    </StackPanel>
+                                                    <ui:SymbolIcon Filled="True" Symbol="Play24" Foreground="White" />
                                                 </ui:Button>
                                             </Grid>
                                         </Border>
