@@ -163,7 +163,8 @@
             Visibility="Collapsed"
             Background="#A0000000"
             Panel.ZIndex="9999"
-            Grid.RowSpan="3"
+            Grid.Row="1"
+            Grid.RowSpan="2"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch">
 

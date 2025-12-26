@@ -89,11 +89,23 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
         private long _lastActiveUserId = 0;
 
+        private AccountManager Manager => AccountManager.Shared;
+
         private CancellationTokenSource? _friendsRefreshCts;
         private System.Timers.Timer? _presenceUpdateTimer;
         private bool _isPresenceTimerPaused = false;
 
-        private AccountManager Manager => AccountManager.Shared;
+        private Elements.AccountManagers.MainWindow? GetMainWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is Elements.AccountManagers.MainWindow accountManagerWindow)
+                {
+                    return accountManagerWindow;
+                }
+            }
+            return null;
+        }
 
         public FriendsViewModel()
         {
@@ -106,24 +118,31 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private void InitializePresenceTimer()
         {
             _presenceUpdateTimer = new System.Timers.Timer(20000);
-            _presenceUpdateTimer.Elapsed += async (sender, e) =>
-            {
-                try
-                {
-                    if (_isPresenceTimerPaused) return;
-                    await CheckForAccountChangeAsync();
-                    await CheckPresenceAsync();
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine($"{LOG_IDENT}::PresenceTimer", $"Exception: {ex.Message}");
-                }
-            };
+            _presenceUpdateTimer.Elapsed += OnPresenceTimerElapsed;
             _presenceUpdateTimer.AutoReset = true;
             _presenceUpdateTimer.Start();
+        }
 
-            _ = CheckForAccountChangeAsync();
-            _ = CheckPresenceAsync();
+        private async void OnPresenceTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+        {
+            if (_isPresenceTimerPaused || IsPresenceLoading || IsRefreshing)
+                return;
+
+            try
+            {
+                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    await CheckForAccountChangeAsync();
+                    await CheckPresenceAsync();
+                });
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    App.Logger.WriteLine($"{LOG_IDENT}::PresenceTimer", $"Exception: {ex.Message}");
+                });
+            }
         }
 
         private void PausePresenceTimer() => _isPresenceTimerPaused = true;
@@ -132,6 +151,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private async Task CheckPresenceAsync()
         {
             const string LOG_IDENT_PRESENCE = $"{LOG_IDENT}::CheckPresence";
+
+            var mainWindow = GetMainWindow();
 
             var activeUserId = AccountsViewModel.GetActiveUserId();
             if (activeUserId == null)
@@ -157,6 +178,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             try
             {
+                mainWindow?.ShowLoading("Updating friends presence...");
+
                 IsPresenceLoading = true;
 
                 // Get ALL friend IDs for presence checking
@@ -224,7 +247,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                             }
 
                             string statusColor = GetStatusColor(presenceType);
-
                             string displayLocation = GetDisplayLocation(presenceType, playingGameName, lastLocation);
 
                             var newFriend = new FriendInfo(
@@ -271,6 +293,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             finally
             {
                 IsPresenceLoading = false;
+
+                mainWindow?.HideLoading();
             }
         }
 
@@ -600,9 +624,12 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private async Task FetchFriendsAsync(long userId, CancellationToken token = default)
         {
             const string LOG_IDENT_FRIENDS = $"{LOG_IDENT}::FetchFriends";
+            var mainWindow = GetMainWindow();
 
             try
             {
+                mainWindow?.ShowLoading("Loading friends...");
+
                 IsRefreshing = true;
                 await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
@@ -747,6 +774,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 {
                     IsPresenceLoading = false;
                 });
+
+                mainWindow?.HideLoading();
             }
         }
 
@@ -1054,32 +1083,34 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             if (SelectedFriendsCount == 0)
                 return;
 
+            var mainWindow = GetMainWindow();
+
             try
             {
-                IsUnfriending = true;
-                BulkActionStatus = $"Unfriending {SelectedFriendsCount} friends...";
+                mainWindow?.ShowLoading($"Unfriending {SelectedFriendsCount} friends...");
 
                 var activeUserId = AccountsViewModel.GetActiveUserId();
                 if (activeUserId == null)
                 {
-                    BulkActionStatus = "No active account";
-                    IsUnfriending = false;
+                    mainWindow?.ShowLoading("No active account");
+                    await Task.Delay(2000);
                     return;
                 }
 
                 var activeAccount = Manager.ActiveAccount;
                 if (activeAccount == null)
                 {
-                    BulkActionStatus = "No active account";
-                    IsUnfriending = false;
+                    mainWindow?.ShowLoading("No active account");
+                    await Task.Delay(2000);
                     return;
                 }
 
                 string? cookie = Manager.GetRoblosecurityForUser(activeAccount.UserId);
+
                 if (string.IsNullOrEmpty(cookie))
                 {
-                    BulkActionStatus = "Authentication required";
-                    IsUnfriending = false;
+                    mainWindow?.ShowLoading("Authentication required");
+                    await Task.Delay(2000);
                     return;
                 }
 
@@ -1091,8 +1122,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                 if (result != MessageBoxResult.Yes)
                 {
-                    BulkActionStatus = "Cancelled";
-                    IsUnfriending = false;
+                    mainWindow?.ShowLoading("Cancelled");
+                    await Task.Delay(1000);
                     return;
                 }
 
@@ -1103,7 +1134,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 foreach (var friend in SelectedFriends.ToList())
                 {
                     current++;
-                    BulkActionStatus = $"Processing {current}/{SelectedFriendsCount}: {friend.DisplayName}";
+
+                    mainWindow?.ShowLoading($"Processing {current}/{SelectedFriendsCount}: {friend.DisplayName}");
 
                     bool success = await UnfriendSingleUserAsync(activeAccount.UserId, friend.Id, cookie);
 
@@ -1121,26 +1153,25 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                 ClearAllSelections();
 
-                await RefreshFriends();
+                mainWindow?.ShowLoading($"Completed: {successful} successful, {failed} failed");
 
-                BulkActionStatus = $"Completed: {successful} successful, {failed} failed";
+                await RefreshFriends();
+                await Task.Delay(2000);
 
                 if (successful > 0)
                 {
-                    await Task.Delay(2000);
                     IsBulkMode = false;
-                    BulkActionStatus = "";
                     ResumePresenceTimer();
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT_BULK_UNFRIEND, $"Exception: {ex.Message}");
-                BulkActionStatus = $"Error: {ex.Message}";
+                await Task.Delay(2000);
             }
             finally
             {
-                IsUnfriending = false;
+                mainWindow?.HideLoading();
             }
         }
 

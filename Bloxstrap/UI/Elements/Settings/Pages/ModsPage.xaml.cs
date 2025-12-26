@@ -194,6 +194,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     void SetStatus(string text) => App.Current.Dispatcher.Invoke(() => DownloadStatusText.Text = text);
                     void Log(string text) => App.Logger?.WriteLine(LOG_IDENT, text);
 
+                    // we only dowloaded before to get imagesetdata which contained locations of each sprite but now font dosent need that and im lowkey too lazy to change it
                     SetStatus("Downloading required packages...");
                     var (luaPackagesZip, extraTexturesZip, contentTexturesZip, versionHash, version) =
                         await ModGenerator.DownloadForModGenerator();

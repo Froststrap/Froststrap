@@ -144,39 +144,5 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
-
-        <Grid Panel.ZIndex="999" Visibility="{Binding IsPresenceLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="#A0000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Background="{DynamicResource NormalDarkAndLightBackground}"
-                        CornerRadius="12"
-                        Padding="20"
-                        Effect="{DynamicResource ControlShadow}">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
-                        <TextBlock Text="Loading friends list" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center"/>
-                        <ui:ProgressRing IsIndeterminate="True" Width="56" Height="56" HorizontalAlignment="Center" />
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Grid>
-
-        <Grid Panel.ZIndex="1000" Visibility="{Binding IsUnfriending, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="#A0000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Background="{DynamicResource NormalDarkAndLightBackground}"
-                        CornerRadius="12"
-                        Padding="20"
-                        Effect="{DynamicResource ControlShadow}">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
-                        <TextBlock Text="{Binding BulkActionStatus}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center"/>
-                        <ui:ProgressRing IsIndeterminate="True" Width="48" Height="48" HorizontalAlignment="Center" />
-                        <TextBlock Text="Please wait..." FontSize="12" Margin="0,8,0,0"
-                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Grid>
     </Grid>
 </ui:UiPage>

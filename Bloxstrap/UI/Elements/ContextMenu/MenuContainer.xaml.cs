@@ -165,6 +165,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                 GameInformationMenuItem.Visibility = Visibility.Collapsed;
 
                 _serverInformationWindow?.Close();
+                _gameInformationWindow?.Close();
             });
         }
 

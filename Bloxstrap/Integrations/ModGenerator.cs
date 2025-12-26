@@ -193,6 +193,9 @@ namespace Bloxstrap.Integrations
             }
         }
 
+        // we made mod generator exe instead of py script because
+        // for py script to work user needs to have font tools and python installed
+        // so we made it exe and open sourced it
         private static async Task<string> DownloadModGeneratorExeAsync()
         {
             const string LOG_IDENT = "ModGenerator::DownloadModGeneratorExeAsync";
@@ -297,23 +300,6 @@ namespace Bloxstrap.Integrations
                 string errors = await errorTask;
 
                 return (process.ExitCode, output, errors);
-            }
-        }
-
-        public static void CleanupModGeneratorCache()
-        {
-            try
-            {
-                string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
-                if (Directory.Exists(cacheDir))
-                {
-                    Directory.Delete(cacheDir, true);
-                    App.Logger?.WriteLine("ModGenerator", "Cleaned up mod-generator cache");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException("ModGenerator::CleanupModGeneratorCache", ex);
             }
         }
 

@@ -1,7 +1,9 @@
-﻿using System.Windows.Controls;
+﻿using Bloxstrap.UI.Elements.AccountManagers.Pages;
+using System.Windows;
+using System.Windows.Controls;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
-using System.Windows;
+using Wpf.Ui.Common;
 
 namespace Bloxstrap.UI.Elements.AccountManagers
 {
@@ -17,6 +19,23 @@ namespace Bloxstrap.UI.Elements.AccountManagers
             App.FrostRPC?.SetDialog("Account Manager");
 
             App.Logger.WriteLine("MainWindow", "Initializing account manager window");
+        }
+
+        public void ShowLoading(string message = "Loading...")
+        {
+            Dispatcher.Invoke(() =>
+            {
+                LoadingOverlayText.Text = message;
+                LoadingOverlay.Visibility = Visibility.Visible;
+            });
+        }
+
+        public void HideLoading()
+        {
+            Dispatcher.Invoke(() =>
+            {
+                LoadingOverlay.Visibility = Visibility.Collapsed;
+            });
         }
 
         #region INavigationWindow methods
