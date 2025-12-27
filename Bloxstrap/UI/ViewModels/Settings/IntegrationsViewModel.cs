@@ -75,6 +75,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 {
                     ShowServerDetailsEnabled = false;
                     ShowGameHistoryEnabled = false;
+                    ShowServerUptimeEnabled = false;
                     AutoRejoinEnabled = false;
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
@@ -84,6 +85,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                     OnPropertyChanged(nameof(ShowServerDetailsEnabled));
                     OnPropertyChanged(nameof(ShowGameHistoryEnabled));
+                    OnPropertyChanged(nameof(ShowServerUptimeEnabled));
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));

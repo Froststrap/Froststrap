@@ -98,7 +98,10 @@
             </StackPanel>
         </ui:CardExpander>
 
-        <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}" Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}">
+        <controls:OptionControl 
+            Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}" 
+            Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
             <ComboBox
                 Width="200"
                 Margin="5,0,0,0"
