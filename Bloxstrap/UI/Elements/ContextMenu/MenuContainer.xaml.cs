@@ -180,6 +180,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
         }
 
         private void Window_Closed(object sender, EventArgs e) => App.Logger.WriteLine("MenuContainer::Window_Closed", "Context menu container closed");
+        private void CloseFroststrapMenuItem_Click(object sender, RoutedEventArgs e) => _watcher.Dispose();
 
         private void RichPresenceMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -259,19 +260,6 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                 _gameHistoryWindow.ShowDialog();
             else
                 _gameHistoryWindow.Activate();
-        }
-
-        private void CloseFroststrapMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                _watcher.Dispose();
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                Frontend.ShowMessageBox($"Failed to stop Froststrap watcher: {ex.Message}", MessageBoxImage.Error);
-            }
         }
     }
 }

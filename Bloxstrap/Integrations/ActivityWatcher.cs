@@ -23,6 +23,9 @@ namespace Bloxstrap.Integrations
         private const string GameInactivityTimeoutEntry = "[FLog::Network] Sending disconnect with reason: 1";
         private const string GameConnectionLostEntry = "[FLog::Network] Lost connection with reason : Lost connection to the game server, please reconnect";
 
+        private const string StudioPlaceOpenEntry = "[FLog::PlaceManager] Start to open place";
+        private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
+
         private const string GameJoiningEntryPattern = @"! Joining game '([0-9a-f\-]{36})' place ([0-9]+) at ([0-9\.]+)";
         private const string GameJoiningPrivateServerPattern = @"""accessCode"":""([0-9a-f\-]{36})""";
         private const string GameJoiningUniversePattern = @"universeid:([0-9]+).*userid:([0-9]+)";
@@ -41,6 +44,8 @@ namespace Bloxstrap.Integrations
         public event EventHandler<string>? OnLogEntry;
         public event EventHandler? OnGameJoin;
         public event EventHandler? OnGameLeave;
+        public event EventHandler? OnStudioPlaceOpened;
+        public event EventHandler? OnStudioPlaceClosed;
         public event EventHandler? OnLogOpen;
         public event EventHandler? OnAppClose;
         public event EventHandler<Message>? OnRPCMessage;
@@ -55,6 +60,7 @@ namespace Bloxstrap.Integrations
         public string LogLocation = null!;
 
         public bool InGame = false;
+        public bool InStudioPlace = false;
         public bool InRobloxStudio = false;
 
         public ActivityData Data { get; private set; } = new();
@@ -194,72 +200,92 @@ namespace Bloxstrap.Integrations
                 InRobloxStudio = true;
             }
 
-            if (logMessage.StartsWith(StudioMessageEntry))
+            if (!InStudioPlace)
             {
-                var match = Regex.Match(logMessage, StudioMessagePattern);
-
-                if (match.Groups.Count != 2)
+                if (logMessage.Contains(StudioPlaceOpenEntry))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to parse Studio RPC message");
-                    return;
+                    InStudioPlace = true;
+                    App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
+
+                    OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
                 }
-
-                string studioMessage = match.Groups[1].Value;
-                App.Logger.WriteLine(LOG_IDENT, $"Studio RPC: {studioMessage}");
-
-                if (studioMessage.Contains("| Workspace: Game"))
+            }
+            else if (InStudioPlace)
+            {
+                if (logMessage.Contains(StudioPlaceCloseEntry))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Ignoring message because workspace is 'Game'");
-                    return;
+                    App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
+                    InStudioPlace = false;
+
+                    OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
                 }
-
-                string workspace = "";
-                string activityState = studioMessage;
-                bool testing = false;
-                string scriptType = "developing";
-
-                string[] parts = studioMessage.Split(new[] { " | " }, StringSplitOptions.None);
-
-                foreach (string part in parts)
+                else if (logMessage.StartsWith(StudioMessageEntry))
                 {
-                    if (part.StartsWith("Workspace:"))
-                    {
-                        workspace = part.Substring(10).Trim();
-                    }
-                    else if (part.StartsWith("Testing:"))
-                    {
-                        string testingStr = part.Substring(8).Trim();
-                        testing = testingStr.Equals("True", StringComparison.OrdinalIgnoreCase);
-                    }
-                    else if (part.StartsWith("Type:"))
-                    {
-                        scriptType = part.Substring(5).Trim();
-                    }
-                    else if (!part.Contains("Workspace:") && !part.Contains("Testing:") && !part.Contains("Type:"))
-                    {
-                        activityState = part.Trim();
-                    }
-                }
+                    var match = Regex.Match(logMessage, StudioMessagePattern);
 
-                var studioRpc = new StudioMessage
-                {
-                    Data = new StudioRichPresence
+                    if (match.Groups.Count != 2)
                     {
-                        Details = activityState,
-                        State = !string.IsNullOrEmpty(workspace) ? $"Workspace: {workspace}" : null!,
-                        TimestampStart = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                        Testing = testing,
-                        ScriptType = scriptType
+                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse Studio RPC message");
+                        return;
                     }
-                };
 
-                string json = JsonSerializer.Serialize(studioRpc);
-                var rpcMessage = JsonSerializer.Deserialize<Message>(json);
+                    string studioMessage = match.Groups[1].Value;
+                    App.Logger.WriteLine(LOG_IDENT, $"Studio RPC: {studioMessage}");
 
-                if (rpcMessage != null)
-                {
-                    OnRPCMessage?.Invoke(this, rpcMessage);
-                    App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | Type: {scriptType} | Testing: {testing}");
+                    if (studioMessage.Contains("| Workspace: Game"))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Ignoring message because workspace is 'Game'");
+                        return;
+                    }
+
+                    string workspace = "";
+                    string activityState = studioMessage;
+                    bool testing = false;
+                    string scriptType = "developing";
+
+                    string[] parts = studioMessage.Split(new[] { " | " }, StringSplitOptions.None);
+
+                    foreach (string part in parts)
+                    {
+                        if (part.StartsWith("Workspace:"))
+                        {
+                            workspace = part.Substring(10).Trim();
+                        }
+                        else if (part.StartsWith("Testing:"))
+                        {
+                            string testingStr = part.Substring(8).Trim();
+                            testing = testingStr.Equals("True", StringComparison.OrdinalIgnoreCase);
+                        }
+                        else if (part.StartsWith("Type:"))
+                        {
+                            scriptType = part.Substring(5).Trim();
+                        }
+                        else if (!part.Contains("Workspace:") && !part.Contains("Testing:") && !part.Contains("Type:"))
+                        {
+                            activityState = part.Trim();
+                        }
+                    }
+
+                    var studioRpc = new StudioMessage
+                    {
+                        Data = new StudioRichPresence
+                        {
+                            Details = activityState,
+                            State = !string.IsNullOrEmpty(workspace) ? $"Workspace: {workspace}" : null!,
+                            TimestampStart = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                            Testing = testing,
+                            ScriptType = scriptType
+                        }
+                    };
+
+                    string json = JsonSerializer.Serialize(studioRpc);
+                    var rpcMessage = JsonSerializer.Deserialize<Message>(json);
+
+                    if (rpcMessage != null)
+                    {
+                        OnRPCMessage?.Invoke(this, rpcMessage);
+                        App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | Type: {scriptType} | Testing: {testing}");
+                    }
                 }
             }
         }

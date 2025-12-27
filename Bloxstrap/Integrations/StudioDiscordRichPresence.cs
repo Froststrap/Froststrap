@@ -18,7 +18,10 @@ namespace Bloxstrap.Integrations
             const string LOG_IDENT = "StudioDiscordRichPresence";
 
             _activityWatcher = activityWatcher;
+
             _activityWatcher.OnRPCMessage += (_, message) => ProcessRPCMessage(message);
+            _activityWatcher.OnStudioPlaceOpened += (_, _) => HandleStudioPlaceOpened();
+            _activityWatcher.OnStudioPlaceClosed += (_, _) => HandleStudioPlaceClosed();
 
             _rpcClient.OnReady += (_, e) =>
                 App.Logger.WriteLine(LOG_IDENT, $"Received ready from user {e.User} ({e.User.ID})");
@@ -33,6 +36,20 @@ namespace Bloxstrap.Integrations
                 App.Logger.WriteLine(LOG_IDENT, $"An RPC error occurred - {e.Message}");
 
             _rpcClient.Initialize();
+
+            InitializeStudioPresence();
+        }
+
+        private void HandleStudioPlaceOpened()
+        {
+            const string LOG_IDENT = "StudioDiscordRichPresence::HandleStudioPlaceOpened";
+            App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
+        }
+
+        private void HandleStudioPlaceClosed()
+        {
+            const string LOG_IDENT = "StudioDiscordRichPresence::HandleStudioPlaceClosed";
+            App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
 
             InitializeStudioPresence();
         }
@@ -142,8 +159,8 @@ namespace Bloxstrap.Integrations
                 }
             }
 
-            string smallImageKey = "froststrap";
-            string smallImageText = $"Froststrap {App.Version}";
+            string smallImageKey = "";
+            string smallImageText = "";
 
             if (presenceData.Testing)
             {
@@ -196,7 +213,7 @@ namespace Bloxstrap.Integrations
 
         public void Dispose()
         {
-            App.Logger.WriteLine("StudioDiscordRichPresence::Dispose","Cleaning up Discord RPC and Presence");
+            App.Logger.WriteLine("StudioDiscordRichPresence::Dispose", "Cleaning up Discord RPC");
             _rpcClient.ClearPresence();
             _rpcClient.Dispose();
             GC.SuppressFinalize(this);
