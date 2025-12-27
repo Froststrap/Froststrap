@@ -216,36 +216,28 @@ namespace Bloxstrap.Integrations
                 string workspace = "";
                 string activityState = studioMessage;
                 bool testing = false;
+                string scriptType = "developing";
 
-                if (studioMessage.Contains("| Workspace:"))
+                string[] parts = studioMessage.Split(new[] { " | " }, StringSplitOptions.None);
+
+                foreach (string part in parts)
                 {
-                    int workspaceIndex = studioMessage.IndexOf("| Workspace:");
-                    if (workspaceIndex != -1)
+                    if (part.StartsWith("Workspace:"))
                     {
-                        activityState = studioMessage.Substring(0, workspaceIndex).Trim();
-                        string afterWorkspace = studioMessage.Substring(workspaceIndex + 12).Trim();
-
-                        if (afterWorkspace.Contains("| Testing:"))
-                        {
-                            int testingIndex = afterWorkspace.IndexOf("| Testing:");
-                            workspace = afterWorkspace.Substring(0, testingIndex).Trim();
-                            string testingStr = afterWorkspace.Substring(testingIndex + 10).Trim();
-                            testing = testingStr.Equals("True", StringComparison.OrdinalIgnoreCase);
-                        }
-                        else
-                        {
-                            workspace = afterWorkspace;
-                        }
+                        workspace = part.Substring(10).Trim();
                     }
-                }
-                else
-                {
-                    if (studioMessage.Contains("| Testing:"))
+                    else if (part.StartsWith("Testing:"))
                     {
-                        int testingIndex = studioMessage.IndexOf("| Testing:");
-                        activityState = studioMessage.Substring(0, testingIndex).Trim();
-                        string testingStr = studioMessage.Substring(testingIndex + 10).Trim();
+                        string testingStr = part.Substring(8).Trim();
                         testing = testingStr.Equals("True", StringComparison.OrdinalIgnoreCase);
+                    }
+                    else if (part.StartsWith("Type:"))
+                    {
+                        scriptType = part.Substring(5).Trim();
+                    }
+                    else if (!part.Contains("Workspace:") && !part.Contains("Testing:") && !part.Contains("Type:"))
+                    {
+                        activityState = part.Trim();
                     }
                 }
 
@@ -256,7 +248,8 @@ namespace Bloxstrap.Integrations
                         Details = activityState,
                         State = !string.IsNullOrEmpty(workspace) ? $"Workspace: {workspace}" : null!,
                         TimestampStart = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
-                        Testing = testing
+                        Testing = testing,
+                        ScriptType = scriptType
                     }
                 };
 
@@ -266,8 +259,7 @@ namespace Bloxstrap.Integrations
                 if (rpcMessage != null)
                 {
                     OnRPCMessage?.Invoke(this, rpcMessage);
-                    string testingStatus = testing ? " (Testing)" : "";
-                    App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | State: Workspace: {workspace}{testingStatus}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | Type: {scriptType} | Testing: {testing}");
                 }
             }
         }

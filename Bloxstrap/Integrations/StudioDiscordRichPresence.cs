@@ -67,8 +67,6 @@ namespace Bloxstrap.Integrations
                 {
                     LargeImageKey = "roblox_studio",
                     LargeImageText = "Roblox Studio",
-                    SmallImageKey = "froststrap",
-                    SmallImageText = $"Froststrap {App.Version}"
                 },
             };
 
@@ -116,19 +114,47 @@ namespace Bloxstrap.Integrations
 
             _currentPresence.Timestamps.Start = currentTimestamp;
 
+            string largeImageKey = "roblox_studio";
+            string largeImageText = "Roblox Studio";
+
+            if (!string.IsNullOrEmpty(presenceData.ScriptType))
+            {
+                switch (presenceData.ScriptType.ToLower())
+                {
+                    case "server":
+                        largeImageKey = "studio_server";
+                        largeImageText = "Editing Server Script";
+                        break;
+                    case "client":
+                        largeImageKey = "studio_client";
+                        largeImageText = "Editing Client Script";
+                        break;
+                    case "server_module":
+                    case "client_module":
+                    case "module":
+                        largeImageKey = "studio_module";
+                        largeImageText = "Editing Module Script";
+                        break;
+                    case "developing":
+                        largeImageKey = "roblox_studio";
+                        largeImageText = "Roblox Studio";
+                        break;
+                }
+            }
+
             string smallImageKey = "froststrap";
             string smallImageText = $"Froststrap {App.Version}";
 
             if (presenceData.Testing)
             {
                 smallImageKey = "testing";
-                smallImageText = "Testing Game";
+                smallImageText = "Currently Testing";
             }
 
             _currentPresence.Assets = new Assets
             {
-                LargeImageKey = "roblox_studio",
-                LargeImageText = "Roblox Studio",
+                LargeImageKey = largeImageKey,
+                LargeImageText = largeImageText,
                 SmallImageKey = smallImageKey,
                 SmallImageText = smallImageText
             };

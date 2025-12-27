@@ -13,5 +13,8 @@
 
         [JsonPropertyName("testing")]
         public bool Testing { get; set; } = false;
+
+        [JsonPropertyName("scriptType")]
+        public string ScriptType { get; set; } = "developing";
     }
 }
