@@ -110,8 +110,6 @@ namespace Bloxstrap.Integrations
                     return;
                 }
 
-                App.Logger.WriteLine(LOG_IDENT_TIMER, "Roblox trim timer elapsed, trimming Roblox processes");
-
                 lock (_cleanupLock)
                 {
                     _isCleaning = true;
@@ -219,8 +217,6 @@ namespace Bloxstrap.Integrations
                             robloxProcessesFound++;
 
                             long beforeMemory = process.WorkingSet64;
-                            App.Logger.WriteLine(LOG_IDENT_ROBLOX,
-                                $"Found Roblox process: {process.ProcessName} (PID: {process.Id}) using {FormatBytes(beforeMemory)}");
 
                             if (TrimRobloxProcessMemory(process))
                             {
@@ -248,10 +244,6 @@ namespace Bloxstrap.Integrations
                         process.Dispose();
                     }
                 }
-
-                App.Logger.WriteLine(LOG_IDENT_ROBLOX,
-                    $"Roblox trimming complete: {robloxProcessesTrimmed}/{robloxProcessesFound} processes trimmed, " +
-                    $"total freed: {FormatBytes(totalRobloxMemoryFreed)}");
             }
             catch (Exception ex)
             {

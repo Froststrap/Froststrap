@@ -3,7 +3,7 @@ using DiscordRPC;
 
 namespace Bloxstrap.Integrations
 {
-    public class DiscordRichPresence : IDisposable
+    public class PlayerDiscordRichPresence : IDisposable
     {
         private readonly DiscordRpcClient _rpcClient = new("1005469189907173486");
         private readonly ActivityWatcher _activityWatcher;
@@ -20,9 +20,9 @@ namespace Bloxstrap.Integrations
 
         private bool _visible = true;
 
-        public DiscordRichPresence(ActivityWatcher activityWatcher)
+        public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
-            const string LOG_IDENT = "DiscordRichPresence";
+            const string LOG_IDENT = "PlayerDiscordRichPresence";
 
             _activityWatcher = activityWatcher;
 

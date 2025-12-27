@@ -1,8 +1,11 @@
-﻿namespace Bloxstrap.Integrations
+﻿using System.Numerics;
+
+namespace Bloxstrap.Integrations
 {
     public class ActivityWatcher : IDisposable
     {
         private const string GameMessageEntry = "[FLog::Output] [BloxstrapRPC]";
+        private const string StudioMessageEntry = "[FLog::Output] [FroststrapStudioRPC]";
         private const string GameJoiningEntry = "[FLog::Output] ! Joining game";
 
         // these entries are technically volatile!
@@ -26,6 +29,7 @@
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
+        private const string StudioMessagePattern = @"\[FroststrapStudioRPC\] (.*)";
 
         private int _logEntriesRead = 0;
         private bool _teleportMarker = false;
@@ -46,9 +50,12 @@
 
         private DateTime LastRPCRequest;
 
+        private readonly LaunchMode _launchMode;
+
         public string LogLocation = null!;
 
         public bool InGame = false;
+        public bool InRobloxStudio = false;
 
         public ActivityData Data { get; private set; } = new();
 
@@ -59,10 +66,15 @@
 
         public bool IsDisposed = false;
 
-        public ActivityWatcher(string? logFile = null)
+        public ActivityWatcher(string? logFile = null, LaunchMode launchMode = LaunchMode.Player)
         {
             if (!String.IsNullOrEmpty(logFile))
                 LogLocation = logFile;
+
+            _launchMode = launchMode; 
+
+            if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+                InRobloxStudio = true;
 
             LoadGameHistory();
         }
@@ -162,6 +174,83 @@
             }
 
             string logMessage = entry[(logMessageIdx + 1)..];
+
+            if (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+            {
+                ProcessStudioLogEntry(logMessage);
+            }
+            else
+            {
+                ProcessPlayerLogEntry(logMessage);
+            }
+        }
+
+        private void ProcessStudioLogEntry(string logMessage)
+        {
+            const string LOG_IDENT = "ActivityWatcher::ProcessStudioLogEntry";
+
+            if (!InRobloxStudio)
+            {
+                InRobloxStudio = true;
+            }
+
+            if (logMessage.StartsWith(StudioMessageEntry))
+            {
+                var match = Regex.Match(logMessage, StudioMessagePattern);
+
+                if (match.Groups.Count != 2)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to parse Studio RPC message");
+                    return;
+                }
+
+                string studioMessage = match.Groups[1].Value;
+                App.Logger.WriteLine(LOG_IDENT, $"Studio RPC: {studioMessage}");
+
+                string workspace = "";
+                string activityState = studioMessage;
+
+                if (studioMessage.Contains("| Workspace:"))
+                {
+                    int workspaceIndex = studioMessage.IndexOf("| Workspace:");
+                    if (workspaceIndex != -1)
+                    {
+                        activityState = studioMessage.Substring(0, workspaceIndex).Trim();
+                        workspace = studioMessage.Substring(workspaceIndex + 12).Trim();
+                    }
+                }
+
+                var studioRpc = new StudioMessage
+                {
+                    Data = new StudioRichPresence
+                    {
+                        Details = activityState,
+                        State = !string.IsNullOrEmpty(workspace) ? $"Workspace: {workspace}" : null!,
+                        TimestampStart = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                    }
+                };
+
+                string json = JsonSerializer.Serialize(studioRpc);
+                var rpcMessage = JsonSerializer.Deserialize<Message>(json);
+
+                if (rpcMessage != null)
+                {
+                    OnRPCMessage?.Invoke(this, rpcMessage);
+                    App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | State: Workspace: {workspace}");
+                }
+            }
+        }
+
+        private void ProcessPlayerLogEntry(string logMessage)
+        {
+            const string LOG_IDENT = "ActivityWatcher::ProcessPlayerLogEntry";
+
+            if (logMessage.StartsWith(StudioMessageEntry) || logMessage.Contains("[FroststrapStudioRPC]"))
+            {
+                InRobloxStudio = true;
+                ProcessStudioLogEntry(logMessage);
+                return;
+            }
 
             if (logMessage.StartsWith(GameLeavingEntry))
             {

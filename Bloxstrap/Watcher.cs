@@ -1,6 +1,5 @@
 ﻿using Bloxstrap.AppData;
 using Bloxstrap.Integrations;
-using Bloxstrap.Models;
 
 namespace Bloxstrap
 {
@@ -14,11 +13,12 @@ namespace Bloxstrap
 
         public readonly ActivityWatcher? ActivityWatcher;
 
-        public readonly DiscordRichPresence? RichPresence;
-
         public readonly IntegrationWatcher? IntegrationWatcher;
 
         public readonly MemoryCleaner? MemoryCleaner;
+
+        public readonly PlayerDiscordRichPresence? PlayerRichPresence;
+        public readonly StudioDiscordRichPresence? StudioRichPresence;
 
         public Watcher()
         {
@@ -58,7 +58,7 @@ namespace Bloxstrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                ActivityWatcher = new(_watcherData.LogFile);
+                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode);
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
@@ -71,7 +71,12 @@ namespace Bloxstrap
                 }
 
                 if (App.Settings.Prop.UseDiscordRichPresence)
-                    RichPresence = new(ActivityWatcher);
+                {
+                    if (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth)
+                        StudioRichPresence = new(ActivityWatcher);
+                    else
+                        PlayerRichPresence = new(ActivityWatcher);
+                }
             }
 
             _notifyIcon = new(this);
@@ -140,7 +145,9 @@ namespace Bloxstrap
             IntegrationWatcher?.Dispose();
             MemoryCleaner?.Dispose();
             _notifyIcon?.Dispose();
-            RichPresence?.Dispose();
+            PlayerRichPresence?.Dispose();
+            StudioRichPresence?.Dispose();
+
 
             GC.SuppressFinalize(this);
         }
