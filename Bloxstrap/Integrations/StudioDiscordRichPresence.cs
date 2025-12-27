@@ -1,3 +1,16 @@
+/*
+ *  Froststrap
+ *  Copyright (c) Froststrap Team
+ *
+ *  This file is part of Froststrap and is distributed under the terms of the
+ *  GNU Affero General Public License, version 3 or later.
+ *
+ *  SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ *  Description: Nix flake for shipping for Nix-darwin, Nix, NixOS, and modules
+ *               of the Nix ecosystem. 
+ */
+
 using DiscordRPC;
 
 namespace Bloxstrap.Integrations
@@ -6,7 +19,7 @@ namespace Bloxstrap.Integrations
     {
         private readonly DiscordRpcClient _rpcClient = new("1454451301130960896");
         private readonly ActivityWatcher _activityWatcher;
-        private readonly Queue<Message> _messageQueue = new();
+        private readonly Queue<StudioMessage> _messageQueue = new();
 
         private DiscordRPC.RichPresence? _currentPresence;
         private DiscordRPC.RichPresence? _originalPresence;
@@ -19,7 +32,7 @@ namespace Bloxstrap.Integrations
 
             _activityWatcher = activityWatcher;
 
-            _activityWatcher.OnRPCMessage += (_, message) => ProcessRPCMessage(message);
+            _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
             _activityWatcher.OnStudioPlaceOpened += (_, _) => HandleStudioPlaceOpened();
             _activityWatcher.OnStudioPlaceClosed += (_, _) => HandleStudioPlaceClosed();
 
@@ -40,6 +53,7 @@ namespace Bloxstrap.Integrations
             InitializeStudioPresence();
         }
 
+        // for future use
         private void HandleStudioPlaceOpened()
         {
             const string LOG_IDENT = "StudioDiscordRichPresence::HandleStudioPlaceOpened";
@@ -54,11 +68,11 @@ namespace Bloxstrap.Integrations
             InitializeStudioPresence();
         }
 
-        public void ProcessRPCMessage(Message message, bool implicitUpdate = true)
+        public void ProcessRPCMessage(StudioMessage message, bool implicitUpdate = true)
         {
             const string LOG_IDENT = "StudioDiscordRichPresence::ProcessRPCMessage";
 
-            if (message.Command != "SetRichPresence")
+            if (message.StudioCommand != "SetRichPresence")
                 return;
 
             if (_currentPresence is null || _originalPresence is null)
@@ -97,7 +111,7 @@ namespace Bloxstrap.Integrations
             UpdatePresence();
         }
 
-        private void ProcessStudioRichPresence(Message message, bool implicitUpdate)
+        private void ProcessStudioRichPresence(StudioMessage message, bool implicitUpdate)
         {
             const string LOG_IDENT = "StudioDiscordRichPresence::ProcessStudioRichPresence";
             StudioRichPresence? presenceData;
@@ -107,7 +121,7 @@ namespace Bloxstrap.Integrations
 
             try
             {
-                presenceData = message.Data.Deserialize<StudioRichPresence>();
+                presenceData = message.Data;
             }
             catch (Exception)
             {
@@ -123,10 +137,10 @@ namespace Bloxstrap.Integrations
 
             DateTime? currentTimestamp = _currentPresence.Timestamps.Start;
 
-            if (!string.IsNullOrEmpty(presenceData.Details))
+            if (!string.IsNullOrEmpty(presenceData.Details) && App.Settings.Prop.StudioEditingInfo)
                 _currentPresence.Details = presenceData.Details;
 
-            if (!string.IsNullOrEmpty(presenceData.State))
+            if (!string.IsNullOrEmpty(presenceData.State) && App.Settings.Prop.StudioWorkspaceInfo)
                 _currentPresence.State = presenceData.State;
 
             _currentPresence.Timestamps.Start = currentTimestamp;
@@ -134,7 +148,7 @@ namespace Bloxstrap.Integrations
             string largeImageKey = "roblox_studio";
             string largeImageText = "Roblox Studio";
 
-            if (!string.IsNullOrEmpty(presenceData.ScriptType))
+            if (!string.IsNullOrEmpty(presenceData.ScriptType) && App.Settings.Prop.StudioThumbnailChanging)
             {
                 switch (presenceData.ScriptType.ToLower())
                 {
@@ -162,9 +176,9 @@ namespace Bloxstrap.Integrations
             string smallImageKey = "";
             string smallImageText = "";
 
-            if (presenceData.Testing)
+            if (presenceData.Testing && App.Settings.Prop.StudioShowTesting)
             {
-                smallImageKey = "testing";
+                smallImageKey = "play_icon";
                 smallImageText = "Currently Testing";
             }
 

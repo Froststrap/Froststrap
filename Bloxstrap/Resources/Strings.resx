@@ -1059,7 +1059,7 @@ Selecting 'No' will ignore this warning and continue installation.</value>
     <value>Enable Activity Tracking</value>
   </data>
   <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
-    <value>This feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0}).</value>
+    <value>These feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0}).</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
     <value>The Roblox game you're playing will be shown on your Discord profile. [Not working?]({0})</value>

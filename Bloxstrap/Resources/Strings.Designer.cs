@@ -5273,7 +5273,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0})..
+        ///   Looks up a localized string similar to These feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0})..
         /// </summary>
         public static string Menu_Integrations_RequiresActivityTracking {
             get {

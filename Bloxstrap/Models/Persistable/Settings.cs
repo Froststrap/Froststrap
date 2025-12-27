@@ -11,7 +11,7 @@ namespace Bloxstrap.Models.Persistable
         public bool EnableActivityTracking { get; set; } = true;
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = false;
-        public bool AutoRejoinEnabled { get; set; } = false;
+        public bool AutoRejoin { get; set; } = false;
         public bool ShowGameHistoryMenu { get; set; } = true;
         public List<ActivityData> ServerHistory { get; set; } = new List<ActivityData>();
         public bool PlaytimeCounter { get; set; } = true;
@@ -24,6 +24,11 @@ namespace Bloxstrap.Models.Persistable
         public bool HideRPCButtons { get; set; } = true;
         public bool EnableCustomStatusDisplay { get; set; } = true;
         public bool ShowAccountOnRichPresence { get; set; } = false;
+        public bool StudioRPC { get; set; } = false;
+        public bool StudioThumbnailChanging { get; set; } = false;
+        public bool StudioEditingInfo { get; set; } = false;
+        public bool StudioWorkspaceInfo { get; set; } = false;
+        public bool StudioShowTesting { get; set; } = false;
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = new();
 
         // Bootstrapper Page

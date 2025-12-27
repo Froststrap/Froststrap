@@ -259,7 +259,7 @@ namespace Bloxstrap.Integrations
             {
                 attempt++;
                 var joinReq = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
-                joinReq.Headers.Add("User-Agent", "Roblox/Froststrap");
+                joinReq.Headers.Add("User-Agent", $"{App.ProjectName}/{App.Version}");
                 joinReq.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
                 joinReq.Headers.Add("Origin", "https://roblox.com");
 

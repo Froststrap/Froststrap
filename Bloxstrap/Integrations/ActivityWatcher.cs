@@ -49,6 +49,7 @@ namespace Bloxstrap.Integrations
         public event EventHandler? OnLogOpen;
         public event EventHandler? OnAppClose;
         public event EventHandler<Message>? OnRPCMessage;
+        public event EventHandler<StudioMessage>? OnStudioRPCMessage;
         public event EventHandler<ActivityData>? OnAutoRejoinTriggered;
 
         private DateTime _lastInactivityTimeout = DateTime.MinValue;
@@ -272,19 +273,17 @@ namespace Bloxstrap.Integrations
                         {
                             Details = activityState,
                             State = !string.IsNullOrEmpty(workspace) ? $"Workspace: {workspace}" : null!,
-                            TimestampStart = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                             Testing = testing,
                             ScriptType = scriptType
                         }
                     };
 
                     string json = JsonSerializer.Serialize(studioRpc);
-                    var rpcMessage = JsonSerializer.Deserialize<Message>(json);
+                    var rpcMessage = JsonSerializer.Deserialize<StudioMessage>(json);
 
                     if (rpcMessage != null)
                     {
-                        OnRPCMessage?.Invoke(this, rpcMessage);
-                        App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | Type: {scriptType} | Testing: {testing}");
+                        OnStudioRPCMessage?.Invoke(this, rpcMessage);
                     }
                 }
             }
@@ -293,13 +292,6 @@ namespace Bloxstrap.Integrations
         private void ProcessPlayerLogEntry(string logMessage)
         {
             const string LOG_IDENT = "ActivityWatcher::ProcessPlayerLogEntry";
-
-            if (logMessage.StartsWith(StudioMessageEntry) || logMessage.Contains("[FroststrapStudioRPC]"))
-            {
-                InRobloxStudio = true;
-                ProcessStudioLogEntry(logMessage);
-                return;
-            }
 
             if (logMessage.StartsWith(GameLeavingEntry))
             {
@@ -467,10 +459,8 @@ namespace Bloxstrap.Integrations
                         OnGameLeave?.Invoke(this, EventArgs.Empty);
                     });
 
-                    if (App.Settings.Prop.AutoRejoinEnabled)
+                    if (App.Settings.Prop.AutoRejoin)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "checking for inactivity timeout for 3 seconds");
-
                         _ = Task.Run(async () =>
                         {
                             try

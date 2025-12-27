@@ -8,9 +8,6 @@
         [JsonPropertyName("state")]
         public string State { get; set; } = "";
 
-        [JsonPropertyName("timeStart")]
-        public ulong TimestampStart { get; set; } = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-
         [JsonPropertyName("testing")]
         public bool Testing { get; set; } = false;
 

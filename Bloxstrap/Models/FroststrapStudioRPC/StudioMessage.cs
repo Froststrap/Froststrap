@@ -3,7 +3,7 @@
 public class StudioMessage
 {
     [JsonPropertyName("command")]
-    public string Command { get; set; } = "SetRichPresence";
+    public string StudioCommand { get; set; } = "SetRichPresence";
 
     [JsonPropertyName("data")]
     public StudioRichPresence Data { get; set; } = new();

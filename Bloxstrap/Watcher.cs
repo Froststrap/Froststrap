@@ -70,13 +70,10 @@ namespace Bloxstrap
                     };
                 }
 
-                if (App.Settings.Prop.UseDiscordRichPresence)
-                {
-                    if (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth)
-                        StudioRichPresence = new(ActivityWatcher);
-                    else
-                        PlayerRichPresence = new(ActivityWatcher);
-                }
+                if ((_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
+                    StudioRichPresence = new(ActivityWatcher);
+                else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
+                    PlayerRichPresence = new(ActivityWatcher);
             }
 
             _notifyIcon = new(this);
