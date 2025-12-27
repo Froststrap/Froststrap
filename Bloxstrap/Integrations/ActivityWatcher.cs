@@ -207,8 +207,15 @@ namespace Bloxstrap.Integrations
                 string studioMessage = match.Groups[1].Value;
                 App.Logger.WriteLine(LOG_IDENT, $"Studio RPC: {studioMessage}");
 
+                if (studioMessage.Contains("| Workspace: Game"))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Ignoring message because workspace is 'Game'");
+                    return;
+                }
+
                 string workspace = "";
                 string activityState = studioMessage;
+                bool testing = false;
 
                 if (studioMessage.Contains("| Workspace:"))
                 {
@@ -216,7 +223,29 @@ namespace Bloxstrap.Integrations
                     if (workspaceIndex != -1)
                     {
                         activityState = studioMessage.Substring(0, workspaceIndex).Trim();
-                        workspace = studioMessage.Substring(workspaceIndex + 12).Trim();
+                        string afterWorkspace = studioMessage.Substring(workspaceIndex + 12).Trim();
+
+                        if (afterWorkspace.Contains("| Testing:"))
+                        {
+                            int testingIndex = afterWorkspace.IndexOf("| Testing:");
+                            workspace = afterWorkspace.Substring(0, testingIndex).Trim();
+                            string testingStr = afterWorkspace.Substring(testingIndex + 10).Trim();
+                            testing = testingStr.Equals("True", StringComparison.OrdinalIgnoreCase);
+                        }
+                        else
+                        {
+                            workspace = afterWorkspace;
+                        }
+                    }
+                }
+                else
+                {
+                    if (studioMessage.Contains("| Testing:"))
+                    {
+                        int testingIndex = studioMessage.IndexOf("| Testing:");
+                        activityState = studioMessage.Substring(0, testingIndex).Trim();
+                        string testingStr = studioMessage.Substring(testingIndex + 10).Trim();
+                        testing = testingStr.Equals("True", StringComparison.OrdinalIgnoreCase);
                     }
                 }
 
@@ -226,7 +255,8 @@ namespace Bloxstrap.Integrations
                     {
                         Details = activityState,
                         State = !string.IsNullOrEmpty(workspace) ? $"Workspace: {workspace}" : null!,
-                        TimestampStart = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds()
+                        TimestampStart = (ulong)DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
+                        Testing = testing
                     }
                 };
 
@@ -236,7 +266,8 @@ namespace Bloxstrap.Integrations
                 if (rpcMessage != null)
                 {
                     OnRPCMessage?.Invoke(this, rpcMessage);
-                    App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | State: Workspace: {workspace}");
+                    string testingStatus = testing ? " (Testing)" : "";
+                    App.Logger.WriteLine(LOG_IDENT, $"Sent Studio RPC: Details: {activityState} | State: Workspace: {workspace}{testingStatus}");
                 }
             }
         }

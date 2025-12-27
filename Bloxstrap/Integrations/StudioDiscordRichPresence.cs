@@ -106,23 +106,31 @@ namespace Bloxstrap.Integrations
                 return;
             }
 
+            DateTime? currentTimestamp = _currentPresence.Timestamps.Start;
+
             if (!string.IsNullOrEmpty(presenceData.Details))
                 _currentPresence.Details = presenceData.Details;
 
             if (!string.IsNullOrEmpty(presenceData.State))
                 _currentPresence.State = presenceData.State;
 
-            if (presenceData.TimestampStart > 0)
-                _currentPresence.Timestamps.StartUnixMilliseconds = presenceData.TimestampStart * 1000;
-            else if (presenceData.TimestampStart == 0)
-                _currentPresence.Timestamps.Start = null;
+            _currentPresence.Timestamps.Start = currentTimestamp;
+
+            string smallImageKey = "froststrap";
+            string smallImageText = $"Froststrap {App.Version}";
+
+            if (presenceData.Testing)
+            {
+                smallImageKey = "testing";
+                smallImageText = "Testing Game";
+            }
 
             _currentPresence.Assets = new Assets
             {
                 LargeImageKey = "roblox_studio",
                 LargeImageText = "Roblox Studio",
-                SmallImageKey = "froststrap",
-                SmallImageText = $"Froststrap {App.Version}"
+                SmallImageKey = smallImageKey,
+                SmallImageText = smallImageText
             };
 
             _originalPresence = _currentPresence.Clone();
