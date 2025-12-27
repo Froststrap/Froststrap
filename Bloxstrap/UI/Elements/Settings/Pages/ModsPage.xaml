@@ -131,7 +131,7 @@
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_Mods_Presets_OldCharacterSounds_Title}"
                         Description="{x:Static resources:Strings.Menu_Mods_Presets_OldCharacterSounds_Description}">
-                        
+
                         <ui:ToggleSwitch IsChecked="{Binding OldCharacterSoundsTask.NewState, Mode=TwoWay}" />
                     </controls:OptionControl>
 
@@ -519,7 +519,6 @@
                 Header="{x:Static resources:Strings.Menu_Mods_ModGenerator_Title}">
 
                 <Grid Margin="8,12">
-
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -536,13 +535,13 @@
                                 Text="Font Preview" />
 
                             <ComboBox 
-                                x:Name="FontSelectorComboBox" 
                                 Width="200" 
-                                SelectionChanged="FontSelectorComboBox_SelectionChanged"/>
+                                ItemsSource="{Binding FontDisplayNames}"
+                                SelectedItem="{Binding SelectedFontDisplayName}"/>
                         </StackPanel>
 
                         <ScrollViewer Height="260" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="GlyphGrid">
+                            <ItemsControl ItemsSource="{Binding GlyphItems}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <WrapPanel />
@@ -567,19 +566,19 @@
                         </ScrollViewer>
 
                         <StackPanel
-                        Margin="0,8"
-                        HorizontalAlignment="Left"
-                        Orientation="Horizontal">
+                            Margin="0,8"
+                            HorizontalAlignment="Left"
+                            Orientation="Horizontal">
                             <Button
-                            x:Name="GenerateModButton"
-                            Click="ModGenerator_Click"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_GenerateMod}" />
+                                Command="{Binding GenerateModCommand}"
+                                IsEnabled="{Binding IsNotGeneratingMod}"
+                                Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_GenerateMod}" />
 
                             <CheckBox
-                            x:Name="IncludeModificationsCheckBox"
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_CopyToModsFolder}" />
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                IsChecked="{Binding IncludeModifications}"
+                                Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_QuickActions_CopyToModsFolder}" />
 
                             <TextBlock
                                 Margin="8,0"
@@ -587,46 +586,40 @@
                                 Text="Solid Color:" />
 
                             <TextBox
-                                x:Name="SolidColorTextBox"
                                 Width="80"
                                 Margin="0,0,8,0"
-                                Text="#FFFFFF"
-                                VerticalContentAlignment="Center"
-                                TextChanged="OnSolidColorChanged" />
+                                Text="{Binding SolidColorHex, UpdateSourceTrigger=PropertyChanged}"
+                                VerticalContentAlignment="Center" />
 
                             <ui:Button
-                                x:Name="ChangeColorButton"
-                                Click="OnChangeSolidColor_Click"
+                                Command="{Binding OpenColorPickerCommand}"
                                 Content="{x:Static resources:Strings.Common_Color}" />
 
                         </StackPanel>
 
                         <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
                             <CheckBox
-                            x:Name="CursorsCheckBox" Margin="4,0"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Cursor}" />
+                                Margin="4,0"
+                                IsChecked="{Binding ColorCursors}"
+                                Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Cursor}" />
                             <CheckBox
-                            x:Name="ShiftlockCheckBox" Margin="4,0"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Shiftlock}" />
+                                Margin="4,0"
+                                IsChecked="{Binding ColorShiftlock}"
+                                Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_Shiftlock}" />
                             <CheckBox
-                            x:Name="VoiceChatCheckBox" Margin="4,0"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_VoiceChat}" />
-                            <CheckBox
-                            x:Name="EmoteWheelCheckBox" Margin="4,0"
-                            Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_EmoteWheel}" />
+                                Margin="4,0"
+                                IsChecked="{Binding ColorEmoteWheel}"
+                                Content="{x:Static resources:Strings.Menu_Mods_ModGenerator_GenerationOptions_EmoteWheel}" />
                         </StackPanel>
 
                         <TextBlock
-                        x:Name="DownloadStatusText"
-                        Margin="0,6,0,0"
-                        FontWeight="Bold"
-                        TextWrapping="Wrap" />
-
+                            Margin="0,6,0,0"
+                            FontWeight="Bold"
+                            TextWrapping="Wrap"
+                            Text="{Binding StatusText}" />
                     </StackPanel>
                 </Grid>
             </TabItem>
-
         </TabControl>
     </StackPanel>
-
 </ui:UiPage>

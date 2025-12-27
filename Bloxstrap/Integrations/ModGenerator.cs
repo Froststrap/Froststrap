@@ -20,9 +20,9 @@ namespace Bloxstrap.Integrations
 {
     public static class ModGenerator
     {
-        public static void RecolorAllPngs(string rootDir, Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false, bool recolorVoiceChat = false)
+        public static void RecolorAllPngs(string rootDir, Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false)
         {
-            const string LOG_IDENT = "UI::Recolor";
+            const string LOG_IDENT = "ModGenerator::RecolorAllPngs";
 
             if (string.IsNullOrWhiteSpace(rootDir) || !Directory.Exists(rootDir))
             {
@@ -154,7 +154,7 @@ namespace Bloxstrap.Integrations
 
                 App.Logger?.WriteLine(LOG_IDENT, $"Found {ttfFiles.Length} TTF files to recolor");
 
-                // font recoloring requires downloading the exe from our private repo
+                // font recoloring requires downloading the exe from our mod generator repo
                 string exePath = await DownloadModGeneratorExeAsync();
 
                 string hexColorArg = $"#{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}".TrimStart('#');

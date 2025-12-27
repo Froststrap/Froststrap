@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
+using System.IO.Compression;
+using Bloxstrap.Integrations;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -23,6 +25,17 @@ namespace Bloxstrap.UI.ViewModels.Settings
             { "otf", new byte[] { 0x4F, 0x54, 0x54, 0x4F } },
             { "ttc", new byte[] { 0x74, 0x74, 0x63, 0x66 } }
         };
+
+        public ModsViewModel()
+        {
+            LoadCustomCursorSets();
+
+            LoadCursorPathsForSelectedSet();
+
+            NotifyCursorVisibilities();
+
+            _ = LoadFontFilesAsync();
+        }
 
         private void ManageCustomFont()
         {
@@ -307,6 +320,760 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 });
         }
 
+        #region Mod Generator
+
+        private System.Drawing.Color _solidColor = System.Drawing.Color.White;
+        private string _solidColorHex = "#FFFFFF";
+        public string SolidColorHex
+        {
+            get => _solidColorHex;
+            set
+            {
+                _solidColorHex = value;
+                OnPropertyChanged(nameof(SolidColorHex));
+                OnPropertyChanged(nameof(CanGenerateMod));
+
+                if (IsValidHexColor(value))
+                {
+                    UpdateSolidColorFromHex(value);
+                    UpdateGlyphColors();
+                    StatusText = "Ready to generate mod.";
+                }
+                else
+                {
+                    StatusText = "Enter a valid hex color (e.g., #FF0000)";
+                }
+            }
+        }
+
+        public bool CanGenerateMod => IsValidHexColor(SolidColorHex) && IsNotGeneratingMod;
+
+        private ObservableCollection<GlyphItem> _glyphItems = new();
+        public ObservableCollection<GlyphItem> GlyphItems
+        {
+            get => _glyphItems;
+            set
+            {
+                _glyphItems = value;
+                OnPropertyChanged(nameof(GlyphItems));
+            }
+        }
+
+        private ObservableCollection<string> _fontDisplayNames = new();
+        public ObservableCollection<string> FontDisplayNames
+        {
+            get => _fontDisplayNames;
+            set
+            {
+                _fontDisplayNames = value;
+                OnPropertyChanged(nameof(FontDisplayNames));
+            }
+        }
+
+        private string? _selectedFontDisplayName;
+        public string? SelectedFontDisplayName
+        {
+            get => _selectedFontDisplayName;
+            set
+            {
+                _selectedFontDisplayName = value;
+                OnPropertyChanged(nameof(SelectedFontDisplayName));
+                OnSelectedFontChanged();
+            }
+        }
+
+        private bool _colorCursors = false;
+        public bool ColorCursors
+        {
+            get => _colorCursors;
+            set
+            {
+                _colorCursors = value;
+                OnPropertyChanged(nameof(ColorCursors));
+            }
+        }
+
+        private bool _colorShiftlock = false;
+        public bool ColorShiftlock
+        {
+            get => _colorShiftlock;
+            set
+            {
+                _colorShiftlock = value;
+                OnPropertyChanged(nameof(ColorShiftlock));
+            }
+        }
+
+        private bool _colorEmoteWheel = false;
+        public bool ColorEmoteWheel
+        {
+            get => _colorEmoteWheel;
+            set
+            {
+                _colorEmoteWheel = value;
+                OnPropertyChanged(nameof(ColorEmoteWheel));
+            }
+        }
+
+        private bool _includeModifications = true;
+        public bool IncludeModifications
+        {
+            get => _includeModifications;
+            set
+            {
+                _includeModifications = value;
+                OnPropertyChanged(nameof(IncludeModifications));
+            }
+        }
+
+        private string _statusText = "Ready to generate mod.";
+        public string StatusText
+        {
+            get => _statusText;
+            set
+            {
+                _statusText = value;
+                OnPropertyChanged(nameof(StatusText));
+            }
+        }
+
+        private bool _isNotGeneratingMod = true;
+        public bool IsNotGeneratingMod
+        {
+            get => _isNotGeneratingMod;
+            set
+            {
+                _isNotGeneratingMod = value;
+                OnPropertyChanged(nameof(IsNotGeneratingMod));
+                OnPropertyChanged(nameof(CanGenerateMod));
+            }
+        }
+
+        public ICommand OpenColorPickerCommand => new RelayCommand(OpenColorPicker);
+        public ICommand GenerateModCommand => new AsyncRelayCommand(GenerateModAsync, () => CanGenerateMod);
+
+        private async Task LoadFontFilesAsync()
+        {
+            string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+            string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
+            if (!Directory.Exists(fontDir))
+            {
+                Directory.CreateDirectory(fontDir);
+            }
+
+            var fontFiles = Directory.GetFiles(fontDir)
+                .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                           f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            if (fontFiles.Length == 0)
+            {
+                await DownloadFontFilesAsync(fontDir);
+                fontFiles = Directory.GetFiles(fontDir)
+                    .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                               f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+            }
+
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                var displayNames = fontFiles
+                    .Select(f => Path.GetFileNameWithoutExtension(f))
+                    .Select(f => f.Replace("BuilderIcons-", ""))
+                    .Distinct()
+                    .OrderBy(f => f)
+                    .ToList();
+
+                FontDisplayNames = new ObservableCollection<string>(displayNames);
+
+                if (displayNames.Count > 0)
+                {
+                    SelectedFontDisplayName = displayNames[0];
+                }
+            });
+        }
+
+        private async Task DownloadFontFilesAsync(string fontDir)
+        {
+            try
+            {
+                string[] fontUrls = {
+                    "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
+                    "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
+                };
+
+                using var httpClient = new HttpClient();
+                httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+                foreach (var url in fontUrls)
+                {
+                    try
+                    {
+                        string fileName = Path.GetFileName(url);
+                        string filePath = Path.Combine(fontDir, fileName);
+
+                        var response = await httpClient.GetAsync(url);
+                        response.EnsureSuccessStatusCode();
+
+                        var fontData = await response.Content.ReadAsByteArrayAsync();
+                        await File.WriteAllBytesAsync(filePath, fontData);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger?.WriteException("ModsViewmodel::DownloadFontFilesAsync", ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException("ModsViewmodel::DownloadFontFilesAsync", ex);
+            }
+        }
+
+        private async void OnSelectedFontChanged()
+        {
+            if (string.IsNullOrEmpty(SelectedFontDisplayName))
+            {
+                GlyphItems = new ObservableCollection<GlyphItem>();
+                return;
+            }
+
+            string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+            string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
+            if (!Directory.Exists(fontDir))
+            {
+                StatusText = "Font directory not found. Please try again.";
+                return;
+            }
+
+            var fontFiles = Directory.GetFiles(fontDir)
+                .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                           f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            if (fontFiles.Length == 0)
+            {
+                StatusText = "No font files found. Downloading...";
+                await DownloadFontFilesAsync(fontDir);
+                fontFiles = Directory.GetFiles(fontDir)
+                    .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
+                               f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+            }
+
+            string selectedFont = FindFontFile(SelectedFontDisplayName, fontFiles);
+
+            if (string.IsNullOrEmpty(selectedFont) || !File.Exists(selectedFont))
+            {
+                StatusText = $"Font file not found: {SelectedFontDisplayName}";
+                GlyphItems = new ObservableCollection<GlyphItem>();
+                return;
+            }
+
+            if (!IsValidHexColor(SolidColorHex))
+            {
+                StatusText = "Please enter a valid hex color to see preview";
+                GlyphItems = new ObservableCollection<GlyphItem>();
+                return;
+            }
+
+            StatusText = "Loading font preview...";
+            await LoadGlyphPreviewsAsync(selectedFont);
+
+            if (GlyphItems.Any())
+            {
+                StatusText = $"Loaded {GlyphItems.Count} glyphs from {SelectedFontDisplayName}";
+            }
+            else
+            {
+                StatusText = "No glyphs found in font";
+            }
+        }
+
+        private string FindFontFile(string displayName, string[] fontFiles)
+        {
+            string? otfFile = fontFiles.FirstOrDefault(f =>
+                Path.GetFileNameWithoutExtension(f) == $"BuilderIcons-{displayName}" &&
+                f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase));
+
+            if (otfFile != null)
+                return otfFile;
+
+            string? ttfFile = fontFiles.FirstOrDefault(f =>
+                Path.GetFileNameWithoutExtension(f) == $"BuilderIcons-{displayName}" &&
+                f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase));
+
+            return ttfFile ?? fontFiles.FirstOrDefault() ?? string.Empty;
+        }
+
+        private async Task LoadGlyphPreviewsAsync(string fontPath)
+        {
+            if (!File.Exists(fontPath))
+                return;
+
+            var glyphItems = new ObservableCollection<GlyphItem>();
+            var semaphore = new SemaphoreSlim(Environment.ProcessorCount / 4);
+
+            var colorBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
+                _solidColor.A, _solidColor.R, _solidColor.G, _solidColor.B));
+            colorBrush.Freeze();
+
+            try
+            {
+                GlyphTypeface typeface;
+                try
+                {
+                    typeface = new GlyphTypeface(new Uri(fontPath));
+                }
+                catch
+                {
+                    return;
+                }
+
+                var characterCodes = typeface.CharacterToGlyphMap.Keys
+                    .OrderByDescending(c => c)
+                    .ToList();
+
+                var tasks = characterCodes.Select(async characterCode =>
+                {
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                        if (!typeface.CharacterToGlyphMap.TryGetValue(characterCode, out ushort glyphIndex))
+                            return;
+
+                        Geometry geometry;
+                        try
+                        {
+                            geometry = typeface.GetGlyphOutline(glyphIndex, 40, 40);
+                        }
+                        catch
+                        {
+                            return;
+                        }
+
+                        var bounds = geometry.Bounds;
+                        var translate = new TranslateTransform(
+                            (50 - bounds.Width) / 2 - bounds.X,
+                            (50 - bounds.Height) / 2 - bounds.Y
+                        );
+                        geometry.Transform = translate;
+
+                        var item = new GlyphItem
+                        {
+                            Data = geometry,
+                            ColorBrush = colorBrush
+                        };
+
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
+                        {
+                            glyphItems.Add(item);
+                        });
+                    }
+                    finally
+                    {
+                        semaphore.Release();
+                    }
+                });
+
+                await Task.WhenAll(tasks);
+                GlyphItems = glyphItems;
+            }
+            catch
+            {
+                GlyphItems = new ObservableCollection<GlyphItem>();
+            }
+        }
+
+        private void UpdateGlyphColors()
+        {
+            if (!IsValidHexColor(SolidColorHex))
+                return;
+
+            var newBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(
+                _solidColor.A, _solidColor.R, _solidColor.G, _solidColor.B));
+            newBrush.Freeze();
+
+            foreach (var item in GlyphItems)
+            {
+                item.ColorBrush = newBrush;
+            }
+
+            var updatedItems = new ObservableCollection<GlyphItem>(GlyphItems);
+            GlyphItems = updatedItems;
+        }
+
+        private bool IsValidHexColor(string hex)
+        {
+            if (string.IsNullOrWhiteSpace(hex))
+                return false;
+
+            string cleanHex = hex.Trim();
+
+            if (!cleanHex.StartsWith("#"))
+                return false;
+
+            if (cleanHex.Length != 7 && cleanHex.Length != 4)
+                return false;
+
+            string hexDigits = cleanHex.Substring(1);
+            return hexDigits.All(c =>
+                (c >= '0' && c <= '9') ||
+                (c >= 'A' && c <= 'F') ||
+                (c >= 'a' && c <= 'f'));
+        }
+
+        private void UpdateSolidColorFromHex(string hex)
+        {
+            try
+            {
+                _solidColor = System.Drawing.ColorTranslator.FromHtml(hex);
+            }
+            catch
+            {
+                _solidColor = System.Drawing.Color.White;
+            }
+        }
+
+        private void OpenColorPicker()
+        {
+            var dlg = new System.Windows.Forms.ColorDialog
+            {
+                AllowFullOpen = true,
+                FullOpen = true,
+                Color = _solidColor
+            };
+
+            if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            _solidColor = dlg.Color;
+            SolidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+        }
+
+        private async Task GenerateModAsync()
+        {
+            const string LOG_IDENT = "ModsViewmodel::ModGenerator";
+
+            if (!IsValidHexColor(SolidColorHex))
+            {
+                StatusText = "Please enter a valid hex color before generating mod.";
+                return;
+            }
+
+            IsNotGeneratingMod = false;
+            StatusText = "Starting mod generation...";
+
+            try
+            {
+                await Task.Run(async () =>
+                {
+                    void SetStatus(string text) => StatusText = text;
+                    void Log(string text) => App.Logger?.WriteLine(LOG_IDENT, text);
+
+                    SetStatus("Downloading required packages...");
+                    var (luaPackagesZip, extraTexturesZip, contentTexturesZip, versionHash, version) =
+                        await ModGenerator.DownloadForModGenerator();
+
+                    Log($"DownloadForModGenerator returned. Version: {version} ({versionHash})");
+
+                    string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
+
+                    string luaPackagesDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages");
+                    string extraTexturesDir = Path.Combine(froststrapTemp, "ExtraContent", "textures");
+                    string contentTexturesDir = Path.Combine(froststrapTemp, "content", "textures");
+
+                    void SafeExtract(string zipPath, string targetDir)
+                    {
+                        if (string.IsNullOrWhiteSpace(zipPath) || !File.Exists(zipPath))
+                            return;
+
+                        if (Directory.Exists(targetDir))
+                        {
+                            try { Directory.Delete(targetDir, true); }
+                            catch (Exception ex)
+                            {
+                                App.Logger?.WriteException(LOG_IDENT, ex);
+                                throw;
+                            }
+                        }
+
+                        Directory.CreateDirectory(targetDir);
+                        new FastZip().ExtractZip(zipPath, targetDir, null);
+                    }
+
+                    SetStatus("Extracting ZIPs...");
+                    Log("Extracting downloaded ZIPs...");
+
+                    Parallel.Invoke(
+                        () => SafeExtract(luaPackagesZip, luaPackagesDir),
+                        () => SafeExtract(extraTexturesZip, extraTexturesDir),
+                        () => SafeExtract(contentTexturesZip, contentTexturesDir)
+                    );
+
+                    Log("Extraction complete.");
+
+                    SetStatus("Loading mappings...");
+                    Dictionary<string, string[]> mappings = await ModGenerator.LoadMappingsAsync();
+
+                    if (mappings == null || mappings.Count == 0)
+                    {
+                        throw new Exception("Failed to load mappings. No mappings available.");
+                    }
+
+                    Log($"Loaded mappings with {mappings.Count} top-level entries.");
+
+                    SetStatus("Recoloring images...");
+                    Log($"Using solid color for recolor: {_solidColor}");
+
+                    Log("Starting RecolorAllPngs...");
+                    ModGenerator.RecolorAllPngs(froststrapTemp, _solidColor, mappings,
+                        ColorCursors, ColorShiftlock, ColorEmoteWheel);
+                    Log("RecolorAllPngs finished.");
+
+                    try
+                    {
+                        SetStatus("Recoloring fonts...");
+                        Log("Starting font recoloring...");
+
+                        await ModGenerator.RecolorFontsAsync(froststrapTemp, _solidColor);
+                        Log("Font recoloring finished.");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger?.WriteException(LOG_IDENT, ex);
+                        SetStatus("Font recoloring failed but continuing");
+                    }
+
+                    SetStatus("Cleaning up unnecessary files...");
+                    var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                    foreach (var entry in mappings.Values)
+                    {
+                        string fullPath = Path.Combine(froststrapTemp, Path.Combine(entry));
+                        preservePaths.Add(fullPath);
+                    }
+
+                    string builderIconsFontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+                    if (Directory.Exists(builderIconsFontDir))
+                    {
+                        preservePaths.Add(builderIconsFontDir);
+                        var fontFiles = Directory.GetFiles(builderIconsFontDir, "*.*");
+                        foreach (var fontFile in fontFiles)
+                        {
+                            preservePaths.Add(fontFile);
+                        }
+                    }
+
+                    if (ColorCursors)
+                    {
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\IBeamCursor.png"));
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowCursor.png"));
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\Cursors\KeyboardMouse\ArrowFarCursor.png"));
+                    }
+
+                    if (ColorShiftlock)
+                    {
+                        preservePaths.Add(Path.Combine(froststrapTemp, @"content\textures\MouseLockedCursor.png"));
+                    }
+
+                    if (ColorEmoteWheel)
+                    {
+                        string emotesDir = Path.Combine(froststrapTemp, @"content\textures\ui\Emotes\Large");
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@2x.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedGradient@3x.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedLine.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@2x.png"));
+                        preservePaths.Add(Path.Combine(emotesDir, "SelectedLine@3x.png"));
+                    }
+
+                    void DeleteExcept(string dir)
+                    {
+                        foreach (var file in Directory.GetFiles(dir))
+                        {
+                            if (!preservePaths.Contains(file))
+                            {
+                                try { File.Delete(file); } catch { }
+                            }
+                        }
+
+                        foreach (var subDir in Directory.GetDirectories(dir))
+                        {
+                            if (!preservePaths.Contains(subDir))
+                            {
+                                try
+                                {
+                                    DeleteExcept(subDir);
+                                    if (Directory.Exists(subDir) && !Directory.EnumerateFileSystemEntries(subDir).Any())
+                                        Directory.Delete(subDir);
+                                }
+                                catch { }
+                            }
+                        }
+                    }
+
+                    var otfFiles = Directory.GetFiles(froststrapTemp, "*.otf", SearchOption.TopDirectoryOnly);
+
+                    foreach (var otfFile in otfFiles)
+                    {
+                        File.Delete(otfFile);
+                    }
+
+                    if (Directory.Exists(luaPackagesDir)) DeleteExcept(luaPackagesDir);
+                    if (Directory.Exists(extraTexturesDir)) DeleteExcept(extraTexturesDir);
+                    if (Directory.Exists(contentTexturesDir)) DeleteExcept(contentTexturesDir);
+
+                    string infoPath = Path.Combine(froststrapTemp, "info.json");
+                    var infoData = new
+                    {
+                        FroststrapVersion = App.Version,
+                        CreatedUsing = "Froststrap",
+                        RobloxVersion = version,
+                        RobloxVersionHash = versionHash,
+                        OptionsUsed = new
+                        {
+                            ColorCursors = ColorCursors,
+                            ColorShiftlock = ColorShiftlock,
+                            ColorEmoteWheel = ColorEmoteWheel,
+                        },
+                        ColorsUsed = new
+                        {
+                            SolidColor = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}"
+                        }
+                    };
+
+                    string infoJson = JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true });
+                    await File.WriteAllTextAsync(infoPath, infoJson);
+
+                    if (IncludeModifications)
+                    {
+                        if (!Directory.Exists(Paths.Modifications))
+                            Directory.CreateDirectory(Paths.Modifications);
+
+                        int copiedFiles = 0;
+
+                        var itemsToCopy = new List<string>
+                        {
+                            Path.Combine(froststrapTemp, "ExtraContent"),
+                            Path.Combine(froststrapTemp, "content"),
+                            Path.Combine(froststrapTemp, "info.json")
+                        };
+
+                        string fontsPath = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
+                        foreach (var item in itemsToCopy)
+                        {
+                            if (!File.Exists(item) && !Directory.Exists(item))
+                                continue;
+
+                            string relativePath = Path.GetRelativePath(froststrapTemp, item);
+                            string targetPath = Path.Combine(Paths.Modifications, relativePath);
+
+                            if (File.Exists(item))
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+                                File.Copy(item, targetPath, overwrite: true);
+                                copiedFiles++;
+                            }
+                            else if (Directory.Exists(item))
+                            {
+                                foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
+                                {
+                                    if (file.StartsWith(fontsPath, StringComparison.OrdinalIgnoreCase) &&
+                                        file.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        continue;
+                                    }
+
+                                    string fileRelativePath = Path.GetRelativePath(froststrapTemp, file);
+                                    string fileTargetPath = Path.Combine(Paths.Modifications, fileRelativePath);
+
+                                    Directory.CreateDirectory(Path.GetDirectoryName(fileTargetPath)!);
+                                    File.Copy(file, fileTargetPath, overwrite: true);
+                                    copiedFiles++;
+                                }
+                            }
+                        }
+
+                        SetStatus($"Mod generation completed! Copied {copiedFiles} files to Modifications folder.");
+                        Log($"Copied {copiedFiles} files to {Paths.Modifications}");
+                    }
+                    else
+                    {
+                        var saveDialog = new SaveFileDialog
+                        {
+                            FileName = "FroststrapMod.zip",
+                            Filter = "ZIP Archives (*.zip)|*.zip",
+                            Title = "FroststrapMod"
+                        };
+
+                        if (saveDialog.ShowDialog() == true)
+                        {
+                            using (var zip = new ZipArchive(new FileStream(saveDialog.FileName, FileMode.Create), ZipArchiveMode.Create))
+                            {
+                                var itemsToInclude = new List<string>
+                                {
+                                    Path.Combine(froststrapTemp, "ExtraContent"),
+                                    Path.Combine(froststrapTemp, "content"),
+                                    Path.Combine(froststrapTemp, "info.json")
+                                };
+
+                                string fontsPath = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+
+                                foreach (var item in itemsToInclude)
+                                {
+                                    if (!File.Exists(item) && !Directory.Exists(item))
+                                        continue;
+
+                                    if (File.Exists(item))
+                                    {
+                                        string relativePath = Path.GetRelativePath(froststrapTemp, item);
+                                        zip.CreateEntryFromFile(item, relativePath);
+                                    }
+                                    else if (Directory.Exists(item))
+                                    {
+                                        foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
+                                        {
+                                            if (file.StartsWith(fontsPath, StringComparison.OrdinalIgnoreCase) &&
+                                                file.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                continue;
+                                            }
+
+                                            string relativePath = Path.GetRelativePath(froststrapTemp, file);
+                                            zip.CreateEntryFromFile(file, relativePath);
+                                        }
+                                    }
+                                }
+                            }
+
+                            SetStatus($"Mod generated successfully! Saved to: {saveDialog.FileName}");
+                            Log($"Mod zip created at {saveDialog.FileName}");
+                        }
+                        else
+                        {
+                            StatusText = "Save cancelled by user.";
+                            Log("User cancelled save dialog.");
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException(LOG_IDENT, ex);
+                StatusText = $"Error: {ex.Message}";
+            }
+            finally
+            {
+                IsNotGeneratingMod = true;
+            }
+        }
+
+        #endregion
+
         #region Custom Cursor Set
         public ObservableCollection<CustomCursorSet> CustomCursorSets { get; } = new();
 
@@ -367,15 +1134,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand DeleteArrowFarCursorCommand => new RelayCommand(() => DeleteCursorImage("ArrowFarCursor.png"));
         public ICommand DeleteIBeamCursorCommand => new RelayCommand(() => DeleteCursorImage("IBeamCursor.png"));
         public ICommand DeleteShiftlockCursorCommand => new RelayCommand(() => DeleteCursorImage("MouseLockedCursor.png"));
-
-        public ModsViewModel()
-        {
-            LoadCustomCursorSets();
-
-            LoadCursorPathsForSelectedSet();
-
-            NotifyCursorVisibilities();
-        }
 
         private void LoadCustomCursorSets()
         {
