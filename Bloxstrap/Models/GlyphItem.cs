@@ -1,10 +1,41 @@
-﻿using System.Windows.Media;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Media;
 
 namespace Bloxstrap.Models
 {
-    public class GlyphItem
+    public class GlyphItem : INotifyPropertyChanged
     {
-        public Geometry Data { get; set; } = null!;
-        public SolidColorBrush ColorBrush { get; set; } = null!;
+        private Geometry? _data;
+        private SolidColorBrush? _colorBrush;
+
+        public Geometry? Data
+        {
+            get => _data;
+            set
+            {
+                if (Equals(_data, value)) return;
+                _data = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SolidColorBrush? ColorBrush
+        {
+            get => _colorBrush;
+            set
+            {
+                if (Equals(_colorBrush, value)) return;
+                _colorBrush = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

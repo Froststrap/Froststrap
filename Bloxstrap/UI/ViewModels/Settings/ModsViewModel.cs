@@ -634,6 +634,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                 var characterCodes = typeface.CharacterToGlyphMap.Keys
                     .OrderByDescending(c => c)
+                    .Take(80)
                     .ToList();
 
                 var tasks = characterCodes.Select(async characterCode =>
@@ -700,9 +701,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             {
                 item.ColorBrush = newBrush;
             }
-
-            var updatedItems = new ObservableCollection<GlyphItem>(GlyphItems);
-            GlyphItems = updatedItems;
         }
 
         private bool IsValidHexColor(string hex)
