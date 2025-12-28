@@ -1,4 +1,4 @@
-﻿namespace Bloxstrap.Models.APIs.Config
+﻿namespace Bloxstrap.Models
 {
     public class DatacentersCache
     {

@@ -57,6 +57,7 @@ namespace Bloxstrap
         private string _latestVersionGuid = null!;
         private string _latestVersionDirectory = null!;
         private PackageManifest _versionPackageManifest = null!;
+        public static bool _staticDirectory => App.Settings.Prop.StaticDirectory;
 
         private bool _isInstalling = false;
         private double _progressIncrement;
@@ -485,7 +486,7 @@ namespace Bloxstrap
             // Private channels
             if (App.Cookies.Loaded)
             {
-                UserChannel? userChannel = await App.Cookies.GetUserChannel(Deployment.BinaryType);
+                UserChannel? userChannel = await Deployment.GetUserChannel(Deployment.BinaryType);
 
                 if (
                     userChannel?.Token is not null &&
@@ -630,7 +631,10 @@ namespace Bloxstrap
                 // we can't determine the version
             }
 
-            _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
+            if (_staticDirectory)
+                _latestVersionDirectory = AppData.StaticDirectory;
+            else
+                _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
             string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
             var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
@@ -1337,7 +1341,10 @@ namespace Bloxstrap
             {
                 string dirName = Path.GetFileName(dir);
 
-                if (dirName != App.RobloxState.Prop.Player.VersionGuid && dirName != App.RobloxState.Prop.Studio.VersionGuid)
+                if (
+                    !_staticDirectory && (dirName != App.RobloxState.Prop.Player.VersionGuid && dirName != App.RobloxState.Prop.Studio.VersionGuid) ||
+                    _staticDirectory && (dirName != "WindowsPlayer" && dirName != "WindowsStudio64")
+                    )
                 {
                     // TODO: this is too expensive
                     //Filesystem.AssertReadOnlyDirectory(dir);
@@ -1350,7 +1357,7 @@ namespace Bloxstrap
                     {
                         Directory.Delete(dir, true);
                     }
-                    catch (IOException ex)
+                    catch (Exception ex)
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
                         App.Logger.WriteException(LOG_IDENT, ex);

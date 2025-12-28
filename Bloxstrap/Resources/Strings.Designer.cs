@@ -1078,6 +1078,15 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Timestamp.
+        /// </summary>
+        public static string Common_Timestamp {
+            get {
+                return ResourceManager.GetString("Common.Timestamp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
         public static string Common_Type {
@@ -3867,6 +3876,24 @@ namespace Bloxstrap.Resources {
         public static string Menu_Channel_RobloxUpgrades_Description {
             get {
                 return ResourceManager.GetString("Menu.Channel.RobloxUpgrades.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch from version-xxx to BinaryType based install directories..
+        /// </summary>
+        public static string Menu_Channel_StaticDirectory_Description {
+            get {
+                return ResourceManager.GetString("Menu.Channel.StaticDirectory.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Static directory.
+        /// </summary>
+        public static string Menu_Channel_StaticDirectory_Title {
+            get {
+                return ResourceManager.GetString("Menu.Channel.StaticDirectory.Title", resourceCulture);
             }
         }
         

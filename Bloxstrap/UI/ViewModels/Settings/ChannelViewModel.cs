@@ -34,13 +34,13 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 bool isPrivate = await Deployment.IsChannelPrivate(channel);
                 if (App.Cookies.Loaded && isPrivate && string.IsNullOrEmpty(Deployment.ChannelToken))
                 {
-                    UserChannel? userChannel = await App.Cookies.GetUserChannel("WindowsPlayer");
+                    UserChannel? userChannel = await Deployment.GetUserChannel("WindowsPlayer");
 
                     if (userChannel?.Token is not null)
                         Deployment.ChannelToken = userChannel.Token;
                 }
 
-                ClientVersion info = await Deployment.GetInfo(channel, true);
+                ClientVersion info = await Deployment.GetInfo(channel, true, true);
 
                 ShowChannelWarning = info.IsBehindDefaultChannel;
                 OnPropertyChanged(nameof(ShowChannelWarning));
@@ -48,7 +48,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 ChannelDeployInfo = new DeployInfo
                 {
                     Version = info.Version,
-                    VersionGuid = isPrivate ? "version-private" : info.VersionGuid // we dont want to return the hash of private channels for obvious reason
+                    VersionGuid = isPrivate ? "version-private" : info.VersionGuid, // we dont want to return the hash of private channels for obvious reason
+                    Timestamp = info.Timestamp?.ToLocalTime().ToString() ?? "?"
                 };
 
                 App.State.Prop.IgnoreOutdatedChannel = true;
@@ -94,24 +95,16 @@ namespace Bloxstrap.UI.ViewModels.Settings
             }
         }
 
-        public string ChannelHash
-        {
-            get => App.Settings.Prop.ChannelHash;
-            set
-            {
-                const string VersionHashFormat = "version-(.*)";
-                Match match = Regex.Match(value, VersionHashFormat);
-                if (match.Success || String.IsNullOrEmpty(value))
-                {
-                    App.Settings.Prop.ChannelHash = value;
-                }
-            }
-        }
-
         public bool UpdateRoblox
         {
             get => App.Settings.Prop.UpdateRoblox && !IsRobloxInstallationMissing;
             set => App.Settings.Prop.UpdateRoblox = value;
+        }
+
+        public bool StaticDirectory
+        {
+            get => App.Settings.Prop.StaticDirectory;
+            set => App.Settings.Prop.StaticDirectory = value;
         }
 
         public IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
