@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Bloxstrap.Resources;
 
 namespace Bloxstrap.Utility
 {

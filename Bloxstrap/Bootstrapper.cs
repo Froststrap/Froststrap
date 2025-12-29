@@ -1025,6 +1025,7 @@ namespace Bloxstrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}), waiting for log file");
 
+            // should i increase timeout ? since i think watcher dosent launh sometimes cause it cannot find the log file in time.
             logCreatedEvent.WaitOne(TimeSpan.FromSeconds(15));
 
             if (String.IsNullOrEmpty(logFileName))

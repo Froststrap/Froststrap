@@ -5,7 +5,6 @@ namespace Bloxstrap.Integrations
     public class ActivityWatcher : IDisposable
     {
         private const string GameMessageEntry = "[FLog::Output] [BloxstrapRPC]";
-        private const string StudioMessageEntry = "[FLog::Output] [FroststrapStudioRPC]";
         private const string GameJoiningEntry = "[FLog::Output] ! Joining game";
 
         // these entries are technically volatile!
@@ -32,7 +31,6 @@ namespace Bloxstrap.Integrations
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
-        private const string StudioMessagePattern = @"\[FroststrapStudioRPC\] (.*)";
 
         private int _logEntriesRead = 0;
         private bool _teleportMarker = false;
@@ -64,6 +62,12 @@ namespace Bloxstrap.Integrations
         public bool InStudioPlace = false;
         public bool InRobloxStudio = false;
 
+        private const int HttpPort = 4875;
+        private HttpListener? _httpListener;
+        private Thread? _httpListenerThread;
+        private bool _isHttpListenerRunning = false;
+        private readonly CancellationTokenSource _httpCancellationTokenSource = new();
+
         public ActivityData Data { get; private set; } = new();
 
         /// <summary>
@@ -78,7 +82,7 @@ namespace Bloxstrap.Integrations
             if (!String.IsNullOrEmpty(logFile))
                 LogLocation = logFile;
 
-            _launchMode = launchMode; 
+            _launchMode = launchMode;
 
             if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
                 InRobloxStudio = true;
@@ -208,6 +212,7 @@ namespace Bloxstrap.Integrations
                     InStudioPlace = true;
                     App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
 
+                    StartHTTPServer();
                     OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -218,73 +223,8 @@ namespace Bloxstrap.Integrations
                     App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
                     InStudioPlace = false;
 
+                    StopHTTPServer();
                     OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
-                }
-                else if (logMessage.StartsWith(StudioMessageEntry))
-                {
-                    var match = Regex.Match(logMessage, StudioMessagePattern);
-
-                    if (match.Groups.Count != 2)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to parse Studio RPC message");
-                        return;
-                    }
-
-                    string studioMessage = match.Groups[1].Value;
-                    App.Logger.WriteLine(LOG_IDENT, $"Studio RPC: {studioMessage}");
-
-                    if (studioMessage.Contains("| Workspace: Game"))
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Ignoring message because workspace is 'Game'");
-                        return;
-                    }
-
-                    string workspace = "";
-                    string activityState = studioMessage;
-                    bool testing = false;
-                    string scriptType = "developing";
-
-                    string[] parts = studioMessage.Split(new[] { " | " }, StringSplitOptions.None);
-
-                    foreach (string part in parts)
-                    {
-                        if (part.StartsWith("Workspace:"))
-                        {
-                            workspace = part.Substring(10).Trim();
-                        }
-                        else if (part.StartsWith("Testing:"))
-                        {
-                            string testingStr = part.Substring(8).Trim();
-                            testing = testingStr.Equals("True", StringComparison.OrdinalIgnoreCase);
-                        }
-                        else if (part.StartsWith("Type:"))
-                        {
-                            scriptType = part.Substring(5).Trim();
-                        }
-                        else if (!part.Contains("Workspace:") && !part.Contains("Testing:") && !part.Contains("Type:"))
-                        {
-                            activityState = part.Trim();
-                        }
-                    }
-
-                    var studioRpc = new StudioMessage
-                    {
-                        Data = new StudioRichPresence
-                        {
-                            Details = activityState,
-                            State = !string.IsNullOrEmpty(workspace) ? $"Workspace: {workspace}" : null!,
-                            Testing = testing,
-                            ScriptType = scriptType
-                        }
-                    };
-
-                    string json = JsonSerializer.Serialize(studioRpc);
-                    var rpcMessage = JsonSerializer.Deserialize<StudioMessage>(json);
-
-                    if (rpcMessage != null)
-                    {
-                        OnStudioRPCMessage?.Invoke(this, rpcMessage);
-                    }
                 }
             }
         }
@@ -595,6 +535,135 @@ namespace Bloxstrap.Integrations
             }
         }
 
+        private void StartHTTPServer()
+        {
+            try
+            {
+                _httpListener = new HttpListener();
+
+                _httpListener.Prefixes.Add($"http://localhost:{HttpPort}/");
+
+                _httpListener.Start();
+
+                _isHttpListenerRunning = true;
+                _httpListenerThread = new Thread(() => ListenForHTTPRequests(_httpCancellationTokenSource.Token));
+                _httpListenerThread.IsBackground = true;
+                _httpListenerThread.Name = "StudioRPC-HTTP-Listener";
+                _httpListenerThread.Start();
+
+                App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", $"HTTP server started on port {HttpPort}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("ActivityWatcher::StartHTTPServer", ex);
+            }
+        }
+
+        private async void ListenForHTTPRequests(CancellationToken cancellationToken)
+        {
+            while (_isHttpListenerRunning && _httpListener != null && _httpListener.IsListening && !cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var context = await _httpListener.GetContextAsync().WaitAsync(cancellationToken);
+                    _ = Task.Run(() => ProcessHTTPRequest(context), cancellationToken);
+                }
+                catch (HttpListenerException)
+                {
+                    break;
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("ActivityWatcher::ListenForHTTPRequests", ex);
+                    await Task.Delay(1000, cancellationToken);
+                }
+            }
+        }
+
+        private void ProcessHTTPRequest(HttpListenerContext context)
+        {
+            const string LOG_IDENT = "ActivityWatcher::ProcessHTTPRequest";
+
+            try
+            {
+                if (context.Request.HttpMethod == "POST" && context.Request.Url?.AbsolutePath == "/rpc")
+                {
+                    using (var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8))
+                    {
+                        string json = reader.ReadToEnd();
+                        App.Logger.WriteLine(LOG_IDENT, $"Received HTTP RPC: {json}");
+
+                        var studioMessage = JsonSerializer.Deserialize<StudioMessage>(json);
+
+                        if (studioMessage != null)
+                        {
+                            if (studioMessage.Data == null)
+                            {
+                                studioMessage.Data = new StudioRichPresence();
+                            }
+
+                            OnStudioRPCMessage?.Invoke(this, studioMessage);
+                        }
+                        else
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "Failed to parse JSON message");
+                        }
+                    }
+
+                    context.Response.StatusCode = 200;
+                    context.Response.Close();
+                }
+                else
+                {
+                    context.Response.StatusCode = 404;
+                    context.Response.Close();
+                }
+            }
+            catch (JsonException jsonEx)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"JSON parsing error: {jsonEx.Message}");
+                context.Response.StatusCode = 400;
+                context.Response.Close();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+                context.Response.StatusCode = 500;
+                context.Response.Close();
+            }
+        }
+
+        private void StopHTTPServer()
+        {
+            _isHttpListenerRunning = false;
+            _httpCancellationTokenSource.Cancel();
+
+            if (_httpListener != null)
+            {
+                try
+                {
+                    _httpListener.Stop();
+                    _httpListener.Close();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("ActivityWatcher::StopHTTPServer", ex);
+                }
+                _httpListener = null;
+            }
+
+            if (_httpListenerThread != null && _httpListenerThread.IsAlive)
+            {
+                _httpListenerThread.Join(2000);
+            }
+
+            _httpCancellationTokenSource.Dispose();
+        }
+
         public void LoadGameHistory()
         {
             try
@@ -710,6 +779,7 @@ namespace Bloxstrap.Integrations
         public void Dispose()
         {
             IsDisposed = true;
+            StopHTTPServer();
             GC.SuppressFinalize(this);
         }
     }
