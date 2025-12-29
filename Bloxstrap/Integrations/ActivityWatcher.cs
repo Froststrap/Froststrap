@@ -540,6 +540,12 @@
         {
             try
             {
+        	if (_httpListener != null && _httpListener.IsListening)
+        	{
+        	    App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", "HTTP server is already running");
+        	    return;
+        	}
+
                 _httpListener = new HttpListener();
 
                 _httpListener.Prefixes.Add($"http://localhost:{HttpPort}/");
@@ -553,6 +559,10 @@
                 _httpListenerThread.Start();
 
                 App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", $"HTTP server started on port {HttpPort}");
+            }
+            catch (HttpListenerException ex) when (ex.ErrorCode == 183) // ERROR_ALREADY_EXISTS
+            {
+                App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", $"Port {HttpPort} is already in use by another process");
             }
             catch (Exception ex)
             {
