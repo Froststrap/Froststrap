@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Bloxstrap.Integrations
+﻿namespace Bloxstrap.Integrations
 {
     public class ActivityWatcher : IDisposable
     {
@@ -85,7 +83,10 @@ namespace Bloxstrap.Integrations
             _launchMode = launchMode;
 
             if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+            {
                 InRobloxStudio = true;
+                StartHTTPServer();
+            }
 
             LoadGameHistory();
         }
@@ -200,30 +201,30 @@ namespace Bloxstrap.Integrations
         {
             const string LOG_IDENT = "ActivityWatcher::ProcessStudioLogEntry";
 
+            // incase this got called and InRobloxStudio is still false
             if (!InRobloxStudio)
             {
                 InRobloxStudio = true;
             }
 
+            // i need to find more logs stuff for studio lowkey
             if (!InStudioPlace)
             {
-                if (logMessage.Contains(StudioPlaceOpenEntry))
+                if (logMessage.StartsWith(StudioPlaceOpenEntry))
                 {
                     InStudioPlace = true;
                     App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
 
-                    StartHTTPServer();
                     OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
                 }
             }
             else if (InStudioPlace)
             {
-                if (logMessage.Contains(StudioPlaceCloseEntry))
+                if (logMessage.StartsWith(StudioPlaceCloseEntry))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
                     InStudioPlace = false;
 
-                    StopHTTPServer();
                     OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -601,12 +602,37 @@ namespace Bloxstrap.Integrations
 
                         if (studioMessage != null)
                         {
-                            if (studioMessage.Data == null)
+                            if (studioMessage.StudioCommand == "SetRichPresence")
                             {
-                                studioMessage.Data = new StudioRichPresence();
+                                var richPresenceData = studioMessage.Data.Deserialize<StudioRichPresence>();
+                                if (richPresenceData != null)
+                                {
+                                    var fullMessage = new StudioMessage
+                                    {
+                                        StudioCommand = studioMessage.StudioCommand,
+                                        Data = JsonSerializer.SerializeToElement(richPresenceData)
+                                    };
+                                    OnStudioRPCMessage?.Invoke(this, fullMessage);
+                                }
                             }
-
-                            OnStudioRPCMessage?.Invoke(this, studioMessage);
+                            else if (studioMessage.StudioCommand == "RPCToggle")
+                            {
+                                var toggleData = studioMessage.Data.Deserialize<StudioToggleData>();
+                                if (toggleData != null)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"Received RPCToggle: Enabled={toggleData.Enabled}, Workspace={toggleData.Workspace}");
+                                    var toggleMessage = new StudioMessage
+                                    {
+                                        StudioCommand = studioMessage.StudioCommand,
+                                        Data = JsonSerializer.SerializeToElement(toggleData)
+                                    };
+                                    OnStudioRPCMessage?.Invoke(this, toggleMessage);
+                                }
+                            }
+                            else
+                            {
+                                OnStudioRPCMessage?.Invoke(this, studioMessage);
+                            }
                         }
                         else
                         {

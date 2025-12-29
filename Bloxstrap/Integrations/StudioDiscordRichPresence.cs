@@ -25,6 +25,7 @@ namespace Bloxstrap.Integrations
         private DiscordRPC.RichPresence? _originalPresence;
 
         private bool _visible = true;
+        private bool _rpcEnabled = true;
 
         public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
         {
@@ -65,26 +66,68 @@ namespace Bloxstrap.Integrations
             const string LOG_IDENT = "StudioDiscordRichPresence::HandleStudioPlaceClosed";
             App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
 
-            InitializeStudioPresence();
+            ResetStudioPresence();
+            _rpcEnabled = true;
         }
 
         public void ProcessRPCMessage(StudioMessage message, bool implicitUpdate = true)
         {
             const string LOG_IDENT = "StudioDiscordRichPresence::ProcessRPCMessage";
 
-            if (message.StudioCommand != "SetRichPresence")
-                return;
-
-            if (_currentPresence is null || _originalPresence is null)
+            if (message.StudioCommand == "RPCToggle")
             {
-                App.Logger.WriteLine(LOG_IDENT, "Presence is not set, initializing Studio presence");
-                InitializeStudioPresence();
+                var toggleData = message.Data.Deserialize<StudioToggleData>();
+                if (toggleData != null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Processing RPCToggle: Enabled={toggleData.Enabled}");
+                    HandleRPCToggle(toggleData.Enabled);
+                }
+                return;
             }
+            else if (message.StudioCommand == "SetRichPresence")
+            {
+                if (!_rpcEnabled)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "RPC is disabled, ignoring SetRichPresence message");
+                    return;
+                }
 
-            ProcessStudioRichPresence(message, implicitUpdate);
+                if (_currentPresence is null || _originalPresence is null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Presence is not set, initializing Studio presence");
+                    InitializeStudioPresence();
+                }
 
-            if (implicitUpdate)
-                UpdatePresence();
+                ProcessStudioRichPresence(message, implicitUpdate);
+
+                if (implicitUpdate)
+                    UpdatePresence();
+            }
+        }
+
+        private void HandleRPCToggle(bool enabled)
+        {
+            const string LOG_IDENT = "StudioDiscordRichPresence::HandleRPCToggle";
+
+            _rpcEnabled = enabled;
+            App.Logger.WriteLine(LOG_IDENT, $"RPC is now {(enabled ? "ENABLED" : "DISABLED")}");
+
+            if (enabled)
+            {
+                if (_originalPresence != null)
+                {
+                    _currentPresence = _originalPresence.Clone();
+                    UpdatePresence();
+                }
+                else
+                {
+                    InitializeStudioPresence();
+                }
+            }
+            else
+            {
+                ResetStudioPresence();
+            }
         }
 
         private void InitializeStudioPresence()
@@ -111,6 +154,27 @@ namespace Bloxstrap.Integrations
             UpdatePresence();
         }
 
+        private void ResetStudioPresence()
+        {
+            App.Logger.WriteLine("StudioDiscordRichPresence::ResetStudioPresence", "Resetting Studio presence");
+
+            DateTime? existingTimestamp = _currentPresence?.Timestamps?.Start;
+
+            _currentPresence = new DiscordRPC.RichPresence
+            {
+                Timestamps = existingTimestamp.HasValue
+                    ? new Timestamps { Start = existingTimestamp.Value }
+                    : new Timestamps { Start = DateTime.UtcNow },
+                Assets = new Assets
+                {
+                    LargeImageKey = "roblox_studio",
+                    LargeImageText = "Roblox Studio",
+                },
+            };
+
+            UpdatePresence();
+        }
+
         private void ProcessStudioRichPresence(StudioMessage message, bool implicitUpdate)
         {
             const string LOG_IDENT = "StudioDiscordRichPresence::ProcessStudioRichPresence";
@@ -121,7 +185,7 @@ namespace Bloxstrap.Integrations
 
             try
             {
-                presenceData = message.Data;
+                presenceData = message.Data.Deserialize<StudioRichPresence>();
             }
             catch (Exception)
             {
@@ -135,15 +199,11 @@ namespace Bloxstrap.Integrations
                 return;
             }
 
-            DateTime? currentTimestamp = _currentPresence.Timestamps.Start;
-
-            if (!string.IsNullOrEmpty(presenceData.Details) && App.Settings.Prop.StudioEditingInfo)
+            if (!string.IsNullOrEmpty(presenceData.Details) && App.Settings.Prop.StudioWorkspaceInfo)
                 _currentPresence.Details = presenceData.Details;
 
-            if (!string.IsNullOrEmpty(presenceData.State) && App.Settings.Prop.StudioWorkspaceInfo)
+            if (!string.IsNullOrEmpty(presenceData.State) && App.Settings.Prop.StudioEditingInfo)
                 _currentPresence.State = presenceData.State;
-
-            _currentPresence.Timestamps.Start = currentTimestamp;
 
             string largeImageKey = "roblox_studio";
             string largeImageText = "Roblox Studio";
@@ -173,8 +233,8 @@ namespace Bloxstrap.Integrations
                 }
             }
 
-            string smallImageKey = "";
-            string smallImageText = "";
+            string smallImageKey = null!;
+            string smallImageText = null!;
 
             if (presenceData.Testing && App.Settings.Prop.StudioShowTesting)
             {
@@ -190,7 +250,10 @@ namespace Bloxstrap.Integrations
                 SmallImageText = smallImageText
             };
 
-            _originalPresence = _currentPresence.Clone();
+            if (_rpcEnabled)
+            {
+                _originalPresence = _currentPresence.Clone();
+            }
 
             if (implicitUpdate)
                 UpdatePresence();
