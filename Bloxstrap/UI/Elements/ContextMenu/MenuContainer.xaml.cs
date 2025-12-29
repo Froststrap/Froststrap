@@ -40,6 +40,36 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                     GameHistoryMenuItem.Visibility = Visibility.Visible;
                 else
                     GameHistoryMenuItem.Visibility = Visibility.Collapsed;
+
+                if (_activityWatcher.InRobloxStudio)
+                {
+                    InviteDeeplinkMenuItem.Visibility = Visibility.Collapsed;
+                    ServerDetailsMenuItem.Visibility = Visibility.Collapsed;
+                    GameInformationMenuItem.Visibility = Visibility.Collapsed;
+                    GameHistoryMenuItem.Visibility = Visibility.Collapsed;
+
+                }
+                else
+                {
+                    if (App.Settings.Prop.PlaytimeCounter)
+                    {
+                        StartTotalPlaytimeTimer();
+                        PlaytimeMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        PlaytimeMenuItem.Visibility = Visibility.Collapsed;
+                    }
+
+                    if (App.Settings.Prop.MemoryCleanerInterval != MemoryCleanerInterval.Never)
+                    {
+                        CleanMemoryMenuItem.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        CleanMemoryMenuItem.Visibility = Visibility.Collapsed;
+                    }
+                }
             }
 
             if (_watcher.PlayerRichPresence is not null || _watcher.StudioRichPresence is not null)
@@ -48,25 +78,6 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                 RichPresenceMenuItem.Visibility = Visibility.Collapsed;
 
             VersionTextBlock.Text = $"{App.ProjectName} v{App.Version}";
-
-            if (App.Settings.Prop.PlaytimeCounter)
-            {
-                StartTotalPlaytimeTimer();
-                PlaytimeMenuItem.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                PlaytimeMenuItem.Visibility = Visibility.Collapsed;
-            }
-
-            if (App.Settings.Prop.MemoryCleanerInterval != MemoryCleanerInterval.Never)
-            {
-                CleanMemoryMenuItem.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                CleanMemoryMenuItem.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void StartTotalPlaytimeTimer()
@@ -103,7 +114,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
             {
                 PlaytimeTextBlock.Text = $"Total: {FormatTimeSpan(totalElapsed)}";
             }
-            else
+            else if (!_activityWatcher.InRobloxStudio)
             {
                 TimeSpan sessionElapsed = DateTime.Now - _activityWatcher!.Data.TimeJoined;
                 PlaytimeTextBlock.Text = $"Total: {FormatTimeSpan(totalElapsed)} | Game: {FormatTimeSpan(sessionElapsed)}";
@@ -180,7 +191,11 @@ namespace Bloxstrap.UI.Elements.ContextMenu
         }
 
         private void Window_Closed(object sender, EventArgs e) => App.Logger.WriteLine("MenuContainer::Window_Closed", "Context menu container closed");
-        private void CloseFroststrapMenuItem_Click(object sender, RoutedEventArgs e) => _watcher.Dispose();
+        private void CloseFroststrapMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            _watcher.Dispose();
+            Close();
+        }
 
         private void RichPresenceMenuItem_Click(object sender, RoutedEventArgs e)
         {
