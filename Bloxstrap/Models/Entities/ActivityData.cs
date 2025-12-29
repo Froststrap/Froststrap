@@ -92,32 +92,17 @@ namespace Bloxstrap.Models.Entities
 
         public string GetInviteDeeplink(bool launchData = true)
         {
-            const string baseUrl = "https://froststrap.github.io/invite";
+            string deeplink = $"https://www.roblox.com/games/start?placeId={PlaceId}";
 
-            var queryParts = new List<string>
-            {
-                $"placeId={PlaceId}"
-            };
-
-            if (ServerType == ServerType.Private && !string.IsNullOrEmpty(AccessCode))
-            {
-                queryParts.Add("accessCode=" + HttpUtility.UrlEncode(AccessCode));
-            }
+            if (ServerType == ServerType.Private) // thats not going to work
+                deeplink += "&accessCode=" + AccessCode;
             else
-            {
-                if (!string.IsNullOrEmpty(JobId))
-                    queryParts.Add("gameInstanceId=" + HttpUtility.UrlEncode(JobId));
-                else
-                    queryParts.Add("gameInstanceId=");
-            }
+                deeplink += "&gameInstanceId=" + JobId;
 
             if (launchData && !string.IsNullOrEmpty(RPCLaunchData))
-            {
-                queryParts.Add("launchData=" + HttpUtility.UrlEncode(RPCLaunchData));
-            }
+                deeplink += "&launchData=" + HttpUtility.UrlEncode(RPCLaunchData);
 
-            string query = string.Join("&", queryParts);
-            return $"{baseUrl}?{query}";
+            return deeplink;
         }
 
         public async Task<DateTime?> QueryServerTime()
