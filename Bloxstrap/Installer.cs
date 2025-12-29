@@ -511,6 +511,11 @@ namespace Bloxstrap
 
             if (existingVer is not null)
             {
+                if (Utilities.CompareVersions(existingVer, "1.2.5.0") == VersionComparison.LessThan)
+                {
+                    App.Settings.Prop.ShowServerUptime = false;
+                }
+
                 if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
                 {
                     // move from App.State to App.RobloxState
@@ -532,11 +537,8 @@ namespace Bloxstrap
 
                         legacyRobloxState.Delete();
                     }
-                }
 
-                if (Utilities.CompareVersions(existingVer, "1.2.5.0") == VersionComparison.LessThan)
-                {
-                    App.Settings.Prop.ShowServerUptime = false;
+                    App.Settings.Prop.Theme = Theme.Default;
                 }
 
                 App.Settings.Save();

@@ -33,6 +33,7 @@
         private int _logEntriesRead = 0;
         private bool _teleportMarker = false;
         private bool _reservedTeleportMarker = false;
+        private bool _inactivityDetected = false;
 
         private static readonly string GameHistoryCachePath = Path.Combine(Paths.Cache, "GameHistory.json");
         public event EventHandler? OnHistoryUpdated;
@@ -46,9 +47,6 @@
         public event EventHandler? OnAppClose;
         public event EventHandler<Message>? OnRPCMessage;
         public event EventHandler<StudioMessage>? OnStudioRPCMessage;
-        public event EventHandler<ActivityData>? OnAutoRejoinTriggered;
-
-        private DateTime _lastInactivityTimeout = DateTime.MinValue;
 
         private DateTime LastRPCRequest;
 
@@ -230,7 +228,7 @@
             }
         }
 
-        private void ProcessPlayerLogEntry(string logMessage)
+        private async void ProcessPlayerLogEntry(string logMessage)
         {
             const string LOG_IDENT = "ActivityWatcher::ProcessPlayerLogEntry";
 
@@ -247,6 +245,12 @@
                 }
 
                 return;
+            }
+
+            if (logMessage.StartsWith(GameInactivityTimeoutEntry) || logMessage.StartsWith(GameConnectionLostEntry))
+            {
+                _inactivityDetected = true;
+                App.Logger.WriteLine(LOG_IDENT, "Inactivity timeout or connection loss detected");
             }
 
             if (!InGame && Data.PlaceId == 0)
@@ -374,77 +378,30 @@
             {
                 // We are confirmed to be in a game
 
-                if (logMessage.StartsWith(GameInactivityTimeoutEntry) || logMessage.StartsWith(GameConnectionLostEntry))
-                {
-                    string triggerType = logMessage.StartsWith(GameInactivityTimeoutEntry) ? "inactivity timeout" : "connection lost";
-
-                    if ((DateTime.Now - _lastInactivityTimeout).TotalSeconds < 3)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Skipping duplicate {triggerType} logs");
-                        return;
-                    }
-
-                    _lastInactivityTimeout = DateTime.Now;
-                    App.Logger.WriteLine(LOG_IDENT, $"{triggerType} detected - will be handled by disconnect");
-                }
-
                 if (logMessage.StartsWith(GameDisconnectedEntry))
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Disconnected from Game ({Data})");
 
-                    _ = Task.Run(() =>
+                    InGame = false;
+                    Data.TimeLeft = DateTime.Now;
+                    AddToHistory(Data);
+                    OnGameLeave?.Invoke(this, EventArgs.Empty);
+
+                    var autoRejoinData = Data;
+                    Data = new();
+
+                    await Task.Delay(3000);
+
+                    if (_inactivityDetected && App.Settings.Prop.AutoRejoin)
                     {
-                        Data.TimeLeft = DateTime.Now;
-                        AddToHistory(Data);
-                        InGame = false;
-                        OnGameLeave?.Invoke(this, EventArgs.Empty);
-                    });
-
-                    if (App.Settings.Prop.AutoRejoin)
-                    {
-                        _ = Task.Run(async () =>
-                        {
-                            try
-                            {
-                                bool isInactivityTimeout = false;
-                                DateTime checkStartTime = DateTime.Now;
-
-                                while ((DateTime.Now - checkStartTime).TotalSeconds < 3)
-                                {
-                                    if (_lastInactivityTimeout > checkStartTime)
-                                    {
-                                        isInactivityTimeout = true;
-                                        App.Logger.WriteLine(LOG_IDENT, "Inactivity timeout found during check period");
-                                        break;
-                                    }
-                                    await Task.Delay(25);
-                                }
-
-                                if (isInactivityTimeout)
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, "Inactivity timeout found, attempting auto-rejoin");
-                                    Data.RejoinServer();
-                                    OnAutoRejoinTriggered?.Invoke(this, Data);
-                                }
-                                else
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, "No inactivity timeout found.");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Auto-rejoin task failed: {ex.Message}");
-                            }
-                            finally
-                            {
-                                Data = new();
-                            }
-                        });
+                        autoRejoinData.RejoinServer();
                     }
-                    else
+                    else if (App.Settings.Prop.AutoRejoin)
                     {
-                        Data = new();
+                        App.Logger.WriteLine(LOG_IDENT, "No inactivity detected within 3 seconds, skipping auto-rejoin");
                     }
+
+                    _inactivityDetected = false;
                 }
                 else if (logMessage.StartsWith(GameTeleportingEntry))
                 {
@@ -540,11 +497,11 @@
         {
             try
             {
-        	if (_httpListener != null && _httpListener.IsListening)
-        	{
-        	    App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", "HTTP server is already running");
-        	    return;
-        	}
+        	    if (_httpListener != null && _httpListener.IsListening)
+        	    {
+        	        App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", "HTTP server is already running");
+        	        return;
+        	    }
 
                 _httpListener = new HttpListener();
 
