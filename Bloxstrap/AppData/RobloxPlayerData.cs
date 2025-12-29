@@ -8,8 +8,10 @@
 
         public string RegistryName => "RobloxPlayer";
 
+        public string ProcessName => "RobloxPlayerBeta";
+
         public override string ExecutableName => App.RobloxPlayerAppName;
 
-        public override AppState State => App.RobloxState.Prop.Player;
+        public override JsonManager<DistributionState> DistributionStateManager => App.PlayerState;
     }
 }

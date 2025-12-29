@@ -8,8 +8,10 @@
 
         public string RegistryName => "RobloxStudio";
 
+        public string ProcessName => "RobloxStudioBeta";
+
         public override string ExecutableName => App.RobloxStudioAppName;
 
-        public override AppState State => App.RobloxState.Prop.Studio;
+        public override JsonManager<DistributionState> DistributionStateManager => App.StudioState;
     }
 }

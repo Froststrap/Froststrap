@@ -191,6 +191,13 @@ namespace Bloxstrap
             {
                 bool showAlreadyRunningWarning = Process.GetProcessesByName(App.ProjectName).Length > 1;
 
+                // before we open the window, force load the distribution states
+                // some menu viewmodels require the distribution states, which will result in a short freeze once the page is opened
+                if (!App.PlayerState.Loaded)
+                    App.PlayerState.Load();
+                if (!App.StudioState.Loaded)
+                    App.StudioState.Load();
+
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
                     App.FrostRPC = new FroststrapRichPresence();

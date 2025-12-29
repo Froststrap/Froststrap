@@ -13,12 +13,16 @@ namespace Bloxstrap.AppData
         public virtual string BinaryType { get; } = null!;
 
         public string StaticDirectory => Path.Combine(Paths.Versions, BinaryType);
-        public string DynamicDirectory => Path.Combine(Paths.Versions, State.VersionGuid);
+        public string DynamicDirectory => Path.Combine(Paths.Versions, DistributionState.VersionGuid);
 
         public string Directory => App.Settings.Prop.StaticDirectory ? StaticDirectory : DynamicDirectory;
 
         public string ExecutablePath => Path.Combine(Directory, ExecutableName);
 
-        public virtual AppState State { get; } = null!;
+        public virtual JsonManager<DistributionState> DistributionStateManager { get; } = null!;
+
+        public DistributionState DistributionState => DistributionStateManager.Prop;
+
+        public List<string> ModManifest => DistributionState.ModManifest;
     }
 }

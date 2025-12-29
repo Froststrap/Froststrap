@@ -58,7 +58,9 @@ namespace Bloxstrap
 
         public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);
 
-        public static bool IsStudioVisible => !String.IsNullOrEmpty(RobloxState.Prop.Studio.VersionGuid);
+        public static bool IsPlayerInstalled => App.PlayerState.IsSaved && !String.IsNullOrEmpty(App.PlayerState.Prop.VersionGuid);
+
+        public static bool IsStudioInstalled => App.StudioState.IsSaved && !String.IsNullOrEmpty(App.StudioState.Prop.VersionGuid);
 
         public static readonly MD5 MD5Provider = MD5.Create();
 
@@ -72,7 +74,9 @@ namespace Bloxstrap
 
         public static readonly JsonManager<State> State = new();
 
-        public static readonly JsonManager<RobloxState> RobloxState = new();
+        public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
+
+        public static readonly LazyJsonManager<DistributionState> StudioState = new(nameof(StudioState));
 
         public static readonly RemoteDataManager RemoteData = new();
 
@@ -465,7 +469,6 @@ namespace Bloxstrap
 
                 Settings.Load();
                 State.Load();
-                RobloxState.Load();
                 FastFlags.Load();
                 GlobalSettings.Load();
 
