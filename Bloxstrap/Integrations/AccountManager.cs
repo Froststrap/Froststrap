@@ -1015,6 +1015,34 @@ namespace Bloxstrap.Integrations
             }
         }
 
+        public AltAccount? AddManualAccount(string cookie, long userId, string username, string displayName)
+        {
+            const string LOG_IDENT_ADD_MANUAL = $"{LOG_IDENT}::AddManualAccount";
+
+            try
+            {
+                var existingAccount = _accounts.FirstOrDefault(acc => acc.UserId == userId);
+                if (existingAccount != null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_ADD_MANUAL, $"Account '{username}' already exists");
+                    return existingAccount;
+                }
+
+                var newAccount = new AltAccount(cookie, userId, username, displayName);
+                _accounts.Add(newAccount);
+
+                SaveAccounts();
+
+                App.Logger.WriteLine(LOG_IDENT_ADD_MANUAL, $"Successfully added account: {username}");
+                return newAccount;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_ADD_MANUAL, ex);
+                return null;
+            }
+        }
+
         public async Task<AltAccount?> AddAccountByBrowser()
         {
             const string LOG_IDENT_BROWSER = $"{LOG_IDENT}::AddAccountByBrowser";

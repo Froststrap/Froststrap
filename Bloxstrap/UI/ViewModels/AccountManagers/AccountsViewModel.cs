@@ -12,6 +12,7 @@
  */
 
 using Bloxstrap.Integrations;
+using Bloxstrap.UI.Elements.Dialogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -61,7 +62,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private int _followingCount;
 
         [ObservableProperty]
-        private ObservableCollection<string> _addMethods = new(new[] { "Quick Sign-In", "Browser" });
+        private ObservableCollection<string> _addMethods = new(new[] { "Quick Sign-In", "Browser", "Manual" });
 
         [ObservableProperty]
         private string _selectedAddMethod = "Quick Sign-In";
@@ -212,7 +213,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
-                        var json = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(content);
+                        var json = JsonSerializer.Deserialize<JsonElement>(content);
                         return json.GetProperty("count").GetInt32();
                     }
                     return 0;
@@ -314,39 +315,21 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                         return;
                     }
                 }
-                else
+                else if (string.Equals(SelectedAddMethod, "Browser", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", "Adding account via Browser");
                     IsInstallingChromium = true;
                     newAccount = await mgr.AddAccountByBrowser();
                 }
+                else if (string.Equals(SelectedAddMethod, "Manual", StringComparison.OrdinalIgnoreCase))
+                {
+                    await AddAccountByManualCookieAsync();
+                    return;
+                }
 
                 if (newAccount is not null)
                 {
-                    if (!Accounts.Any(a => a.Id == newAccount.UserId))
-                    {
-                        var avatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { newAccount.UserId });
-                        string? avatarUrl = avatarUrls.GetValueOrDefault(newAccount.UserId);
-
-                        var account = new Account(newAccount.UserId, newAccount.DisplayName,
-                            newAccount.Username, avatarUrl);
-
-                        Accounts.Add(account);
-                    }
-
-                    mgr.SetActiveAccount(newAccount);
-
-                    CurrentUserDisplayName = newAccount.DisplayName;
-                    CurrentUserUsername = $"@{newAccount.Username}";
-
-                    var currentAvatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { newAccount.UserId });
-                    CurrentUserAvatarUrl = currentAvatarUrls.GetValueOrDefault(newAccount.UserId) ?? "";
-
-                    SelectedAccount = Accounts.FirstOrDefault(a => a.Id == newAccount.UserId);
-
-                    await UpdateAccountInformationAsync(newAccount.UserId);
-
-                    Frontend.ShowMessageBox($"Added and switched to account: {newAccount.DisplayName}", MessageBoxImage.Information);
+                    await ProcessNewAccount(newAccount);
                 }
             }
             catch (Exception ex)
@@ -358,6 +341,66 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             {
                 IsInstallingChromium = false;
             }
+        }
+
+        private async Task AddAccountByManualCookieAsync()
+        {
+            App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", "Adding account via Manual Cookie");
+
+            var dialog = new ManualCookieDialog();
+            dialog.Owner = Application.Current.MainWindow;
+
+            var result = dialog.ShowDialog();
+
+            if (result == true && dialog.ViewModel.ValidatedAccount != null)
+            {
+                var validatedAccount = dialog.ViewModel.ValidatedAccount;
+                await ProcessNewAccount(validatedAccount);
+            }
+        }
+
+        private async Task ProcessNewAccount(AltAccount newAccount)
+        {
+            var mgr = Manager;
+
+            var existingBackendAccount = mgr.Accounts.FirstOrDefault(acc => acc.UserId == newAccount.UserId);
+
+            if (existingBackendAccount == null)
+            {
+                existingBackendAccount = mgr.AddManualAccount(newAccount.SecurityToken, newAccount.UserId,
+                    newAccount.Username, newAccount.DisplayName);
+
+                if (existingBackendAccount == null)
+                {
+                    Frontend.ShowMessageBox("Failed to add account to backend.", MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            if (!Accounts.Any(a => a.Id == existingBackendAccount.UserId))
+            {
+                var avatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { existingBackendAccount.UserId });
+                string? avatarUrl = avatarUrls.GetValueOrDefault(existingBackendAccount.UserId);
+
+                var account = new Account(existingBackendAccount.UserId, existingBackendAccount.DisplayName,
+                    existingBackendAccount.Username, avatarUrl);
+
+                Accounts.Add(account);
+            }
+
+            mgr.SetActiveAccount(existingBackendAccount);
+
+            CurrentUserDisplayName = existingBackendAccount.DisplayName;
+            CurrentUserUsername = $"@{existingBackendAccount.Username}";
+
+            var currentAvatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { existingBackendAccount.UserId });
+            CurrentUserAvatarUrl = currentAvatarUrls.GetValueOrDefault(existingBackendAccount.UserId) ?? "";
+
+            SelectedAccount = Accounts.FirstOrDefault(a => a.Id == existingBackendAccount.UserId);
+
+            await UpdateAccountInformationAsync(existingBackendAccount.UserId);
+
+            Frontend.ShowMessageBox($"Added and switched to account: {existingBackendAccount.DisplayName}", MessageBoxImage.Information);
         }
 
         [RelayCommand]
