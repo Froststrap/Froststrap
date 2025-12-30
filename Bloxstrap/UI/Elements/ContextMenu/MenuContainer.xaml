@@ -131,7 +131,7 @@
                 </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem Click="CloseFroststrapMenuItem_Click">
+            <MenuItem Click="CloseWatcheMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -139,7 +139,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ui:SymbolIcon Grid.Column="0" Symbol="DismissCircle24"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Close Froststrap" />
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Close Watcher" />
                     </Grid>
                 </MenuItem.Header>
             </MenuItem>

@@ -24,6 +24,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
         private TimeSpan _accumulatedTotalPlaytime = TimeSpan.Zero;
 
         private DispatcherTimer? _playtimeTimer;
+        private DateTime? _studioPlaceJoinTime = null;
 
         public MenuContainer(Watcher watcher)
         {
@@ -35,11 +36,8 @@ namespace Bloxstrap.UI.Elements.ContextMenu
             {
                 _activityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
                 _activityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
-
-                if (!App.Settings.Prop.UseDisableAppPatch && App.Settings.Prop.ShowGameHistoryMenu)
-                    GameHistoryMenuItem.Visibility = Visibility.Visible;
-                else
-                    GameHistoryMenuItem.Visibility = Visibility.Collapsed;
+                _activityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
+                _activityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
                 if (_activityWatcher.InRobloxStudio)
                 {
@@ -47,6 +45,27 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                     ServerDetailsMenuItem.Visibility = Visibility.Collapsed;
                     GameInformationMenuItem.Visibility = Visibility.Collapsed;
                     GameHistoryMenuItem.Visibility = Visibility.Collapsed;
+
+                    if (App.Settings.Prop.PlaytimeCounter)
+                    {
+                        StartTotalPlaytimeTimer();
+                        PlaytimeMenuItem.Visibility = Visibility.Visible;
+
+                        // Check if we're already in a Studio place when the menu opens
+                        if (_activityWatcher.InStudioPlace)
+                        {
+                            _studioPlaceJoinTime = DateTime.Now;
+                        }
+                    }
+                    else
+                    {
+                        PlaytimeMenuItem.Visibility = Visibility.Collapsed;
+                    }
+
+                    if (App.Settings.Prop.MemoryCleanerInterval != MemoryCleanerInterval.Never)
+                        CleanMemoryMenuItem.Visibility = Visibility.Visible;
+                    else
+                        CleanMemoryMenuItem.Visibility = Visibility.Collapsed;
 
                 }
                 else
@@ -57,18 +76,17 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                         PlaytimeMenuItem.Visibility = Visibility.Visible;
                     }
                     else
-                    {
                         PlaytimeMenuItem.Visibility = Visibility.Collapsed;
-                    }
 
                     if (App.Settings.Prop.MemoryCleanerInterval != MemoryCleanerInterval.Never)
-                    {
                         CleanMemoryMenuItem.Visibility = Visibility.Visible;
-                    }
                     else
-                    {
                         CleanMemoryMenuItem.Visibility = Visibility.Collapsed;
-                    }
+
+                    if (App.Settings.Prop.ShowGameHistoryMenu)
+                        GameHistoryMenuItem.Visibility = Visibility.Visible;
+                    else
+                        GameHistoryMenuItem.Visibility = Visibility.Collapsed;
                 }
             }
 
@@ -110,11 +128,16 @@ namespace Bloxstrap.UI.Elements.ContextMenu
         {
             TimeSpan totalElapsed = _accumulatedTotalPlaytime + _totalPlaytimeStopwatch.Elapsed;
 
-            if (_activityWatcher is null || !_activityWatcher.InGame)
+            if (_activityWatcher is null || (!_activityWatcher.InGame && !_activityWatcher.InStudioPlace))
             {
                 PlaytimeTextBlock.Text = $"Total: {FormatTimeSpan(totalElapsed)}";
             }
-            else if (!_activityWatcher.InRobloxStudio)
+            else if (_activityWatcher.InStudioPlace && _studioPlaceJoinTime.HasValue)
+            {
+                TimeSpan studioElapsed = DateTime.Now - _studioPlaceJoinTime.Value;
+                PlaytimeTextBlock.Text = $"Total: {FormatTimeSpan(totalElapsed)} | Studio: {FormatTimeSpan(studioElapsed)}";
+            }
+            else if (_activityWatcher.InGame && !_activityWatcher.InRobloxStudio)
             {
                 TimeSpan sessionElapsed = DateTime.Now - _activityWatcher!.Data.TimeJoined;
                 PlaytimeTextBlock.Text = $"Total: {FormatTimeSpan(totalElapsed)} | Game: {FormatTimeSpan(sessionElapsed)}";
@@ -182,6 +205,22 @@ namespace Bloxstrap.UI.Elements.ContextMenu
             });
         }
 
+        private void ActivityWatcher_OnStudioPlaceOpened(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _studioPlaceJoinTime = DateTime.Now;
+            });
+        }
+
+        private void ActivityWatcher_OnStudioPlaceClosed(object? sender, EventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                _studioPlaceJoinTime = null;
+            });
+        }
+
         private void Window_Loaded(object? sender, RoutedEventArgs e)
         {
             HWND hWnd = (HWND)new WindowInteropHelper(this).Handle;
@@ -191,11 +230,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
         }
 
         private void Window_Closed(object sender, EventArgs e) => App.Logger.WriteLine("MenuContainer::Window_Closed", "Context menu container closed");
-        private void CloseFroststrapMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            _watcher.Dispose();
-            Close();
-        }
+        private void CloseWatcheMenuItem_Click(object sender, RoutedEventArgs e) => _watcher.Dispose();
 
         private void RichPresenceMenuItem_Click(object sender, RoutedEventArgs e)
         {

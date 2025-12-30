@@ -210,8 +210,8 @@
             {
                 if (logMessage.StartsWith(StudioPlaceOpenEntry))
                 {
-                    InStudioPlace = true;
                     App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
+                    InStudioPlace = true;
 
                     OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
                 }
@@ -390,15 +390,18 @@
                     var autoRejoinData = Data;
                     Data = new();
 
-                    await Task.Delay(3000);
+                    if (App.Settings.Prop.AutoRejoin)
+                    {
+                        await Task.Delay(3000);
 
-                    if (_inactivityDetected && App.Settings.Prop.AutoRejoin)
-                    {
-                        autoRejoinData.RejoinServer();
-                    }
-                    else if (App.Settings.Prop.AutoRejoin)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "No inactivity detected within 3 seconds, skipping auto-rejoin");
+                        if (_inactivityDetected)
+                        {
+                            autoRejoinData.RejoinServer();
+                        }
+                        else
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "No inactivity detected within 3 seconds, skipping auto-rejoin");
+                        }
                     }
 
                     _inactivityDetected = false;
@@ -772,7 +775,8 @@
         public void Dispose()
         {
             IsDisposed = true;
-            StopHTTPServer();
+            if (InRobloxStudio)
+                StopHTTPServer();
             GC.SuppressFinalize(this);
         }
     }

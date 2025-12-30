@@ -20,6 +20,9 @@ namespace Bloxstrap
         public readonly PlayerDiscordRichPresence? PlayerRichPresence;
         public readonly StudioDiscordRichPresence? StudioRichPresence;
 
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private bool _isDisposed = false;
+
         public Watcher()
         {
             const string LOG_IDENT = "Watcher";
@@ -116,8 +119,22 @@ namespace Bloxstrap
 
             ActivityWatcher?.Start();
 
-            while (Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId))
-                await Task.Delay(1000);
+            try
+            {
+                while (!_cancellationTokenSource.Token.IsCancellationRequested &&
+                       Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId))
+                {
+                    await Task.Delay(1000, _cancellationTokenSource.Token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                App.Logger.WriteLine("Watcher::Run", "Watcher was cancelled");
+                return;
+            }
+
+            if (_cancellationTokenSource.Token.IsCancellationRequested)
+                return;
 
             if (_watcherData.AutoclosePids is not null)
             {
@@ -131,7 +148,12 @@ namespace Bloxstrap
 
         public void Dispose()
         {
+            if (_isDisposed)
+                return;
+
             App.Logger.WriteLine("Watcher::Dispose", "Disposing Watcher");
+
+            _cancellationTokenSource.Cancel();
 
             if (App.Settings.Prop.MultiInstanceLaunching)
             {
@@ -144,8 +166,9 @@ namespace Bloxstrap
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();
             StudioRichPresence?.Dispose();
+            _cancellationTokenSource.Dispose();
 
-
+            _isDisposed = true;
             GC.SuppressFinalize(this);
         }
     }

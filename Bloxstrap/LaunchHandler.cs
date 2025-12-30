@@ -316,7 +316,9 @@ namespace Bloxstrap
 
             var watcher = new Watcher();
 
-            Task.Run(watcher.Run).ContinueWith(t =>
+            Task watcherTask = Task.Run(watcher.Run);
+
+            watcherTask.ContinueWith(t =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Watcher task has finished");
 
@@ -329,7 +331,8 @@ namespace Bloxstrap
                     if (t.Exception is not null)
                         App.FinalizeExceptionHandling(t.Exception);
                 }
-                // shouldnt this be done after client closes?
+
+                // Shouldn't this be done after client closes?
                 if (App.Settings.Prop.CleanerOptions != CleanerOptions.Never)
                     Cleaner.DoCleaning();
 
