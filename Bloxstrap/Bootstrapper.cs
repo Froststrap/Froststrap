@@ -350,17 +350,14 @@ namespace Bloxstrap
                 StartRoblox();
             }
 
-            if (_launchMode == LaunchMode.Player)
-            {
-                _ = Task.Run(async () => await HandlePostLaunchOperations());
-            }
+            _ = Task.Run(async () => await HandlePostLaunchOperations(_launchMode));
 
             await mutex.ReleaseAsync();
 
             Dialog?.CloseBootstrapper();
         }
 
-        private async Task HandlePostLaunchOperations()
+        private async Task HandlePostLaunchOperations(LaunchMode launchMode)
         {
             const string LOG_IDENT = "Bootstrapper::PostLaunch";
 
@@ -380,28 +377,30 @@ namespace Bloxstrap
                     await Task.Delay(20000);
                 }
 
-                if (App.Settings.Prop.AutoCloseCrashHandler)
+                if (launchMode == LaunchMode.Player)
                 {
-                    try
+                    if (App.Settings.Prop.AutoCloseCrashHandler)
                     {
-                        var crashHandlerProcesses = Process.GetProcessesByName("RobloxCrashHandler");
-
-                        foreach (var proc in crashHandlerProcesses)
+                        try
                         {
-                            try
+                            var crashHandlerProcesses = Process.GetProcessesByName("RobloxCrashHandler");
+
+                            foreach (var proc in crashHandlerProcesses)
                             {
-                                proc.Kill();
-                                App.Logger.WriteLine(LOG_IDENT, $"Killed RobloxCrashHandler process (PID {proc.Id})");
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to kill RobloxCrashHandler process (PID {proc.Id}): {ex.Message}");
+                                try
+                                {
+                                    proc.Kill();
+                                }
+                                catch (Exception ex)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"Failed to kill RobloxCrashHandler process (PID {proc.Id}): {ex.Message}");
+                                }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Error killing RobloxCrashHandler: {ex.Message}");
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Error killing RobloxCrashHandler: {ex.Message}");
+                        }
                     }
                 }
 
@@ -420,26 +419,8 @@ namespace Bloxstrap
                             _ => ProcessPriorityClass.Normal
                         };
 
-                        var robloxProcesses = Process.GetProcessesByName("RobloxPlayerBeta");
-
-                        if (robloxProcesses.Length == 0)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, "Roblox process not found for priority setting");
-                            return;
-                        }
-
-                        foreach (var proc in robloxProcesses)
-                        {
-                            try
-                            {
-                                proc.PriorityClass = priorityClass;
-                                App.Logger.WriteLine(LOG_IDENT, $"Set priority to {priorityClass} for process {proc.Id}");
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to set priority for process {proc.Id}: {ex}");
-                            }
-                        }
+                        var robloxProcess = Process.GetProcessById(_appPid);
+                        robloxProcess.PriorityClass = priorityClass;
                     }
                     catch (Exception ex)
                     {
@@ -1303,12 +1284,14 @@ namespace Bloxstrap
         #region Roblox Install
         private static bool TryDeleteRobloxInDirectory(string dir)
         {
-            string clientPath = Path.Combine(dir, "RobloxPlayerBeta.exe");
-            if (!File.Exists(dir))
+            // If neither of these exist in the directory, return true.
+            // This was not implemented properly.
+            string clientPath = Path.Combine(dir, App.RobloxPlayerAppName);
+            if (!File.Exists(clientPath))
             {
-                clientPath = Path.Combine(dir, "RobloxStudioBeta.exe");
-                if (!File.Exists(dir))
-                    return true; // ok???
+                clientPath = Path.Combine(dir, App.RobloxStudioAppName);
+                if (!File.Exists(clientPath))
+                    return true;
             }
 
             try
@@ -1358,7 +1341,12 @@ namespace Bloxstrap
                     {
                         Directory.Delete(dir, true);
                     }
-                    catch (Exception ex)
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
+                        App.Logger.WriteException(LOG_IDENT, ex);
+                    }
+                    catch (IOException ex)
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
                         App.Logger.WriteException(LOG_IDENT, ex);
