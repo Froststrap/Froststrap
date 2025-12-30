@@ -302,12 +302,23 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 if (mod.IsCustomTheme)
                 {
                     await ExtractCustomThemeAsync(tempFile, mod.Name);
+
+                    App.Settings.Prop.SelectedCustomTheme = mod.Name;
+                    App.Settings.Save();
+
+                    if (App.Settings.Prop.BootstrapperStyle != BootstrapperStyle.CustomDialog)
+                    {
+                        App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
+                        App.Settings.Save();
+                    }
+
                     Frontend.ShowMessageBox(
-                        $"Custom theme '{mod.Name}' installed successfully!\n\nThe theme has been saved to your Custom Themes folder and will be available in Custom Launchers.",
+                        $"Custom theme '{mod.Name}' installed successfully!\n" +
+                        "The theme has been saved to your Custom Themes folder and has been automatically selected as your current theme.",
                         MessageBoxImage.Information,
                         MessageBoxButton.OK
                     );
-                    App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed custom theme: {mod.Name}");
+                    App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed and selected custom theme: {mod.Name}");
                 }
                 else
                 {
@@ -402,26 +413,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 throw new Exception($"Failed to extract custom theme '{themeName}': {ex.Message}", ex);
-            }
-        }
-
-        private async Task ExtractModToModificationsAsync(string zipPath, string modName)
-        {
-            if (!File.Exists(zipPath))
-                throw new FileNotFoundException("Mod file not found", zipPath);
-
-            try
-            {
-                Directory.CreateDirectory(Paths.Modifications);
-                await CleanModificationsDirectoryAsync();
-
-                await ExtractZipAsync(zipPath);
-
-                App.Logger.WriteLine($"CommunityModsViewModel::ExtractModToModificationsAsync", $"Extracted {modName} to {Paths.Modifications}");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to extract mod '{modName}': {ex.Message}", ex);
             }
         }
 
