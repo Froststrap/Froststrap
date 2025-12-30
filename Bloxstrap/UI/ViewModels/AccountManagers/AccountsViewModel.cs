@@ -66,6 +66,9 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [ObservableProperty]
         private string _selectedAddMethod = "Quick Sign-In";
 
+        [ObservableProperty]
+        private bool _isInstallingChromium = false;
+
         private AccountManager Manager => AccountManager.Shared;
 
         public static long? GetActiveUserId()
@@ -314,6 +317,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 else
                 {
                     App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", "Adding account via Browser");
+                    IsInstallingChromium = true;
                     newAccount = await mgr.AddAccountByBrowser();
                 }
 
@@ -349,6 +353,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             {
                 App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", $"Exception: {ex.Message}");
                 Frontend.ShowMessageBox($"Failed to add account: {ex.Message}", MessageBoxImage.Error);
+            }
+            finally
+            {
+                IsInstallingChromium = false;
             }
         }
 

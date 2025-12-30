@@ -1,6 +1,4 @@
 ﻿using Bloxstrap.UI.ViewModels.AccountManagers;
-using Bloxstrap.UI.ViewModels.Settings;
-using System.Windows;
 
 namespace Bloxstrap.UI.Elements.AccountManagers.Pages
 {
