@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
-using Bloxstrap.Integrations;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
@@ -12,6 +11,28 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 RobloxIcons.Add(new RobloxIconEntry { IconType = (RobloxIcon)entry });
 
             App.Cookies.StateChanged += (object? _, CookieState state) => CookieLoadingFailed = state != CookieState.Success && state != CookieState.Unknown;
+
+            if (App.RemoteData.LoadedState == GenericTriState.Unknown)
+                WaitForRemoteData();
+        }
+
+        private async void WaitForRemoteData()
+        {
+            await App.RemoteData.WaitUntilDataFetched();
+            OnPropertyChanged(nameof(UntilFishstrapReleases));
+        }
+
+        public Visibility UntilFishstrapReleases
+        {
+            get
+            {
+                if (App.RemoteData?.Prop != null && App.RemoteData.Prop.UntilFishstrapReleases)
+                {
+                    return Visibility.Visible;
+                }
+
+                return Visibility.Collapsed;
+            }
         }
 
         public ObservableCollection<ProcessPriorityOption> ProcessPriorityOptions { get; } = new ObservableCollection<ProcessPriorityOption>(Enum.GetValues(typeof(ProcessPriorityOption)).Cast<ProcessPriorityOption>());

@@ -1,5 +1,6 @@
 ﻿using Bloxstrap.RobloxInterfaces;
 using System.ComponentModel;
+using System.Windows;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
@@ -8,6 +9,28 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ChannelViewModel()
         {
             Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
+
+            if (App.RemoteData.LoadedState == GenericTriState.Unknown)
+                WaitForRemoteData();
+        }
+
+        private async void WaitForRemoteData()
+        {
+            await App.RemoteData.WaitUntilDataFetched();
+            OnPropertyChanged(nameof(UntilFishstrapReleases));
+        }
+
+        public Visibility UntilFishstrapReleases
+        {
+            get
+            {
+                if (App.RemoteData?.Prop != null && App.RemoteData.Prop.UntilFishstrapReleases)
+                {
+                    return Visibility.Visible;
+                }
+
+                return Visibility.Collapsed;
+            }
         }
 
         public bool UpdateCheckingEnabled

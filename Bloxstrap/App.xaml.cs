@@ -25,12 +25,10 @@ namespace Bloxstrap
 #endif
         public const string ProjectOwner = "RealMeddsam";
         public const string ProjectRepository = "RealMeddsam/Froststrap";
+        public const string ProjectDownloadLink = "https://github.com/RealMeddsam/Froststrap/releases";
         public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
         public const string ProjectSupportLink = "https://github.com/RealMeddsam/Froststrap/issues/new";
         public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Data.json";
-
-        // Reason for making it a remote data is because we plan on moving to org, and this way we can change the link without telling ppl to manually update, will remove when we eventually move
-        public static string ProjectDownloadLink => RemoteData.Prop.ProjectDownloadLink ?? "https://github.com/RealMeddsam/Froststrap/releases";
 
         public const string RobloxPlayerAppName = "RobloxPlayerBeta.exe";
         public const string RobloxStudioAppName = "RobloxStudioBeta.exe";

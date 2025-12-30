@@ -2075,7 +2075,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Quality</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
-    <value>Displays your total and game session playtime</value>
+    <value>Displays your total playtime and your session when your in a Game/Studio Place.</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
     <value>Playtime Counter</value>

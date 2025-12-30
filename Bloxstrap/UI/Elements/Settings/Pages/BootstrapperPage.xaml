@@ -23,11 +23,10 @@
             <ui:ToggleSwitch IsChecked="{Binding ConfirmLaunches, Mode=TwoWay}" />
         </controls:OptionControl>
 
-        <!--  Keeping visibility collapsed until fishstrap releases or i get permission to add.  -->
         <controls:OptionControl 
             Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
             Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}"
-            Visibility="Collapsed">
+            Visibility="{Binding UntilFishstrapReleases}">
             <StackPanel Orientation="Horizontal">
                 <ui:SymbolIcon Symbol="Warning20" Margin="0,2,8,0" Foreground="Orange">
                     <ui:SymbolIcon.Style>

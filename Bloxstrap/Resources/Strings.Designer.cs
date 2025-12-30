@@ -5246,7 +5246,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Displays your total and game session playtime.
+        ///   Looks up a localized string similar to Displays your total playtime and your session when your in a Game/Studio Place..
         /// </summary>
         public static string Menu_Integrations_PlaytimeCounter_Description {
             get {
