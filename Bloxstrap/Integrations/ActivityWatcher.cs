@@ -17,8 +17,7 @@
         private const string GameJoinedEntry = "[FLog::Network] serverId:";
         private const string GameDisconnectedEntry = "[FLog::Network] Time to disconnect replication data:";
         private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
-        private const string GameInactivityTimeoutEntry = "[FLog::Network] Sending disconnect with reason: 1";
-        private const string GameConnectionLostEntry = "[FLog::Network] Lost connection with reason : Lost connection to the game server, please reconnect";
+        private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
 
         private const string StudioPlaceOpenEntry = "[FLog::PlaceManager] Start to open place";
         private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
@@ -29,11 +28,12 @@
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
+        private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
 
         private int _logEntriesRead = 0;
         private bool _teleportMarker = false;
         private bool _reservedTeleportMarker = false;
-        private bool _inactivityDetected = false;
+        private bool _shouldAutoRejoin = false;
 
         private static readonly string GameHistoryCachePath = Path.Combine(Paths.Cache, "GameHistory.json");
         public event EventHandler? OnHistoryUpdated;
@@ -247,10 +247,28 @@
                 return;
             }
 
-            if (logMessage.StartsWith(GameInactivityTimeoutEntry) || logMessage.StartsWith(GameConnectionLostEntry))
+            if (logMessage.StartsWith(GameDisconnectReasonEntry))
             {
-                _inactivityDetected = true;
-                App.Logger.WriteLine(LOG_IDENT, "Inactivity timeout or connection loss detected");
+                var match = Regex.Match(logMessage, GameDisconnectReasonPattern);
+                if (match.Success && match.Groups.Count == 2)
+                {
+                    int reasonCode = int.Parse(match.Groups[1].Value);
+
+                    if (reasonCode == 1)
+                    {
+                        _shouldAutoRejoin = true;
+                        App.Logger.WriteLine(LOG_IDENT, $"Inactivity timeout detected (reason code: {reasonCode})");
+                    }
+                    if (reasonCode == 277)
+                    {
+                        _shouldAutoRejoin = true;
+                        App.Logger.WriteLine(LOG_IDENT, $"InternetDisconnection detected (reason code: {reasonCode})");
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Disconnect reason code: {reasonCode}");
+                    }
+                }
             }
 
             if (!InGame && Data.PlaceId == 0)
@@ -394,7 +412,7 @@
                     {
                         await Task.Delay(3000);
 
-                        if (_inactivityDetected)
+                        if (_shouldAutoRejoin)
                         {
                             autoRejoinData.RejoinServer();
                         }
@@ -404,7 +422,7 @@
                         }
                     }
 
-                    _inactivityDetected = false;
+                    _shouldAutoRejoin = false;
                 }
                 else if (logMessage.StartsWith(GameTeleportingEntry))
                 {
