@@ -66,7 +66,7 @@
 
         <controls:OptionControl
             Header="Uncap FPS"
-            Description="Unlock your fps to go above 240">
+            Description="Unlock your fps to go above 240.">
             <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding FramerateUncap, Mode=TwoWay}" />
         </controls:OptionControl>
 

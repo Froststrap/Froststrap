@@ -85,9 +85,6 @@ namespace Bloxstrap.Models.Persistable
         public List<string> NavigationOrder { get; set; } = new List<string>();
         public bool IsNavigationOrderLocked { get; set; } = true;
 
-        // Shortcuts Page
-        public string GameShortcutsJson { get; set; } = "[]";
-
         // Settings Page
         public bool CheckForUpdates { get; set; } = true;
         public bool WPFSoftwareRender { get; set; } = false;
