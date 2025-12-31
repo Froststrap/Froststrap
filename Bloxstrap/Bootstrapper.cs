@@ -960,7 +960,7 @@ namespace Bloxstrap
 
             string? logFileName = null;
 
-            string rbxDir = Path.Combine(Paths.LocalAppData, "Roblox");
+            string rbxDir = Paths.Roblox;
             if (!Directory.Exists(rbxDir))
                 Directory.CreateDirectory(rbxDir);
 
@@ -968,7 +968,7 @@ namespace Bloxstrap
             if (!Directory.Exists(rbxLogDir))
                 Directory.CreateDirectory(rbxLogDir);
 
-            var logWatcher = new FileSystemWatcher()
+            using var logWatcher = new FileSystemWatcher()
             {
                 Path = rbxLogDir,
                 Filter = "*.log",
@@ -1007,7 +1007,7 @@ namespace Bloxstrap
             App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}), waiting for log file");
 
             // should i increase timeout ? since i think watcher dosent launh sometimes cause it cannot find the log file in time.
-            logCreatedEvent.WaitOne(TimeSpan.FromSeconds(15));
+            logCreatedEvent.WaitOne(TimeSpan.FromSeconds(30));
 
             if (String.IsNullOrEmpty(logFileName))
             {
@@ -1972,7 +1972,7 @@ namespace Bloxstrap
             Directory.CreateDirectory(Paths.Downloads);
 
             string packageUrl = Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
-            string robloxPackageLocation = Path.Combine(Paths.LocalAppData, "Roblox", "Downloads", package.Signature);
+            string robloxPackageLocation = Path.Combine(Paths.Roblox, "Downloads", package.Signature);
 
             if (File.Exists(package.DownloadPath))
             {
