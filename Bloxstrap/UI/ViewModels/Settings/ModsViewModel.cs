@@ -634,7 +634,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                 var characterCodes = typeface.CharacterToGlyphMap.Keys
                     .OrderByDescending(c => c)
-                    .Take(80)
                     .ToList();
 
                 var tasks = characterCodes.Select(async characterCode =>

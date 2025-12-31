@@ -101,7 +101,7 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="{x:Static resources:Strings.Common_Performance}" Grid.Column="0" />
-                    <Slider Grid.Column="1" Margin="8,0,8,0" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding LowPolyMeshesLevel, Mode=TwoWay}" />
+                    <Slider Grid.Column="1" Margin="8,0,8,0" Minimum="0" Maximum="9" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding LowPolyMeshesLevel, Mode=TwoWay}" />
                     <TextBlock Text="{x:Static resources:Strings.Common_Quality}" Grid.Column="2" />
                 </Grid>
             </StackPanel>

@@ -476,6 +476,9 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             FollowingCount = 0;
             IsAccountInformationVisible = false;
 
+            SelectedAccount = null;
+            OnPropertyChanged(nameof(Accounts));
+
             Frontend.ShowMessageBox("Signed out successfully.", MessageBoxImage.Information);
         }
     }

@@ -151,6 +151,7 @@ namespace Bloxstrap.Integrations
                         if (cachedAccount != null)
                         {
                             ActiveAccount = cachedAccount;
+                            ActiveAccountChanged?.Invoke(ActiveAccount);
                             App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored active account from file: {cachedAccount.Username}");
                         }
                         else

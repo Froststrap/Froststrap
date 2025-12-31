@@ -36,7 +36,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             {
                 if (value)
                 {
-                    LowPolyMeshesLevel = 2;
+                    LowPolyMeshesLevel = 4;
                 }
                 else
                 {
@@ -53,18 +53,22 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             get
             {
-                return int.TryParse(App.FastFlags.GetPreset("Rendering.LowPolyMeshes1"), out var x) ? x / 100 : 0;
+                if (int.TryParse(App.FastFlags.GetPreset("Rendering.LowPolyMeshes1"), out var storedValue))
+                {
+                    return (storedValue * 9) / 2000;
+                }
+                return 0;
             }
             set
             {
-                int clamped = Math.Clamp(value, 0, 10);
+                int clamped = Math.Clamp(value, 0, 9);
 
-                int[] baseValues = { 1000, 750, 500, 250 };
+                int[] baseValues = { 2000, 1500, 1000, 500 };
                 int[] levels = new int[4];
 
                 for (int i = 0; i < 4; i++)
                 {
-                    levels[i] = (baseValues[i] * clamped) / 10;
+                    levels[i] = (baseValues[i] * clamped) / 9;
                 }
 
                 App.FastFlags.SetPreset("Rendering.LowPolyMeshes1", levels[0].ToString());

@@ -149,7 +149,57 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
 
+            AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
+
             _ = InitializeDataAsync();
+        }
+
+        private async void OnActiveAccountChanged(AltAccount? newAccount)
+        {
+            try
+            {
+                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    if (newAccount == null)
+                    {
+                        DiscoveryGames.Clear();
+                        FavoriteGames.Clear();
+                        ContinuePlayingGames.Clear();
+                        SearchResults.Clear();
+                        Subplaces.Clear();
+                        ResetGameDetails();
+
+                        OnPropertyChanged(nameof(ShouldShowGames));
+                        OnPropertyChanged(nameof(HasActiveAccount));
+                        return;
+                    }
+
+                    IsLoading = true;
+
+                    try
+                    {
+                        var tasks = new List<Task>
+                {
+                    RefreshDiscoveryGames(),
+                    RefreshFavoriteGames(),
+                    RefreshContinuePlaying()
+                };
+
+                        await Task.WhenAll(tasks);
+
+                        OnPropertyChanged(nameof(ShouldShowGames));
+                        OnPropertyChanged(nameof(HasActiveAccount));
+                    }
+                    finally
+                    {
+                        IsLoading = false;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine($"{LOG_IDENT}::OnActiveAccountChanged", $"Exception: {ex.Message}");
+            }
         }
 
         private async Task InitializeDataAsync()

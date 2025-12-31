@@ -214,35 +214,35 @@
         <controls:OptionControl
             x:Name="StudioActivityOption"
             Header="Show Studio Activity"
-            Description="Shows your playing Roblox Studio when launching."
+            Description="Shows you playing Roblox Studio upon launch."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <controls:OptionControl
             Header="Thumbnail Changing"
-            Description="Changes the RPC thumbnail depending on the type of script you have open, Module/Client/Server Script."
+            Description="Changes the thumbnail depending on the script you have open."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <controls:OptionControl
             Header="Editing Info"
-            Description="Shows the script type and lines amount when opening it."
+            Description="Shows script type/script name and the number of lines inside the script."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <controls:OptionControl
             Header="Workspace Info"
-            Description="Shows the game name."
+            Description="Displays the name of the your working on."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <controls:OptionControl
             Header="Show Testing"
-            Description="Shows your testing the game when debugging."
+            Description="Shows a small play icon in your RPC when testing a game."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
         </controls:OptionControl>

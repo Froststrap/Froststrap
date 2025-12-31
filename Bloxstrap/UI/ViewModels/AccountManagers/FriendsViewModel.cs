@@ -86,9 +86,44 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
 
-            _ = RefreshFriends();
+            AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
 
+            _ = RefreshFriends();
             InitializePresenceTimer();
+        }
+
+        private async void OnActiveAccountChanged(AltAccount? newAccount)
+        {
+            if (newAccount == null)
+            {
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    Friends.Clear();
+                    FilteredFriends.Clear();
+                    PresenceStatus = "No active account";
+                    HasApiFriends = false;
+                    HasFriends = false;
+                });
+                return;
+            }
+
+            await Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                PresenceStatus = "Refreshing friends...";
+                IsPresenceLoading = true;
+            });
+
+            try
+            {
+                await RefreshFriends();
+            }
+            finally
+            {
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    IsPresenceLoading = false;
+                });
+            }
         }
 
         private void InitializePresenceTimer()

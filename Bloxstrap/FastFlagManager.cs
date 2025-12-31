@@ -66,13 +66,6 @@ namespace Bloxstrap
 
         };
 
-        public static IReadOnlyDictionary<ProfileMode, string> ProfileModes => new Dictionary<ProfileMode, string>
-        {
-            { ProfileMode.Default, "None" },
-            { ProfileMode.Yourmom, "Your Mom" },
-            { ProfileMode.SoFatlol, "Is So Fat" },
-        };
-
         public static IReadOnlyDictionary<MSAAMode, string?> MSAAModes => new Dictionary<MSAAMode, string?>
         {
             { MSAAMode.Default, null },

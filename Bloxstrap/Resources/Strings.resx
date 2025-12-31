@@ -2012,7 +2012,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Lock Order</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
-    <value>Automatically closes the RobloxCrashHandler.exe process onlaunch to free up some system usage.</value>
+    <value>Automatically closes the RobloxCrashHandler.exe process on launch to free up some system usage.</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
     <value>Close Crash Handler</value>

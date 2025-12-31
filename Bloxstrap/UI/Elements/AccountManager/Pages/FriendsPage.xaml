@@ -75,14 +75,6 @@
 
                                 <TextBlock
                                     Margin="0,6,0,0"
-                                    FontSize="12"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="{Binding DisplayName}"
-                                    TextTrimming="CharacterEllipsis" />
-
-                                <TextBlock
-                                    Margin="0,2,0,0"
                                     FontSize="10"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                     Text="{Binding LastLocation}"

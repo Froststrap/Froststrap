@@ -3502,7 +3502,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically closes the RobloxCrashHandler.exe process onlaunch to free up some system usage..
+        ///   Looks up a localized string similar to Automatically closes the RobloxCrashHandler.exe process on launch to free up some system usage..
         /// </summary>
         public static string Menu_Behaviour_CloseCrashHandler_Description {
             get {
