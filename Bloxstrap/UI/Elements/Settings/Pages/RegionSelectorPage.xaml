@@ -148,12 +148,6 @@
                             Command="{Binding LoadMoreCommand}"
                             Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
                     </StackPanel>
-
-                    <Button
-                        Grid.Column="2"
-                        Width="140"
-                        Command="{Binding DeleteCacheCommand}"
-                        Content="{x:Static resources:Strings.Menu_RegionSelector_ClearServerList}" />
                 </Grid>
 
             </StackPanel>

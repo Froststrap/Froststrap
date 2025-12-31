@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Bloxstrap
 {
@@ -29,6 +24,8 @@ namespace Bloxstrap
         private const string SupportedVersion = "1";
         private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
         private string CookiesPath => Path.Combine(Paths.Roblox, "LocalStorage", "RobloxCookies.dat");
+
+        public string? GetAuthCookie() => Loaded ? AuthCookie : null;
 
         public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
         {

@@ -245,24 +245,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             Regions.Clear();
 
             var fetcher = new RobloxServerFetcher();
-            try
-            {
-                var mgr = AccountManager.Shared;
-                var token = mgr.ActiveAccount?.SecurityToken;
-                if (!string.IsNullOrWhiteSpace(token))
-                {
-                    fetcher.SetRoblosecurity(token);
-                    App.Logger.WriteLine(LOG_IDENT_REGIONS, "Using roblosecurity from AccountManager for region requests.");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT_REGIONS, "No active account roblosecurity available; fetcher will use cache.");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT_REGIONS, $"Exception: {ex.Message}");
-            }
 
             var datacentersResult = await fetcher.GetDatacentersAsync();
 
@@ -290,10 +272,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 foreach (var region in datacentersResult.Value.regions)
                     Regions.Add(region);
 
-                var mgr = AccountManager.Shared;
-                if (!string.IsNullOrEmpty(mgr.SelectedRegion) && Regions.Contains(mgr.SelectedRegion))
+                var savedRegion = App.Settings.Prop.SelectedRegion;
+                if (!string.IsNullOrEmpty(savedRegion) && Regions.Contains(savedRegion))
                 {
-                    SelectedRegion = mgr.SelectedRegion;
+                    SelectedRegion = savedRegion;
                 }
                 else if (string.IsNullOrEmpty(SelectedRegion) && datacentersResult.Value.regions.Count > 0)
                 {
@@ -616,7 +598,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
-        private async Task FindAndJoinServer(long placeId, AltAccount account)
+        private async Task FindAndJoinServer(long placeId)
         {
             const string LOG_IDENT_FIND_SERVER = $"{LOG_IDENT}::FindAndJoinServer";
 
@@ -650,10 +632,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     });
                 }
 
-                fetcher.SetRoblosecurity(account.SecurityToken);
-
-                var mgr = AccountManager.Shared;
-
                 while (attemptCount < maxAttempts)
                 {
                     attemptCount++;
@@ -677,11 +655,25 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     {
                         mainWindow?.ShowLoading($"Found server in {SelectedRegion}! Joining...");
 
-                        await mgr.LaunchAccountToPlaceAsync(account, placeId, matchingServer.Id);
+                        string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={matchingServer.Id}";
+                        try
+                        {
+                            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                            {
+                                FileName = robloxUri,
+                                UseShellExecute = true
+                            });
 
-                        mainWindow?.ShowLoading("Successfully joined server!");
-                        await Task.Delay(750);
-                        return;
+                            mainWindow?.ShowLoading("Successfully joined server!");
+                            await Task.Delay(750);
+                            return;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteException(LOG_IDENT_FIND_SERVER, ex);
+                            Frontend.ShowMessageBox($"Failed to launch game: {ex.Message}", MessageBoxImage.Error);
+                            return;
+                        }
                     }
 
                     if (!string.IsNullOrEmpty(result.NextCursor))
@@ -717,13 +709,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             PlaceId = placeId.ToString();
 
-            var mgr = AccountManager.Shared;
-            if (mgr?.ActiveAccount is null)
-            {
-                Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
-                return;
-            }
-
             if (string.IsNullOrWhiteSpace(SelectedRegion))
             {
                 Frontend.ShowMessageBox("Please select a region first.", MessageBoxImage.Warning);
@@ -734,7 +719,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             try
             {
-                await FindAndJoinServer(placeId, mgr.ActiveAccount);
+                await FindAndJoinServer(placeId);
             }
             catch (Exception ex)
             {

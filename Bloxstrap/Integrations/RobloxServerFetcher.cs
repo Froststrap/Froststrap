@@ -27,17 +27,13 @@ namespace Bloxstrap.Integrations
         private readonly string _serverCacheFilePath = Path.Combine(Paths.Cache, "server_cache.json");
         private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = new();
 
-        private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
+        private readonly CookiesManager _cookiesManager;
 
-        public void SetChannelToken(string? token)
-        {
-            _channelToken = string.IsNullOrWhiteSpace(token) ? null : token;
-            App.Logger.WriteLine(LOG_IDENT, $"Channel token {(string.IsNullOrEmpty(token) ? "cleared" : "set")}");
-        }
+        private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
 
         public RobloxServerFetcher()
         {
-            _client.Timeout = TimeSpan.FromSeconds(60);
+            _cookiesManager = new CookiesManager();
 
             try
             {
@@ -54,10 +50,41 @@ namespace Bloxstrap.Integrations
                         App.Logger.WriteLine(LOG_IDENT, $"Successfully loaded server cache for {_serverCache.Count} games from disk.");
                     }
                 }
+
+                _ = InitializeCookiesAsync();
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        private async Task InitializeCookiesAsync()
+        {
+            const string LOG_IDENT_INIT_COOKIES = $"{LOG_IDENT}::InitializeCookies";
+
+            try
+            {
+                await _cookiesManager.LoadCookies();
+
+                if (_cookiesManager.Loaded)
+                {
+                    _roblosecurityCached = _cookiesManager.GetAuthCookie();
+
+                    var user = await _cookiesManager.GetAuthenticated();
+                    if (user != null)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Authenticated as: {user.Username} (ID: {user.Id})");
+                    }
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Cookies not loaded. State: {_cookiesManager.State}");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_INIT_COOKIES, ex);
             }
         }
 
@@ -178,25 +205,24 @@ namespace Bloxstrap.Integrations
         {
             const string LOG_IDENT_GET_TOKEN = $"{LOG_IDENT}::GetCachedRoblosecurity";
 
-            try
+            if (_cookiesManager.Loaded)
             {
-                var shared = AccountManager.Shared;
-                var active = shared?.ActiveAccount;
-                if (active != null && !string.IsNullOrWhiteSpace(active.SecurityToken))
+                var cookie = _cookiesManager.GetAuthCookie();
+                if (!string.IsNullOrWhiteSpace(cookie))
                 {
-                    _roblosecurityCached = active.SecurityToken;
-                    App.Logger.WriteLine(LOG_IDENT_GET_TOKEN, $"Using roblosecurity from AccountManager active account '{active.Username}'.");
-                    return _roblosecurityCached;
+                    App.Logger.WriteLine(LOG_IDENT_GET_TOKEN, "Using roblosecurity from CookiesManager");
+                    return cookie;
                 }
+            }
 
-                App.Logger.WriteLine(LOG_IDENT_GET_TOKEN, "No active account roblosecurity available in AccountManager. Region selector will not fetch servers.");
-                return null;
-            }
-            catch (Exception ex)
+            if (!string.IsNullOrWhiteSpace(_roblosecurityCached))
             {
-                App.Logger.WriteException(LOG_IDENT_GET_TOKEN, ex);
-                return null;
+                App.Logger.WriteLine(LOG_IDENT_GET_TOKEN, "Using cached roblosecurity");
+                return _roblosecurityCached;
             }
+
+            App.Logger.WriteLine(LOG_IDENT_GET_TOKEN, "No roblosecurity available. Region selector will not fetch servers.");
+            return null;
         }
 
         private string MaskToken(string? s)
@@ -206,48 +232,16 @@ namespace Bloxstrap.Integrations
             return s.Substring(0, 6) + "..." + s.Substring(s.Length - 4);
         }
 
-        private string DescribeTokenSource(string token, AltAccount? activeSnapshot = null)
+        private string DescribeTokenSource(string token)
         {
             if (string.IsNullOrWhiteSpace(token)) return "none";
 
-            try
+            if (_cookiesManager.Loaded)
             {
-                var shared = AccountManager.Shared;
-                var active = activeSnapshot ?? shared?.ActiveAccount;
-                if (active != null && !string.IsNullOrWhiteSpace(active.SecurityToken) && active.SecurityToken == token)
-                    return $"active account '{active.Username}' token={MaskToken(token)}";
-
-                var match = shared?.Accounts.FirstOrDefault(a => !string.IsNullOrWhiteSpace(a.SecurityToken) && a.SecurityToken == token);
-                if (match != null)
-                    return $"alt-account '{match.Username}' token={MaskToken(token)}";
-
-                return $"unknown source (token len={token.Length}) token={MaskToken(token)}";
+                return "Cookie loadded";
             }
-            catch
-            {
-                return $"unknown (error inspecting AltManager) token len={(token?.Length ?? 0)}";
-            }
-        }
 
-        public void ClearCache()
-        {
-            const string LOG_IDENT_CLEAR_CACHE = $"{LOG_IDENT}::ClearCache";
-
-            _serverCache.Clear();
-            App.Logger.WriteLine(LOG_IDENT_CLEAR_CACHE, "In-memory server cache has been cleared.");
-
-            try
-            {
-                if (File.Exists(_serverCacheFilePath))
-                {
-                    File.Delete(_serverCacheFilePath);
-                    App.Logger.WriteLine(LOG_IDENT_CLEAR_CACHE, $"Successfully deleted persistent cache file at: {_serverCacheFilePath}");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_CLEAR_CACHE, ex);
-            }
+            return $"cached token={MaskToken(token)}";
         }
 
         private async Task<HttpResponseMessage> SendJoinRequestWithRetriesAsync(long placeId, string jobId, string roblosecurity, int maxAttempts = 3)
@@ -258,52 +252,103 @@ namespace Bloxstrap.Integrations
             while (true)
             {
                 attempt++;
-                var joinReq = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
-                joinReq.Headers.Add("User-Agent", $"{App.ProjectName}/{App.Version}");
-                joinReq.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
-                joinReq.Headers.Add("Origin", "https://roblox.com");
 
-                joinReq.Headers.Remove("Cookie");
-                joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
-
-                // Add channel token header if available
-                if (!string.IsNullOrEmpty(_channelToken))
+                if (_cookiesManager.Loaded)
                 {
-                    joinReq.Headers.Add("Roblox-Channel-Token", _channelToken);
-                }
-
-                joinReq.Content = new StringContent(JsonSerializer.Serialize(new
-                {
-                    placeId,
-                    isTeleport = false,
-                    gameId = jobId,
-                    gameJoinAttemptId = jobId
-                }), Encoding.UTF8, "application/json");
-
-                try
-                {
-                    var resp = await _client.SendAsync(joinReq).ConfigureAwait(false);
-
-                    if (resp.StatusCode == HttpStatusCode.Unauthorized || resp.StatusCode == HttpStatusCode.Forbidden)
+                    try
                     {
-                        App.Logger.WriteLine(LOG_IDENT_JOIN_REQUEST, $"Join request returned {(int)resp.StatusCode}; invalidating cached roblosecurity.");
-                        InvalidateCachedRoblosecurity();
-                        return resp;
+                        var request = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
+                        request.Headers.Add("User-Agent", $"Roblox/Froststrap");
+                        request.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
+                        request.Headers.Add("Origin", "https://roblox.com");
+
+                        // Add channel token header if available
+                        if (!string.IsNullOrEmpty(_channelToken))
+                        {
+                            request.Headers.Add("Roblox-Channel-Token", _channelToken);
+                        }
+
+                        request.Content = new StringContent(JsonSerializer.Serialize(new
+                        {
+                            placeId,
+                            isTeleport = false,
+                            gameId = jobId,
+                            gameJoinAttemptId = jobId
+                        }), Encoding.UTF8, "application/json");
+
+                        var response = await _cookiesManager.AuthRequest(request);
+
+                        if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT_JOIN_REQUEST, $"Join request returned {(int)response.StatusCode}; cookies may be invalid.");
+                            _roblosecurityCached = null;
+                            return response;
+                        }
+
+                        if ((int)response.StatusCode == 429 || (int)response.StatusCode >= 500)
+                        {
+                            if (attempt >= maxAttempts)
+                                return response;
+                            await Task.Delay(1000 * attempt).ConfigureAwait(false);
+                            continue;
+                        }
+                        return response;
                     }
-
-                    if ((int)resp.StatusCode == 429 || (int)resp.StatusCode >= 500)
+                    catch (Exception ex) when (attempt < maxAttempts)
                     {
-                        if (attempt >= maxAttempts)
-                            return resp;
-                        await Task.Delay(1000 * attempt).ConfigureAwait(false);
+                        App.Logger.WriteException(LOG_IDENT_JOIN_REQUEST, ex);
+                        await Task.Delay(500 * attempt).ConfigureAwait(false);
                         continue;
                     }
-                    return resp;
                 }
-                catch (HttpRequestException) when (attempt < maxAttempts)
+                else
                 {
-                    await Task.Delay(500 * attempt).ConfigureAwait(false);
-                    continue;
+                    var joinReq = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
+                    joinReq.Headers.Add("User-Agent", $"Roblox/Froststrap");
+                    joinReq.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
+                    joinReq.Headers.Add("Origin", "https://roblox.com");
+
+                    joinReq.Headers.Remove("Cookie");
+                    joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
+
+                    if (!string.IsNullOrEmpty(_channelToken))
+                    {
+                        joinReq.Headers.Add("Roblox-Channel-Token", _channelToken);
+                    }
+
+                    joinReq.Content = new StringContent(JsonSerializer.Serialize(new
+                    {
+                        placeId,
+                        isTeleport = false,
+                        gameId = jobId,
+                        gameJoinAttemptId = jobId
+                    }), Encoding.UTF8, "application/json");
+
+                    try
+                    {
+                        var resp = await _client.SendAsync(joinReq).ConfigureAwait(false);
+
+                        if (resp.StatusCode == HttpStatusCode.Unauthorized || resp.StatusCode == HttpStatusCode.Forbidden)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT_JOIN_REQUEST, $"Join request returned {(int)resp.StatusCode}; invalidating cached roblosecurity.");
+                            _roblosecurityCached = null;
+                            return resp;
+                        }
+
+                        if ((int)resp.StatusCode == 429 || (int)resp.StatusCode >= 500)
+                        {
+                            if (attempt >= maxAttempts)
+                                return resp;
+                            await Task.Delay(1000 * attempt).ConfigureAwait(false);
+                            continue;
+                        }
+                        return resp;
+                    }
+                    catch (HttpRequestException) when (attempt < maxAttempts)
+                    {
+                        await Task.Delay(500 * attempt).ConfigureAwait(false);
+                        continue;
+                    }
                 }
             }
         }
@@ -361,67 +406,90 @@ namespace Bloxstrap.Integrations
 
             var roblosecurity = GetCachedRoblosecurity();
             if (string.IsNullOrWhiteSpace(roblosecurity))
+            {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"No roblosecurity available for place {placeId}");
                 return new FetchResult();
+            }
 
             App.Logger.WriteLine(LOG_IDENT_FETCH, $"Starting server fetch for place {placeId} with cursor: '{cursor}' and sortOrder: {sortOrder}");
 
-            AltAccount? activeSnapshot = null;
-            try
-            {
-                activeSnapshot = AccountManager.Shared?.ActiveAccount;
-                string desc = DescribeTokenSource(roblosecurity, activeSnapshot);
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Fetching servers for place {placeId}.");
-
-                if (!string.IsNullOrEmpty(_channelToken))
-                {
-                    App.Logger.WriteLine(LOG_IDENT_FETCH, $"Using channel token for authenticated API access");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_FETCH, ex);
-            }
-
-            string url = $"https://games.roblox.com/v1/games/{placeId}/servers/Public?sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
-            var req = new HttpRequestMessage(HttpMethod.Get, url);
-            req.Headers.Remove("Cookie");
-            req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
+            string desc = DescribeTokenSource(roblosecurity);
+            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Fetching servers for place {placeId} using {desc}");
 
             if (!string.IsNullOrEmpty(_channelToken))
             {
-                req.Headers.Add("Roblox-Channel-Token", _channelToken);
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Using channel token for authenticated API access");
             }
+
+            string url = $"https://games.roblox.com/v1/games/{placeId}/servers/Public?sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
 
             HttpResponseMessage response;
             try
             {
-                response = await _client.SendAsync(req).ConfigureAwait(false);
+                if (_cookiesManager.Loaded)
+                {
+                    var request = new HttpRequestMessage(HttpMethod.Get, url);
+                    if (!string.IsNullOrEmpty(_channelToken))
+                    {
+                        request.Headers.Add("Roblox-Channel-Token", _channelToken);
+                    }
+                    response = await _cookiesManager.AuthRequest(request);
+                }
+                else
+                {
+                    var req = new HttpRequestMessage(HttpMethod.Get, url);
+                    req.Headers.Remove("Cookie");
+                    req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
+
+                    if (!string.IsNullOrEmpty(_channelToken))
+                    {
+                        req.Headers.Add("Roblox-Channel-Token", _channelToken);
+                    }
+
+                    response = await _client.SendAsync(req).ConfigureAwait(false);
+                }
             }
-            catch
+            catch (Exception)
             {
                 return new FetchResult();
             }
 
             if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
             {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Server list request returned {(int)response.StatusCode}; invalidating cached roblosecurity.");
-                InvalidateCachedRoblosecurity();
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Server list request returned {(int)response.StatusCode}; cookies may be invalid.");
+                _roblosecurityCached = null;
                 return new FetchResult();
             }
 
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Rate limited for place {placeId}, waiting...");
                 await Task.Delay(10000).ConfigureAwait(false);
                 return new FetchResult();
             }
 
             if (!response.IsSuccessStatusCode)
+            {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Request failed with status: {(int)response.StatusCode} for place {placeId}");
                 return new FetchResult();
+            }
 
-            string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            string responseBody;
+            try
+            {
+                responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return new FetchResult();
+            }
+
             using var jsonDoc = JsonDocument.Parse(responseBody);
             if (!jsonDoc.RootElement.TryGetProperty("data", out var dataElement) || dataElement.ValueKind != JsonValueKind.Array)
+            {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"No 'data' array found in response for place {placeId}");
                 return new FetchResult();
+            }
 
             string nextCursor = "";
             if (jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cursorElem) && cursorElem.ValueKind == JsonValueKind.String)
@@ -507,15 +575,15 @@ namespace Bloxstrap.Integrations
                             {
                                 firstSeen = await GetServerUptime(jobId, placeId);
                             }
-                            catch
+                            catch (Exception uptimeEx)
                             {
-                                // Ignore uptime errors
+                                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Failed to get uptime for server {jobId}: {uptimeEx.Message}");
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Ignore join info errors
+                        App.Logger.WriteLine(LOG_IDENT_FETCH, $"Failed to get join info for server {jobId}: {ex.Message}");
                     }
 
                     var serverInstance = new ServerInstance
@@ -545,12 +613,16 @@ namespace Bloxstrap.Integrations
             var processedServers = await Task.WhenAll(serverTasks);
             var validServers = processedServers.OfType<ServerInstance>().ToList();
 
-            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Returning {validServers.Count} servers for Place ID {placeId}. NextCursor: {nextCursor}");
+            int newlyFetchedCount = validServers.Count(s =>
+                !string.IsNullOrEmpty(cursor) ||
+                (_serverCache.TryGetValue(placeId, out var placeCache) && !placeCache.ContainsKey(s.Id)));
+
+            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Returning {validServers.Count} servers for Place ID {placeId} ({newlyFetchedCount} newly fetched). NextCursor: {nextCursor}");
 
             return new FetchResult
             {
                 Servers = validServers,
-                NewlyFetchedCount = validServers.Count,
+                NewlyFetchedCount = newlyFetchedCount,
                 NextCursor = nextCursor
             };
         }
@@ -569,6 +641,11 @@ namespace Bloxstrap.Integrations
             {
                 App.Logger.WriteLine(LOG_IDENT_SET_TOKEN, "RobloxServerFetcher: roblosecurity cleared (in-memory).");
             }
+        }
+
+        public bool HasValidCookies()
+        {
+            return _cookiesManager.Loaded || !string.IsNullOrWhiteSpace(_roblosecurityCached);
         }
     }
 }

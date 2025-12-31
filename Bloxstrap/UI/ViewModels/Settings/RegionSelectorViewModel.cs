@@ -49,9 +49,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         private readonly HashSet<string> _displayedServerIds = new();
 
-        private string? _statusMessage;
-
-
         private int _selectedSortOrder = 2;
         public int SelectedSortOrder
         {
@@ -305,11 +302,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             get
             {
-                if (!string.IsNullOrWhiteSpace(_statusMessage))
-                    return _statusMessage;
-
-                if (_altManager?.ActiveAccount == null)
-                    return "Please add an Account in Account Manager first";
+                if (!_hasValidCookies)
+                    return "Please enable 'Allow Froststrp to access your Roblox account' in Bootstrapper page";
 
                 if (IsLoading)
                     return "";
@@ -332,11 +326,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand SearchCommand { get; }
         public ICommand LoadMoreCommand { get; }
         public ICommand SearchGamesCommand { get; }
-        public ICommand DeleteCacheCommand { get; }
 
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
-        private AccountManager? _altManager;
+        private bool _hasValidCookies = false;
 
         public RegionSelectorViewModel()
         {
@@ -351,67 +344,20 @@ namespace Bloxstrap.UI.ViewModels.Settings
             SearchItems = new ObservableCollection<object>();
             SearchResults = new ObservableCollection<GameSearchResult>();
 
-            SearchCommand = new RelayCommand(async () => await SearchAsync(),() => !IsLoading && !string.IsNullOrWhiteSpace(PlaceId) && _altManager?.ActiveAccount != null);
+            SearchCommand = new RelayCommand(async () => await SearchAsync(),
+                () => !IsLoading && !string.IsNullOrWhiteSpace(PlaceId) && _hasValidCookies);
 
-            SearchGamesCommand = new RelayCommand(async () => await SearchGamesAsync(),() => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && _altManager?.ActiveAccount != null);
+            SearchGamesCommand = new RelayCommand(async () => await SearchGamesAsync(),
+                () => !IsLoading && !IsGameSearchLoading && !string.IsNullOrWhiteSpace(SearchQuery) && _hasValidCookies);
 
-            LoadMoreCommand = new RelayCommand(async () => await LoadMoreServersAsync(),() => !IsLoading && !string.IsNullOrWhiteSpace(_nextCursor));
-
-            DeleteCacheCommand = new RelayCommand(DeleteCache);
-
-            _altManager = AccountManager.Shared;
-            _altManager.ActiveAccountChanged += AltManager_ActiveAccountChanged;
+            LoadMoreCommand = new RelayCommand(async () => await LoadMoreServersAsync(),
+                () => !IsLoading && !string.IsNullOrWhiteSpace(_nextCursor));
 
             (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
             (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
             OnPropertyChanged(nameof(ServerListMessage));
 
             _ = LoadRegionsAsync();
-        }
-
-        private void AltManager_ActiveAccountChanged(AltAccount? account)
-        {
-            const string LOG_IDENT_ACCOUNT_CHANGE = $"{LOG_IDENT}::AltManager_ActiveAccountChanged";
-
-            try
-            {
-                var token = account?.SecurityToken;
-                if (_fetcher != null)
-                {
-                    _fetcher.SetRoblosecurity(token);
-                    App.Logger.WriteLine(LOG_IDENT_ACCOUNT_CHANGE, "Applied roblosecurity from AccountManager");
-                }
-
-                (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
-                (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
-                OnPropertyChanged(nameof(ServerListMessage));
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_ACCOUNT_CHANGE, ex);
-            }
-        }
-
-        private void DeleteCache()
-        {
-            const string LOG_IDENT_DELETE_CACHE = $"{LOG_IDENT}::DeleteCache";
-
-            if (_fetcher is null)
-                return;
-
-            App.Logger.WriteLine(LOG_IDENT_DELETE_CACHE, "User initiated deletion of the server cache.");
-            _fetcher.ClearCache();
-
-            Servers.Clear();
-            _statusMessage = "Server cache deleted.";
-            _ = ClearMessageAfterDelay();
-        }
-
-        private async Task ClearMessageAfterDelay()
-        {
-            await Task.Delay(2500);
-            _statusMessage = null;
-            OnPropertyChanged(nameof(ServerListMessage));
         }
 
         private async Task LoadRegionsAsync()
@@ -425,23 +371,27 @@ namespace Bloxstrap.UI.ViewModels.Settings
             Servers.Clear();
 
             _fetcher = new RobloxServerFetcher();
-            try
+
+            _hasValidCookies = _fetcher.HasValidCookies();
+
+            if (!_hasValidCookies)
             {
-                var token = _altManager?.ActiveAccount?.SecurityToken;
-                if (!string.IsNullOrWhiteSpace(token))
-                {
-                    _fetcher.SetRoblosecurity(token);
-                    App.Logger.WriteLine(LOG_IDENT_LOAD_REGIONS, "Using roblosecurity from AltManager for server requests.");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT_LOAD_REGIONS, "No active alt-account roblosecurity available; fetcher will read cache/local storage.");
-                }
+                LoadingMessage = "Waiting for Roblox cookies...";
+                await Task.Delay(2000);
+                _hasValidCookies = _fetcher.HasValidCookies();
             }
-            catch (Exception ex)
+
+            if (!_hasValidCookies)
             {
-                App.Logger.WriteException(LOG_IDENT_LOAD_REGIONS, ex);
+                LoadingMessage = "Please log into Roblox first or enable cookie access in settings";
+                IsLoading = false;
+                (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
+                (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
+                OnPropertyChanged(nameof(ServerListMessage));
+                return;
             }
+
+            LoadingMessage = "Loading datacenters...";
 
             var datacentersResult = await _fetcher.GetDatacentersAsync();
 
@@ -501,6 +451,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
             IsLoading = false;
             await Task.Delay(800);
             LoadingMessage = "";
+
+            (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
+            OnPropertyChanged(nameof(ServerListMessage));
         }
 
         private string GetDatacentersCachePath()
@@ -853,35 +807,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 return;
             }
 
-            try
-            {
-                var mgr = _altManager ?? AccountManager.Shared;
-                var account = mgr?.ActiveAccount;
-
-                if (account is not null)
-                {
-                    App.Logger.WriteLine(LOG_IDENT_JOIN, $"Launching via AccountManager for {account.Username} to place {placeId} (server {serverId})");
-
-                    try
-                    {
-                        await AccountManager.Shared.LaunchAccountToPlaceAsync(account, placeId, serverId).ConfigureAwait(false);
-
-                        App.Logger.WriteLine(LOG_IDENT_JOIN, "AccountManager launch requested.");
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteException(LOG_IDENT_JOIN, ex);
-                        // fall through to system protocol fallback
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_JOIN, ex);
-            }
-
-            // Fallback to system protocol if no active account or AccountManager launch fails.
+            // Fallback to system protocol.
             string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={serverId}";
             try
             {
@@ -890,10 +816,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     FileName = robloxUri,
                     UseShellExecute = true
                 });
+                App.Logger.WriteLine(LOG_IDENT_JOIN, "Launched game via system protocol");
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT_JOIN, ex);
+                LoadingMessage = "Failed to launch game";
             }
         }
 

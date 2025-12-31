@@ -538,7 +538,10 @@ namespace Bloxstrap
                         legacyRobloxState.Delete();
                     }
 
-                    App.Settings.Prop.Theme = Theme.Default;
+                    if (App.Settings.Prop.Theme == Theme.Custom)
+                    {
+                        App.Settings.Prop.Theme = Theme.Default;
+                    }
 
                     if (File.Exists(Path.Combine(Paths.Cache, "GameHistory.json")))
                     {
