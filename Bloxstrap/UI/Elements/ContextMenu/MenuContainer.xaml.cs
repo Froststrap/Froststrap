@@ -45,6 +45,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                     ServerDetailsMenuItem.Visibility = Visibility.Collapsed;
                     GameInformationMenuItem.Visibility = Visibility.Collapsed;
                     GameHistoryMenuItem.Visibility = Visibility.Collapsed;
+                    RegionJoinningMenuItem.Visibility = Visibility.Collapsed;
 
                     if (App.Settings.Prop.PlaytimeCounter)
                     {
@@ -76,7 +77,12 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                         PlaytimeMenuItem.Visibility = Visibility.Visible;
                     }
                     else
+                    {
                         PlaytimeMenuItem.Visibility = Visibility.Collapsed;
+                    }
+
+                    if (App.Settings.Prop.AllowCookieAccess)
+                        UpdateRegionJoinText();
 
                     if (App.Settings.Prop.MemoryCleanerInterval != MemoryCleanerInterval.Never)
                         CleanMemoryMenuItem.Visibility = Visibility.Visible;
@@ -189,6 +195,9 @@ namespace Bloxstrap.UI.Elements.ContextMenu
 
                 ServerDetailsMenuItem.Visibility = Visibility.Visible;
                 GameInformationMenuItem.Visibility = Visibility.Visible;
+
+                if (App.Settings.Prop.AllowCookieAccess)
+                    RegionJoinningMenuItem.Visibility = Visibility.Visible;
             });
         }
 
@@ -199,6 +208,9 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                 InviteDeeplinkMenuItem.Visibility = Visibility.Collapsed;
                 ServerDetailsMenuItem.Visibility = Visibility.Collapsed;
                 GameInformationMenuItem.Visibility = Visibility.Collapsed;
+
+                if (App.Settings.Prop.AllowCookieAccess)
+                    RegionJoinningMenuItem.Visibility = Visibility.Collapsed;
 
                 _serverInformationWindow?.Close();
                 _gameInformationWindow?.Close();
@@ -310,6 +322,111 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                 _gameHistoryWindow.ShowDialog();
             else
                 _gameHistoryWindow.Activate();
+        }
+
+        private async void AutoJoinRegionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            const string LOG_IDENT = "MenuContainer::AutoJoinRegionMenuItem_Click";
+
+            try
+            {
+                if (_activityWatcher?.InGame != true || _activityWatcher?.Data == null)
+                {
+                    Frontend.ShowMessageBox("You need to be in a game to use this feature.", MessageBoxImage.Warning);
+                    return;
+                }
+
+                long placeId = _activityWatcher.Data.PlaceId;
+
+                string? selectedRegion = App.Settings.Prop.SelectedRegion;
+                if (string.IsNullOrEmpty(selectedRegion))
+                {
+                    Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
+                    return;
+                }
+
+                MessageBoxResult result = Frontend.ShowMessageBox($"Start searching for {selectedRegion}?", MessageBoxImage.Information, MessageBoxButton.YesNo);
+                if (result != MessageBoxResult.Yes)
+                    return;
+
+                await FindAndJoinServerInRegion(placeId, selectedRegion);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+                Frontend.ShowMessageBox($"Failed to auto-join: {ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        private async Task FindAndJoinServerInRegion(long placeId, string selectedRegion)
+        {
+            var fetcher = new RobloxServerFetcher();
+            string? nextCursor = "";
+            int pagesChecked = 0;
+            const int maxPages = 20;
+
+            var datacentersResult = await fetcher.GetDatacentersAsync();
+            if (datacentersResult == null)
+            {
+                Frontend.ShowMessageBox("Failed to load regions.", MessageBoxImage.Error);
+                return;
+            }
+
+            var (regions, dcMap) = datacentersResult.Value;
+
+            while (pagesChecked < maxPages)
+            {
+                pagesChecked++;
+
+                var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, 2);
+
+                if (result?.Servers != null)
+                {
+                    var matchingServer = result.Servers.FirstOrDefault(server =>
+                        server.DataCenterId.HasValue &&
+                        dcMap.TryGetValue(server.DataCenterId.Value, out var mappedRegion) &&
+                        mappedRegion == selectedRegion &&
+                        server.Playing < server.MaxPlayers);
+
+                    if (matchingServer != null)
+                    {
+                        string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={matchingServer.Id}";
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = robloxUri,
+                            UseShellExecute = true
+                        });
+
+                        _watcher.KillRobloxProcess();
+                        return;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(result?.NextCursor))
+                    break;
+
+                nextCursor = result.NextCursor;
+                await Task.Delay(250);
+            }
+
+            Frontend.ShowMessageBox($"No {selectedRegion} server found after checking {pagesChecked} pages.", MessageBoxImage.Information);
+        }
+
+        private void UpdateRegionJoinText()
+        {
+            if (RegionJoinTextBlock == null)
+                return;
+
+            string? selectedRegion = App.Settings.Prop.SelectedRegion;
+
+            if (string.IsNullOrEmpty(selectedRegion))
+            {
+                RegionJoinTextBlock.Text = "Join Region";
+            }
+            else
+            {
+                RegionJoinTextBlock.Text = $"Join {selectedRegion}";
+            }
         }
     }
 }

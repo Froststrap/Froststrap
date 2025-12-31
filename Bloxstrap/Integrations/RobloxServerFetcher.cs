@@ -23,7 +23,6 @@ namespace Bloxstrap.Integrations
         private List<string>? _regionList;
 
         private string? _roblosecurityCached;
-        private string? _channelToken;
         private readonly string _serverCacheFilePath = Path.Combine(Paths.Cache, "server_cache.json");
         private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = new();
 
@@ -262,12 +261,6 @@ namespace Bloxstrap.Integrations
                         request.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
                         request.Headers.Add("Origin", "https://roblox.com");
 
-                        // Add channel token header if available
-                        if (!string.IsNullOrEmpty(_channelToken))
-                        {
-                            request.Headers.Add("Roblox-Channel-Token", _channelToken);
-                        }
-
                         request.Content = new StringContent(JsonSerializer.Serialize(new
                         {
                             placeId,
@@ -310,11 +303,6 @@ namespace Bloxstrap.Integrations
 
                     joinReq.Headers.Remove("Cookie");
                     joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
-
-                    if (!string.IsNullOrEmpty(_channelToken))
-                    {
-                        joinReq.Headers.Add("Roblox-Channel-Token", _channelToken);
-                    }
 
                     joinReq.Content = new StringContent(JsonSerializer.Serialize(new
                     {
@@ -416,11 +404,6 @@ namespace Bloxstrap.Integrations
             string desc = DescribeTokenSource(roblosecurity);
             App.Logger.WriteLine(LOG_IDENT_FETCH, $"Fetching servers for place {placeId} using {desc}");
 
-            if (!string.IsNullOrEmpty(_channelToken))
-            {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Using channel token for authenticated API access");
-            }
-
             string url = $"https://games.roblox.com/v1/games/{placeId}/servers/Public?sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
 
             HttpResponseMessage response;
@@ -429,10 +412,6 @@ namespace Bloxstrap.Integrations
                 if (_cookiesManager.Loaded)
                 {
                     var request = new HttpRequestMessage(HttpMethod.Get, url);
-                    if (!string.IsNullOrEmpty(_channelToken))
-                    {
-                        request.Headers.Add("Roblox-Channel-Token", _channelToken);
-                    }
                     response = await _cookiesManager.AuthRequest(request);
                 }
                 else
@@ -440,11 +419,6 @@ namespace Bloxstrap.Integrations
                     var req = new HttpRequestMessage(HttpMethod.Get, url);
                     req.Headers.Remove("Cookie");
                     req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
-
-                    if (!string.IsNullOrEmpty(_channelToken))
-                    {
-                        req.Headers.Add("Roblox-Channel-Token", _channelToken);
-                    }
 
                     response = await _client.SendAsync(req).ConfigureAwait(false);
                 }
