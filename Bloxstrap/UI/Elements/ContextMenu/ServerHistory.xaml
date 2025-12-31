@@ -149,6 +149,13 @@
                                         Command="{Binding CopyServerIdCommand}"
                                         Content="Server ID"
                                         Icon="Clipboard24" />
+
+                                    <ui:Button
+                                        Margin="8,0,0,0"
+                                        Appearance="Danger"
+                                        Command="{Binding DeleteHistoryCommand}"
+                                        Content="{x:Static resources:Strings.Common_Delete}"
+                                        Icon="Delete24"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>

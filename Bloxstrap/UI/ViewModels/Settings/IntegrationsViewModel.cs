@@ -1,6 +1,7 @@
 ﻿using Bloxstrap.Integrations;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -240,7 +241,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 {
                     var result = Frontend.ShowMessageBox(
                         "This works by adding a custom made froststrap plugin that will log what your doing.\n" +
-                        "Do you want to add the plugin to your plugins folder ?",
+                        "Do you want to install the plugin?",
                         MessageBoxImage.Information,
                         MessageBoxButton.YesNo
                     );
@@ -329,38 +330,25 @@ namespace Bloxstrap.UI.ViewModels.Settings
             string pluginFileName = "FroststrapStudioRPC.rbxmx";
 
             string pluginsPath = Path.Combine(Paths.Roblox, "Plugins");
-            string cachePath = Path.Combine(Paths.Cache);
-
             string pluginFile = Path.Combine(pluginsPath, pluginFileName);
-            string cacheFile = Path.Combine(cachePath, pluginFileName);
 
             if (value)
             {
                 try
                 {
                     Directory.CreateDirectory(pluginsPath);
-                    Directory.CreateDirectory(cachePath);
 
                     if (File.Exists(pluginFile))
                     {
                         File.Delete(pluginFile);
                     }
 
-                    if (File.Exists(cacheFile))
-                    {
-                        await Task.Run(() => File.Copy(cacheFile, pluginFile, true));
-                    }
-                    else
-                    {
                         using (HttpClient client = new HttpClient())
                         {
                             byte[] data = await client.GetByteArrayAsync(pluginUrl);
 
-                            await File.WriteAllBytesAsync(cacheFile, data);
-
                             await File.WriteAllBytesAsync(pluginFile, data);
                         }
-                    }
                 }
                 catch (Exception ex)
                 {

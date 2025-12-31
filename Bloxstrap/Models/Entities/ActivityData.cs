@@ -54,17 +54,14 @@ namespace Bloxstrap.Models.Entities
 
         public UniverseDetails? UniverseDetails { get; set; }
 
-        private readonly Watcher? _watcher;
+        public string? RootJobId { get; set; }
 
-        public ActivityData(Watcher? watcher = null)
-        {
-            _watcher = watcher;
-        }
-
+        public event EventHandler<string>? OnDeleteRequested;
 
         public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
         public ICommand CopyDeeplinkCommand => new RelayCommand(CopyDeeplink);
         public ICommand CopyServerIdCommand => new RelayCommand(CopyServerId);
+        public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
         private SemaphoreSlim serverQuerySemaphore = new(1, 1);
         private SemaphoreSlim serverTimeSemaphore = new(1, 1);
@@ -304,5 +301,15 @@ namespace Bloxstrap.Models.Entities
         }
 
         private async void CopyServerId() => Clipboard.SetText(JobId);
+
+        private void DeleteHistory()
+        {
+            string jobIdToDelete = !string.IsNullOrEmpty(RootJobId) ? RootJobId : JobId;
+
+            if (!string.IsNullOrEmpty(jobIdToDelete))
+            {
+                OnDeleteRequested?.Invoke(this, jobIdToDelete);
+            }
+        }
     }
 }

@@ -539,6 +539,11 @@ namespace Bloxstrap
                     }
 
                     App.Settings.Prop.Theme = Theme.Default;
+
+                    if (File.Exists(Path.Combine(Paths.Cache, "GameHistory.json")))
+                    {
+                        File.Delete(Path.Combine(Paths.Cache, "GameHistory.json"));
+                    }
                 }
 
                 App.Settings.Save();

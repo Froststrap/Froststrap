@@ -712,6 +712,7 @@
                 if (!File.Exists(GameHistoryCachePath))
                 {
                     App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", "No existing game history cache found");
+                    History = new List<ActivityData>();
                     return;
                 }
 
@@ -730,13 +731,25 @@
 
                     foreach (var history in gameHistory)
                     {
+                        var serverType = (ServerType)history.ServerType;
+
+                        if (serverType == ServerType.Private || serverType == ServerType.Reserved)
+                        {
+                            continue;
+                        }
+
+                        if (history.UniverseId == 0 || history.PlaceId == 0 || history.TimeJoined == default)
+                        {
+                            continue;
+                        }
+
                         var activity = new ActivityData
                         {
                             UniverseId = history.UniverseId,
                             PlaceId = history.PlaceId,
                             JobId = history.JobId,
                             UserId = history.UserId,
-                            ServerType = (ServerType)history.ServerType,
+                            ServerType = serverType,
                             TimeJoined = history.TimeJoined,
                             TimeLeft = history.TimeLeft,
                         };
@@ -745,7 +758,17 @@
                         History.Add(activity);
                     }
 
+                    History = History
+                        .GroupBy(x => x.UniverseId)
+                        .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
+                        .OrderByDescending(x => x.TimeJoined)
+                        .ToList();
+
                     App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", $"Loaded {History.Count} game history entries from cache");
+                }
+                else
+                {
+                    History = new List<ActivityData>();
                 }
             }
             catch (Exception ex)
@@ -761,6 +784,20 @@
             {
                 Directory.CreateDirectory(Paths.Cache);
 
+                var validHistory = History
+                    .Where(activity =>
+                        activity.ServerType != ServerType.Private &&
+                        activity.ServerType != ServerType.Reserved &&
+                        activity.UniverseId != 0 &&
+                        activity.PlaceId != 0 &&
+                        activity.TimeJoined != default)
+                    .ToList();
+
+                var limitedHistory = validHistory
+                    .GroupBy(x => x.UniverseId)
+                    .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
+                    .ToList();
+
                 var options = new JsonSerializerOptions
                 {
                     WriteIndented = true,
@@ -768,7 +805,7 @@
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                 };
 
-                var gameHistory = History.Select(activity => new GameHistoryData
+                var gameHistory = limitedHistory.Select(activity => new GameHistoryData
                 {
                     UniverseId = activity.UniverseId,
                     PlaceId = activity.PlaceId,
@@ -782,7 +819,8 @@
                 string json = JsonSerializer.Serialize(gameHistory, options);
                 File.WriteAllText(GameHistoryCachePath, json);
 
-                App.Logger.WriteLine("ActivityWatcher::SaveGameHistory", $"Saved {History.Count} game history entries to cache");
+                App.Logger.WriteLine("ActivityWatcher::SaveGameHistory",
+                    $"Saved {gameHistory.Count} game history entries to cache ({limitedHistory.Count} after filtering)");
             }
             catch (Exception ex)
             {
@@ -792,29 +830,43 @@
 
         private void AddToHistory(ActivityData activity)
         {
-            History.RemoveAll(x => x.JobId == activity.JobId);
-
-            var sameGameEntries = History.Where(x => x.UniverseId == activity.UniverseId && x.PlaceId == activity.PlaceId).ToList();
-
-            if (sameGameEntries.Count >= 2)
+            if (activity.ServerType == ServerType.Private || activity.ServerType == ServerType.Reserved)
             {
-                var oldestEntry = sameGameEntries.Last();
-                History.Remove(oldestEntry);
-
                 App.Logger.WriteLine("ActivityWatcher::AddToHistory",
-                    $"Removed oldest entry for game {activity.UniverseId}/{activity.PlaceId} to maintain history limit");
+                    $"Skipping {activity.ServerType} server from history");
+                return;
+            }
+
+            if (activity.UniverseId == 0 || activity.PlaceId == 0 || activity.TimeJoined == default)
+            {
+                App.Logger.WriteLine("ActivityWatcher::AddToHistory",
+                    "Skipping incomplete activity from history");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(activity.JobId))
+            {
+                History.RemoveAll(x => x.JobId == activity.JobId);
             }
 
             History.Insert(0, activity);
 
-            const int maxHistorySize = 125;
-            if (History.Count > maxHistorySize)
+            History = History
+                .GroupBy(x => x.UniverseId)
+                .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
+                .OrderByDescending(x => x.TimeJoined)
+                .ToList();
+
+            if (History.Count > 125)
             {
-                History = History.Take(maxHistorySize).ToList();
+                History = History.Take(125).ToList();
             }
 
             SaveGameHistory();
             OnHistoryUpdated?.Invoke(this, EventArgs.Empty);
+
+            App.Logger.WriteLine("ActivityWatcher::AddToHistory",
+                $"Added history entry for universe {activity.UniverseId}. Total entries: {History.Count}");
         }
 
         public void Dispose()
