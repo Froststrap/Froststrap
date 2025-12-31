@@ -78,10 +78,9 @@ namespace Bloxstrap
         public static IReadOnlyDictionary<TextureQuality, string?> TextureQualityLevels => new Dictionary<TextureQuality, string?>
         {
             { TextureQuality.Default, null },
-            { TextureQuality.Lowest, "0" },
+            { TextureQuality.Medium, "0" },
             { TextureQuality.Low, "1" },
-            { TextureQuality.Medium, "2" },
-            { TextureQuality.High, "3" },
+            { TextureQuality.Lowest, "2" },
         };
 
         public static IReadOnlyDictionary<QualityLevel, string?> QualityLevels => new Dictionary<QualityLevel, string?>

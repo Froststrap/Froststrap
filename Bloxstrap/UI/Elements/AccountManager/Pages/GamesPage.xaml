@@ -200,7 +200,7 @@
                         Grid.Column="1"
                         Margin="4,0,0,0"
                         Appearance="Primary"
-                        Command="{Binding AutoFindAndJoinSelectedCommand}"
+                        Command="{Binding AutoFindAndJoinSelectedGameCommand}"
                         IconFilled="True">
                                         <ui:SymbolIcon FontSize="20" Symbol="Earth32" Foreground="White" />
                                     </ui:Button>

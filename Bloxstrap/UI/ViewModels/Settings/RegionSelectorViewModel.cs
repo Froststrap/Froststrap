@@ -303,7 +303,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get
             {
                 if (!_hasValidCookies)
-                    return "Please enable 'Allow Froststrp to access your Roblox account' in Bootstrapper page";
+                    return "Please enable 'Allow Froststrap to access your Roblox account' in Bootstrapper page";
 
                 if (IsLoading)
                     return "";

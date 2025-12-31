@@ -2,19 +2,16 @@
 {
     public enum TextureQuality
     {
-        [EnumName(FromTranslation = "Common.Default")]
+        [EnumName(StaticName = "High (Default)")]
         Default,
-
-        [EnumName(StaticName = "Lowest")]
-        Lowest,
-
-        [EnumName(StaticName = "Low")]
-        Low,
 
         [EnumName(StaticName = "Medium")]
         Medium,
 
-        [EnumName(StaticName = "High (Default)")]
-        High,
+        [EnumName(StaticName = "Low")]
+        Low,
+
+        [EnumName(StaticName = "Lowest")]
+        Lowest,
     }
 }

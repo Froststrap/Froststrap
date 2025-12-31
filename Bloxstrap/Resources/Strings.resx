@@ -1976,7 +1976,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Remove</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
-    <value>Allow Froststrp to access your Roblox account</value>
+    <value>Allow Froststrap to access your Roblox account</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
     <value>Provide access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0})</value>

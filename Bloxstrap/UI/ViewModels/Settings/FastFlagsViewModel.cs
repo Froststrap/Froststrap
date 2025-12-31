@@ -36,7 +36,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             {
                 if (value)
                 {
-                    LowPolyMeshesLevel = 4;
+                    LowPolyMeshesLevel = 5;
                 }
                 else
                 {

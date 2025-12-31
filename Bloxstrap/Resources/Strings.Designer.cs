@@ -3439,7 +3439,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow Froststrp to access your Roblox account.
+        ///   Looks up a localized string similar to Allow Froststrap to access your Roblox account.
         /// </summary>
         public static string Menu_Behaviour_AllowCookieAccess_Title {
             get {
