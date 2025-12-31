@@ -25,21 +25,23 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Margin="0,0,0,16" Text="{x:Static resources:Strings.Menu_FastFlagEditor_Description}" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+        <TextBlock Grid.Row="0" Text="{x:Static resources:Strings.Menu_FastFlagEditor_Description}" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-        <WrapPanel Grid.Row="1" Orientation="Horizontal">
+        <ui:InfoBar Grid.Row="1" Margin="0,8" Padding="8" IsOpen="True" Title="Important" Message="Following the whitelisting of some Roblox FastFlags, these are the only remaining available for use." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
+
+        <WrapPanel Grid.Row="2" Orientation="Horizontal">
             <ui:Button 
                 Icon="ArrowLeft48" 
                 Content="{x:Static resources:Strings.Menu_FastFlagEditor_Back}" 
                 Click="BackButton_Click" 
-                Margin="0,0,8,12" />
+                Margin="0,0,8,8" />
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 Click="AddButton_Click"
                 Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}"
                 Icon="AddCircle24"/>
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Appearance="Danger"
                 Click="DeleteButton_Click"
@@ -56,50 +58,50 @@
                 </ui:Button.Style>
             </ui:Button>
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 Click="DeleteAllButton_Click"
                 Content="{x:Static resources:Strings.Common_DeleteAll}"
                 Icon="Delete48"/>
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Click="CopyJSONButton_Click"
                 ClipToBounds="True"
                 Content="{x:Static resources:Strings.Common_CopyAll}"
                 Icon="Clipboard16"/>
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Click="ExportJSONButton_Click"
                 Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}"
                 Icon="ArrowExit20"/>
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Click="FlagProfiles_Click"
                 Content="{x:Static resources:Strings.Common_Profiles}"
                 Icon="Edit28"/>
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Icon="Settings48"
                 Content="{x:Static resources:Strings.Menu_FastFlagEditor_AdvancedSettings}"
                 Click="AdvancedSettings_Click"/>
             <ui:Button
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Icon="Broom28"
                 Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}"
                 Click="CleanListButton_Click"/>
             <ToggleButton
                 x:Name="TogglePresetsButton"
-                Margin="0,0,8,12"
+                Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Click="ToggleButton_Click"
                 Content="{x:Static resources:Strings.Menu_FastFlagEditor_ShowPresetFlags}" />
         </WrapPanel>
 
-        <Grid Grid.Row="2" Margin="0,2,1,4">
+        <Grid Grid.Row="3" Margin="0,0,1,4">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -118,7 +120,7 @@
             </Grid>
         </Grid>
         
-        <Grid Grid.Row="3" Grid.RowSpan="2" Margin="0,0,0,-9">
+        <Grid Grid.Row="4" Grid.RowSpan="2" Margin="0,0,0,-9">
 
             <DataGrid
         Name="DataGrid"
@@ -225,7 +227,7 @@
             </TextBlock>
         </Grid>
 
-        <Border x:Name="DragOverlay" Background="#80000000" Visibility="Collapsed" CornerRadius="4" Grid.RowSpan="5" BorderBrush="DodgerBlue" BorderThickness="3" Margin="0,0,0,-9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
+        <Border x:Name="DragOverlay" Background="#80000000" Visibility="Collapsed" CornerRadius="4" Grid.RowSpan="6" BorderBrush="DodgerBlue" BorderThickness="3" Margin="0,0,0,-9" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsHitTestVisible="False">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="{x:Static resources:Strings.Menu_FastFlagEditor_DropJson_Title}" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" TextAlignment="Center"/>
                 <TextBlock Text="{x:Static resources:Strings.Menu_FastFlagEditor_DropJson_Description}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="14" Margin="0,8,0,0" HorizontalAlignment="Center" TextAlignment="Center"/>

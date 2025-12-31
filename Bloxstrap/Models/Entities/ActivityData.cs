@@ -1,7 +1,5 @@
 using Bloxstrap.Models.APIs;
 using CommunityToolkit.Mvvm.Input;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Web;
 using System.Windows;
 using System.Windows.Input;
@@ -47,14 +45,6 @@ namespace Bloxstrap.Models.Entities
 
         public DateTime? TimeLeft { get; set; }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
         // everything below here is optional strictly for bloxstraprpc, discord rich presence, or game history
 
         /// <summary>
@@ -64,26 +54,15 @@ namespace Bloxstrap.Models.Entities
 
         public UniverseDetails? UniverseDetails { get; set; }
 
-        public string GameHistoryDescription
+        private readonly Watcher? _watcher;
+
+        public ActivityData(Watcher? watcher = null)
         {
-            get
-            {
-                string desc = string.Format(
-                    "{0} • {1} {2} {3}",
-                    UniverseDetails?.Data.Creator.Name ?? "Unknown",
-                    TimeJoined.ToString("t"),
-                    Locale.CurrentCulture.Name.StartsWith("ja") ? '~' : '-',
-                    TimeLeft?.ToString("t") ?? "?"
-                );
-
-                if (ServerType != ServerType.Public)
-                    desc += " • " + ServerType.ToTranslatedString();
-
-                return desc;
-            }
+            _watcher = watcher;
         }
 
-        public ICommand RejoinServerCommand => new RelayCommand(RejoinServer);
+
+        public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
         public ICommand CopyDeeplinkCommand => new RelayCommand(CopyDeeplink);
         public ICommand CopyServerIdCommand => new RelayCommand(CopyServerId);
 
@@ -252,9 +231,7 @@ namespace Bloxstrap.Models.Entities
             }
         }
 
-        public override string ToString() => $"{PlaceId}/{JobId}";
-
-        public void RejoinServer()
+        public void RejoinServer(bool CloseRoblox = true)
         {
             try
             {
@@ -272,17 +249,14 @@ namespace Bloxstrap.Models.Entities
                     robloxUri += $"&launchData={HttpUtility.UrlEncode(RPCLaunchData)}";
                 }
 
-                App.Logger.WriteLine("ActivityData::RejoinServer", $"Launching Roblox URI: {robloxUri}");
-
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = robloxUri,
                     UseShellExecute = true
                 });
 
-                App.Logger.WriteLine("ActivityData::RejoinServer", "Successfully launched new Roblox instance");
-
-                CloseExistingRobloxInstances();
+                if (CloseRoblox)
+                    CloseRobloxProcesses();
             }
             catch (Exception ex)
             {
@@ -291,75 +265,44 @@ namespace Bloxstrap.Models.Entities
             }
         }
 
-        private void CloseExistingRobloxInstances()
+        public void CloseRobloxProcesses()
         {
+            const string LOG_IDENT = "ActivityData::CloseProcess";
+
             try
             {
-                var processes = Process.GetProcessesByName("RobloxPlayerBeta");
-                int closedCount = 0;
+                var process = Process.GetProcessesByName("RobloxPlayerBeta");
 
-                foreach (var process in processes)
+                if (process.Length == 0)
                 {
-                    try
-                    {
-                        if ((DateTime.Now - process.StartTime).TotalSeconds < 3)
-                        {
-                            App.Logger.WriteLine("ActivityData::CloseExistingRobloxInstances", $"Skipping new process (PID: {process.Id})");
-                            continue;
-                        }
-
-                        App.Logger.WriteLine("ActivityData::CloseExistingRobloxInstances", $"Instantly closing old Roblox process (PID: {process.Id})");
-                        process.Kill(); // Kill instantly, don't wait for exit
-                        closedCount++;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine("ActivityData::CloseExistingRobloxInstances", $"Failed to close process {process.Id}: {ex.Message}");
-                    }
+                    App.Logger.WriteLine(LOG_IDENT, $"Roblox not found");
+                    return;
                 }
 
-                App.Logger.WriteLine("ActivityData::CloseExistingRobloxInstances", $"Instantly closed {closedCount} old Roblox instances");
+                foreach (var proc in process)
+                {
+                    if ((DateTime.Now - proc.StartTime).TotalSeconds < 3)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Skipping new process");
+                        continue;
+                    }
+
+                    proc.Kill();
+                }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ActivityData::CloseExistingRobloxInstances", $"Error closing processes: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Roblox could not be closed");
+                App.Logger.WriteException(LOG_IDENT, ex);
             }
         }
 
         private async void CopyDeeplink()
         {
-            try
-            {
-                string deeplink = GetInviteDeeplink();
-                Clipboard.SetText(deeplink);
-
-                App.Logger.WriteLine("ActivityData::CopyDeeplink", $"Copied deeplink to clipboard: {deeplink}");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException("ActivityData::CopyDeeplink", ex);
-                Frontend.ShowMessageBox($"Failed to copy deeplink: {ex.Message}", MessageBoxImage.Error);
-            }
+            string deeplink = GetInviteDeeplink();
+            Clipboard.SetText(deeplink);
         }
 
-        private async void CopyServerId()
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(JobId))
-                {
-                    Frontend.ShowMessageBox("No server ID available to copy", MessageBoxImage.Information);
-                    return;
-                }
-
-                Clipboard.SetText(JobId);
-                App.Logger.WriteLine("ActivityData::CopyServerId", $"Copied server ID to clipboard: {JobId}");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException("ActivityData::CopyServerId", ex);
-                Frontend.ShowMessageBox($"Failed to copy server ID: {ex.Message}", MessageBoxImage.Error);
-            }
-        }
+        private async void CopyServerId() => Clipboard.SetText(JobId);
     }
 }

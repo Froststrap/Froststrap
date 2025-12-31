@@ -51,6 +51,7 @@
         private DateTime LastRPCRequest;
 
         private readonly LaunchMode _launchMode;
+        private readonly int _robloxPID;
 
         public string LogLocation = null!;
 
@@ -73,12 +74,35 @@
 
         public bool IsDisposed = false;
 
-        public ActivityWatcher(string? logFile = null, LaunchMode launchMode = LaunchMode.Player)
+        public void CloseProcess(int pid)
+        {
+            const string LOG_IDENT = "Watcher::CloseProcess";
+
+            try
+            {
+                using var process = Process.GetProcessById(pid);
+                if (process.HasExited)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"PID {pid} has already exited");
+                    return;
+                }
+
+                process.Kill();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"PID {pid} could not be closed");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public ActivityWatcher(string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
         {
             if (!String.IsNullOrEmpty(logFile))
                 LogLocation = logFile;
 
             _launchMode = launchMode;
+            _robloxPID = RobloxPID;
 
             if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
             {
@@ -262,7 +286,7 @@
                     if (reasonCode == 277)
                     {
                         _shouldAutoRejoin = true;
-                        App.Logger.WriteLine(LOG_IDENT, $"InternetDisconnection detected (reason code: {reasonCode})");
+                        App.Logger.WriteLine(LOG_IDENT, $"Internet Disconnection detected (reason code: {reasonCode})");
                     }
                     else
                     {
@@ -414,7 +438,10 @@
 
                         if (_shouldAutoRejoin)
                         {
-                            autoRejoinData.RejoinServer();
+                            autoRejoinData.RejoinServer(false);
+
+                            // we use this because can you imagine having 5 accs open and we close all of them cuz 1 dced ?
+                            CloseProcess(_robloxPID);
                         }
                         else
                         {

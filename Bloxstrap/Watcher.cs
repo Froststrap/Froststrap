@@ -61,7 +61,7 @@ namespace Bloxstrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode);
+                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {

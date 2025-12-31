@@ -41,7 +41,7 @@
 
             <TextBlock Margin="4,0" Grid.Row="0" Text="Download community made mods easily, this will delete your already existing mods before applying." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
             
-            <ui:InfoBar Margin="4,8,0,8" Grid.Row="1" Padding="8" IsOpen="True" Title="Information" Message="If you want us to add a specific mod, come ask us in our dicord server." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
+            <ui:InfoBar Margin="4,8,0,8" Grid.Row="1" Padding="8" IsOpen="True" Title="Information" Message="Some mods like dark texture and higher brightness require your graphic to be set over 5." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
 
             <StackPanel Grid.Row="2" Margin="0,0,0,8">
                 <ui:TextBox PlaceholderText="Search mods..." Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,12,0">
