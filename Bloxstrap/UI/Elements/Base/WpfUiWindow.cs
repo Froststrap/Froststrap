@@ -2,6 +2,7 @@
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Mvvm.Contracts;
@@ -11,8 +12,8 @@ namespace Bloxstrap.UI.Elements.Base
 {
     public abstract class WpfUiWindow : UiWindow
     {
-        // I could add animated backgrounds, its easy but its hella gay i need to add a seperate image control :/
         private readonly IThemeService _themeService = new ThemeService();
+        private Image? _backgroundImageControl;
 
         public WpfUiWindow()
         {
@@ -29,8 +30,9 @@ namespace Bloxstrap.UI.Elements.Base
             _themeService.SetSystemAccent();
 
             Application.Current.Resources["ApplicationBackground"] = null;
-
             this.Background = null;
+
+            HideBackgroundImageControl();
 
             if (finalTheme == Enums.Theme.Custom)
             {
@@ -51,8 +53,8 @@ namespace Bloxstrap.UI.Elements.Base
             }
 
 #if QA_BUILD
-    this.BorderBrush = System.Windows.Media.Brushes.Red;
-    this.BorderThickness = new Thickness(4);
+            this.BorderBrush = System.Windows.Media.Brushes.Red;
+            this.BorderThickness = new Thickness(4);
 #endif
         }
 
@@ -92,35 +94,113 @@ namespace Bloxstrap.UI.Elements.Base
                 return;
             }
 
+            var extension = Path.GetExtension(App.Settings.Prop.BackgroundImagePath)?.ToLower();
+
+            try
+            {
+                if (extension == ".gif")
+                {
+                    ApplyAnimatedGifBackground();
+                }
+                else
+                {
+                    ApplyStaticImageBackground();
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("WpfUiWindow", $"Exception when changing to image: {ex.Message}");
+            }
+        }
+
+        private void ApplyStaticImageBackground()
+        {
             try
             {
                 var imageSource = new BitmapImage();
                 imageSource.BeginInit();
                 imageSource.CacheOption = BitmapCacheOption.OnLoad;
-                imageSource.UriSource = new Uri(App.Settings.Prop.BackgroundImagePath);
+                imageSource.UriSource = new Uri(App.Settings.Prop.BackgroundImagePath!);
                 imageSource.EndInit();
                 imageSource.Freeze();
 
                 var imageBrush = new ImageBrush
                 {
                     ImageSource = imageSource,
-                    Stretch = App.Settings.Prop.BackgroundStretch switch
-                    {
-                        BackgroundStretch.None => Stretch.None,
-                        BackgroundStretch.Fill => Stretch.Fill,
-                        BackgroundStretch.Uniform => Stretch.Uniform,
-                        BackgroundStretch.UniformToFill => Stretch.UniformToFill,
-                        _ => Stretch.UniformToFill
-                    },
-                    Opacity = App.Settings.Prop.BackgroundOpacity
+                    Stretch = GetStretchFromSetting(),
+                    Opacity = App.Settings.Prop.BackgroundOpacity,
+                    AlignmentX = AlignmentX.Center,
+                    AlignmentY = AlignmentY.Center
                 };
 
                 Application.Current.Resources["ApplicationBackground"] = imageBrush;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("WpfUiWindow", $"Exception when changing to image: {ex.Message}");
+                App.Logger.WriteLine("WpfUiWindow", $"Exception when loading static image: {ex.Message}");
             }
+        }
+
+        private void ApplyAnimatedGifBackground()
+        {
+            try
+            {
+                _backgroundImageControl = GetBackgroundImageControl();
+
+                if (_backgroundImageControl == null)
+                {
+                    App.Logger.WriteLine("WpfUiWindow", "Failed to get background image control");
+                    ApplyStaticImageBackground();
+                    return;
+                }
+
+                _backgroundImageControl.Stretch = GetStretchFromSetting();
+                _backgroundImageControl.Opacity = App.Settings.Prop.BackgroundOpacity;
+                _backgroundImageControl.HorizontalAlignment = HorizontalAlignment.Center;
+                _backgroundImageControl.VerticalAlignment = VerticalAlignment.Center;
+
+                XamlAnimatedGif.AnimationBehavior.SetSourceUri(_backgroundImageControl, null);
+
+                XamlAnimatedGif.AnimationBehavior.SetSourceUri(_backgroundImageControl, new Uri(App.Settings.Prop.BackgroundImagePath!));
+
+                _backgroundImageControl.Visibility = Visibility.Visible;
+
+                Application.Current.Resources["ApplicationBackground"] = null;
+                this.Background = null;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("WpfUiWindow", $"Exception when loading animated GIF: {ex.Message}");
+                ApplyStaticImageBackground();
+            }
+        }
+
+        private Image? GetBackgroundImageControl()
+        {
+            var control = this.FindName("BackgroundImageControl") as Image;
+            return control;
+        }
+
+        private void HideBackgroundImageControl()
+        {
+            var control = GetBackgroundImageControl();
+            if (control != null)
+            {
+                XamlAnimatedGif.AnimationBehavior.SetSourceUri(control, null);
+                control.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private Stretch GetStretchFromSetting()
+        {
+            return App.Settings.Prop.BackgroundStretch switch
+            {
+                BackgroundStretch.None => Stretch.None,
+                BackgroundStretch.Fill => Stretch.Fill,
+                BackgroundStretch.Uniform => Stretch.Uniform,
+                BackgroundStretch.UniformToFill => Stretch.UniformToFill,
+                _ => Stretch.UniformToFill
+            };
         }
 
         private void ApplyCustomThemeResources()
@@ -135,8 +215,12 @@ namespace Bloxstrap.UI.Elements.Base
 
         private void ApplyStandardTheme(Enums.Theme finalTheme, int customThemeIndex)
         {
-            var dict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/UI/Style/{Enum.GetName(finalTheme)}.xaml") };
-            Application.Current.Resources.MergedDictionaries[customThemeIndex] = dict;
+            var themeName = Enum.GetName(finalTheme);
+            if (themeName != null)
+            {
+                var dict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/UI/Style/{themeName}.xaml") };
+                Application.Current.Resources.MergedDictionaries[customThemeIndex] = dict;
+            }
 
             Application.Current.Resources.Remove("NewTextEditorBackground");
             Application.Current.Resources.Remove("NewTextEditorForeground");
@@ -144,6 +228,8 @@ namespace Bloxstrap.UI.Elements.Base
             Application.Current.Resources.Remove("PrimaryBackgroundColor");
             Application.Current.Resources.Remove("NormalDarkAndLightBackground");
             Application.Current.Resources.Remove("ControlFillColorDefault");
+
+            HideBackgroundImageControl();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -167,6 +253,15 @@ namespace Bloxstrap.UI.Elements.Base
                     this.FontFamily = font;
                 }
             }
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            HideBackgroundImageControl();
+
+            _backgroundImageControl = null;
         }
     }
 }
