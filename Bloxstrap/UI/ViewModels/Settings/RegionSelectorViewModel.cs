@@ -306,7 +306,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get
             {
                 if (!_hasValidCookies)
-                    return "Please enable 'Allow Froststrap to access your Roblox account' in Bootstrapper page or Log into an account in Account Manager";
+                    return "Dummy not found, Please notify us in our discord server.";
 
                 if (IsLoading)
                     return "";
@@ -329,7 +329,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand SearchCommand { get; }
         public ICommand LoadMoreCommand { get; }
         public ICommand SearchGamesCommand { get; }
-        public ICommand RefreshCookiesCommand { get; }
 
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
@@ -354,19 +353,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             LoadMoreCommand = new RelayCommand(async () => await LoadMoreServersAsync(),
                 () => !IsLoading && !string.IsNullOrWhiteSpace(_nextCursor));
 
-            RefreshCookiesCommand = new RelayCommand(async () =>
-            {
-                var refreshed = await RefreshCookiesAsync();
-                if (refreshed)
-                {
-                    Frontend.ShowMessageBox("Authentication refreshed successfully!", MessageBoxImage.Information);
-                }
-                else
-                {
-                    Frontend.ShowMessageBox("Failed to refresh authentication. Please check your settings.", MessageBoxImage.Warning);
-                }
-            });
-
             (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
             (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
             OnPropertyChanged(nameof(ServerListMessage));
@@ -374,106 +360,54 @@ namespace Bloxstrap.UI.ViewModels.Settings
             _ = InitializeCookiesAsync();
         }
 
-        public async Task<bool> RefreshCookiesAsync()
-        {
-            try
-            {
-                await App.Cookies.LoadCookies();
-
-                if (App.Cookies.Loaded)
-                {
-                    _roblosecurity = App.Cookies.GetAuthCookie();
-                    _hasValidCookies = !string.IsNullOrWhiteSpace(_roblosecurity);
-
-                    (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
-                    (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
-                    OnPropertyChanged(nameof(ServerListMessage));
-
-                    return _hasValidCookies;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
-            }
-
-            return false;
-        }
-
-        // should i make dummy cookie and link to remote data to use for this ?
         private async Task InitializeCookiesAsync()
         {
             const string LOG_IDENT_INIT_COOKIES = $"{LOG_IDENT}::InitializeCookies";
 
             try
             {
-                // First try cookie manager
-                await App.Cookies.LoadCookies();
+                await App.RemoteData.WaitUntilDataFetched();
 
-                if (App.Cookies.Loaded)
+                _roblosecurity = App.RemoteData.Prop.Dummy;
+
+                if (!string.IsNullOrWhiteSpace(_roblosecurity))
                 {
-                    _roblosecurity = App.Cookies.GetAuthCookie();
-                    _hasValidCookies = !string.IsNullOrWhiteSpace(_roblosecurity);
+                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "Validating dummy cookie...");
 
-                    if (_hasValidCookies)
+                    var fetcher = new RobloxServerFetcher();
+                    bool isValid = await fetcher.ValidateCookieAsync(_roblosecurity);
+
+                    if (isValid)
                     {
-                        var user = await App.Cookies.GetAuthenticated();
-                        if (user != null)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Authenticated via cookie manager as: {user.Username} (ID: {user.Id})");
-                        }
+                        _hasValidCookies = true;
+                        App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "Dummy cookie is VALID");
                     }
                     else
                     {
-                        App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "No valid roblosecurity cookie found in cookie manager");
+                        _hasValidCookies = false;
+                        App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "Dummy cookie is INVALID");
                     }
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Cookie manager was not loaded. State: {App.Cookies.State}");
                     _hasValidCookies = false;
-                }
-
-                // Fallback to account manager if cookie manager dosent have valid cookies
-                if (!_hasValidCookies)
-                {
-                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "Falling back to AccountManager for authentication...");
-
-                    var mgr = AccountManager.Shared;
-                    if (mgr?.ActiveAccount != null)
-                    {
-                        _roblosecurity = mgr.GetRoblosecurityForUser(mgr.ActiveAccount.UserId);
-                        _hasValidCookies = !string.IsNullOrWhiteSpace(_roblosecurity);
-
-                        if (_hasValidCookies)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Authenticated via AccountManager as: {mgr.ActiveAccount.Username} (ID: {mgr.ActiveAccount.UserId})");
-                        }
-                        else
-                        {
-                            App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "AccountManager also doesn't have valid cookies");
-                        }
-                    }
-                    else
-                    {
-                        App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "No active account in AccountManager");
-                    }
+                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "No dummy cookie found in config");
                 }
 
                 if (_hasValidCookies)
                 {
-                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "Authentication successful, loading regions...");
                     await LoadRegionsAsync();
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "No authentication available");
+                    OnPropertyChanged(nameof(ServerListMessage));
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT_INIT_COOKIES, ex);
                 _hasValidCookies = false;
+                OnPropertyChanged(nameof(ServerListMessage));
             }
         }
 

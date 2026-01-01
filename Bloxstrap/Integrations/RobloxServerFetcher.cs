@@ -241,6 +241,36 @@ namespace Bloxstrap.Integrations
             return false;
         }
 
+        public async Task<bool> ValidateCookieAsync(string roblosecurityCookie)
+        {
+            const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateCookieAsync";
+
+            try
+            {
+                if (string.IsNullOrWhiteSpace(roblosecurityCookie))
+                {
+                    App.Logger.WriteLine(LOG_IDENT_VALIDATE, "Cookie is null or empty");
+                    return false;
+                }
+
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://users.roblox.com/v1/users/authenticated");
+                request.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurityCookie}");
+                request.Headers.Add("User-Agent", "Roblox/Froststrap");
+
+                var response = await _client.SendAsync(request);
+
+                bool isValid = response.StatusCode == HttpStatusCode.OK;
+
+                App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Cookie validation result: {(isValid ? "VALID" : "INVALID")} (Status: {response.StatusCode})");
+                return isValid;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_VALIDATE, ex);
+                return false;
+            }
+        }
+
         public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string roblosecurity, string cursor = "", int sortOrder = 2)
         {
             const string LOG_IDENT_FETCH = $"{LOG_IDENT}::FetchServerInstances";

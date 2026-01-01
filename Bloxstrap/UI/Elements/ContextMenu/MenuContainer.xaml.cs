@@ -380,37 +380,23 @@ namespace Bloxstrap.UI.Elements.ContextMenu
 
             try
             {
-                await App.Cookies.LoadCookies();
-                if (App.Cookies.Loaded)
-                {
-                    cookie = App.Cookies.GetAuthCookie();
-                }
+                await App.RemoteData.WaitUntilDataFetched();
+                cookie = App.RemoteData.Prop.Dummy;
 
-                if (string.IsNullOrWhiteSpace(cookie))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "App.Cookies not available, trying AccountManager...");
+                bool isValid = await fetcher.ValidateCookieAsync(cookie);
 
-                    var mgr = AccountManager.Shared;
-                    if (mgr?.ActiveAccount != null)
-                    {
-                        cookie = mgr.GetRoblosecurityForUser(mgr.ActiveAccount.UserId);
-                        if (!string.IsNullOrWhiteSpace(cookie))
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Using cookies from AccountManager for user: {mgr.ActiveAccount.Username}");
-                        }
-                    }
-                }
-
-                if (string.IsNullOrWhiteSpace(cookie))
+                if (!isValid)
                 {
-                    Frontend.ShowMessageBox("Authentication required. Please log into Roblox first.", MessageBoxImage.Warning);
+                    Frontend.ShowMessageBox("Dummy cookie is invalid or expired. Please notify us in our discord server.", MessageBoxImage.Error);
                     return;
                 }
+
+                App.Logger.WriteLine(LOG_IDENT, "Dummy cookie is valid, starting search...");
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT, ex);
-                Frontend.ShowMessageBox("Failed to authenticate. Please check your settings.", MessageBoxImage.Error);
+                Frontend.ShowMessageBox("Failed to validate cookie.", MessageBoxImage.Error);
                 return;
             }
 
@@ -430,15 +416,28 @@ namespace Bloxstrap.UI.Elements.ContextMenu
 
                     if (matchingServer != null)
                     {
-                        string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={matchingServer.Id}";
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = robloxUri,
-                            UseShellExecute = true
-                        });
+                        MessageBoxResult confirmResult = Frontend.ShowMessageBox(
+                            $"Found server in {selectedRegion} with {matchingServer.Playing}/{matchingServer.MaxPlayers} players.\nDo you want to join?",
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo
+                        );
 
-                        _watcher.KillRobloxProcess();
-                        return;
+                        if (confirmResult == MessageBoxResult.Yes)
+                        {
+                            string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={matchingServer.Id}";
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = robloxUri,
+                                UseShellExecute = true
+                            });
+
+                            _watcher.KillRobloxProcess();
+                            return;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                 }
 
@@ -449,7 +448,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
                 await Task.Delay(250);
             }
 
-            Frontend.ShowMessageBox($"No {selectedRegion} server found after checking {pagesChecked} pages.", MessageBoxImage.Information);
+            Frontend.ShowMessageBox($"No {selectedRegion} server found after checking {pagesChecked} pages, Please try another region.", MessageBoxImage.Information);
         }
 
         private void UpdateRegionJoinText()

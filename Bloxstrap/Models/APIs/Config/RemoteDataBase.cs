@@ -25,10 +25,10 @@ namespace Bloxstrap.Models.APIs.Config
         [JsonPropertyName("mappings")]
         public Dictionary<string, string[]> Mappings { get; set; } = new Dictionary<string, string[]>();
 
+        [JsonPropertyName("dummyCookie")]
+        public string Dummy { get; set; } = string.Empty;
+
         [JsonPropertyName("communityMods")]
         public List<CommunityMod> CommunityMods { get; set; } = new List<CommunityMod>();
-
-        [JsonPropertyName("untilFishstrapReleases")]
-        public bool UntilFishstrapReleases { get; set; } = false;
     }
 }
