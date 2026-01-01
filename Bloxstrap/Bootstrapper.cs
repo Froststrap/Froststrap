@@ -350,7 +350,7 @@ namespace Bloxstrap
                 StartRoblox();
             }
 
-            _ = Task.Run(async () => await HandlePostLaunchOperations(_launchMode));
+            _ =  HandlePostLaunchOperations(_launchMode);
 
             await mutex.ReleaseAsync();
 
@@ -363,13 +363,17 @@ namespace Bloxstrap
 
             try
             {
-                if (App.Settings.Prop.SelectedRobloxIcon != RobloxIcon.Default)
+                // roblox studio automatically sets its icon everytime you do smth
+                if (launchMode == LaunchMode.Player)
                 {
-                    var robloxProcess = Process.GetProcessById(_appPid);
-
-                    if (!robloxProcess.HasExited)
+                    if (App.Settings.Prop.SelectedRobloxIcon != RobloxIcon.Default)
                     {
-                        await SetRobloxWindowIcon(robloxProcess, App.Settings.Prop.SelectedRobloxIcon);
+                        var robloxProcess = Process.GetProcessById(_appPid);
+
+                        if (!robloxProcess.HasExited)
+                        {
+                            await SetRobloxWindowIcon(robloxProcess, App.Settings.Prop.SelectedRobloxIcon);
+                        }
                     }
                 }
                 else
@@ -884,10 +888,8 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "Bootstrapper::SetRobloxWindowIcon";
 
-            if (icon == RobloxIcon.Default)
-                return;
-
             using var iconHandle = LoadIcon(icon);
+
             if (iconHandle == null)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Icon resource '{icon}' not found.");

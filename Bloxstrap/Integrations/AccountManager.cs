@@ -49,7 +49,6 @@ namespace Bloxstrap.Integrations
 
         public string CurrentPlaceId { get; private set; } = "";
         public string CurrentServerInstanceId { get; private set; } = "";
-        public string SelectedRegion { get; private set; } = "";
 
         public AccountManager()
         {
@@ -100,13 +99,6 @@ namespace Bloxstrap.Integrations
             {
                 return protectedText ?? string.Empty;
             }
-        }
-
-        public void SetSelectedRegion(string region)
-        {
-            SelectedRegion = region ?? "";
-            SaveAccounts();
-            App.Logger.WriteLine(LOG_IDENT, $"Set selected region to: {SelectedRegion}");
         }
 
         public void LoadAccounts()
@@ -168,9 +160,8 @@ namespace Bloxstrap.Integrations
 
                     CurrentPlaceId = managerData.CurrentPlaceId ?? "";
                     CurrentServerInstanceId = managerData.CurrentServerInstanceId ?? "";
-                    SelectedRegion = managerData.SelectedRegion ?? "";
 
-                    App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}, Region: {SelectedRegion}");
+                    App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}");
                 }
                 else
                 {
@@ -214,14 +205,13 @@ namespace Bloxstrap.Integrations
                     LastUpdated = DateTime.UtcNow,
                     CurrentPlaceId = CurrentPlaceId,
                     CurrentServerInstanceId = CurrentServerInstanceId,
-                    SelectedRegion = SelectedRegion
                 };
 
                 string json = JsonConvert.SerializeObject(managerData, Formatting.Indented);
                 File.WriteAllText(_accountsLocation, json);
 
                 App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved {_accounts.Count} accounts with active account: {ActiveAccount?.Username ?? "None"}");
-                App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}, Region: {SelectedRegion}");
+                App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}");
             }
             catch (Exception ex)
             {

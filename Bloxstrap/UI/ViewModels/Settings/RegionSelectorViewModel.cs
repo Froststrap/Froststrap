@@ -35,6 +35,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
         private ObservableCollection<ServerEntry> _servers = new();
         private string _nextCursor = "";
 
+        private string? _roblosecurity;
+        private bool _hasValidCookies = false;
+
         private string _searchQuery = "";
         private ObservableCollection<GameSearchResult> _searchResults = new();
         private GameSearchResult? _selectedSearchResult;
@@ -326,10 +329,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand SearchCommand { get; }
         public ICommand LoadMoreCommand { get; }
         public ICommand SearchGamesCommand { get; }
+        public ICommand RefreshCookiesCommand { get; }
 
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
-        private bool _hasValidCookies = false;
 
         public RegionSelectorViewModel()
         {
@@ -353,11 +356,126 @@ namespace Bloxstrap.UI.ViewModels.Settings
             LoadMoreCommand = new RelayCommand(async () => await LoadMoreServersAsync(),
                 () => !IsLoading && !string.IsNullOrWhiteSpace(_nextCursor));
 
+            RefreshCookiesCommand = new RelayCommand(async () =>
+            {
+                var refreshed = await RefreshCookiesAsync();
+                if (refreshed)
+                {
+                    Frontend.ShowMessageBox("Authentication refreshed successfully!", MessageBoxImage.Information);
+                }
+                else
+                {
+                    Frontend.ShowMessageBox("Failed to refresh authentication. Please check your settings.", MessageBoxImage.Warning);
+                }
+            });
+
             (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
             (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
             OnPropertyChanged(nameof(ServerListMessage));
 
-            _ = LoadRegionsAsync();
+            _ = InitializeCookiesAsync();
+        }
+
+        public async Task<bool> RefreshCookiesAsync()
+        {
+            try
+            {
+                await App.Cookies.LoadCookies();
+
+                if (App.Cookies.Loaded)
+                {
+                    _roblosecurity = App.Cookies.GetAuthCookie();
+                    _hasValidCookies = !string.IsNullOrWhiteSpace(_roblosecurity);
+
+                    (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
+                    (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
+                    OnPropertyChanged(nameof(ServerListMessage));
+
+                    return _hasValidCookies;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+
+            return false;
+        }
+
+        private async Task InitializeCookiesAsync()
+        {
+            const string LOG_IDENT_INIT_COOKIES = $"{LOG_IDENT}::InitializeCookies";
+
+            try
+            {
+                // First try cookie manager
+                await App.Cookies.LoadCookies();
+
+                if (App.Cookies.Loaded)
+                {
+                    _roblosecurity = App.Cookies.GetAuthCookie();
+                    _hasValidCookies = !string.IsNullOrWhiteSpace(_roblosecurity);
+
+                    if (_hasValidCookies)
+                    {
+                        var user = await App.Cookies.GetAuthenticated();
+                        if (user != null)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Authenticated via cookie manager as: {user.Username} (ID: {user.Id})");
+                        }
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "No valid roblosecurity cookie found in cookie manager");
+                    }
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Cookie manager was not loaded. State: {App.Cookies.State}");
+                    _hasValidCookies = false;
+                }
+
+                // Fallback to account manager if cookie manager dosent have valid cookies
+                if (!_hasValidCookies)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "Falling back to AccountManager for authentication...");
+
+                    var mgr = AccountManager.Shared;
+                    if (mgr?.ActiveAccount != null)
+                    {
+                        _roblosecurity = mgr.GetRoblosecurityForUser(mgr.ActiveAccount.UserId);
+                        _hasValidCookies = !string.IsNullOrWhiteSpace(_roblosecurity);
+
+                        if (_hasValidCookies)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, $"Authenticated via AccountManager as: {mgr.ActiveAccount.Username} (ID: {mgr.ActiveAccount.UserId})");
+                        }
+                        else
+                        {
+                            App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "AccountManager also doesn't have valid cookies");
+                        }
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "No active account in AccountManager");
+                    }
+                }
+
+                if (_hasValidCookies)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "Authentication successful, loading regions...");
+                    await LoadRegionsAsync();
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT_INIT_COOKIES, "No authentication available");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_INIT_COOKIES, ex);
+                _hasValidCookies = false;
+            }
         }
 
         private async Task LoadRegionsAsync()
@@ -371,25 +489,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             Servers.Clear();
 
             _fetcher = new RobloxServerFetcher();
-
-            _hasValidCookies = _fetcher.HasValidCookies();
-
-            if (!_hasValidCookies)
-            {
-                LoadingMessage = "Waiting for Roblox cookies...";
-                await Task.Delay(2000);
-                _hasValidCookies = _fetcher.HasValidCookies();
-            }
-
-            if (!_hasValidCookies)
-            {
-                LoadingMessage = "Please log into Roblox first or enable cookie access in settings";
-                IsLoading = false;
-                (SearchCommand as RelayCommand)?.NotifyCanExecuteChanged();
-                (SearchGamesCommand as RelayCommand)?.NotifyCanExecuteChanged();
-                OnPropertyChanged(nameof(ServerListMessage));
-                return;
-            }
 
             LoadingMessage = "Loading datacenters...";
 
@@ -649,10 +748,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             App.Logger.WriteLine(LOG_IDENT_LOAD_SERVERS, "LoadServersAsync called");
 
-            if (string.IsNullOrWhiteSpace(PlaceId) || string.IsNullOrWhiteSpace(SelectedRegion))
+            if (string.IsNullOrWhiteSpace(PlaceId) || string.IsNullOrWhiteSpace(SelectedRegion) || string.IsNullOrWhiteSpace(_roblosecurity))
             {
-                App.Logger.WriteLine(LOG_IDENT_LOAD_SERVERS, "PlaceId or SelectedRegion is null/empty");
-                LoadingMessage = "Place ID or region not set.";
+                App.Logger.WriteLine(LOG_IDENT_LOAD_SERVERS, "PlaceId, SelectedRegion, or roblosecurity is null/empty");
+                LoadingMessage = "Authentication required.";
                 await Task.Delay(800);
                 LoadingMessage = "";
                 return;
@@ -677,7 +776,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             LoadingMessage = "Fetching server list...";
 
-            var result = await fetcher.FetchServerInstancesAsync(placeIdLong, cursor, SelectedSortOrder);
+            var result = await fetcher.FetchServerInstancesAsync(placeIdLong, _roblosecurity, cursor, SelectedSortOrder);
 
             if (result == null)
             {

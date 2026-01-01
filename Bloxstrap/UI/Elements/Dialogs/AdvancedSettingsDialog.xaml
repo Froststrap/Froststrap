@@ -17,7 +17,7 @@
         Background="{ui:ThemeResource ApplicationBackgroundBrush}"
         ExtendsContentIntoTitleBar="True"
         WindowStartupLocation="CenterScreen">
-    <Grid Background="{DynamicResource ApplicationBackground}">
+    <Grid Background="{DynamicResource ApplicationBackground}" Margin="8,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -26,9 +26,10 @@
 
         <ui:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" Title="Advanced Settings" Icon="pack://application:,,,/Bloxstrap.ico" ShowMinimize="False" ShowMaximize="False" CanMaximize="False" KeyboardNavigation.TabNavigation="None" />
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Margin="5,0,0,10">
-
-                <controls:OptionControl
+            <StackPanel>
+                <TextBlock Text="Advanced and Miscellaneous settings for the fastflag editor" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                
+                <controls:OptionControl Margin="0,8,0,0"
                         Header="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_AltManually_Title}" 
                         Description="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_AltManually_Description}">
                     <ui:ToggleSwitch IsChecked="{Binding UseAltManually, Mode=TwoWay}" />

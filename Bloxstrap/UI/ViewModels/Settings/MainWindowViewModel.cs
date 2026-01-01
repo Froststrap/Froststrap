@@ -97,6 +97,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
             SaveSettings();
             if (!App.LaunchSettings.TestModeFlag.Active) // test mode already launches an instance
                 Process.Start(Paths.Application, "-player");
+            else
+                CloseWindow();
         }
 
         private async void RestartApp()

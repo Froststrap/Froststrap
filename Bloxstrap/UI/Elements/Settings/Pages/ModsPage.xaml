@@ -110,7 +110,7 @@
         <TabControl Margin="0,16,0,0">
 
             <!-- PRESET MOD TAB -->
-            <TabItem Header="Preset Mod">
+            <TabItem Header="Preset Mods">
                 <StackPanel Margin="8">
 
                     <!-- Header -->

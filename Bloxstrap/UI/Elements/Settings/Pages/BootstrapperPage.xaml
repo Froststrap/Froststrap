@@ -65,7 +65,7 @@
 
         <controls:OptionControl
             Header="Uncap FPS"
-            Description="Unlock your fps to go above 240.">
+            Description="Unlocks the maximum FPS limit, allowing it to exceed 240.">
             <ui:ToggleSwitch Grid.Column="1" IsChecked="{Binding FramerateUncap, Mode=TwoWay}" />
         </controls:OptionControl>
 
@@ -131,7 +131,7 @@
             <ui:CardExpander.Header>
                 <StackPanel Grid.Column="0">
                     <TextBlock FontSize="14" Text="Memory Optimization" />
-                    <TextBlock FontSize="12" Text="Optimizations for your memory usage." Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                    <TextBlock FontSize="12" Text="Optimizes memory usage to potentially improve performance and stability." Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                 </StackPanel>
             </ui:CardExpander.Header>
 
@@ -143,20 +143,20 @@
                 </controls:OptionControl>
                 
                 <controls:OptionControl
-                    Description="Trim Roblox memory to lower its memory usage."
+                    Description="Trims Roblox memory to reduce usage."
                     Header="Memory Trim">
                     <ui:ToggleSwitch IsChecked="{Binding EnableRobloxTrim, Mode=TwoWay}" />
                 </controls:OptionControl>
 
                 <controls:OptionControl 
                     Visibility="{Binding EnableRobloxTrim, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Description="How often (in seconds) to trim Roblox memory, Lower values use more CPU."
+                    Description="Sets how often (in seconds) Roblox memory is trimmed. Lower values use more CPU."
                     Header="Memory Trim Interval">
                     <ui:TextBox Text="{Binding RobloxTrimSeconds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" />
                 </controls:OptionControl>
 
                 <controls:OptionControl
-                    Description="Clean up your entire system memory."
+                    Description="Cleans your system memory. Uses process exclusions if configured."
                     Header="System Memory Cleaner">
                     <ComboBox 
                         Width="200" 

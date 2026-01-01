@@ -50,7 +50,7 @@
         </controls:OptionControl>
 
         <controls:OptionControl
-            Description="Automatically join the same server back after 20 min disconnection or network loss errors."
+            Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
             Header="Auto Rejoin"
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding AutoRejoinEnabled, Mode=TwoWay}" />
@@ -213,14 +213,14 @@
 
         <controls:OptionControl
             x:Name="StudioActivityOption"
-            Header="Show Studio Activity"
-            Description="Shows you playing Roblox Studio upon launch."
+            Header="Display Studio Activity"
+            Description="Shows Roblox Studio as your Discord activity on launch."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <controls:OptionControl
-            Header="Thumbnail Changing"
+            Header="Dynamic Thumbnail"
             Description="Changes the thumbnail depending on the script you have open."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
@@ -228,14 +228,14 @@
 
         <controls:OptionControl
             Header="Editing Info"
-            Description="Shows script type/script name and the number of lines inside the script."
+            Description="Shows the script type, script name, and number of lines in the script."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <controls:OptionControl
             Header="Workspace Info"
-            Description="Displays the name of the your working on."
+            Description="Displays the name of your current workspace."
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
         </controls:OptionControl>

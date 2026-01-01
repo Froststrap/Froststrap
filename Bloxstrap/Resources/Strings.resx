@@ -238,13 +238,13 @@
     <value>Disable Roblox Recording</value>
   </data>
   <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
-    <value>Disables the Roblox recording feature. Note: when this feature is enabled, the hotkey combo will no longer work.</value>
+    <value>Disables the Roblox recording feature. Note: When this feature is enabled, the hotkey combo will no longer work.</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
     <value>Disable Roblox Screenshots</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
-    <value>Disables the Roblox screenshot feature. Note: when this feature is enabled, the hotkey combo will no longer work.</value>
+    <value>Disables the Roblox screenshot feature. Note: When this feature is enabled, the hotkey combo will no longer work.</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
     <value>Disable Roblox Features</value>
@@ -745,7 +745,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Preview</value>
   </data>
   <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
-    <value>Choose a launch screen style. Note: dark theme isn’t supported for Legacy or Vista.
+    <value>Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista.
 For more custom launchers, visit the official Bloxstrap Discord server.</value>
   </data>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
@@ -773,7 +773,7 @@ For more custom launchers, visit the official Bloxstrap Discord server.</value>
     <value>Disable Animations</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>Prevent closures of your existing game when accidentally launching another Roblox Instance.</value>
+    <value>Prevents closures of your existing game when accidentally launching another Roblox Instance.</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
     <value>Instance Launch Confirmation</value>
@@ -803,7 +803,7 @@ For more custom launchers, visit the official Bloxstrap Discord server.</value>
     <value>Froststrap Cleaner</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
-    <value>Automatically clears old data to clear up some space. Note: feature originally made by Fishstrap.</value>
+    <value>Automatically clears old data to free up space. Originally created by Fishstrap.</value>
   </data>
   <data name="Enums.CleanerOptions.Never" xml:space="preserve">
     <value>Never</value>
@@ -1259,7 +1259,7 @@ Some text might not be translated to preferred language.</value>
     <value>Texture Quality</value>
   </data>
   <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
-    <value>Adjust the texture quality for games. Note: this setting also affects GUI and UI.</value>
+    <value>Adjust the texture quality for games. Note: This setting also affects GUI and UI.</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
     <value>Level 0 (Lowest)</value>
@@ -1934,10 +1934,10 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Waiting for data...</value>
   </data>
   <data name="Menu.Integrations.QueryServerUptime.Description" xml:space="preserve">
-    <value>Displays the server’s estimated uptime using via [RoValra's APIs]({0}), [RoValra's privacy policy]({0}/privacy) applies. (Feature Made By Fishstrap)</value>
+    <value>Displays the server’s estimated uptime using [RoValra's APIs]({0}), [RoValra's privacy policy]({0}/privacy) applies, Feature developed by Fishstrap.</value>
   </data>
   <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Easily join servers near you using the selected account in Account Manager. Made with [RoValra's APIs]({0}), [RoValra's privacy policy]({0}/privacy) applies.</value>
+    <value>Easily join servers near you using the selected account in Account Manager. Uses [RoValra's APIs]({0}), [RoValra's privacy policy applies.]({0}/privacy)</value>
   </data>
   <data name="Menu.Integrations.QueryServerUptime.Title" xml:space="preserve">
     <value>Query Server Uptime</value>
@@ -1976,10 +1976,10 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Remove</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
-    <value>Allow Froststrap to access your Roblox account</value>
+    <value>Froststrap Account Permissions</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
-    <value>Provide access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0})</value>
+    <value>Provides access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
     <value>Window Backdrop</value>
@@ -2018,7 +2018,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Close Crash Handler</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
-    <value>Select the CPU priority for Roblox.</value>
+    <value>Selects the CPU priority for Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
     <value>Roblox Process Priority</value>
@@ -2027,7 +2027,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Available Channels</value>
   </data>
   <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Check the large majority of the current available channels to use</value>
+    <value>Scans the majority of available channels for use.</value>
   </data>
   <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
     <value>Uninstall Froststrap</value>
@@ -2048,7 +2048,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Looking For</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
-    <value>Wow this is so empty, how about adding a fastflag ?</value>
+    <value>Wow, this is so empty! How about adding a FastFlag?</value>
   </data>
   <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
     <value>📂 Drop your JSON or TXT here</value>
@@ -2063,7 +2063,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Pause Voxelizer</value>
   </data>
   <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
-    <value>Changes the game’s sky to a solid gray color. Note: this will not work in games that have a custom skybox added by the developer.</value>
+    <value>Changes the game’s sky to a solid gray color. Note: This will not work in games that have a custom skybox added by the developer.</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
     <value>Drag to adjust mesh detail for performance or quality.</value>
@@ -2075,7 +2075,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Quality</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
-    <value>Displays your total playtime and your session when your in a Game/Studio Place.</value>
+    <value>Displays your total playtime and current session time while in a game or Studio place.</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
     <value>Playtime Counter</value>
@@ -2087,7 +2087,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Game History Menu</value>
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
-    <value>View game history to quickly rejoin your server</value>
+    <value>View game history to quickly rejoin your server.</value>
   </data>
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
     <value>Double Click Action</value>

@@ -147,6 +147,12 @@
                             VerticalAlignment="Center"
                             Command="{Binding LoadMoreCommand}"
                             Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
+
+                        <Button Content="Refresh Cookie"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center"
+                            Command="{Binding RefreshCookiesCommand}"
+                            IsEnabled="{Binding IsNotLoading}" />
                     </StackPanel>
                 </Grid>
 

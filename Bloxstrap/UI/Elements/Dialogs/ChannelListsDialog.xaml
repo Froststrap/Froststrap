@@ -39,9 +39,8 @@
 
         <TextBlock
             Grid.Row="1"
-            Text="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels_Description}"
+            Text="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels_Description}" 
             FontSize="12"
-            
             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
             Margin="8,8,0,4"
             TextWrapping="Wrap" />
@@ -127,7 +126,7 @@
 
         <Border Grid.Row="3" Margin="0,10,0,0" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
             <StackPanel HorizontalAlignment="Right" FlowDirection="LeftToRight" Orientation="Horizontal">
-                <Button MinWidth="100" Content="{x:Static resources:Strings.Common_Refresh}" Width="110" Command="{Binding RefreshCommand}"  />
+                <ui:Button MinWidth="100" Content="{x:Static resources:Strings.Common_Refresh}" Command="{Binding RefreshCommand}" Appearance="Primary" Icon="ArrowSync24"  />
                 <Button MinWidth="100" Margin="12,0,0,0"  Click="Close_Click" Content="{x:Static resources:Strings.Common_Close}" IsCancel="True" />
             </StackPanel>
         </Border>

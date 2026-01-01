@@ -338,7 +338,7 @@ namespace Bloxstrap.UI.Elements.ContextMenu
 
                 long placeId = _activityWatcher.Data.PlaceId;
 
-                string? selectedRegion = App.Settings.Prop.SelectedRegion;
+                string selectedRegion = App.Settings.Prop.SelectedRegion;
                 if (string.IsNullOrEmpty(selectedRegion))
                 {
                     Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
@@ -360,6 +360,8 @@ namespace Bloxstrap.UI.Elements.ContextMenu
 
         private async Task FindAndJoinServerInRegion(long placeId, string selectedRegion)
         {
+            const string LOG_IDENT = "MenuContainer::FindAndJoinServerInRegion";
+
             var fetcher = new RobloxServerFetcher();
             string? nextCursor = "";
             int pagesChecked = 0;
@@ -374,11 +376,49 @@ namespace Bloxstrap.UI.Elements.ContextMenu
 
             var (regions, dcMap) = datacentersResult.Value;
 
+            string? cookie = null;
+
+            try
+            {
+                await App.Cookies.LoadCookies();
+                if (App.Cookies.Loaded)
+                {
+                    cookie = App.Cookies.GetAuthCookie();
+                }
+
+                if (string.IsNullOrWhiteSpace(cookie))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "App.Cookies not available, trying AccountManager...");
+
+                    var mgr = AccountManager.Shared;
+                    if (mgr?.ActiveAccount != null)
+                    {
+                        cookie = mgr.GetRoblosecurityForUser(mgr.ActiveAccount.UserId);
+                        if (!string.IsNullOrWhiteSpace(cookie))
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Using cookies from AccountManager for user: {mgr.ActiveAccount.Username}");
+                        }
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(cookie))
+                {
+                    Frontend.ShowMessageBox("Authentication required. Please log into Roblox first.", MessageBoxImage.Warning);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+                Frontend.ShowMessageBox("Failed to authenticate. Please check your settings.", MessageBoxImage.Error);
+                return;
+            }
+
             while (pagesChecked < maxPages)
             {
                 pagesChecked++;
 
-                var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, 2);
+                var result = await fetcher.FetchServerInstancesAsync(placeId, cookie, nextCursor, 2);
 
                 if (result?.Servers != null)
                 {
