@@ -14,6 +14,7 @@ namespace Bloxstrap.UI.Elements.Base
     {
         private readonly IThemeService _themeService = new ThemeService();
         private Image? _backgroundImageControl;
+        private string? _tempGifPath;
 
         public WpfUiWindow()
         {
@@ -161,7 +162,12 @@ namespace Bloxstrap.UI.Elements.Base
 
                 XamlAnimatedGif.AnimationBehavior.SetSourceUri(_backgroundImageControl, null);
 
-                XamlAnimatedGif.AnimationBehavior.SetSourceUri(_backgroundImageControl, new Uri(App.Settings.Prop.BackgroundImagePath!));
+                CleanupTempFile();
+
+                _tempGifPath = Path.Combine(Path.GetTempPath(), $"Froststrap_Background_{Guid.NewGuid()}.gif");
+                File.Copy(App.Settings.Prop.BackgroundImagePath!, _tempGifPath, true);
+
+                XamlAnimatedGif.AnimationBehavior.SetSourceUri(_backgroundImageControl, new Uri(_tempGifPath));
 
                 _backgroundImageControl.Visibility = Visibility.Visible;
 
@@ -172,6 +178,22 @@ namespace Bloxstrap.UI.Elements.Base
             {
                 App.Logger.WriteLine("WpfUiWindow", $"Exception when loading animated GIF: {ex.Message}");
                 ApplyStaticImageBackground();
+            }
+        }
+
+        private void CleanupTempFile()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(_tempGifPath) && File.Exists(_tempGifPath))
+                {
+                    File.Delete(_tempGifPath);
+                }
+            }
+            catch { }
+            finally
+            {
+                _tempGifPath = null;
             }
         }
 
@@ -189,6 +211,8 @@ namespace Bloxstrap.UI.Elements.Base
                 XamlAnimatedGif.AnimationBehavior.SetSourceUri(control, null);
                 control.Visibility = Visibility.Collapsed;
             }
+
+            CleanupTempFile();
         }
 
         private Stretch GetStretchFromSetting()
@@ -260,6 +284,7 @@ namespace Bloxstrap.UI.Elements.Base
             base.OnClosed(e);
 
             HideBackgroundImageControl();
+            CleanupTempFile();
 
             _backgroundImageControl = null;
         }
