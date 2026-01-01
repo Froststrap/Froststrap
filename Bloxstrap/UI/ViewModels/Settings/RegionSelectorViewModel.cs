@@ -400,6 +400,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             return false;
         }
 
+        // should i make dummy cookie and link to remote data to use for this ?
         private async Task InitializeCookiesAsync()
         {
             const string LOG_IDENT_INIT_COOKIES = $"{LOG_IDENT}::InitializeCookies";
