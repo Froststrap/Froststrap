@@ -25,6 +25,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <Image x:Name="BackgroundImageControlNoOpacity" Stretch="UniformToFill" Opacity="1.0" Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0" Grid.RowSpan="999" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-1" IsHitTestVisible="False" Visibility="Collapsed"/>
+
         <ui:TitleBar
             Title="Add Account with Cookie"
             Grid.Row="0"

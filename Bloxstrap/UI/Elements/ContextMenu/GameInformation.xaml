@@ -27,6 +27,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <Image x:Name="BackgroundImageControlNoOpacity" Stretch="UniformToFill" Opacity="1.0" Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0" Grid.RowSpan="999" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-1" IsHitTestVisible="False" Visibility="Collapsed"/>
+
         <ui:TitleBar Padding="8" Grid.Row="0" ForceShutdown="False" MinimizeToTray="False" UseSnapLayout="True" Title="Game Information" Icon="pack://application:,,,/Bloxstrap.ico" />
 
         <Grid Grid.Row="1" 

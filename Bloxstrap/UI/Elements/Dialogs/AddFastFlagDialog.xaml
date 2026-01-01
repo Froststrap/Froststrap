@@ -30,6 +30,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <Image x:Name="BackgroundImageControlNoOpacity" Stretch="UniformToFill" Opacity="1.0" Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0" Grid.RowSpan="999" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-1" IsHitTestVisible="False" Visibility="Collapsed"/>
+
         <ui:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" ShowMinimize="False" ShowMaximize="False" CanMaximize="False" KeyboardNavigation.TabNavigation="None" />
 
         <TabControl x:Name="Tabs" Grid.Row="1" Margin="16">

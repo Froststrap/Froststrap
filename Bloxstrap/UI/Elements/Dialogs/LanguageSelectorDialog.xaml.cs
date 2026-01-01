@@ -30,8 +30,6 @@ namespace Bloxstrap.UI.Elements.Dialogs
             App.FrostRPC?.SetDialog("Language Selector");
 
             viewModel.CloseRequestEvent += (_, _) => Close();
-
-            App.WindowsBackdrop();
         }
     }
 }
