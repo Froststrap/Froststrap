@@ -22,8 +22,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Image x:Name="BackgroundImageControlNoOpacity" Stretch="UniformToFill" Opacity="1.0" Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0" Grid.RowSpan="999" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-1" IsHitTestVisible="False" Visibility="Collapsed"/>
-
         <ui:TitleBar Grid.Row="0"
                      Padding="8"
                      Title="Multiblox"

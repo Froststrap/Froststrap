@@ -22,8 +22,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Image x:Name="BackgroundImageControlNoOpacity" Stretch="UniformToFill" Opacity="1.0" Grid.Column="0" Grid.ColumnSpan="999" Grid.Row="0" Grid.RowSpan="999" HorizontalAlignment="Center" VerticalAlignment="Center" Panel.ZIndex="-1" Visibility="Collapsed"/>
-
         <ui:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" ForceShutdown="False" MinimizeToTray="False" UseSnapLayout="True" Title="Account Manager" Icon="pack://application:,,,/Bloxstrap.ico" />
 
         <Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0" Visibility="Visible">

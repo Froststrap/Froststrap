@@ -1,8 +1,7 @@
-﻿using System.Windows;
+﻿﻿using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Controls;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Mvvm.Contracts;
@@ -12,25 +11,12 @@ namespace Bloxstrap.UI.Elements.Base
 {
     public abstract class WpfUiWindow : UiWindow
     {
+        // I could add animated backgrounds, its easy but its hella gay i need to add a seperate image control :/
         private readonly IThemeService _themeService = new ThemeService();
-        private Image? _backgroundImageControl;
-        private string? _tempGifPath;
-        private bool _shouldApplyImageBackground = false;
-        private bool _isAnimatedGif = false;
 
         public WpfUiWindow()
         {
-            Loaded += OnWindowLoaded;
             ApplyTheme();
-        }
-
-        private void OnWindowLoaded(object sender, RoutedEventArgs e)
-        {
-            if (_shouldApplyImageBackground)
-            {
-                _shouldApplyImageBackground = false;
-                ApplyImageBackgroundNow();
-            }
         }
 
         public void ApplyTheme()
@@ -43,9 +29,8 @@ namespace Bloxstrap.UI.Elements.Base
             _themeService.SetSystemAccent();
 
             Application.Current.Resources["ApplicationBackground"] = null;
-            this.Background = null;
 
-            HideBackgroundImageControl();
+            this.Background = null;
 
             if (finalTheme == Enums.Theme.Custom)
             {
@@ -66,8 +51,8 @@ namespace Bloxstrap.UI.Elements.Base
             }
 
 #if QA_BUILD
-            this.BorderBrush = System.Windows.Media.Brushes.Red;
-            this.BorderThickness = new Thickness(4);
+    this.BorderBrush = System.Windows.Media.Brushes.Red;
+    this.BorderThickness = new Thickness(4);
 #endif
         }
 
@@ -107,244 +92,35 @@ namespace Bloxstrap.UI.Elements.Base
                 return;
             }
 
-            var extension = Path.GetExtension(App.Settings.Prop.BackgroundImagePath)?.ToLower();
-            _isAnimatedGif = extension == ".gif";
-
-            try
-            {
-                if (IsLoaded)
-                {
-                    ApplyImageBackgroundNow();
-                }
-                else
-                {
-                    _shouldApplyImageBackground = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("WpfUiWindow", $"Exception when changing to image: {ex.Message}");
-            }
-        }
-
-        private void ApplyImageBackgroundNow()
-        {
-            try
-            {
-                _backgroundImageControl = GetBackgroundImageControl();
-
-                if (_backgroundImageControl == null)
-                {
-                    Dispatcher.BeginInvoke(new Action(() =>
-                    {
-                        try
-                        {
-                            _backgroundImageControl = GetBackgroundImageControl();
-                            if (_backgroundImageControl != null)
-                            {
-                                SetupImageBackground();
-                            }
-                            else
-                            {
-                                App.Logger.WriteLine("WpfUiWindow", "Failed to get background image control after retry");
-                                ApplyImageBrushFallback();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine("WpfUiWindow", $"Exception in delayed image setup: {ex.Message}");
-                            ApplyImageBrushFallback();
-                        }
-                    }), System.Windows.Threading.DispatcherPriority.Loaded);
-                    return;
-                }
-
-                SetupImageBackground();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("WpfUiWindow", $"Exception when loading image: {ex.Message}");
-                ApplyImageBrushFallback();
-            }
-        }
-
-        private void SetupImageBackground()
-        {
-            if (_backgroundImageControl == null)
-                return;
-
-            try
-            {
-                _backgroundImageControl.Stretch = GetStretchFromSetting();
-                _backgroundImageControl.HorizontalAlignment = HorizontalAlignment.Center;
-                _backgroundImageControl.VerticalAlignment = VerticalAlignment.Center;
-
-                if (_backgroundImageControl.Name != "BackgroundImageControlNoOpacity")
-                {
-                    _backgroundImageControl.Opacity = App.Settings.Prop.BackgroundOpacity;
-                }
-
-                _backgroundImageControl.Source = null;
-                XamlAnimatedGif.AnimationBehavior.SetSourceUri(_backgroundImageControl, null);
-
-                if (_isAnimatedGif)
-                {
-                    SetupAnimatedGif();
-                }
-                else
-                {
-                    SetupStaticImage();
-                }
-
-                _backgroundImageControl.Visibility = Visibility.Visible;
-
-                Application.Current.Resources["ApplicationBackground"] = null;
-                this.Background = null;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("WpfUiWindow", $"Exception in SetupImageBackground: {ex.Message}");
-                ApplyImageBrushFallback();
-            }
-        }
-
-        private void SetupAnimatedGif()
-        {
-            try
-            {
-                CleanupTempFile();
-
-                _tempGifPath = Path.Combine(Path.GetTempPath(), $"Froststrap_Background_{Guid.NewGuid()}.gif");
-                File.Copy(App.Settings.Prop.BackgroundImagePath!, _tempGifPath, true);
-
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    try
-                    {
-                        XamlAnimatedGif.AnimationBehavior.SetSourceUri(_backgroundImageControl!, new Uri(_tempGifPath!));
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine("WpfUiWindow", $"Exception in final GIF load: {ex.Message}");
-                        ApplyImageBrushFallback();
-                    }
-                }), System.Windows.Threading.DispatcherPriority.Render);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("WpfUiWindow", $"Exception in SetupAnimatedGif: {ex.Message}");
-                ApplyImageBrushFallback();
-            }
-        }
-
-        private void SetupStaticImage()
-        {
             try
             {
                 var imageSource = new BitmapImage();
                 imageSource.BeginInit();
                 imageSource.CacheOption = BitmapCacheOption.OnLoad;
-                imageSource.UriSource = new Uri(App.Settings.Prop.BackgroundImagePath!);
-                imageSource.EndInit();
-                imageSource.Freeze();
-
-                _backgroundImageControl!.Source = imageSource;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("WpfUiWindow", $"Exception in SetupStaticImage: {ex.Message}");
-                ApplyImageBrushFallback();
-            }
-        }
-
-        private void ApplyImageBrushFallback()
-        {
-            try
-            {
-                var imageSource = new BitmapImage();
-                imageSource.BeginInit();
-                imageSource.CacheOption = BitmapCacheOption.OnLoad;
-                imageSource.UriSource = new Uri(App.Settings.Prop.BackgroundImagePath!);
+                imageSource.UriSource = new Uri(App.Settings.Prop.BackgroundImagePath);
                 imageSource.EndInit();
                 imageSource.Freeze();
 
                 var imageBrush = new ImageBrush
                 {
                     ImageSource = imageSource,
-                    Stretch = GetStretchFromSetting(),
-                    Opacity = App.Settings.Prop.BackgroundOpacity,
-                    AlignmentX = AlignmentX.Center,
-                    AlignmentY = AlignmentY.Center
+                    Stretch = App.Settings.Prop.BackgroundStretch switch
+                    {
+                        BackgroundStretch.None => Stretch.None,
+                        BackgroundStretch.Fill => Stretch.Fill,
+                        BackgroundStretch.Uniform => Stretch.Uniform,
+                        BackgroundStretch.UniformToFill => Stretch.UniformToFill,
+                        _ => Stretch.UniformToFill
+                    },
+                    Opacity = App.Settings.Prop.BackgroundOpacity
                 };
 
                 Application.Current.Resources["ApplicationBackground"] = imageBrush;
-
-                HideBackgroundImageControl();
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("WpfUiWindow", $"Exception in ImageBrush fallback: {ex.Message}");
+                App.Logger.WriteLine("WpfUiWindow", $"Exception when changing to image: {ex.Message}");
             }
-        }
-
-        private void CleanupTempFile()
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(_tempGifPath) && File.Exists(_tempGifPath))
-                {
-                    File.Delete(_tempGifPath);
-                }
-            }
-            catch { }
-            finally
-            {
-                _tempGifPath = null;
-            }
-        }
-
-        private Image? GetBackgroundImageControl()
-        {
-            var control = this.FindName("BackgroundImageControl") as Image;
-            if (control == null)
-            {
-                control = this.FindName("BackgroundImageControlNoOpacity") as Image;
-            }
-            return control;
-        }
-
-        private void HideBackgroundImageControl()
-        {
-            var control1 = this.FindName("BackgroundImageControl") as Image;
-            var control2 = this.FindName("BackgroundImageControlNoOpacity") as Image;
-
-            if (control1 != null)
-            {
-                XamlAnimatedGif.AnimationBehavior.SetSourceUri(control1, null);
-                control1.Source = null;
-                control1.Visibility = Visibility.Collapsed;
-            }
-
-            if (control2 != null)
-            {
-                XamlAnimatedGif.AnimationBehavior.SetSourceUri(control2, null);
-                control2.Source = null;
-                control2.Visibility = Visibility.Collapsed;
-            }
-
-            CleanupTempFile();
-        }
-
-        private Stretch GetStretchFromSetting()
-        {
-            return App.Settings.Prop.BackgroundStretch switch
-            {
-                BackgroundStretch.None => Stretch.None,
-                BackgroundStretch.Fill => Stretch.Fill,
-                BackgroundStretch.Uniform => Stretch.Uniform,
-                BackgroundStretch.UniformToFill => Stretch.UniformToFill,
-                _ => Stretch.UniformToFill
-            };
         }
 
         private void ApplyCustomThemeResources()
@@ -359,12 +135,8 @@ namespace Bloxstrap.UI.Elements.Base
 
         private void ApplyStandardTheme(Enums.Theme finalTheme, int customThemeIndex)
         {
-            var themeName = Enum.GetName(finalTheme);
-            if (themeName != null)
-            {
-                var dict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/UI/Style/{themeName}.xaml") };
-                Application.Current.Resources.MergedDictionaries[customThemeIndex] = dict;
-            }
+            var dict = new ResourceDictionary { Source = new Uri($"pack://application:,,,/UI/Style/{Enum.GetName(finalTheme)}.xaml") };
+            Application.Current.Resources.MergedDictionaries[customThemeIndex] = dict;
 
             Application.Current.Resources.Remove("NewTextEditorBackground");
             Application.Current.Resources.Remove("NewTextEditorForeground");
@@ -372,9 +144,6 @@ namespace Bloxstrap.UI.Elements.Base
             Application.Current.Resources.Remove("PrimaryBackgroundColor");
             Application.Current.Resources.Remove("NormalDarkAndLightBackground");
             Application.Current.Resources.Remove("ControlFillColorDefault");
-
-            HideBackgroundImageControl();
-            _shouldApplyImageBackground = false;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -398,17 +167,6 @@ namespace Bloxstrap.UI.Elements.Base
                     this.FontFamily = font;
                 }
             }
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-
-            Loaded -= OnWindowLoaded;
-            HideBackgroundImageControl();
-            CleanupTempFile();
-
-            _backgroundImageControl = null;
         }
     }
 }
