@@ -429,9 +429,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
             }
 
-            _friendsRefreshCts = await ExecuteWithCancellationSupport(
+            await ExecuteWithCancellationSupport(
                 token => FetchFriendsAsync(activeUserId.Value, token),
-                _friendsRefreshCts,
                 "RefreshFriends");
         }
 
@@ -442,6 +441,15 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             try
             {
+                if (_friendsRefreshCts != null && !_friendsRefreshCts.IsCancellationRequested)
+                {
+                    _friendsRefreshCts.Cancel();
+                    _friendsRefreshCts.Dispose();
+                    _friendsRefreshCts = null;
+                }
+
+                await Task.Delay(50);
+
                 if (friend == null)
                 {
                     App.Logger.WriteLine(LOG_IDENT_JOIN_FRIEND, "Friend parameter is null");
@@ -506,27 +514,34 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
-        private async Task<CancellationTokenSource?> ExecuteWithCancellationSupport(Func<CancellationToken, Task> action, CancellationTokenSource? cts, string operationName)
+        private async Task ExecuteWithCancellationSupport(Func<CancellationToken, Task> action, string operationName)
         {
-            cts?.Cancel();
-            cts?.Dispose();
-            cts = new CancellationTokenSource();
-            var token = cts.Token;
+            if (_friendsRefreshCts != null && !_friendsRefreshCts.IsCancellationRequested)
+            {
+                _friendsRefreshCts.Cancel();
+                await Task.Delay(100);
+            }
+
+            _friendsRefreshCts?.Dispose();
+
+            _friendsRefreshCts = new CancellationTokenSource();
+            var token = _friendsRefreshCts.Token;
 
             try
             {
                 await action(token);
-                return cts;
             }
             catch (OperationCanceledException)
             {
                 App.Logger.WriteLine($"{LOG_IDENT}::{operationName}", "Cancelled.");
-                return cts;
+            }
+            catch (ObjectDisposedException)
+            {
+                App.Logger.WriteLine($"{LOG_IDENT}::{operationName}", "Token was disposed.");
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine($"{LOG_IDENT}::{operationName}", $"Exception: {ex.Message}");
-                return cts;
             }
         }
 
@@ -961,9 +976,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             {
                 _lastActiveUserId = activeUserId.Value;
 
-                _friendsRefreshCts = await ExecuteWithCancellationSupport(
+                await ExecuteWithCancellationSupport(
                     token => FetchFriendsAsync(activeUserId.Value, token),
-                    _friendsRefreshCts,
                     "AccountChangeRefresh");
 
                 PresenceStatus = "Refreshing friends...";

@@ -70,6 +70,9 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         [ObservableProperty]
         private bool _isInstallingChromium = false;
 
+        [ObservableProperty]
+        private bool _isAccountLoggedIn = false;
+
         private AccountManager Manager => AccountManager.Shared;
 
         public static long? GetActiveUserId()
@@ -90,7 +93,16 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
 
+            IsAccountLoggedIn = Manager.ActiveAccount != null;
+
+            Manager.ActiveAccountChanged += OnAccountManagerActiveAccountChanged;
+
             _ = InitializeDataAsync();
+        }
+
+        private void OnAccountManagerActiveAccountChanged(AltAccount? account)
+        {
+            IsAccountLoggedIn = account != null;
         }
 
         private async Task InitializeDataAsync()
@@ -133,6 +145,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 CurrentUserAvatarUrl = avatarUrl ?? "";
 
                 SelectedAccount = Accounts.FirstOrDefault(a => a.Id == mgr.ActiveAccount.UserId);
+                IsAccountLoggedIn = true;
 
                 await UpdateAccountInformationAsync(mgr.ActiveAccount.UserId);
             }
@@ -142,6 +155,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 CurrentUserUsername = "";
                 CurrentUserAvatarUrl = "";
                 IsAccountInformationVisible = false;
+                IsAccountLoggedIn = false; // Set to false when no active account
             }
         }
 
@@ -287,6 +301,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 {
                     mgr.SetActiveAccount(backendAccount);
                     await SwitchToAccountAsync(backendAccount);
+                    IsAccountLoggedIn = true;
                     Frontend.ShowMessageBox($"Switched to account: {SelectedAccount.DisplayName}", MessageBoxImage.Information);
                 }
                 else
@@ -475,6 +490,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             FollowersCount = 0;
             FollowingCount = 0;
             IsAccountInformationVisible = false;
+            IsAccountLoggedIn = false;
 
             SelectedAccount = null;
             OnPropertyChanged(nameof(Accounts));

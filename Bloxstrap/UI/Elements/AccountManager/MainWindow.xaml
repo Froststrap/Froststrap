@@ -37,8 +37,8 @@
             <ui:NavigationStore x:Name="RootNavigation" Grid.Row="1" Grid.Column="0" Margin="0,0,12,0" Frame="{Binding ElementName=RootFrame}" SelectedPageIndex="0">
                 <ui:NavigationStore.Items>
                     <ui:NavigationItem Content="Accounts" PageType="{x:Type pages:AccountsPage}" Icon="PersonAccounts24" Tag="accounts" Margin="0,0,0,12" FontWeight="Medium" />
-                    <ui:NavigationItem Content="Friends" PageType="{x:Type pages:FriendsPage}" Icon="People24" Tag="friends" Margin="0,0,0,12" FontWeight="Medium" />
-                    <ui:NavigationItem Content="Games" PageType="{x:Type pages:GamesPage}" Icon="Games24" Tag="games" Margin="0,0,0,12" FontWeight="Medium" />
+                    <ui:NavigationItem Content="Friends" PageType="{x:Type pages:FriendsPage}" Icon="People24" Tag="friends" Margin="0,0,0,12" FontWeight="Medium" x:Name="friends"/>
+                    <ui:NavigationItem Content="Games" PageType="{x:Type pages:GamesPage}" Icon="Games24" Tag="games" Margin="0,0,0,12" FontWeight="Medium" x:Name="games"/>
                 </ui:NavigationStore.Items>
             </ui:NavigationStore>
 

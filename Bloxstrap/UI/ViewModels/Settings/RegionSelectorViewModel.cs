@@ -306,7 +306,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get
             {
                 if (!_hasValidCookies)
-                    return "Please enable 'Allow Froststrap to access your Roblox account' in Bootstrapper page";
+                    return "Please enable 'Allow Froststrap to access your Roblox account' in Bootstrapper page or Log into an account in Account Manager";
 
                 if (IsLoading)
                     return "";
@@ -336,8 +336,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public RegionSelectorViewModel()
         {
-            App.Logger.WriteLine(LOG_IDENT, "Constructor called");
-
             Servers.CollectionChanged += (s, e) =>
             {
                 OnPropertyChanged(nameof(IsServerListEmpty));
