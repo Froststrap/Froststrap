@@ -75,14 +75,6 @@ namespace Bloxstrap
             { MSAAMode.x8, "8" }
         };
 
-        public static IReadOnlyDictionary<TextureQuality, string?> TextureQualityLevels => new Dictionary<TextureQuality, string?>
-        {
-            { TextureQuality.Default, null },
-            { TextureQuality.Medium, "0" },
-            { TextureQuality.Low, "1" },
-            { TextureQuality.Lowest, "2" },
-        };
-
         public static IReadOnlyDictionary<QualityLevel, string?> QualityLevels => new Dictionary<QualityLevel, string?>
         {
             { QualityLevel.Disabled, null },

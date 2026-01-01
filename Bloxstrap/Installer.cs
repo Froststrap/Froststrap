@@ -549,6 +549,19 @@ namespace Bloxstrap
                     }
                 }
 
+                if (Utilities.CompareVersions(existingVer, "1.4.1.0") == VersionComparison.LessThan)
+                {
+                    if (App.Settings.Prop.MultiInstanceLaunching)
+                    {
+                        App.Settings.Prop.MultiInstanceLaunching = false;
+                    }
+
+                    if (File.Exists(Path.Combine(Paths.Cache, "GameHistory.json")))
+                    {
+                        File.Delete(Path.Combine(Paths.Cache, "GameHistory.json"));
+                    }
+                }
+
                 App.Settings.Save();
                 App.FastFlags.Save();
                 App.State.Save();

@@ -1255,24 +1255,6 @@ Some text might not be translated to preferred language.</value>
   <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
     <value>Removes Roblox’s default grass textures. Note: This setting does not affect custom grass textures used by individual games.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Texture Quality</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
-    <value>Adjust the texture quality for games. Note: This setting also affects GUI and UI.</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Level 0 (Lowest)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Level 1 (Low)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Level 2 (Medium)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Level 3 (Highest)</value>
-  </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>Froststrap is unable to download Roblox</value>
   </data>

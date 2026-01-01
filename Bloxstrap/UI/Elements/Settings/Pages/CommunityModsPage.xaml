@@ -14,7 +14,7 @@
         <Grid Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                 <ui:ProgressRing IsIndeterminate="True" Width="60" Height="60"/>
-                <TextBlock Text="Loading community mods..." 
+                <TextBlock Text="Loading community mods, this might take a while..." 
                          Margin="0,12,0,0"
                          FontSize="14"/>
             </StackPanel>
@@ -39,9 +39,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Margin="4,0" Grid.Row="0" Text="Easily download community-made mods. Note: Existing mods will be deleted before applying." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            <TextBlock Margin="4,0" Grid.Row="0" Text="Easily download community-made mods, Some mods, such as Dark Textures or Higher Brightness, require your in-game graphics level to be 5 or higher." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-            <ui:InfoBar Margin="4,8,0,8" Grid.Row="1" Padding="8" IsOpen="True" Title="Information" Message="Some mods, such as Dark Textures or Higher Brightness, require your in-game graphics level to be 5 or higher." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
+            <ui:InfoBar Margin="4,8,0,8" Grid.Row="1" Padding="8" IsOpen="True" Title="Important" Message="Custom skyboxes require the game to have the default roblox skybox." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
 
             <StackPanel Grid.Row="2" Margin="0,0,0,8">
                 <ui:TextBox PlaceholderText="Search mods..." Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,12,0">
