@@ -286,7 +286,7 @@ Kattintson további információért</value>
     <value>Kivétel lépett fel a Froststrap futtatása közben</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Először nézze át a [Bloxstrap Wikit]({0}), mert lehet, hogy a problémáját már megválaszoltuk.
+    <value>Először nézze át a [Froststrap Wikit]({0}), mert lehet, hogy a problémáját már megválaszoltuk.
 
 Ha nem, kérjük, hogy jelentse ezt egy [GitHub problémaként]({1}) a Froststrap által készített naplófájllal együtt.</value>
   </data>
@@ -1034,7 +1034,7 @@ A Froststrap telepítése a „{1}” helyre történt.</value>
     <value>A Froststrap nem tudott parancsikonokat létrehozni az Asztal és a Start menü számára. Próbálja meg később létrehozni őket a beállításokon keresztül.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Nézd meg először a [Bloxstrap Wiki]({0}) oldalát, hátha már találtak megoldást erre a problémára.
+    <value>Nézd meg először a [Froststrap Wiki]({0}) oldalát, hátha már találtak megoldást erre a problémára.
 
 Ha nem, akkor kérjük, jelentse ezt a kivételt a fork karbantartóinak. NE jelentse ezt a Froststrap GitHub issue-jeiben, mivel ez egy nem hivatalos build.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1264,7 +1264,7 @@ Kérjük, zárjon be minden olyan alkalmazást, amely a Roblox fájljait haszná
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>A legújabb Froststrap beszerzése...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

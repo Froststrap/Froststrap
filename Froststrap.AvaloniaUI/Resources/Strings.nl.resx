@@ -286,7 +286,7 @@ Klik voor meer informatie</value>
     <value>Er is een uitzondering opgetreden tijdens het uitvoeren van Froststrap</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Controleer de [Bloxstrap Wiki]({0}) om eerst te zien of dit probleem al is verholpen.
+    <value>Controleer de [Froststrap Wiki]({0}) om eerst te zien of dit probleem al is verholpen.
 
 Als dat niet het geval is, rapporteer deze uitzondering dan alstublieft door een [GitHub-issue]({1}) aan te maken, samen met een kopie van het logbestand dat is aangemaakt.</value>
   </data>
@@ -1036,7 +1036,7 @@ Froststrap is geïnstalleerd op "{1}".</value>
     <value>Froststrap kon geen snelkoppelingen maken voor het bureaublad en Start menu. Probeer ze later te maken via de instellingen.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Bekijk de [Bloxstrap Wiki]({0}) eerst om te zien of dit probleem al is opgelost met een oplossing.
+    <value>Bekijk de [Froststrap Wiki]({0}) eerst om te zien of dit probleem al is opgelost met een oplossing.
 
 Als dit niet het geval is, rapporteer dit probleem dan aan de beheerders van deze fork. Meld dit NIET aan de GitHub van Froststrap, omdat dit niet een officiële versie is.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1240,7 +1240,7 @@ Sluit alstublieft alle applicaties die mogelijk de bestanden van Roblox gebruike
     <value>Exporteer</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>De nieuwste Froststrap krijgen...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

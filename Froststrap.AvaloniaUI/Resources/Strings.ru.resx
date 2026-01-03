@@ -271,7 +271,7 @@
 		<value>Проблемы Загрузчика</value>
 	</data>
 	<data name="Menu.Help.DiscordRichPresenceNotWorking">
-		<value>[Discord статус сломан](https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work)</value>
+		<value>[Discord статус сломан](https://github.com/Froststraplabs/Froststrap/wiki/Discord-Rich-Presence-does-not-work)</value>
 	</data>
 	<data name="Menu.Help.SetupFailed">
 		<value>[Сбой установки пользовательского лаунчера](https://github.com/Meddsam/Froststrap/wiki/Bootstrapper-Common-Issues#custom-bootstrapper-setup-failed)</value>
@@ -283,13 +283,13 @@
 		<value>Особенности</value>
 	</data>
 	<data name="Menu.Help.ServerInformation">
-		<value>[Информация о сервере](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
+		<value>[Информация о сервере](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
 	</data>
 	<data name="Menu.Help.GameHistory">
-		<value>[История Посещений](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
+		<value>[История Посещений](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
 	</data>
 	<data name="Menu.Help.DiscordRichPresence">
-		<value>[Discord Статус](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
+		<value>[Discord Статус](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
 	</data>
 	<data name="Menu.Help.MessageLogsAndPlayerLogs">
 		<value>[Логи сообщений и Логи игроков](https://github.com/Meddsam/Froststrap/wiki/Features#message-logs-and-player-logs)</value>
@@ -344,9 +344,6 @@
 	</data>
 	<data name="Menu.Help.LargeReplicator">
 		<value>[Большой Дупликатор](https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#large-replicator)</value>
-	</data>
-	<data name="Menu.Help.RCore">
-		<value></value>
 	</data>
 	<data name="Menu.Help.PayloadLimit">
 		<value>[Ограничение размера данных](https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#payload-limit)</value>
@@ -425,7 +422,7 @@
 	</data>
 	<data name="Dialog.Exception.Info.2">
 		<value>
-			Сначала проверьте [Bloxstrap Wiki]({0}), чтобы увидеть, была ли эта проблема уже решена.
+			Сначала проверьте [Froststrap Wiki]({0}), чтобы увидеть, была ли эта проблема уже решена.
 
 			Если нет, то сообщите об этом исключении через [GitHub issue]({1}) вместе с копией созданного файла журнала.
 		</value>
@@ -436,19 +433,16 @@
 	<data name="Common.Custom">
 		<value>Пользовательский</value>
 	</data>
-	<data name="Enums.BootstrapperIcon.IconEarly2015">
-		<value></value>
-	</data>
 	<data name="Enums.BootstrapperIcon.IconLate2015">
 		<value>Поздний 2015</value>
 	</data>
 	<data name="Enums.BootstrapperStyle.ByfronDialog">
-		<value> Не настоящий Byfron (2023)</value>
+		<value>Не настоящий Byfron (2023)</value>
 	</data>
 	<data name="Enums.BootstrapperStyle.FluentDialog">
 		<value>Froststrap (Прозрачный)</value>
 	</data>
-	<data name="Enums.BootstrapperStyle.CustomFluentDialog">
+	<data name="Enums.BootstrapperStyle.FroststrapDialog">
 		<value>Froststrap</value>
 	</data>
 	<data name="Bootstrapper.ExtractionFailed.Title">
@@ -837,7 +831,7 @@
 	</data>
 	<data name="Menu.Appearance.Launcher.Description">
 		<value>Выберите стиль экрана запуска. Примечание: Темная тема не поддерживается для Legacy или Vista.
-Для большего количества пользовательских лаунчеров, посетите официальный сервер Bloxstrap Discord.
+Для большего количества пользовательских лаунчеров, посетите официальный сервер Froststrap Discord.
 		</value>
 	</data>
 	<data name="Menu.Appearance.Launcher.Title">
@@ -918,10 +912,10 @@
 	<data name="Menu.Bootstrapper.Cleaner.Logs.Description">
 		<value>Старые логи будут удалены.</value>
 	</data>
-	<data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title">
+	<data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title">
 		<value>Логи Froststrap</value>
 	</data>
-	<data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description">
+	<data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description">
 		<value>Логи Froststrap будут удалены.</value>
 	</data>
 	<data name="Menu.FastFlagEditor.BannerText">
@@ -1925,12 +1919,6 @@
 	<data name="Common.Export">
 		<value>Экспортировать</value>
 	</data>
-	<data name="Dialog.Connectivity.Preventing">
-		<value></value>
-	</data>
-	<data name="Dialog.Connectivity.TimedOut">
-		<value></value>
-	</data>
 	<data name="Menu.Channel.Description">
 		<value>Изменить настройки развёртывания и установки для Roblox и Froststrap.</value>
 	</data>
@@ -2152,13 +2140,13 @@
 	</data>
 	<data name="Installer.FailedToImportSettings">
 		<value>
-			Не удалось импортировать настройки Bloxstrap.
+			Не удалось импортировать настройки Froststrap.
 
 			{0}
 		</value>
 	</data>
 	<data name="Installer.ImportSettings">
-		<value>Импортировать настройки из Bloxstrap</value>
+		<value>Импортировать настройки из Froststrap</value>
 	</data>
 	<data name="Bootstrapper.Dialog.AnselDisabled">
 		<value>
@@ -2166,7 +2154,7 @@
 			Вы больше не можете использовать Bloxshade с Froststrap.
 		</value>
 	</data>
-	<data name="Bootstrapper.Status.UpgradingBloxstrap">
+	<data name="Bootstrapper.Status.UpgradingFroststrap">
 		<value>Получаем последнюю версию Froststrap...</value>
 	</data>
 	<data name="Menu.Froststrap.Description">

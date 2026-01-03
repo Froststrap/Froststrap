@@ -286,7 +286,7 @@ Tekan untuk informasi lebih lanjut.</value>
     <value>Sebuah eror telah terjadi ketika menjalankan Froststrap</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Periksa [Bloxstrap Wiki]({0}) terlebih dahulu jika masalah ini sudah diperbaiki
+    <value>Periksa [Froststrap Wiki]({0}) terlebih dahulu jika masalah ini sudah diperbaiki
 
 Jika belym, Mohon laporkan masalah ini melalui [GitHub issue]({1}) bersama file log yang dibuat.</value>
   </data>
@@ -1037,7 +1037,7 @@ Froststrap terpasang di "{1}".</value>
     <value>Froststrap tidak dapat membuat pintasan untuk Desktop dan Start menu. Coba membuatnya nanti melalui pengaturan.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Periksa [Bloxstrap Wiki]({0}) terlebih dahulu untuk melihat apakah masalah ini telah ditangani dengan solusi.
+    <value>Periksa [Froststrap Wiki]({0}) terlebih dahulu untuk melihat apakah masalah ini telah ditangani dengan solusi.
 
 Jika tidak, harap laporkan pengecualian ini kepada pengelola fork ini. JANGAN laporkan ini ke masalah GitHub Froststrap, karena ini adalah versi yang tidak resmi.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1241,7 +1241,7 @@ Silakan tutup aplikasi apa pun yang dapat menggunakan berkas Roblox, lalu luncur
     <value>Ekspor</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Mengunduh versi Froststrap terbaru...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

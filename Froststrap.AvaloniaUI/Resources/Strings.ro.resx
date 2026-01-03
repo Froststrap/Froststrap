@@ -271,7 +271,7 @@
     <value>Bootstrapper Issues</value>
   </data>
   <data name="Menu.Help.DiscordRichPresenceNotWorking">
-    <value>[Discord Rich Presence Broken](https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work)</value>
+    <value>[Discord Rich Presence Broken](https://github.com/Froststraplabs/Froststrap/wiki/Discord-Rich-Presence-does-not-work)</value>
   </data>
   <data name="Menu.Help.SetupFailed">
     <value>[Failed Custom Bootstrapper Setup](https://github.com/Meddsam/Froststrap/wiki/Bootstrapper-Common-Issues#custom-bootstrapper-setup-failed)</value>
@@ -283,13 +283,13 @@
     <value>Features</value>
   </data>
   <data name="Menu.Help.ServerInformation">
-    <value>[Server Information](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
+    <value>[Server Information](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
   </data>
   <data name="Menu.Help.GameHistory">
-    <value>[Game History](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
+    <value>[Game History](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
   </data>
   <data name="Menu.Help.DiscordRichPresence">
-    <value>[Discord Rich Presence](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
+    <value>[Discord Rich Presence](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
   </data>
   <data name="Menu.Help.MessageLogsAndPlayerLogs">
     <value>[Message Logs and Player Logs](https://github.com/Meddsam/Froststrap/wiki/Features#message-logs-and-player-logs)</value>
@@ -432,9 +432,6 @@ Dacă nu, atunci vă rugăm să raportați această eroare printr-o [problemă G
   <data name="Common.Custom">
     <value>Personalizat</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconEarly2015">
-    <value></value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015">
     <value>Sfârșitul lui 2015</value>
   </data>
@@ -444,7 +441,7 @@ Dacă nu, atunci vă rugăm să raportați această eroare printr-o [problemă G
   <data name="Enums.BootstrapperStyle.FluentDialog">
     <value>Froststrap (Opaque)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.CustomFluentDialog">
+  <data name="Enums.BootstrapperStyle.FroststrapDialog">
     <value>Froststrap</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title">
@@ -829,7 +826,7 @@ Doriți să actualizați versiunea instalată în prezent?</value>
   </data>
   <data name="Menu.Appearance.Launcher.Description">
     <value>Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista.
-For more custom launchers, visit the official Bloxstrap Discord server.</value>
+For more custom launchers, visit the official Froststrap Discord server.</value>
   </data>
   <data name="Menu.Appearance.Launcher.Title">
     <value>Launcher</value>
@@ -912,10 +909,10 @@ For more custom launchers, visit the official Bloxstrap Discord server.</value>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description">
     <value>Old log files will be deleted.</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title">
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title">
     <value>Froststrap logs</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description">
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description">
     <value>Froststrap logs will be deleted.</value>
   </data>
   <data name="Menu.FastFlagEditor.BannerText">
@@ -1653,7 +1650,7 @@ Froststrap a fost instalat la „{1}”.</value>
     <value>Froststrap nu a putut crea comenzi rapide pentru Desktop și meniul de Pornire. Încearcă să le creezi mai târziu în setări.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt">
-    <value>Verificați mai întâi [Bloxstrap Wiki]({0}) pentru a vedea dacă această problemă a fost deja rezolvată printr-o soluție.
+    <value>Verificați mai întâi [Froststrap Wiki]({0}) pentru a vedea dacă această problemă a fost deja rezolvată printr-o soluție.
 
 Dacă nu, atunci vă rugăm să raportați această excepție deținătorilor acestei bifurcații. NU raportați acest lucru pe problemele GitHub ale Froststrap-ului, deoarece acesta este un element neoficial.</value>
   </data>
@@ -1892,12 +1889,6 @@ Vă rugăm să închideți orice aplicație care poate folosi fișierele Roblox,
   <data name="Common.Export">
     <value>Exportă</value>
   </data>
-  <data name="Dialog.Connectivity.Preventing">
-    <value></value>
-  </data>
-  <data name="Dialog.Connectivity.TimedOut">
-    <value></value>
-  </data>
   <data name="Menu.Channel.Description">
     <value>Change deployment and installation settings for Roblox &amp; Froststrap.</value>
   </data>
@@ -2111,18 +2102,18 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>The specified channel either doesn't exist or is private</value>
   </data>
   <data name="Installer.FailedToImportSettings">
-    <value>Failed to import Bloxstrap settings.
+    <value>Failed to import Froststrap settings.
 
 {0}</value>
   </data>
   <data name="Installer.ImportSettings">
-    <value>Import settings from Bloxstrap</value>
+    <value>Import settings from Froststrap</value>
   </data>
   <data name="Bootstrapper.Dialog.AnselDisabled">
     <value>Ansel is not supported.
 You can no longer use Bloxshade with Froststrap.</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap">
+  <data name="Bootstrapper.Status.UpgradingFroststrap">
     <value>Se obține cel mai nou Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description">
@@ -2333,7 +2324,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Choose the format for copying JSON.</value>
   </data>
   <data name="Installer.InstallationNotFound">
-    <value>Bloxstrap installation was not found.</value>
+    <value>Froststrap installation was not found.</value>
   </data>
   <data name="Menu.FastFlags.Presets.WhiteSky.Description">
     <value>Can make the whole screen white if the game has no default sky. Note: this uses gray sky flag.</value>

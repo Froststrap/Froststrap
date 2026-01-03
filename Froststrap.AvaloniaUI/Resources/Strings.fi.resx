@@ -1266,7 +1266,7 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Haetaan uusinta Froststrap-versiota...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

@@ -286,7 +286,7 @@
     <value>Froststrapの実行中に例外が発生しました</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>最初に[Bloxstrap Wiki]({0})で解決策がないか確認してください。
+    <value>最初に[Froststrap Wiki]({0})で解決策がないか確認してください。
 
 解決策が見つからない場合は、作成されたログファイルとともに[GitHub issue]({1})またはDiscordで報告してください。</value>
   </data>
@@ -1047,7 +1047,7 @@ Froststrapのインストール場所: {1}</value>
     <value>デスクトップまたはスタートメニューにショートカットを作ることができませんでした。しばらくしてから再度お試しください。</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>最初に[Bloxstrap Wiki]({0})で解決策がないか確認してください。
+    <value>最初に[Froststrap Wiki]({0})で解決策がないか確認してください。
 
 解決策が見つからない場合は、エラーをこのフォークのメンテナーに報告してください。絶対に公式版FroststrapのGitHub issuesに投稿しないでください。
 このFroststrapは非公式版です。</value>
@@ -1279,7 +1279,7 @@ Robloxのアプリファイルを使用している可能性のあるアプリ�
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Froststrapの最新版を取得中...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

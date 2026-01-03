@@ -238,13 +238,13 @@
     <value>Disable Roblox Recording</value>
   </data>
   <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
-    <value>Disables the Roblox recording feature. Note: when this feature is enabled, the hotkey combo will no longer work.</value>
+    <value>Disables the Roblox recording feature. Note: When this feature is enabled, the hotkey combo will no longer work.</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
     <value>Disable Roblox Screenshots</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
-    <value>Disables the Roblox screenshot feature. Note: when this feature is enabled, the hotkey combo will no longer work.</value>
+    <value>Disables the Roblox screenshot feature. Note: When this feature is enabled, the hotkey combo will no longer work.</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
     <value>Disable Roblox Features</value>
@@ -351,10 +351,10 @@ Click for more information</value>
     <value>Copy log contents</value>
   </data>
   <data name="Dialog.Exception.Info.1" xml:space="preserve">
-    <value>An exception occurred while running Froststrap/Bloxstrap</value>
+    <value>An exception occurred while running Froststrap/Froststrap</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Check the [Bloxstrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
+    <value>Check the [Froststrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
 
 If not, then please report this exception through a [GitHub issue]({1}) along with a copy of the log file that was created.</value>
   </data>
@@ -376,7 +376,7 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
     <value>Froststrap (Opaque)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.CustomFluentDialog" xml:space="preserve">
+  <data name="Enums.BootstrapperStyle.FroststrapDialog" xml:space="preserve">
     <value>Froststrap</value>
   </data>
   <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
@@ -623,7 +623,7 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="CustomTheme.Errors.SetupFailed" xml:space="preserve">
     <value>Failed to setup custom bootstrapper: {0}.
 Defaulting to {1}.</value>
-    <comment>{0} is the error reason, {1} is the theme name (e.g. Bloxstrap (Classic))</comment>
+    <comment>{0} is the error reason, {1} is the theme name (e.g. Froststrap (Classic))</comment>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>No custom theme selected.</value>
@@ -654,7 +654,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Code</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>These are all of the people who have made notable contributions to Froststrap and Bloxstrap, shaping them into what they are today.</value>
+    <value>These are all of the people who have made notable contributions to Froststrap and Froststrap, shaping them into what they are today.</value>
   </data>
   <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
     <value>Contributors</value>
@@ -663,7 +663,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Inspirations</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>A Fishstrap/Bloxstrap Fork.</value>
+    <value>A Fishstrap/Froststrap Fork.</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
     <value>Discord Server</value>
@@ -745,8 +745,8 @@ Would you like to upgrade your currently installed version?</value>
     <value>Preview</value>
   </data>
   <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
-    <value>Choose a launch screen style. Note: dark theme isn’t supported for Legacy or Vista.
-For more custom launchers, visit the official Bloxstrap Discord server.</value>
+    <value>Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista.
+For more custom launchers, visit the official Froststrap Discord server.</value>
   </data>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Launcher</value>
@@ -773,7 +773,7 @@ For more custom launchers, visit the official Bloxstrap Discord server.</value>
     <value>Disable Animations</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>Prevent closures of your existing game when accidentally launching another Roblox Instance.</value>
+    <value>Prevents closures of your existing game when accidentally launching another Roblox Instance.</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
     <value>Instance Launch Confirmation</value>
@@ -803,7 +803,7 @@ For more custom launchers, visit the official Bloxstrap Discord server.</value>
     <value>Froststrap Cleaner</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
-    <value>Automatically clears old data to clear up some space. Note: feature originally made by Fishstrap.</value>
+    <value>Automatically clears old data to free up space. Originally created by Fishstrap.</value>
   </data>
   <data name="Enums.CleanerOptions.Never" xml:space="preserve">
     <value>Never</value>
@@ -838,10 +838,10 @@ For more custom launchers, visit the official Bloxstrap Discord server.</value>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>Old log files will be deleted.</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
     <value>Froststrap Logs</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
     <value>Froststrap logs will be deleted.</value>
   </data>
   <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
@@ -1059,7 +1059,7 @@ Selecting 'No' will ignore this warning and continue installation.</value>
     <value>Enable Activity Tracking</value>
   </data>
   <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
-    <value>This feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0}).</value>
+    <value>These feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0}).</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
     <value>The Roblox game you're playing will be shown on your Discord profile. [Not working?]({0})</value>
@@ -1255,24 +1255,6 @@ Some text might not be translated to preferred language.</value>
   <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
     <value>Removes Roblox’s default grass textures. Note: This setting does not affect custom grass textures used by individual games.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Texture Quality</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
-    <value>Adjust the texture quality for games. Note: this setting also affects GUI and UI.</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Level 0 (Lowest)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Level 1 (Low)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Level 2 (Medium)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Level 3 (Highest)</value>
-  </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
     <value>Froststrap is unable to download Roblox</value>
   </data>
@@ -1292,7 +1274,7 @@ Some text might not be translated to preferred language.</value>
     <comment>Do not translate 'True' and 'False', those must stay in English</comment>
   </data>
   <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>The entry for '{0}' is not valid as the value must be a number</value>
+    <value>The entry for '{0}' is not valid as the value must be an interger</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>No log file will be written for this launch because Froststrap is unable to write to the folder at '{0}'</value>
@@ -1424,9 +1406,9 @@ Froststrap was installed at "{1}".</value>
     <value>Froststrap was unable to create shortcuts for the Desktop and Start Menu. Try creating them later through the settings.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Check the [Bloxstrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
+    <value>Check the [Froststrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
 
-If not, then please report this exception to the maintainers of this fork. Do NOT report this to Bloxstrap's GitHub issues, as this is an unoffical build.</value>
+If not, then please report this exception to the maintainers of this fork. Do NOT report this to Froststrap's GitHub issues, as this is an unoffical build.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
   </data>
   <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
@@ -1850,12 +1832,12 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>The specified channel either doesn't exist or is private</value>
   </data>
   <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Failed to import Bloxstrap settings.
+    <value>Failed to import Froststrap settings.
 
 {0}</value>
   </data>
   <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Import settings from Bloxstrap</value>
+    <value>Import settings from Froststrap</value>
   </data>
   <data name="Installer.InstallationNotFound" xml:space="preserve">
     <value>No bootstrapper installation was found.</value>
@@ -1864,7 +1846,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Ansel is not supported.
 You can no longer use Bloxshade with Froststrap.</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Getting the latest Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">
@@ -1934,10 +1916,10 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Waiting for data...</value>
   </data>
   <data name="Menu.Integrations.QueryServerUptime.Description" xml:space="preserve">
-    <value>Displays the server’s estimated uptime using via [RoValra's APIs]({0}), [RoValra's privacy policy]({0}/privacy) applies. (Feature Made By Fishstrap)</value>
+    <value>Displays the server’s estimated uptime using [RoValra's APIs]({0}), [RoValra's privacy policy]({0}/privacy) applies, Feature developed by Fishstrap.</value>
   </data>
   <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Easily join servers near you using the selected account in Account Manager. Made with [RoValra's APIs]({0}), [RoValra's privacy policy]({0}/privacy) applies.</value>
+    <value>Easily join servers near you using the selected account in Account Manager. Uses [RoValra's APIs]({0}), [RoValra's privacy policy applies.]({0}/privacy)</value>
   </data>
   <data name="Menu.Integrations.QueryServerUptime.Title" xml:space="preserve">
     <value>Query Server Uptime</value>
@@ -1976,10 +1958,10 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Remove</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
-    <value>Allow Froststrp to access your Roblox account</value>
+    <value>Froststrap Account Permissions</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
-    <value>Provide access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0})</value>
+    <value>Provides access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0})</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
     <value>Window Backdrop</value>
@@ -2012,13 +1994,13 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Lock Order</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
-    <value>Automatically closes the RobloxCrashHandler.exe process onlaunch to free up some system usage.</value>
+    <value>Automatically closes the RobloxCrashHandler.exe process on launch to free up some system usage.</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
     <value>Close Crash Handler</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
-    <value>Select the CPU priority for Roblox.</value>
+    <value>Selects the CPU priority for Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
     <value>Roblox Process Priority</value>
@@ -2027,7 +2009,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Available Channels</value>
   </data>
   <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Check the large majority of the current available channels to use</value>
+    <value>Scans the majority of available channels for use.</value>
   </data>
   <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
     <value>Uninstall Froststrap</value>
@@ -2048,7 +2030,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Looking For</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
-    <value>Wow this is so empty, how about adding a fastflag ?</value>
+    <value>Wow, this is so empty! How about adding a FastFlag?</value>
   </data>
   <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
     <value>📂 Drop your JSON or TXT here</value>
@@ -2063,7 +2045,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Pause Voxelizer</value>
   </data>
   <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
-    <value>Changes the game’s sky to a solid gray color. Note: this will not work in games that have a custom skybox added by the developer.</value>
+    <value>Changes the game’s sky to a solid gray color. Note: This will not work in games that have a custom skybox added by the developer.</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
     <value>Drag to adjust mesh detail for performance or quality.</value>
@@ -2075,7 +2057,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Quality</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
-    <value>Displays your total and game session playtime</value>
+    <value>Displays your total playtime and current session time while in a game or Studio place.</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
     <value>Playtime Counter</value>
@@ -2087,7 +2069,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Game History Menu</value>
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
-    <value>View game history to quickly rejoin your server</value>
+    <value>View game history to quickly rejoin your server.</value>
   </data>
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
     <value>Double Click Action</value>
@@ -2280,5 +2262,14 @@ You can no longer use Bloxshade with Froststrap.</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
     <value>Quick Sign In</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
+    <value>Static directory</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
+    <value>Switch from version-xxx to BinaryType based install directories.</value>
+  </data>
+  <data name="Common.Timestamp" xml:space="preserve">
+    <value>Timestamp</value>
   </data>
 </root>

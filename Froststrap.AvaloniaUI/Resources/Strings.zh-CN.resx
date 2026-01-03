@@ -290,7 +290,7 @@
     <value>运行 Froststrap 时发生了异常</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>请先浏览 [Bloxstrap Wiki]({0})，看看这个问题是否已经得到解决。
+    <value>请先浏览 [Froststrap Wiki]({0})，看看这个问题是否已经得到解决。
 
 如果没有，请通过 [GitHub Issues]({1}) 来报告此异常；并附上所创建的日志文件副本。</value>
   </data>
@@ -1053,7 +1053,7 @@ Froststrap 的安装路径是：
     <value>Froststrap 目前无法在 桌面 和 “开始”菜单 创建快捷方式；请尝试稍后通过设置手动创建快捷方式。</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>请先在 [Bloxstrap Wiki]({0}) 检索这个问题是否已被修复。
+    <value>请先在 [Froststrap Wiki]({0}) 检索这个问题是否已被修复。
 
 如果没有，请向此 社区分支 的维护者报告这个问题。切勿将此异常向 Froststrap 官方 GitHub Issues 报告；因为这是一个非官方版本。</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1289,7 +1289,7 @@ Froststrap 的安装路径是：
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>正在获取最新版本的 Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

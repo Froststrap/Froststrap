@@ -1036,7 +1036,7 @@ Froststrap이 “{1}”에 설치되어 있습니다.</value>
     <value>Froststrap에서 데스크톱 및 시작 메뉴에 대한 바로 가기를 만들 수 없었습니다. 나중에 설정을 통해 생성해 보세요.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>[Bloxstrap Wiki]({0}) 에서 이 문제가 이미 수정으로 해결되었는지 먼저 확인해 주세요.
+    <value>[Froststrap Wiki]({0}) 에서 이 문제가 이미 수정으로 해결되었는지 먼저 확인해 주세요.
 
 그렇지 않은 경우 이 포크의 관리자에게 이 오류를 보고해 주세요. 이 포크는 비공식 빌드이므로 Froststrap's GitHub issues에 보고하지 마세요.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1241,7 +1241,7 @@ Roblox의 파일을 사용 중인 프로그램을 모두 종료하고, 다시 �
     <value>내보내기</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>최신 Froststrap을 받는 중...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

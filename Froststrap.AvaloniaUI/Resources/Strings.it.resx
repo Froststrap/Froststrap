@@ -286,7 +286,7 @@ Clicca per maggiori informazioni</value>
     <value>Si è verificata un'eccezione durante l'esecuzione di bloxtrap</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Controlla la [Bloxstrap Wiki]({0}) prima per vedere se il problema è già stato risolto.
+    <value>Controlla la [Froststrap Wiki]({0}) prima per vedere se il problema è già stato risolto.
 
 Se no, per favore segnala questa eccezione attraverso una [GitHub issue]({1}) con una copia del file di registro che è stato creato.</value>
   </data>
@@ -1267,7 +1267,7 @@ Si prega di chiudere tutte le applicazioni che potrebbero usare i file di Roblox
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Ricerca della versione più recente di Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

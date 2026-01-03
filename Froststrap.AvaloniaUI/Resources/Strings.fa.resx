@@ -1241,7 +1241,7 @@
     <value>صدور</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>در حال گرفتن آخرین بلاکسترپ...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

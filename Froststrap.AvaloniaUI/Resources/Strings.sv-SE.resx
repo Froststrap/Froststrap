@@ -286,7 +286,7 @@ Klicka för mer information</value>
     <value>Ett undantag skedde när Froststrap kördes</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Kolla [Bloxstrap Wikin]({0}) först för att se om problemet redan har en lösning.
+    <value>Kolla [Froststrap Wikin]({0}) först för att se om problemet redan har en lösning.
 
 Om det inte har det, rapportera gärna detta undantag med ett [GitHub-ärende]({1}) tillsammans med en kopia av loggfilen som skapades.</value>
   </data>
@@ -1036,7 +1036,7 @@ Froststrap installerades i "{1}".</value>
     <value>Froststrap kunde inte skapa genvägar på skrivbordet och för Start-menyn. Försök att skapa dem senare genom inställningarna.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Kolla [Bloxstrap Wikin]({0}) först för att se om detta problem redan har en fix.
+    <value>Kolla [Froststrap Wikin]({0}) först för att se om detta problem redan har en fix.
 
 Annars så rapportera detta felmeddelande till de ansvariga för denna fork. Rapportera INTE detta på Froststraps egna GitHub sida, eftersom detta är en inofficiell version av Froststrap.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1266,7 +1266,7 @@ Var vänlig och stäng applikationer som kan använda Roblox filer, och starta s
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Skaffar den nyaste Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

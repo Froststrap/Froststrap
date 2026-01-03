@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Froststrap.AppData
+{
+    public abstract class CommonAppData
+    {
+        public virtual string ExecutableName { get; } = null!;
+
+        public virtual string BinaryType { get; } = null!;
+
+        public string StaticDirectory => Path.Combine(Paths.Versions, BinaryType);
+        public string DynamicDirectory => Path.Combine(Paths.Versions, DistributionState.VersionGuid);
+
+        public string Directory => App.Settings.Prop.StaticDirectory ? StaticDirectory : DynamicDirectory;
+
+        public string ExecutablePath => Path.Combine(Directory, ExecutableName);
+
+        public virtual JsonManager<DistributionState> DistributionStateManager { get; } = null!;
+
+        public DistributionState DistributionState => DistributionStateManager.Prop;
+
+        public List<string> ModManifest => DistributionState.ModManifest;
+    }
+}

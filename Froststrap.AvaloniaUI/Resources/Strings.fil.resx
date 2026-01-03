@@ -286,7 +286,7 @@ Pindutin para sa marami pang impormasyon</value>
     <value>May exception na nangyari habang pinapatakbo ang Froststrap</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Suriin muna ang [Bloxstrap Wiki]({0}) upang makita kung itong problema ay meron nang paraan ng pag-aayos.
+    <value>Suriin muna ang [Froststrap Wiki]({0}) upang makita kung itong problema ay meron nang paraan ng pag-aayos.
 
 Kung hindi, paki ulat itong pagbubukod, gamit ang [GitHub issue]({1}) kasama ang kopya ng log file na nilikha.</value>
   </data>
@@ -1034,7 +1034,7 @@ Na-installed ang Froststrap sa "{1}".</value>
     <value>Hindi kaya ng Froststrap na gumawa ng shortcuts para sa Desktop at Start Menu. Subukan mong gawin ito sa ibang pagkakataon sa mga settings.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Tumingin sa [Bloxstrap Wiki]({0}) muna para makita kung itong problema ay tinutugunan ng pag-aayos.
+    <value>Tumingin sa [Froststrap Wiki]({0}) muna para makita kung itong problema ay tinutugunan ng pag-aayos.
 
 Kung hindi, I-report mo itong eksepsyon sa maintainers ng fork nito. HUWAG mong i-report ito sa GitHub issues ng Froststrap, dahil ito ang unofficial build.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1234,7 +1234,7 @@ Isarado muna ang kahit anong application na maaaring gamitin ang mga file ng Rob
     <value>I-export</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Kinukuha ang latest Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

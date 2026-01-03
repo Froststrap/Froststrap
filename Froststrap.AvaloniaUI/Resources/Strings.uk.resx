@@ -1033,7 +1033,7 @@ Froststrap встановлено на "{1}".</value>
     <value>Froststrap не вдалося створити ярлики для Робочого столу та меню Пуск. Спробуйте створити їх пізніше через налаштування.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Спочатку перевірте [Bloxstrap Wiki]({0}), щоб побачити, чи ця проблема вже була вирішена за допомогою виправлення.
+    <value>Спочатку перевірте [Froststrap Wiki]({0}), щоб побачити, чи ця проблема вже була вирішена за допомогою виправлення.
 
 Якщо ні, то, будь ласка, повідомте про цей виняток супровідникам цієї збірки. НЕ повідомляйте про це на GitHub Froststrap, оскільки це неофіційна збірка.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1263,7 +1263,7 @@ Froststrap встановлено на "{1}".</value>
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Отримання останньої версії Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

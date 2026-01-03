@@ -318,7 +318,7 @@
 	<data name="Menu.Help.DiscordRichPresenceNotWorking">
 		<value>
 			[Presença do Discord quebrada]
-			(https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work)
+			(https://github.com/Froststraplabs/Froststrap/wiki/Discord-Rich-Presence-does-not-work)
 		</value>
 	</data>
 	<data name="Menu.Help.SetupFailed">
@@ -339,19 +339,19 @@
 	<data name="Menu.Help.ServerInformation">
 		<value>
 			[Informações do servidor]
-			(https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#server-information-viewing)
+			(https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#server-information-viewing)
 		</value>
 	</data>
 	<data name="Menu.Help.GameHistory">
 		<value>
 			[Histórico do jogo]
-			(https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#game-history-viewing)
+			(https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#game-history-viewing)
 		</value>
 	</data>
 	<data name="Menu.Help.DiscordRichPresence">
 		<value>
 			[Presença do Discord]
-			(https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)
+			(https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)
 		</value>
 	</data>
 	<data name="Menu.Help.MessageLogsAndPlayerLogs">
@@ -538,11 +538,11 @@
 		<value>Copiar conteudo do log</value>
 	</data>
 	<data name="Dialog.Exception.Info.1">
-		<value>Ocorreu uma exceção durante a execução de Froststrap/Bloxstrap</value>
+		<value>Ocorreu uma exceção durante a execução de Froststrap/Froststrap</value>
 	</data>
 	<data name="Dialog.Exception.Info.2">
 		<value>
-			Verifique a [Bloxstrap Wiki] ({0}) primeiro para ver se esse problema ja foi resolvido.
+			Verifique a [Froststrap Wiki] ({0}) primeiro para ver se esse problema ja foi resolvido.
 
 			Se não, então por favor reporte essa exceção atraves de um [Problema de GitHub] ({1}), juntamente com uma copia do arquivo log que foi criado.
 		</value>
@@ -553,9 +553,6 @@
 	<data name="Common.Custom">
 		<value>Personalizado</value>
 	</data>
-	<data name="Enums.BootstrapperIcon.IconEarly2015">
-		<value></value>
-	</data>
 	<data name="Enums.BootstrapperIcon.IconLate2015">
 		<value>Antes de 2015</value>
 	</data>
@@ -565,7 +562,7 @@
 	<data name="Enums.BootstrapperStyle.FluentDialog">
 		<value>Froststrap (Opaque)</value>
 	</data>
-	<data name="Enums.BootstrapperStyle.CustomFluentDialog">
+	<data name="Enums.BootstrapperStyle.FroststrapDialog">
 		<value>Froststrap</value>
 	</data>
 	<data name="Bootstrapper.ExtractionFailed.Title">
@@ -866,7 +863,7 @@
 		<value>Code</value>
 	</data>
 	<data name="Menu.About.Contributors.Description">
-		<value>These are all of the people who have made notable contributions to Froststrap and Bloxstrap, shaping them into what they are today.</value>
+		<value>These are all of the people who have made notable contributions to Froststrap and Froststrap, shaping them into what they are today.</value>
 	</data>
 	<data name="Menu.About.Contributors.Contributors">
 		<value>Contributors</value>
@@ -875,7 +872,7 @@
 		<value>Inspirations</value>
 	</data>
 	<data name="Menu.About.Description">
-		<value>A Fishstrap/Bloxstrap Fork.</value>
+		<value>A Fishstrap/Froststrap Fork.</value>
 	</data>
 	<data name="Menu.About.DiscordServer">
 		<value>Discord Server</value>
@@ -955,7 +952,7 @@
 	<data name="Menu.Appearance.Launcher.Description">
 		<value>
 			Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista.
-			For more custom launchers, visit the official Bloxstrap Discord server.
+			For more custom launchers, visit the official Froststrap Discord server.
 		</value>
 	</data>
 	<data name="Menu.Appearance.Launcher.Title">
@@ -1039,10 +1036,10 @@
 	<data name="Menu.Bootstrapper.Cleaner.Logs.Description">
 		<value>Old log files will be deleted.</value>
 	</data>
-	<data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title">
+	<data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title">
 		<value>Froststrap logs</value>
 	</data>
-	<data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description">
+	<data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description">
 		<value>Froststrap logs will be deleted.</value>
 	</data>
 	<data name="Menu.FastFlagEditor.BannerText">
@@ -1800,9 +1797,9 @@
 	</data>
 	<data name="Dialog.Exception.Info.2.Alt">
 		<value>
-			Check the [Bloxstrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
+			Check the [Froststrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
 
-			If not, then please report this exception to the maintainers of this fork. Do NOT report this to Bloxstrap's GitHub issues, as this is an unoffical build.
+			If not, then please report this exception to the maintainers of this fork. Do NOT report this to Froststrap's GitHub issues, as this is an unoffical build.
 		</value>
 	</data>
 	<data name="Installer.Install.Shortcuts.Description">
@@ -2056,12 +2053,6 @@
 	<data name="Common.Export">
 		<value>Export</value>
 	</data>
-	<data name="Dialog.Connectivity.Preventing">
-		<value></value>
-	</data>
-	<data name="Dialog.Connectivity.TimedOut">
-		<value></value>
-	</data>
 	<data name="Menu.Channel.Description">
 		<value>Change deployment and installation settings for Roblox &amp; Froststrap.</value>
 	</data>
@@ -2286,13 +2277,13 @@
 	</data>
 	<data name="Installer.FailedToImportSettings">
 		<value>
-			Failed to import Bloxstrap settings.
+			Failed to import Froststrap settings.
 
 			{0}
 		</value>
 	</data>
 	<data name="Installer.ImportSettings">
-		<value>Import settings from Bloxstrap</value>
+		<value>Import settings from Froststrap</value>
 	</data>
 	<data name="Bootstrapper.Dialog.AnselDisabled">
 		<value>
@@ -2300,7 +2291,7 @@
 			You can no longer use Bloxshade with Froststrap.
 		</value>
 	</data>
-	<data name="Bootstrapper.Status.UpgradingBloxstrap">
+	<data name="Bootstrapper.Status.UpgradingFroststrap">
 		<value>Getting the latest Froststrap...</value>
 	</data>
 	<data name="Menu.Froststrap.Description">
@@ -2511,7 +2502,7 @@
 		<value>Choose the format for copying JSON.</value>
 	</data>
 	<data name="Installer.InstallationNotFound">
-		<value>Bloxstrap installation was not found.</value>
+		<value>Froststrap installation was not found.</value>
 	</data>
 	<data name="Menu.FastFlags.Presets.WhiteSky.Description">
 		<value>Can make the whole screen white if the game has no default sky. Note: this uses gray sky flag.</value>

@@ -1,0 +1,43 @@
+{
+  "profiles": {
+    "Avalonia Froststrap (Launch)": {
+      "commandName": "Project"
+    },
+    "Avalonia Froststrap (Quiet Launch)": {
+      "commandName": "Project",
+      "commandLineArgs": "-quiet"
+    },
+    "Avalonia Froststrap (Uninstall)": {
+      "commandName": "Project",
+      "commandLineArgs": "-uninstall"
+    },
+    "Avalonia Froststrap (Quiet Uninstall)": {
+      "commandName": "Project",
+      "commandLineArgs": "-uninstall -quiet"
+    },
+    "Avalonia Froststrap (Menu)": {
+      "commandName": "Project",
+      "commandLineArgs": "-menu"
+    },
+    "Avalonia Froststrap (Deeplink)": {
+      "commandName": "Project",
+      "commandLineArgs": "-player \"roblox://experiences/start?placeId=13700835620\""
+    },
+    "Avalonia Froststrap (Channel Launch)": {
+      "commandName": "Project",
+      "commandLineArgs": "-player \"roblox-player:1+launchmode:play+channel:zcontrol+LaunchExp:InApp\""
+    },
+    "Avalonia Froststrap (Studio Launch)": {
+      "commandName": "Project",
+      "commandLineArgs": "-studio"
+    },
+    "Avalonia Froststrap (Watcher)": {
+      "commandName": "Project",
+      "commandLineArgs": "-watcher"
+    },
+    "Avalonia Froststrap (Bloxshade)": {
+      "commandName": "Project",
+      "commandLineArgs": "-bloxshade"
+    }
+  }
+}

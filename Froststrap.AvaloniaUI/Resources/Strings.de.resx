@@ -286,7 +286,7 @@ Klicke für mehr Informationen</value>
     <value>Es ist ein Fehler während der Ausführung von Froststrap aufgetreten</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Schau dir als Erstes die [Bloxstrap Wiki]({0}) an, um zu sehen, ob dieses Problem bereits angesprochen und gelöst wurde.
+    <value>Schau dir als Erstes die [Froststrap Wiki]({0}) an, um zu sehen, ob dieses Problem bereits angesprochen und gelöst wurde.
 
 Falls nicht, solltest du diesen Fehler über ein [GitHub Issue]({1}) mit einer Kopie der erstellten log Datei melden.</value>
   </data>
@@ -1036,7 +1036,7 @@ Froststrap war bei "{1}" installiert.</value>
     <value>Froststrap konnte keine Verknüpfungen für den Desktop und das Startmenü erstellen. Versuche diese später über die Einstellungen zu erstellen.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Überprüfe zuerst die [Bloxstrap Wiki]({0}), um zu sehen, ob dieses Problem bereits mit einem Fix behoben wurde.
+    <value>Überprüfe zuerst die [Froststrap Wiki]({0}), um zu sehen, ob dieses Problem bereits mit einem Fix behoben wurde.
 
 Falls nicht, melde diese Ausnahme bitte an die Entwickler dieses Forks. Melde dies NICHT an Froststrap's GitHub issues, da dies eine inoffizielle Version ist.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1266,7 +1266,7 @@ Bitte schließe alle Anwendungen, die möglicherweise auf die Dateien von Roblox
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Froststrap wird aktualisiert...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

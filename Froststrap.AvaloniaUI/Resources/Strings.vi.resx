@@ -271,7 +271,7 @@
     <value>Vấn đề trình khởi động</value>
   </data>
   <data name="Menu.Help.DiscordRichPresenceNotWorking">
-    <value>[Trạng thái hoạt động Discord hư](https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work)</value>
+    <value>[Trạng thái hoạt động Discord hư](https://github.com/Froststraplabs/Froststrap/wiki/Discord-Rich-Presence-does-not-work)</value>
   </data>
   <data name="Menu.Help.SetupFailed">
     <value>[Thiết lập trình khởi động tùy chỉnh không thành công](https://github.com/Meddsam/Froststrap/wiki/Bootstrapper-Common-Issues#custom-bootstrapper-setup-failed)</value>
@@ -283,13 +283,13 @@
     <value>Tính năng</value>
   </data>
   <data name="Menu.Help.ServerInformation">
-    <value>[Thông tin máy chủ](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
+    <value>[Thông tin máy chủ](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
   </data>
   <data name="Menu.Help.GameHistory">
-    <value>[Lịch sử trò chơi](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
+    <value>[Lịch sử trò chơi](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
   </data>
   <data name="Menu.Help.DiscordRichPresence">
-    <value>[Trạng thái hoạt động Discord](https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
+    <value>[Trạng thái hoạt động Discord](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
   </data>
   <data name="Menu.Help.MessageLogsAndPlayerLogs">
     <value>[Nhật ký trò chuyện và Nhật ký người chơi](https://github.com/Meddsam/Froststrap/wiki/Features#message-logs-and-player-logs)</value>
@@ -419,10 +419,10 @@ Bấm để biết thêm thông tin</value>
     <value>Sao chép dữ liệu log</value>
   </data>
   <data name="Dialog.Exception.Info.1">
-    <value>Một trường hợp ngoại lệ đã xảy ra khi đang chạy Froststrap/Bloxstrap</value>
+    <value>Một trường hợp ngoại lệ đã xảy ra khi đang chạy Froststrap/Froststrap</value>
   </data>
   <data name="Dialog.Exception.Info.2">
-    <value>Hãy xem qua [Bloxstrap Wiki]({0}) trước để xem nếu vấn đề này đã được khắc phục chưa
+    <value>Hãy xem qua [Froststrap Wiki]({0}) trước để xem nếu vấn đề này đã được khắc phục chưa
 
 Nếu chưa, xin hãy báo cáo lỗi này qua [GitHub issue]({1}) với bản copy của tệp log vừa được tạo.</value>
   </data>
@@ -431,9 +431,6 @@ Nếu chưa, xin hãy báo cáo lỗi này qua [GitHub issue]({1}) với bản c
   </data>
   <data name="Common.Custom">
     <value>Tùy chỉnh</value>
-  </data>
-  <data name="Enums.BootstrapperIcon.IconEarly2015">
-    <value></value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015">
     <value>Cuối năm 2015</value>
@@ -444,7 +441,7 @@ Nếu chưa, xin hãy báo cáo lỗi này qua [GitHub issue]({1}) với bản c
   <data name="Enums.BootstrapperStyle.FluentDialog">
     <value>Froststrap (Nền đen)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.CustomFluentDialog">
+  <data name="Enums.BootstrapperStyle.FroststrapDialog">
     <value>Froststrap</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title">
@@ -741,7 +738,7 @@ Bạn có muốn nâng cấp phiên bản đã cài đặt không?</value>
     <value>Lập trình</value>
   </data>
   <data name="Menu.About.Contributors.Description">
-    <value>Đây là những người có đóng góp nổi bật cho Froststrap và Bloxstrap, định hình nó được như bây giờ.</value>
+    <value>Đây là những người có đóng góp nổi bật cho Froststrap và Froststrap, định hình nó được như bây giờ.</value>
   </data>
   <data name="Menu.About.Contributors.Contributors">
     <value>Người đóng góp</value>
@@ -750,7 +747,7 @@ Bạn có muốn nâng cấp phiên bản đã cài đặt không?</value>
     <value>Cảm hứng</value>
   </data>
   <data name="Menu.About.Description">
-    <value>Một bản sao của Fishstrap/Bloxstrap.</value>
+    <value>Một bản sao của Fishstrap/Froststrap.</value>
   </data>
   <data name="Menu.About.DiscordServer">
     <value>Máy chủ Discord</value>
@@ -829,7 +826,7 @@ Bạn có muốn nâng cấp phiên bản đã cài đặt không?</value>
   </data>
   <data name="Menu.Appearance.Launcher.Description">
     <value>Chọn cách hiển thị. Lưu ý: Giao diện tối không áp dụng cho Legacy và Vista.
-Để thêm nhiều trình khởi chạy tùy chỉnh, hãy truy cập máy chủ Discord chính thức của Bloxstrap.</value>
+Để thêm nhiều trình khởi chạy tùy chỉnh, hãy truy cập máy chủ Discord chính thức của Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Launcher.Title">
     <value>Trình khởi chạy</value>
@@ -912,10 +909,10 @@ Bạn có muốn nâng cấp phiên bản đã cài đặt không?</value>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description">
     <value>Các tệp nhật ký cũ sẽ bị xóa.</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title">
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title">
     <value>Nhật ký Froststrap</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description">
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description">
     <value>Các tệp nhật ký Froststrap cũ sẽ bị xóa.</value>
   </data>
   <data name="Menu.FastFlagEditor.BannerText">
@@ -1055,7 +1052,7 @@ Bạn có chắc chắn muốn tiếp tục không?</value>
     <value>Froststrap không thể được cài đặt ở đây. Vui lòng chọn một vị trí khác, hoặc sử dụng vị trí mặc định bằng cách nhấp vào nút đặt lại.</value>
   </data>
   <data name="Menu.InstallLocation.NotEmpty">
-    <value>Thư mục bạn chọn cài đặt Froststrap đã tồn tại và KHÔNG trống rỗng. Chúng tôi đặc biệt khuyến khích cài đặt Bloxstrap vào thư mục độc lập của riêng nó.
+    <value>Thư mục bạn chọn cài đặt Froststrap đã tồn tại và KHÔNG trống rỗng. Chúng tôi đặc biệt khuyến khích cài đặt Froststrap vào thư mục độc lập của riêng nó.
 
 Đề xuất thay đổi sang vị trí như này:
 {0}
@@ -1657,9 +1654,9 @@ Quá trình gỡ cài đặt có thể không tự dọn dẹp hoàn toàn, vì 
     <value>Froststrap không thể tạo phím tắt cho màn hình chính và Start Menu. Hãy thử tạo chúng thông qua cài đặt.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt">
-    <value>Tìm xem [Bloxstrap Wiki]({0}) trước để xem nếu vấn đề này đã có phương pháp giải quyết.
+    <value>Tìm xem [Froststrap Wiki]({0}) trước để xem nếu vấn đề này đã có phương pháp giải quyết.
 
-Nếu không, thì hãy báo cáo vấn đề này đến người quản lí của bản sao này. ĐỪNG báo cáo vấn đề này đến GitHub của Bloxstrap, bởi vì đây là một bản sao không chính thức.</value>
+Nếu không, thì hãy báo cáo vấn đề này đến người quản lí của bản sao này. ĐỪNG báo cáo vấn đề này đến GitHub của Froststrap, bởi vì đây là một bản sao không chính thức.</value>
   </data>
   <data name="Installer.Install.Shortcuts.Description">
     <value>Đây là các phím tắt chung giúp mở menu khởi chạy với nhiều lựa chọn. Các phím tắt cho các chức năng cụ thể có thể được tạo sau trong phần cài đặt.</value>
@@ -1896,12 +1893,6 @@ Xin hãy đóng các ứng dụng đang sử dụng các tập tin của Roblox,
   <data name="Common.Export">
     <value>Xuất ra</value>
   </data>
-  <data name="Dialog.Connectivity.Preventing">
-    <value></value>
-  </data>
-  <data name="Dialog.Connectivity.TimedOut">
-    <value></value>
-  </data>
   <data name="Menu.Channel.Description">
     <value>Thay đổi cài đặt triển khai và cài đặt cho Roblox &amp; Froststrap</value>
   </data>
@@ -2114,18 +2105,18 @@ Bạn có muốn chuyển kênh ưu tiên của mình thành {0} không?</value>
     <value>Kênh được xác định không tồn tại hoặc là kênh riêng tư</value>
   </data>
   <data name="Installer.FailedToImportSettings">
-    <value>Không nhập được cài đặt Bloxstrap.
+    <value>Không nhập được cài đặt Froststrap.
 
 {0}</value>
   </data>
   <data name="Installer.ImportSettings">
-    <value>Nhập các cài đặt từ Bloxstrap</value>
+    <value>Nhập các cài đặt từ Froststrap</value>
   </data>
   <data name="Bootstrapper.Dialog.AnselDisabled">
     <value>Ansel không được hỗ trợ.
 Bạn không thể sử dụng Bloxshade với Froststrap nữa.</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap">
+  <data name="Bootstrapper.Status.UpgradingFroststrap">
     <value>Đang tải xuống phiên bản mới nhất của Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description">
@@ -2336,7 +2327,7 @@ Bạn không thể sử dụng Bloxshade với Froststrap nữa.</value>
     <value>Chọn định dạng để sao chép JSON.</value>
   </data>
   <data name="Installer.InstallationNotFound">
-    <value>Không tìm thấy cài đặt Bloxstrap.</value>
+    <value>Không tìm thấy cài đặt Froststrap.</value>
   </data>
   <data name="Menu.FastFlags.Presets.WhiteSky.Description">
     <value>Có thể làm toàn bộ màn hình thành màu trắng nếu trò chơi không có bầu trời mặc định. Lưu ý: điều này sử dụng cờ bầu trời màu xám.</value>

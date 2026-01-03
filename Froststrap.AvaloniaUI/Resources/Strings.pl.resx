@@ -286,7 +286,7 @@ Kliknij, aby dowiedzieć się więcej</value>
     <value>Wystąpił błąd podczas uruchamiania Froststrap</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Najpierw sprawdź [Bloxstrap Wiki]({0}), by zobaczyć czy ten problem nie został już rozwiązany.
+    <value>Najpierw sprawdź [Froststrap Wiki]({0}), by zobaczyć czy ten problem nie został już rozwiązany.
 
 Jeśli nie, zgłoś ten błąd przez [GitHub]({1}) wraz z utworzoną kopią pliku dziennika.</value>
   </data>
@@ -1036,7 +1036,7 @@ Froststrap był zainstalowany na "{1}".</value>
     <value>Froststrap nie mógł utworzyć skrótów na pulpicie i w Menu Start. Spróbuj utworzyć je później w ustawieniach.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Sprawdź [Bloxstrap Wiki]({0}), aby upewnić się, czy twój problem nie został już rozwiązany.
+    <value>Sprawdź [Froststrap Wiki]({0}), aby upewnić się, czy twój problem nie został już rozwiązany.
 
 Jeśli nie, zgłoś problem twórcom tego „fork”-a. Podkreślamy, aby NIE zgłaszać tego na oficjalnego GitHub'a, gdyż nie jest to oficjalna wersja programu i nie jesteśmy za nią odpowiedzialni.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
@@ -1265,7 +1265,7 @@ Proszę, zamknij wszystkie aplikacje, które mogą używać plików Roblox i uru
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Pobieranie najnowszej wersji Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

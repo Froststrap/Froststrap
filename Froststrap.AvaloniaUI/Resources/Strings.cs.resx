@@ -287,7 +287,7 @@ Klikněte pro více informací</value>
     <value>Došlo k výjimce při běžení Froststrapu</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Nejprve zkontrolujte [Bloxstrap Wiki]({0}), zda byl tento problém již vyřešen opravou.
+    <value>Nejprve zkontrolujte [Froststrap Wiki]({0}), zda byl tento problém již vyřešen opravou.
 
 Pokud ne, prosím nahlaste tuto výjimku prostřednictvím [GitHub issue]({1}) spolu s kopií log souboru, který byl vytvořen.</value>
   </data>
@@ -1266,7 +1266,7 @@ Zavřete všechny aplikace, které mohou používat soubory Robloxu, a znovu spu
   <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
-  <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
     <value>Získávání nejnovější verze Froststrap...</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">

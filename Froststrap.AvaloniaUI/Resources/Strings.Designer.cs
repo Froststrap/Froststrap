@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Bloxstrap.Resources {
+namespace Froststrap.Resources {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Bloxstrap.Resources {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Bloxstrap.Resources.Strings", typeof(Strings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Froststrap.Resources.Strings", typeof(Strings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -387,9 +387,9 @@ namespace Bloxstrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Getting the latest Froststrap....
         /// </summary>
-        public static string Bootstrapper_Status_UpgradingBloxstrap {
+        public static string Bootstrapper_Status_UpgradingFroststrap {
             get {
-                return ResourceManager.GetString("Bootstrapper.Status.UpgradingBloxstrap", resourceCulture);
+                return ResourceManager.GetString("Bootstrapper.Status.UpgradingFroststrap", resourceCulture);
             }
         }
         
@@ -1074,6 +1074,15 @@ namespace Bloxstrap.Resources {
         public static string Common_Time {
             get {
                 return ResourceManager.GetString("Common.Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timestamp.
+        /// </summary>
+        public static string Common_Timestamp {
+            get {
+                return ResourceManager.GetString("Common.Timestamp", resourceCulture);
             }
         }
         
@@ -2019,7 +2028,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An exception occurred while running Froststrap/Bloxstrap.
+        ///   Looks up a localized string similar to An exception occurred while running Froststrap/Froststrap.
         /// </summary>
         public static string Dialog_Exception_Info_1 {
             get {
@@ -2028,7 +2037,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check the [Bloxstrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
+        ///   Looks up a localized string similar to Check the [Froststrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
         ///
         ///If not, then please report this exception through a [GitHub issue]({1}) along with a copy of the log file that was created..
         /// </summary>
@@ -2039,9 +2048,9 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check the [Bloxstrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
+        ///   Looks up a localized string similar to Check the [Froststrap Wiki]({0}) first to see if this problem has already been addressed with a fix.
         ///
-        ///If not, then please report this exception to the maintainers of this fork. Do NOT report this to Bloxstrap&apos;s GitHub issues, as this is an unoffical build..
+        ///If not, then please report this exception to the maintainers of this fork. Do NOT report this to Froststrap&apos;s GitHub issues, as this is an unoffical build..
         /// </summary>
         public static string Dialog_Exception_Info_2_Alt {
             get {
@@ -2190,15 +2199,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap.
-        /// </summary>
-        public static string Enums_BootstrapperStyle_CustomFluentDialog {
-            get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.CustomFluentDialog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Froststrap (Glass).
         /// </summary>
         public static string Enums_BootstrapperStyle_FluentAeroDialog {
@@ -2213,6 +2213,15 @@ namespace Bloxstrap.Resources {
         public static string Enums_BootstrapperStyle_FluentDialog {
             get {
                 return ResourceManager.GetString("Enums.BootstrapperStyle.FluentDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap.
+        /// </summary>
+        public static string Enums_BootstrapperStyle_FroststrapDialog {
+            get {
+                return ResourceManager.GetString("Enums.BootstrapperStyle.FroststrapDialog", resourceCulture);
             }
         }
         
@@ -2460,42 +2469,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Level 0 (Lowest).
-        /// </summary>
-        public static string Enums_FlagPresets_TextureQuality_Level0 {
-            get {
-                return ResourceManager.GetString("Enums.FlagPresets.TextureQuality.Level0", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Level 1 (Low).
-        /// </summary>
-        public static string Enums_FlagPresets_TextureQuality_Level1 {
-            get {
-                return ResourceManager.GetString("Enums.FlagPresets.TextureQuality.Level1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Level 2 (Medium).
-        /// </summary>
-        public static string Enums_FlagPresets_TextureQuality_Level2 {
-            get {
-                return ResourceManager.GetString("Enums.FlagPresets.TextureQuality.Level2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Level 3 (Highest).
-        /// </summary>
-        public static string Enums_FlagPresets_TextureQuality_Level3 {
-            get {
-                return ResourceManager.GetString("Enums.FlagPresets.TextureQuality.Level3", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Private server.
         /// </summary>
         public static string Enums_ServerType_Private {
@@ -2701,7 +2674,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to import Bloxstrap settings.
+        ///   Looks up a localized string similar to Failed to import Froststrap settings.
         ///
         ///{0}.
         /// </summary>
@@ -2712,7 +2685,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import settings from Bloxstrap.
+        ///   Looks up a localized string similar to Import settings from Froststrap.
         /// </summary>
         public static string Installer_ImportSettings {
             get {
@@ -2952,7 +2925,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These are all of the people who have made notable contributions to Froststrap and Bloxstrap, shaping them into what they are today..
+        ///   Looks up a localized string similar to These are all of the people who have made notable contributions to Froststrap and Froststrap, shaping them into what they are today..
         /// </summary>
         public static string Menu_About_Contributors_Description {
             get {
@@ -2970,7 +2943,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Fishstrap/Bloxstrap Fork..
+        ///   Looks up a localized string similar to A Fishstrap/Froststrap Fork..
         /// </summary>
         public static string Menu_About_Description {
             get {
@@ -3312,8 +3285,8 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a launch screen style. Note: dark theme isn’t supported for Legacy or Vista.
-        ///For more custom launchers, visit the official Bloxstrap Discord server..
+        ///   Looks up a localized string similar to Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista.
+        ///For more custom launchers, visit the official Froststrap Discord server..
         /// </summary>
         public static string Menu_Appearance_Launcher_Description {
             get {
@@ -3421,7 +3394,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provide access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0}).
+        ///   Looks up a localized string similar to Provides access to Roblox APIs using your authentication cookie. [What will Froststrap access?]({0}).
         /// </summary>
         public static string Menu_Behaviour_AllowCookieAccess_Description {
             get {
@@ -3430,7 +3403,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow Froststrp to access your Roblox account.
+        ///   Looks up a localized string similar to Froststrap Account Permissions.
         /// </summary>
         public static string Menu_Behaviour_AllowCookieAccess_Title {
             get {
@@ -3493,7 +3466,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically closes the RobloxCrashHandler.exe process onlaunch to free up some system usage..
+        ///   Looks up a localized string similar to Automatically closes the RobloxCrashHandler.exe process on launch to free up some system usage..
         /// </summary>
         public static string Menu_Behaviour_CloseCrashHandler_Description {
             get {
@@ -3511,7 +3484,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prevent closures of your existing game when accidentally launching another Roblox Instance..
+        ///   Looks up a localized string similar to Prevents closures of your existing game when accidentally launching another Roblox Instance..
         /// </summary>
         public static string Menu_Behaviour_ConfirmLaunches_Description {
             get {
@@ -3646,7 +3619,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the CPU priority for Roblox..
+        ///   Looks up a localized string similar to Selects the CPU priority for Roblox..
         /// </summary>
         public static string Menu_Behaviour_ProcessPriority_Description {
             get {
@@ -3711,18 +3684,18 @@ namespace Bloxstrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Froststrap logs will be deleted..
         /// </summary>
-        public static string Menu_Bootstrapper_Cleaner_IncludeBloxstrap_Description {
+        public static string Menu_Bootstrapper_Cleaner_IncludeFroststrap_Description {
             get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Froststrap Logs.
         /// </summary>
-        public static string Menu_Bootstrapper_Cleaner_IncludeBloxstrap_Title {
+        public static string Menu_Bootstrapper_Cleaner_IncludeFroststrap_Title {
             get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title", resourceCulture);
+                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title", resourceCulture);
             }
         }
         
@@ -3745,7 +3718,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically clears old data to clear up some space. Note: feature originally made by Fishstrap..
+        ///   Looks up a localized string similar to Automatically clears old data to free up space. Originally created by Fishstrap..
         /// </summary>
         public static string Menu_Bootstrapper_CleanUp_Description {
             get {
@@ -3871,6 +3844,24 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Switch from version-xxx to BinaryType based install directories..
+        /// </summary>
+        public static string Menu_Channel_StaticDirectory_Description {
+            get {
+                return ResourceManager.GetString("Menu.Channel.StaticDirectory.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Static directory.
+        /// </summary>
+        public static string Menu_Channel_StaticDirectory_Title {
+            get {
+                return ResourceManager.GetString("Menu.Channel.StaticDirectory.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fetching latest deploy info, please wait....
         /// </summary>
         public static string Menu_Channel_Switcher_Fetching {
@@ -3916,7 +3907,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Check the large majority of the current available channels to use.
+        ///   Looks up a localized string similar to Scans the majority of available channels for use..
         /// </summary>
         public static string Menu_ChannelChanger_AvailableChannels_Description {
             get {
@@ -4237,7 +4228,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the value must be a number.
+        ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the value must be an interger.
         /// </summary>
         public static string Menu_FastFlagEditor_InvalidNumberValue {
             get {
@@ -4284,7 +4275,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Wow this is so empty, how about adding a fastflag ?.
+        ///   Looks up a localized string similar to Wow, this is so empty! How about adding a FastFlag?.
         /// </summary>
         public static string Menu_FastFlagEditor_NoFlags {
             get {
@@ -4448,7 +4439,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changes the game’s sky to a solid gray color. Note: this will not work in games that have a custom skybox added by the developer..
+        ///   Looks up a localized string similar to Changes the game’s sky to a solid gray color. Note: This will not work in games that have a custom skybox added by the developer..
         /// </summary>
         public static string Menu_FastFlags_Presets_GraySky_Description {
             get {
@@ -4579,24 +4570,6 @@ namespace Bloxstrap.Resources {
         public static string Menu_FastFlags_Presets_RenderingMode_Title {
             get {
                 return ResourceManager.GetString("Menu.FastFlags.Presets.RenderingMode.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Adjust the texture quality for games. Note: this setting also affects GUI and UI..
-        /// </summary>
-        public static string Menu_FastFlags_Presets_TextureQuality_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlags.Presets.TextureQuality.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Texture Quality.
-        /// </summary>
-        public static string Menu_FastFlags_Presets_TextureQuality_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlags.Presets.TextureQuality.Title", resourceCulture);
             }
         }
         
@@ -4940,7 +4913,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disables the Roblox screenshot feature. Note: when this feature is enabled, the hotkey combo will no longer work..
+        ///   Looks up a localized string similar to Disables the Roblox screenshot feature. Note: When this feature is enabled, the hotkey combo will no longer work..
         /// </summary>
         public static string Menu_Integrations_BlockScreenShots_Description {
             get {
@@ -4958,7 +4931,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Disables the Roblox recording feature. Note: when this feature is enabled, the hotkey combo will no longer work..
+        ///   Looks up a localized string similar to Disables the Roblox recording feature. Note: When this feature is enabled, the hotkey combo will no longer work..
         /// </summary>
         public static string Menu_Integrations_BlockVideoRecording_Description {
             get {
@@ -5183,7 +5156,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View game history to quickly rejoin your server.
+        ///   Looks up a localized string similar to View game history to quickly rejoin your server..
         /// </summary>
         public static string Menu_Integrations_GameHistoryMenu_Description {
             get {
@@ -5219,7 +5192,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Displays your total and game session playtime.
+        ///   Looks up a localized string similar to Displays your total playtime and current session time while in a game or Studio place..
         /// </summary>
         public static string Menu_Integrations_PlaytimeCounter_Description {
             get {
@@ -5255,7 +5228,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Displays the server’s estimated uptime using via [RoValra&apos;s APIs]({0}), [RoValra&apos;s privacy policy]({0}/privacy) applies. (Feature Made By Fishstrap).
+        ///   Looks up a localized string similar to Displays the server’s estimated uptime using [RoValra&apos;s APIs]({0}), [RoValra&apos;s privacy policy]({0}/privacy) applies, Feature developed by Fishstrap..
         /// </summary>
         public static string Menu_Integrations_QueryServerUptime_Description {
             get {
@@ -5273,7 +5246,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0})..
+        ///   Looks up a localized string similar to These feature requires activity tracking to be enabled and the Discord desktop app to be installed and running. [Find out more]({0})..
         /// </summary>
         public static string Menu_Integrations_RequiresActivityTracking {
             get {
@@ -5894,7 +5867,7 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Easily join servers near you using the selected account in Account Manager. Made with [RoValra&apos;s APIs]({0}), [RoValra&apos;s privacy policy]({0}/privacy) applies..
+        ///   Looks up a localized string similar to Easily join servers near you using the selected account in Account Manager. Uses [RoValra&apos;s APIs]({0}), [RoValra&apos;s privacy policy applies.]({0}/privacy).
         /// </summary>
         public static string Menu_RegionSelector_Description {
             get {
