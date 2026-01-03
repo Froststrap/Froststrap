@@ -132,12 +132,74 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private CancellationTokenSource? _searchDebounceCts;
         private static readonly HttpClient _http = new();
 
+        private Elements.AccountManagers.MainWindow? GetMainWindow()
+        {
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is Elements.AccountManagers.MainWindow accountManagerWindow)
+                {
+                    return accountManagerWindow;
+                }
+            }
+            return null;
+        }
+
         public GamesViewModel()
         {
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
 
+            AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
+
             _ = InitializeDataAsync();
+        }
+
+        private async void OnActiveAccountChanged(AltAccount? newAccount)
+        {
+            try
+            {
+                await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    if (newAccount == null)
+                    {
+                        DiscoveryGames.Clear();
+                        FavoriteGames.Clear();
+                        ContinuePlayingGames.Clear();
+                        SearchResults.Clear();
+                        Subplaces.Clear();
+                        ResetGameDetails();
+
+                        OnPropertyChanged(nameof(ShouldShowGames));
+                        OnPropertyChanged(nameof(HasActiveAccount));
+                        return;
+                    }
+
+                    IsLoading = true;
+
+                    try
+                    {
+                        var tasks = new List<Task>
+                {
+                    RefreshDiscoveryGames(),
+                    RefreshFavoriteGames(),
+                    RefreshContinuePlaying()
+                };
+
+                        await Task.WhenAll(tasks);
+
+                        OnPropertyChanged(nameof(ShouldShowGames));
+                        OnPropertyChanged(nameof(HasActiveAccount));
+                    }
+                    finally
+                    {
+                        IsLoading = false;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine($"{LOG_IDENT}::OnActiveAccountChanged", $"Exception: {ex.Message}");
+            }
         }
 
         private async Task InitializeDataAsync()
@@ -160,7 +222,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             PlaceId = mgr.CurrentPlaceId ?? "";
             ServerId = mgr.CurrentServerInstanceId ?? "";
-            SelectedRegion = mgr.SelectedRegion;
+            SelectedRegion = App.Settings.Prop.SelectedRegion ?? "";
 
             if (mgr.ActiveAccount is not null)
             {
@@ -183,24 +245,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             Regions.Clear();
 
             var fetcher = new RobloxServerFetcher();
-            try
-            {
-                var mgr = AccountManager.Shared;
-                var token = mgr.ActiveAccount?.SecurityToken;
-                if (!string.IsNullOrWhiteSpace(token))
-                {
-                    fetcher.SetRoblosecurity(token);
-                    App.Logger.WriteLine(LOG_IDENT_REGIONS, "Using roblosecurity from AccountManager for region requests.");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT_REGIONS, "No active account roblosecurity available; fetcher will use cache.");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT_REGIONS, $"Exception: {ex.Message}");
-            }
 
             var datacentersResult = await fetcher.GetDatacentersAsync();
 
@@ -228,10 +272,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 foreach (var region in datacentersResult.Value.regions)
                     Regions.Add(region);
 
-                var mgr = AccountManager.Shared;
-                if (!string.IsNullOrEmpty(mgr.SelectedRegion) && Regions.Contains(mgr.SelectedRegion))
+                var savedRegion = App.Settings.Prop.SelectedRegion;
+                if (!string.IsNullOrEmpty(savedRegion) && Regions.Contains(savedRegion))
                 {
-                    SelectedRegion = mgr.SelectedRegion;
+                    SelectedRegion = savedRegion;
                 }
                 else if (string.IsNullOrEmpty(SelectedRegion) && datacentersResult.Value.regions.Count > 0)
                 {
@@ -558,81 +602,102 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         {
             const string LOG_IDENT_FIND_SERVER = $"{LOG_IDENT}::FindAndJoinServer";
 
+            var mainWindow = GetMainWindow();
             var fetcher = new RobloxServerFetcher();
             string? nextCursor = "";
             int attemptCount = 0;
             const int maxAttempts = 20;
 
-            AutoSearchStatus = "Loading regions...";
-            var datacentersResult = await fetcher.GetDatacentersAsync();
+            mainWindow?.ShowLoading("Loading regions...");
 
-            if (datacentersResult == null)
+            try
             {
-                Frontend.ShowMessageBox("Failed to load server regions. Please try again later.", MessageBoxImage.Error);
-                return;
-            }
+                var datacentersResult = await fetcher.GetDatacentersAsync();
 
-            var (regions, dcMap) = datacentersResult.Value;
-
-            if (!Regions.Any())
-            {
-                Application.Current.Dispatcher.Invoke(() =>
+                if (datacentersResult == null)
                 {
-                    Regions.Clear();
-                    foreach (var region in regions)
-                        Regions.Add(region);
-                });
-            }
-
-            fetcher.SetRoblosecurity(account.SecurityToken);
-
-            var mgr = AccountManager.Shared;
-
-            while (attemptCount < maxAttempts)
-            {
-                attemptCount++;
-                AutoSearchStatus = $"Searching servers... (Page {attemptCount})";
-
-                var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, SelectedSortOrder);
-
-                if (result?.Servers == null || !result.Servers.Any())
-                {
-                    AutoSearchStatus = "No servers found, checking next page...";
-                    await Task.Delay(1000);
-                    continue;
-                }
-
-                var matchingServer = result.Servers.FirstOrDefault(server =>
-                server.DataCenterId.HasValue &&
-                dcMap.TryGetValue(server.DataCenterId.Value, out var mappedRegion) &&
-                mappedRegion == SelectedRegion);
-
-                if (matchingServer != null)
-                {
-                    AutoSearchStatus = $"Found server in {SelectedRegion}! Joining...";
-
-                    await mgr.LaunchAccountToPlaceAsync(account, placeId, matchingServer.Id);
-
-                    AutoSearchStatus = "Successfully joined server!";
+                    Frontend.ShowMessageBox("Failed to load server regions. Please try again later.", MessageBoxImage.Error);
                     return;
                 }
 
-                AutoSearchStatus = $"Checked {result.Servers.Count} servers on page {attemptCount}, none in {SelectedRegion}. Continuing search...";
+                var (regions, dcMap) = datacentersResult.Value;
 
-                if (!string.IsNullOrEmpty(result.NextCursor))
+                if (!Regions.Any())
                 {
-                    nextCursor = result.NextCursor;
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        Regions.Clear();
+                        foreach (var region in regions)
+                            Regions.Add(region);
+                    });
                 }
-                else
+
+                var mgr = AccountManager.Shared;
+                string? cookie = mgr.GetRoblosecurityForUser(account.UserId);
+
+                if (string.IsNullOrWhiteSpace(cookie))
                 {
-                    Frontend.ShowMessageBox($"Could not find a server in {SelectedRegion} after searching all available servers.", MessageBoxImage.Information);
+                    Frontend.ShowMessageBox("Cannot find a cookie to use, Please log in to account manager.", MessageBoxImage.Error);
                     return;
                 }
 
-                await Task.Delay(500);
-            }
+                string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
 
-            Frontend.ShowMessageBox($"Could not find a server in {SelectedRegion} after {maxAttempts} pages. Try selecting a different region.", MessageBoxImage.Information);
+                if (string.IsNullOrWhiteSpace(selectedRegion))
+                {
+                    Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
+                    return;
+                }
+
+                while (attemptCount < maxAttempts)
+                {
+                    attemptCount++;
+                    mainWindow?.ShowLoading($"Searching for {selectedRegion} server... (Page {attemptCount})");
+
+                    var result = await fetcher.FetchServerInstancesAsync(placeId, cookie, nextCursor, SelectedSortOrder);
+
+                    if (result?.Servers == null || !result.Servers.Any())
+                    {
+                        mainWindow?.ShowLoading("No servers found, checking next page...");
+                        await Task.Delay(1000);
+                        continue;
+                    }
+
+                    var matchingServer = result.Servers.FirstOrDefault(server =>
+                        server.DataCenterId.HasValue &&
+                        dcMap.TryGetValue(server.DataCenterId.Value, out var mappedRegion) &&
+                        mappedRegion == selectedRegion);
+
+                    if (matchingServer != null)
+                    {
+                        mainWindow?.ShowLoading($"Found server in {selectedRegion}! Joining...");
+
+                        await mgr.LaunchAccountToPlaceAsync(account, placeId, matchingServer.Id);
+
+                        mainWindow?.ShowLoading("Successfully joined server!");
+                        await Task.Delay(750);
+                        return;
+                    }
+
+                    if (!string.IsNullOrEmpty(result.NextCursor))
+                    {
+                        nextCursor = result.NextCursor;
+                    }
+                    else
+                    {
+                        Frontend.ShowMessageBox($"Could not find a server in {selectedRegion} after searching all available servers.", MessageBoxImage.Information);
+                        return;
+                    }
+
+                    await Task.Delay(500);
+                }
+
+                Frontend.ShowMessageBox($"Could not find a server in {selectedRegion} after {maxAttempts} pages. Try selecting a different region.", MessageBoxImage.Information);
+            }
+            finally
+            {
+                mainWindow?.HideLoading();
+            }
         }
 
         private async Task AutoFindAndJoinGameAsync(long placeId)
@@ -654,14 +719,13 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(SelectedRegion))
+            if (string.IsNullOrWhiteSpace(App.Settings.Prop.SelectedRegion))
             {
-                Frontend.ShowMessageBox("Please select a region first.", MessageBoxImage.Warning);
+                Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
                 return;
             }
 
             IsAutoSearching = true;
-            AutoSearchStatus = $"Searching for {SelectedRegion} server...";
 
             try
             {
@@ -675,7 +739,6 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             finally
             {
                 IsAutoSearching = false;
-                AutoSearchStatus = "";
             }
         }
 
@@ -1753,9 +1816,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             const string LOG_IDENT_REGION = $"{LOG_IDENT}::OnSelectedRegionChanged";
 
             var mgr = AccountManager.Shared;
-            if (mgr != null && value != null)
+            if (value != null)
             {
-                mgr.SetSelectedRegion(value);
+                App.Settings.Prop.SelectedRegion = value;
+                App.Settings.Save();
                 App.Logger.WriteLine(LOG_IDENT_REGION, $"Selected region changed to: {value}");
             }
         }

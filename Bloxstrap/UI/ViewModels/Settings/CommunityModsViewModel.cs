@@ -25,6 +25,27 @@ namespace Bloxstrap.UI.ViewModels.Settings
         [ObservableProperty]
         private string _searchQuery = string.Empty;
 
+        [ObservableProperty]
+        private bool _showAll = true;
+
+        [ObservableProperty]
+        private bool _showColorMods = false;
+
+        [ObservableProperty]
+        private bool _showCustomThemes = false;
+
+        [ObservableProperty]
+        private bool _showMiscMods = false;
+
+        [ObservableProperty]
+        private bool _showSkyBox = false;
+
+        [ObservableProperty]
+        private bool _showCursor = false;
+
+        [ObservableProperty]
+        private bool _showAvatarEditor = false;
+
         private readonly HttpClient _httpClient = new();
         private List<CommunityMod> _allMods = new();
         private readonly string _cacheFolder;
@@ -41,6 +62,73 @@ namespace Bloxstrap.UI.ViewModels.Settings
         private async void OnRemoteDataLoaded(object? sender, EventArgs e)
         {
             await LoadModsAsync();
+        }
+
+        [RelayCommand]
+        private void FilterAll()
+        {
+            ResetAllFilters();
+            ShowAll = true;
+            ApplyFilters();
+        }
+
+        [RelayCommand]
+        private void FilterColorMods()
+        {
+            ResetAllFilters();
+            ShowColorMods = true;
+            ApplyFilters();
+        }
+
+        [RelayCommand]
+        private void FilterCustomThemes()
+        {
+            ResetAllFilters();
+            ShowCustomThemes = true;
+            ApplyFilters();
+        }
+
+        [RelayCommand]
+        private void FilterMiscMods()
+        {
+            ResetAllFilters();
+            ShowMiscMods = true;
+            ApplyFilters();
+        }
+
+        [RelayCommand]
+        private void FilterSkyBox()
+        {
+            ResetAllFilters();
+            ShowSkyBox = true;
+            ApplyFilters();
+        }
+
+        [RelayCommand]
+        private void FilterCursor()
+        {
+            ResetAllFilters();
+            ShowCursor = true;
+            ApplyFilters();
+        }
+
+        [RelayCommand]
+        private void FilterAvatarEditor()
+        {
+            ResetAllFilters();
+            ShowAvatarEditor = true;
+            ApplyFilters();
+        }
+
+        private void ResetAllFilters()
+        {
+            ShowAll = false;
+            ShowColorMods = false;
+            ShowCustomThemes = false;
+            ShowMiscMods = false;
+            ShowSkyBox = false;
+            ShowCursor = false;
+            ShowAvatarEditor = false;
         }
 
         [RelayCommand]
@@ -65,6 +153,11 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 HasError = false;
                 ErrorMessage = string.Empty;
 
+                if (App.RemoteData.LoadedState == GenericTriState.Unknown)
+                {
+                    await App.RemoteData.WaitUntilDataFetched();
+                }
+
                 var remoteMods = App.RemoteData.Prop.CommunityMods;
 
                 if (remoteMods?.Any() != true)
@@ -78,17 +171,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 }
 
                 _allMods = remoteMods;
-
-                await Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    Mods.Clear();
-                    foreach (var mod in _allMods)
-                    {
-                        mod.DownloadCommand = DownloadModCommand;
-                        mod.ShowInfoCommand = ShowModInfoCommand;
-                        Mods.Add(mod);
-                    }
-                });
+                ApplyFilters();
 
                 var thumbnailTasks = _allMods.Select(mod => LoadModThumbnailAsync(mod));
                 await Task.WhenAll(thumbnailTasks);
@@ -121,35 +204,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             try
             {
                 await Task.Delay(300, cancellationToken);
-
-                List<CommunityMod> modsToDisplay;
-
-                if (string.IsNullOrWhiteSpace(SearchQuery))
-                {
-                    modsToDisplay = _allMods;
-                }
-                else
-                {
-                    var query = SearchQuery.ToLower();
-                    modsToDisplay = _allMods.Where(mod =>
-                        mod.Name.ToLower().Contains(query) ||
-                        (mod.HexCode?.ToLower()?.Contains(query) ?? false) ||
-                        (mod.Author?.ToLower()?.Contains(query) ?? false) ||
-                        mod.ModTypeDisplay.ToLower().Contains(query)
-                    ).ToList();
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                await Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    Mods.Clear();
-                    foreach (var mod in modsToDisplay)
-                    {
-                        mod.DownloadCommand = DownloadModCommand;
-                        Mods.Add(mod);
-                    }
-                });
+                ApplyFilters();
             }
             catch (OperationCanceledException)
             {
@@ -158,6 +213,65 @@ namespace Bloxstrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteLine($"CommunityModsViewModel::SearchModsAsync", $"Search error: {ex.Message}");
+            }
+        }
+
+        private void ApplyFilters()
+        {
+            try
+            {
+                IEnumerable<CommunityMod> filteredMods = _allMods;
+
+                if (ShowColorMods)
+                {
+                    filteredMods = filteredMods.Where(mod => mod.ModType == ModType.ColorMod);
+                }
+                else if (ShowCustomThemes)
+                {
+                    filteredMods = filteredMods.Where(mod => mod.ModType == ModType.CustomTheme);
+                }
+                else if (ShowMiscMods)
+                {
+                    filteredMods = filteredMods.Where(mod => mod.ModType == ModType.MiscMod);
+                }
+                else if (ShowSkyBox)
+                {
+                    filteredMods = filteredMods.Where(mod => mod.ModType == ModType.SkyBox);
+                }
+                else if (ShowCursor)
+                {
+                    filteredMods = filteredMods.Where(mod => mod.ModType == ModType.Cursor);
+                }
+                else if (ShowAvatarEditor)
+                {
+                    filteredMods = filteredMods.Where(mod => mod.ModType == ModType.AvatarEditor);
+                }
+
+                if (!string.IsNullOrWhiteSpace(SearchQuery))
+                {
+                    var query = SearchQuery.ToLower();
+                    filteredMods = filteredMods.Where(mod =>
+                        mod.Name.ToLower().Contains(query) ||
+                        (mod.HexCode?.ToLower()?.Contains(query) ?? false) ||
+                        (mod.Author?.ToLower()?.Contains(query) ?? false) ||
+                        mod.ModTypeDisplay.ToLower().Contains(query)
+                    );
+                }
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Mods.Clear();
+                    foreach (var mod in filteredMods)
+                    {
+                        mod.DownloadCommand = DownloadModCommand;
+                        mod.ShowInfoCommand = ShowModInfoCommand;
+                        Mods.Add(mod);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine($"CommunityModsViewModel::ApplyFilters", $"Filter error: {ex.Message}");
             }
         }
 
@@ -185,28 +299,58 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                 mod.DownloadProgress = 100;
 
-                switch (mod.ModType)
+                if (mod.IsCustomTheme)
                 {
-                    case ModType.Misc:
-                    case ModType.Mod:
-                        await ExtractModToModificationsAsync(tempFile, mod.Name);
-                        Frontend.ShowMessageBox(
-                            $"Mod '{mod.Name}' installed successfully!",
-                            MessageBoxImage.Information,
-                            MessageBoxButton.OK
-                        );
-                        App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed mod: {mod.Name}");
-                        break;
+                    await ExtractCustomThemeAsync(tempFile, mod.Name);
 
-                    case ModType.CustomTheme:
-                        await ExtractCustomThemeAsync(tempFile, mod.Name);
-                        Frontend.ShowMessageBox(
-                            $"Custom theme '{mod.Name}' installed successfully!",
-                            MessageBoxImage.Information,
-                            MessageBoxButton.OK
+                    App.Settings.Prop.SelectedCustomTheme = mod.Name;
+                    App.Settings.Save();
+
+                    if (App.Settings.Prop.BootstrapperStyle != BootstrapperStyle.CustomDialog)
+                    {
+                        App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
+                        App.Settings.Save();
+                    }
+
+                    Frontend.ShowMessageBox(
+                        $"Custom theme '{mod.Name}' installed successfully!\n" +
+                        "The theme has been saved to your Custom Themes folder and has been automatically selected as your current theme.",
+                        MessageBoxImage.Information,
+                        MessageBoxButton.OK
+                    );
+                    App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed and selected custom theme: {mod.Name}");
+                }
+                else
+                {
+                    bool hasExistingMods = Directory.Exists(Paths.Modifications) &&
+                                          (Directory.GetFiles(Paths.Modifications).Any() ||
+                                           Directory.GetDirectories(Paths.Modifications)
+                                               .Any(dir => !dir.EndsWith("ClientSettings", StringComparison.OrdinalIgnoreCase)));
+
+                    if (hasExistingMods)
+                    {
+                        var result = Frontend.ShowMessageBox(
+                            "Existing mods found in the Modifications folder.\n\n" +
+                            $"Would you like to delete existing mods before installing '{mod.Name}'?",
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo
                         );
-                        App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed custom theme: {mod.Name}");
-                        break;
+
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            await CleanModificationsDirectoryAsync();
+                        }
+                    }
+
+                    await ExtractZipAsync(tempFile);
+
+                    Frontend.ShowMessageBox(
+                        $"Mod '{mod.Name}' installed successfully!",
+                        MessageBoxImage.Information,
+                        MessageBoxButton.OK
+                    );
+
+                    App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed mod: {mod.Name}");
                 }
             }
             catch (Exception ex)
@@ -269,26 +413,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 throw new Exception($"Failed to extract custom theme '{themeName}': {ex.Message}", ex);
-            }
-        }
-
-        private async Task ExtractModToModificationsAsync(string zipPath, string modName)
-        {
-            if (!File.Exists(zipPath))
-                throw new FileNotFoundException("Mod file not found", zipPath);
-
-            try
-            {
-                Directory.CreateDirectory(Paths.Modifications);
-                await CleanModificationsDirectoryAsync();
-
-                await ExtractZipAsync(zipPath);
-
-                App.Logger.WriteLine($"CommunityModsViewModel::ExtractModToModificationsAsync", $"Extracted {modName} to {Paths.Modifications}");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Failed to extract mod '{modName}': {ex.Message}", ex);
             }
         }
 

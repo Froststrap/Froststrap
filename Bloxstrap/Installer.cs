@@ -101,8 +101,11 @@ namespace Bloxstrap
 
             // only register player, for the scenario where the user installs bloxstrap, closes it,
             // and then launches from the website expecting it to work
-            // studio can be implicitly registered when it's first launched manually
+            // studio can be implicitly registered when it's first launched manually or if its configuration files are present
             WindowsRegistry.RegisterPlayer();
+
+            if (App.IsStudioInstalled)
+                WindowsRegistry.RegisterStudio();
 
             if (CreateDesktopShortcuts)
                 Shortcut.Create(Paths.Application, "", DesktopShortcut);
@@ -144,10 +147,6 @@ namespace Bloxstrap
             App.Settings.Load(false);
             App.State.Load(false);
             App.FastFlags.Load(false);
-
-            if (App.IsStudioVisible)
-                WindowsRegistry.RegisterStudio();
-
             App.Settings.Save();
 
             App.Logger.WriteLine(LOG_IDENT, "Installation finished");
@@ -247,10 +246,10 @@ namespace Bloxstrap
 
             var processes = new List<Process>();
 
-            if (!String.IsNullOrEmpty(App.RobloxState.Prop.Player.VersionGuid))
+            if (!String.IsNullOrEmpty(App.PlayerState.Prop.VersionGuid))
                 processes.AddRange(Process.GetProcessesByName(App.RobloxPlayerAppName));
 
-            if (App.IsStudioVisible)
+            if (App.IsStudioInstalled)
                 processes.AddRange(Process.GetProcessesByName(App.RobloxStudioAppName));
 
             // prompt to shutdown roblox if its currently running
@@ -283,7 +282,7 @@ namespace Bloxstrap
                 }
             }
 
-            string robloxFolder = Path.Combine(Paths.LocalAppData, "Roblox");
+            string robloxFolder = Path.Combine(Paths.Roblox);
             bool playerStillInstalled = true;
             bool studioStillInstalled = true;
 
@@ -512,28 +511,65 @@ namespace Bloxstrap
 
             if (existingVer is not null)
             {
-                if (Utilities.CompareVersions(existingVer, "1.1.4.0") == VersionComparison.LessThan)
-                {
-                    // move from App.State to App.RobloxState
-                    if (App.State.Prop.GetDeprecatedPlayer() != null)
-                        App.RobloxState.Prop.Player = App.State.Prop.GetDeprecatedPlayer()!;
-
-                    if (App.State.Prop.GetDeprecatedStudio() != null)
-                        App.RobloxState.Prop.Studio = App.State.Prop.GetDeprecatedStudio()!;
-
-                    if (App.State.Prop.GetDeprecatedModManifest() != null)
-                        App.RobloxState.Prop.ModManifest = App.State.Prop.GetDeprecatedModManifest()!;
-                }
-
                 if (Utilities.CompareVersions(existingVer, "1.2.5.0") == VersionComparison.LessThan)
                 {
                     App.Settings.Prop.ShowServerUptime = false;
                 }
 
+                if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
+                {
+                    // move from App.State to App.RobloxState
+                    JsonManager<RobloxState> legacyRobloxState = new();
+
+                    if (legacyRobloxState.IsSaved)
+                    {
+                        if (legacyRobloxState.Load(false))
+                        {
+                            App.PlayerState.Prop.VersionGuid = legacyRobloxState.Prop.Player.VersionGuid;
+                            App.PlayerState.Prop.PackageHashes = legacyRobloxState.Prop.Player.PackageHashes;
+                            App.PlayerState.Prop.Size = legacyRobloxState.Prop.Player.Size;
+                            App.PlayerState.Prop.ModManifest = legacyRobloxState.Prop.ModManifest;
+
+                            App.StudioState.Prop.VersionGuid = legacyRobloxState.Prop.Studio.VersionGuid;
+                            App.StudioState.Prop.PackageHashes = legacyRobloxState.Prop.Studio.PackageHashes;
+                            App.StudioState.Prop.Size = legacyRobloxState.Prop.Studio.Size;
+                        }
+
+                        legacyRobloxState.Delete();
+                    }
+
+                    if (App.Settings.Prop.Theme == Theme.Custom)
+                    {
+                        App.Settings.Prop.Theme = Theme.Default;
+                    }
+
+                    if (File.Exists(Path.Combine(Paths.Cache, "GameHistory.json")))
+                    {
+                        File.Delete(Path.Combine(Paths.Cache, "GameHistory.json"));
+                    }
+                }
+
+                if (Utilities.CompareVersions(existingVer, "1.4.1.0") == VersionComparison.LessThan)
+                {
+                    if (App.Settings.Prop.MultiInstanceLaunching)
+                    {
+                        App.Settings.Prop.MultiInstanceLaunching = false;
+                    }
+
+                    if (File.Exists(Path.Combine(Paths.Cache, "GameHistory.json")))
+                    {
+                        File.Delete(Path.Combine(Paths.Cache, "GameHistory.json"));
+                    }
+                }
+
                 App.Settings.Save();
                 App.FastFlags.Save();
                 App.State.Save();
-                App.RobloxState.Save();
+                if (App.PlayerState.Loaded)
+                    App.PlayerState.Save();
+
+                if (App.StudioState.Loaded)
+                    App.StudioState.Save();
             }
 
             if (currentVer is null)

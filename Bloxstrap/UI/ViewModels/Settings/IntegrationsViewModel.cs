@@ -1,6 +1,7 @@
 ﻿using Bloxstrap.Integrations;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -75,19 +76,23 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 {
                     ShowServerDetailsEnabled = false;
                     ShowGameHistoryEnabled = false;
+                    ShowServerUptimeEnabled = false;
                     AutoRejoinEnabled = false;
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
                     DiscordActivityEnabled = false;
                     DiscordActivityJoinEnabled = false;
+                    StudioRPCEnabled = false;
 
                     OnPropertyChanged(nameof(ShowServerDetailsEnabled));
                     OnPropertyChanged(nameof(ShowGameHistoryEnabled));
+                    OnPropertyChanged(nameof(ShowServerUptimeEnabled));
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
                     OnPropertyChanged(nameof(DiscordActivityEnabled));
                     OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
+                    OnPropertyChanged(nameof(StudioRPCEnabled));
                 }
 
                 OnPropertyChanged(nameof(ActivityTrackingEnabled));
@@ -114,8 +119,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public bool AutoRejoinEnabled
         {
-            get => App.Settings.Prop.AutoRejoinEnabled;
-            set => App.Settings.Prop.AutoRejoinEnabled = value;
+            get => App.Settings.Prop.AutoRejoin;
+            set => App.Settings.Prop.AutoRejoin = value;
         }
 
         public bool ShowGameHistoryEnabled
@@ -227,6 +232,68 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set => App.Settings.Prop.UseDisableAppPatch = value;
         }
 
+        public bool StudioRPCEnabled
+        {
+            get => App.Settings.Prop.StudioRPC;
+            set
+            {
+                if (value)
+                {
+                    var result = Frontend.ShowMessageBox(
+                        "This works by adding a custom made froststrap plugin that will log what your doing.\n" +
+                        "Do you want to install the plugin?",
+                        MessageBoxImage.Information,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result != MessageBoxResult.Yes)
+                    {
+                        return;
+                    }
+                }
+
+                App.Settings.Prop.StudioRPC = value;
+
+                if (!value)
+                {
+                    ThumbnailChanging = value;
+                    EditingInfo = value;
+                    WorkspaceInfo = value;
+                    ShowTesting = value;
+                    OnPropertyChanged(nameof(ThumbnailChanging));
+                    OnPropertyChanged(nameof(EditingInfo));
+                    OnPropertyChanged(nameof(WorkspaceInfo));
+                    OnPropertyChanged(nameof(ShowTesting));
+                }
+
+                _ = HandleStudioRPCPluginAsync(value);
+            }
+        }
+
+        public bool ThumbnailChanging
+        {
+            get => App.Settings.Prop.StudioThumbnailChanging;
+            set => App.Settings.Prop.StudioThumbnailChanging = value;
+        }
+
+        public bool EditingInfo
+        {
+            get => App.Settings.Prop.StudioEditingInfo;
+            set => App.Settings.Prop.StudioEditingInfo = value;
+        }
+
+        public bool WorkspaceInfo
+        {
+            get => App.Settings.Prop.StudioWorkspaceInfo;
+            set => App.Settings.Prop.StudioWorkspaceInfo= value;
+        }
+
+        public bool ShowTesting
+        {
+            get => App.Settings.Prop.StudioShowTesting;
+            set => App.Settings.Prop.StudioShowTesting = value;
+        }
+
         public bool DisableRobloxRecording
         {
             get => App.Settings.Prop.BlockRobloxRecording;
@@ -257,7 +324,48 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public int SelectedCustomIntegrationIndex { get; set; }
         public bool IsCustomIntegrationSelected => SelectedCustomIntegration is not null;
 
-        public static void DisableRecording()
+        private async Task HandleStudioRPCPluginAsync(bool value)
+        {
+            string pluginUrl = "https://github.com/Froststrap/FroststrapStudioRPC/releases/latest/download/FroststrapStudioRPC.rbxmx";
+            string pluginFileName = "FroststrapStudioRPC.rbxmx";
+
+            string pluginsPath = Path.Combine(Paths.Roblox, "Plugins");
+            string pluginFile = Path.Combine(pluginsPath, pluginFileName);
+
+            if (value)
+            {
+                try
+                {
+                    Directory.CreateDirectory(pluginsPath);
+
+                    if (File.Exists(pluginFile))
+                    {
+                        File.Delete(pluginFile);
+                    }
+
+                        using (HttpClient client = new HttpClient())
+                        {
+                            byte[] data = await client.GetByteArrayAsync(pluginUrl);
+
+                            await File.WriteAllBytesAsync(pluginFile, data);
+                        }
+                }
+                catch (Exception ex)
+                {
+                    Frontend.ShowMessageBox($"Install failed: {ex.Message}",
+                        MessageBoxImage.Error, MessageBoxButton.OK);
+                }
+            }
+            else
+            {
+                if (File.Exists(pluginFile))
+                {
+                    File.Delete(pluginFile);
+                }
+            }
+        }
+
+        private static void DisableRecording()
         {
             const string LOG_IDENT = "Watcher::DisableRecording";
             string videosPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox");
@@ -313,7 +421,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             }
         }
 
-        public static void DisableScreenshots()
+        private static void DisableScreenshots()
         {
             const string LOG_IDENT = "Watcher::DisableScreenshots";
             string picturesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox");
@@ -332,13 +440,11 @@ namespace Bloxstrap.UI.ViewModels.Settings
                             if (!Directory.Exists(backupPath))
                             {
                                 Directory.Move(picturesPath, backupPath);
-                                App.Logger.WriteLine(LOG_IDENT, $"Moved existing folder to '{backupPath}'");
                             }
                         }
                         else
                         {
                             Directory.Delete(picturesPath);
-                            App.Logger.WriteLine(LOG_IDENT, $"Deleted empty folder '{picturesPath}'");
                         }
                     }
 
@@ -346,7 +452,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     {
                         File.WriteAllBytes(picturesPath, Array.Empty<byte>());
                         File.SetAttributes(picturesPath, FileAttributes.ReadOnly);
-                        App.Logger.WriteLine(LOG_IDENT, $"Created read-only file '{picturesPath}'");
                     }
                 }
                 else
@@ -361,13 +466,11 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         }
 
                         File.Delete(picturesPath);
-                        App.Logger.WriteLine(LOG_IDENT, $"Deleted read-only file '{picturesPath}'");
                     }
 
                     if (!Directory.Exists(picturesPath) && Directory.Exists(backupPath))
                     {
                         Directory.Move(backupPath, picturesPath);
-                        App.Logger.WriteLine(LOG_IDENT, $"Restored backup folder from '{backupPath}'");
                     }
                 }
             }

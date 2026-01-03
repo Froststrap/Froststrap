@@ -10,7 +10,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     x:Name="IntegrationsPageView"
     Title="IntegrationsPage"
-    d:DesignHeight="1500"
+    d:DesignHeight="2100"
     d:DesignWidth="800"
     Scrollable="True"
     mc:Ignorable="d">
@@ -50,7 +50,7 @@
         </controls:OptionControl>
 
         <controls:OptionControl
-            Description="Automatically join the same server back after 20 min disconnection or network loss errors."
+            Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
             Header="Auto Rejoin"
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding AutoRejoinEnabled, Mode=TwoWay}" />
@@ -64,7 +64,8 @@
         </controls:OptionControl>
 
         <ui:CardExpander
-            Margin="0,8,0,0"
+            Margin="0,8,0,0" 
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}"
             IsExpanded="{Binding Path=ShowGameHistoryEnabled, Mode=OneWay}"
             Style="{StaticResource NoUserExpansionCardExpanderStyle}">
             <ui:CardExpander.Header>
@@ -87,18 +88,20 @@
                 <controls:OptionControl
                     Description="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Description}"
                     Header="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Title}"
-                    IsEnabled="{Binding ShowGameHistoryEnabled, Mode=OneWay}">
+                    IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
                     <Button
                         Margin="0,8,0,0"
                         HorizontalAlignment="Left"
                         Command="{Binding OpenGameHistoryCommand}"
-                        Content="View Game History"
-                        IsEnabled="{Binding ShowGameHistoryEnabled}" />
+                        Content="View Game History"/>
                 </controls:OptionControl>
             </StackPanel>
         </ui:CardExpander>
 
-        <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}" Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}">
+        <controls:OptionControl 
+            Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}" 
+            Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
             <ComboBox
                 Width="200"
                 Margin="5,0,0,0"
@@ -167,6 +170,12 @@
             <ui:ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
         </controls:OptionControl>
 
+        <TextBlock
+            FontSize="18"
+            Margin="0,16,0,0"
+            FontWeight="Bold"
+            Text="Roblox Player" />
+
         <controls:OptionControl
             x:Name="DiscordActivityOption"
             Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work'}"
@@ -194,6 +203,48 @@
             Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
             IsEnabled="{Binding InnerContent.IsChecked, ElementName=DiscordActivityOption, Mode=OneWay}">
             <ui:ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <TextBlock
+            FontSize="18"
+            Margin="0,16,0,0"
+            FontWeight="Bold"
+            Text="Roblox Studio" />
+
+        <controls:OptionControl
+            x:Name="StudioActivityOption"
+            Header="Display Studio Activity"
+            Description="Shows Roblox Studio as your Discord activity on launch."
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=ActivityTrackingOption, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl
+            Header="Dynamic Thumbnail"
+            Description="Changes the thumbnail depending on the script you have open."
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl
+            Header="Editing Info"
+            Description="Shows the script type, script name, and number of lines in the script."
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl
+            Header="Workspace Info"
+            Description="Displays the name of your current workspace."
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl
+            Header="Show Testing"
+            Description="Shows a small play icon in your RPC when testing a game."
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <Separator Margin="0,8,0,8" />

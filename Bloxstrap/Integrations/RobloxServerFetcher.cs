@@ -22,23 +22,13 @@ namespace Bloxstrap.Integrations
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
 
-        private string? _roblosecurityCached;
-        private string? _channelToken;
         private readonly string _serverCacheFilePath = Path.Combine(Paths.Cache, "server_cache.json");
         private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = new();
 
         private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
 
-        public void SetChannelToken(string? token)
-        {
-            _channelToken = string.IsNullOrWhiteSpace(token) ? null : token;
-            App.Logger.WriteLine(LOG_IDENT, $"Channel token {(string.IsNullOrEmpty(token) ? "cleared" : "set")}");
-        }
-
         public RobloxServerFetcher()
         {
-            _client.Timeout = TimeSpan.FromSeconds(60);
-
             try
             {
                 Directory.CreateDirectory(Paths.Cache);
@@ -152,104 +142,6 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        private string GetCachePath()
-        {
-            string dir = Path.Combine(Paths.Cache);
-            Directory.CreateDirectory(dir);
-            return Path.Combine(dir, "regionselector.cache");
-        }
-
-        private void InvalidateCachedRoblosecurity()
-        {
-            _roblosecurityCached = null;
-            try
-            {
-                var p = GetCachePath();
-                if (File.Exists(p)) File.Delete(p);
-                App.Logger.WriteLine(LOG_IDENT, "Roblosecurity cache invalidated.");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
-            }
-        }
-
-        private string? GetCachedRoblosecurity()
-        {
-            const string LOG_IDENT_GET_TOKEN = $"{LOG_IDENT}::GetCachedRoblosecurity";
-
-            try
-            {
-                var shared = AccountManager.Shared;
-                var active = shared?.ActiveAccount;
-                if (active != null && !string.IsNullOrWhiteSpace(active.SecurityToken))
-                {
-                    _roblosecurityCached = active.SecurityToken;
-                    App.Logger.WriteLine(LOG_IDENT_GET_TOKEN, $"Using roblosecurity from AccountManager active account '{active.Username}'.");
-                    return _roblosecurityCached;
-                }
-
-                App.Logger.WriteLine(LOG_IDENT_GET_TOKEN, "No active account roblosecurity available in AccountManager. Region selector will not fetch servers.");
-                return null;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_GET_TOKEN, ex);
-                return null;
-            }
-        }
-
-        private string MaskToken(string? s)
-        {
-            if (string.IsNullOrEmpty(s)) return "(empty)";
-            if (s.Length <= 12) return new string('*', s.Length);
-            return s.Substring(0, 6) + "..." + s.Substring(s.Length - 4);
-        }
-
-        private string DescribeTokenSource(string token, AltAccount? activeSnapshot = null)
-        {
-            if (string.IsNullOrWhiteSpace(token)) return "none";
-
-            try
-            {
-                var shared = AccountManager.Shared;
-                var active = activeSnapshot ?? shared?.ActiveAccount;
-                if (active != null && !string.IsNullOrWhiteSpace(active.SecurityToken) && active.SecurityToken == token)
-                    return $"active account '{active.Username}' token={MaskToken(token)}";
-
-                var match = shared?.Accounts.FirstOrDefault(a => !string.IsNullOrWhiteSpace(a.SecurityToken) && a.SecurityToken == token);
-                if (match != null)
-                    return $"alt-account '{match.Username}' token={MaskToken(token)}";
-
-                return $"unknown source (token len={token.Length}) token={MaskToken(token)}";
-            }
-            catch
-            {
-                return $"unknown (error inspecting AltManager) token len={(token?.Length ?? 0)}";
-            }
-        }
-
-        public void ClearCache()
-        {
-            const string LOG_IDENT_CLEAR_CACHE = $"{LOG_IDENT}::ClearCache";
-
-            _serverCache.Clear();
-            App.Logger.WriteLine(LOG_IDENT_CLEAR_CACHE, "In-memory server cache has been cleared.");
-
-            try
-            {
-                if (File.Exists(_serverCacheFilePath))
-                {
-                    File.Delete(_serverCacheFilePath);
-                    App.Logger.WriteLine(LOG_IDENT_CLEAR_CACHE, $"Successfully deleted persistent cache file at: {_serverCacheFilePath}");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_CLEAR_CACHE, ex);
-            }
-        }
-
         private async Task<HttpResponseMessage> SendJoinRequestWithRetriesAsync(long placeId, string jobId, string roblosecurity, int maxAttempts = 3)
         {
             const string LOG_IDENT_JOIN_REQUEST = $"{LOG_IDENT}::SendJoinRequestWithRetries";
@@ -258,19 +150,14 @@ namespace Bloxstrap.Integrations
             while (true)
             {
                 attempt++;
+
                 var joinReq = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
-                joinReq.Headers.Add("User-Agent", "Roblox/Froststrap");
+                joinReq.Headers.Add("User-Agent", $"Roblox/Froststrap");
                 joinReq.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
                 joinReq.Headers.Add("Origin", "https://roblox.com");
 
                 joinReq.Headers.Remove("Cookie");
                 joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
-
-                // Add channel token header if available
-                if (!string.IsNullOrEmpty(_channelToken))
-                {
-                    joinReq.Headers.Add("Roblox-Channel-Token", _channelToken);
-                }
 
                 joinReq.Content = new StringContent(JsonSerializer.Serialize(new
                 {
@@ -287,7 +174,6 @@ namespace Bloxstrap.Integrations
                     if (resp.StatusCode == HttpStatusCode.Unauthorized || resp.StatusCode == HttpStatusCode.Forbidden)
                     {
                         App.Logger.WriteLine(LOG_IDENT_JOIN_REQUEST, $"Join request returned {(int)resp.StatusCode}; invalidating cached roblosecurity.");
-                        InvalidateCachedRoblosecurity();
                         return resp;
                     }
 
@@ -355,73 +241,101 @@ namespace Bloxstrap.Integrations
             return false;
         }
 
-        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", int sortOrder = 2)
+        public async Task<bool> ValidateCookieAsync(string roblosecurityCookie)
         {
-            const string LOG_IDENT_FETCH = $"{LOG_IDENT}::FetchServerInstances";
+            const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateCookieAsync";
 
-            var roblosecurity = GetCachedRoblosecurity();
-            if (string.IsNullOrWhiteSpace(roblosecurity))
-                return new FetchResult();
-
-            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Starting server fetch for place {placeId} with cursor: '{cursor}' and sortOrder: {sortOrder}");
-
-            AltAccount? activeSnapshot = null;
             try
             {
-                activeSnapshot = AccountManager.Shared?.ActiveAccount;
-                string desc = DescribeTokenSource(roblosecurity, activeSnapshot);
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Fetching servers for place {placeId}.");
-
-                if (!string.IsNullOrEmpty(_channelToken))
+                if (string.IsNullOrWhiteSpace(roblosecurityCookie))
                 {
-                    App.Logger.WriteLine(LOG_IDENT_FETCH, $"Using channel token for authenticated API access");
+                    App.Logger.WriteLine(LOG_IDENT_VALIDATE, "Cookie is null or empty");
+                    return false;
                 }
+
+                var request = new HttpRequestMessage(HttpMethod.Get, "https://users.roblox.com/v1/users/authenticated");
+                request.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurityCookie}");
+                request.Headers.Add("User-Agent", "Roblox/Froststrap");
+
+                var response = await _client.SendAsync(request);
+
+                bool isValid = response.StatusCode == HttpStatusCode.OK;
+
+                App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Cookie validation result: {(isValid ? "VALID" : "INVALID")} (Status: {response.StatusCode})");
+                return isValid;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_FETCH, ex);
+                App.Logger.WriteException(LOG_IDENT_VALIDATE, ex);
+                return false;
             }
+        }
+
+        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string roblosecurity, string cursor = "", int sortOrder = 2)
+        {
+            const string LOG_IDENT_FETCH = $"{LOG_IDENT}::FetchServerInstances";
+
+            if (string.IsNullOrWhiteSpace(roblosecurity))
+            {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"No roblosecurity available for place {placeId}");
+                return new FetchResult();
+            }
+
+            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Starting server fetch for place {placeId} with cursor: '{cursor}' and sortOrder: {sortOrder}");
+
+            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Fetching servers for place {placeId} using provided roblosecurity");
 
             string url = $"https://games.roblox.com/v1/games/{placeId}/servers/Public?sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
-            var req = new HttpRequestMessage(HttpMethod.Get, url);
-            req.Headers.Remove("Cookie");
-            req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
-
-            if (!string.IsNullOrEmpty(_channelToken))
-            {
-                req.Headers.Add("Roblox-Channel-Token", _channelToken);
-            }
 
             HttpResponseMessage response;
             try
             {
+                var req = new HttpRequestMessage(HttpMethod.Get, url);
+                req.Headers.Remove("Cookie");
+                req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
+
                 response = await _client.SendAsync(req).ConfigureAwait(false);
             }
-            catch
+            catch (Exception)
             {
                 return new FetchResult();
             }
 
             if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
             {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Server list request returned {(int)response.StatusCode}; invalidating cached roblosecurity.");
-                InvalidateCachedRoblosecurity();
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Server list request returned {(int)response.StatusCode}; cookies may be invalid.");
                 return new FetchResult();
             }
 
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Rate limited for place {placeId}, waiting...");
                 await Task.Delay(10000).ConfigureAwait(false);
                 return new FetchResult();
             }
 
             if (!response.IsSuccessStatusCode)
+            {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Request failed with status: {(int)response.StatusCode} for place {placeId}");
                 return new FetchResult();
+            }
 
-            string responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            string responseBody;
+            try
+            {
+                responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return new FetchResult();
+            }
+
             using var jsonDoc = JsonDocument.Parse(responseBody);
             if (!jsonDoc.RootElement.TryGetProperty("data", out var dataElement) || dataElement.ValueKind != JsonValueKind.Array)
+            {
+                App.Logger.WriteLine(LOG_IDENT_FETCH, $"No 'data' array found in response for place {placeId}");
                 return new FetchResult();
+            }
 
             string nextCursor = "";
             if (jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cursorElem) && cursorElem.ValueKind == JsonValueKind.String)
@@ -507,15 +421,15 @@ namespace Bloxstrap.Integrations
                             {
                                 firstSeen = await GetServerUptime(jobId, placeId);
                             }
-                            catch
+                            catch (Exception uptimeEx)
                             {
-                                // Ignore uptime errors
+                                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Failed to get uptime for server {jobId}: {uptimeEx.Message}");
                             }
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Ignore join info errors
+                        App.Logger.WriteLine(LOG_IDENT_FETCH, $"Failed to get join info for server {jobId}: {ex.Message}");
                     }
 
                     var serverInstance = new ServerInstance
@@ -545,30 +459,18 @@ namespace Bloxstrap.Integrations
             var processedServers = await Task.WhenAll(serverTasks);
             var validServers = processedServers.OfType<ServerInstance>().ToList();
 
-            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Returning {validServers.Count} servers for Place ID {placeId}. NextCursor: {nextCursor}");
+            int newlyFetchedCount = validServers.Count(s =>
+                !string.IsNullOrEmpty(cursor) ||
+                (_serverCache.TryGetValue(placeId, out var placeCache) && !placeCache.ContainsKey(s.Id)));
+
+            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Returning {validServers.Count} servers for Place ID {placeId} ({newlyFetchedCount} newly fetched). NextCursor: {nextCursor}");
 
             return new FetchResult
             {
                 Servers = validServers,
-                NewlyFetchedCount = validServers.Count,
+                NewlyFetchedCount = newlyFetchedCount,
                 NextCursor = nextCursor
             };
-        }
-
-        public void SetRoblosecurity(string? token)
-        {
-            const string LOG_IDENT_SET_TOKEN = $"{LOG_IDENT}::SetRoblosecurity";
-
-            _roblosecurityCached = string.IsNullOrWhiteSpace(token) ? null : token;
-
-            if (!string.IsNullOrWhiteSpace(_roblosecurityCached))
-            {
-                App.Logger.WriteLine(LOG_IDENT_SET_TOKEN, "RobloxServerFetcher: roblosecurity set from external source (in-memory only).");
-            }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT_SET_TOKEN, "RobloxServerFetcher: roblosecurity cleared (in-memory).");
-            }
         }
     }
 }

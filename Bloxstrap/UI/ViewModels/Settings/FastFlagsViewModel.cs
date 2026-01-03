@@ -36,7 +36,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             {
                 if (value)
                 {
-                    LowPolyMeshesLevel = 2;
+                    LowPolyMeshesLevel = 5;
                 }
                 else
                 {
@@ -53,18 +53,22 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             get
             {
-                return int.TryParse(App.FastFlags.GetPreset("Rendering.LowPolyMeshes1"), out var x) ? x / 100 : 0;
+                if (int.TryParse(App.FastFlags.GetPreset("Rendering.LowPolyMeshes1"), out var storedValue))
+                {
+                    return (storedValue * 9) / 2000;
+                }
+                return 0;
             }
             set
             {
-                int clamped = Math.Clamp(value, 0, 10);
+                int clamped = Math.Clamp(value, 0, 9);
 
-                int[] baseValues = { 1000, 750, 500, 250 };
+                int[] baseValues = { 2000, 1500, 1000, 500 };
                 int[] levels = new int[4];
 
                 for (int i = 0; i < 4; i++)
                 {
-                    levels[i] = (baseValues[i] * clamped) / 10;
+                    levels[i] = (baseValues[i] * clamped) / 9;
                 }
 
                 App.FastFlags.SetPreset("Rendering.LowPolyMeshes1", levels[0].ToString());
@@ -101,25 +105,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             get => MSAALevels.FirstOrDefault(x => x.Value == App.FastFlags.GetPreset("Rendering.MSAA1")).Key;
             set => App.FastFlags.SetPreset("Rendering.MSAA1", MSAALevels[value]);
-        }
-
-        public IReadOnlyDictionary<TextureQuality, string?> TextureQualities => FastFlagManager.TextureQualityLevels;
-
-        public TextureQuality SelectedTextureQuality
-        {
-            get => TextureQualities.FirstOrDefault(x => x.Value == App.FastFlags.GetPreset("Rendering.TextureQuality.Level")).Key;
-            set
-            {
-                if (value == TextureQuality.Default)
-                {
-                    App.FastFlags.SetPreset("Rendering.TextureQuality", null);
-                }
-                else
-                {
-                    App.FastFlags.SetPreset("Rendering.TextureQuality.OverrideEnabled", "True");
-                    App.FastFlags.SetPreset("Rendering.TextureQuality.Level", TextureQualities[value]);
-                }
-            }
         }
 
         public IReadOnlyDictionary<RenderingMode, string> RenderingModes => FastFlagManager.RenderingModes;

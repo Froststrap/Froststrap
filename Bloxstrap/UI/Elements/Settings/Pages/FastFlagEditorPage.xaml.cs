@@ -10,11 +10,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Input;
 using Bloxstrap.UI.ViewModels.Dialogs;
 using System.Windows.Media;
-using System.Text.Json;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 
 namespace Bloxstrap.UI.Elements.Settings.Pages
 {
@@ -52,116 +47,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     ReloadList();
                     e.Handled = true;
                 }
-            }
-        }
-
-        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if (App.Settings.Prop.CtrlCJsonFormat && e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                // Let editing TextBox handle Ctrl+C normally
-                if (DataGrid.CurrentCell.IsValid &&
-                    DataGrid.CurrentCell.Column is DataGridBoundColumn &&
-                    DataGrid.CurrentColumn.GetCellContent(DataGrid.CurrentItem) is TextBox)
-                {
-                    return;
-                }
-
-                var selectedItems = DataGrid.SelectedItems.Cast<FastFlag>().ToList();
-                if (selectedItems.Count == 0)
-                    return;
-
-                var dict = selectedItems.ToDictionary(item => item.Name, item => item.Value);
-                var format = App.Settings.Prop.SelectedCopyFormat;
-
-                string output;
-
-                if (format == CopyFormatMode.Format1)
-                {
-                    output = JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true });
-                }
-                else if (format == CopyFormatMode.Format2)
-                {
-                    var groupedFlags = dict
-                        .GroupBy(kvp =>
-                        {
-                            var match = Regex.Match(kvp.Key, @"^[A-Z]+[a-z]*");
-                            return match.Success ? match.Value : "Other";
-                        })
-                        .OrderBy(g => g.Key);
-
-                    var formattedJson = new StringBuilder();
-                    formattedJson.AppendLine("{");
-
-                    int totalItems = dict.Count;
-                    int writtenItems = 0;
-
-                    foreach (var group in groupedFlags)
-                    {
-                        foreach (var kvp in group.OrderByDescending(kvp => kvp.Key.Length + (kvp.Value?.ToString()?.Length ?? 0)))
-                        {
-                            writtenItems++;
-                            string line = $"    \"{kvp.Key}\": \"{kvp.Value}\"";
-                            if (writtenItems < totalItems) line += ",";
-                            formattedJson.AppendLine(line);
-                        }
-                    }
-
-                    formattedJson.AppendLine("}");
-                    output = formattedJson.ToString();
-                }
-                else if (format == CopyFormatMode.Format3)
-                {
-                    var sortedFlags = dict.OrderBy(kvp => kvp.Key);
-
-                    var formattedJson = new StringBuilder();
-                    formattedJson.AppendLine("{");
-
-                    int totalItems = dict.Count;
-                    int writtenItems = 0;
-
-                    foreach (var kvp in sortedFlags)
-                    {
-                        writtenItems++;
-                        string line = $"    \"{kvp.Key}\": \"{kvp.Value}\"";
-                        if (writtenItems < totalItems) line += ",";
-                        formattedJson.AppendLine(line);
-                    }
-
-                    formattedJson.AppendLine("}");
-                    output = formattedJson.ToString();
-                }
-                else if (format == CopyFormatMode.Format4)
-                {
-                    var sortedFlags = dict.OrderByDescending(kvp =>
-                        $"    \"{kvp.Key}\": \"{kvp.Value}\"".Length
-                    );
-
-                    var formattedJson = new StringBuilder();
-                    formattedJson.AppendLine("{");
-
-                    int totalItems = dict.Count;
-                    int writtenItems = 0;
-
-                    foreach (var kvp in sortedFlags)
-                    {
-                        writtenItems++;
-                        string line = $"    \"{kvp.Key}\": \"{kvp.Value}\"";
-                        if (writtenItems < totalItems) line += ",";
-                        formattedJson.AppendLine(line);
-                    }
-
-                    formattedJson.AppendLine("}");
-                    output = formattedJson.ToString();
-                }
-                else
-                {
-                    // fallback if no match
-                    output = JsonSerializer.Serialize(dict, new JsonSerializerOptions { WriteIndented = true });
-                }
-
-                Clipboard.SetText(output);
-                e.Handled = true;
             }
         }
 
@@ -214,8 +99,8 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     Name = pair.Key,
                     Value = pair.Value?.ToString() ?? string.Empty,
                     Preset = presetFlags.Contains(pair.Key)
-                        ? "pack://application:,,,/Resources/Checkmark.ico"
-                        : "pack://application:,,,/Resources/CrossMark.ico"
+                        ? "pack://application:,,,/Resources/Checkmark.ico" // lowkey need better icons because
+                        : "pack://application:,,,/Resources/CrossMark.ico" // these ones are actually horrid
                 };
 
                 _fastFlagList.Add(entry);
@@ -371,19 +256,9 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     return;
                 }
 
-                var message =
-                            $"{totalChanges} invalid FastFlag{(totalChanges == 1 ? "" : "s")} have been removed.\n\n" +
-                            "Do you want to see a list of all the removed flags?";
-
-                if (Frontend.ShowMessageBox(message, MessageBoxImage.Question, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    // Pass empty collections to avoid null warnings
-                    var flagDialog = new FlagDialog(this, invalidRemoved, new Dictionary<string, string>(), new List<(string OldName, string NewName)>())
-                    {
-                        Owner = Application.Current.MainWindow
-                    };
-                    flagDialog.ShowDialog();
-                }
+                Frontend.ShowMessageBox($"{totalChanges} have been removed due to not being in allow list.",
+                    MessageBoxImage.Information
+                    );
 
                 ReloadList();
                 UpdateTotalFlagsCount();
@@ -844,72 +719,32 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
         private void CopyJSONButton_Click(object sender, RoutedEventArgs e)
         {
-            CopyFormatMode format = App.Settings.Prop.SelectedCopyFormat;
+            var flags = App.FastFlags.Prop;
 
-            if (format == CopyFormatMode.Format1)
-            {
-                string json = JsonSerializer.Serialize(App.FastFlags.Prop, new JsonSerializerOptions { WriteIndented = true });
-                Clipboard.SetDataObject(json);
-            }
-            else if (format == CopyFormatMode.Format2)
-            {
-                var flags = App.FastFlags.Prop;
-
-                var groupedFlags = flags
-                    .GroupBy(kvp =>
-                    {
-                        var match = Regex.Match(kvp.Key, @"^[A-Z]+[a-z]*");
-                        return match.Success ? match.Value : "Other";
-                    })
-                    .OrderBy(g => g.Key);
-
-                var formattedJson = new StringBuilder();
-                formattedJson.AppendLine("{");
-
-                int totalItems = flags.Count;
-                int writtenItems = 0;
-                int groupIndex = 0;
-
-                foreach (var group in groupedFlags)
+            var groupedFlags = flags
+                .GroupBy(kvp =>
                 {
-                    if (groupIndex > 0)
-                        formattedJson.AppendLine();
+                    var match = Regex.Match(kvp.Key, @"^[A-Z]+[a-z]*");
+                    return match.Success ? match.Value : "Other";
+                })
+                .OrderBy(g => g.Key);
 
-                    var sortedGroup = group
-                        .OrderByDescending(kvp => kvp.Key.Length + (kvp.Value?.ToString()?.Length ?? 0));
+            var formattedJson = new StringBuilder();
+            formattedJson.AppendLine("{");
 
-                    foreach (var kvp in sortedGroup)
-                    {
-                        writtenItems++;
-                        bool isLast = (writtenItems == totalItems);
-                        string line = $"    \"{kvp.Key}\": \"{kvp.Value}\"";
+            int totalItems = flags.Count;
+            int writtenItems = 0;
+            int groupIndex = 0;
 
-                        if (!isLast)
-                            line += ",";
-
-                        formattedJson.AppendLine(line);
-                    }
-
-                    groupIndex++;
-                }
-
-                formattedJson.AppendLine("}");
-                Clipboard.SetText(formattedJson.ToString());
-            }
-            else if (format == CopyFormatMode.Format3)
+            foreach (var group in groupedFlags)
             {
-                var flags = App.FastFlags.Prop;
+                if (groupIndex > 0)
+                    formattedJson.AppendLine();
 
-                // Sort all flags alphabetically by key
-                var sortedFlags = flags.OrderBy(kvp => kvp.Key);
+                var sortedGroup = group
+                    .OrderByDescending(kvp => kvp.Key.Length + (kvp.Value?.ToString()?.Length ?? 0));
 
-                var formattedJson = new StringBuilder();
-                formattedJson.AppendLine("{");
-
-                int totalItems = flags.Count;
-                int writtenItems = 0;
-
-                foreach (var kvp in sortedFlags)
+                foreach (var kvp in sortedGroup)
                 {
                     writtenItems++;
                     bool isLast = (writtenItems == totalItems);
@@ -921,39 +756,11 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                     formattedJson.AppendLine(line);
                 }
 
-                formattedJson.AppendLine("}");
-                Clipboard.SetText(formattedJson.ToString());
+                groupIndex++;
             }
-            else if (format == CopyFormatMode.Format4) 
-            {
-                var flags = App.FastFlags.Prop;
 
-                var sortedFlags = flags.OrderByDescending(kvp =>
-                    $"    \"{kvp.Key}\": \"{kvp.Value}\"".Length
-                );
-
-                var formattedJson = new StringBuilder();
-                formattedJson.AppendLine("{");
-
-                int totalItems = flags.Count;
-                int writtenItems = 0;
-
-                foreach (var kvp in sortedFlags)
-                {
-                    writtenItems++;
-                    bool isLast = (writtenItems == totalItems);
-                    string line = $"    \"{kvp.Key}\": \"{kvp.Value}\"";
-
-                    if (!isLast)
-                        line += ",";
-
-                    formattedJson.AppendLine(line);
-                }
-
-                formattedJson.AppendLine("}");
-                Clipboard.SetText(formattedJson.ToString());
-
-            }
+            formattedJson.AppendLine("}");
+            Clipboard.SetText(formattedJson.ToString());
         }
 
 

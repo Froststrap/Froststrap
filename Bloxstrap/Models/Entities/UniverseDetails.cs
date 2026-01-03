@@ -16,19 +16,20 @@
 
         public static UniverseDetails? LoadFromCache(long id)
         {
-            var cacheQuery = _cache.Where(x => x.Data?.Id == id);
-
-            if (cacheQuery.Any())
-                return cacheQuery.First();
-
-            return null;
+            return _cache.FirstOrDefault(x => x.Data?.Id == id);
         }
 
         public static Task FetchSingle(long id) => FetchBulk(id.ToString());
 
         public static async Task FetchBulk(string ids)
         {
-            var gameDetailResponse = await Http.GetJson<ApiArrayResponse<GameDetailResponse>>($"https://games.roblox.com/v1/games?universeIds={ids}");
+            ApiArrayResponse<GameDetailResponse> gameDetailResponse;
+
+            // some universes can't be viewed by logged out user (ex. 18+)
+            if (App.Cookies.Loaded)
+                gameDetailResponse = await Http.AuthGetJson<ApiArrayResponse<GameDetailResponse>>($"https://games.roblox.com/v1/games?universeIds={ids}");
+            else
+                gameDetailResponse = await Http.GetJson<ApiArrayResponse<GameDetailResponse>>($"https://games.roblox.com/v1/games?universeIds={ids}");
 
             if (!gameDetailResponse.Data.Any())
                 throw new InvalidHTTPResponseException("Roblox API for Game Details returned invalid data");
@@ -44,8 +45,8 @@
 
                 _cache.Add(new UniverseDetails
                 {
-                    Data = gameDetailResponse.Data.Where(x => x.Id == id).First(),
-                    Thumbnail = universeThumbnailResponse.Data.Where(x => x.TargetId == id).First(),
+                    Data = gameDetailResponse.Data.FirstOrDefault(x => x.Id == id) ?? gameDetailResponse.Data.First(),
+                    Thumbnail = universeThumbnailResponse.Data.FirstOrDefault(x => x.TargetId == id) ?? universeThumbnailResponse.Data.First(),
                 });
             }
         }

@@ -9,8 +9,7 @@
         ClassicFluentDialog,
         ByfronDialog,
         FluentDialog,
-        [EnumName(StaticName = "Froststrap Official")]
-        CustomFluentDialog,
+        FroststrapDialog,
         FluentAeroDialog,
         CustomDialog
     }

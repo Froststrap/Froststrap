@@ -49,7 +49,6 @@ namespace Bloxstrap.Integrations
 
         public string CurrentPlaceId { get; private set; } = "";
         public string CurrentServerInstanceId { get; private set; } = "";
-        public string SelectedRegion { get; private set; } = "";
 
         public AccountManager()
         {
@@ -102,13 +101,6 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        public void SetSelectedRegion(string region)
-        {
-            SelectedRegion = region ?? "";
-            SaveAccounts();
-            App.Logger.WriteLine(LOG_IDENT, $"Set selected region to: {SelectedRegion}");
-        }
-
         public void LoadAccounts()
         {
             const string LOG_IDENT_LOAD = $"{LOG_IDENT}::LoadAccounts";
@@ -151,6 +143,7 @@ namespace Bloxstrap.Integrations
                         if (cachedAccount != null)
                         {
                             ActiveAccount = cachedAccount;
+                            ActiveAccountChanged?.Invoke(ActiveAccount);
                             App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored active account from file: {cachedAccount.Username}");
                         }
                         else
@@ -167,9 +160,8 @@ namespace Bloxstrap.Integrations
 
                     CurrentPlaceId = managerData.CurrentPlaceId ?? "";
                     CurrentServerInstanceId = managerData.CurrentServerInstanceId ?? "";
-                    SelectedRegion = managerData.SelectedRegion ?? "";
 
-                    App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}, Region: {SelectedRegion}");
+                    App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}");
                 }
                 else
                 {
@@ -213,14 +205,13 @@ namespace Bloxstrap.Integrations
                     LastUpdated = DateTime.UtcNow,
                     CurrentPlaceId = CurrentPlaceId,
                     CurrentServerInstanceId = CurrentServerInstanceId,
-                    SelectedRegion = SelectedRegion
                 };
 
                 string json = JsonConvert.SerializeObject(managerData, Formatting.Indented);
                 File.WriteAllText(_accountsLocation, json);
 
                 App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved {_accounts.Count} accounts with active account: {ActiveAccount?.Username ?? "None"}");
-                App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}, Region: {SelectedRegion}");
+                App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}");
             }
             catch (Exception ex)
             {
@@ -1012,6 +1003,34 @@ namespace Bloxstrap.Integrations
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT_LOGOUT, ex);
+            }
+        }
+
+        public AltAccount? AddManualAccount(string cookie, long userId, string username, string displayName)
+        {
+            const string LOG_IDENT_ADD_MANUAL = $"{LOG_IDENT}::AddManualAccount";
+
+            try
+            {
+                var existingAccount = _accounts.FirstOrDefault(acc => acc.UserId == userId);
+                if (existingAccount != null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_ADD_MANUAL, $"Account '{username}' already exists");
+                    return existingAccount;
+                }
+
+                var newAccount = new AltAccount(cookie, userId, username, displayName);
+                _accounts.Add(newAccount);
+
+                SaveAccounts();
+
+                App.Logger.WriteLine(LOG_IDENT_ADD_MANUAL, $"Successfully added account: {username}");
+                return newAccount;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_ADD_MANUAL, ex);
+                return null;
             }
         }
 

@@ -1,7 +1,5 @@
 ﻿using Bloxstrap.AppData;
 using System.ComponentModel;
-using System.Security.AccessControl;
-using System.Windows;
 
 namespace Bloxstrap
 {
@@ -155,13 +153,13 @@ namespace Bloxstrap
                 using (EventWaitHandle.OpenExisting(name)) { }
                 return true;
             }
-            catch (WaitHandleCannotBeOpenedException)
-            {
-                return false;
-            }
             catch (UnauthorizedAccessException)
             {
                 return true;
+            }
+            catch (WaitHandleCannotBeOpenedException)
+            {
+                return false;
             }
         }
 

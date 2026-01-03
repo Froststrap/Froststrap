@@ -24,6 +24,7 @@ global using Bloxstrap.Models.APIs.RoValra;
 global using Bloxstrap.Models.Attributes;
 global using Bloxstrap.Models.BloxstrapRPC;
 global using Bloxstrap.Models.Entities;
+global using Bloxstrap.Models.FroststrapStudioRPC;
 global using Bloxstrap.Models.Manifest;
 global using Bloxstrap.Models.Persistable;
 global using Bloxstrap.Models.SettingTasks;

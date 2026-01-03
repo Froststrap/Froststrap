@@ -66,6 +66,19 @@
                 </MenuItem.Header>
             </MenuItem>
 
+            <MenuItem x:Name="RegionJoinningMenuItem" Visibility="Collapsed" Click="AutoJoinRegionMenuItem_Click">
+                <MenuItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="24" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Earth24"/>
+                        <TextBlock x:Name="RegionJoinTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Join Region" />
+                    </Grid>
+                </MenuItem.Header>
+            </MenuItem>
+
             <MenuItem x:Name="GameInformationMenuItem" Visibility="Collapsed" Click="GameInformaionMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
@@ -131,15 +144,15 @@
                 </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem Click="CloseFroststrapMenuItem_Click">
+            <MenuItem Click="CloseWatcheMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="PresenceOffline20"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Close Froststrap" />
+                        <ui:SymbolIcon Grid.Column="0" Symbol="DismissCircle24"/>
+                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Close Watcher" />
                     </Grid>
                 </MenuItem.Header>
             </MenuItem>

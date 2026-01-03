@@ -12,6 +12,7 @@
  */
 
 using Bloxstrap.Integrations;
+using Bloxstrap.UI.Elements.Dialogs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -61,10 +62,16 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private int _followingCount;
 
         [ObservableProperty]
-        private ObservableCollection<string> _addMethods = new(new[] { "Quick Sign-In", "Browser" });
+        private ObservableCollection<string> _addMethods = new(new[] { "Quick Sign-In", "Browser", "Manual" });
 
         [ObservableProperty]
         private string _selectedAddMethod = "Quick Sign-In";
+
+        [ObservableProperty]
+        private bool _isInstallingChromium = false;
+
+        [ObservableProperty]
+        private bool _isAccountLoggedIn = false;
 
         private AccountManager Manager => AccountManager.Shared;
 
@@ -86,7 +93,16 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
 
+            IsAccountLoggedIn = Manager.ActiveAccount != null;
+
+            Manager.ActiveAccountChanged += OnAccountManagerActiveAccountChanged;
+
             _ = InitializeDataAsync();
+        }
+
+        private void OnAccountManagerActiveAccountChanged(AltAccount? account)
+        {
+            IsAccountLoggedIn = account != null;
         }
 
         private async Task InitializeDataAsync()
@@ -109,30 +125,27 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             Accounts.Clear();
 
             var mgr = Manager;
+            var accountIds = mgr.Accounts.Select(acc => acc.UserId).ToList();
 
-            // Load all accounts
-            var accountTasks = mgr.Accounts.Select(async acc =>
-            {
-                string? avatarUrl = await GetAvatarUrl(acc.UserId);
-                return new Account(acc.UserId, acc.DisplayName, acc.Username, string.IsNullOrEmpty(avatarUrl) ? null : avatarUrl);
-            }).ToList();
+            var avatarUrls = await GetAvatarUrlsBulkAsync(accountIds);
 
-            var accountResults = await Task.WhenAll(accountTasks);
-            foreach (var account in accountResults)
+            foreach (var acc in mgr.Accounts)
             {
-                Accounts.Add(account);
+                string? avatarUrl = avatarUrls.GetValueOrDefault(acc.UserId);
+                Accounts.Add(new Account(acc.UserId, acc.DisplayName, acc.Username,
+                    string.IsNullOrEmpty(avatarUrl) ? null : avatarUrl));
             }
 
-            // Set current account info
             if (mgr.ActiveAccount is not null)
             {
                 CurrentUserDisplayName = mgr.ActiveAccount.DisplayName;
                 CurrentUserUsername = $"@{mgr.ActiveAccount.Username}";
 
-                string? avatarUrl = await GetAvatarUrl(mgr.ActiveAccount.UserId);
+                string? avatarUrl = avatarUrls.GetValueOrDefault(mgr.ActiveAccount.UserId);
                 CurrentUserAvatarUrl = avatarUrl ?? "";
 
                 SelectedAccount = Accounts.FirstOrDefault(a => a.Id == mgr.ActiveAccount.UserId);
+                IsAccountLoggedIn = true;
 
                 await UpdateAccountInformationAsync(mgr.ActiveAccount.UserId);
             }
@@ -142,29 +155,56 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 CurrentUserUsername = "";
                 CurrentUserAvatarUrl = "";
                 IsAccountInformationVisible = false;
+                IsAccountLoggedIn = false; // Set to false when no active account
             }
         }
 
-        private async Task<string?> GetAvatarUrl(long userId)
+        private async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)
         {
+            var result = new Dictionary<long, string?>();
+            if (userIds == null || userIds.Count == 0)
+                return result;
+
+            const int batchSize = 100;
+
             try
             {
-                var request = new ThumbnailRequest
+                for (int i = 0; i < userIds.Count; i += batchSize)
                 {
-                    TargetId = (ulong)userId,
-                    Type = "AvatarHeadShot",
-                    Size = "75x75",
-                    Format = "Png",
-                    IsCircular = true
-                };
+                    var batch = userIds.Skip(i).Take(batchSize).ToList();
+                    string idsParam = string.Join(',', batch);
 
-                return await Thumbnails.GetThumbnailUrlAsync(request, CancellationToken.None);
+                    string url = $"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true";
+
+                    try
+                    {
+                        var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(url);
+
+                        if (response?.Data != null)
+                        {
+                            foreach (var item in response.Data)
+                            {
+                                if (item.TargetId > 0 && !string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    result[item.TargetId] = item.ImageUrl;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine($"{LOG_IDENT}::GetAvatarUrlsBulkAsync",
+                            $"Batch failed: {ex.Message}");
+                    }
+                }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine($"{LOG_IDENT}::GetAvatarUrl", $"Exception: {ex.Message}");
-                return null;
+                App.Logger.WriteLine($"{LOG_IDENT}::GetAvatarUrlsBulkAsync",
+                    $"Exception: {ex.Message}");
             }
+
+            return result;
         }
 
         private async Task<(int friends, int followers, int following)> GetAccountInformationAsync(long userId)
@@ -187,7 +227,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     if (response.IsSuccessStatusCode)
                     {
                         var content = await response.Content.ReadAsStringAsync();
-                        var json = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(content);
+                        var json = JsonSerializer.Deserialize<JsonElement>(content);
                         return json.GetProperty("count").GetInt32();
                     }
                     return 0;
@@ -236,8 +276,8 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             CurrentUserDisplayName = account.DisplayName;
             CurrentUserUsername = $"@{account.Username}";
 
-            string? avatarUrl = await GetAvatarUrl(account.UserId);
-            CurrentUserAvatarUrl = avatarUrl ?? "";
+            var avatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { account.UserId });
+            CurrentUserAvatarUrl = avatarUrls.GetValueOrDefault(account.UserId) ?? "";
 
             await UpdateAccountInformationAsync(account.UserId);
         }
@@ -261,6 +301,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 {
                     mgr.SetActiveAccount(backendAccount);
                     await SwitchToAccountAsync(backendAccount);
+                    IsAccountLoggedIn = true;
                     Frontend.ShowMessageBox($"Switched to account: {SelectedAccount.DisplayName}", MessageBoxImage.Information);
                 }
                 else
@@ -289,46 +330,21 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                         return;
                     }
                 }
-                else
+                else if (string.Equals(SelectedAddMethod, "Browser", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", "Adding account via Browser");
+                    IsInstallingChromium = true;
                     newAccount = await mgr.AddAccountByBrowser();
+                }
+                else if (string.Equals(SelectedAddMethod, "Manual", StringComparison.OrdinalIgnoreCase))
+                {
+                    await AddAccountByManualCookieAsync();
+                    return;
                 }
 
                 if (newAccount is not null)
                 {
-                    if (!Accounts.Any(a => a.Id == newAccount.UserId))
-                    {
-                        Accounts.Add(new Account(newAccount.UserId, newAccount.DisplayName, newAccount.Username, ""));
-
-                        _ = Task.Run(async () =>
-                        {
-                            try
-                            {
-                                string? avatarUrl = await GetAvatarUrl(newAccount.UserId);
-                                var updatedAccount = new Account(newAccount.UserId, newAccount.DisplayName, newAccount.Username, avatarUrl);
-
-                                await Application.Current.Dispatcher.InvokeAsync(() =>
-                                {
-                                    var existingAccount = Accounts.FirstOrDefault(a => a.Id == newAccount.UserId);
-                                    if (existingAccount != null)
-                                    {
-                                        var index = Accounts.IndexOf(existingAccount);
-                                        Accounts[index] = updatedAccount;
-                                    }
-                                });
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine($"{LOG_IDENT}::AddAccount::AvatarLoad", $"Exception: {ex.Message}");
-                            }
-                        });
-                    }
-
-                    mgr.SetActiveAccount(newAccount);
-                    await SwitchToAccountAsync(newAccount);
-
-                    Frontend.ShowMessageBox($"Added and switched to account: {newAccount.DisplayName}", MessageBoxImage.Information);
+                    await ProcessNewAccount(newAccount);
                 }
             }
             catch (Exception ex)
@@ -336,6 +352,70 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", $"Exception: {ex.Message}");
                 Frontend.ShowMessageBox($"Failed to add account: {ex.Message}", MessageBoxImage.Error);
             }
+            finally
+            {
+                IsInstallingChromium = false;
+            }
+        }
+
+        private async Task AddAccountByManualCookieAsync()
+        {
+            App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", "Adding account via Manual Cookie");
+
+            var dialog = new ManualCookieDialog();
+            dialog.Owner = Application.Current.MainWindow;
+
+            var result = dialog.ShowDialog();
+
+            if (result == true && dialog.ViewModel.ValidatedAccount != null)
+            {
+                var validatedAccount = dialog.ViewModel.ValidatedAccount;
+                await ProcessNewAccount(validatedAccount);
+            }
+        }
+
+        private async Task ProcessNewAccount(AltAccount newAccount)
+        {
+            var mgr = Manager;
+
+            var existingBackendAccount = mgr.Accounts.FirstOrDefault(acc => acc.UserId == newAccount.UserId);
+
+            if (existingBackendAccount == null)
+            {
+                existingBackendAccount = mgr.AddManualAccount(newAccount.SecurityToken, newAccount.UserId,
+                    newAccount.Username, newAccount.DisplayName);
+
+                if (existingBackendAccount == null)
+                {
+                    Frontend.ShowMessageBox("Failed to add account to backend.", MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            if (!Accounts.Any(a => a.Id == existingBackendAccount.UserId))
+            {
+                var avatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { existingBackendAccount.UserId });
+                string? avatarUrl = avatarUrls.GetValueOrDefault(existingBackendAccount.UserId);
+
+                var account = new Account(existingBackendAccount.UserId, existingBackendAccount.DisplayName,
+                    existingBackendAccount.Username, avatarUrl);
+
+                Accounts.Add(account);
+            }
+
+            mgr.SetActiveAccount(existingBackendAccount);
+
+            CurrentUserDisplayName = existingBackendAccount.DisplayName;
+            CurrentUserUsername = $"@{existingBackendAccount.Username}";
+
+            var currentAvatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { existingBackendAccount.UserId });
+            CurrentUserAvatarUrl = currentAvatarUrls.GetValueOrDefault(existingBackendAccount.UserId) ?? "";
+
+            SelectedAccount = Accounts.FirstOrDefault(a => a.Id == existingBackendAccount.UserId);
+
+            await UpdateAccountInformationAsync(existingBackendAccount.UserId);
+
+            Frontend.ShowMessageBox($"Added and switched to account: {existingBackendAccount.DisplayName}", MessageBoxImage.Information);
         }
 
         [RelayCommand]
@@ -410,6 +490,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             FollowersCount = 0;
             FollowingCount = 0;
             IsAccountInformationVisible = false;
+            IsAccountLoggedIn = false;
+
+            SelectedAccount = null;
+            OnPropertyChanged(nameof(Accounts));
 
             Frontend.ShowMessageBox("Signed out successfully.", MessageBoxImage.Information);
         }

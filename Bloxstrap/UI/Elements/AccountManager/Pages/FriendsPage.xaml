@@ -24,38 +24,10 @@
 
             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
                 <TextBlock VerticalAlignment="Center" FontSize="20" FontWeight="Bold" Text="Friends" />
-                <TextBlock VerticalAlignment="Center" Text="Filter:" Margin="8,4,8,0" 
-                          Visibility="{Binding IsBulkMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                <ComboBox Width="100" ItemsSource="{Binding FriendFilters}" SelectedItem="{Binding SelectedFriendFilter}"
-                         Visibility="{Binding IsBulkMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-                <ui:Button Margin="8,0,0,0" Command="{Binding RefreshFriendsCommand}" Content="Refresh"
-                          Visibility="{Binding IsBulkMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                <TextBlock VerticalAlignment="Center" Text="Filter:" Margin="8,4,8,0" />
+                <ComboBox Width="100" ItemsSource="{Binding FriendFilters}" SelectedItem="{Binding SelectedFriendFilter}"/>
+                <ui:Button Margin="8,0,0,0" Command="{Binding RefreshFriendsCommand}" Content="Refresh" />
 
-                <ui:Button Margin="8,0,0,0" 
-                          Command="{Binding StartBulkUnfriendCommand}"
-                          Content="Bulk Unfriend"
-                          Visibility="{Binding IsBulkMode, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-
-                <StackPanel Orientation="Horizontal" 
-                    Margin="8,0,0,0"
-                    Visibility="{Binding IsBulkMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock VerticalAlignment="Center" Text="{Binding BulkActionStatus}" Margin="0,0,8,0" />
-
-                    <ui:Button Command="{Binding ToggleSelectAllCommand}"
-                        Content="Select All"
-                        VerticalAlignment="Center"
-                        Margin="0,0,8,0" />
-
-                    <ui:Button Command="{Binding ExecuteBulkUnfriendCommand}"
-                        Content="Unfriend Selected"
-                        Appearance="Danger"
-                        IsEnabled="{Binding IsBulkUnfriendEnabled}"
-                        Margin="0,0,8,0" />
-
-                    <ui:Button Command="{Binding CancelBulkUnfriendCommand}"
-                        Content="Cancel"
-                        Appearance="Secondary" />
-                </StackPanel>
             </StackPanel>
 
             <ItemsControl ItemsSource="{Binding FilteredFriends}" Grid.Row="2" HorizontalAlignment="Stretch">
@@ -103,14 +75,6 @@
 
                                 <TextBlock
                                     Margin="0,6,0,0"
-                                    FontSize="12"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="{Binding DisplayName}"
-                                    TextTrimming="CharacterEllipsis" />
-
-                                <TextBlock
-                                    Margin="0,2,0,0"
                                     FontSize="10"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                     Text="{Binding LastLocation}"
@@ -124,59 +88,14 @@
                                     Command="{Binding DataContext.JoinFriendCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                     CommandParameter="{Binding}"
                                     Height="30"
-                                    IsEnabled="{Binding IsOnline}"
-                                    Visibility="{Binding DataContext.IsBulkMode, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                                    <ui:SymbolIcon Filled="True" Symbol="Play24" FontSize="16" />
+                                    IsEnabled="{Binding IsOnline}">
+                                    <ui:SymbolIcon Filled="True" Symbol="Play24" FontSize="16" Foreground="White" />
                                 </ui:Button>
-
-                                <ToggleButton
-                                    Content="Select"
-                                    Margin="0,8,0,0"
-                                    HorizontalAlignment="Stretch"
-                                    Height="30"
-                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                    Command="{Binding DataContext.ToggleFriendSelectionCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}"
-                                    Visibility="{Binding DataContext.IsBulkMode, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             </StackPanel>
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-        </Grid>
-
-        <Grid Panel.ZIndex="999" Visibility="{Binding IsPresenceLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="#A0000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Background="{DynamicResource NormalDarkAndLightBackground}"
-                        CornerRadius="12"
-                        Padding="20"
-                        Effect="{DynamicResource ControlShadow}">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
-                        <TextBlock Text="Loading friends list" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,12"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center"/>
-                        <ui:ProgressRing IsIndeterminate="True" Width="56" Height="56" HorizontalAlignment="Center" />
-                    </StackPanel>
-                </Border>
-            </Grid>
-        </Grid>
-
-        <Grid Panel.ZIndex="1000" Visibility="{Binding IsUnfriending, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="#A0000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Border Background="{DynamicResource NormalDarkAndLightBackground}"
-                        CornerRadius="12"
-                        Padding="20"
-                        Effect="{DynamicResource ControlShadow}">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical">
-                        <TextBlock Text="{Binding BulkActionStatus}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,12"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" HorizontalAlignment="Center"/>
-                        <ui:ProgressRing IsIndeterminate="True" Width="48" Height="48" HorizontalAlignment="Center" />
-                        <TextBlock Text="Please wait..." FontSize="12" Margin="0,8,0,0"
-                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
         </Grid>
     </Grid>
 </ui:UiPage>

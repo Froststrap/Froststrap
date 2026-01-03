@@ -19,8 +19,5 @@ namespace Bloxstrap.Models.APIs.Config
 
         [JsonProperty("currentServerInstanceId")]
         public string CurrentServerInstanceId { get; set; } = "";
-
-        [JsonProperty("selectedRegion")]
-        public string SelectedRegion { get; set; } = "";
     }
 }

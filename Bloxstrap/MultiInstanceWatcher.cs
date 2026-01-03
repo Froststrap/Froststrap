@@ -31,39 +31,36 @@
         {
             const string LOG_IDENT = "MultiInstanceWatcher::Run";
 
-            // Try to get both mutexes for better compatibility
-            bool acquiredMutex1;
-            bool acquiredMutex2;
-
-            using Mutex mutex1 = new Mutex(false, "ROBLOX_singletonMutex");
-            using Mutex mutex2 = new Mutex(false, "ROBLOX_singletonEvent");
+            // try to get the mutex
+            bool acquiredMutex;
+             
+            // we only need to check one of the mutexes
+            using Mutex mutex = new Mutex(false, "ROBLOX_singletonMutex");
 
             try
             {
-                acquiredMutex1 = mutex1.WaitOne(0);
-                acquiredMutex2 = mutex2.WaitOne(0);
+                acquiredMutex = mutex.WaitOne(0);
             }
             catch (AbandonedMutexException)
             {
-                acquiredMutex1 = true;
-                acquiredMutex2 = false;
+                acquiredMutex = true;
             }
 
-            if (!acquiredMutex1 && !acquiredMutex2)
+            if (!acquiredMutex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Client singleton mutexes are already acquired");
+                App.Logger.WriteLine(LOG_IDENT, "Client singleton mutex is already acquired");
                 FireInitialisedEvent();
                 return;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Acquired singleton mutexes! Mutex1: {acquiredMutex1}, Mutex2: {acquiredMutex2}");
+            App.Logger.WriteLine(LOG_IDENT, "Acquired mutex!");
             FireInitialisedEvent();
 
             // watch for alive processes
             int count;
             do
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(2500);
                 count = GetOpenProcessesCount();
             }
             while (count == -1 || count > 0); // redo if -1 (one of the Process apis failed)

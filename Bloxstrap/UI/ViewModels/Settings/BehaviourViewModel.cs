@@ -5,18 +5,15 @@ namespace Bloxstrap.UI.ViewModels.Settings
 {
     public class BehaviourViewModel : NotifyPropertyChangedViewModel
     {
-
         public BehaviourViewModel()
         {
-
             foreach (var entry in RobloxIconEx.Selections)
                 RobloxIcons.Add(new RobloxIconEntry { IconType = (RobloxIcon)entry });
 
             App.Cookies.StateChanged += (object? _, CookieState state) => CookieLoadingFailed = state != CookieState.Success && state != CookieState.Unknown;
         }
 
-        public ObservableCollection<ProcessPriorityOption> ProcessPriorityOptions { get; } =
-            new ObservableCollection<ProcessPriorityOption>(Enum.GetValues(typeof(ProcessPriorityOption)).Cast<ProcessPriorityOption>());
+        public ObservableCollection<ProcessPriorityOption> ProcessPriorityOptions { get; } = new ObservableCollection<ProcessPriorityOption>(Enum.GetValues(typeof(ProcessPriorityOption)).Cast<ProcessPriorityOption>());
 
         public ProcessPriorityOption SelectedPriority
         {
@@ -63,7 +60,13 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 string? value = App.GlobalSettings.GetPresets("Rendering.FramerateCap");
                 return int.TryParse(value, out int framerate) && framerate > 240;
             }
-            set => App.GlobalSettings.SetPresets("Rendering.FramerateCap", value ? "9999" : "-1");
+            set
+            {
+                App.GlobalSettings.SetPresets("Rendering.FramerateCap", value ? "9999" : "-1");
+
+                if (value)
+                    App.GlobalSettings.SetReadOnly(true);
+            }
         }
 
         public bool Error773Fix
@@ -127,6 +130,33 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public bool IsProcessSelected => !string.IsNullOrEmpty(SelectedProcess);
 
+        public bool EnableRobloxTrim
+        {
+            get => App.Settings.Prop.EnableRobloxTrim;
+            set
+            {
+                App.Settings.Prop.EnableRobloxTrim = value;
+                OnPropertyChanged(nameof(EnableRobloxTrim));
+                App.MemoryCleaner?.RefreshRobloxTimer();
+            }
+        }
+
+        private int _robloxTrimSeconds = App.Settings.Prop.RobloxTrimIntervalSeconds;
+        public int RobloxTrimSeconds
+        {
+            get => _robloxTrimSeconds;
+            set
+            {
+                _robloxTrimSeconds = value;
+                App.Settings.Prop.RobloxTrimIntervalSeconds = value;
+
+                if (App.Settings.Prop.EnableRobloxTrim)
+                {
+                    App.MemoryCleaner?.RefreshRobloxTimer();
+                }
+            }
+        }
+
         public IEnumerable<MemoryCleanerInterval> MemoryCleanerIntervals { get; } = Enum.GetValues(typeof(MemoryCleanerInterval)).Cast<MemoryCleanerInterval>();
 
         public MemoryCleanerInterval MemoryCleanerInterval
@@ -135,7 +165,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set
             {
                 App.Settings.Prop.MemoryCleanerInterval = value;
-                OnPropertyChanged(nameof(MemoryCleanerInterval));
                 OnPropertyChanged(nameof(MemoryCleanerExclusionsExpanded));
             }
         }
@@ -259,7 +288,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 if (value)
                     CleanerItems.Add("RobloxLogs");
                 else
-                    CleanerItems.Remove("RobloxLogs"); // should we try catch it?
+                    CleanerItems.Remove("RobloxLogs");
             }
         }
 

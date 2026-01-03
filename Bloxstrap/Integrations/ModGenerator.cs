@@ -20,9 +20,9 @@ namespace Bloxstrap.Integrations
 {
     public static class ModGenerator
     {
-        public static void RecolorAllPngs(string rootDir, Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false, bool recolorVoiceChat = false)
+        public static void RecolorAllPngs(string rootDir, Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false)
         {
-            const string LOG_IDENT = "UI::Recolor";
+            const string LOG_IDENT = "ModGenerator::RecolorAllPngs";
 
             if (string.IsNullOrWhiteSpace(rootDir) || !Directory.Exists(rootDir))
             {
@@ -154,7 +154,7 @@ namespace Bloxstrap.Integrations
 
                 App.Logger?.WriteLine(LOG_IDENT, $"Found {ttfFiles.Length} TTF files to recolor");
 
-                // font recoloring requires downloading the exe from our private repo
+                // font recoloring requires downloading the exe from our mod generator repo
                 string exePath = await DownloadModGeneratorExeAsync();
 
                 string hexColorArg = $"#{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}".TrimStart('#');
@@ -193,6 +193,9 @@ namespace Bloxstrap.Integrations
             }
         }
 
+        // we made mod generator exe instead of py script because
+        // for py script to work user needs to have font tools and python installed
+        // so we made it exe and open sourced it
         private static async Task<string> DownloadModGeneratorExeAsync()
         {
             const string LOG_IDENT = "ModGenerator::DownloadModGeneratorExeAsync";
@@ -297,23 +300,6 @@ namespace Bloxstrap.Integrations
                 string errors = await errorTask;
 
                 return (process.ExitCode, output, errors);
-            }
-        }
-
-        public static void CleanupModGeneratorCache()
-        {
-            try
-            {
-                string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
-                if (Directory.Exists(cacheDir))
-                {
-                    Directory.Delete(cacheDir, true);
-                    App.Logger?.WriteLine("ModGenerator", "Cleaned up mod-generator cache");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException("ModGenerator::CleanupModGeneratorCache", ex);
             }
         }
 

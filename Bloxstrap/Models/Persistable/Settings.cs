@@ -11,7 +11,7 @@ namespace Bloxstrap.Models.Persistable
         public bool EnableActivityTracking { get; set; } = true;
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = false;
-        public bool AutoRejoinEnabled { get; set; } = false;
+        public bool AutoRejoin { get; set; } = false;
         public bool ShowGameHistoryMenu { get; set; } = true;
         public List<ActivityData> ServerHistory { get; set; } = new List<ActivityData>();
         public bool PlaytimeCounter { get; set; } = true;
@@ -24,13 +24,20 @@ namespace Bloxstrap.Models.Persistable
         public bool HideRPCButtons { get; set; } = true;
         public bool EnableCustomStatusDisplay { get; set; } = true;
         public bool ShowAccountOnRichPresence { get; set; } = false;
+        public bool StudioRPC { get; set; } = false;
+        public bool StudioThumbnailChanging { get; set; } = false;
+        public bool StudioEditingInfo { get; set; } = false;
+        public bool StudioWorkspaceInfo { get; set; } = false;
+        public bool StudioShowTesting { get; set; } = false;
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = new();
 
         // Bootstrapper Page
         public bool ConfirmLaunches { get; set; } = true;
         public bool AutoCloseCrashHandler { get; set; } = false;
         public MemoryCleanerInterval MemoryCleanerInterval { get; set; } = MemoryCleanerInterval.Never;
-        public ObservableCollection<string> UserExcludedProcesses { get; set; } = new ObservableCollection<string> { "robloxplayerbeta" };
+        public ObservableCollection<string> UserExcludedProcesses { get; set; } = new();
+        public int RobloxTrimIntervalSeconds { get; set; } = 300;
+        public bool EnableRobloxTrim { get; set; } = true;
         public string Locale { get; set; } = "nil";
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = new List<string>();
@@ -50,14 +57,12 @@ namespace Bloxstrap.Models.Persistable
 
         // FastFlag Editor/Settings Related
         public bool UseFastFlagManager { get; set; } = true;
-        public CopyFormatMode SelectedCopyFormat { get; set; } = CopyFormatMode.Format1;
-        public bool CtrlCJsonFormat { get; set; } = false;
         public bool ShowPresetColumn { get; set; } = false;
         public bool ShowFlagCount { get; set; } = true;
         public bool UseAltManually { get; set; } = true;
 
         // Appearance Page
-        public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.CustomFluentDialog;
+        public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FroststrapDialog;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconBloxstrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.Mica;
         public string? SelectedCustomTheme { get; set; } = null;
@@ -80,14 +85,12 @@ namespace Bloxstrap.Models.Persistable
         public List<string> NavigationOrder { get; set; } = new List<string>();
         public bool IsNavigationOrderLocked { get; set; } = true;
 
-        // Shortcuts Page
-        public string GameShortcutsJson { get; set; } = "[]";
-
         // Settings Page
         public bool CheckForUpdates { get; set; } = true;
         public bool WPFSoftwareRender { get; set; } = false;
         public bool DisableAnimations { get; set; } = false;
         public bool UpdateRoblox { get; set; } = true;
+        public bool StaticDirectory { get; set; } = false;
         public string Channel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
         public string ChannelHash { get; set; } = "";

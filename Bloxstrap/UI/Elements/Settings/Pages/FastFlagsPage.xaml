@@ -38,8 +38,6 @@
             <ui:ToggleSwitch IsChecked="{Binding ResetConfiguration, Mode=TwoWay}" />
         </controls:OptionControl>
 
-        <ui:InfoBar Margin="0,8,0,0" Padding="8" IsOpen="True" Title="Important" Message="Following the whitelisting of some Roblox FastFlags, these are the only remaining available for use." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
-
         <Separator Margin="0,8,0,4"/>
 
         <TextBlock Text="{x:Static resources:Strings.Common_Presets}" FontSize="20" FontWeight="Bold"/>
@@ -103,7 +101,7 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="{x:Static resources:Strings.Common_Performance}" Grid.Column="0" />
-                    <Slider Grid.Column="1" Margin="8,0,8,0" Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding LowPolyMeshesLevel, Mode=TwoWay}" />
+                    <Slider Grid.Column="1" Margin="8,0,8,0" Minimum="0" Maximum="9" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding LowPolyMeshesLevel, Mode=TwoWay}" />
                     <TextBlock Text="{x:Static resources:Strings.Common_Quality}" Grid.Column="2" />
                 </Grid>
             </StackPanel>
@@ -134,18 +132,6 @@
             Description="{x:Static resources:Strings.Menu_FastFlags_Presets_OverrideGraphicQuality_Description}"
             HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#override-graphic-level">
             <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding QualityLevels.Keys , Mode=OneTime}" Text="{Binding SelectedQualityLevel, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </controls:OptionControl>
-
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Description}">
-            <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}" Text="{Binding SelectedTextureQuality, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />

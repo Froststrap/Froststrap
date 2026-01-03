@@ -432,9 +432,6 @@ Nếu chưa, xin hãy báo cáo lỗi này qua [GitHub issue]({1}) với bản c
   <data name="Common.Custom">
     <value>Tùy chỉnh</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconEarly2015">
-    <value></value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015">
     <value>Cuối năm 2015</value>
   </data>
@@ -444,7 +441,7 @@ Nếu chưa, xin hãy báo cáo lỗi này qua [GitHub issue]({1}) với bản c
   <data name="Enums.BootstrapperStyle.FluentDialog">
     <value>Froststrap (Nền đen)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.CustomFluentDialog">
+  <data name="Enums.BootstrapperStyle.FroststrapDialog">
     <value>Froststrap</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title">
@@ -1895,12 +1892,6 @@ Xin hãy đóng các ứng dụng đang sử dụng các tập tin của Roblox,
   </data>
   <data name="Common.Export">
     <value>Xuất ra</value>
-  </data>
-  <data name="Dialog.Connectivity.Preventing">
-    <value></value>
-  </data>
-  <data name="Dialog.Connectivity.TimedOut">
-    <value></value>
   </data>
   <data name="Menu.Channel.Description">
     <value>Thay đổi cài đặt triển khai và cài đặt cho Roblox &amp; Froststrap</value>

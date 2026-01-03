@@ -17,8 +17,6 @@ namespace Bloxstrap
 
         public override string FileLocation => Path.Combine(Paths.Base, "Data.json");
 
-        public bool Changed => !OriginalProp.Equals(Prop);
-
         public GenericTriState LoadedState = GenericTriState.Unknown;
 
         public event EventHandler DataLoaded = null!;

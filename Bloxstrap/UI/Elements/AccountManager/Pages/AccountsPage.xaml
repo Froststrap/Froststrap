@@ -259,6 +259,15 @@
                             ItemsSource="{Binding AddMethods}"
                             SelectedItem="{Binding SelectedAddMethod}" />
                     </Grid>
+
+                    <TextBlock
+                            Grid.Row="0"
+                            Margin="0,8,0,6"
+                            FontSize="13"
+                            Text="Installing Chromium browser for account manager, this will take a long time to finish, please wait"
+                            Visibility="{Binding IsInstallingChromium, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TextWrapping="Wrap"
+                            HorizontalAlignment="Center" />
                 </StackPanel>
             </Grid>
         </Border>

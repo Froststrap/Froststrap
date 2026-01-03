@@ -27,7 +27,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-
+            
             <ui:TitleBar
                  Title="{x:Static resources:Strings.CustomTheme_Add_Title}"
                  Grid.Row="0"

@@ -345,9 +345,6 @@
 	<data name="Menu.Help.LargeReplicator">
 		<value>[Большой Дупликатор](https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#large-replicator)</value>
 	</data>
-	<data name="Menu.Help.RCore">
-		<value></value>
-	</data>
 	<data name="Menu.Help.PayloadLimit">
 		<value>[Ограничение размера данных](https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#payload-limit)</value>
 	</data>
@@ -436,19 +433,16 @@
 	<data name="Common.Custom">
 		<value>Пользовательский</value>
 	</data>
-	<data name="Enums.BootstrapperIcon.IconEarly2015">
-		<value></value>
-	</data>
 	<data name="Enums.BootstrapperIcon.IconLate2015">
 		<value>Поздний 2015</value>
 	</data>
 	<data name="Enums.BootstrapperStyle.ByfronDialog">
-		<value> Не настоящий Byfron (2023)</value>
+		<value>Не настоящий Byfron (2023)</value>
 	</data>
 	<data name="Enums.BootstrapperStyle.FluentDialog">
 		<value>Froststrap (Прозрачный)</value>
 	</data>
-	<data name="Enums.BootstrapperStyle.CustomFluentDialog">
+	<data name="Enums.BootstrapperStyle.FroststrapDialog">
 		<value>Froststrap</value>
 	</data>
 	<data name="Bootstrapper.ExtractionFailed.Title">
@@ -1924,12 +1918,6 @@
 	</data>
 	<data name="Common.Export">
 		<value>Экспортировать</value>
-	</data>
-	<data name="Dialog.Connectivity.Preventing">
-		<value></value>
-	</data>
-	<data name="Dialog.Connectivity.TimedOut">
-		<value></value>
 	</data>
 	<data name="Menu.Channel.Description">
 		<value>Изменить настройки развёртывания и установки для Roblox и Froststrap.</value>

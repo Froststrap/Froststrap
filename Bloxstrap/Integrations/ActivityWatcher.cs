@@ -17,8 +17,10 @@
         private const string GameJoinedEntry = "[FLog::Network] serverId:";
         private const string GameDisconnectedEntry = "[FLog::Network] Time to disconnect replication data:";
         private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
-        private const string GameInactivityTimeoutEntry = "[FLog::Network] Sending disconnect with reason: 1";
-        private const string GameConnectionLostEntry = "[FLog::Network] Lost connection with reason : Lost connection to the game server, please reconnect";
+        private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
+
+        private const string StudioPlaceOpenEntry = "[FLog::PlaceManager] Start to open place";
+        private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
 
         private const string GameJoiningEntryPattern = @"! Joining game '([0-9a-f\-]{36})' place ([0-9]+) at ([0-9\.]+)";
         private const string GameJoiningPrivateServerPattern = @"""accessCode"":""([0-9a-f\-]{36})""";
@@ -26,10 +28,12 @@
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
+        private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
 
         private int _logEntriesRead = 0;
         private bool _teleportMarker = false;
         private bool _reservedTeleportMarker = false;
+        private bool _shouldAutoRejoin = false;
 
         private static readonly string GameHistoryCachePath = Path.Combine(Paths.Cache, "GameHistory.json");
         public event EventHandler? OnHistoryUpdated;
@@ -37,18 +41,29 @@
         public event EventHandler<string>? OnLogEntry;
         public event EventHandler? OnGameJoin;
         public event EventHandler? OnGameLeave;
+        public event EventHandler? OnStudioPlaceOpened;
+        public event EventHandler? OnStudioPlaceClosed;
         public event EventHandler? OnLogOpen;
         public event EventHandler? OnAppClose;
         public event EventHandler<Message>? OnRPCMessage;
-        public event EventHandler<ActivityData>? OnAutoRejoinTriggered;
-
-        private DateTime _lastInactivityTimeout = DateTime.MinValue;
+        public event EventHandler<StudioMessage>? OnStudioRPCMessage;
 
         private DateTime LastRPCRequest;
+
+        private readonly LaunchMode _launchMode;
+        private readonly int _robloxPID;
 
         public string LogLocation = null!;
 
         public bool InGame = false;
+        public bool InStudioPlace = false;
+        public bool InRobloxStudio = false;
+
+        private const int HttpPort = 4875;
+        private HttpListener? _httpListener;
+        private Thread? _httpListenerThread;
+        private bool _isHttpListenerRunning = false;
+        private readonly CancellationTokenSource _httpCancellationTokenSource = new();
 
         public ActivityData Data { get; private set; } = new();
 
@@ -59,10 +74,41 @@
 
         public bool IsDisposed = false;
 
-        public ActivityWatcher(string? logFile = null)
+        public void CloseProcess(int pid)
+        {
+            const string LOG_IDENT = "Watcher::CloseProcess";
+
+            try
+            {
+                using var process = Process.GetProcessById(pid);
+                if (process.HasExited)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"PID {pid} has already exited");
+                    return;
+                }
+
+                process.Kill();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"PID {pid} could not be closed");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public ActivityWatcher(string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
         {
             if (!String.IsNullOrEmpty(logFile))
                 LogLocation = logFile;
+
+            _launchMode = launchMode;
+            _robloxPID = RobloxPID;
+
+            if (_launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+            {
+                InRobloxStudio = true;
+                StartHTTPServer();
+            }
 
             LoadGameHistory();
         }
@@ -163,6 +209,53 @@
 
             string logMessage = entry[(logMessageIdx + 1)..];
 
+            if (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+            {
+                ProcessStudioLogEntry(logMessage);
+            }
+            else
+            {
+                ProcessPlayerLogEntry(logMessage);
+            }
+        }
+
+        private void ProcessStudioLogEntry(string logMessage)
+        {
+            const string LOG_IDENT = "ActivityWatcher::ProcessStudioLogEntry";
+
+            // incase this got called and InRobloxStudio is still false
+            if (!InRobloxStudio)
+            {
+                InRobloxStudio = true;
+            }
+
+            // i need to find more logs stuff for studio lowkey
+            if (!InStudioPlace)
+            {
+                if (logMessage.StartsWith(StudioPlaceOpenEntry))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
+                    InStudioPlace = true;
+
+                    OnStudioPlaceOpened?.Invoke(this, EventArgs.Empty);
+                }
+            }
+            else if (InStudioPlace)
+            {
+                if (logMessage.StartsWith(StudioPlaceCloseEntry))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Studio place closed");
+                    InStudioPlace = false;
+
+                    OnStudioPlaceClosed?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private async void ProcessPlayerLogEntry(string logMessage)
+        {
+            const string LOG_IDENT = "ActivityWatcher::ProcessPlayerLogEntry";
+
             if (logMessage.StartsWith(GameLeavingEntry))
             {
                 App.Logger.WriteLine(LOG_IDENT, "User is back into the desktop app");
@@ -176,6 +269,30 @@
                 }
 
                 return;
+            }
+
+            if (logMessage.StartsWith(GameDisconnectReasonEntry))
+            {
+                var match = Regex.Match(logMessage, GameDisconnectReasonPattern);
+                if (match.Success && match.Groups.Count == 2)
+                {
+                    int reasonCode = int.Parse(match.Groups[1].Value);
+
+                    if (reasonCode == 1)
+                    {
+                        _shouldAutoRejoin = true;
+                        App.Logger.WriteLine(LOG_IDENT, $"Inactivity timeout detected (reason code: {reasonCode})");
+                    }
+                    if (reasonCode == 277)
+                    {
+                        _shouldAutoRejoin = true;
+                        App.Logger.WriteLine(LOG_IDENT, $"Internet Disconnection detected (reason code: {reasonCode})");
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Disconnect reason code: {reasonCode}");
+                    }
+                }
             }
 
             if (!InGame && Data.PlaceId == 0)
@@ -303,79 +420,36 @@
             {
                 // We are confirmed to be in a game
 
-                if (logMessage.StartsWith(GameInactivityTimeoutEntry) || logMessage.StartsWith(GameConnectionLostEntry))
-                {
-                    string triggerType = logMessage.StartsWith(GameInactivityTimeoutEntry) ? "inactivity timeout" : "connection lost";
-
-                    if ((DateTime.Now - _lastInactivityTimeout).TotalSeconds < 3)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Skipping duplicate {triggerType} logs");
-                        return;
-                    }
-
-                    _lastInactivityTimeout = DateTime.Now;
-                    App.Logger.WriteLine(LOG_IDENT, $"{triggerType} detected - will be handled by disconnect");
-                }
-
                 if (logMessage.StartsWith(GameDisconnectedEntry))
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Disconnected from Game ({Data})");
 
-                    _ = Task.Run(() =>
-                    {
-                        Data.TimeLeft = DateTime.Now;
-                        AddToHistory(Data);
-                        InGame = false;
-                        OnGameLeave?.Invoke(this, EventArgs.Empty);
-                    });
+                    InGame = false;
+                    Data.TimeLeft = DateTime.Now;
+                    AddToHistory(Data);
+                    OnGameLeave?.Invoke(this, EventArgs.Empty);
 
-                    if (App.Settings.Prop.AutoRejoinEnabled)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "checking for inactivity timeout for 3 seconds");
+                    var autoRejoinData = Data;
+                    Data = new();
 
-                        _ = Task.Run(async () =>
+                    if (App.Settings.Prop.AutoRejoin)
+                    {
+                        await Task.Delay(3000);
+
+                        if (_shouldAutoRejoin)
                         {
-                            try
-                            {
-                                bool isInactivityTimeout = false;
-                                DateTime checkStartTime = DateTime.Now;
+                            autoRejoinData.RejoinServer(false);
 
-                                while ((DateTime.Now - checkStartTime).TotalSeconds < 3)
-                                {
-                                    if (_lastInactivityTimeout > checkStartTime)
-                                    {
-                                        isInactivityTimeout = true;
-                                        App.Logger.WriteLine(LOG_IDENT, "Inactivity timeout found during check period");
-                                        break;
-                                    }
-                                    await Task.Delay(25);
-                                }
+                            // we use this because can you imagine having 5 accs open and we close all of them cuz 1 dced ?
+                            CloseProcess(_robloxPID);
+                        }
+                        else
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "No inactivity detected within 3 seconds, skipping auto-rejoin");
+                        }
+                    }
 
-                                if (isInactivityTimeout)
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, "Inactivity timeout found, attempting auto-rejoin");
-                                    Data.RejoinServer();
-                                    OnAutoRejoinTriggered?.Invoke(this, Data);
-                                }
-                                else
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, "No inactivity timeout found.");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Auto-rejoin task failed: {ex.Message}");
-                            }
-                            finally
-                            {
-                                Data = new();
-                            }
-                        });
-                    }
-                    else
-                    {
-                        Data = new();
-                    }
+                    _shouldAutoRejoin = false;
                 }
                 else if (logMessage.StartsWith(GameTeleportingEntry))
                 {
@@ -467,6 +541,170 @@
             }
         }
 
+        private void StartHTTPServer()
+        {
+            try
+            {
+        	    if (_httpListener != null && _httpListener.IsListening)
+        	    {
+        	        App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", "HTTP server is already running");
+        	        return;
+        	    }
+
+                _httpListener = new HttpListener();
+
+                _httpListener.Prefixes.Add($"http://localhost:{HttpPort}/");
+
+                _httpListener.Start();
+
+                _isHttpListenerRunning = true;
+                _httpListenerThread = new Thread(() => ListenForHTTPRequests(_httpCancellationTokenSource.Token));
+                _httpListenerThread.IsBackground = true;
+                _httpListenerThread.Name = "StudioRPC-HTTP-Listener";
+                _httpListenerThread.Start();
+
+                App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", $"HTTP server started on port {HttpPort}");
+            }
+            catch (HttpListenerException ex) when (ex.ErrorCode == 183) // ERROR_ALREADY_EXISTS
+            {
+                App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", $"Port {HttpPort} is already in use by another process");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("ActivityWatcher::StartHTTPServer", ex);
+            }
+        }
+
+        private async void ListenForHTTPRequests(CancellationToken cancellationToken)
+        {
+            while (_isHttpListenerRunning && _httpListener != null && _httpListener.IsListening && !cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    var context = await _httpListener.GetContextAsync().WaitAsync(cancellationToken);
+                    _ = Task.Run(() => ProcessHTTPRequest(context), cancellationToken);
+                }
+                catch (HttpListenerException)
+                {
+                    break;
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("ActivityWatcher::ListenForHTTPRequests", ex);
+                    await Task.Delay(1000, cancellationToken);
+                }
+            }
+        }
+
+        private void ProcessHTTPRequest(HttpListenerContext context)
+        {
+            const string LOG_IDENT = "ActivityWatcher::ProcessHTTPRequest";
+
+            try
+            {
+                if (context.Request.HttpMethod == "POST" && context.Request.Url?.AbsolutePath == "/rpc")
+                {
+                    using (var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8))
+                    {
+                        string json = reader.ReadToEnd();
+                        App.Logger.WriteLine(LOG_IDENT, $"Received HTTP RPC: {json}");
+
+                        var studioMessage = JsonSerializer.Deserialize<StudioMessage>(json);
+
+                        if (studioMessage != null)
+                        {
+                            if (studioMessage.StudioCommand == "SetRichPresence")
+                            {
+                                var richPresenceData = studioMessage.Data.Deserialize<StudioRichPresence>();
+                                if (richPresenceData != null)
+                                {
+                                    var fullMessage = new StudioMessage
+                                    {
+                                        StudioCommand = studioMessage.StudioCommand,
+                                        Data = JsonSerializer.SerializeToElement(richPresenceData)
+                                    };
+                                    OnStudioRPCMessage?.Invoke(this, fullMessage);
+                                }
+                            }
+                            else if (studioMessage.StudioCommand == "RPCToggle")
+                            {
+                                var toggleData = studioMessage.Data.Deserialize<StudioToggleData>();
+                                if (toggleData != null)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"Received RPCToggle: Enabled={toggleData.Enabled}, Workspace={toggleData.Workspace}");
+                                    var toggleMessage = new StudioMessage
+                                    {
+                                        StudioCommand = studioMessage.StudioCommand,
+                                        Data = JsonSerializer.SerializeToElement(toggleData)
+                                    };
+                                    OnStudioRPCMessage?.Invoke(this, toggleMessage);
+                                }
+                            }
+                            else
+                            {
+                                OnStudioRPCMessage?.Invoke(this, studioMessage);
+                            }
+                        }
+                        else
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "Failed to parse JSON message");
+                        }
+                    }
+
+                    context.Response.StatusCode = 200;
+                    context.Response.Close();
+                }
+                else
+                {
+                    context.Response.StatusCode = 404;
+                    context.Response.Close();
+                }
+            }
+            catch (JsonException jsonEx)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"JSON parsing error: {jsonEx.Message}");
+                context.Response.StatusCode = 400;
+                context.Response.Close();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+                context.Response.StatusCode = 500;
+                context.Response.Close();
+            }
+        }
+
+        private void StopHTTPServer()
+        {
+            _isHttpListenerRunning = false;
+            _httpCancellationTokenSource.Cancel();
+
+            if (_httpListener != null)
+            {
+                try
+                {
+                    _httpListener.Stop();
+                    _httpListener.Close();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("ActivityWatcher::StopHTTPServer", ex);
+                }
+                _httpListener = null;
+            }
+
+            if (_httpListenerThread != null && _httpListenerThread.IsAlive)
+            {
+                _httpListenerThread.Join(2000);
+            }
+
+            _httpCancellationTokenSource.Dispose();
+        }
+
         public void LoadGameHistory()
         {
             try
@@ -474,6 +712,7 @@
                 if (!File.Exists(GameHistoryCachePath))
                 {
                     App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", "No existing game history cache found");
+                    History = new List<ActivityData>();
                     return;
                 }
 
@@ -492,13 +731,25 @@
 
                     foreach (var history in gameHistory)
                     {
+                        var serverType = (ServerType)history.ServerType;
+
+                        if (serverType == ServerType.Private || serverType == ServerType.Reserved)
+                        {
+                            continue;
+                        }
+
+                        if (history.UniverseId == 0 || history.PlaceId == 0 || history.TimeJoined == default)
+                        {
+                            continue;
+                        }
+
                         var activity = new ActivityData
                         {
                             UniverseId = history.UniverseId,
                             PlaceId = history.PlaceId,
                             JobId = history.JobId,
                             UserId = history.UserId,
-                            ServerType = (ServerType)history.ServerType,
+                            ServerType = serverType,
                             TimeJoined = history.TimeJoined,
                             TimeLeft = history.TimeLeft,
                         };
@@ -507,7 +758,17 @@
                         History.Add(activity);
                     }
 
+                    History = History
+                        .GroupBy(x => x.UniverseId)
+                        .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
+                        .OrderByDescending(x => x.TimeJoined)
+                        .ToList();
+
                     App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", $"Loaded {History.Count} game history entries from cache");
+                }
+                else
+                {
+                    History = new List<ActivityData>();
                 }
             }
             catch (Exception ex)
@@ -523,6 +784,20 @@
             {
                 Directory.CreateDirectory(Paths.Cache);
 
+                var validHistory = History
+                    .Where(activity =>
+                        activity.ServerType != ServerType.Private &&
+                        activity.ServerType != ServerType.Reserved &&
+                        activity.UniverseId != 0 &&
+                        activity.PlaceId != 0 &&
+                        activity.TimeJoined != default)
+                    .ToList();
+
+                var limitedHistory = validHistory
+                    .GroupBy(x => x.UniverseId)
+                    .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
+                    .ToList();
+
                 var options = new JsonSerializerOptions
                 {
                     WriteIndented = true,
@@ -530,7 +805,7 @@
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
                 };
 
-                var gameHistory = History.Select(activity => new GameHistoryData
+                var gameHistory = limitedHistory.Select(activity => new GameHistoryData
                 {
                     UniverseId = activity.UniverseId,
                     PlaceId = activity.PlaceId,
@@ -544,7 +819,8 @@
                 string json = JsonSerializer.Serialize(gameHistory, options);
                 File.WriteAllText(GameHistoryCachePath, json);
 
-                App.Logger.WriteLine("ActivityWatcher::SaveGameHistory", $"Saved {History.Count} game history entries to cache");
+                App.Logger.WriteLine("ActivityWatcher::SaveGameHistory",
+                    $"Saved {gameHistory.Count} game history entries to cache ({limitedHistory.Count} after filtering)");
             }
             catch (Exception ex)
             {
@@ -554,34 +830,50 @@
 
         private void AddToHistory(ActivityData activity)
         {
-            History.RemoveAll(x => x.JobId == activity.JobId);
-
-            var sameGameEntries = History.Where(x => x.UniverseId == activity.UniverseId && x.PlaceId == activity.PlaceId).ToList();
-
-            if (sameGameEntries.Count >= 2)
+            if (activity.ServerType == ServerType.Private || activity.ServerType == ServerType.Reserved)
             {
-                var oldestEntry = sameGameEntries.Last();
-                History.Remove(oldestEntry);
-
                 App.Logger.WriteLine("ActivityWatcher::AddToHistory",
-                    $"Removed oldest entry for game {activity.UniverseId}/{activity.PlaceId} to maintain history limit");
+                    $"Skipping {activity.ServerType} server from history");
+                return;
+            }
+
+            if (activity.UniverseId == 0 || activity.PlaceId == 0 || activity.TimeJoined == default)
+            {
+                App.Logger.WriteLine("ActivityWatcher::AddToHistory",
+                    "Skipping incomplete activity from history");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(activity.JobId))
+            {
+                History.RemoveAll(x => x.JobId == activity.JobId);
             }
 
             History.Insert(0, activity);
 
-            const int maxHistorySize = 125;
-            if (History.Count > maxHistorySize)
+            History = History
+                .GroupBy(x => x.UniverseId)
+                .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
+                .OrderByDescending(x => x.TimeJoined)
+                .ToList();
+
+            if (History.Count > 125)
             {
-                History = History.Take(maxHistorySize).ToList();
+                History = History.Take(125).ToList();
             }
 
             SaveGameHistory();
             OnHistoryUpdated?.Invoke(this, EventArgs.Empty);
+
+            App.Logger.WriteLine("ActivityWatcher::AddToHistory",
+                $"Added history entry for universe {activity.UniverseId}. Total entries: {History.Count}");
         }
 
         public void Dispose()
         {
             IsDisposed = true;
+            if (InRobloxStudio)
+                StopHTTPServer();
             GC.SuppressFinalize(this);
         }
     }

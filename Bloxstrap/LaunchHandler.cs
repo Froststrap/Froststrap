@@ -191,6 +191,13 @@ namespace Bloxstrap
             {
                 bool showAlreadyRunningWarning = Process.GetProcessesByName(App.ProjectName).Length > 1;
 
+                // before we open the window, force load the distribution states
+                // some menu viewmodels require the distribution states, which will result in a short freeze once the page is opened
+                if (!App.PlayerState.Loaded)
+                    App.PlayerState.Load();
+                if (!App.StudioState.Loaded)
+                    App.StudioState.Load();
+
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
                     App.FrostRPC = new FroststrapRichPresence();
@@ -309,7 +316,9 @@ namespace Bloxstrap
 
             var watcher = new Watcher();
 
-            Task.Run(watcher.Run).ContinueWith(t =>
+            Task watcherTask = Task.Run(watcher.Run);
+
+            watcherTask.ContinueWith(t =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Watcher task has finished");
 
@@ -322,7 +331,8 @@ namespace Bloxstrap
                     if (t.Exception is not null)
                         App.FinalizeExceptionHandling(t.Exception);
                 }
-                // shouldnt this be done after client closes?
+
+                // Shouldn't this be done after client closes?
                 if (App.Settings.Prop.CleanerOptions != CleanerOptions.Never)
                     Cleaner.DoCleaning();
 

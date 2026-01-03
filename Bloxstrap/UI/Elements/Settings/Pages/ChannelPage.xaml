@@ -70,13 +70,11 @@
             </controls:OptionControl.Style>
             <ui:ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
         </controls:OptionControl>
-
         <controls:OptionControl 
-            x:Name="FlagStateOption"
-            Header="{x:Static resources:Strings.Menu_Channel_VersionHash_Title}" 
-            Description="{x:Static resources:Strings.Menu_Channel_VersionHash_Desription}"
+            Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
+            Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}"
             Visibility="Collapsed">
-            <ui:TextBox Width="200" Padding="10,5,10,5" Text="{Binding ChannelHash, Mode=TwoWay}" />
+        <ui:ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <ui:CardExpander Margin="0,8,0,0" IsExpanded="True">
@@ -129,6 +127,9 @@
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,16,8" VerticalAlignment="Center" Text="{x:Static resources:Strings.Common_VersionGuid}" />
                     <TextBlock Grid.Row="1" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding ChannelDeployInfo.VersionGuid, Mode=OneWay}" />
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,16,8" VerticalAlignment="Center" Text="{x:Static resources:Strings.Common_Timestamp}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding ChannelDeployInfo.Timestamp, Mode=OneWay}" />
 
                     <Button Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Content="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels}" Click="OpenChannelListDialog_Click" />
 

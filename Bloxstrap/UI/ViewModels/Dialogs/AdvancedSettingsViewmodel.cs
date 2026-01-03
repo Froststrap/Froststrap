@@ -5,31 +5,7 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
     public class AdvancedSettingViewModel : INotifyPropertyChanged
     {
         public static event EventHandler? ShowPresetColumnChanged;
-        public static event EventHandler? CtrlCJsonFormatChanged;
         public static event EventHandler? ShowFlagCountChanged;
-
-        public CopyFormatMode SelectedCopyFormat
-        {
-            get => App.Settings.Prop.SelectedCopyFormat;
-            set
-            {
-                App.Settings.Prop.SelectedCopyFormat = value;
-                OnPropertyChanged(nameof(SelectedCopyFormat));
-            }
-        }
-
-        public IEnumerable<CopyFormatMode> CopyFormatModes => Enum.GetValues(typeof(CopyFormatMode)).Cast<CopyFormatMode>();
-
-        public bool ShowCtrlCJsonFormatSetting
-        {
-            get => App.Settings.Prop.CtrlCJsonFormat;
-            set
-            {
-                App.Settings.Prop.CtrlCJsonFormat = value;
-                OnPropertyChanged(nameof(ShowCtrlCJsonFormatSetting));
-                CtrlCJsonFormatChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
 
         public bool ShowPresetColumnSetting
         {

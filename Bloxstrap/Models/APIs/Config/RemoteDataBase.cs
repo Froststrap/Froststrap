@@ -22,11 +22,11 @@ namespace Bloxstrap.Models.APIs.Config
         [JsonPropertyName("settingsPage")]
         public SettingsPageConfig SettingsPage { get; set; } = new();
 
-        [JsonPropertyName("projectDownloadLink")]
-        public string ProjectDownloadLink { get; set; } = "https://github.com/RealMeddsam/Froststrap/releases";
-
         [JsonPropertyName("mappings")]
         public Dictionary<string, string[]> Mappings { get; set; } = new Dictionary<string, string[]>();
+
+        [JsonPropertyName("dummyCookie")]
+        public string Dummy { get; set; } = string.Empty;
 
         [JsonPropertyName("communityMods")]
         public List<CommunityMod> CommunityMods { get; set; } = new List<CommunityMod>();

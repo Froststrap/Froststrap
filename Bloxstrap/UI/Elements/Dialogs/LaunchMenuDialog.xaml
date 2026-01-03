@@ -14,7 +14,7 @@
         MinHeight="0"
         Width="580"
         SizeToContent="Height"
-        ResizeMode="NoResize"
+        ResizeMode="CanResize"
         Background="{ui:ThemeResource ApplicationBackgroundBrush}"
         ExtendsContentIntoTitleBar="True"
         WindowBackdropType="Mica"

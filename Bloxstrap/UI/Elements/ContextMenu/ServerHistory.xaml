@@ -20,6 +20,7 @@
     ExtendsContentIntoTitleBar="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+    
     <Grid Background="{DynamicResource ApplicationBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -124,7 +125,7 @@
                                     FontSize="18"
                                     FontWeight="Medium"
                                     Text="{Binding UniverseDetails.Data.Name}" />
-                                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding GameHistoryDescription}" />
+                                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding JobId}" />
 
                                 <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                                     <ui:Button
@@ -149,6 +150,13 @@
                                         Command="{Binding CopyServerIdCommand}"
                                         Content="Server ID"
                                         Icon="Clipboard24" />
+
+                                    <ui:Button
+                                        Margin="8,0,0,0"
+                                        Appearance="Danger"
+                                        Command="{Binding DeleteHistoryCommand}"
+                                        Content="{x:Static resources:Strings.Common_Delete}"
+                                        Icon="Delete24"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>

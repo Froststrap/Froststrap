@@ -1,6 +1,5 @@
 ﻿using Bloxstrap.AppData;
 using Bloxstrap.Integrations;
-using Bloxstrap.Models;
 
 namespace Bloxstrap
 {
@@ -14,11 +13,15 @@ namespace Bloxstrap
 
         public readonly ActivityWatcher? ActivityWatcher;
 
-        public readonly DiscordRichPresence? RichPresence;
-
         public readonly IntegrationWatcher? IntegrationWatcher;
 
         public readonly MemoryCleaner? MemoryCleaner;
+
+        public readonly PlayerDiscordRichPresence? PlayerRichPresence;
+        public readonly StudioDiscordRichPresence? StudioRichPresence;
+
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private bool _isDisposed = false;
 
         public Watcher()
         {
@@ -58,7 +61,7 @@ namespace Bloxstrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                ActivityWatcher = new(_watcherData.LogFile);
+                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
@@ -70,8 +73,10 @@ namespace Bloxstrap
                     };
                 }
 
-                if (App.Settings.Prop.UseDiscordRichPresence)
-                    RichPresence = new(ActivityWatcher);
+                if ((_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
+                    StudioRichPresence = new(ActivityWatcher);
+                else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
+                    PlayerRichPresence = new(ActivityWatcher);
             }
 
             _notifyIcon = new(this);
@@ -114,8 +119,22 @@ namespace Bloxstrap
 
             ActivityWatcher?.Start();
 
-            while (Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId))
-                await Task.Delay(1000);
+            try
+            {
+                while (!_cancellationTokenSource.Token.IsCancellationRequested &&
+                       Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId))
+                {
+                    await Task.Delay(1000, _cancellationTokenSource.Token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                App.Logger.WriteLine("Watcher::Run", "Watcher was cancelled");
+                return;
+            }
+
+            if (_cancellationTokenSource.Token.IsCancellationRequested)
+                return;
 
             if (_watcherData.AutoclosePids is not null)
             {
@@ -129,7 +148,12 @@ namespace Bloxstrap
 
         public void Dispose()
         {
+            if (_isDisposed)
+                return;
+
             App.Logger.WriteLine("Watcher::Dispose", "Disposing Watcher");
+
+            _cancellationTokenSource.Cancel();
 
             if (App.Settings.Prop.MultiInstanceLaunching)
             {
@@ -140,8 +164,11 @@ namespace Bloxstrap
             IntegrationWatcher?.Dispose();
             MemoryCleaner?.Dispose();
             _notifyIcon?.Dispose();
-            RichPresence?.Dispose();
+            PlayerRichPresence?.Dispose();
+            StudioRichPresence?.Dispose();
+            _cancellationTokenSource.Dispose();
 
+            _isDisposed = true;
             GC.SuppressFinalize(this);
         }
     }

@@ -11,13 +11,13 @@
         xmlns:converters="clr-namespace:Bloxstrap.UI.Converters"
         mc:Ignorable="d"
         Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" 
-        Height="500"
+        Height="375"
         Width="560"
         ResizeMode="CanResize"
         Background="{ui:ThemeResource ApplicationBackgroundBrush}"
         ExtendsContentIntoTitleBar="True"
         WindowStartupLocation="CenterScreen">
-    <Grid Background="{DynamicResource ApplicationBackground}">
+    <Grid Background="{DynamicResource ApplicationBackground}" Margin="8,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -26,31 +26,10 @@
 
         <ui:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" Title="Advanced Settings" Icon="pack://application:,,,/Bloxstrap.ico" ShowMinimize="False" ShowMaximize="False" CanMaximize="False" KeyboardNavigation.TabNavigation="None" />
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Margin="5,0,0,10">
-
-                <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_CopyFormat_Title}" 
-                        Description="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_CopyFormat_Description}"
-                        HelpLink="https://github.com/Meddsam/Froststrap/wiki/Advanced-FastFlag-Editor-Settings#copy-format" >
-                    <ComboBox Margin="5,0,0,0" Padding="10,5,10,5"
-                            Width="200"
-                            ItemsSource="{Binding CopyFormatModes}"
-                            SelectedItem="{Binding SelectedCopyFormat, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </controls:OptionControl>
-
-                <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_CtrlC_Title}" 
-                        Description="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_CtrlC_Description}">
-                    <ui:ToggleSwitch IsChecked="{Binding ShowCtrlCJsonFormatSetting, Mode=TwoWay}" />
-                </controls:OptionControl>
-
-                <controls:OptionControl
+            <StackPanel>
+                <TextBlock Text="Advanced and Miscellaneous settings for the fastflag editor" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="12"/>
+                
+                <controls:OptionControl Margin="0,8,0,0"
                         Header="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_AltManually_Title}" 
                         Description="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_AltManually_Description}">
                     <ui:ToggleSwitch IsChecked="{Binding UseAltManually, Mode=TwoWay}" />

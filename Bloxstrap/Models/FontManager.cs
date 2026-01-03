@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Windows;
-using System.Windows.Media;
-using SWM = System.Windows.Media;  // did this so i dont have to keep writing system.Windows.Media
+﻿using System.Windows;
 
 namespace Bloxstrap.Models
 {
@@ -11,12 +6,12 @@ namespace Bloxstrap.Models
     {
         public static bool IsCustomFontApplied { get; private set; }
 
-        public static SWM.FontFamily? LoadFontFromFile(string fontFilePath)
+        public static System.Windows.Media.FontFamily? LoadFontFromFile(string fontFilePath)
         {
             if (!File.Exists(fontFilePath))
                 return null;
 
-            string tempFontsRoot = Path.Combine(Path.GetTempPath(), "BloxstrapFonts");
+            string tempFontsRoot = Path.Combine(Path.GetTempPath(), "Froststrap", "Fonts");
 
             string uniqueFontFolder = Path.Combine(tempFontsRoot, Guid.NewGuid().ToString());
             Directory.CreateDirectory(uniqueFontFolder);
@@ -25,7 +20,7 @@ namespace Bloxstrap.Models
             File.Copy(fontFilePath, destFontPath, overwrite: true);
 
             var fontDirectoryUri = new Uri(uniqueFontFolder + Path.DirectorySeparatorChar);
-            var fontFamilies = Fonts.GetFontFamilies(fontDirectoryUri);
+            var fontFamilies = System.Windows.Media.Fonts.GetFontFamilies(fontDirectoryUri);
 
             return fontFamilies.FirstOrDefault();
         }
@@ -55,7 +50,7 @@ namespace Bloxstrap.Models
             return false;
         }
 
-        public static void ApplyFontGlobally(SWM.FontFamily fontFamily)
+        public static void ApplyFontGlobally(System.Windows.Media.FontFamily fontFamily)
         {
             Application.Current.Resources[SystemFonts.MessageFontFamilyKey] = fontFamily;
 
@@ -67,7 +62,7 @@ namespace Bloxstrap.Models
 
         public static void RemoveCustomFont()
         {
-            var defaultFont = new SWM.FontFamily("Segoe UI");
+            var defaultFont = new System.Windows.Media.FontFamily("Segoe UI");
             ApplyFontGlobally(defaultFont);
             IsCustomFontApplied = false;
             App.Settings.Prop.CustomFontPath = null;

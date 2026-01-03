@@ -432,9 +432,6 @@ Dacă nu, atunci vă rugăm să raportați această eroare printr-o [problemă G
   <data name="Common.Custom">
     <value>Personalizat</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconEarly2015">
-    <value></value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015">
     <value>Sfârșitul lui 2015</value>
   </data>
@@ -444,7 +441,7 @@ Dacă nu, atunci vă rugăm să raportați această eroare printr-o [problemă G
   <data name="Enums.BootstrapperStyle.FluentDialog">
     <value>Froststrap (Opaque)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.CustomFluentDialog">
+  <data name="Enums.BootstrapperStyle.FroststrapDialog">
     <value>Froststrap</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title">
@@ -1891,12 +1888,6 @@ Vă rugăm să închideți orice aplicație care poate folosi fișierele Roblox,
   </data>
   <data name="Common.Export">
     <value>Exportă</value>
-  </data>
-  <data name="Dialog.Connectivity.Preventing">
-    <value></value>
-  </data>
-  <data name="Dialog.Connectivity.TimedOut">
-    <value></value>
   </data>
   <data name="Menu.Channel.Description">
     <value>Change deployment and installation settings for Roblox &amp; Froststrap.</value>

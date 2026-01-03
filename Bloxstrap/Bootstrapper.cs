@@ -57,6 +57,7 @@ namespace Bloxstrap
         private string _latestVersionGuid = null!;
         private string _latestVersionDirectory = null!;
         private PackageManifest _versionPackageManifest = null!;
+        public static bool _staticDirectory => App.Settings.Prop.StaticDirectory;
 
         private bool _isInstalling = false;
         private double _progressIncrement;
@@ -65,7 +66,7 @@ namespace Bloxstrap
         private long _totalDownloadedBytes = 0;
         private bool _packageExtractionSuccess = true;
 
-        private bool _mustUpgrade => App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall || String.IsNullOrEmpty(AppData.State.VersionGuid) || !File.Exists(AppData.ExecutablePath);
+        private bool _mustUpgrade => App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid) || !File.Exists(AppData.ExecutablePath);
 
         private bool _noConnection = false;
 
@@ -246,7 +247,7 @@ namespace Bloxstrap
             {
                 App.Settings.Load();
                 App.State.Load();
-                App.RobloxState.Load();
+                AppData.DistributionStateManager.Load();
             }
 
             if (!_noConnection)
@@ -284,7 +285,7 @@ namespace Bloxstrap
                     await UpgradeRoblox();
                 }
 
-                if (AppData.State.VersionGuid != _latestVersionGuid || _mustUpgrade)
+                if (AppData.DistributionState.VersionGuid != _latestVersionGuid || _mustUpgrade)
                 {
                     bool backgroundUpdaterMutexOpen = Utilities.DoesMutexExist("Bloxstrap-BackgroundUpdater");
                     if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
@@ -349,29 +350,30 @@ namespace Bloxstrap
                 StartRoblox();
             }
 
-            if (_launchMode == LaunchMode.Player)
-            {
-                _ = Task.Run(async () => await HandlePostLaunchOperations());
-            }
+            _ =  HandlePostLaunchOperations(_launchMode);
 
             await mutex.ReleaseAsync();
 
             Dialog?.CloseBootstrapper();
         }
 
-        private async Task HandlePostLaunchOperations()
+        private async Task HandlePostLaunchOperations(LaunchMode launchMode)
         {
             const string LOG_IDENT = "Bootstrapper::PostLaunch";
 
             try
             {
-                if (App.Settings.Prop.SelectedRobloxIcon != RobloxIcon.Default)
+                // roblox studio automatically sets its icon everytime you do smth
+                if (launchMode == LaunchMode.Player)
                 {
-                    var robloxProcess = Process.GetProcessById(_appPid);
-
-                    if (!robloxProcess.HasExited)
+                    if (App.Settings.Prop.SelectedRobloxIcon != RobloxIcon.Default)
                     {
-                        await SetRobloxWindowIcon(robloxProcess, App.Settings.Prop.SelectedRobloxIcon);
+                        var robloxProcess = Process.GetProcessById(_appPid);
+
+                        if (!robloxProcess.HasExited)
+                        {
+                            await SetRobloxWindowIcon(robloxProcess, App.Settings.Prop.SelectedRobloxIcon);
+                        }
                     }
                 }
                 else
@@ -379,28 +381,30 @@ namespace Bloxstrap
                     await Task.Delay(20000);
                 }
 
-                if (App.Settings.Prop.AutoCloseCrashHandler)
+                if (launchMode == LaunchMode.Player)
                 {
-                    try
+                    if (App.Settings.Prop.AutoCloseCrashHandler)
                     {
-                        var crashHandlerProcesses = Process.GetProcessesByName("RobloxCrashHandler");
-
-                        foreach (var proc in crashHandlerProcesses)
+                        try
                         {
-                            try
+                            var crashHandlerProcesses = Process.GetProcessesByName("RobloxCrashHandler");
+
+                            foreach (var proc in crashHandlerProcesses)
                             {
-                                proc.Kill();
-                                App.Logger.WriteLine(LOG_IDENT, $"Killed RobloxCrashHandler process (PID {proc.Id})");
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to kill RobloxCrashHandler process (PID {proc.Id}): {ex.Message}");
+                                try
+                                {
+                                    proc.Kill();
+                                }
+                                catch (Exception ex)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"Failed to kill RobloxCrashHandler process (PID {proc.Id}): {ex.Message}");
+                                }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Error killing RobloxCrashHandler: {ex.Message}");
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Error killing RobloxCrashHandler: {ex.Message}");
+                        }
                     }
                 }
 
@@ -419,26 +423,8 @@ namespace Bloxstrap
                             _ => ProcessPriorityClass.Normal
                         };
 
-                        var robloxProcesses = Process.GetProcessesByName("RobloxPlayerBeta");
-
-                        if (robloxProcesses.Length == 0)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, "Roblox process not found for priority setting");
-                            return;
-                        }
-
-                        foreach (var proc in robloxProcesses)
-                        {
-                            try
-                            {
-                                proc.PriorityClass = priorityClass;
-                                App.Logger.WriteLine(LOG_IDENT, $"Set priority to {priorityClass} for process {proc.Id}");
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to set priority for process {proc.Id}: {ex}");
-                            }
-                        }
+                        var robloxProcess = Process.GetProcessById(_appPid);
+                        robloxProcess.PriorityClass = priorityClass;
                     }
                     catch (Exception ex)
                     {
@@ -485,7 +471,7 @@ namespace Bloxstrap
             // Private channels
             if (App.Cookies.Loaded)
             {
-                UserChannel? userChannel = await App.Cookies.GetUserChannel(Deployment.BinaryType);
+                UserChannel? userChannel = await Deployment.GetUserChannel(Deployment.BinaryType);
 
                 if (
                     userChannel?.Token is not null &&
@@ -630,7 +616,10 @@ namespace Bloxstrap
                 // we can't determine the version
             }
 
-            _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
+            if (_staticDirectory)
+                _latestVersionDirectory = AppData.StaticDirectory;
+            else
+                _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
             string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
             var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
@@ -899,10 +888,8 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "Bootstrapper::SetRobloxWindowIcon";
 
-            if (icon == RobloxIcon.Default)
-                return;
-
             using var iconHandle = LoadIcon(icon);
+
             if (iconHandle == null)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Icon resource '{icon}' not found.");
@@ -975,7 +962,7 @@ namespace Bloxstrap
 
             string? logFileName = null;
 
-            string rbxDir = Path.Combine(Paths.LocalAppData, "Roblox");
+            string rbxDir = Paths.Roblox;
             if (!Directory.Exists(rbxDir))
                 Directory.CreateDirectory(rbxDir);
 
@@ -983,7 +970,7 @@ namespace Bloxstrap
             if (!Directory.Exists(rbxLogDir))
                 Directory.CreateDirectory(rbxLogDir);
 
-            var logWatcher = new FileSystemWatcher()
+            using var logWatcher = new FileSystemWatcher()
             {
                 Path = rbxLogDir,
                 Filter = "*.log",
@@ -1021,7 +1008,8 @@ namespace Bloxstrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}), waiting for log file");
 
-            logCreatedEvent.WaitOne(TimeSpan.FromSeconds(15));
+            // should i increase timeout ? since i think watcher dosent launh sometimes cause it cannot find the log file in time.
+            logCreatedEvent.WaitOne(TimeSpan.FromSeconds(30));
 
             if (String.IsNullOrEmpty(logFileName))
             {
@@ -1036,38 +1024,38 @@ namespace Bloxstrap
 
             _mutex?.ReleaseAsync();
 
-            if (IsStudioLaunch)
-                return;
-
             var autoclosePids = new List<int>();
 
-            // launch custom integrations now
-            foreach (var integration in App.Settings.Prop.CustomIntegrations)
+            if (!IsStudioLaunch)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
-
-                int pid = 0;
-
-                try
+                // launch custom integrations now if normal roblox
+                foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 {
-                    var process = Process.Start(new ProcessStartInfo
+                    App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+
+                    int pid = 0;
+
+                    try
                     {
-                        FileName = integration.Location,
-                        Arguments = integration.LaunchArgs.Replace("\r\n", " "),
-                        WorkingDirectory = Path.GetDirectoryName(integration.Location),
-                        UseShellExecute = true
-                    })!;
+                        var process = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = integration.Location,
+                            Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                            WorkingDirectory = Path.GetDirectoryName(integration.Location),
+                            UseShellExecute = true
+                        })!;
 
-                    pid = process.Id;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}'!");
-                    App.Logger.WriteLine(LOG_IDENT, ex.Message);
-                }
+                        pid = process.Id;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}'!");
+                        App.Logger.WriteLine(LOG_IDENT, ex.Message);
+                    }
 
-                if (integration.AutoClose && pid != 0)
-                    autoclosePids.Add(pid);
+                    if (integration.AutoClose && pid != 0)
+                        autoclosePids.Add(pid);
+                }
             }
 
             if (App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Any())
@@ -1078,7 +1066,8 @@ namespace Bloxstrap
                 {
                     ProcessId = _appPid,
                     LogFile = logFileName,
-                    AutoclosePids = autoclosePids
+                    AutoclosePids = autoclosePids,
+                    LaunchMode = _launchMode
                 };
 
                 string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
@@ -1297,12 +1286,14 @@ namespace Bloxstrap
         #region Roblox Install
         private static bool TryDeleteRobloxInDirectory(string dir)
         {
-            string clientPath = Path.Combine(dir, "RobloxPlayerBeta.exe");
-            if (!File.Exists(dir))
+            // If neither of these exist in the directory, return true.
+            // This was not implemented properly.
+            string clientPath = Path.Combine(dir, App.RobloxPlayerAppName);
+            if (!File.Exists(clientPath))
             {
-                clientPath = Path.Combine(dir, "RobloxStudioBeta.exe");
-                if (!File.Exists(dir))
-                    return true; // ok???
+                clientPath = Path.Combine(dir, App.RobloxStudioAppName);
+                if (!File.Exists(clientPath))
+                    return true;
             }
 
             try
@@ -1336,7 +1327,10 @@ namespace Bloxstrap
             {
                 string dirName = Path.GetFileName(dir);
 
-                if (dirName != App.RobloxState.Prop.Player.VersionGuid && dirName != App.RobloxState.Prop.Studio.VersionGuid)
+                if (
+                    !_staticDirectory && (dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid) ||
+                    _staticDirectory && (dirName != "WindowsPlayer" && dirName != "WindowsStudio64")
+                    )
                 {
                     // TODO: this is too expensive
                     //Filesystem.AssertReadOnlyDirectory(dir);
@@ -1348,6 +1342,11 @@ namespace Bloxstrap
                     try
                     {
                         Directory.Delete(dir, true);
+                    }
+                    catch (UnauthorizedAccessException ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
+                        App.Logger.WriteException(LOG_IDENT, ex);
                     }
                     catch (IOException ex)
                     {
@@ -1362,7 +1361,7 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "Bootstrapper::MigrateCompatibilityFlags";
 
-            string oldClientLocation = Path.Combine(Paths.Versions, AppData.State.VersionGuid, AppData.ExecutableName);
+            string oldClientLocation = Path.Combine(Paths.Versions, AppData.DistributionState.VersionGuid, AppData.ExecutableName);
             string newClientLocation = Path.Combine(_latestVersionDirectory, AppData.ExecutableName);
 
             // move old compatibility flags for the old location
@@ -1422,7 +1421,7 @@ namespace Bloxstrap
                 return;
             }
 
-            if (String.IsNullOrEmpty(AppData.State.VersionGuid))
+            if (String.IsNullOrEmpty(AppData.DistributionState.VersionGuid))
                 SetStatus(Strings.Bootstrapper_Status_Installing);
             else
                 SetStatus(Strings.Bootstrapper_Status_Upgrading);
@@ -1580,19 +1579,19 @@ namespace Bloxstrap
 
             MigrateCompatibilityFlags();
 
-            AppData.State.VersionGuid = _latestVersionGuid;
+            AppData.DistributionState.VersionGuid = _latestVersionGuid;
 
-            AppData.State.PackageHashes.Clear();
+            AppData.DistributionState.PackageHashes.Clear();
 
             foreach (var package in _versionPackageManifest)
-                AppData.State.PackageHashes.Add(package.Name, package.Signature);
+                AppData.DistributionState.PackageHashes.Add(package.Name, package.Signature);
 
             CleanupVersionsFolder();
 
             var allPackageHashes = new List<string>();
 
-            allPackageHashes.AddRange(App.RobloxState.Prop.Player.PackageHashes.Values);
-            allPackageHashes.AddRange(App.RobloxState.Prop.Studio.PackageHashes.Values);
+            allPackageHashes.AddRange(App.PlayerState.Prop.PackageHashes.Values);
+            allPackageHashes.AddRange(App.StudioState.Prop.PackageHashes.Values);
 
             if (!App.Settings.Prop.DebugDisableVersionPackageCleanup)
             {
@@ -1619,9 +1618,9 @@ namespace Bloxstrap
 
             int distributionSize = _versionPackageManifest.Sum(x => x.Size + x.PackedSize) / 1024;
 
-            AppData.State.Size = distributionSize;
+            AppData.DistributionState.Size = distributionSize;
 
-            int totalSize = App.RobloxState.Prop.Player.Size + App.RobloxState.Prop.Studio.Size;
+            int totalSize = App.PlayerState.Prop.Size + App.PlayerState.Prop.Size;
 
             using (var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey))
             {
@@ -1635,7 +1634,7 @@ namespace Bloxstrap
             App.State.Prop.ForceReinstall = false;
 
             App.State.Save();
-            App.RobloxState.Save();
+            AppData.DistributionStateManager.Save();
 
             _isInstalling = false;
         }
@@ -1764,51 +1763,97 @@ namespace Bloxstrap
                 if (relativeFile.EndsWith(".lock"))
                     continue;
 
-                modFolderFiles.Add(relativeFile);
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+                bool isDeleteOperation = fileNameWithoutExt.EndsWith("_Delete");
 
-                string fileModFolder = Path.Combine(Paths.Modifications, relativeFile);
-                string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
-
-                fileTasks.Add(Task.Run(async () =>
+                if (isDeleteOperation)
                 {
-                    await semaphore.WaitAsync();
-                    try
-                    {
-                        if (File.Exists(fileVersionFolder))
-                        {
-                            // Check hashes in parallel
-                            var hashTask = Task.Run(() => MD5Hash.FromFile(fileModFolder));
-                            var existingHashTask = Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+                    string directory = Path.GetDirectoryName(relativeFile) ?? "";
+                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
+                    string originalExtension = Path.GetExtension(relativeFile);
+                    string originalFileName = Path.Combine(directory, originalFileNameWithoutDelete + originalExtension);
 
-                            if (await hashTask == await existingHashTask)
+                    string originalFileVersionPath = Path.Combine(_latestVersionDirectory, originalFileName);
+
+                    modFolderFiles.Add(relativeFile);
+
+                    fileTasks.Add(Task.Run(async () =>
+                    {
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            if (File.Exists(originalFileVersionPath))
                             {
-                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
+                                Filesystem.AssertReadOnly(originalFileVersionPath);
+                                File.Delete(originalFileVersionPath);
+                                App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} has been deleted from the version folder");
+                                return true;
+                            }
+                            else
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} not found in version folder, nothing to delete");
                                 return true;
                             }
                         }
-
-                        Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-
-                        Filesystem.AssertReadOnly(fileVersionFolder);
-                        try
-                        {
-                            File.Copy(fileModFolder, fileVersionFolder, true);
-                            Filesystem.AssertReadOnly(fileVersionFolder);
-                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
-                            return true;
-                        }
                         catch (Exception ex)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete file ({originalFileName})");
                             App.Logger.WriteException(LOG_IDENT, ex);
                             return false;
                         }
-                    }
-                    finally
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    }));
+                }
+                else
+                {
+                    modFolderFiles.Add(relativeFile);
+
+                    string fileModFolder = Path.Combine(Paths.Modifications, relativeFile);
+                    string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
+
+                    fileTasks.Add(Task.Run(async () =>
                     {
-                        semaphore.Release();
-                    }
-                }));
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            if (File.Exists(fileVersionFolder))
+                            {
+                                var hashTask = Task.Run(() => MD5Hash.FromFile(fileModFolder));
+                                var existingHashTask = Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+
+                                if (await hashTask == await existingHashTask)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
+                                    return true;
+                                }
+                            }
+
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            try
+                            {
+                                File.Copy(fileModFolder, fileVersionFolder, true);
+                                Filesystem.AssertReadOnly(fileVersionFolder);
+                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
+                                return true;
+                            }
+                            catch (Exception ex)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
+                                App.Logger.WriteException(LOG_IDENT, ex);
+                                return false;
+                            }
+                        }
+                        finally
+                        {
+                            semaphore.Release();
+                        }
+                    }));
+                }
             }
 
             var fileResults = await Task.WhenAll(fileTasks);
@@ -1822,35 +1867,67 @@ namespace Bloxstrap
 
             var fileRestoreMap = new Dictionary<string, List<string>>();
 
-            foreach (string fileLocation in App.RobloxState.Prop.ModManifest)
+            foreach (string fileLocation in AppData.DistributionState.ModManifest)
             {
                 if (modFolderFiles.Contains(fileLocation))
                     continue;
 
-                var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && fileLocation.StartsWith(x.Value));
-                string packageName = packageMapEntry.Key;
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+                bool isDeleteOperation = fileNameWithoutExt.EndsWith("_Delete");
 
-                // package doesn't exist, likely mistakenly placed file
-                if (String.IsNullOrEmpty(packageName))
+                if (isDeleteOperation)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed as a mod but does not belong to a package");
+                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
+                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
+                    string originalExtension = Path.GetExtension(fileLocation);
+                    string originalFileName = Path.Combine(directory, originalFileNameWithoutDelete + originalExtension);
 
-                    string versionFileLocation = Path.Combine(_latestVersionDirectory, fileLocation);
+                    var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && originalFileName.StartsWith(x.Value));
+                    string packageName = packageMapEntry.Key;
 
-                    if (File.Exists(versionFileLocation))
-                        File.Delete(versionFileLocation);
+                    // package doesn't exist, likely mistakenly placed file
+                    if (String.IsNullOrEmpty(packageName))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} was removed but does not belong to a package");
+                        continue;
+                    }
 
-                    continue;
+                    string fileName = originalFileName.Substring(packageMapEntry.Value.Length);
+
+                    if (!fileRestoreMap.ContainsKey(packageName))
+                        fileRestoreMap[packageName] = new();
+
+                    fileRestoreMap[packageName].Add(fileName);
+
+                    App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} was removed, restoring from {packageName}");
                 }
+                else
+                {
+                    var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && fileLocation.StartsWith(x.Value));
+                    string packageName = packageMapEntry.Key;
 
-                string fileName = fileLocation.Substring(packageMapEntry.Value.Length);
+                    // package doesn't exist, likely mistakenly placed file
+                    if (String.IsNullOrEmpty(packageName))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed but does not belong to a package");
 
-                if (!fileRestoreMap.ContainsKey(packageName))
-                    fileRestoreMap[packageName] = new();
+                        string versionFileLocation = Path.Combine(_latestVersionDirectory, fileLocation);
 
-                fileRestoreMap[packageName].Add(fileName);
+                        if (File.Exists(versionFileLocation))
+                            File.Delete(versionFileLocation);
 
-                App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed as a mod, restoring from {packageName}");
+                        continue;
+                    }
+
+                    string fileName = fileLocation.Substring(packageMapEntry.Value.Length);
+
+                    if (!fileRestoreMap.ContainsKey(packageName))
+                        fileRestoreMap[packageName] = new();
+
+                    fileRestoreMap[packageName].Add(fileName);
+
+                    App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed, restoring from {packageName}");
+                }
             }
 
             foreach (var entry in fileRestoreMap)
@@ -1869,14 +1946,14 @@ namespace Bloxstrap
 
             // make sure we're not overwriting a new update
             // if we're the background update process, always overwrite
-            if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !App.RobloxState.HasFileOnDiskChanged())
+            if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
             {
-                App.RobloxState.Prop.ModManifest = modFolderFiles;
-                App.RobloxState.Save();
+                AppData.DistributionState.ModManifest = modFolderFiles;
+                AppData.DistributionStateManager.Save();
             }
             else
             {
-                App.Logger.WriteLine(LOG_IDENT, "RobloxState disk mismatch, not saving ModManifest");
+                App.Logger.WriteLine(LOG_IDENT, $"{AppData.DistributionStateManager.ClassName} disk mismatch, not saving ModManifest");
             }
 
             App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
@@ -1897,7 +1974,7 @@ namespace Bloxstrap
             Directory.CreateDirectory(Paths.Downloads);
 
             string packageUrl = Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
-            string robloxPackageLocation = Path.Combine(Paths.LocalAppData, "Roblox", "Downloads", package.Signature);
+            string robloxPackageLocation = Path.Combine(Paths.Roblox, "Downloads", package.Signature);
 
             if (File.Exists(package.DownloadPath))
             {
@@ -2058,6 +2135,8 @@ namespace Bloxstrap
             App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name}...");
 
             var fastZip = new FastZip(_fastZipEvents);
+            fastZip.RestoreDateTimeOnExtract = false;
+            fastZip.RestoreAttributesOnExtract = false;
 
             fastZip.ExtractZip(package.DownloadPath, packageFolder, fileFilter);
 

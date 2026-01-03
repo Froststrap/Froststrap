@@ -25,8 +25,7 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             _window = window;
             _ = LoadGlyphsAsync();
         }
-        
-        // copy and pasted most code from already existing preview in mod generator
+
         [RelayCommand]
         private async Task LoadGlyphsAsync()
         {
@@ -37,22 +36,44 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
 
                 if (!Directory.Exists(fontDir))
                 {
-                    IsLoadingGlyphs = false;
-                    return;
+                    Directory.CreateDirectory(fontDir);
                 }
 
-                var fontFiles = Directory.GetFiles(fontDir)
-                    .Where(f => f.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase) ||
-                               f.EndsWith(".otf", StringComparison.OrdinalIgnoreCase))
-                    .ToArray();
+                string fontPath = Path.Combine(fontDir, "BuilderIcons-Regular.ttf");
 
-                if (fontFiles.Length == 0)
+                if (!File.Exists(fontPath))
+                {
+                    try
+                    {
+                        const string fontUrl = "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf";
+
+                        App.Logger?.WriteLine("CommunityModInfoViewModel", "Downloading font from GitHub...");
+
+                        using var httpClient = new HttpClient();
+                        httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+                        var response = await httpClient.GetAsync(fontUrl);
+                        response.EnsureSuccessStatusCode();
+
+                        var fontData = await response.Content.ReadAsByteArrayAsync();
+                        await File.WriteAllBytesAsync(fontPath, fontData);
+
+                        App.Logger?.WriteLine("CommunityModInfoViewModel", "Successfully downloaded BuilderIcons-Regular.ttf");
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger?.WriteException("CommunityModInfoViewModel", ex);
+                    }
+                }
+
+                if (File.Exists(fontPath))
+                {
+                    await LoadGlyphsFromFontAsync(fontPath);
+                }
+                else
                 {
                     IsLoadingGlyphs = false;
-                    return;
                 }
-
-                await LoadGlyphsFromFontAsync(fontFiles[0]);
             }
             catch
             {

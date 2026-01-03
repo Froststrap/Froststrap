@@ -25,7 +25,7 @@ namespace Bloxstrap.Models.APIs.Config
         public string? ThumbnailUrl { get; set; }
 
         [JsonPropertyName("modtype")]
-        public ModType ModType { get; set; } = ModType.Mod;
+        public ModType ModType { get; set; } = ModType.ColorMod;
 
         [JsonIgnore]
         private BitmapImage? _thumbnailImage;
@@ -67,19 +67,19 @@ namespace Bloxstrap.Models.APIs.Config
         private IRelayCommand? _showInfoCommand;
 
         [JsonIgnore]
-        public bool IsMisc => ModType == ModType.Misc;
-
-        [JsonIgnore]
-        public bool IsMod => ModType == ModType.Mod;
-
-        [JsonIgnore]
         public bool IsCustomTheme => ModType == ModType.CustomTheme;
+
+        [JsonIgnore]
+        public bool IsColorMod => ModType == ModType.ColorMod;
 
         [JsonIgnore]
         public string ModTypeDisplay => ModType switch
         {
-            ModType.Misc => "Misc Mod",
-            ModType.Mod => "Color Mod",
+            ModType.MiscMod => "Misc Mod",
+            ModType.ColorMod => "Color Mod",
+            ModType.SkyBox => "SkyBox",
+            ModType.Cursor => "Cursor",
+            ModType.AvatarEditor => "Avatar Editor",
             ModType.CustomTheme => "Custom Theme",
             _ => "Unknown"
         };
