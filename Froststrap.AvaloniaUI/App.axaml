@@ -1,15 +1,34 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converters="using:Froststrap.UI.Converters"
+             xmlns:local="using:Froststrap"
              x:Class="Froststrap.AvaloniaUI.App"
-             xmlns:local="using:Froststrap.AvaloniaUI"
-             RequestedThemeVariant="Default">
-             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-  
+             RequestedThemeVariant="Dark">
+    
     <Application.Styles>
-        <FluentTheme />
+        <FluentTheme Mode="Dark" />
+        <StyleInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
     </Application.Styles>
+
+    <Application.Resources>
+        <FontFamily x:Key="RubikFont">avares://Froststrap/Resources/Fonts/#Rubik</FontFamily>
+        
+        <Style Selector="HyperlinkButton">
+            <Setter Property="TextDecorations" Value="None" />
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColorSecondary}" />
+        </Style>
+        <Style Selector="HyperlinkButton:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColorTertiary}" />
+            <Setter Property="TextDecorations" Value="Underline" />
+        </Style>
+	
+        <converters:StringFormatConverter x:Key="StringFormatConverter" />
+        <converters:RangeConverter x:Key="RangeConverter" />
+        <converters:EnumNameConverter x:Key="EnumNameConverter" />
+        <converters:SettingsControlTemplateSelector x:Key="SettingsControlSelector" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
+    </Application.Resources>
 </Application>
