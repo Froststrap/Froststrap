@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
-
+﻿
 namespace Froststrap
 {
     public class RemoteDataManager : JsonManager<RemoteDataBase>

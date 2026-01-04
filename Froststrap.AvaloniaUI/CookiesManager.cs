@@ -1,5 +1,16 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.IO;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
+#if WINDOWS
+using System.Security.Cryptography;
+#endif
+
+// TODO: Make Linux equivalent for reading Cookie (Sober puts your cookie in plain text so its not that hard)
 namespace Froststrap
 {
     public class CookiesManager
@@ -16,6 +27,7 @@ namespace Froststrap
                 StateChanged?.Invoke(this, value);
             }
         }
+
         public bool Loaded => Enabled && State == CookieState.Success;
         private bool Enabled => App.Settings.Prop.AllowCookieAccess;
 
@@ -28,48 +40,42 @@ namespace Froststrap
         public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
         {
             string? host = request.RequestUri?.Host;
-
             if (host is null)
                 throw new ArgumentNullException("Host cannot be null");
 
-            if (
-                !host.Equals("roblox.com", StringComparison.OrdinalIgnoreCase) &&
-                !host.EndsWith(".roblox.com", StringComparison.OrdinalIgnoreCase)
-                )
+            if (!host.Equals("roblox.com", StringComparison.OrdinalIgnoreCase) &&
+                !host.EndsWith(".roblox.com", StringComparison.OrdinalIgnoreCase))
                 throw new HttpRequestException("Host must end with roblox.com");
 
             if (!Enabled)
                 throw new NullReferenceException("Cookie access is not enabled");
 
             request.Headers.Add("Cookie", $".ROBLOSECURITY={AuthCookie}");
-            var response = await App.HttpClient.SendAsync(request);
-
-            return response;
+            return await App.HttpClient.SendAsync(request);
         }
 
-        public async Task<HttpResponseMessage> AuthGet(string uri) => await AuthRequest(new HttpRequestMessage { RequestUri = new Uri(uri), Method = HttpMethod.Get });
-        public async Task<HttpResponseMessage> AuthPost(string uri, HttpContent? content) => await AuthRequest(new HttpRequestMessage { RequestUri = new Uri(uri), Content = content, Method = HttpMethod.Post });
+        public async Task<HttpResponseMessage> AuthGet(string uri) =>
+            await AuthRequest(new HttpRequestMessage { RequestUri = new Uri(uri), Method = HttpMethod.Get });
+
+        public async Task<HttpResponseMessage> AuthPost(string uri, HttpContent? content) =>
+            await AuthRequest(new HttpRequestMessage { RequestUri = new Uri(uri), Content = content, Method = HttpMethod.Post });
 
         public async Task<AuthenticatedUser?> GetAuthenticated()
         {
             const string LOG_IDENT = "CookiesManager::GetAuthenticated";
-
             try
             {
                 HttpResponseMessage response = await AuthGet("https://users.roblox.com/v1/users/authenticated");
                 response.EnsureSuccessStatusCode();
 
                 string content = await response.Content.ReadAsStringAsync();
-                AuthenticatedUser user = JsonSerializer.Deserialize<AuthenticatedUser>(content)!;
-
-                return user;
+                return JsonSerializer.Deserialize<AuthenticatedUser>(content);
             }
             catch (HttpRequestException ex)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Failed to get authenticated user");
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
-
             return null;
         }
 
@@ -77,7 +83,6 @@ namespace Froststrap
         {
             const string LOG_IDENT = "CookiesManager::LoadCookies";
 
-            // we use the status to infrom user about it in the menu
             if (!Enabled)
             {
                 State = CookieState.NotAllowed;
@@ -106,11 +111,13 @@ namespace Froststrap
                 if (cookies.Version != SupportedVersion)
                     App.Logger.WriteLine(LOG_IDENT, $"Unknown cookie version: {cookies.Version}");
 
-                // here we got the raw bytes data which we have to decrypt with user scope
-                // from that we get raw cookies data in roblox's format
-                // in our case we will regex it since all we need is auth cookie
                 byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
+
+#if WINDOWS
                 byte[] unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
+#else
+                byte[] unencryptedData = Array.Empty<byte>();
+#endif
 
                 string rawCookies = Encoding.UTF8.GetString(unencryptedData);
                 Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
@@ -122,12 +129,10 @@ namespace Froststrap
                     return;
                 }
 
-                string authCookie = authCookieMatch.Groups[1].Value;
-                AuthCookie = authCookie; // could use better naming
+                AuthCookie = authCookieMatch.Groups[1].Value;
 
-                // we test the cookie to see if its valid
                 AuthenticatedUser? user = await GetAuthenticated();
-                if (user is null || user?.Id == 0)
+                if (user is null || user.Id == 0)
                 {
                     State = CookieState.Invalid;
                     App.Logger.WriteLine(LOG_IDENT, "Cookie is invalid");
@@ -140,11 +145,8 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Failed to load cookie!");
                 App.Logger.WriteException(LOG_IDENT, ex);
-
                 State = CookieState.Failed;
             }
-
-            return;
         }
     }
 }

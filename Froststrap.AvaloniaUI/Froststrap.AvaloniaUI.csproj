@@ -12,36 +12,38 @@
 
     <!-- Folders for organization -->
     <ItemGroup>
-        <Folder Include="Models\"/>
-        <Folder Include="ViewModels\"/>
-        <Folder Include="Views\"/>
+        <Folder Include="Models\" />
+        <Folder Include="ViewModels\" />
+        <Folder Include="Views\" />
     </ItemGroup>
 
     <!-- Resources needed by Avalonia -->
     <ItemGroup>
-        <AvaloniaResource Include="Resources\Mods\Sounds\*.mp3"/>
-        <AvaloniaResource Include="Resources\Mods\Cursor\**\*.*"/>
-        <AvaloniaResource Include="Resources\PresetFlags\*"/>
-        <AvaloniaResource Include="Resources\FroststrapPowerPlans\*.pow"/>
+        <AvaloniaResource Include="Resources\Mods\Sounds\*.mp3" />
+        <AvaloniaResource Include="Resources\Mods\Cursor\**\*.*" />
+        <AvaloniaResource Include="Resources\PresetFlags\*" />
+        <AvaloniaResource Include="Resources\FroststrapPowerPlans\*.pow" />
     </ItemGroup>
 
     <!-- NuGet packages -->
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.3.10"/>
-        <PackageReference Include="Avalonia.Desktop" Version="11.3.10"/>
-        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10"/>
-        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10"/>
+        <PackageReference Include="Avalonia" Version="11.3.10" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10" />
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
         <PackageReference Include="Avalonia.Diagnostics" Version="11.3.10">
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
 
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
-        <PackageReference Include="SharpZipLib" Version="1.4.2"/>
-        <PackageReference Include="PuppeteerSharp" Version="20.2.4"/>
-        <PackageReference Include="PuppeteerExtraSharp" Version="3.0.2"/>
-        <PackageReference Include="securifybv.ShellLink" Version="0.1.0"/>
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+
+        <PackageReference Include="MessageBox.Avalonia" Version="3.3.1.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="SharpZipLib" Version="1.4.2" />
+        <PackageReference Include="PuppeteerSharp" Version="20.2.4" />
+        <PackageReference Include="PuppeteerExtraSharp" Version="3.0.2" />
+        <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
     </ItemGroup>
 
     <!-- Shared logic project references -->

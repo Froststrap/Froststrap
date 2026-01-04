@@ -5,6 +5,9 @@
 // - Launch Roblox (for testing web launches, run it from the command prompt)
 // - To re-test the same executable, delete it from the installation folder
 
+// Brother why does this file have both core AND UI logic in it
+// TODO: Split this file into Core and UI parts
+
 // #define DEBUG_UPDATER
 
 #if DEBUG_UPDATER
