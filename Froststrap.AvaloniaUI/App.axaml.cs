@@ -42,7 +42,7 @@ public partial class App : Application
     public const string ProjectOwner = "RealMeddsam";
     public const string ProjectRepository = "RealMeddsam/Froststrap";
     public const string ProjectDownloadLink = "https://github.com/RealMeddsam/Froststrap/releases";
-    public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki"; // Most likely need to make our own wiki after we finish rewrite
+    public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki"; // We made our own wiki but its very bad and we need to rework it, so maybe change after that
     public const string ProjectSupportLink = "https://github.com/RealMeddsam/Froststrap/issues/new";
     public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Data.json";
 
@@ -69,8 +69,8 @@ public partial class App : Application
     
     public static bool IsActionBuild => !String.IsNullOrEmpty(BuildMetadata.CommitRef);
     public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);
-    public static bool IsPlayerInstalled => App.PlayerState.IsSaved && !String.IsNullOrEmpty(App.PlayerState.Prop.VersionGuid);
-    public static bool IsStudioInstalled => App.StudioState.IsSaved && !String.IsNullOrEmpty(App.StudioState.Prop.VersionGuid);
+    public static bool IsPlayerInstalled => PlayerState.IsSaved && !String.IsNullOrEmpty(PlayerState.Prop.VersionGuid);
+    public static bool IsStudioInstalled => StudioState.IsSaved && !String.IsNullOrEmpty(StudioState.Prop.VersionGuid);
 
     
     // Disambiguate Settings so we use the persistable Settings (Bloxstrap.Models.Persistable.Settings),

@@ -17,8 +17,6 @@
 using System.ComponentModel;
 using System.Data;
 using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Shell;
 
 using Microsoft.Win32;
 
