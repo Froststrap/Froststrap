@@ -11,19 +11,20 @@
  *               of the Nix ecosystem. 
  */
 
-using System.Drawing;
-using System.IO.Compression;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using System.Drawing;
+using System.IO.Compression;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Froststrap.Integrations
 {
     public static class ModGenerator
     {
-        public static void RecolorAllPngs(string rootDir, Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false)
+        public static void RecolorAllPngs(string rootDir, Avalonia.Media.Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false)
         {
             const string LOG_IDENT = "ModGenerator::RecolorAllPngs";
 
@@ -132,7 +133,7 @@ namespace Froststrap.Integrations
             App.Logger?.WriteLine(LOG_IDENT, "RecolorAllPngs finished.");
         }
 
-        public static async Task RecolorFontsAsync(string froststrapTemp, Color solidColor)
+        public static async Task RecolorFontsAsync(string froststrapTemp, Avalonia.Media.Color solidColor)
         {
             const string LOG_IDENT = "ModGenerator::RecolorFontsAsync";
 
@@ -306,13 +307,13 @@ namespace Froststrap.Integrations
             }
         }
 
-        private static void SafeRecolorImage(string path, Color solidColor)
+        private static void SafeRecolorImage(string path, Avalonia.Media.Color solidColor)
         {
             using (var original = new Bitmap(path))
             using (var recolored = ApplyMask(original, solidColor))
             {
                 string tempPath = path + ".tmp";
-                recolored.Save(tempPath, ImageFormat.Png);
+                recolored.Save(tempPath);
             }
 
             ReplaceFileWithRetry(path, path + ".tmp");
@@ -323,38 +324,54 @@ namespace Froststrap.Integrations
             int width = original.PixelSize.Width;
             int height = original.PixelSize.Height;
 
+            var renderTarget = new RenderTargetBitmap(new PixelSize(width, height), original.Dpi);
+
+            using (var drawingContext = renderTarget.CreateDrawingContext())
+            {
+                drawingContext.DrawImage(original, new Rect(0, 0, width, height));
+            }
+
             var writeable = new WriteableBitmap(
                 new PixelSize(width, height),
                 original.Dpi,
-                Avalonia.Platform.PixelFormat.Bgra8888);
+                PixelFormat.Bgra8888);
 
-            using (var fb = writeable.Lock())
+            var sourceRect = new PixelRect(0, 0, width, height);
+            byte[] pixels = new byte[width * height * 4];
+
+            var handle = GCHandle.Alloc(pixels, GCHandleType.Pinned);
+            try
             {
-                Span<byte> buffer = fb.Address.ToSpan(fb.RowBytes * height);
-                int stride = fb.RowBytes;
+                nint pointer = handle.AddrOfPinnedObject();
+                renderTarget.CopyPixels(sourceRect, pointer, width * 4, width * 4 * height);
+            }
+            finally
+            {
+                handle.Free();
+            }
 
-                for (int y = 0; y < height; y++)
+            for (int i = 0; i < pixels.Length; i += 4)
+            {
+                byte a = pixels[i + 3];
+
+                if (a == 0)
                 {
-                    for (int x = 0; x < width; x++)
-                    {
-                        int idx = y * stride + x * 4; // BGRA
-                        byte a = buffer[idx + 3];
-
-                        if (a == 0)
-                        {
-                            buffer[idx + 0] = 0;
-                            buffer[idx + 1] = 0;
-                            buffer[idx + 2] = 0;
-                            buffer[idx + 3] = 0;
-                            continue;
-                        }
-
-                        buffer[idx + 0] = solidColor.B;
-                        buffer[idx + 1] = solidColor.G;
-                        buffer[idx + 2] = solidColor.R;
-                        buffer[idx + 3] = a;
-                    }
+                    pixels[i] = 0;
+                    pixels[i + 1] = 0;
+                    pixels[i + 2] = 0;
+                    pixels[i + 3] = 0;
                 }
+                else
+                {
+                    pixels[i] = solidColor.B;
+                    pixels[i + 1] = solidColor.G;
+                    pixels[i + 2] = solidColor.R;
+                }
+            }
+
+            using (var locked = writeable.Lock())
+            {
+                Marshal.Copy(pixels, 0, locked.Address, pixels.Length);
             }
 
             return writeable;

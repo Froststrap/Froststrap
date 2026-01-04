@@ -1,4 +1,4 @@
-using Wpf.Ui.Controls;
+using FluentAvalonia.UI.Controls;
 
 // we need to find smth similar to infobar, imma keep as this for now
 

@@ -3,7 +3,7 @@
     public enum ImportSettingsFrom
     {
         None,
-        Froststrap,
+        Bloxstrap,
         Fishstrap,
         Lunastrap,
         Luczystrap

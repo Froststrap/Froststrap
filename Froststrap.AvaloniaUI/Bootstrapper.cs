@@ -25,7 +25,6 @@ using Froststrap.RobloxInterfaces;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 
 using ICSharpCode.SharpZipLib.Zip;
-using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -1512,7 +1511,7 @@ namespace Froststrap
             if (Dialog is not null)
             {
                 Dialog.ProgressStyle = ProgressBarStyle.Marquee;
-                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+                Dialog.TaskbarProgressState = WindowProgressState.Indeterminate;
                 SetStatus(Strings.Bootstrapper_Status_Configuring);
             }
 
