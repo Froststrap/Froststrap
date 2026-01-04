@@ -22,7 +22,6 @@
         <AvaloniaResource Include="Resources\Mods\Sounds\*.mp3" />
         <AvaloniaResource Include="Resources\Mods\Cursor\**\*.*" />
         <AvaloniaResource Include="Resources\PresetFlags\*" />
-        <AvaloniaResource Include="Resources\FroststrapPowerPlans\*.pow" />
     </ItemGroup>
 
     <!-- NuGet packages -->
@@ -38,8 +37,8 @@
         </PackageReference>
 
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
-		<PackageReference Include="Markdig" Version="0.44.0" />
+	<PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
+	<PackageReference Include="Markdig" Version="0.44.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="SharpZipLib" Version="1.4.2" />
         <PackageReference Include="PuppeteerSharp" Version="20.2.4" />
@@ -75,8 +74,6 @@
       <EmbeddedResource Include="Resources\CustomBootstrapperSchema.json" />
       <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
       <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
-      <EmbeddedResource Include="Resources\FroststrapPowerPlans\FroststrapLowLatency.pow" />
-      <EmbeddedResource Include="Resources\FroststrapPowerPlans\FroststrapMaximumFPS.pow" />
       <EmbeddedResource Include="Resources\Icon2008.ico" />
       <EmbeddedResource Include="Resources\Icon2011.ico" />
       <EmbeddedResource Include="Resources\Icon2017.ico" />
