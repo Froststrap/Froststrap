@@ -1,8 +1,0 @@
-﻿namespace Froststrap.Models
-{
-    public class GlyphItem
-    {
-        public Geometry Data { get; set; } = null!;
-        public SolidColorBrush ColorBrush { get; set; } = null!;
-    }
-}
