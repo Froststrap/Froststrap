@@ -19,6 +19,7 @@ using PuppeteerExtraSharp.Plugins.ExtraStealth;
 using PuppeteerSharp;
 using System.Web;
 using Avalonia;
+using Avalonia.Threading;
 using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.Integrations
@@ -425,7 +426,7 @@ namespace Froststrap.Integrations
 
                 App.FrostRPC?.SetDialog("Quick Sign-In");
 
-                Application.Current.Dispatcher.Invoke(() =>
+                Dispatcher.UIThread.Post(() =>
                 {
                     quickSignWindow = new QuickSignCodeDialog();
                     quickSignWindow.Closed += (s, e) => cts.Cancel();
@@ -499,8 +500,8 @@ namespace Froststrap.Integrations
                 }
 
                 App.FrostRPC?.ClearDialog();
-
-                Application.Current.Dispatcher.Invoke(() =>
+                
+                Dispatcher.UIThread.Post(() =>
                 {
                     quickSignWindow?.Close();
                 });
@@ -657,9 +658,9 @@ namespace Froststrap.Integrations
                                     {
                                         try
                                         {
-                                            if (Application.Current != null && Application.Current.Dispatcher != null && !Application.Current.Dispatcher.HasShutdownFinished)
+                                            if (!Dispatcher.UIThread.CheckAccess())
                                             {
-                                                Application.Current.Dispatcher.Invoke(() =>
+                                                Dispatcher.UIThread.Post(() =>
                                                 {
                                                     // Check again in case quickSignWindow became null during invocation
                                                     if (quickSignWindow != null)
@@ -749,9 +750,8 @@ namespace Froststrap.Integrations
                         {
                             try
                             {
-                                if (Application.Current != null && Application.Current.Dispatcher != null && !Application.Current.Dispatcher.HasShutdownFinished)
-                                {
-                                    Application.Current.Dispatcher.Invoke(() =>
+                                if (!Dispatcher.UIThread.CheckAccess())                                {
+                                    Dispatcher.UIThread.Post(() =>
                                     {
                                         if (quickSignWindow != null)
                                         {
@@ -798,9 +798,8 @@ namespace Froststrap.Integrations
                 {
                     try
                     {
-                        if (Application.Current != null && Application.Current.Dispatcher != null && !Application.Current.Dispatcher.HasShutdownFinished)
-                        {
-                            Application.Current.Dispatcher.Invoke(() =>
+                        if (!Dispatcher.UIThread.CheckAccess())                        {
+                            Dispatcher.UIThread.Post(() =>
                             {
                                 if (quickSignWindow != null)
                                 {
@@ -1546,7 +1545,7 @@ namespace Froststrap.Integrations
 
             foreach (var invalidAccount in invalidAccounts)
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                Dispatcher.UIThread.Post(() =>
                 {
                     var result = Frontend.ShowMessageBox(
                         $"Account '{invalidAccount.DisplayName}' (@{invalidAccount.Username}) is no longer valid and will be removed.\n\nReason: Cookie expired or invalid",

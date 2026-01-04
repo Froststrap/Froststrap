@@ -2,8 +2,6 @@
 {
     public enum BootstrapperIcon
     {
-        [EnumName(StaticName = "Froststrap")] //ermmmm it goes unused as of rn
-        IconFroststrap,
         [EnumName(StaticName = "Froststrap")]
         IconFroststrap,
         [EnumName(StaticName = "2008")]

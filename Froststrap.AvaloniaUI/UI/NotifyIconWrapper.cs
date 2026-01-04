@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 
@@ -38,7 +39,7 @@ namespace Froststrap.UI
             {
                 _trayIcon = new TrayIcon
                 {
-                    Icon = Properties.Resources.IconFroststrap,
+                    Icon = new WindowIcon(AssetLoader.Open((new Uri("avares://Froststrap/Assets/Icons/Froststrap.ico")))),
                     ToolTipText = App.ProjectName,
                     IsVisible = true
                 };

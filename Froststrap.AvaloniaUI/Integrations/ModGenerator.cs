@@ -12,9 +12,12 @@
  */
 
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO.Compression;
 using System.Reflection;
+using Avalonia;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 namespace Froststrap.Integrations
 {
@@ -315,49 +318,46 @@ namespace Froststrap.Integrations
             ReplaceFileWithRetry(path, path + ".tmp");
         }
 
-        private static Bitmap ApplyMask(Bitmap original, Color solidColor)
+        private static Bitmap ApplyMask(Bitmap original, Avalonia.Media.Color solidColor)
         {
-            if (original.Width == 0 || original.Height == 0)
-                return new Bitmap(original);
+            int width = original.PixelSize.Width;
+            int height = original.PixelSize.Height;
 
-            var recolored = new Bitmap(original.Width, original.Height, PixelFormat.Format32bppArgb);
-            var rect = new Rectangle(0, 0, original.Width, original.Height);
-            BitmapData srcData = original.LockBits(rect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData dstData = recolored.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+            var writeable = new WriteableBitmap(
+                new PixelSize(width, height),
+                original.Dpi,
+                Avalonia.Platform.PixelFormat.Bgra8888);
 
-            unsafe
+            using (var fb = writeable.Lock())
             {
-                byte* srcPtr = (byte*)srcData.Scan0;
-                byte* dstPtr = (byte*)dstData.Scan0;
-                int bytesPerPixel = 4;
+                Span<byte> buffer = fb.Address.ToSpan(fb.RowBytes * height);
+                int stride = fb.RowBytes;
 
-                for (int y = 0; y < original.Height; y++)
+                for (int y = 0; y < height; y++)
                 {
-                    for (int x = 0; x < original.Width; x++)
+                    for (int x = 0; x < width; x++)
                     {
-                        int idx = y * srcData.Stride + x * bytesPerPixel;
-                        byte a = srcPtr[idx + 3];
+                        int idx = y * stride + x * 4; // BGRA
+                        byte a = buffer[idx + 3];
 
                         if (a == 0)
                         {
-                            dstPtr[idx] = 0;
-                            dstPtr[idx + 1] = 0;
-                            dstPtr[idx + 2] = 0;
-                            dstPtr[idx + 3] = 0;
+                            buffer[idx + 0] = 0;
+                            buffer[idx + 1] = 0;
+                            buffer[idx + 2] = 0;
+                            buffer[idx + 3] = 0;
                             continue;
                         }
 
-                        dstPtr[idx] = solidColor.B;
-                        dstPtr[idx + 1] = solidColor.G;
-                        dstPtr[idx + 2] = solidColor.R;
-                        dstPtr[idx + 3] = a;
+                        buffer[idx + 0] = solidColor.B;
+                        buffer[idx + 1] = solidColor.G;
+                        buffer[idx + 2] = solidColor.R;
+                        buffer[idx + 3] = a;
                     }
                 }
             }
 
-            original.UnlockBits(srcData);
-            recolored.UnlockBits(dstData);
-            return recolored;
+            return writeable;
         }
 
         private static void ReplaceFileWithRetry(string originalPath, string tempPath)

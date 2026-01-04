@@ -101,6 +101,16 @@ public partial class App : Application
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
     }
+    
+    public static FroststrapRichPresence? FrostRPC
+    {
+        get => (Current as App)?.RichPresence;
+        set
+        {
+            if (Current is App app)
+                app.RichPresence = value!;
+        }
+    }
 
     public override void OnFrameworkInitializationCompleted()
     {
@@ -142,8 +152,7 @@ public partial class App : Application
 
         Dispatcher.UIThread.Post(() =>
         {
-            // TODO: replace with MessageBox.Avalonia dialog 
-            // Frontend.ShowExceptionDialog(ex);
+            Frontend.ShowExceptionDialog(ex);
 
             Environment.Exit((int)ErrorCode.ERROR_INSTALL_FAILURE);
         });
