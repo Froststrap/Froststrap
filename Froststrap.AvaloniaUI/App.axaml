@@ -2,13 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="using:Froststrap.UI.Converters"
              xmlns:local="using:Froststrap"
+             xmlns:style="using:FluentAvalonia.Styling"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
              x:Class="Froststrap.AvaloniaUI.App"
              RequestedThemeVariant="Dark">
     
     <Application.Styles>
-        <FluentTheme Mode="Dark" />
-        <StyleInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
-        <StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
+        <style:FluentAvaloniaTheme />
     </Application.Styles>
 
     <Application.Resources>
