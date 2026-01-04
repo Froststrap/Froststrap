@@ -1,6 +1,4 @@
-﻿using Froststrap.Models.APIs.RoValra;
-
-namespace Froststrap.Models.APIs.RoValra
+﻿namespace Froststrap.Models.APIs.RoValra
 {
     public class RoValraTimeResponse
     {

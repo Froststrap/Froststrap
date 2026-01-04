@@ -18,7 +18,7 @@ using PuppeteerExtraSharp;
 using PuppeteerExtraSharp.Plugins.ExtraStealth;
 using PuppeteerSharp;
 using System.Web;
-using System.Windows;
+using Avalonia;
 using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.Integrations

@@ -1,16 +1,18 @@
 ﻿using Microsoft.Win32;
-using System.CodeDom;
 
 namespace Froststrap.Utility
 {
     static class WindowsRegistry
     {
         private const string RobloxPlaceKey = "Roblox.Place";
-        
+
         public static readonly List<RegistryKey> Roots = new() { Registry.CurrentUser, Registry.LocalMachine };
 
         public static void RegisterProtocol(string key, string name, string handler, string handlerParam = "%1")
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             string handlerArgs = $"\"{handler}\" {handlerParam}";
 
             using var uriKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{key}");
@@ -37,6 +39,9 @@ namespace Froststrap.Utility
 
         public static void RegisterPlayer(string handler, string handlerParam)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             RegisterProtocol("roblox", "Roblox", handler, handlerParam);
             RegisterProtocol("roblox-player", "Roblox", handler, handlerParam);
         }
@@ -46,6 +51,9 @@ namespace Froststrap.Utility
         /// </summary>
         public static void RegisterStudio()
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             RegisterStudioProtocol(Paths.Application, "-studio \"%1\"");
             RegisterStudioFileClass(Paths.Application, "-studio \"%1\"");
             RegisterStudioFileTypes();
@@ -58,6 +66,9 @@ namespace Froststrap.Utility
         /// <param name="handlerParam"></param>
         public static void RegisterStudioProtocol(string handler, string handlerParam)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             RegisterProtocol("roblox-studio", "Roblox", handler, handlerParam);
             RegisterProtocol("roblox-studio-auth", "Roblox", handler, handlerParam);
         }
@@ -67,6 +78,9 @@ namespace Froststrap.Utility
         /// </summary>
         public static void RegisterStudioFileTypes()
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             RegisterStudioFileType(".rbxl");
             RegisterStudioFileType(".rbxlx");
         }
@@ -78,6 +92,9 @@ namespace Froststrap.Utility
         /// <param name="handlerParam"></param>
         public static void RegisterStudioFileClass(string handler, string handlerParam)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             const string keyValue = "Roblox Place";
             string handlerArgs = $"\"{handler}\" {handlerParam}";
             string iconValue = $"{handler},0";
@@ -102,6 +119,9 @@ namespace Froststrap.Utility
 
         public static void RegisterStudioFileType(string key)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             using RegistryKey uriKey = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{key}");
             uriKey.CreateSubKey(RobloxPlaceKey + @"\ShellNew");
 
@@ -111,24 +131,32 @@ namespace Froststrap.Utility
 
         public static void RegisterApis()
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             static void Register()
             {
                 using var apisKey = Registry.CurrentUser.CreateSubKey(App.ApisKey);
                 apisKey.SetValueSafe("ApplicationPath", Paths.Application);
                 apisKey.SetValueSafe("InstallationPath", Paths.Base);
-            };
+            }
+            ;
 
-            var currentApis = Registry.CurrentUser.OpenSubKey(App.ApisKey,false);
+            var currentApis = Registry.CurrentUser.OpenSubKey(App.ApisKey, false);
 
             if (currentApis == null)
             {
                 Register();
-            };
+            }
+            ;
             currentApis?.Dispose();
         }
 
         public static void RegisterClientLocation(bool isStudio, string? clientPath)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             string keyName = isStudio ? "StudioPath" : "PlayerPath";
             clientPath ??= "";
 
@@ -138,6 +166,9 @@ namespace Froststrap.Utility
 
         public static void Unregister(string key)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             try
             {
                 Registry.CurrentUser.DeleteSubKeyTree($@"Software\Classes\{key}");

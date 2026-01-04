@@ -1,10 +1,4 @@
-﻿using Froststrap.Properties;
-using System;
-using System.Configuration;
-using System.IO.Compression;
-using System.Windows.Automation;
-
-namespace Froststrap.RobloxInterfaces
+﻿namespace Froststrap.RobloxInterfaces
 {
     public static class Deployment
     {

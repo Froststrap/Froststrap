@@ -13,8 +13,6 @@
 
 using System.Runtime.InteropServices;
 using System.Timers;
-using System.Diagnostics;
-using System.ComponentModel;
 
 namespace Froststrap.Integrations
 {

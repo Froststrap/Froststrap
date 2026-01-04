@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 namespace Froststrap.Extensions
 {
@@ -6,7 +7,6 @@ namespace Froststrap.Extensions
     {
         public static IReadOnlyCollection<BootstrapperIcon> Selections => new BootstrapperIcon[]
         {
-            //BootstrapperIcon.IconFishstrap,
             BootstrapperIcon.IconFroststrap,
             BootstrapperIcon.Icon2025,
             BootstrapperIcon.Icon2022,
@@ -20,21 +20,22 @@ namespace Froststrap.Extensions
             BootstrapperIcon.IconCustom
         };
 
-        // small note on handling icon sizes
-        // i'm using multisize icon packs here with sizes 16, 24, 32, 48, 64 and 128
-        // use this for generating multisize packs: https://www.aconvert.com/icon/
+        private static Dictionary<BootstrapperIcon, Bitmap> _cache = new();
 
-        public static Icon GetIcon(this BootstrapperIcon icon)
+        public static Bitmap GetIcon(this BootstrapperIcon icon)
         {
             const string LOG_IDENT = "BootstrapperIconEx::GetIcon";
 
-            // load the custom icon file
+            if (_cache.TryGetValue(icon, out var cached))
+                return cached;
+
+            // Load the custom icon file
             if (icon == BootstrapperIcon.IconCustom)
             {
-                Icon? customIcon = null;
+                Bitmap? customIcon = null;
                 string location = App.Settings.Prop.BootstrapperIconCustomLocation;
 
-                if (String.IsNullOrEmpty(location))
+                if (string.IsNullOrEmpty(location))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Warning: custom icon is not set.");
                 }
@@ -42,7 +43,7 @@ namespace Froststrap.Extensions
                 {
                     try
                     {
-                        customIcon = new Icon(location);
+                        customIcon = LoadIconFromFile(location);
                     }
                     catch (Exception ex)
                     {
@@ -51,24 +52,48 @@ namespace Froststrap.Extensions
                     }
                 }
 
-                return customIcon ?? Properties.Resources.IconFroststrap;
+                var result = customIcon ?? LoadFromResource("IconFroststrap");
+                _cache[icon] = result;
+                return result;
             }
 
-            return icon switch
+            var bitmap = icon switch
             {
-                // BootstrapperIcon.IconFishstrap => Properties.Resources.IconFishstrap,
-                BootstrapperIcon.IconFroststrap => Properties.Resources.IconFroststrap,
-                BootstrapperIcon.Icon2008 => Properties.Resources.Icon2008,
-                BootstrapperIcon.Icon2011 => Properties.Resources.Icon2011,
-                BootstrapperIcon.IconEarly2015 => Properties.Resources.IconEarly2015,
-                BootstrapperIcon.IconLate2015 => Properties.Resources.IconLate2015,
-                BootstrapperIcon.Icon2017 => Properties.Resources.Icon2017,
-                BootstrapperIcon.Icon2019 => Properties.Resources.Icon2019,
-                BootstrapperIcon.Icon2022 => Properties.Resources.Icon2022,
-                BootstrapperIcon.Icon2025 => Properties.Resources.Icon2025,
-                BootstrapperIcon.IconFroststrapClassic => Properties.Resources.IconFroststrapClassic,
-                _ => Properties.Resources.IconFroststrap
+                BootstrapperIcon.IconFroststrap => LoadFromResource("IconFroststrap"),
+                BootstrapperIcon.Icon2008 => LoadFromResource("Icon2008"),
+                BootstrapperIcon.Icon2011 => LoadFromResource("Icon2011"),
+                BootstrapperIcon.IconEarly2015 => LoadFromResource("IconEarly2015"),
+                BootstrapperIcon.IconLate2015 => LoadFromResource("IconLate2015"),
+                BootstrapperIcon.Icon2017 => LoadFromResource("Icon2017"),
+                BootstrapperIcon.Icon2019 => LoadFromResource("Icon2019"),
+                BootstrapperIcon.Icon2022 => LoadFromResource("Icon2022"),
+                BootstrapperIcon.Icon2025 => LoadFromResource("Icon2025"),
+                BootstrapperIcon.IconFroststrapClassic => LoadFromResource("IconFroststrapClassic"),
+                _ => LoadFromResource("IconFroststrap")
             };
+
+            _cache[icon] = bitmap;
+            return bitmap;
+        }
+
+        private static Bitmap LoadFromResource(string name)
+        {
+            // Load the ICO file
+            var uri = new Uri($"avares://Froststrap/Assets/Icons/{name}.ico");
+            using var stream = AssetLoader.Open(uri);
+            return LoadBestIconFromIcoStream(stream);
+        }
+
+        private static Bitmap LoadIconFromFile(string path)
+        {
+            using var stream = File.OpenRead(path);
+            return LoadBestIconFromIcoStream(stream);
+        }
+
+        private static Bitmap LoadBestIconFromIcoStream(Stream stream)
+        {
+            stream.Position = 0;
+            return new Bitmap(stream);
         }
     }
 }

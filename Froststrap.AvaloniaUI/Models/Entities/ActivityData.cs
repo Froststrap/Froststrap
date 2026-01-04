@@ -1,7 +1,8 @@
-using Froststrap.Models.APIs;
+using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Models.APIs;
 using System.Web;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Froststrap.Models.Entities
@@ -294,13 +295,8 @@ namespace Froststrap.Models.Entities
             }
         }
 
-        private async void CopyDeeplink()
-        {
-            string deeplink = GetInviteDeeplink();
-            Clipboard.SetText(deeplink);
-        }
-
-        private async void CopyServerId() => Clipboard.SetText(JobId);
+        private void CopyDeeplink() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(GetInviteDeeplink());
+        private void CopyServerId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(JobId);
 
         private void DeleteHistory()
         {

@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Froststrap.Utility
+﻿namespace Froststrap.Utility
 {
     internal static class Shortcut
     {

@@ -1,7 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.Integrations;
-using Froststrap.UI.Elements.ContextMenu;
 
 namespace Froststrap.UI
 {
@@ -9,15 +10,9 @@ namespace Froststrap.UI
     {
         private bool _disposing = false;
         private TrayIcon? _trayIcon;
-        private NativeMenu? _nativeMenu;
         private readonly MenuContainer _menuContainer;
         private readonly Watcher _watcher;
         private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
-        private EventHandler? _alertClickHandler;
-
-        // Timer for double-click detection
-        private DateTime _lastClickTime = DateTime.MinValue;
-        private const int DoubleClickMilliseconds = 500;
 
         public NotifyIconWrapper(Watcher watcher)
         {
@@ -25,7 +20,6 @@ namespace Froststrap.UI
 
             _watcher = watcher;
 
-            // Initialize tray icon on UI thread
             Dispatcher.UIThread.Invoke(() =>
             {
                 InitializeTrayIcon();
@@ -42,127 +36,93 @@ namespace Froststrap.UI
         {
             try
             {
-                // Create tray icon
                 _trayIcon = new TrayIcon
                 {
+                    Icon = Properties.Resources.IconFroststrap,
                     ToolTipText = App.ProjectName,
                     IsVisible = true
                 };
 
-                // Load icon - assuming you have an icon resource
-                // You'll need to add an .ico file to your project
-                var iconPath = "avares://Froststrap/Resources/IconFroststrap.ico";
-
-                // Alternative: Use a PNG if .ico isn't supported
-                // var icon = new WindowIcon(iconPath);
-                // _trayIcon.Icon = icon;
-
-                // For now, we'll just show the tray icon without an icon
-                // You'll need to implement proper icon loading
-
-                // Create context menu
-                CreateNativeMenu();
-
-                // Set up click handlers
                 _trayIcon.Clicked += OnTrayIconClicked;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("NotifyIconWrapper::InitializeTrayIcon",
-                    $"Failed to initialize tray icon: {ex.Message}");
-            }
-        }
-
-        private void CreateNativeMenu()
-        {
-            // Create a simple native menu
-            _nativeMenu = new NativeMenu();
-
-            // Add menu items
-            var exitItem = new NativeMenuItem("Exit");
-            exitItem.Click += (s, e) => App.SoftTerminate();
-            _nativeMenu.Add(exitItem);
-
-            // Set the menu
-            if (_trayIcon != null)
-            {
-                _trayIcon.Menu = _nativeMenu;
+                App.Logger.WriteLine("NotifyIconWrapper::InitializeTrayIcon", $"Failed to initialize tray icon: {ex.Message}");
             }
         }
 
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
-            // Determine if this is a double-click
-            var now = DateTime.Now;
-            var timeSinceLastClick = (now - _lastClickTime).TotalMilliseconds;
-            _lastClickTime = now;
+            ShowCustomContextMenu();
+        }
 
-            if (timeSinceLastClick <= DoubleClickMilliseconds)
+        private void ShowCustomContextMenu()
+        {
+            try
             {
-                // Double-click detected
-                HandleDoubleClick();
+                _menuContainer.Activate();
+
+                if (_menuContainer.ContextMenu != null)
+                {
+                    if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
+                    {
+                        var mainWindow = desktopLifetime.MainWindow;
+                        if (mainWindow != null && mainWindow.IsVisible)
+                        {
+                            _menuContainer.ContextMenu.Open(mainWindow);
+                        }
+                        else
+                        {
+                            mainWindow?.Show();
+                            _menuContainer.ContextMenu.Open(mainWindow);
+                            mainWindow?.Hide();
+                        }
+                    }
+                }
+                else
+                {
+                    App.Logger.WriteLine("NotifyIconWrapper::ShowCustomContextMenu", "MenuContainer.ContextMenu is null - MenuContainer should handle its own display");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // Single click - show context menu
-                ShowContextMenu();
+                App.Logger.WriteLine("NotifyIconWrapper::ShowCustomContextMenu",
+                    $"Failed to show context menu: {ex.Message}");
+
+                BringMainWindowToFront();
             }
         }
 
-        private void HandleDoubleClick()
+        private void BringMainWindowToFront()
         {
-            switch (App.Settings.Prop.DoubleClickAction)
+            try
             {
-                case TrayDoubleClickAction.None:
-                    Frontend.ShowMessageBox(
-                        "You don't have the double-click action set to anything.",
-                        MessageBoxImage.Information
-                    );
-                    break;
-
-                case TrayDoubleClickAction.GameHistory:
-                    if (!App.Settings.Prop.ShowGameHistoryMenu)
+                Dispatcher.UIThread.Invoke(() =>
+                {
+                    if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
                     {
-                        Frontend.ShowMessageBox(
-                            "Enable 'Game History' in settings to use this feature.",
-                            MessageBoxImage.Information
-                        );
-                        return;
-                    }
+                        var mainWindow = desktopLifetime.MainWindow;
+                        if (mainWindow != null)
+                        {
+                            if (mainWindow.WindowState == Avalonia.Controls.WindowState.Minimized)
+                                mainWindow.WindowState = Avalonia.Controls.WindowState.Normal;
 
-                    new ServerHistory(_activityWatcher!).Show();
-                    break;
-
-                case TrayDoubleClickAction.ServerInfo:
-                    if (!App.Settings.Prop.ShowServerDetails)
-                    {
-                        Frontend.ShowMessageBox(
-                            "Enable 'Query Server Location' in settings to use this feature.",
-                            MessageBoxImage.Information
-                        );
-                        return;
+                            mainWindow.Show();
+                            mainWindow.Activate();
+                            mainWindow.Topmost = true;
+                            Dispatcher.UIThread.InvokeAsync(() =>
+                            {
+                                mainWindow.Topmost = false;
+                            }, DispatcherPriority.Background);
+                        }
                     }
-
-                    if (_activityWatcher is not null && _activityWatcher.InGame)
-                    {
-                        _menuContainer.ShowServerInformationWindow();
-                    }
-                    else
-                    {
-                        Frontend.ShowMessageBox(
-                            "Join a game first to view server information.",
-                            MessageBoxImage.Information
-                        );
-                    }
-                    break;
+                });
             }
-        }
-
-        private void ShowContextMenu()
-        {
-            // Activate the menu container to show custom context menu
-            _menuContainer.Activate();
-            _menuContainer.ContextMenu?.Open();
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("NotifyIconWrapper::BringMainWindowToFront",
+                    $"Failed to bring window to front: {ex.Message}");
+            }
         }
 
         #region Activity handlers
@@ -207,7 +167,6 @@ namespace Froststrap.UI
 
             string notifContent = Strings.Common_UnknownStatus;
 
-            // Since we don't have an actual localization, this is probably the best way of doing that
             if (locationActive && !uptimeActive)
                 notifContent = string.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation);
             else if (!locationActive && uptimeActive)
@@ -215,35 +174,31 @@ namespace Froststrap.UI
             else if (locationActive && uptimeActive)
                 notifContent = string.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
 
-            ShowAlert(
-                title,
-                notifContent,
-                10,
-                (_, _) => _menuContainer.ShowServerInformationWindow()
-            );
+            ShowSimpleNotification(title, notifContent);
         }
         #endregion
 
-        // Avalonia doesn't have built-in balloon tips, so we need to create our own notification system
+        private void ShowSimpleNotification(string title, string message)
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                Frontend.ShowMessageBox($"{title}\n\n{message}", MessageBoxImage.Information);
+            });
+        }
+
         public void ShowAlert(string caption, string message, int duration, EventHandler? clickHandler)
         {
             string id = Guid.NewGuid().ToString()[..8];
             string LOG_IDENT = $"NotifyIconWrapper::ShowAlert.{id}";
 
-            App.Logger.WriteLine(LOG_IDENT, $"Showing alert for {duration} seconds (clickHandler={clickHandler is not null})");
+            App.Logger.WriteLine(LOG_IDENT, $"Showing alert for {duration} seconds");
             App.Logger.WriteLine(LOG_IDENT, $"{caption}: {message.Replace("\n", "\\n")}");
 
-            // For now, we'll just log the alert since Avalonia doesn't have built-in tray notifications
-            // You could implement a custom notification window here
-
-            // TODO: Implement custom notification window
-            App.Logger.WriteLine(LOG_IDENT, "Notification shown (no UI implementation yet)");
-
-            // Store the click handler for later use
-            _alertClickHandler = clickHandler;
-
-            // In a real implementation, you would show a custom notification window
-            // and handle clicks on it
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                Frontend.ShowMessageBox($"{caption}\n\n{message}", MessageBoxImage.Information);
+                clickHandler?.Invoke(null, EventArgs.Empty);
+            });
         }
 
         public void Dispose()
@@ -255,20 +210,29 @@ namespace Froststrap.UI
 
             App.Logger.WriteLine("NotifyIconWrapper::Dispose", "Disposing NotifyIcon");
 
-            // Clean up resources on UI thread
-            Dispatcher.UIThread.Invoke(() =>
+            try
             {
-                _menuContainer?.Close();
-
-                if (_trayIcon != null)
+                Dispatcher.UIThread.Invoke(() =>
                 {
-                    _trayIcon.Clicked -= OnTrayIconClicked;
-                    _trayIcon.IsVisible = false;
-                    _trayIcon.Dispose();
-                }
-            });
+                    _menuContainer?.Close();
 
-            GC.SuppressFinalize(this);
+                    if (_trayIcon != null)
+                    {
+                        _trayIcon.Clicked -= OnTrayIconClicked;
+                        _trayIcon.IsVisible = false;
+                        _trayIcon.Dispose();
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("NotifyIconWrapper::Dispose",
+                    $"Error during disposal: {ex.Message}");
+            }
+            finally
+            {
+                GC.SuppressFinalize(this);
+            }
         }
     }
 }

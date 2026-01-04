@@ -1,4 +1,3 @@
-using System.Windows;
 using DiscordRPC;
 
 namespace Froststrap.Integrations

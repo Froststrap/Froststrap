@@ -55,11 +55,10 @@
 
                 WriteLine(LOG_IDENT, $"Failed to initialize because Froststrap cannot write to {directory}");
 
-                // TODO: Avalonia equivalent (MessageBox.Avalonia)
                 Frontend.ShowMessageBox(
                     String.Format(Strings.Logger_NoWriteMode, directory), 
-                    System.Windows.MessageBoxImage.Warning, 
-                    System.Windows.MessageBoxButton.OK
+                    MessageBoxImage.Warning, 
+                    MessageBoxButton.OK
                 );
 
                 NoWriteMode = true;

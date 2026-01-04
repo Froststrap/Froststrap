@@ -1,10 +1,10 @@
-﻿using System.Windows.Media;
+﻿using Avalonia.Media;
 
 namespace Froststrap.Models
 {
     public class RobloxIconEntry
     {
         public RobloxIcon IconType { get; set; }
-        public ImageSource ImageSource => IconType.GetIcon()!.GetImageSource();
+        public IImage ImageSource => IconType.GetIcon()!.GetImageSource();
     }
 }

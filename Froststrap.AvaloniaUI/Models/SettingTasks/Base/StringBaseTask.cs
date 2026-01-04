@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Froststrap.Models.SettingTasks.Base
+﻿namespace Froststrap.Models.SettingTasks.Base
 {
     public abstract class StringBaseTask : BaseTask
     {

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 namespace Froststrap.Extensions
 {
@@ -14,24 +15,39 @@ namespace Froststrap.Extensions
             RobloxIcon.IconLate2015,
             RobloxIcon.Icon2011,
             RobloxIcon.Icon2008,
-            RobloxIcon.IconFroststrap,
         };
 
-        public static Icon GetIcon(this RobloxIcon icon)
+        private static Dictionary<RobloxIcon, Bitmap> _cache = new();
+
+        public static Bitmap GetIcon(this RobloxIcon icon)
         {
-            return icon switch
+            if (_cache.TryGetValue(icon, out var cached))
+                return cached;
+
+            var bitmap = icon switch
             {
-                RobloxIcon.IconFroststrap => Properties.Resources.IconFroststrap,
-                RobloxIcon.Icon2008 => Properties.Resources.Icon2008,
-                RobloxIcon.Icon2011 => Properties.Resources.Icon2011,
-                RobloxIcon.IconEarly2015 => Properties.Resources.IconEarly2015,
-                RobloxIcon.IconLate2015 => Properties.Resources.IconLate2015,
-                RobloxIcon.Icon2017 => Properties.Resources.Icon2017,
-                RobloxIcon.Icon2019 => Properties.Resources.Icon2019,
-                RobloxIcon.Icon2022 => Properties.Resources.Icon2022,
-                RobloxIcon.Default => Properties.Resources.Icon2025,
-                _ => Properties.Resources.IconFroststrap
+                RobloxIcon.IconFroststrap => LoadFromResource("IconFroststrap"),
+                RobloxIcon.Icon2008 => LoadFromResource("Icon2008"),
+                RobloxIcon.Icon2011 => LoadFromResource("Icon2011"),
+                RobloxIcon.IconEarly2015 => LoadFromResource("IconEarly2015"),
+                RobloxIcon.IconLate2015 => LoadFromResource("IconLate2015"),
+                RobloxIcon.Icon2017 => LoadFromResource("Icon2017"),
+                RobloxIcon.Icon2019 => LoadFromResource("Icon2019"),
+                RobloxIcon.Icon2022 => LoadFromResource("Icon2022"),
+                RobloxIcon.Default => LoadFromResource("Icon2025"),
+                _ => LoadFromResource("IconFroststrap")
             };
+
+            _cache[icon] = bitmap;
+            return bitmap;
+        }
+
+        private static Bitmap LoadFromResource(string name)
+        {
+            var uri = new Uri($"avares://Froststrap/Assets/Icons/{name}.ico");
+            using var stream = AssetLoader.Open(uri);
+            stream.Position = 0;
+            return new Bitmap(stream);
         }
     }
 }

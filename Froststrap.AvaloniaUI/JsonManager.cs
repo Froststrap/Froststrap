@@ -82,7 +82,7 @@ namespace Froststrap
                         message = Strings.JsonManager_FastFlagsLoadFailed;
 
                     if (!String.IsNullOrEmpty(message))
-                        Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", System.Windows.MessageBoxImage.Warning);
+                        Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
 
                     try
                     {
@@ -124,8 +124,8 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Failed to save");
                 App.Logger.WriteException(LOG_IDENT, ex);
 
-                string errorMessage = string.Format(Resources.Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
-                Frontend.ShowMessageBox(errorMessage, System.Windows.MessageBoxImage.Warning);
+                string errorMessage = string.Format(Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
+                Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
 
                 return;
             }

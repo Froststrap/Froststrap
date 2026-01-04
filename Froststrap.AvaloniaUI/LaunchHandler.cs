@@ -1,11 +1,4 @@
-﻿using System.Windows;
-
-using Windows.Win32;
-using Windows.Win32.Foundation;
-
-using Froststrap.Enums;
-using Froststrap.UI.Elements.Dialogs;
-using Froststrap.Integrations;
+﻿using Froststrap.Integrations;
 
 namespace Froststrap
 {

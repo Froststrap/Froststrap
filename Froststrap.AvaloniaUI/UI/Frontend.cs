@@ -3,11 +3,9 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Froststrap.UI.Elements.Bootstrapper;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia.Dto;
-using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI
 {

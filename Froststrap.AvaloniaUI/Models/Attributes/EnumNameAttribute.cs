@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Froststrap.Models.Attributes
+﻿namespace Froststrap.Models.Attributes
 {
     class EnumNameAttribute : Attribute
     {

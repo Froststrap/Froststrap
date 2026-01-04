@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace Froststrap.Models.Persistable
+﻿namespace Froststrap.Models.Persistable
 {
     public class State
     {

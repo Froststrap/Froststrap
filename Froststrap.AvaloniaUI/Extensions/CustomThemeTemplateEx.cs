@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Froststrap.Extensions
+﻿namespace Froststrap.Extensions
 {
     static class CustomThemeTemplateEx
     {

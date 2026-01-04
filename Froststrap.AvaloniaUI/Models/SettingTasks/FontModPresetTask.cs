@@ -1,6 +1,4 @@
-﻿using Froststrap.Models.SettingTasks.Base;
-
-namespace Froststrap.Models.SettingTasks
+﻿namespace Froststrap.Models.SettingTasks
 {
     public class FontModPresetTask : StringBaseTask
     {

@@ -146,7 +146,7 @@ namespace Froststrap.UI.Elements.Base
             resources["ControlFillColorDefault"] = ParseColor("#19000000");
         }
 
-        private void ApplyStandardTheme(Enums.Theme finalTheme, int customThemeIndex)
+        private void ApplyStandardTheme(Theme finalTheme, int customThemeIndex)
         {
             try
             {

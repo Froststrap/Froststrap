@@ -1,7 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Windows.Markup;
-
-namespace Froststrap.Models.Entities
+﻿namespace Froststrap.Models.Entities
 {
     public class ModPresetFileData
     {
