@@ -1,5 +1,7 @@
 using Wpf.Ui.Controls;
 
+// we need to find smth similar to infobar, imma keep as this for now
+
 namespace Froststrap.Models.APIs.Config
 {
     public class RemoteDataBase

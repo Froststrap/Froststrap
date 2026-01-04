@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows.Media.Imaging;
+using Avalonia.Media.Imaging;
 
 namespace Froststrap.Models.APIs.Config
 {
@@ -28,9 +28,10 @@ namespace Froststrap.Models.APIs.Config
         public ModType ModType { get; set; } = ModType.ColorMod;
 
         [JsonIgnore]
-        private BitmapImage? _thumbnailImage;
+        private Bitmap? _thumbnailImage;
+
         [JsonIgnore]
-        public BitmapImage? ThumbnailImage
+        public Bitmap? ThumbnailImage
         {
             get => _thumbnailImage;
             set => SetProperty(ref _thumbnailImage, value);
