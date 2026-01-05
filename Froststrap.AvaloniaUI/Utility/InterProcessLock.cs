@@ -1,5 +1,4 @@
-﻿
-namespace Froststrap.Utility
+﻿namespace Froststrap.Utility
 {
     public class InterProcessLock : IDisposable
     {

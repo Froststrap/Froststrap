@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Bloxstrap.UI.Elements.Controls
+namespace Froststrap.UI.Elements.Controls
 {
     public partial class SquareCard : UserControl
     {

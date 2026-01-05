@@ -6,8 +6,8 @@ using Microsoft.Win32;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using Froststrap.AvaloniaUI.Views;
-using Froststrap.AvaloniaUI.ViewModels;
+using Froststrap.Views;
+using Froststrap.ViewModels;
 using Froststrap.Integrations;
 
 namespace Froststrap;
@@ -62,7 +62,8 @@ public partial class App : Application
     public static LaunchSettings LaunchSettings { get; private set; } = null!;
     public static readonly MD5 MD5Provider = MD5.Create();
     public static readonly Logger Logger = new();
-    
+    public static readonly Dictionary<string, BaseTask> PendingSettingTasks = new();
+
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
     public FroststrapRichPresence RichPresence { get; private set; } = null!;
     public static MemoryCleaner MemoryCleaner { get; private set; } = null!; // doubt this is necessary on Linux
@@ -165,38 +166,60 @@ public partial class App : Application
         FinalizeExceptionHandling(e.Exception);
     }
 
-    public static void FinalizeExceptionHandling(Exception ex)
-    {
-        if (_showingExceptionDialog)
-            return;
-
-        _showingExceptionDialog = true;
-
-        Logger.WriteException("App::Fatal", ex);
-
-        Dispatcher.UIThread.Post(() =>
-        {
-            Frontend.ShowExceptionDialog(ex);
-
-            Environment.Exit((int)ErrorCode.ERROR_INSTALL_FAILURE);
-        });
-    }
-
     public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
     {
-        Logger.WriteLine("App::Terminate", exitCode.ToString());
-        Environment.Exit((int)exitCode);
+        int exitCodeNum = (int)exitCode;
+
+        Logger.WriteLine("App::Terminate", $"Terminating with exit code {exitCodeNum} ({exitCode})");
+
+        Environment.Exit(exitCodeNum);
     }
 
     public static void SoftTerminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
     {
-        if (Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        int exitCodeNum = (int)exitCode;
+
+        Logger.WriteLine("App::SoftTerminate", $"Terminating with exit code {exitCodeNum} ({exitCode})");
+
+        Dispatcher.UIThread.Invoke(() => Dispatcher.UIThread.BeginInvokeShutdown(exitCodeNum));
+    }
+
+    void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        e.Handled = true;
+
+        Logger.WriteLine("App::GlobalExceptionHandler", "An exception occurred");
+
+        FinalizeExceptionHandling(e.Exception);
+    }
+
+    public static void FinalizeExceptionHandling(AggregateException ex)
+    {
+        foreach (var innerEx in ex.InnerExceptions)
+            Logger.WriteException("App::FinalizeExceptionHandling", innerEx);
+
+        FinalizeExceptionHandling(ex.GetBaseException(), false);
+    }
+
+    public static void FinalizeExceptionHandling(Exception ex, bool log = true)
+    {
+        if (log)
+            Logger.WriteException("App::FinalizeExceptionHandling", ex);
+
+        if (_showingExceptionDialog)
+            return;
+
+        _showingExceptionDialog = true;
+        if (Bootstrapper?.Dialog != null)
         {
-            desktop.Shutdown((int)exitCode);
+            if (Bootstrapper.Dialog.TaskbarProgressValue == 0)
+                Bootstrapper.Dialog.TaskbarProgressValue = 1; // make sure it's visible
+
+            Bootstrapper.Dialog.TaskbarProgressState = TaskbarItemProgressState.Error;
         }
-        else
-        {
-            Environment.Exit((int)exitCode);
-        }
+
+        Frontend.ShowExceptionDialog(ex);
+
+        Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
     }
 }

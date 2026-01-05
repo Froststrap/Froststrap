@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Froststrap.AvaloniaUI.Views;
+namespace Froststrap.Views;
 
 public partial class MainWindow : Window
 {

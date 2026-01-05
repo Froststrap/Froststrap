@@ -14,19 +14,16 @@
 #warning "Automatic updater debugging is enabled"
 #endif
 
-using System.ComponentModel;
-using System.Data;
-using System.Windows;
-
-using Microsoft.Win32;
-
 using Froststrap.AppData;
 using Froststrap.RobloxInterfaces;
 using Froststrap.UI.Elements.Bootstrapper.Base;
-
 using ICSharpCode.SharpZipLib.Zip;
-using System.Reflection;
+using Microsoft.Win32;
+using MsBox.Avalonia.Enums;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
+using System.Data;
+using System.Reflection;
 
 namespace Froststrap
 {
@@ -372,7 +369,7 @@ namespace Froststrap
 
                         if (!robloxProcess.HasExited)
                         {
-                            await SetRobloxWindowIcon(robloxProcess, App.Settings.Prop.SelectedRobloxIcon);
+                            await SetProcessWindowIcon(robloxProcess, App.Settings.Prop.SelectedRobloxIcon);
                         }
                     }
                 }
@@ -856,6 +853,7 @@ namespace Froststrap
             }
         }
 
+#if WINDOWS
         private const int WM_SETICON = 0x80;
         private const int ICON_SMALL = 0;
         private const int ICON_BIG = 1;
@@ -865,14 +863,65 @@ namespace Froststrap
 
         [DllImport("user32.dll")]
         private static extern bool IsWindowVisible(IntPtr hWnd);
+#endif
 
-        private void ApplyIcon(IntPtr hwnd, Icon icon)
+        private async Task<bool> SetProcessWindowIcon(Process process, RobloxIcon icon)
         {
-            SendMessage(hwnd, WM_SETICON, (IntPtr)ICON_SMALL, icon.Handle);
-            SendMessage(hwnd, WM_SETICON, (IntPtr)ICON_BIG, icon.Handle);
+            const string LOG_IDENT = "Bootstrapper::SetProcessWindowIcon";
+
+            // Only run on Windows
+            if (!OperatingSystem.IsWindows() || icon == RobloxIcon.Default)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Icon setting skipped (Platform: {RuntimeInformation.OSDescription}, Icon: {icon})");
+                return false;
+            }
+
+#if WINDOWS
+            using var iconHandle = LoadIconResource(icon);
+
+            if (iconHandle == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Icon resource '{icon}' not found.");
+                return false;
+            }
+
+            var startTime = DateTime.Now;
+            bool iconSet = false;
+
+            while ((DateTime.Now - startTime).TotalSeconds < 20 && !process.HasExited)
+            {
+                try
+                {
+                    var hwnd = process.MainWindowHandle;
+                    if (hwnd == IntPtr.Zero || !IsWindowVisible(hwnd))
+                    {
+                        await Task.Delay(25);
+                        continue;
+                    }
+
+                    SendMessage(hwnd, WM_SETICON, (IntPtr)ICON_SMALL, iconHandle.Handle);
+                    SendMessage(hwnd, WM_SETICON, (IntPtr)ICON_BIG, iconHandle.Handle);
+
+                    iconSet = true;
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to set icon: {ex}");
+                    await Task.Delay(25);
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Icon setting {(iconSet ? "succeeded" : "failed or timed out")}.");
+            return iconSet;
+#else
+            App.Logger.WriteLine(LOG_IDENT, $"Icon setting not supported on {RuntimeInformation.OSDescription}");
+            return false;
+#endif
         }
 
-        private Icon? LoadIcon(RobloxIcon icon)
+#if WINDOWS
+        private Icon? LoadIconResource(RobloxIcon icon)
         {
             if (icon == RobloxIcon.Default)
                 return null;
@@ -883,41 +932,7 @@ namespace Froststrap
             using Stream? stream = assembly.GetManifestResourceStream(resourceName);
             return stream != null ? new Icon(stream) : null;
         }
-
-        private async Task SetRobloxWindowIcon(Process process, RobloxIcon icon)
-        {
-            const string LOG_IDENT = "Bootstrapper::SetRobloxWindowIcon";
-
-            using var iconHandle = LoadIcon(icon);
-
-            if (iconHandle == null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Icon resource '{icon}' not found.");
-                return;
-            }
-
-            var startTime = DateTime.Now;
-
-            while ((DateTime.Now - startTime).TotalSeconds < 20 && !process.HasExited)
-            {
-                try
-                {
-                    var hwnd = process.MainWindowHandle;
-                    if (hwnd == IntPtr.Zero || !IsWindowVisible(hwnd))
-                        continue;
-
-                    ApplyIcon(hwnd, iconHandle);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to set icon: {ex}");
-                }
-
-                await Task.Delay(25);
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, "Icon setting period completed.");
-        }
+#endif
 
         private async void StartRoblox()
         {

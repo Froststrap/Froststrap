@@ -1,4 +1,7 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
@@ -137,7 +140,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             var dialog = new CommunityModInfoDialog(mod)
             {
-                Owner = Application.Current.MainWindow
+                Owner = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null
             };
 
             var result = dialog.ShowDialog();
@@ -557,7 +560,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async Task<BitmapImage?> GetCachedThumbnailAsync(CommunityMod mod)
+        private async Task<Bitmap?> GetCachedThumbnailAsync(CommunityMod mod)
         {
             try
             {
@@ -645,30 +648,22 @@ namespace Froststrap.UI.ViewModels.Settings
             });
         }
 
-        private async Task SetModThumbnailAsync(CommunityMod mod, BitmapImage? image)
+        private async Task SetModThumbnailAsync(CommunityMod mod, Bitmap? image)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 mod.ThumbnailImage = image;
                 mod.IsLoadingThumbnail = false;
-                mod.HasThumbnailError = image == null;
+                mod.HasThumbnailError = image is null;
             });
         }
 
-        private async Task<BitmapImage> CreateBitmapImageAsync(byte[] imageBytes)
+        private async Task<Bitmap> CreateBitmapImageAsync(byte[] imageBytes)
         {
             return await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var bitmapImage = new BitmapImage();
                 using var stream = new MemoryStream(imageBytes);
-
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-
-                return bitmapImage;
+                return new Bitmap(stream);
             });
         }
     }

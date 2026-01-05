@@ -1,9 +1,9 @@
 ﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
-using Bloxstrap.UI.Elements.About;
+using Froststrap.UI.Elements.About;
 
-namespace Bloxstrap.UI.ViewModels.Installer
+namespace Froststrap.UI.ViewModels.Installer
 {
     public class LaunchMenuViewModel
     {

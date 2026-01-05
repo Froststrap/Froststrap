@@ -1,5 +1,8 @@
-﻿using Froststrap.Integrations;
+﻿using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Integrations;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -44,22 +47,40 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(IsCustomIntegrationSelected));
         }
 
-        private void BrowseIntegrationLocation()
+        private async void BrowseIntegrationLocation()
         {
             if (SelectedCustomIntegration is null)
                 return;
 
-            var dialog = new OpenFileDialog
-            {
-                Filter = $"{Strings.Menu_AllFiles}|*.*"
-            };
+            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
 
-            if (dialog.ShowDialog() != true)
+            if (mainWindow == null)
                 return;
 
-            SelectedCustomIntegration.Name = dialog.SafeFileName;
-            SelectedCustomIntegration.Location = dialog.FileName;
-            OnPropertyChanged(nameof(SelectedCustomIntegration));
+            var storageProvider = mainWindow.StorageProvider;
+
+            var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select Integration File",
+                AllowMultiple = false,
+                FileTypeFilter = new[]
+                {
+                    new FilePickerFileType("All files")
+                    {
+                        Patterns = new[] { "*.*" }
+                    }
+                }
+            });
+
+            if (files != null && files.Count > 0)
+            {
+                var file = files[0];
+                SelectedCustomIntegration.Name = System.IO.Path.GetFileName(file.Path.LocalPath);
+                SelectedCustomIntegration.Location = file.Path.LocalPath;
+                OnPropertyChanged(nameof(SelectedCustomIntegration));
+            }
         }
 
         public bool ActivityTrackingEnabled

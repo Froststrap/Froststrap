@@ -654,7 +654,7 @@ namespace Froststrap.Integrations
                                 {
                                     QuickSignStatusUpdated?.Invoke("Cancelled", null);
 
-                                    if (quickSignWindow != null)
+                                    if (quickSignWindow is not null)
                                     {
                                         try
                                         {
@@ -663,7 +663,7 @@ namespace Froststrap.Integrations
                                                 Dispatcher.UIThread.Post(() =>
                                                 {
                                                     // Check again in case quickSignWindow became null during invocation
-                                                    if (quickSignWindow != null)
+                                                    if (quickSignWindow is not null)
                                                     {
                                                         quickSignWindow.UpdateStatus("Cancelled", "Code expired or invalid");
                                                     }
@@ -746,14 +746,14 @@ namespace Froststrap.Integrations
                     {
                         QuickSignStatusUpdated?.Invoke(status, accountName);
 
-                        if (quickSignWindow != null && !string.IsNullOrEmpty(status))
+                        if (quickSignWindow is not null && !string.IsNullOrEmpty(status))
                         {
                             try
                             {
                                 if (!Dispatcher.UIThread.CheckAccess())                                {
                                     Dispatcher.UIThread.Post(() =>
                                     {
-                                        if (quickSignWindow != null)
+                                        if (quickSignWindow is not null)
                                         {
                                             if (status == "Created" && string.IsNullOrEmpty(accountName))
                                             {
@@ -794,14 +794,14 @@ namespace Froststrap.Integrations
                 App.Logger?.WriteLine(LOG_IDENT_POLL_STATUS, "PollQuickTokenStatusAsync: timed out or cancelled.");
 
                 // Safe timeout UI update
-                if (quickSignWindow != null)
+                if (quickSignWindow is not null)
                 {
                     try
                     {
                         if (!Dispatcher.UIThread.CheckAccess())                        {
                             Dispatcher.UIThread.Post(() =>
                             {
-                                if (quickSignWindow != null)
+                                if (quickSignWindow is not null)
                                 {
                                     quickSignWindow.UpdateStatus("TimedOut", "Sign-in timed out");
                                 }

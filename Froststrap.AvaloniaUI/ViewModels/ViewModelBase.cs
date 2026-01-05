@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Froststrap.AvaloniaUI.ViewModels;
+namespace Froststrap.ViewModels;
 
 public abstract class ViewModelBase : ObservableObject
 {

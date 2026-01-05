@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Styling;
 
 namespace Froststrap
 {
@@ -74,7 +77,7 @@ namespace Froststrap
         public static List<string> GetLanguages()
         {
             var languages = new List<string>();
-            
+
             languages.AddRange(SupportedLocales.Values.Take(3));
             languages.AddRange(SupportedLocales.Values.Where(x => !languages.Contains(x)).OrderBy(x => x));
             languages[0] = Strings.Common_SystemDefault; // set again for any locale changes
@@ -106,28 +109,53 @@ namespace Froststrap
         {
             Set("nil");
 
-            // https://supportcenter.devexpress.com/ticket/details/t905790/is-there-a-way-to-set-right-to-left-mode-in-wpf-for-the-whole-application
-            EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler((sender, _) =>
+            ApplyLocaleToApplication();
+        }
+
+        public static void ApplyLocaleToWindow(Window window)
+        {
+            if (RightToLeft)
             {
-                var window = (Window)sender;
-
-                if (RightToLeft)
-                {
-                    window.FlowDirection = FlowDirection.RightToLeft;
-
-                    if (window.ContextMenu is not null)
-                        window.ContextMenu.FlowDirection = FlowDirection.RightToLeft;
-                }
-                else if (CurrentCulture.Name.StartsWith("th"))
-                {
-                    window.FontFamily = new System.Windows.Media.FontFamily(new Uri("pack://application:,,,/Resources/Fonts/"), "./#Noto Sans Thai");
-                }
+                window.FlowDirection = FlowDirection.RightToLeft;
+            }
+            else if (CurrentCulture.Name.StartsWith("th"))
+            {
+                Application.Current?.Resources["ContentFontFamily"] =
+                    new Avalonia.Media.FontFamily("Noto Sans Thai");
+            }
 
 #if QA_BUILD
-                window.BorderBrush = System.Windows.Media.Brushes.Red;
-                window.BorderThickness = new Thickness(4);
+            // In Avalonia, you can add a red border via styles or directly
+            window.BorderBrush = Brushes.Red;
+            window.BorderThickness = new Thickness(4);
 #endif
-            }));
+        }
+
+        private static void ApplyLocaleToApplication()
+        {
+            if (RightToLeft)
+            {
+                var rtlStyle = new Style(x => x.OfType<Control>())
+                {
+                    Setters =
+                    {
+                        new Setter(Control.FlowDirectionProperty, FlowDirection.RightToLeft)
+                    }
+                };
+
+                Application.Current?.Styles.Add(rtlStyle);
+            }
+        }
+
+        public class LocaleAwareWindow : Window
+        {
+            public LocaleAwareWindow()
+            {
+                this.Initialized += (s, e) =>
+                {
+                    ApplyLocaleToWindow(this);
+                };
+            }
         }
     }
 }

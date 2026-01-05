@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace Froststrap.UI.ViewModels.Settings
 {

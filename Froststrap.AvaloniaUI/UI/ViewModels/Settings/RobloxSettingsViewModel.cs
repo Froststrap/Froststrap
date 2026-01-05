@@ -1,9 +1,12 @@
-﻿using Froststrap.Models.APIs.Config;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Models.APIs.Config;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Input;
 using System.Xml.Linq;
 
@@ -135,7 +138,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand ExportCommand => _exportCommand ??= new RelayCommand(ExportSettings);
         public ICommand ImportCommand => _importCommand ??= new RelayCommand(ImportSettings);
 
-        private void ExportSettings()
+        private async void ExportSettings()
         {
             if (!File.Exists(App.GlobalSettings.FileLocation))
             {
@@ -143,21 +146,42 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "GBS Settings File (*.xml)|*.xml|All files (*.*)|*.*",
-                DefaultExt = ".xml",
-                FileName = $"FroststrapRobloxSettings.xml",
-                Title = "Export GBS Settings"
-            };
+            // Get the main window
+            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
 
-            if (saveFileDialog.ShowDialog() == true)
+            if (mainWindow == null)
+                return;
+
+            // Use StorageProvider API
+            var storageProvider = mainWindow.StorageProvider;
+
+            var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
-                bool success = App.GlobalSettings.ExportSettings(saveFileDialog.FileName);
+                Title = "Export GBS Settings",
+                SuggestedFileName = "FroststrapRobloxSettings.xml",
+                DefaultExtension = "xml",
+                FileTypeChoices = new[]
+                {
+                    new FilePickerFileType("GBS Settings File")
+                    {
+                        Patterns = new[] { "*.xml" }
+                    },
+                    new FilePickerFileType("All files")
+                    {
+                        Patterns = new[] { "*.*" }
+                    }
+                }
+            });
+
+            if (file != null && !string.IsNullOrEmpty(file.Path.LocalPath))
+            {
+                bool success = App.GlobalSettings.ExportSettings(file.Path.LocalPath);
 
                 if (success)
                 {
-                    Frontend.ShowMessageBox($"Settings exported successfully to {saveFileDialog.FileName}",
+                    Frontend.ShowMessageBox($"Settings exported successfully to {file.Path.LocalPath}",
                         MessageBoxImage.Information);
                 }
                 else
@@ -168,20 +192,38 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void ImportSettings()
+        private async void ImportSettings()
         {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog
-            {
-                Filter = "GBS Settings File (*.xml)|*.xml|All files (*.*)|*.*",
-                DefaultExt = ".xml",
-                Title = "Import GBS Settings"
-            };
+            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
 
-            if (openFileDialog.ShowDialog() == true)
+            if (mainWindow == null)
+                return;
+
+            var storageProvider = mainWindow.StorageProvider;
+
+            var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
+                Title = "Import GBS Settings",
+                AllowMultiple = false,
+                FileTypeFilter = new[]
+                {
+                    new FilePickerFileType("GBS Settings File")
+                    {
+                        Patterns = new[] { "*.xml" }
+                    }
+                }
+            });
+
+            if (files != null && files.Count > 0)
+            {
+                var file = files[0];
+                var filePath = file.Path.LocalPath;
+
                 try
                 {
-                    var doc = XDocument.Load(openFileDialog.FileName);
+                    var doc = XDocument.Load(filePath);
                     if (doc.Root?.Name != "roblox")
                     {
                         Frontend.ShowMessageBox("The selected file does not appear to be a valid GBS settings file.",
@@ -203,7 +245,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    bool success = App.GlobalSettings.ImportSettings(openFileDialog.FileName);
+                    bool success = App.GlobalSettings.ImportSettings(filePath);
 
                     if (success)
                     {

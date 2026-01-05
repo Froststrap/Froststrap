@@ -18,8 +18,8 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         public string ServerUptime { get; private set; } = Strings.Common_Loading;
 
-        public Visibility ServerLocationVisibility => App.Settings.Prop.ShowServerDetails ? Visibility.Visible : Visibility.Collapsed;
-        public Visibility ServerUptimeVisibility => App.Settings.Prop.ShowServerUptime ? Visibility.Visible : Visibility.Collapsed;
+        public bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
+        public bool ServerUptimeVisibility => App.Settings.Prop.ShowServerUptime;
 
         public ICommand CopyInstanceIdCommand => new RelayCommand(CopyInstanceId);
 
@@ -27,10 +27,10 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         {
             _activityWatcher = watcher.ActivityWatcher!;
 
-            if (ServerLocationVisibility == Visibility.Visible)
+            if (ServerLocationVisibility)
                 QueryServerLocation();
 
-            if (ServerUptimeVisibility == Visibility.Visible)
+            if (ServerUptimeVisibility)
                 QueryServerUptime();
         }
 

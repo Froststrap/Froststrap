@@ -1,6 +1,5 @@
 ﻿using Froststrap.RobloxInterfaces;
 using System.ComponentModel;
-using System.Windows;
 
 namespace Froststrap.UI.ViewModels.Settings
 {

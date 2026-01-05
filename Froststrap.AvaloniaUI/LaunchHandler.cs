@@ -208,10 +208,8 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Found an already existing menu window");
 
-                var process = Utilities.GetProcessesSafe().Where(x => x.MainWindowTitle == Strings.Menu_Title).FirstOrDefault();
-
-                if (process is not null)
-                    PInvoke.SetForegroundWindow((HWND)process.MainWindowHandle);
+                using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
+                activateEvent.Set();
 
                 App.Terminate();
             }

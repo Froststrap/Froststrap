@@ -12,12 +12,13 @@
  */
 
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
-using Avalonia.Threading;
 
 namespace Froststrap.UI.ViewModels.AccountManagers
 {
@@ -71,13 +72,17 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
         private Elements.AccountManagers.MainWindow? GetMainWindow()
         {
-            foreach (Window window in Application.Current.Windows)
+            if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                if (window is Elements.AccountManagers.MainWindow accountManagerWindow)
+                foreach (Window window in desktop.Windows)
                 {
-                    return accountManagerWindow;
+                    if (window is Elements.AccountManagers.MainWindow accountManagerWindow)
+                    {
+                        return accountManagerWindow;
+                    }
                 }
             }
+
             return null;
         }
 

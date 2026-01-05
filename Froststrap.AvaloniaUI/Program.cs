@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using System;
 
 namespace Froststrap.AvaloniaUI;
 

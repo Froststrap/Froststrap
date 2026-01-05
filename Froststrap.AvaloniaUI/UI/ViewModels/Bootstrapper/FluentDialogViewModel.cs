@@ -1,16 +1,15 @@
-﻿using Bloxstrap.AppData;
-using Bloxstrap.RobloxInterfaces;
-using System;
-using System.Windows.Media;
-using Wpf.Ui.Appearance;
+﻿using Avalonia.Media;
+using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.UI.ViewModels.Bootstrapper
 {
     public class FluentDialogViewModel : BootstrapperDialogViewModel
     {
         public BackgroundType WindowBackdropType { get; set; } = BackgroundType.Mica;
-        public SolidColorBrush BackgroundColourBrush { get; set; } = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
+        public ISolidColorBrush BackgroundColourBrush { get; set; }
+
         public string VersionText { get; set; }
+
         public string ChannelText
         {
             get => _channelText;
@@ -20,12 +19,16 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
                 OnPropertyChanged(nameof(ChannelText));
             }
         }
+
         private string _channelText = string.Empty;
+
         public FluentDialogViewModel(IBootstrapperDialog dialog, bool aero, string version) : base(dialog)
         {
             const int alpha = 128;
 
             WindowBackdropType = aero ? BackgroundType.Aero : BackgroundType.Mica;
+
+            BackgroundColourBrush = new SolidColorBrush(Color.FromArgb(0, 0, 0, 0));
 
             if (aero)
             {

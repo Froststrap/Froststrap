@@ -22,7 +22,8 @@
                 }
             }
         }
-        public Visibility FilePathVisibility => string.IsNullOrEmpty(FilePath) ? Visibility.Collapsed : Visibility.Visible;
+
+        public bool FilePathVisibility => !string.IsNullOrEmpty(FilePath);
 
         public int SelectedTab { get; set; } = 0;
 
@@ -40,7 +41,8 @@
                 }
             }
         }
-        public Visibility NameErrorVisibility => string.IsNullOrEmpty(NameError) ? Visibility.Collapsed : Visibility.Visible;
+
+        public bool NameErrorVisibility => !string.IsNullOrEmpty(NameError);
 
         private string _fileError = "";
         public string FileError
@@ -56,6 +58,7 @@
                 }
             }
         }
-        public Visibility FileErrorVisibility => string.IsNullOrEmpty(FileError) ? Visibility.Collapsed : Visibility.Visible;
+
+        public bool FileErrorVisibility => !string.IsNullOrEmpty(FileError);
     }
 }

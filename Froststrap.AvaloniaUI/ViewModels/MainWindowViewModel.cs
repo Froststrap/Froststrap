@@ -1,4 +1,4 @@
-﻿namespace Froststrap.AvaloniaUI.ViewModels;
+﻿namespace Froststrap.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {

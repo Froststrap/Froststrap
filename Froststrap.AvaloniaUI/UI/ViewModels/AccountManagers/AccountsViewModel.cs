@@ -11,13 +11,14 @@
  *               of the Nix ecosystem. 
  */
 
-using Froststrap.Integrations;
-using Froststrap.UI.Elements.Dialogs;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Integrations;
+using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
-using Avalonia.Controls;
-using Avalonia;
 
 namespace Froststrap.UI.ViewModels.AccountManagers
 {
@@ -363,14 +364,20 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", "Adding account via Manual Cookie");
 
             var dialog = new ManualCookieDialog();
-            dialog.Owner = Application.Current.MainWindow;
 
-            var result = dialog.ShowDialog();
+            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
 
-            if (result == true && dialog.ViewModel.ValidatedAccount != null)
+            if (mainWindow != null)
             {
-                var validatedAccount = dialog.ViewModel.ValidatedAccount;
-                await ProcessNewAccount(validatedAccount);
+                var result = await dialog.ShowDialog<bool?>(mainWindow);
+
+                if (result == true && dialog.ViewModel.ValidatedAccount != null)
+                {
+                    var validatedAccount = dialog.ViewModel.ValidatedAccount;
+                    await ProcessNewAccount(validatedAccount);
+                }
             }
         }
 

@@ -30,7 +30,7 @@ namespace Froststrap
         public bool CreateStartMenuShortcuts = true;
 
         public bool ImportSettings =
-            Directory.Exists(Path.Combine(Paths.LocalAppData, "Froststrap")) ||
+            Directory.Exists(Path.Combine(Paths.LocalAppData, "Bloxstrap")) ||
             Directory.Exists(Path.Combine(Paths.LocalAppData, "Fishstrap")) ||
             Directory.Exists(Path.Combine(Paths.LocalAppData, "Lunastrap")) ||
             Directory.Exists(Path.Combine(Paths.LocalAppData, "Luczystrap"));
@@ -39,7 +39,7 @@ namespace Froststrap
 
         public string InstallLocationError { get; set; } = "";
 
-        public ImportSettingsFrom ImportSource { get; set; } = ImportSettingsFrom.Froststrap;
+        public ImportSettingsFrom ImportSource { get; set; } = ImportSettingsFrom.Bloxstrap;
 
         // anything we want copied should be put in here
         // root directory only
@@ -607,7 +607,7 @@ namespace Froststrap
 
             string sourceDir = ImportSource switch
             {
-                ImportSettingsFrom.Froststrap => Path.Combine(Paths.LocalAppData, "Froststrap"),
+                ImportSettingsFrom.Bloxstrap => Path.Combine(Paths.LocalAppData, "Bloxstrap"),
                 ImportSettingsFrom.Fishstrap => Path.Combine(Paths.LocalAppData, "Fishstrap"),
                 ImportSettingsFrom.Lunastrap => Path.Combine(Paths.LocalAppData, "Lunastrap"),
                 ImportSettingsFrom.Luczystrap => Path.Combine(Paths.LocalAppData, "Luczystrap"),

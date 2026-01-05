@@ -1,5 +1,4 @@
 ﻿using Froststrap.Enums.FlagPresets;
-using System.Windows;
 
 namespace Froststrap
 {

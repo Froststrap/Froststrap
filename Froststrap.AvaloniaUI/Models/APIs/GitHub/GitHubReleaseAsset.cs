@@ -1,8 +1,11 @@
-﻿public class GithubReleaseAsset
+﻿namespace Froststrap.Models.APIs.GitHub
 {
-    [JsonPropertyName("browser_download_url")]
-    public string BrowserDownloadUrl { get; set; } = null!;
+    public class GithubReleaseAsset
+    {
+        [JsonPropertyName("browser_download_url")]
+        public string BrowserDownloadUrl { get; set; } = null!;
 
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = null!;
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = null!;
+    }
 }

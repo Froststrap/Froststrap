@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
@@ -17,7 +19,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         private string _gameDescription = "";
 
         [ObservableProperty]
-        private BitmapImage? _gameThumbnail;
+        private Bitmap? _gameThumbnail;
 
         [ObservableProperty]
         private string _creatorName = "Loading...";
@@ -219,7 +221,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             }
         }
 
-        private async Task<BitmapImage?> LoadBitmapFromUrlAsync(string? imageUrl)
+        private async Task<Bitmap?> LoadBitmapFromUrlAsync(string? imageUrl)
         {
             if (string.IsNullOrEmpty(imageUrl))
                 return null;
@@ -234,14 +236,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                     try
                     {
                         using var stream = new MemoryStream(imageData);
-                        var bitmap = new BitmapImage();
-                        bitmap.BeginInit();
-                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                        bitmap.StreamSource = stream;
-                        bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                        bitmap.EndInit();
-                        bitmap.Freeze();
-                        return bitmap;
+                        return new Bitmap(stream);
                     }
                     catch (Exception)
                     {
@@ -298,16 +293,20 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         }
 
         [RelayCommand]
-        private void CopyGameLink()
+        private async Task CopyGameLink()
         {
-
             string gameUrl = $"https://www.roblox.com/games/{_placeId}";
-            Clipboard.SetDataObject(gameUrl);
 
-            Frontend.ShowMessageBox(
-            "Copied game link successfully.",
-            MessageBoxImage.Information
-            );
+            var topLevel = TopLevel.GetTopLevel(null);
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(gameUrl);
+
+                Frontend.ShowMessageBox(
+                    "Copied game link successfully.",
+                    MessageBoxImage.Information
+                );
+            }
         }
 
         [RelayCommand]

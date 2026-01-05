@@ -8,8 +8,7 @@
 
         public string BuildTimestamp => BuildMetadata.Timestamp.ToFriendlyString();
         public string BuildCommitHashUrl => $"https://github.com/{App.ProjectRepository}/commit/{BuildMetadata.CommitHash}";
-
-        public Visibility BuildInformationVisibility => App.IsProductionBuild ? Visibility.Collapsed : Visibility.Visible;
-        public Visibility BuildCommitVisibility => App.IsActionBuild ? Visibility.Visible : Visibility.Collapsed;
+        public bool BuildInformationVisibility => !App.IsProductionBuild;
+        public bool BuildCommitVisibility => App.IsActionBuild;
     }
 }

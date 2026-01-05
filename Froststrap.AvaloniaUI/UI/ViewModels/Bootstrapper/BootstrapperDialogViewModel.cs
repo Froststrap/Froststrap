@@ -22,7 +22,7 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
         public double TaskbarProgressValue { get; set; } = 0;
 
         public bool CancelEnabled { get; set; } = false;
-        public Visibility CancelButtonVisibility => CancelEnabled ? Visibility.Visible : Visibility.Collapsed;
+        public bool CancelButtonVisible => CancelEnabled;
 
         [Obsolete("Do not use this! This is for the designer only.", true)]
         public BootstrapperDialogViewModel()

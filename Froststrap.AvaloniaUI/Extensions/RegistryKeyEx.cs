@@ -13,7 +13,7 @@ namespace Froststrap.Extensions
             }
             catch (UnauthorizedAccessException)
             {
-                Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, System.Windows.MessageBoxImage.Error);
+                Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
         }
@@ -27,7 +27,7 @@ namespace Froststrap.Extensions
             }
             catch (UnauthorizedAccessException)
             {
-                Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, System.Windows.MessageBoxImage.Error);
+                Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
         }

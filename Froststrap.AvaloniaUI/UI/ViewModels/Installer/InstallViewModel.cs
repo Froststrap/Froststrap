@@ -1,5 +1,8 @@
-﻿using System.Windows.Input;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
+using Avalonia;
+using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Installer
 {
@@ -47,7 +50,7 @@ namespace Froststrap.UI.ViewModels.Installer
 
         public bool ShowNotFound => AvailableImportSources.Count <= 1;
 
-        public Visibility DataFoundMessageVisibility => installer.ExistingDataPresent ? Visibility.Visible : Visibility.Collapsed;
+        public bool DataFoundMessageVisibility => installer.ExistingDataPresent;
 
         public string ErrorMessage => installer.InstallLocationError;
 
@@ -140,15 +143,28 @@ namespace Froststrap.UI.ViewModels.Installer
             return true;
         }
 
-        private void BrowseInstallLocation()
+        private async void BrowseInstallLocation()
         {
-            using var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                ? desktop.MainWindow
+                : null;
 
-            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            if (mainWindow == null)
                 return;
 
-            InstallLocation = dialog.SelectedPath;
-            OnPropertyChanged(nameof(InstallLocation));
+            var storageProvider = mainWindow.StorageProvider;
+
+            var folder = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+            {
+                Title = "Select Install Location",
+                AllowMultiple = false
+            });
+
+            if (folder != null && folder.Count > 0)
+            {
+                InstallLocation = folder[0].Path.LocalPath;
+                OnPropertyChanged(nameof(InstallLocation));
+            }
         }
 
         private void ResetInstallLocation()
