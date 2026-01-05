@@ -4,7 +4,7 @@ using System;
 using System.Windows.Media;
 using Wpf.Ui.Appearance;
 
-namespace Bloxstrap.UI.ViewModels.Bootstrapper
+namespace Froststrap.UI.ViewModels.Bootstrapper
 {
     public class FluentDialogViewModel : BootstrapperDialogViewModel
     {

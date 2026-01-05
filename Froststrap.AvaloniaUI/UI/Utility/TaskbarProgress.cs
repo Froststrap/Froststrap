@@ -58,15 +58,15 @@ namespace Froststrap.UI.Utility
 
         private static Lazy<ITaskbarList3> _taskbarInstance = new Lazy<ITaskbarList3>(() => (ITaskbarList3)new TaskbarInstance());
 
-        private static TaskbarStates ConvertEnum(WindowProgressState state)
+        private static TaskbarStates ConvertEnum(TaskbarItemProgressState state)
         {
             return state switch
             {
-                WindowProgressState.None => TaskbarStates.NoProgress,
-                WindowProgressState.Indeterminate => TaskbarStates.Indeterminate,
-                WindowProgressState.Normal => TaskbarStates.Normal,
-                WindowProgressState.Error => TaskbarStates.Error,
-                WindowProgressState.Paused => TaskbarStates.Paused,
+                TaskbarItemProgressState.None => TaskbarStates.NoProgress,
+                TaskbarItemProgressState.Indeterminate => TaskbarStates.Indeterminate,
+                TaskbarItemProgressState.Normal => TaskbarStates.Normal,
+                TaskbarItemProgressState.Error => TaskbarStates.Error,
+                TaskbarItemProgressState.Paused => TaskbarStates.Paused,
                 _ => throw new Exception($"Unrecognised TaskbarItemProgressState: {state}")
             };
         }
@@ -76,7 +76,7 @@ namespace Froststrap.UI.Utility
             return _taskbarInstance.Value.SetProgressState(windowHandle, taskbarState);
         }
 
-        public static int SetProgressState(IntPtr windowHandle, WindowProgressState taskbarState)
+        public static int SetProgressState(IntPtr windowHandle, TaskbarItemProgressState taskbarState)
         {
             return SetProgressState(windowHandle, ConvertEnum(taskbarState));
         }

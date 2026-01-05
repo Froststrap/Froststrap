@@ -1471,7 +1471,7 @@ namespace Froststrap
             if (Dialog is not null)
             {
                 Dialog.ProgressStyle = ProgressBarStyle.Continuous;
-                Dialog.TaskbarProgressState = WindowProgressState.Normal;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
 
                 Dialog.ProgressMaximum = ProgressBarMaximum;
 
@@ -1511,7 +1511,7 @@ namespace Froststrap
             if (Dialog is not null)
             {
                 Dialog.ProgressStyle = ProgressBarStyle.Marquee;
-                Dialog.TaskbarProgressState = WindowProgressState.Indeterminate;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
                 SetStatus(Strings.Bootstrapper_Status_Configuring);
             }
 

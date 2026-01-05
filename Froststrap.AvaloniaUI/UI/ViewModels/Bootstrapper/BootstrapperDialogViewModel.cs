@@ -1,11 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Shell;
-
+using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 
-namespace Bloxstrap.UI.ViewModels.Bootstrapper
+namespace Froststrap.UI.ViewModels.Bootstrapper
 {
     public class BootstrapperDialogViewModel : NotifyPropertyChangedViewModel
     {
@@ -14,7 +12,7 @@ namespace Bloxstrap.UI.ViewModels.Bootstrapper
         public ICommand CancelInstallCommand => new RelayCommand(CancelInstall);
 
         public string Title => App.Settings.Prop.BootstrapperTitle;
-        public ImageSource Icon { get; set; } = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
+        public IImage Icon { get; set; } = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
         public string Message { get; set; } = "Please wait...";
         public bool ProgressIndeterminate { get; set; } = true;
         public int ProgressMaximum { get; set; } = 0;

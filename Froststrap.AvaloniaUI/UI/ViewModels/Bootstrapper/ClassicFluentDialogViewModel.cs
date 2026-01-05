@@ -1,8 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-
-namespace Bloxstrap.UI.ViewModels.Bootstrapper
+﻿namespace Froststrap.UI.ViewModels.Bootstrapper
 {
     public class ClassicFluentDialogViewModel : BootstrapperDialogViewModel
     {

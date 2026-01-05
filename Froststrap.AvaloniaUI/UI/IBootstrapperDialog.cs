@@ -8,7 +8,7 @@
         ProgressBarStyle ProgressStyle { get; set; }
         int ProgressValue { get; set; }
         int ProgressMaximum { get; set; }
-        WindowProgressState TaskbarProgressState { get; set; }
+        TaskbarItemProgressState TaskbarProgressState { get; set; }
         double TaskbarProgressValue { get; set; }
         bool CancelEnabled { get; set; }
 

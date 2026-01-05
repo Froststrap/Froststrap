@@ -1,13 +1,13 @@
 ﻿using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
 
-namespace Bloxstrap.UI.ViewModels.Bootstrapper
+namespace Froststrap.UI.ViewModels.Bootstrapper
 {
     public class ByfronDialogViewModel : BootstrapperDialogViewModel
     {
         // Using dark theme for default values.
-        public ImageSource ByfronLogoLocation { get; set; } = new BitmapImage(new Uri("pack://application:,,,/Resources/BootstrapperStyles/ByfronDialog/ByfronLogoDark.jpg"));
+        public IImage ByfronLogoLocation { get; set; } = new BitmapImage(new Uri("pack://application:,,,/Resources/BootstrapperStyles/ByfronDialog/ByfronLogoDark.jpg"));
         public Thickness DialogBorder { get; set; } = new Thickness(0);
         public Brush Background { get; set; } = Brushes.Black;
         public Brush Foreground { get; set; } = new SolidColorBrush(Color.FromRgb(239, 239, 239));

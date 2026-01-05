@@ -1,7 +1,10 @@
-﻿using Froststrap.UI.Elements.Base;
+﻿using Avalonia.Media;
+using Avalonia.Platform;
+using Froststrap.UI.Elements.Base;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using Avalonia.Threading;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
@@ -84,48 +87,74 @@ namespace Froststrap.UI.ViewModels.Dialogs
         {
             try
             {
-                var glyphTypeface = new GlyphTypeface(new Uri(fontPath));
+                var fontBytes = await File.ReadAllBytesAsync(fontPath);
+
+                var fontUri = new Uri($"file:///{fontPath.Replace("\\", "/")}");
+                var fontFamily = new Avalonia.Media.FontFamily($"{fontUri}#BuilderIcons");
+                var typeface = new Typeface(fontFamily);
+
                 var glyphItems = new List<GlyphItem>();
 
                 SolidColorBrush colorBrush;
                 try
                 {
-                    var color = (Color)ColorConverter.ConvertFromString(Mod.HexCode ?? "#FFFFFF");
+                    var color = Color.Parse(Mod.HexCode ?? "#FFFFFF");
                     colorBrush = new SolidColorBrush(color);
-                    colorBrush.Freeze();
                 }
                 catch
                 {
                     colorBrush = new SolidColorBrush(Colors.White);
-                    colorBrush.Freeze();
                 }
 
-                var characterCodes = glyphTypeface.CharacterToGlyphMap.Keys
-                    .OrderByDescending(c => c)
-                    .Take(100)
-                    .ToList();
+                var characterCodes = new List<int>();
+
+                for (int i = 0xE000; i <= 0xF8FF; i++)
+                {
+                    characterCodes.Add(i);
+                    if (characterCodes.Count >= 100)
+                        break;
+                }
 
                 foreach (var characterCode in characterCodes)
                 {
-                    if (!glyphTypeface.CharacterToGlyphMap.TryGetValue(characterCode, out ushort glyphIndex))
-                        continue;
-
-                    var geometry = glyphTypeface.GetGlyphOutline(glyphIndex, 40, 40);
-                    var bounds = geometry.Bounds;
-                    var translate = new TranslateTransform(
-                        (50 - bounds.Width) / 2 - bounds.X,
-                        (50 - bounds.Height) / 2 - bounds.Y
-                    );
-                    geometry.Transform = translate;
-
-                    glyphItems.Add(new GlyphItem
+                    try
                     {
-                        Data = geometry,
-                        ColorBrush = colorBrush
-                    });
+                        var character = char.ConvertFromUtf32(characterCode);
+
+                        var formattedText = new FormattedText(
+                            character,
+                            CultureInfo.CurrentCulture,
+                            FlowDirection.LeftToRight,
+                            typeface,
+                            40,
+                            colorBrush
+                        );
+
+                        var geometry = formattedText.BuildGeometry(new Avalonia.Point(0, 0));
+
+                        if (geometry != null)
+                        {
+                            var bounds = geometry.Bounds;
+                            var translate = new TranslateTransform(
+                                (50 - bounds.Width) / 2 - bounds.X,
+                                (50 - bounds.Height) / 2 - bounds.Y
+                            );
+                            geometry.Transform = translate;
+
+                            glyphItems.Add(new GlyphItem
+                            {
+                                Data = geometry,
+                                ColorBrush = colorBrush
+                            });
+                        }
+                    }
+                    catch
+                    {
+                        continue;
+                    }
                 }
 
-                await App.Current.Dispatcher.InvokeAsync(() =>
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     GlyphItems.Clear();
                     foreach (var item in glyphItems)
@@ -135,9 +164,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
                     IsLoadingGlyphs = false;
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                await App.Current.Dispatcher.InvokeAsync(() =>
+                App.Logger?.WriteException("CommunityModInfoViewModel::LoadGlyphsFromFontAsync", ex);
+                await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     IsLoadingGlyphs = false;
                 });
