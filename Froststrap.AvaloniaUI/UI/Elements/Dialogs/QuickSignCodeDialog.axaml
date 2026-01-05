@@ -1,0 +1,121 @@
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.QuickSignCodeDialog"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:resources="clr-namespace:Froststrap.Resources"
+        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+		xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        Title="Quick Sign-In Dialog"
+        Width="450"
+        Height="345"
+        MinWidth="450"
+        MinHeight="345"
+        CanResize="True"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<fa:TitleBar
+            Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
+            Grid.Row="0"
+            IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
+            IsMaximizeButtonEnabled="False"
+            IsMinimizeButtonEnabled="False" />
+
+		<Grid Grid.Row="1" Margin="20,8,20,16">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<TextBlock FontSize="18" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,16" Text="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}" />
+
+			<md:MarkdownScrollViewer
+                x:Name="InstructionsText"
+                Grid.Row="1"
+                Margin="0,0,0,12"
+                FontSize="14"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Markdown="Copy this code and paste it in the [Quick Sign-In Page](https://www.roblox.com/crossdevicelogin/ConfirmCode)."
+                TextWrapping="Wrap" />
+
+			<Border
+                x:Name="CodeBox"
+                Grid.Row="2"
+                Margin="0,0,0,16"
+                Padding="16,12"
+                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="6"
+                IsVisible="False">
+				<TextBox
+                    x:Name="CodeTextBox"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    FontFamily="Consolas"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    IsReadOnly="True"
+                    TextAlignment="Center"
+                    TextWrapping="NoWrap" />
+			</Border>
+
+			<Border
+                Grid.Row="3"
+                Background="{DynamicResource SystemFillColorAttentionBackgroundBrush}"
+                BorderBrush="{DynamicResource SystemFillColorAttentionBrush}"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="12,10">
+				<TextBlock
+					x:Name="StatusText"
+					Text="Waiting for Quick Sign-In...&#x0a;The app will close this window when sign-in completes."
+					TextWrapping="Wrap"
+					FontSize="13"
+					Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+					VerticalAlignment="Center"/>
+			</Border>
+		</Grid>
+
+		<Border Grid.Row="2"
+                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="1,1,0,0">
+			<Grid Margin="20,16">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				
+				<Button Grid.Column="1"
+                        MinWidth="100"
+                        Margin="0,0,8,0"
+                        HorizontalAlignment="Right"
+                        Click="Copy_Click"
+                        Content="Copy Code"/>
+
+				<Button Grid.Column="2"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        Click="Close_Click"
+                        Content="Close"/>
+			</Grid>
+		</Border>
+	</Grid>
+</base:AvaloniaWindow>

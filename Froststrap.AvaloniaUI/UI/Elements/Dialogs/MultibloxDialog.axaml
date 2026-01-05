@@ -1,0 +1,86 @@
+﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.MultibloxDialog"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        mc:Ignorable="d"
+        Title="Multiblox"
+        Width="400"
+        Height="300"
+        MinWidth="380"
+        MinHeight="280"
+        WindowStartupLocation="CenterOwner">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<fa:TitleBar Grid.Row="0"
+                     Title="Multiblox"
+                     IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
+                     IsMaximizeButtonEnabled="False"
+                     IsMinimizeButtonEnabled="False" />
+
+		<StackPanel Grid.Row="1" Margin="16">
+			<TextBlock Text="Launch multiple Roblox instances with a custom delay."
+                       FontSize="14"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+			<StackPanel Margin="0,14,0,0">
+				<TextBlock Text="Instance Count"
+                           FontSize="13" />
+				<StackPanel Orientation="Horizontal" Margin="0,6,0,0" VerticalAlignment="Center">
+					<Slider Width="260"
+                            Minimum="1"
+                            Maximum="10"
+                            TickFrequency="1"
+                            IsSnapToTickEnabled="True"
+                            Value="{Binding InstanceCount, Mode=TwoWay}" />
+					<TextBlock Margin="12,0,0,0"
+                               FontSize="13"
+                               VerticalAlignment="Center"
+                               Text="{Binding InstanceCount}" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Margin="0,14,0,0">
+				<TextBlock Text="Delay Between Starts (ms)"
+                           FontSize="13" />
+				<StackPanel Orientation="Horizontal" Margin="0,6,0,0" VerticalAlignment="Center">
+					<Slider Width="260"
+                            Minimum="0"
+                            Maximum="15000"
+                            TickFrequency="500"
+                            Value="{Binding DelayMs, Mode=TwoWay}" />
+					<TextBlock Margin="12,0,0,0"
+                               FontSize="13"
+                               VerticalAlignment="Center"
+                               Text="{Binding DelayMs}" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+				<Button Content="Start"
+                        Padding="16,8"
+                        MinWidth="100"
+                        Command="{Binding LaunchCommand}"
+                        IsEnabled="{Binding IsIdle}" />
+				<Button Content="Stop"
+                        Margin="8,0,0,0"
+                        Padding="16,8"
+                        MinWidth="100"
+                        Command="{Binding CancelCommand}"
+                        IsEnabled="{Binding IsLaunching}" />
+			</StackPanel>
+
+			<TextBlock Margin="0,12,0,0"
+                       FontSize="12"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Text="{Binding StatusText}" />
+		</StackPanel>
+	</Grid>
+</base:AvaloniaWindow>

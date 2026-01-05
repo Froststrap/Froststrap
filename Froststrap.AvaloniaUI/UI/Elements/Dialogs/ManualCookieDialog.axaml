@@ -1,0 +1,128 @@
+﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.ManualCookieDialog"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:resources="clr-namespace:Froststrap.Resources"
+        Title="Add Account with Cookie"
+        Width="500"
+        Height="450"
+        CanResize="True"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<fa:TitleBar
+            Title="Add Account with Cookie"
+            Grid.Row="0"
+            IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
+            IsMaximizeButtonEnabled="False"
+            IsMinimizeButtonEnabled="False" />
+
+		<Grid Grid.Row="1" Margin="20,8,20,16">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<TextBlock FontSize="18" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,16" Text="Add Account with Cookie" />
+
+			<Border Grid.Row="2" Margin="0,0,0,12"
+                    Padding="16,12"
+                    Background="{DynamicResource PrimaryBackgroundColor}"
+                    BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                    BorderThickness="1"
+                    CornerRadius="6">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<TextBlock Grid.Row="0" Margin="0,0,0,8"
+                               FontSize="13" FontWeight="SemiBold"
+                               Text="Paste your .ROBLOSECURITY cookie:" />
+
+					<TextBox x:Name="CookieTextBox"
+                            Grid.Row="1"
+                            Height="65"
+                            AcceptsReturn="True"
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto"
+                            Text="{Binding CookieInput, UpdateSourceTrigger=PropertyChanged}"
+                            FontFamily="Consolas"
+                            FontSize="12" />
+				</Grid>
+			</Border>
+
+			<StackPanel Grid.Row="3" Margin="8,0,0,0">
+				<TextBlock Margin="0,2,0,2">
+					<Run Text="1." FontWeight="Bold" />
+					<Run Text="Open Roblox.com in your browser and log in" />
+				</TextBlock>
+				<TextBlock Margin="0,2,0,2">
+					<Run Text="2." FontWeight="Bold" />
+					<Run Text="Press F12 to open Developer Tools" />
+				</TextBlock>
+				<TextBlock Margin="0,2,0,2">
+					<Run Text="3." FontWeight="Bold" />
+					<Run Text="Click the 'Application' tab (Chrome) or 'Storage' tab (Firefox)" />
+				</TextBlock>
+				<TextBlock Margin="0,2,0,2">
+					<Run Text="4." FontWeight="Bold" />
+					<Run Text="Expand 'Cookies' and select 'https://www.roblox.com'" />
+				</TextBlock>
+				<TextBlock Margin="0,2,0,2">
+					<Run Text="5." FontWeight="Bold" />
+					<Run Text="Find the 'ROBLOSECURITY' cookie" />
+				</TextBlock>
+				<TextBlock Margin="0,2,0,2">
+					<Run Text="6." FontWeight="Bold" />
+					<Run Text="Double-click the 'Value' column and copy it" />
+				</TextBlock>
+				<TextBlock Margin="0,2,0,2">
+					<Run Text="7." FontWeight="Bold" />
+					<Run Text="Paste the value in the box above" />
+				</TextBlock>
+			</StackPanel>
+		</Grid>
+
+		<Border Grid.Row="2"
+                Background="{DynamicResource PrimaryBackgroundColor}"
+                BorderBrush="{DynamicResource ControlElevationBorderBrush}"
+                BorderThickness="1,1,0,0">
+			<Grid Margin="20,16">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<Button x:Name="AddButton"
+                        Grid.Column="1"
+                        MinWidth="100"
+                        Margin="0,0,8,0"
+                        HorizontalAlignment="Right"
+                        Command="{Binding AddAccountCommand}"
+                        Content="Add Account"
+                        IsEnabled="{Binding IsAddEnabled}"/>
+
+				<Button Grid.Column="2"
+                        MinWidth="100"
+                        HorizontalAlignment="Right"
+                        Command="{Binding CancelCommand}"
+                        Content="Cancel"/>
+			</Grid>
+		</Border>
+	</Grid>
+</base:AvaloniaWindow>

@@ -17,6 +17,11 @@ namespace Froststrap.UI.ViewModels.Installer
 
         public ICommand LaunchAboutCommand => new RelayCommand(LaunchAbout);
 
+        public ICommand OpenDiscordCommand => new RelayCommand(() =>
+        {
+            Process.Start(new ProcessStartInfo("https://discord.gg/KdR9vpRcUN") { UseShellExecute = true });
+        });
+
         public event EventHandler<NextAction>? CloseWindowRequest;
 
         private void LaunchSettings() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings);

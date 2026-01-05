@@ -1,0 +1,62 @@
+﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.FluentMessageBox"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+        xmlns:resources="clr-namespace:Froststrap.Resources"
+        mc:Ignorable="d"
+        Title="Froststrap"
+        d:DesignWidth="480"
+        MinWidth="180"
+        MaxWidth="480"
+        Width="180"
+        MinHeight="160"
+        SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen">
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="41*"/>
+			<ColumnDefinition Width="82*"/>
+			<ColumnDefinition Width="357*"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<fa:TitleBar Grid.ColumnSpan="3" x:Name="RootTitleBar"
+                     Title="Froststrap"
+                     IsMaximizeButtonEnabled="False"
+                     IsMinimizeButtonEnabled="False" />
+
+		<Grid Grid.Row="1" Margin="15,15,15,15" Grid.ColumnSpan="3">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
+                   Margin="0,0,15,0" VerticalAlignment="Top" />
+
+			<md:MarkdownScrollViewer x:Name="MessageTextBlock" Grid.Column="1"
+                                     VerticalAlignment="Center"
+                                     TextWrapping="Wrap"
+                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+		</Grid>
+
+		<Border Grid.Row="2" Margin="0,10,0,0" Padding="15"
+                Background="{DynamicResource PrimaryBackgroundColor}" Grid.ColumnSpan="3">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button x:Name="ButtonOne" MinWidth="100" Content="Button 1" IsVisible="False" />
+				<Button x:Name="ButtonTwo" MinWidth="100" Margin="12,0,0,0" Content="Button 2" IsVisible="False" />
+				<Button x:Name="ButtonThree" MinWidth="100" Margin="12,0,0,0" Content="Button 3" IsVisible="False" />
+			</StackPanel>
+		</Border>
+	</Grid>
+</base:AvaloniaWindow>
