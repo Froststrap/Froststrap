@@ -1,4 +1,4 @@
-<windowing:AppWindow
+<base:AvaloniaWindow
         x:Class="Froststrap.UI.Elements.Settings.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         xmlns="https://github.com/avaloniaui"
@@ -10,6 +10,7 @@
         xmlns:resources="using:Froststrap.Resources"
         xmlns:windowing="clr-namespace:FluentAvalonia.UI.Windowing;assembly=FluentAvalonia"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         Title="{x:Static resources:Strings.Menu_Title}"
         Width="1125"
         Height="700"
@@ -91,4 +92,4 @@
         </Border>
 
     </Grid>
-</windowing:AppWindow>
+</base:AvaloniaWindow>
