@@ -65,7 +65,11 @@ namespace Froststrap.Integrations
             try
             {
                 var bytes = Encoding.UTF8.GetBytes(plaintext);
+#if WINDOWS
                 var protectedBytes = ProtectedData.Protect(bytes, DpapiEntropy, DataProtectionScope.CurrentUser);
+#else
+                var protectedBytes = Array.Empty<byte>();
+#endif
                 return Convert.ToBase64String(protectedBytes);
             }
             catch (Exception)
@@ -83,7 +87,11 @@ namespace Froststrap.Integrations
             {
                 // Try base64 decode -> unprotect. If it's not base64 or unprotect fails, assume plaintext.
                 var protectedBytes = Convert.FromBase64String(protectedText);
+#if WINDOWS
                 var bytes = ProtectedData.Unprotect(protectedBytes, DpapiEntropy, DataProtectionScope.CurrentUser);
+#else
+                var bytes = Array.Empty<byte>();
+#endif
                 return Encoding.UTF8.GetString(bytes);
             }
             catch (FormatException)
