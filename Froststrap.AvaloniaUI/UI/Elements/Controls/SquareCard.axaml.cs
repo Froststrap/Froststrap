@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -17,13 +16,13 @@ namespace Froststrap.UI.Elements.Controls
 
         public string Header
         {
-            get => (string)GetValue(HeaderProperty);
+            get => GetValue(HeaderProperty);
             set => SetValue(HeaderProperty, value);
         }
 
         public string Description
         {
-            get => (string)GetValue(DescriptionProperty);
+            get => GetValue(DescriptionProperty);
             set => SetValue(DescriptionProperty, value);
         }
 
@@ -36,11 +35,6 @@ namespace Froststrap.UI.Elements.Controls
         public SquareCard()
         {
             InitializeComponent();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
         }
     }
 }

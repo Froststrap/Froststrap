@@ -157,7 +157,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 var activityWatcher = new ActivityWatcher();
 
-                var serverHistoryWindow = new Bloxstrap.UI.Elements.ContextMenu.ServerHistory(activityWatcher);
+                var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
                 serverHistoryWindow.Show();
 
                 App.FrostRPC?.SetDialog("Game History");

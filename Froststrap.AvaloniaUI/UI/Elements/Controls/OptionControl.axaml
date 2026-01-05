@@ -1,91 +1,83 @@
-﻿<UserControl
-    x:Class="Froststrap.UI.Elements.Controls.OptionControl"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="Froststrap.UI.Elements.Controls.OptionControl"
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
     xmlns:local="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
-    xmlns:resources="clr-namespace:Froststrap.Resources"
-    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    x:Name="Control"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
-    mc:Ignorable="d">
+    x:Name="Control">
 
-    <ui:Card Margin="0,8,0,0" Padding="14">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+	<Border
+        Margin="0,8,0,0"
+        Padding="14"
+        Background="{DynamicResource CardBackgroundBrush}"
+        BorderBrush="{DynamicResource CardBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="4">
 
-            <StackPanel Grid.Column="0">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="14" Text="{Binding Header, ElementName=Control}" />
-                    <TextBlock Margin="4,0,0,0">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding HelpLink, ElementName=Control}" Value="{x:Null}">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                        <Hyperlink
-                            Command="models:GlobalViewModel.OpenWebpageCommand"
-                            CommandParameter="{Binding HelpLink, ElementName=Control}"
-                            TextDecorations="None"
-                            ToolTip="{x:Static resources:Strings.Menu_MoreInfo}">
-                            <ui:SymbolIcon Margin="0,1,0,0" Symbol="QuestionCircle48">
-                                <ui:SymbolIcon.Style>
-                                    <Style BasedOn="{StaticResource {x:Type ui:SymbolIcon}}" TargetType="ui:SymbolIcon">
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Foreground">
-                                                    <Setter.Value>
-                                                        <SolidColorBrush Color="{DynamicResource SystemAccentColorTertiary}" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                        <Setter Property="Foreground">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="{DynamicResource SystemAccentColorSecondary}" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ui:SymbolIcon.Style>
-                            </ui:SymbolIcon>
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
 
-                <local:MarkdownTextBlock
-                    Margin="0,2,0,0"
-                    FontSize="12"
-                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                    MarkdownText="{Binding Description, ElementName=Control}"
-                    TextWrapping="Wrap">
-                    <local:MarkdownTextBlock.Style>
-                        <Style TargetType="local:MarkdownTextBlock">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </local:MarkdownTextBlock.Style>
-                </local:MarkdownTextBlock>
-            </StackPanel>
+			<StackPanel Grid.Column="0">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock FontSize="14" Text="{Binding Header, ElementName=Control}" />
 
-            <ContentPresenter
+					<!-- Help link will use emoji for now -->
+					<TextBlock x:Name="HelpLinkText" Margin="4,0,0,0">
+						<Hyperlink
+							Command="{Binding OpenWebpageCommand, ElementName=Control}"
+							CommandParameter="{Binding HelpLink, ElementName=Control}"
+							TextDecorations="None">
+							<TextBlock Text="?"
+									   FontSize="14"
+									   FontWeight="Bold"
+									   Foreground="{DynamicResource SystemAccentColorSecondary}">
+								<TextBlock.Styles>
+									<Style Selector="TextBlock:pointerover">
+										<Setter Property="Foreground" Value="{DynamicResource SystemAccentColorTertiary}" />
+									</Style>
+								</TextBlock.Styles>
+							</TextBlock>
+						</Hyperlink>
+
+						<TextBlock.Styles>
+							<Style Selector="TextBlock">
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding HelpLink, ElementName=Control}" Value="{x:Null}">
+										<Setter Property="IsVisible" Value="False" />
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Styles>
+					</TextBlock>
+				</StackPanel>
+
+				<md:MarkdownScrollViewer x:Name="MarkdownText"
+					Margin="0,2,0,0"
+					FontSize="12"
+					Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+					Markdown="{Binding Description, ElementName=Control}"
+					TextWrapping="Wrap">
+
+					<md:MarkdownScrollViewer.Styles>
+						<Style Selector="MarkdownScrollViewer">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
+									<Setter Property="IsVisible" Value="False" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</md:MarkdownScrollViewer.Styles>
+				</md:MarkdownScrollViewer>
+			</StackPanel>
+
+			<ContentPresenter
                 Grid.Column="1"
                 Margin="1,0,0,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Content="{Binding InnerContent, ElementName=Control}" />
-        </Grid>
-    </ui:Card>
+		</Grid>
+	</Border>
 </UserControl>
