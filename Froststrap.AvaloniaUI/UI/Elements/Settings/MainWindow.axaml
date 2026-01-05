@@ -1,9 +1,94 @@
-<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+<windowing:AppWindow
         x:Class="Froststrap.UI.Elements.Settings.MainWindow"
-        Title="MainWindow">
-    Welcome to Avalonia!
-</Window>
+        x:DataType="vm:MainWindowViewModel"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
+        xmlns:sty="using:FluentAvalonia.Styling"
+        xmlns:pages="using:Froststrap.UI.Elements.Settings.Pages"
+        xmlns:resources="using:Froststrap.Resources"
+        xmlns:windowing="clr-namespace:FluentAvalonia.UI.Windowing;assembly=FluentAvalonia"
+        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+        Title="{x:Static resources:Strings.Menu_Title}"
+        Width="1125"
+        Height="700"
+        MinWidth="250"
+        MinHeight="250"
+        WindowStartupLocation="CenterScreen"
+        >
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Navigation + Content -->
+        <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Margin="10,8,10,0">
+
+            <!-- Sidebar -->
+            <ui:NavigationView
+                x:Name="RootNavigation"
+                PaneDisplayMode="Left"
+                IsSettingsVisible="False"
+                Width="215"
+                >
+
+                <ui:NavigationView.MenuItems>
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="bootstrapper" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Mods_Title}" Tag="mods" />
+                    <ui:NavigationViewItem Content="Community Mods" Tag="communitymods" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" Tag="robloxsettings" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts" />
+                </ui:NavigationView.MenuItems>
+            </ui:NavigationView>
+
+            <!-- Main Content -->
+            <Grid Grid.Column="1" RowDefinitions="Auto,*">
+
+                <!-- InfoBar -->
+                <ui:InfoBar
+                    x:Name="AlertBar"
+                    Severity="Warning"
+                    IsOpen="False"
+                    Margin="0,0,12,8" />
+
+                <!-- Page host -->
+                <ContentControl
+                    x:Name="RootContent"
+                    Grid.Row="1" />
+            </Grid>
+        </Grid>
+
+        <!-- Bottom Command Bar -->
+        <Border Grid.Row="2" Padding="12" BorderThickness="0,1,0,0">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+
+                <StackPanel Orientation="Horizontal">
+                    <ToggleSwitch IsChecked="{Binding TestModeEnabled}" />
+                    <TextBlock
+                        Text="{x:Static resources:Strings.Menu_TestMode}"
+                        Margin="10,0,0,0" />
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                    Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
+                    Command="{Binding SaveAndLaunchSettingsCommand}" />
+
+                <Button Grid.Column="2"
+                    Content="{x:Static resources:Strings.Menu_Restart}"
+                    Command="{Binding RestartAppCommand}" />
+
+                <Button Grid.Column="3"
+                    Content="{x:Static resources:Strings.Menu_Save}"
+                    Command="{Binding SaveSettingsCommand}" />
+
+                <Button Grid.Column="4"
+                    Content="{x:Static resources:Strings.Common_Close}"
+                    Command="{Binding CloseWindowCommand}" />
+            </Grid>
+        </Border>
+
+    </Grid>
+</windowing:AppWindow>
