@@ -1,0 +1,74 @@
+﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.ExceptionDialog"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+        xmlns:resources="clr-namespace:Froststrap.Resources"
+        mc:Ignorable="d"
+        Title="{x:Static resources:Strings.Dialog_Exception_Title}"
+        Width="555"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<fa:TitleBar Grid.Row="0"
+                     Title="{x:Static resources:Strings.Dialog_Exception_Title}"
+                     IsMaximizeButtonEnabled="False"
+                     IsMinimizeButtonEnabled="False" />
+
+		<Grid Grid.Row="1" Margin="16">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<Image Grid.Column="0" Width="32" Height="32"
+                   Margin="0,0,15,0" VerticalAlignment="Top"
+                   Source="avares://Froststrap.AvaloniaUI/Resources/MessageBox/Error.png" />
+
+			<StackPanel Grid.Column="1">
+				<TextBlock Text="{x:Static resources:Strings.Dialog_Exception_Info_1}"
+                           FontSize="18" TextWrapping="Wrap" />
+
+				<TextBox x:Name="ErrorTextBox" Padding="8" Margin="0,16,0,0"
+                         FontFamily="Courier New" IsReadOnly="True"
+                         AcceptsReturn="True" TextWrapping="Wrap"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Height="150" />
+
+				<md:MarkdownScrollViewer x:Name="HelpMessageMarkdown"
+                                         Margin="0,16,0,0"
+                                         TextWrapping="Wrap" />
+			</StackPanel>
+		</Grid>
+
+		<Border Grid.Row="2" Padding="15"
+                Background="{DynamicResource PrimaryBackgroundColor}">
+			<Grid>
+				<TextBlock x:Name="VersionText" VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+					<Button x:Name="ReportExceptionButton"
+                            Content="{x:Static resources:Strings.Dialog_Exception_Report}" />
+					<Button x:Name="LocateLogFileButton"
+                            Content="{x:Static resources:Strings.Common_OpenLogFile}"
+                            Margin="12,0,0,0" />
+					<Button x:Name="CloseButton" MinWidth="100"
+                            Content="{x:Static resources:Strings.Common_Close}"
+                            Margin="12,0,0,0" />
+				</StackPanel>
+			</Grid>
+		</Border>
+	</Grid>
+</base:AvaloniaWindow>

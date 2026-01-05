@@ -92,8 +92,6 @@ namespace Froststrap.UI.Elements.Dialogs
             else if (textWidth > Width)
                 Width = textWidth;
 
-            sound?.Play();
-
             Loaded += (s, e) =>
             {
                 // avalonia dosent have this so we will skip it for now

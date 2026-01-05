@@ -1,0 +1,148 @@
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.CommunityModInfoDialog"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:resources="clr-namespace:Froststrap.Resources"
+        xmlns:converters="clr-namespace:Froststrap.UI.Converters"
+        Title="Mod Information"
+        MaxWidth="750"
+        MaxHeight="290"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        mc:Ignorable="d">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<fa:TitleBar Title="Mod Information"
+                    Grid.Row="0"
+                    IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
+                    IsMaximizeButtonEnabled="False"
+                    IsMinimizeButtonEnabled="False" />
+
+		<Grid Grid.Row="1" Margin="8,8,8,4">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="260"/>
+			</Grid.ColumnDefinitions>
+
+			<Border Grid.Column="0"
+                    CornerRadius="8"
+                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                    Padding="8"
+                    Margin="0,0,12,0"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1"
+                    VerticalAlignment="Top">
+				<Grid MinHeight="200">
+					<Image Source="{Binding Mod.ThumbnailImage}"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+
+					<fa:ProgressRing
+                        IsVisible="{Binding Mod.IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        IsIndeterminate="True"
+                        Width="32"
+                        Height="32"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+				</Grid>
+			</Border>
+
+			<StackPanel Grid.Column="1">
+				<TextBlock Text="{Binding Mod.Name}"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       TextWrapping="Wrap"/>
+
+				<TextBlock Text="{Binding Mod.ModTypeDisplay, StringFormat='Mod Type: {0}'}"
+                       FontSize="14"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+
+				<TextBlock Text="{Binding Mod.Author, StringFormat='Made By: {0}'}"
+                       FontSize="12"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+
+				<TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code: {0}'}"
+                       FontSize="12"
+                       IsVisible="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+
+				<Grid Margin="0,8,0,4">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+
+					<ProgressBar Grid.Row="0"
+                                Margin="0,8"
+                                Value="{Binding Mod.DownloadProgress}"
+                                Maximum="100"
+                                Height="6"
+                                IsVisible="{Binding Mod.IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+					<Button Grid.Row="1"
+                            Height="34"
+                            HorizontalAlignment="Stretch"
+                            Command="{Binding Mod.DownloadCommand}"
+                            CommandParameter="{Binding Mod}">
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+							<TextBlock Text="⬇" FontSize="18" Margin="0,0,4,0" />
+							<TextBlock Text="Download" />
+						</StackPanel>
+					</Button>
+				</Grid>
+
+				<StackPanel IsVisible="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}">
+					<TextBlock Text="Preview"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Margin="0,0,0,8"/>
+
+					<ScrollViewer Height="105" VerticalScrollBarVisibility="Auto">
+						<ItemsControl ItemsSource="{Binding GlyphItems}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<WrapPanel />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border Width="52" Height="52" Margin="4"
+                                         Padding="4"
+                                         Background="{DynamicResource PrimaryBackgroundColor}"
+                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                         BorderThickness="1"
+                                         CornerRadius="6">
+										<Viewbox Stretch="Uniform">
+											<Path Data="{Binding Data}" Margin="0,0,10,8" Fill="{Binding ColorBrush}"/>
+										</Viewbox>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</ScrollViewer>
+
+					<fa:ProgressRing
+                     IsVisible="{Binding IsLoadingGlyphs, Converter={StaticResource BooleanToVisibilityConverter}}"
+                     IsIndeterminate="True"
+                     Width="40"
+                     Height="40"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Margin="0,16,0,0"/>
+				</StackPanel>
+			</StackPanel>
+		</Grid>
+	</Grid>
+</base:AvaloniaWindow>
