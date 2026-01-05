@@ -6,9 +6,10 @@ using Microsoft.Win32;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
-using Froststrap.Views;
-using Froststrap.ViewModels;
+using Froststrap.UI.ViewModels;
 using Froststrap.Integrations;
+using Froststrap.UI.Elements.Settings;
+using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap;
 

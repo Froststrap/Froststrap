@@ -1,29 +1,46 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:converters="using:Froststrap.UI.Converters"
-             xmlns:local="using:Froststrap"
-             xmlns:style="using:FluentAvalonia.Styling"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-             x:Class="Froststrap.AvaloniaUI.App"
-             RequestedThemeVariant="Dark">
-    
+<Application
+    x:Class="Froststrap.App"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sty="using:FluentAvalonia.Styling"
+    xmlns:converters="using:Froststrap.UI.Converters"
+    RequestedThemeVariant="Dark">
+
     <Application.Styles>
-        <style:FluentAvaloniaTheme />
+        <sty:FluentAvaloniaTheme PreferSystemTheme="True" />
+
+        <StyleInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
     </Application.Styles>
 
     <Application.Resources>
-        <FontFamily x:Key="RubikFont">avares://Froststrap/Resources/Fonts/#Rubik</FontFamily>
-        
-        <Style Selector="HyperlinkButton">
+
+        <!-- Fonts -->
+        <FontFamily x:Key="Rubik">
+            avares://Bloxstrap/Assets/Fonts/Rubik-Light.ttf#Rubik
+        </FontFamily>
+
+        <!-- Accent brushes -->
+        <SolidColorBrush
+            x:Key="AccentColorSecondaryBrush"
+            Color="{DynamicResource SystemAccentColorSecondary}" />
+
+        <SolidColorBrush
+            x:Key="AccentColorTertiaryBrush"
+            Color="{DynamicResource SystemAccentColorTertiary}" />
+
+        <!-- Hyperlink style -->
+        <Style Selector="TextBlock.hyperlink">
             <Setter Property="TextDecorations" Value="None" />
-            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColorSecondary}" />
+            <Setter Property="Foreground" Value="{DynamicResource AccentColorSecondaryBrush}" />
         </Style>
-        <Style Selector="HyperlinkButton:pointerover">
-            <Setter Property="Foreground" Value="{DynamicResource SystemAccentColorTertiary}" />
+
+        <Style Selector="TextBlock.hyperlink:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource AccentColorTertiaryBrush}" />
             <Setter Property="TextDecorations" Value="Underline" />
         </Style>
-	
+
+        <!-- Converters -->
         <converters:StringFormatConverter x:Key="StringFormatConverter" />
         <converters:RangeConverter x:Key="RangeConverter" />
         <converters:EnumNameConverter x:Key="EnumNameConverter" />
@@ -31,5 +48,6 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
         <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
+
     </Application.Resources>
 </Application>

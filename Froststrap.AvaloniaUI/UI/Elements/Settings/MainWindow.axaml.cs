@@ -1,6 +1,8 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 
-namespace Froststrap.Views;
+namespace Froststrap.UI.Elements.Settings;
 
 public partial class MainWindow : Window
 {
