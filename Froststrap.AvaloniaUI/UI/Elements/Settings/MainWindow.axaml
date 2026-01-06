@@ -4,11 +4,8 @@
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:uip="using:FluentAvalonia.UI.Controls.Primitives"
-        xmlns:sty="using:FluentAvalonia.Styling"
         xmlns:pages="using:Froststrap.UI.Elements.Settings.Pages"
         xmlns:resources="using:Froststrap.Resources"
-        xmlns:windowing="clr-namespace:FluentAvalonia.UI.Windowing;assembly=FluentAvalonia"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         Title="{x:Static resources:Strings.Menu_Title}"
@@ -26,23 +23,32 @@
 
             <!-- Sidebar -->
             <ui:NavigationView
+                Grid.Column="0"
+                Margin="0,0,20,0"
                 x:Name="RootNavigation"
                 PaneDisplayMode="Left"
                 IsSettingsVisible="False"
-                Width="215"
+                MaxWidth="215"
+                IsPaneOpen="{Binding IsSidebarExpanded, Mode=TwoWay}"
                 >
 
                 <ui:NavigationView.MenuItems>
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations" />
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="bootstrapper" />
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Mods_Title}" Tag="mods" />
-                    <ui:NavigationViewItem Content="Community Mods" Tag="communitymods" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_CommunityMods_Title}" Tag="communitymods" />
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags" />
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance" />
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector" />
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" Tag="robloxsettings" />
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts" />
                 </ui:NavigationView.MenuItems>
+                
+                <ui:NavigationView.FooterMenuItems>
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" IsSelected="{Binding OpenAccountManagerCommand, Mode=OneTime}" Tag="accountmanager" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Settings}" Tag="channel" />
+                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" IsSelected="{Binding OpenAboutCommand, Mode=OneTime}" />
+                </ui:NavigationView.FooterMenuItems>
             </ui:NavigationView>
 
             <!-- Main Content -->

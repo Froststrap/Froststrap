@@ -13,8 +13,7 @@
     <!-- Folders for organization -->
     <ItemGroup>
         <Folder Include="Models\" />
-        <Folder Include="ViewModels\" />
-        <Folder Include="Views\" />
+        <Folder Include="UI\Elements\Settings\Pages\" />
     </ItemGroup>
 
     <!-- Resources needed by Avalonia -->
