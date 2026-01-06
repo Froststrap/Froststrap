@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+			 xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d"
              x:Name="Control">
 
@@ -32,11 +32,11 @@
 				</TextBlock.Styles>
 			</TextBlock>
 
-			<md:MarkdownScrollViewer Grid.Row="1" FontSize="14" TextWrapping="Wrap"
+			<md:MarkdownTextBlock Grid.Row="1" FontSize="14" TextWrapping="Wrap"
                        Margin="0,6,0,0"
                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                       Text="{Binding Description, ElementName=Control}">
-				<md:MarkdownScrollViewer.Style>
+					MarkdownText="{Binding Description, ElementName=Control}">
+				<md:MarkdownTextBlock.Style>
 					<Style Selector="md:MarkdownScrollViewer">
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
@@ -44,8 +44,8 @@
 							</DataTrigger>
 						</Style.Triggers>
 					</Style>
-				</md:MarkdownScrollViewer.Style>
-			</md:MarkdownScrollViewer>
+				</md:MarkdownTextBlock.Style>
+			</md:MarkdownTextBlock>
 
 			<ContentPresenter Grid.Row="2"
                               Content="{Binding InnerContent, ElementName=Control}"
@@ -62,6 +62,8 @@
 					</Style>
 				</ContentPresenter.Styles>
 			</ContentPresenter>
-		</Grid>
+		
+	
+	</Grid>
 	</Border>
 </UserControl>

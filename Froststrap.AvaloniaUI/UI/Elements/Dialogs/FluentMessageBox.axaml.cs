@@ -45,7 +45,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             Title = App.ProjectName;
 
-            MessageTextBlock.Markdown = message;
+            MessageMarkdownTextBlock.MarkdownText = message;
 
             ButtonOne.IsVisible = false;
             ButtonTwo.IsVisible = false;

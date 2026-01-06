@@ -5,6 +5,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using Froststrap.UI.Elements.Dialogs;
 using MsBox.Avalonia.Dto;
 
 namespace Froststrap.UI

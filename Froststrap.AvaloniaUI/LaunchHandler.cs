@@ -1,4 +1,5 @@
 ﻿using Froststrap.Integrations;
+using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap
 {

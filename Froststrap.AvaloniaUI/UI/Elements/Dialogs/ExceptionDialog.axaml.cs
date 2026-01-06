@@ -40,7 +40,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (!App.IsActionBuild && !App.BuildMetadata.Machine.Contains("pizzaboxer", StringComparison.Ordinal))
                 helpMessage = String.Format(Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
 
-            HelpMessageMarkdown.Markdown = helpMessage;
+            HelpMessageMarkdown.MarkdownText = helpMessage;
             VersionText.Text = String.Format(Strings.Dialog_Exception_Version, App.Version);
 
             ReportExceptionButton.Click += (_, _) => Utilities.ShellExecute(issueUrl);

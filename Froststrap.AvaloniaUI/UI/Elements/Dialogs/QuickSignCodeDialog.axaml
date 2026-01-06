@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+        xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
 		xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         Title="Quick Sign-In Dialog"
@@ -41,13 +41,13 @@
 
 			<TextBlock FontSize="18" FontWeight="SemiBold" Grid.Row="0" Margin="0,0,0,16" Text="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}" />
 
-			<md:MarkdownScrollViewer
+			<md:MarkdownTextBlock
                 x:Name="InstructionsText"
                 Grid.Row="1"
                 Margin="0,0,0,12"
                 FontSize="14"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Markdown="Copy this code and paste it in the [Quick Sign-In Page](https://www.roblox.com/crossdevicelogin/ConfirmCode)."
+                MarkdownText="Copy this code and paste it in the [Quick Sign-In Page](https://www.roblox.com/crossdevicelogin/ConfirmCode)."
                 TextWrapping="Wrap" />
 
 			<Border

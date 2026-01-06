@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+        xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         mc:Ignorable="d"
         Title="Froststrap"
@@ -44,7 +44,7 @@
 			<Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
                    Margin="0,0,15,0" VerticalAlignment="Top" />
 
-			<md:MarkdownScrollViewer x:Name="MessageTextBlock" Grid.Column="1"
+			<md:MarkdownTextBlock x:Name="MessageMarkdownTextBlock" Grid.Column="1"
                                      VerticalAlignment="Center"
                                      TextWrapping="Wrap"
                                      Foreground="{DynamicResource TextFillColorPrimaryBrush}" />

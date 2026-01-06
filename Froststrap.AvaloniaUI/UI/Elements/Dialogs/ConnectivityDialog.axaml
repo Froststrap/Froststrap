@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+        xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         mc:Ignorable="d"
         Width="480"
@@ -38,8 +38,8 @@
 				<TextBlock x:Name="TitleTextBlock" Text="? is unable to connect to ?"
                            FontSize="18" TextWrapping="Wrap" />
 
-				<md:MarkdownScrollViewer x:Name="DescriptionTextBlock"
-                                         Markdown="?" Margin="0,16,0,0"
+				<md:MarkdownTextBlock x:Name="DescriptionMarkdownTextBlock"
+                                         MarkdownText="?" Margin="0,16,0,0"
                                          TextWrapping="Wrap" />
 
 				<TextBlock Text="{x:Static resources:Strings.Dialog_Connectivity_MoreInfo}"

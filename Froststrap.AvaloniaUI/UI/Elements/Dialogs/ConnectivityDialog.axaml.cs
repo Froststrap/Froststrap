@@ -37,7 +37,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 IconImage.Source = new Bitmap($"avares://Froststrap.AvaloniaUI/Resources/MessageBox/{iconFilename}.png");
 
             TitleTextBlock.Text = title;
-            DescriptionTextBlock.Markdown = description;
+            DescriptionMarkdownTextBlock.MarkdownText = description;
 
             AddException(exception);
 

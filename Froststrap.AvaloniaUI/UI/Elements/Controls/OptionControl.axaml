@@ -2,7 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
-    xmlns:local="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
     x:Name="Control">
 
 	<Border
@@ -53,23 +53,23 @@
 					</TextBlock>
 				</StackPanel>
 
-				<md:MarkdownScrollViewer x:Name="MarkdownText"
+				<md:MarkdownTextBlock x:Name="MarkdownText"
 					Margin="0,2,0,0"
 					FontSize="12"
 					Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-					Markdown="{Binding Description, ElementName=Control}"
+					MarkdownText="{Binding Description, ElementName=Control}"
 					TextWrapping="Wrap">
 
-					<md:MarkdownScrollViewer.Styles>
-						<Style Selector="MarkdownScrollViewer">
+					<md:MarkdownTextBlock.Styles>
+						<Style Selector="MarkdownTextBlock">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
 									<Setter Property="IsVisible" Value="False" />
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</md:MarkdownScrollViewer.Styles>
-				</md:MarkdownScrollViewer>
+					</md:MarkdownTextBlock.Styles>
+				</md:MarkdownTextBlock>
 			</StackPanel>
 
 			<ContentPresenter

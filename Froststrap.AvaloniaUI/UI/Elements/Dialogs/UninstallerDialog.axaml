@@ -6,7 +6,7 @@
         xmlns:dmodels="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
 	    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+        xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance dmodels:UninstallerViewModel, IsDesignTimeCreatable=True}"
@@ -34,8 +34,8 @@
 			<TextBlock FontSize="20" FontWeight="SemiBold"
                        Text="{x:Static resources:Strings.Uninstaller_Title}" />
 
-			<md:MarkdownScrollViewer FontSize="14" Margin="0,0,0,16"
-                                    Markdown="{Binding Text}"
+			<md:MarkdownTextBlock FontSize="14" Margin="0,0,0,16"
+                                    MarkdownText="{Binding Text}"
                                     TextWrapping="Wrap" />
 
 			<CheckBox Content="{x:Static resources:Strings.Uninstaller_KeepData_Label}"
