@@ -4,7 +4,6 @@
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:pages="using:Froststrap.UI.Elements.Settings.Pages"
         xmlns:resources="using:Froststrap.Resources"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
@@ -50,6 +49,8 @@
                     <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" IsSelected="{Binding OpenAboutCommand, Mode=OneTime}" />
                 </ui:NavigationView.FooterMenuItems>
             </ui:NavigationView>
+            
+            <ContentControl Content="{Binding CurrentPage}" />
 
             <!-- Main Content -->
             <Grid Grid.Column="1" RowDefinitions="Auto,*">
