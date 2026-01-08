@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Froststrap.UI.Elements.Settings.Pages.ApperancePage"
+             x:Class="Froststrap.UI.Elements.Settings.Pages.AppearancePage"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:resources="using:Froststrap.Resources"

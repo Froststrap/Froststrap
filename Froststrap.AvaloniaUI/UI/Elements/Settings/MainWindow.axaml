@@ -7,6 +7,7 @@
         xmlns:resources="using:Froststrap.Resources"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:dmodels="clr-namespace:Froststrap.UI.ViewModels.Settings"
         Title="{x:Static resources:Strings.Menu_Title}"
         Width="1125"
         Height="700"
@@ -16,6 +17,28 @@
         >
 
     <Grid RowDefinitions="Auto,*,Auto">
+        
+        <ui:TeachingTip
+            x:Name="AlreadyRunningTip"
+            Title="{x:Static resources:Strings.Menu_AlreadyRunning_Title}"
+            Subtitle="{x:Static resources:Strings.Menu_AlreadyRunning_Caption}"
+            PreferredPlacement="Bottom"
+            IsLightDismissEnabled="True"
+            IsOpen="False"
+            Grid.RowSpan="10"
+            Margin="200,0,200,40"
+            />
+        
+        <ui:TeachingTip
+            x:Name="SettingsSavedTip"
+            Title="{x:Static resources:Strings.Menu_SettingsSaved_Title}"
+            Subtitle="{x:Static resources:Strings.Menu_SettingsSaved_Message}"
+            PreferredPlacement="Bottom"
+            IsLightDismissEnabled="True"
+            IsOpen="False"
+            Grid.RowSpan="10"
+            Margin="200,0,200,40"
+            />
 
         <!-- Navigation + Content -->
         <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Margin="10,8,10,0">
