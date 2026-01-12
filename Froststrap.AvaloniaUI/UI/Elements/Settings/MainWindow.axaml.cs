@@ -1,10 +1,8 @@
+using Froststrap;
 using System.Collections.ObjectModel;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.ViewModels.Settings;
-using Froststrap.UI.Elements.Settings.Pages;
 
 namespace Froststrap.UI.Elements.Settings;
 
@@ -36,6 +34,17 @@ public partial class MainWindow : Window
         gbs.Opacity =  viewModel.GBSEnabled ? 1 : 0.5;
         gbs.IsEnabled = viewModel.GBSEnabled; 
         
+        LoadState();
         
+        string? lastPageName = App.State.Prop.LastPage;
+        Type? lastPage = lastPageName is null ? null : Type.GetType(lastPageName);
+
+        App.RemoteData.Subscribe((object? sender, EventArgs e) => {
+            RemoteDataBase Data = App.RemoteData.Prop;
+
+            AlertBar.Visibility = Data.AlertEnabled ? Visibility.Visible : Visibility.Collapsed;
+            AlertBar.Message = Data.AlertContent;
+            AlertBar.Severity = Data.AlertSeverity;
+        });
     }
 }
