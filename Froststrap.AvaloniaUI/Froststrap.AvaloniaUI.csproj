@@ -54,6 +54,9 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Strings.resx</DependentUpon>
       </Compile>
+      <Compile Update="UI\Elements\Settings\Pages\RobloxSettingsPage.axaml.cs">
+        <DependentUpon>RobloxSettingsPage.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
     <ItemGroup>
       <Resource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoDark.jpg" />

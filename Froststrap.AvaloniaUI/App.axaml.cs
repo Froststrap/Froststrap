@@ -1,15 +1,19 @@
-using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Markup.Xaml;
-using Avalonia.Threading;
-using Microsoft.Win32;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using System.Text;
-using Froststrap.UI.ViewModels;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Settings;
+using Froststrap.UI.ViewModels;
 using Froststrap.UI.ViewModels.Settings;
+using Microsoft.Win32;
 
 namespace Froststrap;
 
@@ -114,7 +118,48 @@ public partial class App : Application
         }
     }
 
-    public static async Task<GithubRelease?> GetLatestRelease()
+    public static void WindowsBackdrop()
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            var backdropType = Settings.Prop.SelectedBackdrop;
+			ApplyBackdropToAllWindows(backdropType);
+		});
+    }
+
+
+	private static void ApplyBackdropToAllWindows(WindowsBackdrops backdropType)
+	{
+		var avaloniaBackdrop = backdropType switch
+		{
+			WindowsBackdrops.None => WindowTransparencyLevel.None,
+			WindowsBackdrops.Mica => WindowTransparencyLevel.Mica,
+			WindowsBackdrops.Acrylic => WindowTransparencyLevel.AcrylicBlur,
+			WindowsBackdrops.Aero => WindowTransparencyLevel.Blur,
+			_ => WindowTransparencyLevel.None
+		};
+
+		if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+		{
+			foreach (var window in desktop.Windows)
+			{
+				window.TransparencyLevelHint = new[] { avaloniaBackdrop };
+
+
+				if (avaloniaBackdrop != WindowTransparencyLevel.None)
+				{
+                    window.Background = Brushes.Transparent;
+				}
+				else
+				{
+					window.Background = null;
+				}
+			}
+		}
+	}
+
+
+	public static async Task<GithubRelease?> GetLatestRelease()
     {
         const string LOG_IDENT = "App::GetLatestRelease";
 

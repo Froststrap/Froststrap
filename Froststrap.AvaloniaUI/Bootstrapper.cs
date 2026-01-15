@@ -33,7 +33,7 @@ namespace Froststrap
         private const int ProgressBarMaximum = 10000;
 
         private const double TaskbarProgressMaximumWpf = 1; // this can not be changed. keep it at 1.
-        private const int TaskbarProgressMaximumWinForms = WinFormsDialogBase.TaskbarProgressMaximum;
+        private const int TaskbarProgressMaximumWinForms = AvaloniaDialogBase.TaskbarProgressMaximum;
 
         private const string AppSettings =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
@@ -1494,7 +1494,7 @@ namespace Froststrap
                 int totalPackedSize = _versionPackageManifest.Sum(package => package.PackedSize);
                 _progressIncrement = (double)ProgressBarMaximum / totalPackedSize;
 
-                if (Dialog is WinFormsDialogBase)
+                if (Dialog is AvaloniaDialogBase)
                     _taskbarProgressMaximum = (double)TaskbarProgressMaximumWinForms;
                 else
                     _taskbarProgressMaximum = (double)TaskbarProgressMaximumWpf;

@@ -9,6 +9,7 @@
              xmlns:resources="using:Froststrap.Resources"
              x:DataType="vm:AppearanceViewModel"
              >
+
     <ScrollViewer>
         <StackPanel Spacing="8">
             <StackPanel Margin="0,0,14,14">

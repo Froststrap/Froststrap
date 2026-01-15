@@ -15,27 +15,34 @@ namespace Froststrap.UI.Elements.Settings.Pages;
 
 public partial class AppearancePage : UserControl
 {
-    private readonly MainWindow _mainWindow;
+    private MainWindow? _mainWindow;
 
     public AppearancePage()
-    {
-        DataContext = new AppearanceViewModel(this);
-        InitializeComponent();
-        App.FrostRPC?.SetPage("Appearance");
+	{
+		DataContext = new AppearanceViewModel(this);
+		InitializeComponent();
 
-        // More deep issue that needs to be fixed regarding switching pages
-        // TODO: Add proper page switching system
-        _mainWindow = (MainWindow)Application.Current.MainWindow;
-        ListBoxNavigationItems.ItemsSource = _mainWindow.NavigationItemsView;
+		App.FrostRPC?.SetPage("Appearance");
 
-        if (ListBoxNavigationItems.Items.Count > 0)
-            ListBoxNavigationItems.SelectedIndex = 0;
+		this.AttachedToVisualTree += (s, e) =>
+		{
+			if (TopLevel.GetTopLevel(this) is MainWindow mainWindow)
+			{
+				_mainWindow = mainWindow;
 
-        UpdateNavigationLockUI();
-        ListBoxNavigationItems.SelectionChanged += ListBoxNavigationItems_SelectionChanged;
-    }
+				ListBoxNavigationItems.ItemsSource = _mainWindow.NavigationItemsView;
 
-    private bool _isWindowsBackdropInitialized = false;
+				if (ListBoxNavigationItems.ItemCount > 0)
+					ListBoxNavigationItems.SelectedIndex = 0;
+			}
+
+			UpdateNavigationLockUI();
+		};
+
+		ListBoxNavigationItems.SelectionChanged += ListBoxNavigationItems_SelectionChanged;
+	}
+
+	private bool _isWindowsBackdropInitialized = false;
 
     private void WindowsBackdropChangeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -68,8 +75,11 @@ public partial class AppearancePage : UserControl
             };
 
             Process.Start(startInfo);
-            (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow.Close();
-        }
+			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+			{
+				desktop.MainWindow?.Close();
+			}
+		}
     }
 
     public void CustomThemeSelection(object sender, SelectionChangedEventArgs e)
@@ -91,8 +101,8 @@ public partial class AppearancePage : UserControl
 
             if (this.VisualRoot is MainWindow mainWindow)
             {
-                mainWindow.ApplyTheme();
-            }
+				((MainWindow)this.VisualRoot!).ApplyTheme();
+			}
         }
     }
 
@@ -230,7 +240,7 @@ public partial class AppearancePage : UserControl
                 gradientData,
                 new JsonSerializerOptions { WriteIndented = true });
 
-            await File.WriteAllTextAsync(file.Path.LocalPath, json);
+            await File.WriteAllTextAsync(file.TryGetLocalPath(), json);
 
             Frontend.ShowMessageBox(
                 "Gradient exported successfully!",
@@ -365,23 +375,20 @@ public partial class AppearancePage : UserControl
 
     private static bool IsValidHexColor(string color) => !string.IsNullOrWhiteSpace(color) && color.StartsWith("#") && color.Length >= 7;
 
-    private void MoveUp_Click(object? sender, RoutedEventArgs e)
-    {
-        if (ListBoxNavigationItems.SelectedItem is not NavigationViewItem selectedItem)
-            return;
+	private void MoveUp_Click(object? sender, RoutedEventArgs e)
+	{
+		if (_mainWindow == null || ListBoxNavigationItems.SelectedItem is not NavigationViewItem selectedItem)
+			return;
 
-        // Use the _mainWindow field (set in the constructor) to move the item.
-        var result = _mainWindow.MoveNavigationItem(selectedItem, -1);
-        if (result != -1)
-        {
-            ListBoxNavigationItems.SelectedItem = selectedItem;
-            ListBoxNavigationItems.ScrollIntoView(selectedItem);
-        }
+		var result = _mainWindow.MoveNavigationItem(selectedItem, -1);
+		if (result != -1)
+		{
+			ListBoxNavigationItems.SelectedItem = selectedItem;
+			ListBoxNavigationItems.ScrollIntoView(selectedItem);
+		}
+	}
 
-        UpdateMoveButtons();
-    }
-    
-    private void MoveDown_Click(object sender, RoutedEventArgs e)
+	private void MoveDown_Click(object sender, RoutedEventArgs e)
     {
         if (ListBoxNavigationItems.SelectedItem is not NavigationViewItem selectedItem)
             return;
@@ -417,7 +424,7 @@ public partial class AppearancePage : UserControl
         if (App.Settings.Prop.IsNavigationOrderLocked)
             return;
 
-        int count = ListBoxNavigationItems.Items.Count;
+		int count = ListBoxNavigationItems.ItemCount;
         MoveUpButton.IsEnabled = idx > 0;
         MoveDownButton.IsEnabled = idx < (count - 1);
     }
@@ -442,24 +449,23 @@ public partial class AppearancePage : UserControl
 
         UpdateNavigationLockUI();
     }
-    
-    private void ResetOrder_Click(object sender, RoutedEventArgs e)
-    {
-        _mainWindow.ResetNavigationToDefault();
 
-        ListBoxNavigationItems.ItemsSource = null;
-        ListBoxNavigationItems.ItemsSource = _mainWindow.NavigationItemsView;
+	private void ResetOrder_Click(object sender, RoutedEventArgs e)
+	{
+		if (_mainWindow == null) return;
 
-        if (ListBoxNavigationItems.Items.Count > 0)
-        {
-            ListBoxNavigationItems.SelectedIndex = 0;
-            ListBoxNavigationItems.ScrollIntoView(ListBoxNavigationItems.SelectedItem);
-        }
+		_mainWindow.ResetNavigationToDefault();
 
-        UpdateMoveButtons();
-    }
-    
-    private void ListBoxNavigationItems_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+		ListBoxNavigationItems.ItemsSource = null;
+		ListBoxNavigationItems.ItemsSource = _mainWindow.NavigationItemsView;
+
+		if (ListBoxNavigationItems.ItemCount > 0)
+		{
+			ListBoxNavigationItems.SelectedIndex = 0;
+		}
+	}
+
+	private void ListBoxNavigationItems_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         UpdateMoveButtons();
     }

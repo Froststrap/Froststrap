@@ -1,125 +1,86 @@
 <base:AvaloniaWindow
-        x:Class="Froststrap.UI.Elements.Settings.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:resources="using:Froststrap.Resources"
-        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:dmodels="clr-namespace:Froststrap.UI.ViewModels.Settings"
-        Title="{x:Static resources:Strings.Menu_Title}"
-        Width="1125"
-        Height="700"
-        MinWidth="250"
-        MinHeight="250"
-        WindowStartupLocation="CenterScreen"
-        >
+    x:Class="Froststrap.UI.Elements.Settings.MainWindow"
+    x:DataType="vm:MainWindowViewModel"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    Title="{x:Static resources:Strings.Menu_Title}"
+    Width="1125" Height="700"
+    MinWidth="250" MinHeight="250"
+    WindowStartupLocation="CenterScreen"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    TransparencyLevelHint="Mica"
+    Background="Transparent">
 
-    <Grid RowDefinitions="Auto,*,Auto">
-        
-        <ui:TeachingTip
-            x:Name="AlreadyRunningTip"
-            Title="{x:Static resources:Strings.Menu_AlreadyRunning_Title}"
-            Subtitle="{x:Static resources:Strings.Menu_AlreadyRunning_Caption}"
-            PreferredPlacement="Bottom"
-            IsLightDismissEnabled="True"
-            IsOpen="False"
-            Grid.RowSpan="10"
-            Margin="200,0,200,40"
-            />
-        
-        <ui:TeachingTip
-            x:Name="SettingsSavedTip"
-            Title="{x:Static resources:Strings.Menu_SettingsSaved_Title}"
-            Subtitle="{x:Static resources:Strings.Menu_SettingsSaved_Message}"
-            PreferredPlacement="Bottom"
-            IsLightDismissEnabled="True"
-            IsOpen="False"
-            Grid.RowSpan="10"
-            Margin="200,0,200,40"
-            />
+	<Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Navigation + Content -->
-        <Grid ColumnDefinitions="Auto,*" Grid.Row="1" Margin="10,8,10,0">
+		<ui:AppTitleBar Grid.Row="0" IsFilled="True" Height="32">
+			<ui:AppTitleBar.LeftHeader>
+				<Image Source="/Assets/Bloxstrap.ico" Width="18" Height="18" Margin="12,0,0,0" VerticalAlignment="Center"/>
+			</ui:AppTitleBar.LeftHeader>
+		</ui:AppTitleBar>
 
-            <!-- Sidebar -->
-            <ui:NavigationView
-                Grid.Column="0"
-                Margin="0,0,20,0"
-                x:Name="RootNavigation"
-                PaneDisplayMode="Left"
-                IsSettingsVisible="False"
-                MaxWidth="215"
-                IsPaneOpen="{Binding IsSidebarExpanded, Mode=TwoWay}"
-                >
+		<ui:TeachingTip x:Name="AlreadyRunningTip" Title="{x:Static resources:Strings.Menu_AlreadyRunning_Title}" Subtitle="{x:Static resources:Strings.Menu_AlreadyRunning_Caption}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />
+		<ui:TeachingTip x:Name="SettingsSavedTip" Title="{x:Static resources:Strings.Menu_SettingsSaved_Title}" Subtitle="{x:Static resources:Strings.Menu_SettingsSaved_Message}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />
 
-                <ui:NavigationView.MenuItems>
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="bootstrapper" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Mods_Title}" Tag="mods" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_CommunityMods_Title}" Tag="communitymods" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" Tag="robloxsettings" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts" />
-                </ui:NavigationView.MenuItems>
-                
-                <ui:NavigationView.FooterMenuItems>
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" IsSelected="{Binding OpenAccountManagerCommand, Mode=OneTime}" Tag="accountmanager" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Settings}" Tag="channel" />
-                    <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" IsSelected="{Binding OpenAboutCommand, Mode=OneTime}" />
-                </ui:NavigationView.FooterMenuItems>
-            </ui:NavigationView>
-            
-            <ContentControl Content="{Binding CurrentPage}" />
+		<ui:NavigationView
+            Grid.Row="1"
+            x:Name="RootNavigation"
+            PaneDisplayMode="Left"
+            IsSettingsVisible="False"
+            IsPaneOpen="{Binding IsSidebarExpanded, Mode=TwoWay}"
+            OpenPaneLength="215">
 
-            <!-- Main Content -->
-            <Grid Grid.Column="1" RowDefinitions="Auto,*">
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations" IconSource="Add" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="bootstrapper" IconSource="Settings" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Mods_Title}" Tag="mods" IconSource="Repair" />
+				<ui:NavigationViewItem Content="Community Mods" Tag="communitymods" IconSource="Shop" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags" IconSource="Flag" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance" IconSource="Edit" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" x:Name="gbs" Tag="robloxsettings" IconSource="AllApps" />
+			</ui:NavigationView.MenuItems>
 
-                <!-- InfoBar -->
-                <ui:InfoBar
-                    x:Name="AlertBar"
-                    Severity="Warning"
-                    IsOpen="False"
-                    Margin="0,0,12,8" />
+			<ui:NavigationView.FooterMenuItems>
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" Tag="accountmanager" IconSource="People" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Settings}" Tag="channel" IconSource="Settings" />
+			</ui:NavigationView.FooterMenuItems>
 
-                <!-- Page host -->
-                <ContentControl
-                    x:Name="RootContent"
-                    Grid.Row="1" />
-            </Grid>
-        </Grid>
+			<ui:NavigationView.Content>
+				<Grid RowDefinitions="Auto,*">
+					<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="12" IsOpen="False" />
+					<ui:Frame x:Name="RootFrame" Grid.Row="1" />
+				</Grid>
+			</ui:NavigationView.Content>
+		</ui:NavigationView>
 
-        <!-- Bottom Command Bar -->
-        <Border Grid.Row="2" Padding="12" BorderThickness="0,1,0,0">
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+		<Grid x:Name="LoadingOverlay" Grid.Row="1" Grid.RowSpan="2" Background="#A0000000" IsVisible="False">
+			<Border Background="{DynamicResource NavigationRootBoundsBackground}" CornerRadius="12" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+				<StackPanel Spacing="15">
+					<TextBlock x:Name="LoadingOverlayText" Text="Loading..." FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+					<ui:ProgressRing IsIndeterminate="True" Width="50" Height="50" />
+				</StackPanel>
+			</Border>
+		</Grid>
 
-                <StackPanel Orientation="Horizontal">
-                    <ToggleSwitch IsChecked="{Binding TestModeEnabled}" />
-                    <TextBlock
-                        Text="{x:Static resources:Strings.Menu_TestMode}"
-                        Margin="10,0,0,0" />
-                </StackPanel>
+		<Border Grid.Row="2" Padding="12" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+				<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+					<ToggleSwitch IsChecked="{Binding TestModeEnabled}" OnContent="" OffContent="" />
+					<TextBlock Text="{x:Static resources:Strings.Menu_TestMode}" VerticalAlignment="Center" Margin="8,0,0,0" FontWeight="Medium"/>
+				</StackPanel>
 
-                <Button Grid.Column="1"
-                    Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
-                    Command="{Binding SaveAndLaunchSettingsCommand}" />
-
-                <Button Grid.Column="2"
-                    Content="{x:Static resources:Strings.Menu_Restart}"
-                    Command="{Binding RestartAppCommand}" />
-
-                <Button Grid.Column="3"
-                    Content="{x:Static resources:Strings.Menu_Save}"
-                    Command="{Binding SaveSettingsCommand}" />
-
-                <Button Grid.Column="4"
-                    Content="{x:Static resources:Strings.Common_Close}"
-                    Command="{Binding CloseWindowCommand}" />
-            </Grid>
-        </Border>
-
-    </Grid>
+				<StackPanel Grid.Column="1" Grid.ColumnSpan="4" Orientation="Horizontal" Spacing="8">
+					<Button Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" Classes="accent" Command="{Binding SaveAndLaunchSettingsCommand}" />
+					<Button Content="{x:Static resources:Strings.Menu_Restart}" Command="{Binding RestartAppCommand}" />
+					<Button Content="{x:Static resources:Strings.Menu_Save}" Classes="accent" Command="{Binding SaveSettingsCommand}" />
+					<Button Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseWindowCommand}" />
+				</StackPanel>
+			</Grid>
+		</Border>
+	</Grid>
 </base:AvaloniaWindow>

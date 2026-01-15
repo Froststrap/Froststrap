@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.UI.Elements.ContextMenu;
 
 namespace Froststrap.UI
 {
