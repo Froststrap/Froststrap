@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="Froststrap.UI.Elements.Controls.OptionControl"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:md="https://github.com/whistyun/Markdown.Avalonia"
+	xmlns:models="clr-namespace:Bloxstrap.UI.ViewModels"
     xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
     x:Name="Control">
 
@@ -26,7 +26,7 @@
 					<!-- Help link will use emoji for now -->
 					<TextBlock x:Name="HelpLinkText" Margin="4,0,0,0">
 						<Hyperlink
-							Command="{Binding OpenWebpageCommand, ElementName=Control}"
+							Command="models:GlobalViewModel.OpenWebpageCommand"
 							CommandParameter="{Binding HelpLink, ElementName=Control}"
 							TextDecorations="None">
 							<TextBlock Text="?"
@@ -53,23 +53,23 @@
 					</TextBlock>
 				</StackPanel>
 
-				<md:MarkdownTextBlock x:Name="MarkdownText"
+				<ui:MarkdownTextBlock x:Name="MarkdownText"
 					Margin="0,2,0,0"
 					FontSize="12"
 					Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 					MarkdownText="{Binding Description, ElementName=Control}"
 					TextWrapping="Wrap">
 
-					<md:MarkdownTextBlock.Styles>
-						<Style Selector="MarkdownTextBlock">
+					<ui:MarkdownTextBlock.Styles>
+						<Style Selector="ui:MarkdownTextBlock">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
 									<Setter Property="IsVisible" Value="False" />
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</md:MarkdownTextBlock.Styles>
-				</md:MarkdownTextBlock>
+					</ui:MarkdownTextBlock.Styles>
+				</ui:MarkdownTextBlock>
 			</StackPanel>
 
 			<ContentPresenter

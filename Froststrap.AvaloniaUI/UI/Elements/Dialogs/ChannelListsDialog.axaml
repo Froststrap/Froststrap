@@ -52,7 +52,6 @@
                 IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
                 AutoGenerateColumns="False"
                 IsReadOnly="True"
-                CanUserResizeRows="False"
                 CanUserResizeColumns="True"
                 SelectionMode="Single">
 

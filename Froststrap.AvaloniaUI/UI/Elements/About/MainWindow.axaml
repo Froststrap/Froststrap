@@ -26,11 +26,6 @@
                                            Tag="about"
                                            IconSource="HelpRound24" />
 
-					<ui:NavigationViewItem Content="{x:Static resources:Strings.About_Supporters_Title}"
-                                           IsVisible="False"
-                                           Tag="supporters"
-                                           IconSource="Heart24" />
-
 					<ui:NavigationViewItem Tag="translators" IconSource="CharacterAnimate24">
 						<ui:NavigationViewItem.Content>
 							<TextBlock Text="{x:Static resources:Strings.About_Translators_Title}"

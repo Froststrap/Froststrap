@@ -6,48 +6,39 @@
     xmlns:converters="using:Froststrap.UI.Converters"
     RequestedThemeVariant="Dark">
 
-    <Application.Styles>
-        <sty:FluentAvaloniaTheme PreferSystemTheme="True" />
+	<Application.Styles>
+		<sty:FluentAvaloniaTheme PreferSystemTheme="True" />
+	</Application.Styles>
 
-        <StyleInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
-        <StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
-    </Application.Styles>
+	<Application.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
+				<ResourceInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
+			</ResourceDictionary.MergedDictionaries>
 
-    <Application.Resources>
+			<!-- Fonts -->
+			<FontFamily x:Key="Rubik">
+				avares://Bloxstrap/Assets/Fonts/Rubik-Light.ttf#Rubik
+			</FontFamily>
 
-        <!-- Fonts -->
-        <FontFamily x:Key="Rubik">
-            avares://Bloxstrap/Assets/Fonts/Rubik-Light.ttf#Rubik
-        </FontFamily>
+			<!-- Accent brushes -->
+			<SolidColorBrush
+				x:Key="AccentColorSecondaryBrush"
+				Color="{DynamicResource SystemAccentColorSecondary}" />
 
-        <!-- Accent brushes -->
-        <SolidColorBrush
-            x:Key="AccentColorSecondaryBrush"
-            Color="{DynamicResource SystemAccentColorSecondary}" />
+			<SolidColorBrush
+				x:Key="AccentColorTertiaryBrush"
+				Color="{DynamicResource SystemAccentColorTertiary}" />
 
-        <SolidColorBrush
-            x:Key="AccentColorTertiaryBrush"
-            Color="{DynamicResource SystemAccentColorTertiary}" />
-
-        <!-- Hyperlink style -->
-        <Style Selector="TextBlock.hyperlink">
-            <Setter Property="TextDecorations" Value="None" />
-            <Setter Property="Foreground" Value="{DynamicResource AccentColorSecondaryBrush}" />
-        </Style>
-
-        <Style Selector="TextBlock.hyperlink:pointerover">
-            <Setter Property="Foreground" Value="{DynamicResource AccentColorTertiaryBrush}" />
-            <Setter Property="TextDecorations" Value="Underline" />
-        </Style>
-
-        <!-- Converters -->
-        <converters:StringFormatConverter x:Key="StringFormatConverter" />
-        <converters:RangeConverter x:Key="RangeConverter" />
-        <converters:EnumNameConverter x:Key="EnumNameConverter" />
-        <converters:SettingsControlTemplateSelector x:Key="SettingsControlSelector" />
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
-        <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
-
-    </Application.Resources>
+			<!-- Converters -->
+			<converters:StringFormatConverter x:Key="StringFormatConverter" />
+			<converters:RangeConverter x:Key="RangeConverter" />
+			<converters:EnumNameConverter x:Key="EnumNameConverter" />
+			<converters:SettingsControlTemplateSelector x:Key="SettingsControlSelector" />
+			<converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+			<converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+			<converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
+		</ResourceDictionary>
+	</Application.Resources>
 </Application>

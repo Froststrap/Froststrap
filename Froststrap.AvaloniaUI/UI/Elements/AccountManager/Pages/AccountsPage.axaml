@@ -73,7 +73,7 @@
 							</StackPanel>
 						</StackPanel>
 
-						<ui:Button Grid.Column="1" Content="Sign Out" VerticalAlignment="Center"
+						<Button Grid.Column="1" Content="Sign Out" VerticalAlignment="Center"
                                    Command="{Binding SignOutCommand}" Theme="{StaticResource AccentButtonStyle}" />
 					</Grid>
 				</StackPanel>
@@ -106,12 +106,12 @@
 										</StackPanel>
 									</StackPanel>
 
-									<ui:Button Grid.Column="1" Width="32" Height="32" Padding="0"
+									<Button Grid.Column="1" Width="32" Height="32" Padding="0"
                                                Classes="danger"
                                                Command="{Binding #AccountsListBox.((vm:AccountsViewModel)DataContext).DeleteAccountCommand}"
                                                CommandParameter="{Binding}">
 										<ui:SymbolIcon Symbol="Delete" FontSize="16" />
-									</ui:Button>
+									</Button>
 								</Grid>
 							</DataTemplate>
 						</ListBox.ItemTemplate>
@@ -119,10 +119,10 @@
 
 					<StackPanel Grid.Row="2" Margin="0,16,0,0" Spacing="10">
 						<Grid ColumnDefinitions="Auto, *, Auto">
-							<ui:Button Grid.Column="0" Content="Switch to Selected" Height="36" Margin="0,0,8,0"
+							<Button Grid.Column="0" Content="Switch to Selected" Height="36" Margin="0,0,8,0"
                                        Command="{Binding SelectAccountCommand}" Classes="accent" />
 
-							<ui:Button Grid.Column="1" Content="Add New Account" Height="36" HorizontalAlignment="Stretch"
+							<Button Grid.Column="1" Content="Add New Account" Height="36" HorizontalAlignment="Stretch"
                                        Command="{Binding AddAccountCommand}" />
 
 							<ComboBox Grid.Column="2" Width="140" Margin="8,0,0,0"

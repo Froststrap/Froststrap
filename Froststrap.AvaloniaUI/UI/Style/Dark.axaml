@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:base="clr-namespace:Froststrap.UI.Elements.Base">
+    <SolidColorBrush x:Key="NewTextEditorBackground" Color="#2D2D2D" />
+    <SolidColorBrush x:Key="NewTextEditorForeground" Color="White" />
+    <SolidColorBrush x:Key="NewTextEditorLink" Color="#3A9CEA" />
+    <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#19000000" />
+    <SolidColorBrush x:Key="NormalDarkAndLightBackground" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="ApplicationBackground" Color="#01000000" />
+</ResourceDictionary>

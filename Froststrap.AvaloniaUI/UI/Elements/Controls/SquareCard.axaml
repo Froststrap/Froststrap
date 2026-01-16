@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
+			 xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d"
              x:Name="Control">
 
@@ -32,20 +32,20 @@
 				</TextBlock.Styles>
 			</TextBlock>
 
-			<md:MarkdownTextBlock Grid.Row="1" FontSize="14" TextWrapping="Wrap"
+			<ui:MarkdownTextBlock Grid.Row="1" FontSize="14" TextWrapping="Wrap"
                        Margin="0,6,0,0"
                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 					MarkdownText="{Binding Description, ElementName=Control}">
-				<md:MarkdownTextBlock.Style>
-					<Style Selector="md:MarkdownScrollViewer">
+				<ui:MarkdownTextBlock.Style>
+					<Style Selector="ui:MarkdownScrollViewer">
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
 								<Setter Property="IsVisible" Value="False"/>
 							</DataTrigger>
 						</Style.Triggers>
 					</Style>
-				</md:MarkdownTextBlock.Style>
-			</md:MarkdownTextBlock>
+				</ui:MarkdownTextBlock.Style>
+			</ui:MarkdownTextBlock>
 
 			<ContentPresenter Grid.Row="2"
                               Content="{Binding InnerContent, ElementName=Control}"

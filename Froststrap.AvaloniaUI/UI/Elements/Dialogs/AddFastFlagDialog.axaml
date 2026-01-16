@@ -12,9 +12,9 @@
         Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen">
-    <ui:UiWindow.Resources>
+    <Window.Resources>
         <converters:RangeConverter x:Key="ValidationConverter" From="0" />
-    </ui:UiWindow.Resources>
+    </Window.Resources>
 
     <Grid Background="{DynamicResource ApplicationBackground}">
         <Grid.RowDefinitions>

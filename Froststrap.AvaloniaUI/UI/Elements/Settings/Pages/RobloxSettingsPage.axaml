@@ -73,7 +73,7 @@
 			<UniformGrid Columns="3" Margin="0,0,0,16">
 				<Button Margin="0,0,4,0" Command="{Binding ImportCommand}" HorizontalAlignment="Stretch">
 					<StackPanel Orientation="Horizontal" Spacing="8">
-						<ui:SymbolIcon Symbol="FolderAdd" />
+						<ui:SymbolIcon Symbol="NewFolder" />
 						<TextBlock Text="Import Settings" />
 					</StackPanel>
 				</Button>

@@ -1,4 +1,5 @@
-<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer"
+		xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,7 +7,7 @@
         xmlns:local="clr-namespace:Froststrap.UI.Elements.ContextMenu"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer"
+		xmlns:fa="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d"
         Title="ContextMenuContainer"
         Width="0" Height="0"
@@ -36,17 +37,17 @@
 			<MenuItem IsEnabled="False" x:Name="PlaytimeMenuItem" IsVisible="False">
 				<MenuItem.Header>
 					<Grid ColumnDefinitions="24, *">
-						<ui:SymbolIcon Grid.Column="0" Symbol="Timer" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+						<ui:SymbolIcon Grid.Column="0" Symbol="Clock" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
 						<TextBlock x:Name="PlaytimeTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Total: 00:00" />
 					</Grid>
 				</MenuItem.Header>
 			</MenuItem>
 
-			<ToggleMenuItem x:Name="RichPresenceMenuItem"
-                            Header="{x:Static resources:Strings.Common_DiscordRichPresence}"
-                            IsChecked="True"
-                            IsVisible="False"
-                            Click="RichPresenceMenuItem_Click" />
+			<fa:ToggleMenuFlyoutItem x:Name="RichPresenceMenuItem"
+                         Text="{x:Static resources:Strings.Common_DiscordRichPresence}"
+                         IsChecked="True"
+                         IsVisible="False"
+                         Click="RichPresenceMenuItem_Click" />
 
 			<MenuItem x:Name="InviteDeeplinkMenuItem" IsVisible="False" Click="InviteDeeplinkMenuItem_Click">
 				<MenuItem.Header>
@@ -78,7 +79,7 @@
 			<MenuItem x:Name="ServerDetailsMenuItem" IsVisible="False" Click="ServerDetailsMenuItem_Click">
 				<MenuItem.Header>
 					<Grid ColumnDefinitions="24, *">
-						<ui:SymbolIcon Grid.Column="0" Symbol="Info"/>
+						<ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
 						<TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" />
 					</Grid>
 				</MenuItem.Header>
@@ -87,7 +88,7 @@
 			<MenuItem x:Name="GameHistoryMenuItem" Click="JoinLastServerMenuItem_Click" IsVisible="False">
 				<MenuItem.Header>
 					<Grid ColumnDefinitions="24, *">
-						<ui:SymbolIcon Grid.Column="0" Symbol="History"/>
+						<ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
 						<TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" />
 					</Grid>
 				</MenuItem.Header>
@@ -96,7 +97,7 @@
 			<MenuItem x:Name="CleanMemoryMenuItem" IsVisible="False" Click="CleanMemoryMenuItem_Click">
 				<MenuItem.Header>
 					<Grid ColumnDefinitions="24, *">
-						<ui:SymbolIcon Grid.Column="0" Symbol="Broom"/>
+						<ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
 						<TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Clean Memory" />
 					</Grid>
 				</MenuItem.Header>
