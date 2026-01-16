@@ -1,10 +1,12 @@
 <UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:accountmanagers="using:Froststrap.UI.ViewModels.AccountManagers"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.AccountManagers"
              x:Class="Froststrap.UI.Elements.AccountManagers.Pages.AccountsPage"
+             x:DataType="vm:AccountsViewModel"
              mc:Ignorable="d"
 			 d:DesignHeight="600"
 			 d:DesignWidth="850">
@@ -53,9 +55,7 @@
                                         BorderBrush="{DynamicResource ApplicationPageBackgroundThemeBrush}"
                                         BorderThickness="2" CornerRadius="8"
                                         ToolTip.Tip="{Binding CurrentUserPresence.ToolTipText}">
-									<Border.BoxShadow>
-										<BoxShadow Offset="0 1" Blur="4" Color="#60000000" />
-									</Border.BoxShadow>
+									<Border BoxShadow="0 1 4 0 #60000000" />
 								</Border>
 							</Grid>
 
@@ -108,8 +108,7 @@
 
 									<Button Grid.Column="1" Width="32" Height="32" Padding="0"
                                                Classes="danger"
-                                               Command="{Binding #AccountsListBox.((vm:AccountsViewModel)DataContext).DeleteAccountCommand}"
-                                               CommandParameter="{Binding}">
+											   Command="{Binding $parent[ListBox].DataContext.DeleteAccountCommand}"                                               CommandParameter="{Binding}">
 										<ui:SymbolIcon Symbol="Delete" FontSize="16" />
 									</Button>
 								</Grid>
