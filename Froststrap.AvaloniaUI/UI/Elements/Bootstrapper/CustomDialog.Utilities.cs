@@ -36,39 +36,72 @@ namespace Froststrap.UI.Elements.Bootstrapper
 			return attribute.Value.ToString();
 		}
 
-		private static T ParseXmlAttribute<T>(XElement element, string attributeName, T? defaultValue = null) where T : struct
+		public static T ParseXmlAttribute<T>(XElement element, string attributeName, T? defaultValue = null) where T : struct
 		{
 			var attribute = element.Attribute(attributeName);
 
 			if (attribute == null)
 			{
-				if (defaultValue != null)
-					return (T)defaultValue;
+				if (defaultValue.HasValue)
+					return defaultValue.Value;
 
-				throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissing", element.Name, attributeName);
+				throw new Exception($"Missing attribute: {attributeName} on element {element.Name}");
 			}
 
-			T? parsed = ConvertValue<T>(attribute.Value);
-			if (parsed == null)
-				throw new CustomThemeException("CustomTheme.Errors.ElementAttributeInvalidType", element.Name, attributeName, typeof(T).Name);
+			try
+			{
+				if (typeof(T).IsEnum)
+				{
+					if (Enum.TryParse<T>(attribute.Value, true, out var result))
+						return result;
+				}
+				else
+				{
+					return (T)Convert.ChangeType(attribute.Value, typeof(T));
+				}
+			}
+			catch (Exception)
+			{
+				if (defaultValue.HasValue)
+					return defaultValue.Value;
+			}
 
-			return (T)parsed;
+			throw new Exception($"Invalid value for {attributeName} on {element.Name}. Expected {typeof(T).Name}");
 		}
 
-		private static T? ParseXmlAttributeNullable<T>(XElement element, string attributeName) where T : struct
+		public static T? ParseXmlAttributeRef<T>(XElement element, string attributeName, T? defaultValue = null) where T : class
+		{
+			var attribute = element.Attribute(attributeName);
+
+			if (attribute == null)
+				return defaultValue;
+
+			return (T)Convert.ChangeType(attribute.Value, typeof(T));
+		}
+
+		public static T? ParseXmlAttributeNullable<T>(XElement element, string attributeName) where T : struct
 		{
 			var attribute = element.Attribute(attributeName);
 
 			if (attribute == null)
 				return null;
 
-			T? parsed = ConvertValue<T>(attribute.Value);
-			if (parsed == null)
-				throw new CustomThemeException("CustomTheme.Errors.ElementAttributeInvalidType", element.Name, attributeName, typeof(T).Name);
+			if (typeof(T).IsEnum)
+			{
+				if (Enum.TryParse<T>(attribute.Value, true, out var result))
+					return result;
+			}
 
-			return (T)parsed;
+			try
+			{
+				return (T)Convert.ChangeType(attribute.Value, typeof(T));
+			}
+			catch
+			{
+				return null;
+			}
 		}
-
+	
 		private static void ValidateXmlElement(string elementName, string attributeName, int value, int? min = null, int? max = null)
 		{
 			if (min != null && value < min)

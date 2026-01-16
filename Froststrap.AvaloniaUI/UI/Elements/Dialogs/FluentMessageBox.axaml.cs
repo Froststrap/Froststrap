@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Media;
 using Froststrap.Resources;
+using Froststrap.UI.Elements.Controls;
 
 namespace Froststrap.UI.Elements.Dialogs
 {

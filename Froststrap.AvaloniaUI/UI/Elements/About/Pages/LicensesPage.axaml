@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500"
+             x:Class="Froststrap.UI.Elements.About.Pages.LicensesPage">
+
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Margin="0,0,14,14">
+			<TextBlock Margin="0,0,0,16"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Text="{x:Static resources:Strings.Menu_About_Licenses}" />
+
+			<UniformGrid Columns="3">
+				<ui:SettingsExpander Margin="0,4,4,4"
+                                     Header="Bloxstrap"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/bloxstraplabs/bloxstrap/blob/main/LICENSE" />
+
+				<ui:SettingsExpander Margin="4,4,4,4"
+                                     Header="Fishstrap"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/Fishstrap/Fishstrap/blob/main/LICENSE" />
+
+			</UniformGrid>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

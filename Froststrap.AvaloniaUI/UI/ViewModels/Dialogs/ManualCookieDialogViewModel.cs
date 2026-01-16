@@ -49,8 +49,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 }
 
                 ValidatedAccount = accountInfo;
-                _dialog.DialogResult = true;
-                _dialog.Close();
+                _dialog.Close(true);
             }
             catch (Exception ex)
             {
@@ -67,8 +66,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         [RelayCommand]
         private void Cancel()
         {
-            _dialog.DialogResult = false;
-            _dialog.Close();
+            _dialog.Close(false);
         }
 
         private async Task<AltAccount?> GetAccountInfoFromCookieAsync(string cookie)

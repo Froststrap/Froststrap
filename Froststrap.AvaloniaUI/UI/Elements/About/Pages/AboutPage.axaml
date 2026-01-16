@@ -1,0 +1,114 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
+             xmlns:dmodels="clr-namespace:Froststrap.UI.ViewModels.About"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500"
+             x:DataType="dmodels:AboutViewModel"
+             x:Class="Froststrap.UI.Elements.About.Pages.AboutPage"
+             KeyDown="UiPage_KeyDown">
+
+	<UserControl.Resources>
+		<Animation x:Key="EggAnimation" Duration="0:0:3" FillMode="Forward">
+			<KeyFrame Cue="0%">
+				<Setter Property="Opacity" Value="1.0"/>
+			</KeyFrame>
+			<KeyFrame Cue="100%">
+				<Setter Property="Opacity" Value="0.0"/>
+			</KeyFrame>
+		</Animation>
+	</UserControl.Resources>
+
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<StackPanel Margin="0,0,14,14">
+
+			<Grid Margin="0,0,0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
+				<Panel Grid.Column="0">
+					<Image x:Name="Image1" Width="72" Height="72" VerticalAlignment="Center"
+                           Source="avares://Froststrap/Bloxstrap.ico" />
+					<Image x:Name="Image2" Width="72" Height="72" VerticalAlignment="Center"
+                           Source="avares://Froststrap/Resources/BootstrapperStyles/ByfronDialog/Matt.png"
+                           Opacity="0" />
+				</Panel>
+
+				<StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+					<TextBlock Text="Froststrap" FontSize="24" FontWeight="Bold" />
+					<TextBlock Text="{x:Static resources:Strings.Menu_About_Description}"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"  />
+				</StackPanel>
+			</Grid>
+
+			<WrapPanel HorizontalAlignment="Center" Orientation="Horizontal">
+				<ui:HyperlinkButton Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_GithubRepository}"
+                                    NavigateUri="https://github.com/RealMeddsam/Froststrap" />
+				<ui:HyperlinkButton Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_HelpInformation}"
+                                    NavigateUri="https://github.com/bloxstraplabs/bloxstrap/wiki" />
+				<ui:HyperlinkButton Margin="0,0,8,8" Content="{x:Static resources:Strings.Menu_About_ReportIssue}"
+                                    NavigateUri="https://github.com/RealMeddsam/Froststrap/issues" />
+				<ui:HyperlinkButton Margin="0,0,0,8" Content="{x:Static resources:Strings.Menu_About_DiscordServer}"
+                                    NavigateUri="https://discord.gg/KdR9vpRcUN" />
+			</WrapPanel>
+
+			<StackPanel IsVisible="{Binding BuildInformationVisibility}">
+				<TextBlock Text="Build Information" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
+
+				<Grid Margin="0,8,0,0" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
+					<TextBlock Grid.Row="0" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Timestamp" />
+					<TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                               Text="{Binding BuildTimestamp}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+					<TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Version" />
+					<TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                               Text="{Binding Version}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+					<TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Hash"
+                               IsVisible="{Binding BuildCommitVisibility}" />
+					<ui:HyperlinkButton Grid.Row="2" Grid.Column="1" IsVisible="{Binding BuildCommitVisibility}"
+                                        Command="{Binding OpenWebpageCommand}"
+                                        CommandParameter="{Binding BuildCommitHashUrl}">
+						<TextBlock Text="{Binding BuildMetadata.CommitHash}" />
+					</ui:HyperlinkButton>
+
+					<TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Ref"
+                               IsVisible="{Binding BuildCommitVisibility}" />
+					<TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
+                               Text="{Binding BuildMetadata.CommitRef}" Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                               IsVisible="{Binding BuildCommitVisibility}" />
+				</Grid>
+			</StackPanel>
+
+			<TextBlock Text="{x:Static resources:Strings.Menu_About_Contributors}" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
+			<TextBlock Text="{x:Static resources:Strings.Menu_About_Contributors_Description}" TextWrapping="Wrap"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+			<Grid Margin="0,8,0,0" ColumnDefinitions="*,*,*">
+				<Expander Grid.Column="0" Margin="0,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Code}" IsExpanded="True">
+					<StackPanel>
+						<controls:MarkdownTextBlock MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
+						<controls:MarkdownTextBlock MarkdownText="[SquireDot](https://github.com/UltimatePlayer97)" />
+						<controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net) ([GitLab](https://gitlab.com/invra), [GitHub](https://github.com/invra))" />
+					</StackPanel>
+				</Expander>
+
+				<Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Contributors}" IsExpanded="True">
+					<StackPanel>
+						<controls:MarkdownTextBlock MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
+						<controls:MarkdownTextBlock MarkdownText="[Scroom](https://discord.com/users/1254472513199673347)" />
+					</StackPanel>
+				</Expander>
+
+				<Expander Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Insipirations}" IsExpanded="True">
+					<StackPanel>
+						<controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
+						<controls:MarkdownTextBlock MarkdownText="[Froststrap](https://github.com/bloxstraplabs/bloxstrap)" />
+						<controls:MarkdownTextBlock MarkdownText="[MaximumADHD](https://github.com/MaximumADHD)" />
+					</StackPanel>
+				</Expander>
+			</Grid>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

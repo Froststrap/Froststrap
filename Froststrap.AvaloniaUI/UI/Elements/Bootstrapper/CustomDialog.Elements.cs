@@ -1,20 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Xml.Linq;
-using System.Reflection;
+﻿using System.Xml.Linq;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Chrome;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Media.Immutable;
 using Avalonia.Styling;
-using Froststrap;
-using Froststrap.Enums;
 using Froststrap.UI.Elements.Controls;
+using FluentAvalonia.UI.Controls;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -57,6 +51,33 @@ namespace Froststrap.UI.Elements.Bootstrapper
 				Y = ParseXmlAttribute<double>(xmlElement, "Y", 0)
 			};
 		}
+		#endregion
+
+		#region effects
+		private static BlurEffect HandleXmlElement_BlurEffect(CustomDialog dialog, XElement xmlElement)
+		{
+			double radius = ParseXmlAttribute<double>(xmlElement, "Radius", 5);
+
+			var effect = new BlurEffect();
+			effect.Radius = ParseXmlAttribute<double>(xmlElement, "Radius", 5);
+
+			return effect;
+		}
+
+		private static DropShadowEffect HandleXmlElement_DropShadowEffect(CustomDialog dialog, XElement xmlElement)
+		{
+			var effect = new DropShadowEffect();
+			effect.Color = GetColorFromXElement(xmlElement, "Color") is Color c ? c : Colors.Black;
+			effect.BlurRadius = ParseXmlAttribute<double>(xmlElement, "BlurRadius", 5);
+			effect.Opacity = ParseXmlAttribute<double>(xmlElement, "Opacity", 1);
+
+			var color = GetColorFromXElement(xmlElement, "Color");
+			if (color is Color)
+				effect.Color = (Color)color;
+
+			return effect;
+		}
+
 		#endregion
 
 		#region Brushes
@@ -195,6 +216,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
 		}
 		#endregion
 
+
+
 		#region Elements
 		private static void HandleXmlElement_Control(CustomDialog dialog, Control uiElement, XElement xmlElement)
 		{
@@ -282,7 +305,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 			throw new CustomThemeException("CustomTheme.Errors.ElementInvalidChild", xmlElement.Parent!.Name.ToString(), xmlElement.Name.ToString());
 		}
 
-		private static DummyControl HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
+		private static Control HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
 		{
 			xmlElement.SetAttributeValue("Name", "TitleBar");
 			xmlElement.SetAttributeValue("IsEnabled", "True");
@@ -290,60 +313,31 @@ namespace Froststrap.UI.Elements.Bootstrapper
 			HandleXmlElement_Control(dialog, dialog.RootTitleBar, xmlElement);
 
 			dialog.RootTitleBar.RenderTransform = null;
-			dialog.RootTitleBar.ZIndex = 1001;
 
+
+			dialog.RootTitleBar.ZIndex = 1001;
 			dialog.RootTitleBar.Height = double.NaN;
 			dialog.RootTitleBar.Width = double.NaN;
 			dialog.RootTitleBar.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
 			dialog.RootTitleBar.Margin = new Thickness(0);
 
-			bool showMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
-			bool showClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
-			string title = xmlElement.Attribute("Title")?.Value ?? "Bloxstrap";
-
-			if (dialog.RootTitleBar is Panel avTitleBar)
+			if (dialog is Window window)
 			{
-				avTitleBar.ShowMinimize = showMinimize;
-				avTitleBar.ShowClose = showClose;
-				avTitleBar.Title = title;
+				window.CanMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
+				bool showClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
+				window.Title = xmlElement.Attribute("Title")?.Value ?? "Bloxstrap";
+
+
+				window.Closing += (_, e) =>
+				{
+					if (!showClose)
+						e.Cancel = true;
+				};
 			}
-			else
-			{
-				try
-				{
-					var rt = dialog.RootTitleBar;
-					var rtType = rt.GetType();
-
-					var propShowMin = rtType.GetProperty("ShowMinimize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-					if (propShowMin != null && propShowMin.CanWrite)
-						propShowMin.SetValue(rt, showMinimize);
-
-					var propShowClose = rtType.GetProperty("ShowClose", BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-					if (propShowClose != null && propShowClose.CanWrite)
-						propShowClose.SetValue(rt, showClose);
-
-					var propTitle = rtType.GetProperty("Title", BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-					if (propTitle != null && propTitle.CanWrite)
-						propTitle.SetValue(rt, title);
-				}
-				catch
-				{
-					// Ignore reflection failures - non-critical for themes
-				}
-
-				// As a last resort update any TextBlock inside the RootTitleBar to reflect the title.
-				if (dialog.RootTitleBar is Panel panel)
-				{
-					var tb = panel.Children.OfType<TextBlock>().FirstOrDefault();
-					if (tb != null)
-						tb.Text = title;
-				}
-			}
-
-			dialog.Title = title;
 
 			return new DummyControl();
 		}
+
 
 		private static Control HandleXmlElement_Button(CustomDialog dialog, XElement xmlElement)
 		{
@@ -358,6 +352,14 @@ namespace Froststrap.UI.Elements.Bootstrapper
 			}
 
 			return button;
+		}
+
+		private static void HandleXmlElement_RangeBase(CustomDialog dialog, RangeBase rangeBase, XElement xmlElement)
+		{
+			HandleXmlElement_Control(dialog, rangeBase, xmlElement);
+
+			rangeBase.Value = ParseXmlAttribute<double>(xmlElement, "Value", 0);
+			rangeBase.Maximum = ParseXmlAttribute<double>(xmlElement, "Maximum", 100);
 		}
 
 		private static Control HandleXmlElement_ProgressBar(CustomDialog dialog, XElement xmlElement)
@@ -378,6 +380,65 @@ namespace Froststrap.UI.Elements.Bootstrapper
 			return progressBar;
 		}
 
+		private static Control HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
+		{
+			var progressRing = new ProgressRing();
+
+			HandleXmlElement_RangeBase(dialog, progressRing, xmlElement);
+
+			progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
+
+			if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
+			{
+				progressRing.Bind(ProgressRing.IsIndeterminateProperty, new Binding("ProgressIndeterminate")
+				{
+					Mode = BindingMode.OneWay
+				});
+
+				progressRing.Bind(ProgressRing.MaximumProperty, new Binding("ProgressMaximum")
+				{
+					Mode = BindingMode.OneWay
+				});
+
+				progressRing.Bind(ProgressRing.ValueProperty, new Binding("ProgressValue")
+				{
+					Mode = BindingMode.OneWay
+				});
+			}
+
+			return progressRing;
+		}
+
+		private static void HandleXmlElement_TextBlock_Base(CustomDialog dialog, TextBlock textBlock, XElement xmlElement)
+		{
+			HandleXmlElement_Control(dialog, textBlock, xmlElement);
+
+			ApplyBrush_Control(dialog, textBlock, "Foreground", TextBlock.ForegroundProperty, xmlElement);
+			ApplyBrush_Control(dialog, textBlock, "Background", TextBlock.BackgroundProperty, xmlElement);
+
+			var fontSize = ParseXmlAttributeNullable<double>(xmlElement, "FontSize");
+			if (fontSize.HasValue)
+				textBlock.FontSize = fontSize.Value;
+
+			textBlock.FontWeight = GetFontWeightFromXElement(xmlElement);
+			textBlock.FontStyle = GetFontStyleFromXElement(xmlElement);
+
+			textBlock.LineHeight = ParseXmlAttribute<double>(xmlElement, "LineHeight", double.NaN);
+
+			textBlock.TextAlignment = ParseXmlAttribute<TextAlignment>(xmlElement, "TextAlignment", TextAlignment.Center);
+			//textBlock.TextTrimming = ParseXmlAttribute<TextTrimming>(xmlElement, "TextTrimming", TextTrimming.None);
+			textBlock.TextWrapping = ParseXmlAttribute<TextWrapping>(xmlElement, "TextWrapping", TextWrapping.NoWrap);
+			textBlock.TextDecorations = GetTextDecorationsFromXElement(xmlElement);
+
+			string? fontFamily = GetFullPath(dialog, xmlElement.Attribute("FontFamily")?.Value);
+			if (!string.IsNullOrEmpty(fontFamily))
+				textBlock.FontFamily = new Avalonia.Media.FontFamily(fontFamily);
+
+			object? padding = GetThicknessFromXElement(xmlElement, "Padding");
+			if (padding is Thickness thickness)
+				textBlock.Padding = thickness;
+		}
+
 		private static Control HandleXmlElement_TextBlock(CustomDialog dialog, XElement xmlElement)
 		{
 			var textBlock = new TextBlock();
@@ -394,6 +455,18 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
 			if (xmlElement.Attribute("Name")?.Value == "StatusText")
 				textBlock[!TextBlock.TextProperty] = new Binding("Message");
+
+			return textBlock;
+		}
+
+		private static Control HandleXmlElement_MarkdownTextBlock(CustomDialog dialog, XElement xmlElement)
+		{
+			var textBlock = new MarkdownTextBlock();
+			HandleXmlElement_TextBlock_Base(dialog, textBlock, xmlElement);
+
+			string? text = GetTranslatedText(xmlElement.Attribute("Text")?.Value);
+			if (text != null)
+				textBlock.MarkdownText = text;
 
 			return textBlock;
 		}
@@ -424,6 +497,52 @@ namespace Froststrap.UI.Elements.Bootstrapper
 			return image;
 		}
 
+		private static RowDefinition HandleXmlElement_RowDefinition(CustomDialog dialog, XElement xmlElement)
+		{
+			var rowDefinition = new RowDefinition();
+
+			var height = GetGridLengthFromXElement(xmlElement, "Height");
+			if (height != null)
+				rowDefinition.Height = (GridLength)height;
+
+			rowDefinition.MinHeight = ParseXmlAttribute<double>(xmlElement, "MinHeight", 0);
+			rowDefinition.MaxHeight = ParseXmlAttribute<double>(xmlElement, "MaxHeight", double.PositiveInfinity);
+
+			return rowDefinition;
+		}
+
+		private static ColumnDefinition HandleXmlElement_ColumnDefinition(CustomDialog dialog, XElement xmlElement)
+		{
+			var columnDefinition = new ColumnDefinition();
+
+			var width = GetGridLengthFromXElement(xmlElement, "Width");
+			if (width != null)
+				columnDefinition.Width = (GridLength)width;
+
+			columnDefinition.MinWidth = ParseXmlAttribute<double>(xmlElement, "MinWidth", 0);
+			columnDefinition.MaxWidth = ParseXmlAttribute<double>(xmlElement, "MaxWidth", double.PositiveInfinity);
+
+			return columnDefinition;
+		}
+
+		private static void HandleXmlElement_Grid_RowDefinitions(Grid grid, CustomDialog dialog, XElement xmlElement)
+		{
+			foreach (var element in xmlElement.Elements())
+			{
+				var rowDefinition = HandleXml<RowDefinition>(dialog, element);
+				grid.RowDefinitions.Add(rowDefinition);
+			}
+		}
+
+		private static void HandleXmlElement_Grid_ColumnDefinitions(Grid grid, CustomDialog dialog, XElement xmlElement)
+		{
+			foreach (var element in xmlElement.Elements())
+			{
+				var columnDefinition = HandleXml<ColumnDefinition>(dialog, element);
+				grid.ColumnDefinitions.Add(columnDefinition);
+			}
+		}
+
 		private static Grid HandleXmlElement_Grid(CustomDialog dialog, XElement xmlElement)
 		{
 			var grid = new Grid();
@@ -447,6 +566,22 @@ namespace Froststrap.UI.Elements.Bootstrapper
 				}
 			}
 			return grid;
+		}
+
+		private static StackPanel HandleXmlElement_StackPanel(CustomDialog dialog, XElement xmlElement)
+		{
+			var stackPanel = new StackPanel();
+			HandleXmlElement_Control(dialog, stackPanel, xmlElement);
+
+			stackPanel.Orientation = ParseXmlAttribute<Orientation>(xmlElement, "Orientation", Orientation.Vertical);
+
+			foreach (var element in xmlElement.Elements())
+			{
+				var uiElement = HandleXml<Control>(dialog, element);
+				stackPanel.Children.Add(uiElement);
+			}
+
+			return stackPanel;
 		}
 
 		private static Border HandleXmlElement_Border(CustomDialog dialog, XElement xmlElement)

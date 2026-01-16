@@ -123,10 +123,10 @@ namespace Froststrap
                 Frontend.ShowMessageBox("You are about to install a QA build of Froststrap. The red window border indicates that this is a QA build.\n\nQA builds are handled completely separately of your standard installation, like a virtual environment.", MessageBoxImage.Information);
 #endif
 
-                new LanguageSelectorDialog().ShowDialog();
+                new LanguageSelectorDialog().Show();
 
                 var installer = new UI.Elements.Installer.MainWindow();
-                installer.ShowDialog();
+                installer.Show();
 
                 interlock.Dispose();
 
@@ -156,7 +156,7 @@ namespace Froststrap
             else
             {
                 var dialog = new UninstallerDialog();
-                dialog.ShowDialog();
+                dialog.Show();
 
                 confirmed = dialog.Confirmed;
                 keepData = dialog.KeepData;
@@ -201,7 +201,7 @@ namespace Froststrap
 
                 App.FrostRPC?.SetPage("Settings");
 
-                window.ShowDialog();
+                window.Show();
 
                 App.FrostRPC?.ResetPresence();
             }
@@ -227,7 +227,7 @@ namespace Froststrap
 
             App.FrostRPC?.SetPage("Launch Menu");
 
-            dialog.ShowDialog();
+            dialog.Show();
 
             ProcessNextAction(dialog.CloseAction);
 
@@ -360,7 +360,7 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, "Showing unsupported warning");
 
-            new BloxshadeDialog().ShowDialog();
+            new BloxshadeDialog().Show();
             App.SoftTerminate();
         }
 

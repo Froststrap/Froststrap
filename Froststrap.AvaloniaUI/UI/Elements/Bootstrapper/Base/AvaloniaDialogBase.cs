@@ -10,7 +10,7 @@ using Froststrap.UI.Elements.Bootstrapper.Base;
 
 namespace Froststrap.UI.Elements.Bootstrapper.Base
 {
-	public class AvaloniaDialogBase : Window, IBootstrapperDialog
+	public class AvaloniaDialogBase : CustomDialog, IBootstrapperDialog
 	{
 		public const int TaskbarProgressMaximum = 100;
 
@@ -107,8 +107,15 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
 			});
 		}
 
-		public virtual void ShowSuccess(string message, Action? callback)
-			=> BaseFunctions.ShowSuccess(message, callback);
-		#endregion
-	}
+        public virtual void ShowSuccess(string message, Action? callback)
+        {
+			var dialog = this as CustomDialog;
+
+			if (dialog != null)
+			{
+				dialog.ShowSuccess(message, callback);
+			}
+		}
+        #endregion
+    }
 }

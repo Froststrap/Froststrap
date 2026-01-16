@@ -1,0 +1,71 @@
+<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:pages="clr-namespace:Froststrap.UI.Elements.AccountManagers.Pages"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
+             x:Class="Froststrap.UI.Elements.AccountManagers.MainWindow"
+             mc:Ignorable="d"
+             Title="Account Manager"
+             Width="1000"
+             Height="675"
+             Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
+             WindowStartupLocation="CenterScreen">
+
+	<Grid Background="{DynamicResource ApplicationBackground}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<ui:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" Title="Account Manager" />
+
+		<Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0" IsVisible="True">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<ui:NavigationView x:Name="RootNavigation"
+                               Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"
+                               PaneDisplayMode="Left"
+                               IsSettingsVisible="False">
+				<ui:NavigationView.MenuItems>
+					<ui:NavigationViewItem Content="Accounts" IconSource="ContactInfo" Tag="accounts" />
+					<ui:NavigationViewItem Content="Friends" IconSource="People" Tag="friends" x:Name="friends"/>
+					<ui:NavigationViewItem Content="Games" IconSource="Games" Tag="games" x:Name="games"/>
+				</ui:NavigationView.MenuItems>
+
+				<ui:NavigationView.Content>
+					<ContentControl x:Name="RootFrame" />
+				</ui:NavigationView.Content>
+			</ui:NavigationView>
+		</Grid>
+
+		<Grid x:Name="LoadingOverlay" Grid.Row="0" Grid.RowSpan="2" IsVisible="False" Background="#A0000000" ZIndex="9999">
+			<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+				<Border Background="{DynamicResource NormalDarkAndLightBackground}" CornerRadius="16" Padding="32">
+					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+						<TextBlock x:Name="LoadingOverlayText"
+                                   Text="Loading..."
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+						<ui:ProgressRing IsIndeterminate="True"
+                                         Width="60"
+                                         Height="60"
+                                         HorizontalAlignment="Center" />
+					</StackPanel>
+				</Border>
+			</Grid>
+		</Grid>
+	</Grid>
+</base:AvaloniaWindow>

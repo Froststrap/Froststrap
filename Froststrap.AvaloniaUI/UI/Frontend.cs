@@ -7,6 +7,7 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using Froststrap.UI.Elements.Dialogs;
 using MsBox.Avalonia.Dto;
+using Froststrap.UI.Elements.Bootstrapper;
 
 namespace Froststrap.UI
 {
@@ -97,17 +98,17 @@ namespace Froststrap.UI
             return style switch
             {
                 // TODO: ADD ACTUAL DIALOGS
-                BootstrapperStyle.VistaDialog => new VistaDialog(),
-                BootstrapperStyle.LegacyDialog2008 => new LegacyDialog2008(),
-                BootstrapperStyle.LegacyDialog2011 => new LegacyDialog2011(),
-                BootstrapperStyle.ProgressDialog => new ProgressDialog(),
-                BootstrapperStyle.ClassicFluentDialog => new ClassicFluentDialog(),
-                BootstrapperStyle.ByfronDialog => new ByfronDialog(),
-                BootstrapperStyle.FroststrapDialog => new FroststrapDialog(),
-                BootstrapperStyle.FluentDialog => new FluentDialog(false),
-                BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),
-                BootstrapperStyle.CustomDialog => GetCustomBootstrapper(),
-                _ => new FluentDialog(false)
+                //BootstrapperStyle.VistaDialog => new VistaDialog(),
+                //BootstrapperStyle.LegacyDialog2008 => new LegacyDialog2008(),
+                //BootstrapperStyle.LegacyDialog2011 => new LegacyDialog2011(),
+                //BootstrapperStyle.ProgressDialog => new ProgressDialog(),
+                //BootstrapperStyle.ClassicFluentDialog => new ClassicFluentDialog(),
+                //BootstrapperStyle.ByfronDialog => new ByfronDialog(),
+                //BootstrapperStyle.FroststrapDialog => new FroststrapDialog(),
+                //BootstrapperStyle.FluentDialog => new FluentDialog(false),
+                //BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),
+                //BootstrapperStyle.CustomDialog => GetCustomBootstrapper(),
+                //_ => new FluentDialog(false)
             };
         }
 

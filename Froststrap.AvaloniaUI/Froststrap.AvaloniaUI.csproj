@@ -56,14 +56,38 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Strings.resx</DependentUpon>
       </Compile>
+      <Compile Update="UI\Elements\About\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\AccountManager\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\AccountManager\Pages\AccountsPage.axaml.cs">
+        <DependentUpon>AccountsPage.axaml</DependentUpon>
+      </Compile>
       <Compile Update="UI\Elements\Bootstrapper\CustomDialog.axaml.cs">
         <DependentUpon>CustomDialog.axaml</DependentUpon>
       </Compile>
       <Compile Update="UI\Elements\ContextMenu\MenuContainer.axaml.cs">
         <DependentUpon>MenuContainer.axaml</DependentUpon>
       </Compile>
+      <Compile Update="UI\Elements\ContextMenu\ServerHistory.axaml.cs">
+        <DependentUpon>ServerHistory.axaml</DependentUpon>
+      </Compile>
       <Compile Update="UI\Elements\Editor\BootstrapperEditorWindow.axaml.cs">
         <DependentUpon>BootstrapperEditorWindow.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\Installer\MainWindow.axaml.cs">
+        <DependentUpon>MainWindow.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\Installer\Pages\CompletionPage.axaml.cs">
+        <DependentUpon>CompletionPage.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\Installer\Pages\InstallPage.axaml.cs">
+        <DependentUpon>InstallPage.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\Installer\Pages\WelcomePage.axaml.cs">
+        <DependentUpon>WelcomePage.axaml</DependentUpon>
       </Compile>
       <Compile Update="UI\Elements\Settings\Pages\RobloxSettingsPage.axaml.cs">
         <DependentUpon>RobloxSettingsPage.axaml</DependentUpon>

@@ -1,0 +1,141 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels"
+             x:Class="Froststrap.UI.Elements.AccountManagers.Pages.AccountsPage"
+             mc:Ignorable="d"
+			 d:DesignHeight="600"
+			 d:DesignWidth="850">
+
+	<UserControl.Styles>
+		<Style Selector="ListBoxItem">
+			<Setter Property="Padding" Value="12,8" />
+			<Setter Property="Margin" Value="0,0,0,4" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="CornerRadius" Value="4" />
+		</Style>
+		<Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+		</Style>
+		<Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+			<Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
+		</Style>
+	</UserControl.Styles>
+
+	<ScrollViewer>
+		<Grid Margin="0,8,8,8">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			<Border Grid.Row="0" Margin="0,0,0,16" Padding="16"
+                    Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8">
+				<StackPanel Spacing="12">
+					<TextBlock FontSize="20" FontWeight="Bold" Text="Current Account" />
+
+					<Grid ColumnDefinitions="*, Auto">
+						<StackPanel Orientation="Horizontal" Spacing="12">
+							<Grid Width="70" Height="70">
+								<Border CornerRadius="35" ClipToBounds="True"
+                                        Background="{DynamicResource ControlFillColorSecondaryBrush}">
+									<Image Source="{Binding CurrentUserAvatarUrl}" Stretch="UniformToFill" />
+								</Border>
+
+								<Border Width="16" Height="16"
+                                        HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                        Background="{Binding CurrentUserPresence.StatusColor}"
+                                        BorderBrush="{DynamicResource ApplicationPageBackgroundThemeBrush}"
+                                        BorderThickness="2" CornerRadius="8"
+                                        ToolTip.Tip="{Binding CurrentUserPresence.ToolTipText}">
+									<Border.BoxShadow>
+										<BoxShadow Offset="0 1" Blur="4" Color="#60000000" />
+									</Border.BoxShadow>
+								</Border>
+							</Grid>
+
+							<StackPanel VerticalAlignment="Center">
+								<TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding CurrentUserDisplayName}" />
+								<TextBlock FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding CurrentUserUsername}" />
+
+								<StackPanel Orientation="Horizontal" Margin="0,4,0,0" Spacing="8"
+                                            IsVisible="{Binding IsAccountInformationVisible}">
+									<TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               Text="{Binding FriendsCount, StringFormat='{}{0} Friends'}" />
+									<TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                               Text="{Binding FollowersCount, StringFormat='{}{0} Followers'}" />
+								</StackPanel>
+							</StackPanel>
+						</StackPanel>
+
+						<ui:Button Grid.Column="1" Content="Sign Out" VerticalAlignment="Center"
+                                   Command="{Binding SignOutCommand}" Theme="{StaticResource AccentButtonStyle}" />
+					</Grid>
+				</StackPanel>
+			</Border>
+
+			<Border Grid.Row="1" Padding="16"
+                    Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="1" CornerRadius="8">
+				<Grid RowDefinitions="Auto, *, Auto">
+					<TextBlock Grid.Row="0" Margin="0,0,0,16" FontSize="20" FontWeight="Bold" Text="Manage Accounts" />
+
+					<ListBox x:Name="AccountsListBox" Grid.Row="1" MaxHeight="400"
+                             ItemsSource="{Binding Accounts}"
+                             SelectedItem="{Binding SelectedAccount}">
+						<ListBox.KeyBindings>
+							<KeyBinding Gesture="Enter" Command="{Binding SelectAccountCommand}" />
+						</ListBox.KeyBindings>
+
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<Grid ColumnDefinitions="*, Auto">
+									<StackPanel Orientation="Horizontal" Spacing="12">
+										<Border Width="40" Height="40" CornerRadius="20" ClipToBounds="True">
+											<Image Source="{Binding AvatarUrl}" Stretch="UniformToFill" />
+										</Border>
+										<StackPanel VerticalAlignment="Center">
+											<TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding DisplayName}" />
+											<TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding Username}" />
+										</StackPanel>
+									</StackPanel>
+
+									<ui:Button Grid.Column="1" Width="32" Height="32" Padding="0"
+                                               Classes="danger"
+                                               Command="{Binding #AccountsListBox.((vm:AccountsViewModel)DataContext).DeleteAccountCommand}"
+                                               CommandParameter="{Binding}">
+										<ui:SymbolIcon Symbol="Delete" FontSize="16" />
+									</ui:Button>
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+
+					<StackPanel Grid.Row="2" Margin="0,16,0,0" Spacing="10">
+						<Grid ColumnDefinitions="Auto, *, Auto">
+							<ui:Button Grid.Column="0" Content="Switch to Selected" Height="36" Margin="0,0,8,0"
+                                       Command="{Binding SelectAccountCommand}" Classes="accent" />
+
+							<ui:Button Grid.Column="1" Content="Add New Account" Height="36" HorizontalAlignment="Stretch"
+                                       Command="{Binding AddAccountCommand}" />
+
+							<ComboBox Grid.Column="2" Width="140" Margin="8,0,0,0"
+                                      ItemsSource="{Binding AddMethods}"
+                                      SelectedItem="{Binding SelectedAddMethod}" />
+						</Grid>
+
+						<TextBlock IsVisible="{Binding IsInstallingChromium}"
+                                   Text="Installing Chromium browser for account manager, this will take a long time to finish, please wait"
+                                   TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="13" />
+					</StackPanel>
+				</Grid>
+			</Border>
+		</Grid>
+	</ScrollViewer>
+</UserControl>

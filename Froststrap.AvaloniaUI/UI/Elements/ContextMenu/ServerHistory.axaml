@@ -1,0 +1,119 @@
+<base:AvaloniaWindow
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enums="clr-namespace:Froststrap.Enums"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:Froststrap.UI.ViewModels.ContextMenu"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    x:Class="Froststrap.UI.Elements.ContextMenu.ServerHistory"
+    Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
+    Width="580" Height="420"
+    MinWidth="420" MinHeight="420"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+
+	<Window.Styles>
+		<Style Selector="TextBlock.errorView">
+			<Setter Property="IsVisible" Value="False" />
+		</Style>
+		<Style Selector="TextBlock.errorView[Tag=Failed]">
+			<Setter Property="IsVisible" Value="True" />
+		</Style>
+
+		<Style Selector="Border.loadingView">
+			<Setter Property="IsVisible" Value="False" />
+		</Style>
+		<Style Selector="Border.loadingView[Tag=Unknown]">
+			<Setter Property="IsVisible" Value="True" />
+		</Style>
+
+		<Style Selector="ListView.contentView">
+			<Setter Property="IsVisible" Value="False" />
+		</Style>
+		<Style Selector="ListView.contentView[Tag=Successful]">
+			<Setter Property="IsVisible" Value="True" />
+		</Style>
+	</Window.Styles>
+
+	<Grid Background="{DynamicResource ApplicationBackground}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<ui:TitleBar x:Name="RootTitleBar"
+                     Grid.Row="0"
+                     Padding="8"
+                     Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" />
+
+		<TextBlock Grid.Row="1"
+                   Margin="16,8,16,0"
+                   Text="{x:Static resources:Strings.ContextMenu_GameHistory_Description}"
+                   TextWrapping="Wrap" />
+
+		<TextBlock Grid.Row="2"
+                   Classes="errorView"
+                   Tag="{Binding LoadState}"
+                   Margin="16,8,16,0"
+                   Text="{Binding Error}"
+                   TextWrapping="Wrap" />
+
+		<Border Grid.Row="2"
+                Classes="loadingView"
+                Tag="{Binding LoadState}">
+			<ui:ProgressRing IsIndeterminate="True" VerticalAlignment="Center" HorizontalAlignment="Center" />
+		</Border>
+
+		<ListView Grid.Row="2"
+                  Classes="contentView"
+                  Tag="{Binding LoadState}"
+                  Margin="8"
+                  ItemsSource="{Binding GameHistory}">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<ui:ControlExample Padding="0">
+						<Border Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8" Margin="0,4" Padding="8">
+							<Grid ColumnDefinitions="Auto, *">
+								<Border Grid.Column="0" Width="107" Height="107" CornerRadius="4" ClipToBounds="True">
+									<Image Source="{Binding UniverseDetails.Thumbnail.ImageUrl}" Stretch="UniformToFill" />
+								</Border>
+
+								<StackPanel Grid.Column="1" Margin="16,4,4,4" VerticalAlignment="Center" Spacing="4">
+									<TextBlock FontSize="18" FontWeight="Medium" Text="{Binding UniverseDetails.Data.Name}" />
+									<TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding JobId}" FontSize="12" />
+
+									<StackPanel Margin="0,8,0,0" Orientation="Horizontal" Spacing="8">
+										<ui:Button Command="{Binding RejoinServerCommand}"
+                                                   Content="{x:Static resources:Strings.ContextMenu_GameHistory_Rejoin}"
+                                                   Classes="accent">
+											<ui:SymbolIcon Symbol="Play" />
+										</ui:Button>
+
+										<ui:Button Command="{Binding CopyDeeplinkCommand}" Content="DeepLink">
+											<ui:SymbolIcon Symbol="Copy" />
+										</ui:Button>
+
+										<ui:Button Command="{Binding CopyServerIdCommand}" Content="Server ID">
+											<ui:SymbolIcon Symbol="Clipboard" />
+										</ui:Button>
+
+										<ui:Button Command="{Binding DeleteHistoryCommand}"
+                                                   Content="{x:Static resources:Strings.Common_Delete}"
+                                                   Theme="{StaticResource DangerButtonStyle}">
+											<ui:SymbolIcon Symbol="Delete" />
+										</ui:Button>
+									</StackPanel>
+								</StackPanel>
+							</Grid>
+						</Border>
+					</ui:ControlExample>
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+	</Grid>
+</base:AvaloniaWindow>

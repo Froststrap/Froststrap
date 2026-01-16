@@ -1,12 +1,13 @@
-﻿using Avalonia;
+﻿using System.Collections.ObjectModel;
+using System.IO.Compression;
+using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
-using System.Collections.ObjectModel;
-using System.IO.Compression;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -134,19 +135,20 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         [RelayCommand]
-        private void ShowModInfo(CommunityMod mod)
-        {
-            if (mod == null) return;
+		private async void ShowModInfo(CommunityMod mod)
+		{
+			if (mod == null) return;
 
-            var dialog = new CommunityModInfoDialog(mod)
-            {
-                Owner = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop ? desktop.MainWindow : null
-            };
+			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+			{
+				var parentWindow = desktop.MainWindow;
 
-            var result = dialog.ShowDialog();
-        }
+				var dialog = new CommunityModInfoDialog(mod);
+				dialog.ShowDialog(parentWindow);
+			}
+		}
 
-        [RelayCommand]
+		[RelayCommand]
         private async Task LoadModsAsync()
         {
             try

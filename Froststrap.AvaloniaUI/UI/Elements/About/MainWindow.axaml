@@ -1,0 +1,50 @@
+<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:pages="clr-namespace:Froststrap.UI.Elements.About.Pages"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:resources="clr-namespace:Froststrap.Resources"
+        mc:Ignorable="d"
+        x:Class="Froststrap.UI.Elements.About.MainWindow"
+        Title="{x:Static resources:Strings.About_Title}"
+        MinWidth="740" Width="740" Height="440"
+        WindowStartupLocation="CenterScreen"
+        TransparencyLevelHint="Mica"
+        Background="Transparent"
+        ExtendClientAreaToDecorationsHint="True">
+
+	<Grid RowDefinitions="Auto,*">
+		<Grid Grid.Row="1" Margin="12,40,12,12">
+			<ui:NavigationView x:Name="RootNavigation"
+                               PaneDisplayMode="Left"
+                               IsSettingsVisible="False"
+                               IsBackButtonVisible="False">
+				<ui:NavigationView.MenuItems>
+					<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}"
+                                           Tag="about"
+                                           IconSource="HelpRound24" />
+
+					<ui:NavigationViewItem Content="{x:Static resources:Strings.About_Supporters_Title}"
+                                           IsVisible="False"
+                                           Tag="supporters"
+                                           IconSource="Heart24" />
+
+					<ui:NavigationViewItem Tag="translators" IconSource="CharacterAnimate24">
+						<ui:NavigationViewItem.Content>
+							<TextBlock Text="{x:Static resources:Strings.About_Translators_Title}"
+                                       FontSize="12" />
+						</ui:NavigationViewItem.Content>
+					</ui:NavigationViewItem>
+
+					<ui:NavigationViewItem Content="{x:Static resources:Strings.About_Licenses_Title}"
+                                           Tag="licenses"
+                                           IconSource="Code24" />
+				</ui:NavigationView.MenuItems>
+
+				<ui:Frame x:Name="RootFrame" />
+			</ui:NavigationView>
+		</Grid>
+	</Grid>
+</base:AvaloniaWindow>

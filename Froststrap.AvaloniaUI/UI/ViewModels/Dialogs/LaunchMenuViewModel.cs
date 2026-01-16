@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 
-using Froststrap.UI.Elements.About;
+//using Froststrap.UI.Elements.About;
 using Froststrap.UI.Elements.Settings;
 
 namespace Froststrap.UI.ViewModels.Installer

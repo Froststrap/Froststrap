@@ -45,7 +45,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             App.FrostRPC?.SetDialog("About");
 
-            new Elements.About.MainWindow().ShowDialog();
+            new Elements.About.MainWindow().Show();
 
             App.FrostRPC?.ClearDialog();
         }
@@ -54,7 +54,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             App.FrostRPC?.SetDialog("Account Manager");
 
-            new Elements.AccountManagers.MainWindow().ShowDialog();
+            new Elements.AccountManagers.MainWindow().Show();
 
             App.FrostRPC?.ClearDialog();
         }
