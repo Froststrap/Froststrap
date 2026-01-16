@@ -1,7 +1,9 @@
 ﻿using System.Windows.Input;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 
 using Froststrap.UI.Elements.About;
+using Froststrap.UI.Elements.Settings;
 
 namespace Froststrap.UI.ViewModels.Installer
 {
@@ -34,6 +36,6 @@ namespace Froststrap.UI.ViewModels.Installer
 
         private void LaunchRobloxStudio() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRobloxStudio);
 
-        private void LaunchAbout() => new MainWindow().ShowDialog();
+        private void LaunchAbout() => new MainWindow().Show();
     }
 }

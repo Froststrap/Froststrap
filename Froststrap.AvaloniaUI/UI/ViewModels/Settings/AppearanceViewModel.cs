@@ -384,11 +384,14 @@ namespace Froststrap.UI.ViewModels.Settings
             Directory.Move(oldDir, newDir);
         }
 
-        private void AddCustomTheme()
+        private async void AddCustomTheme()
         {
             App.FrostRPC?.SetDialog("Add Custom Launcher");
-            var dialog = new AddCustomThemeDialog();
-            dialog.ShowDialog();
+
+			var parentWindow = (Window)TopLevel.GetTopLevel(_page)!;
+
+			var dialog = new AddCustomThemeDialog();
+            await dialog.ShowDialog(parentWindow);
 
             App.FrostRPC?.ClearDialog();
 
@@ -493,14 +496,15 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(SelectedCustomThemeIndex));
         }
 
-        private void EditCustomTheme()
+        private async void EditCustomTheme()
         {
             if (SelectedCustomTheme is null)
                 return;
 
             App.FrostRPC?.SetDialog("Edit Custom Theme");
 
-            new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog();
+			var parentWindow = (Window)TopLevel.GetTopLevel(_page)!;
+			await new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog(parentWindow);
 
             App.FrostRPC?.ClearDialog();
         }

@@ -1,0 +1,41 @@
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Bootstrapper.CustomDialog"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Froststrap"
+    Width="800"
+    Height="450"
+    MinWidth="150"
+    MinHeight="150"
+    MaxWidth="4000"
+    MaxHeight="4000"
+    Background="Transparent"
+    ExtendClientAreaToDecorationsHint="True"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    CanResize="False"
+    WindowStartupLocation="CenterScreen">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<Grid Name="RootTitleBar"
+              Grid.Row="0"
+              Height="32"
+              Background="Transparent"
+              IsHitTestVisible="True">
+			<TextBlock Text="Froststrap"
+                       VerticalAlignment="Center"
+                       Margin="12,0"
+                       FontSize="12" />
+		</Grid>
+
+		<Grid x:Name="ElementGrid" Grid.Row="1" />
+	</Grid>
+</base:AvaloniaWindow>

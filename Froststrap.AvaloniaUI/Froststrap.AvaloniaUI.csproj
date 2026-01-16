@@ -54,6 +54,12 @@
         <AutoGen>True</AutoGen>
         <DependentUpon>Strings.resx</DependentUpon>
       </Compile>
+      <Compile Update="UI\Elements\ContextMenu\MenuContainer.axaml.cs">
+        <DependentUpon>MenuContainer.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\Editor\BootstrapperEditorWindow.axaml.cs">
+        <DependentUpon>BootstrapperEditorWindow.axaml</DependentUpon>
+      </Compile>
       <Compile Update="UI\Elements\Settings\Pages\RobloxSettingsPage.axaml.cs">
         <DependentUpon>RobloxSettingsPage.axaml</DependentUpon>
       </Compile>

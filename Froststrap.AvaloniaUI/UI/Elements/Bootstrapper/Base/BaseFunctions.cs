@@ -6,7 +6,7 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
 {
     static class BaseFunctions
     {
-        public static void ShowSuccess(string message, Action? callback)
+        public static void ShowSuccess(CustomDialog customDialog, string message, Action? callback)
         {
 			Frontend.ShowMessageBox(message, MessageBoxImage.Information);
 
