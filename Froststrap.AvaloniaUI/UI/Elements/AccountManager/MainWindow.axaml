@@ -20,7 +20,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<ui:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" Title="Account Manager" />
+		<TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" />
 
 		<Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0" IsVisible="True">
 			<Grid.RowDefinitions>

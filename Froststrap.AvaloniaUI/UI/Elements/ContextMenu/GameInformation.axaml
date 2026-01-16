@@ -1,0 +1,127 @@
+<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+        xmlns:vm="using:Froststrap.UI.ViewModels.ContextMenu"
+        x:Class="Froststrap.UI.Elements.ContextMenu.GameInformation"
+        x:DataType="vm:GameInformationViewModel"
+        mc:Ignorable="d" 
+        Title="Game Information"
+        MinWidth="450" MinHeight="600"
+        Width="500" Height="700"
+        Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Fix this shit later -->
+        <ui:TitleBar Grid.Row="0" x:Name="RootTitleBar" Padding="8">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
+                <Image Source="avares://Bloxstrap/Bloxstrap.ico" Width="18" Height="18" />
+                <TextBlock Text="Game Information" VerticalAlignment="Center" FontSize="12" />
+            </StackPanel>
+        </ui:TitleBar>
+
+        <Grid Grid.Row="1" IsVisible="{Binding IsDataLoading}" Background="Transparent">
+            <ui:ProgressRing Width="60" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" 
+                      IsVisible="{Binding !IsDataLoading}"
+                      VerticalScrollBarVisibility="Auto" 
+                      Padding="20">
+            <StackPanel Spacing="10">
+                
+                <StackPanel IsVisible="{Binding HasError}" HorizontalAlignment="Center" Margin="0,20" Spacing="10">
+                    <ui:SymbolIcon Symbol="ErrorCircle24" FontSize="48" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                    <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                    <Button Content="Retry" Command="{Binding RefreshInformationCommand}" HorizontalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel IsVisible="{Binding !HasError}" Spacing="20">
+                    <Border Background="{DynamicResource SystemFillColorAttentionBrush}" 
+                            CornerRadius="8,8,0,0" Padding="15,10">
+                        <TextBlock Text="{Binding GameName}" FontSize="18" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    </Border>
+
+                    <Border CornerRadius="8" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Game Details" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,2"/>
+                            
+                            <Grid ColumnDefinitions="80,*">
+                                <TextBlock Text="Creator:" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                                    <TextBlock Text="{Binding CreatorName}" />
+                                    <Image Width="14" Height="14" 
+                                           Source="avares://Bloxstrap/Resources/RobloxVerified.png"
+                                           IsVisible="{Binding IsCreatorVerified}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="80,*">
+                                <TextBlock Text="Genre:" FontWeight="SemiBold" />
+                                <TextBlock Grid.Column="1" Text="{Binding Genre}" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border CornerRadius="8" Padding="15" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                        <UniformGrid Columns="3">
+                            <StackPanel HorizontalAlignment="Center" Spacing="2">
+                                <ui:SymbolIcon Symbol="People" FontSize="24" Foreground="{DynamicResource SystemFillColorSuccessBrush}" />
+                                <TextBlock Text="{Binding PlayingCount}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Playing" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            
+                            <StackPanel HorizontalAlignment="Center" Spacing="2">
+                                <ui:SymbolIcon Symbol="Eye24" Foreground="{DynamicResource SystemFillColorAttentionBrush}" />
+                                <TextBlock Text="{Binding VisitsCount}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Visits" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel HorizontalAlignment="Center" Spacing="2">
+                                <ui:SymbolIcon Symbol="Favorite" FontSize="24" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                                <TextBlock Text="{Binding FavoritesCount}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Favorites" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </UniformGrid>
+                    </Border>
+
+                    <TabControl>
+                        <TabItem Header="Subplaces">
+                            <ItemsControl ItemsSource="{Binding Subplaces}" Margin="0,10">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="6" Margin="0,0,0,8" Padding="10,8" Background="{DynamicResource ControlFillColorDefaultBrush}">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <Border Width="40" Height="40" CornerRadius="4" ClipToBounds="True">
+                                                    <Panel>
+                                                        <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" IsVisible="{Binding ThumbnailUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                        <ui:SymbolIcon Symbol="Map" FontSize="24" IsVisible="{Binding ThumbnailUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                                    </Panel>
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" Margin="10,0,0,0" TextWrapping="Wrap" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </TabItem>
+                        <TabItem Header="Description">
+                            <TextBlock Text="{Binding GameDescription}" Margin="15" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15" Spacing="12">
+                <Button Content="Copy Game Link" Command="{Binding CopyGameLinkCommand}" MinWidth="80"/>
+                <Button Content="Close" Click="CloseButton_Click" MinWidth="80"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>

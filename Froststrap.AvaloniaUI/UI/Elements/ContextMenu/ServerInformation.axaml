@@ -1,0 +1,77 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:Froststrap.UI.ViewModels.ContextMenu"
+        xmlns:res="using:Froststrap.Resources"
+        x:Class="Froststrap.UI.Elements.ContextMenu.ServerInformation"
+        x:DataType="vm:ServerInformationViewModel"
+        mc:Ignorable="d"
+        Title="{x:Static res:Strings.ContextMenu_ServerInformation_Title}"
+        Width="420" SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="40"
+        Background="{DynamicResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        
+        <Grid Grid.Row="0" Height="40" ColumnDefinitions="Auto,*,Auto">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0" Spacing="8">
+                <Image Source="avares://Bloxstrap/Bloxstrap.ico" Width="18" Height="18" />
+                <TextBlock Text="{x:Static res:Strings.ContextMenu_ServerInformation_Title}" 
+                           VerticalAlignment="Center" 
+                           FontSize="12" />
+            </StackPanel>
+            
+            <Button Grid.Column="2" 
+                    Content="&#xE8BB;" 
+                    FontFamily="{StaticResource SymbolThemeFontFamily}"
+                    Theme="{StaticResource CaptionButton}"
+                    Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=Close}" />
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="16,8,16,16" RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*">
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" 
+                       Text="{x:Static res:Strings.ContextMenu_ServerInformation_Type}"  />
+            <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
+                       Text="{Binding ServerType}"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" 
+                       Text="{x:Static res:Strings.ContextMenu_ServerInformation_InstanceId}"  />
+            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
+                       Text="{Binding InstanceId}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" 
+                       Text="{x:Static res:Strings.ContextMenu_ServerInformation_Location}" 
+                       IsVisible="{Binding ServerLocationVisibility}"  />
+            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
+                       Text="{Binding ServerLocation}" 
+                       IsVisible="{Binding ServerLocationVisibility}" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,0,16,12" VerticalAlignment="Center" 
+                       Text="{x:Static res:Strings.ContextMenu_ServerInformation_Uptime}" 
+                       IsVisible="{Binding ServerUptimeVisibility}"  />
+            <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" 
+                       Text="{Binding ServerUptime}" 
+                       IsVisible="{Binding ServerUptimeVisibility}" />
+        </Grid>
+
+        <Border Grid.Row="2" Padding="15" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                <Button MinWidth="100" 
+                        Content="{x:Static res:Strings.ContextMenu_ServerInformation_CopyInstanceId}" 
+                        Command="{Binding CopyInstanceIdCommand}" />
+                <Button MinWidth="100" 
+                        Content="{x:Static res:Strings.Common_Close}" 
+                        Click="CloseButton_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>
