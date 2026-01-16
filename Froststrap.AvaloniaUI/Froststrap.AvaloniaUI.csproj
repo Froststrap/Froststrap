@@ -5,6 +5,8 @@
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+		<Version>2.0.0-alpha.1</Version>
+		<FileVersion>2.0.0-alpha.1</FileVersion>
         <AssemblyName>Froststrap</AssemblyName>
         <RootNamespace>Froststrap</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -53,6 +55,9 @@
         <DesignTime>True</DesignTime>
         <AutoGen>True</AutoGen>
         <DependentUpon>Strings.resx</DependentUpon>
+      </Compile>
+      <Compile Update="UI\Elements\Bootstrapper\CustomDialog.axaml.cs">
+        <DependentUpon>CustomDialog.axaml</DependentUpon>
       </Compile>
       <Compile Update="UI\Elements\ContextMenu\MenuContainer.axaml.cs">
         <DependentUpon>MenuContainer.axaml</DependentUpon>
