@@ -20,11 +20,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="Froststrap"
-                     IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0"/>
 
 		<Grid Grid.Row="1">
 			<Grid.ColumnDefinitions>
@@ -44,8 +40,8 @@
 						<ColumnDefinition Width="*" />
 					</Grid.ColumnDefinitions>
 
-					<Image Grid.Column="0" Width="64" Height="64"
-                           Source="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico" />
+					<Image Grid.Column="0" Width="64" Height="64" RenderOptions.BitmapInterpolationMode="HighQuality"
+                           Source="avares://Froststrap.AvaloniaUI/Froststrap.ico" />
 					<StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
 						<TextBlock x:Name="LaunchTitle" Text="Froststrap"
                                    FontSize="24" FontWeight="Bold" />
@@ -119,7 +115,7 @@
                         Margin="12,16,12,16" />
 
 				<Button Width="285" Height="70" Margin="0,10,0,0"
-                        Command="{Binding OpenWebpageCommand, Source={x:Static models:GlobalViewModel.Instance}}"
+                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
                         HorizontalContentAlignment="Left"
                         Padding="12">

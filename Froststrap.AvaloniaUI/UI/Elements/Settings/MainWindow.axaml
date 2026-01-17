@@ -18,11 +18,7 @@
 
 	<Grid RowDefinitions="Auto,*,Auto">
 
-		<ui:AppTitleBar Grid.Row="0" IsFilled="True" Height="32">
-			<ui:AppTitleBar.LeftHeader>
-				<Image Source="/Assets/Bloxstrap.ico" Width="18" Height="18" Margin="12,0,0,0" VerticalAlignment="Center"/>
-			</ui:AppTitleBar.LeftHeader>
-		</ui:AppTitleBar>
+		<TitleBar Grid.Row="0" IsFilled="True" Height="32"/>
 
 		<ui:TeachingTip x:Name="AlreadyRunningTip" Title="{x:Static resources:Strings.Menu_AlreadyRunning_Title}" Subtitle="{x:Static resources:Strings.Menu_AlreadyRunning_Caption}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />
 		<ui:TeachingTip x:Name="SettingsSavedTip" Title="{x:Static resources:Strings.Menu_SettingsSaved_Title}" Subtitle="{x:Static resources:Strings.Menu_SettingsSaved_Message}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />

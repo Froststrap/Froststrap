@@ -23,12 +23,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar
-            Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
-            Grid.Row="0"
-            IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-            IsMaximizeButtonEnabled="False"
-            IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0" />
 
 		<Grid Grid.Row="1" Margin="20,8,20,16">
 			<Grid.RowDefinitions>

@@ -20,11 +20,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <fa:TitleBar Grid.Row="0" 
-                     Title="{x:Static resources:Strings.Installer_Title}"
-                     IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+        <TitleBar Grid.Row="0" />
 
         <StackPanel Grid.Row="1" Margin="12">
             <TextBlock Text="{x:Static resources:Strings.Dialog_LanguageSelector_Header}" 

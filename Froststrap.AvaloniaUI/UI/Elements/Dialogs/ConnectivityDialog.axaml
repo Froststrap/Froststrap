@@ -20,10 +20,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0" />
 
 		<Grid Grid.Row="1" Margin="16">
 			<Grid.ColumnDefinitions>
@@ -32,7 +29,7 @@
 			</Grid.ColumnDefinitions>
 
 			<Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
-                   Margin="0,0,15,0" VerticalAlignment="Top" />
+                   Margin="0,0,15,0" VerticalAlignment="Top" RenderOptions.BitmapInterpolationMode="HighQuality" />
 
 			<StackPanel Grid.Column="1">
 				<TextBlock x:Name="TitleTextBlock" Text="? is unable to connect to ?"

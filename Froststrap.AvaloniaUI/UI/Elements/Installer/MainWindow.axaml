@@ -9,15 +9,13 @@
         xmlns:dmodels="clr-namespace:Froststrap.UI.ViewModels.Installer"
         xmlns:pages="clr-namespace:Froststrap.UI.Elements.Installer.Pages"
         mc:Ignorable="d"
-        d:DesignContext="{d:DesignInstance dmodels:MainWindowViewModel}"
         Title="{x:Static resources:Strings.Installer_Title}"
         Height="540" Width="840" MinWidth="840"
         WindowStartupLocation="CenterScreen">
 
 	<Grid RowDefinitions="Auto, *, Auto" Background="{DynamicResource ApplicationBackground}">
 
-		<ui:TitleBar x:Name="RootTitleBar" Grid.Row="0" Padding="8"
-                     Title="{x:Static resources:Strings.Installer_Title}" />
+		<TitleBar x:Name="RootTitleBar" Grid.Row="0" Padding="8"/>
 
 		<Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0">
 			<Grid.ColumnDefinitions>
@@ -59,7 +57,7 @@
                 BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="*, Auto, Auto, Auto">
 
-				<ui:Button Grid.Column="1"
+				<Button Grid.Column="1"
                            Content="{x:Static resources:Strings.Common_Navigation_Back}"
                            Width="{Binding ButtonWidth}"
                            Command="{Binding BackPageCommand}"
@@ -67,7 +65,7 @@
                            FontWeight="Medium"
                            Margin="0,0,8,0"/>
 
-				<ui:Button x:Name="NextButton" Grid.Column="2"
+				<Button x:Name="NextButton" Grid.Column="2"
                            Classes="accent"
                            Content="{Binding NextButtonText}"
                            Width="{Binding ButtonWidth}"
@@ -75,7 +73,7 @@
                            FontWeight="Medium"
                            Margin="0,0,8,0"/>
 
-				<ui:Button Grid.Column="3"
+				<Button Grid.Column="3"
                            Content="{x:Static resources:Strings.Common_Close}"
                            Width="{Binding ButtonWidth}"
                            Command="{Binding CloseWindowCommand}"

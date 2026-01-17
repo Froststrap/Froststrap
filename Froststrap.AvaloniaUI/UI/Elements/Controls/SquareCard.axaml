@@ -19,10 +19,10 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 
-			<TextBlock Grid.Row="0" FontSize="18" TextWrapping="Wrap"
+			<TextBlock x:Name="HeaderTextBlock" Grid.Row="0" FontSize="18" TextWrapping="Wrap"
                        Text="{Binding Header, ElementName=Control}">
 				<TextBlock.Styles>
-					<Style Selector="TextBlock">
+					<Style Selector="#HeaderTextBlock">
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Header, ElementName=Control}" Value="{x:Null}">
 								<Setter Property="IsVisible" Value="False"/>
@@ -32,12 +32,12 @@
 				</TextBlock.Styles>
 			</TextBlock>
 
-			<ui:MarkdownTextBlock Grid.Row="1" FontSize="14" TextWrapping="Wrap"
+			<ui:MarkdownTextBlock x:Name="MarkdownTextBlock" Grid.Row="1" FontSize="14" TextWrapping="Wrap"
                        Margin="0,6,0,0"
                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 					MarkdownText="{Binding Description, ElementName=Control}">
 				<ui:MarkdownTextBlock.Style>
-					<Style Selector="ui:MarkdownScrollViewer">
+					<Style Selector="#MarkdownTextBlock">
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
 								<Setter Property="IsVisible" Value="False"/>
@@ -62,8 +62,6 @@
 					</Style>
 				</ContentPresenter.Styles>
 			</ContentPresenter>
-		
-	
-	</Grid>
+		</Grid>
 	</Border>
 </UserControl>

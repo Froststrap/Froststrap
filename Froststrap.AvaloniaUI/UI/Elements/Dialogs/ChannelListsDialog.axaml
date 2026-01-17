@@ -23,11 +23,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Title="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels}"
-                    Grid.Row="0"
-                    IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                    IsMaximizeButtonEnabled="True"
-                    IsMinimizeButtonEnabled="True" />
+		<TitleBar Grid.Row="0"/>
 
 		<TextBlock Grid.Row="1"
                    Text="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels_Description}"

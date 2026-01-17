@@ -5,7 +5,7 @@ using Froststrap.Integrations;
 
 namespace Froststrap.UI.Elements.ContextMenu
 {
-	public partial class MenuContainer : Window
+	public partial class MenuContainer : Base.AvaloniaWindow
 	{
 		private readonly Watcher _watcher;
 		private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;

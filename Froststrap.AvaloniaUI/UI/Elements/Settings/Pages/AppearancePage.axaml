@@ -128,7 +128,7 @@
                             
                             <StackPanel Margin="0,12,0,0">
                                 <TextBlock Text="Image Opacity:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                                <Slider Minimum="0" Maximum="100" Value="{Binding BackgroundOpacity, Mode=TwoWay}" PreviewMouseLeftButtonUp="OnSliderReleased" TickFrequency="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"/>
+                                <Slider Minimum="0" Maximum="100" Value="{Binding BackgroundOpacity, Mode=TwoWay}" PointerReleased="OnSliderReleased" TickFrequency="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -155,8 +155,7 @@
                             Content="Choose Font"
                             Command="{Binding ManageCustomFontCommand}"
                             CommandParameter="Choose"
-                            IsVisible="{Binding ChooseCustomFontVisibility, Mode=OneWay}"
-                            />
+                            IsVisible="{Binding ChooseCustomFontVisibility, Mode=OneWay}"/>
                         <Button
                             Content="Remove Font"
                             Command="{Binding ManageCustomFontCommand}"
@@ -191,7 +190,7 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         
-                        <ListBox x:Name="ListBoxNavigationItems" Grid.Row="0" Margin="0,0,0,8" SelectedIndex="0" HorizontalContentAlignment="Stretch">
+                        <ListBox x:Name="ListBoxNavigationItems" Grid.Row="0" Margin="0,0,0,8" SelectedIndex="0" HorizontalAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding }" Padding="4,2"  />
@@ -262,12 +261,13 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Margin="0,0,4,0" Content="{x:Static resources:Strings.Common_New}" HorizontalAlignment="Stretch" Command="{Binding AddCustomThemeCommand, Mode=OneTime}"  />
-                            <Button Grid.Column="1" Margin="4,0,0,0" Content="{x:Static resources:Strings.Common_Delete}" HorizontalAlignment="Stretch" Appearance="Danger" IsEnabled="{Binding IsCustomThemeSelected, Mode=OneWay}" Command="{Binding DeleteCustomThemeCommand, Mode=OneTime}"  />
+                            <Button Grid.Column="1" Margin="4,0,0,0" Content="{x:Static resources:Strings.Common_Delete}" HorizontalAlignment="Stretch" Theme="{StaticResource DangerButtonStyle}" IsEnabled="{Binding IsCustomThemeSelected, Mode=OneWay}" Command="{Binding DeleteCustomThemeCommand, Mode=OneTime}"  />
                         </Grid>
                         <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0">
                             <StackPanel.Styles>
                                 <Style>
                                     <!-- TODO: Convert to Avalonia -->
+                                    <!-- NOTE: We also need to convert ones in option control, addflagdialog and etc etc -->
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsCustomThemeSelected}" Value="False">
                                             <Setter Property="StackPanel.Visibility" Value="Hidden"/>
@@ -312,7 +312,7 @@
                     x:Name="IconSelector"
                     Header="{x:Static resources:Strings.Menu_Appearance_Icon_Title}" 
                     Description="{x:Static resources:Strings.Menu_Appearance_Icon_Description}">
-                    <ComboBox Width="200" Padding="10,5,10,5" ItemsSource="{Binding Icons, Mode=OneWay}" SelectedValuePath="IconType" SelectedValue="{Binding Icon, Mode=TwoWay}">
+                    <ComboBox Width="200" Padding="10,5,10,5" ItemsSource="{Binding Icons, Mode=OneWay}" SelectedValueBinding="{Binding IconType}" SelectedValue="{Binding Icon, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -320,7 +320,7 @@
                                         <ColumnDefinition Width="16" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <Image Height="16" Source="{Binding ImageSource, Mode=OneWay}" RenderOptions.BitmapScalingMode="HighQuality" />
+                                    <Image Height="16" Source="{Binding ImageSource, Mode=OneWay}" RenderOptions.BitmapInterpolationMode="HighQuality" />
                                     <TextBlock Grid.Column="1" Margin="8,0,0,0" Text="{Binding Path=IconType, Converter={StaticResource EnumNameConverter}}" />
                                 </Grid>
                             </DataTemplate>

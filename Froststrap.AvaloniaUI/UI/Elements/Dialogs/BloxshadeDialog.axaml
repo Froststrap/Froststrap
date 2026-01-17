@@ -20,11 +20,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="Froststrap"
-                     IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0" />
 
 		<Grid Grid.Row="1">
 			<Grid.RowDefinitions>

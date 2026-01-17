@@ -1,8 +1,9 @@
 ﻿<UserControl x:Class="Froststrap.UI.Elements.Controls.OptionControl"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:models="clr-namespace:Bloxstrap.UI.ViewModels"
+	xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
     xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
+	xmlns:icon="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
     x:Name="Control">
 
 	<Border
@@ -25,24 +26,21 @@
 
 					<!-- Help link will use emoji for now -->
 					<TextBlock x:Name="HelpLinkText" Margin="4,0,0,0">
-						<Hyperlink
-							Command="models:GlobalViewModel.OpenWebpageCommand"
-							CommandParameter="{Binding HelpLink, ElementName=Control}"
-							TextDecorations="None">
-							<TextBlock Text="?"
-									   FontSize="14"
-									   FontWeight="Bold"
+						<HyperlinkButton
+							Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+							CommandParameter="{Binding HelpLink, ElementName=Control}">
+							<icon:SymbolIcon Symbol="Help"
 									   Foreground="{DynamicResource SystemAccentColorSecondary}">
 								<TextBlock.Styles>
 									<Style Selector="TextBlock:pointerover">
 										<Setter Property="Foreground" Value="{DynamicResource SystemAccentColorTertiary}" />
 									</Style>
 								</TextBlock.Styles>
-							</TextBlock>
-						</Hyperlink>
+							</icon:SymbolIcon>
+						</HyperlinkButton>
 
 						<TextBlock.Styles>
-							<Style Selector="TextBlock">
+							<Style Selector="#HelpLinkText">
 								<Style.Triggers>
 									<DataTrigger Binding="{Binding HelpLink, ElementName=Control}" Value="{x:Null}">
 										<Setter Property="IsVisible" Value="False" />
@@ -61,7 +59,7 @@
 					TextWrapping="Wrap">
 
 					<ui:MarkdownTextBlock.Styles>
-						<Style Selector="ui:MarkdownTextBlock">
+						<Style Selector="#MarkdownText">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
 									<Setter Property="IsVisible" Value="False" />

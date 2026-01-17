@@ -3,7 +3,7 @@ using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class UninstallerDialog : Window
+    public partial class UninstallerDialog : Base.AvaloniaWindow
     {
         public bool Confirmed { get; private set; } = false;
         public bool KeepData { get; private set; } = true;

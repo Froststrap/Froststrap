@@ -19,11 +19,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="Multiblox"
-                     IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0"/>
 
 		<StackPanel Grid.Row="1" Margin="16">
 			<TextBlock Text="Launch multiple Roblox instances with a custom delay."

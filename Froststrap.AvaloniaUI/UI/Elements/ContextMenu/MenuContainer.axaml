@@ -21,7 +21,7 @@
 			<MenuItem IsEnabled="False">
 				<MenuItem.Header>
 					<Grid ColumnDefinitions="20, *">
-						<Image Grid.Column="0" Source="/Assets/Froststrap.ico" />
+						<Image Grid.Column="0" Source="/Assets/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality" />
 						<TextBlock x:Name="VersionTextBlock"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                    Grid.Column="1"

@@ -16,8 +16,8 @@ using Froststrap.Resources;
 
 namespace Froststrap.UI.Elements.Settings
 {
-	public partial class MainWindow : Window
-	{
+	public partial class MainWindow : Base.AvaloniaWindow
+    {
 		private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
 
 		public static ObservableCollection<NavigationViewItem> MainNavigationItems { get; } = new();
@@ -92,8 +92,6 @@ namespace Froststrap.UI.Elements.Settings
 			this.TransparencyLevelHint = new[] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur };
 			this.Background = Brushes.Transparent;
 		}
-
-
 
 		private void OnNavigationChanged(object? sender, NavigationViewSelectionChangedEventArgs e)
 		{

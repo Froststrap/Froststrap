@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" ShowMinimize="False" ShowMaximize="False" CanMaximize="False" KeyboardNavigation.TabNavigation="None" />
+        <TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" />
 
         <TabControl x:Name="Tabs" Grid.Row="1" Margin="16">
             <TabItem Header="{x:Static resources:Strings.Common_AddSingle}" >
@@ -42,7 +42,7 @@
                         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,12" VerticalAlignment="Center">
                             <TextBlock Text="{x:Static resources:Strings.Common_Value}" FontWeight="SemiBold" Width="120" VerticalAlignment="Center"/>
 
-                            <ComboBox x:Name="FlagValueComboBox" Width="220" IsEditable="True" IsTextSearchEnabled="False" StaysOpenOnEdit="True" ItemsSource="{Binding CommonValuesView.View}" SelectedValuePath="Value" Loaded="FlagValueComboBox_Loaded" >
+                            <ComboBox x:Name="FlagValueComboBox" Width="220" IsEditable="True" IsTextSearchEnabled="False" StaysOpenOnEdit="True" ItemsSource="{Binding CommonValuesView.View}" SelectedValueBinding="{Binding Value}" Loaded="FlagValueComboBox_Loaded" >
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Margin="2">
@@ -83,10 +83,10 @@
                         <TextBlock Grid.Row="0" IsHitTestVisible="False" Margin="18,14,0,0" Foreground="DarkGray" Text="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}">
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="IsVisible" Value="False"/>
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Text, ElementName=JsonTextBox}" Value="">
-                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="IsVisible" Value="True"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>

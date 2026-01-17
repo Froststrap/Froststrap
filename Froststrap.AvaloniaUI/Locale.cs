@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Styling;
+using Froststrap.UI.Elements.Base;
 
 namespace Froststrap
 {
@@ -147,7 +148,7 @@ namespace Froststrap
             }
         }
 
-        public class LocaleAwareWindow : Window
+        public class LocaleAwareWindow : AvaloniaWindow
         {
             public LocaleAwareWindow()
             {

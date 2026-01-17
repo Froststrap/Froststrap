@@ -1,11 +1,11 @@
-<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.ContextMenu.GameInformation"
+        xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
         xmlns:vm="using:Froststrap.UI.ViewModels.ContextMenu"
-        x:Class="Froststrap.UI.Elements.ContextMenu.GameInformation"
         x:DataType="vm:GameInformationViewModel"
         mc:Ignorable="d" 
         Title="Game Information"
@@ -16,13 +16,8 @@
         ExtendClientAreaToDecorationsHint="True">
 
     <Grid RowDefinitions="Auto,*,Auto">
-        <!-- Fix this shit later -->
-        <ui:TitleBar Grid.Row="0" x:Name="RootTitleBar" Padding="8">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="8">
-                <Image Source="avares://Bloxstrap/Bloxstrap.ico" Width="18" Height="18" />
-                <TextBlock Text="Game Information" VerticalAlignment="Center" FontSize="12" />
-            </StackPanel>
-        </ui:TitleBar>
+        <!-- TODO: get titlebar library -->
+        <TitleBar Grid.Row="0" x:Name="RootTitleBar" Padding="8"/>
 
         <Grid Grid.Row="1" IsVisible="{Binding IsDataLoading}" Background="Transparent">
             <ui:ProgressRing Width="60" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -98,7 +93,7 @@
                                             <Grid ColumnDefinitions="Auto,*">
                                                 <Border Width="40" Height="40" CornerRadius="4" ClipToBounds="True">
                                                     <Panel>
-                                                        <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" IsVisible="{Binding ThumbnailUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                                                        <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" IsVisible="{Binding ThumbnailUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" RenderOptions.BitmapInterpolationMode="HighQuality" />
                                                         <ui:SymbolIcon Symbol="Map" FontSize="24" IsVisible="{Binding ThumbnailUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
                                                     </Panel>
                                                 </Border>

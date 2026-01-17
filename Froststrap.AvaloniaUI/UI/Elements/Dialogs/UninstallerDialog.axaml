@@ -9,7 +9,6 @@
         xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance dmodels:UninstallerViewModel, IsDesignTimeCreatable=True}"
         Title="Froststrap"
         MinWidth="480"
         Width="480"
@@ -24,11 +23,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="Froststrap"
-                     IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0" />
 
 		<StackPanel Grid.Row="1" Margin="12">
 			<TextBlock FontSize="20" FontWeight="SemiBold"

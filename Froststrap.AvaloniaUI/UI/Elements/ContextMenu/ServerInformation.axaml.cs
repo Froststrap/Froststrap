@@ -5,7 +5,7 @@ using Froststrap.UI.ViewModels.ContextMenu;
 
 namespace Froststrap.UI.Elements.ContextMenu;
 
-public partial class ServerInformation : Window
+public partial class ServerInformation : Base.AvaloniaWindow
 {
     public ServerInformation(Watcher watcher)
     {

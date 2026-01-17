@@ -20,10 +20,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="{x:Static resources:Strings.Dialog_Exception_Title}"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0" />
 
 		<Grid Grid.Row="1" Margin="16">
 			<Grid.ColumnDefinitions>
@@ -33,7 +30,7 @@
 
 			<Image Grid.Column="0" Width="32" Height="32"
                    Margin="0,0,15,0" VerticalAlignment="Top"
-                   Source="avares://Froststrap.AvaloniaUI/Resources/MessageBox/Error.png" />
+                   Source="avares://Froststrap.AvaloniaUI/Resources/MessageBox/Error.png" RenderOptions.BitmapInterpolationMode="HighQuality" />
 
 			<StackPanel Grid.Column="1">
 				<TextBlock Text="{x:Static resources:Strings.Dialog_Exception_Info_1}"

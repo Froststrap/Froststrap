@@ -5,7 +5,7 @@ using Froststrap.UI.ViewModels.ContextMenu;
 
 namespace Froststrap.UI.Elements.ContextMenu;
 
-public partial class GameInformation : Window
+public partial class GameInformation : Base.AvaloniaWindow
 {
     public GameInformation(long placeId, long universeId)
     {

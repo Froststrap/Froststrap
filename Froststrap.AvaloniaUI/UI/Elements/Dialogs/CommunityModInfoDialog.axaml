@@ -20,11 +20,7 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Title="Mod Information"
-                    Grid.Row="0"
-                    IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                    IsMaximizeButtonEnabled="False"
-                    IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0"/>
 
 		<Grid Grid.Row="1" Margin="8,8,8,4">
 			<Grid.ColumnDefinitions>
@@ -44,7 +40,8 @@
 					<Image Source="{Binding Mod.ThumbnailImage}"
                            Stretch="Uniform"
                            HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+                           VerticalAlignment="Center"
+                           RenderOptions.BitmapInterpolationMode="HighQuality"/>
 
 					<fa:ProgressRing
                         IsVisible="{Binding Mod.IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"

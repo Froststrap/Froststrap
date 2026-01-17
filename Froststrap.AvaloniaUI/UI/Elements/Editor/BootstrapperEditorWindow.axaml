@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:ae="clr-namespace:AvaloniaEdit;assembly=Avalonia.AvaloniaEdit"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Editor"
@@ -24,13 +24,8 @@
 		</StackPanel>
 
 		<Grid Grid.Row="1">
-			<ae:TextEditor Name="UIXML"
-                           Margin="10"
-                           ShowLineNumbers="True"
-                           FontFamily="{StaticResource CodeFontFamily}"
-                           SyntaxHighlighting="XML"
-                           HorizontalScrollBarVisibility="Auto"
-                           VerticalScrollBarVisibility="Visible" />
+            <!-- TODO: find diffrent text editor cuz this one only for windows -->
+         <avalonedit:TextEditor x:Name="UIXML" Grid.Column="0" Margin="10,10,10,10" ShowLineNumbers="True" Style="{StaticResource NewTextEditor}" SyntaxHighlighting="XML" />
 		</Grid>
 
 		<Grid Grid.Row="2" Margin="10,0,10,10" ColumnDefinitions="*, Auto, Auto, Auto">

@@ -27,10 +27,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="{x:Static resources:Strings.Menu_FastFlagEditor_ProfilesDescription}"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.Row="0" />
 
 		<TabControl x:Name="Tabs" Grid.Row="1" Margin="16">
 			<TabItem Header="{x:Static resources:Strings.Menu_Save}">

@@ -13,58 +13,54 @@
         CanResize="True"
         WindowStartupLocation="CenterScreen">
 
-	<Grid Margin="8,0">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+    <Grid Margin="8,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.Row="0"
-                     Title="Advanced Settings"
-                     IconSource="avares://Froststrap.AvaloniaUI/Resources/IconFroststrap.ico"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+        <TitleBar Grid.Row="0"/>
 
-		<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-			<StackPanel>
-				<TextBlock Text="Advanced and Miscellaneous settings for the fastflag editor"
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel>
+                <TextBlock Text="Advanced and Miscellaneous settings for the fastflag editor"
                            TextWrapping="Wrap"
                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                            FontSize="12"/>
 
-				<controls:OptionControl Margin="0,8,0,0"
+                <controls:OptionControl Margin="0,8,0,0"
                         Header="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_AltManually_Title}"
                         Description="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_AltManually_Description}">
-					<ToggleSwitch IsChecked="{Binding UseAltManually, Mode=TwoWay}" />
-				</controls:OptionControl>
+                    <ToggleSwitch IsChecked="{Binding UseAltManually, Mode=TwoWay}" />
+                </controls:OptionControl>
 
-				<controls:OptionControl
+                <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_PresetColumn_Title}"
                         Description="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_PresetColumn_Description}"
                         HelpLink="https://github.com/Meddsam/Froststrap/wiki/Advanced-FastFlag-Editor-Settings#preset-column" >
-					<ToggleSwitch IsChecked="{Binding ShowPresetColumnSetting, Mode=TwoWay}" />
-				</controls:OptionControl>
+                    <ToggleSwitch IsChecked="{Binding ShowPresetColumnSetting, Mode=TwoWay}" />
+                </controls:OptionControl>
 
-				<controls:OptionControl
+                <controls:OptionControl
                         Header="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_ToggleFlagCount_Title}"
                         Description="{x:Static resources:Strings.Menu_FastFlagsEditor_AdvancedSettings_ToggleFlagCount_Description}"
                         HelpLink="https://github.com/Meddsam/Froststrap/wiki/Advanced-FastFlag-Editor-Settings#flag-count" >
-					<ToggleSwitch IsChecked="{Binding ShowFlagCount, Mode=TwoWay}" />
-				</controls:OptionControl>
-			</StackPanel>
-		</ScrollViewer>
+                    <ToggleSwitch IsChecked="{Binding ShowFlagCount, Mode=TwoWay}" />
+                </controls:OptionControl>
+            </StackPanel>
+        </ScrollViewer>
 
-		<Border Grid.Row="2" Margin="0,10,0,0" Padding="15"
+        <Border Grid.Row="2" Margin="0,10,0,0" Padding="15"
                 Background="{DynamicResource PrimaryBackgroundColor}">
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button MinWidth="100"
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button MinWidth="100"
                         Content="{x:Static resources:Strings.Menu_Save}"
                         Click="SaveButton_Click" />
-				<Button MinWidth="100" Margin="12,0,0,0"
+                <Button MinWidth="100" Margin="12,0,0,0"
                         Content="{x:Static resources:Strings.Common_Close}"
                         IsCancel="True" />
-			</StackPanel>
-		</Border>
-	</Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
 </base:AvaloniaWindow>

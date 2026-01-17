@@ -30,10 +30,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<fa:TitleBar Grid.ColumnSpan="3" x:Name="RootTitleBar"
-                     Title="Froststrap"
-                     IsMaximizeButtonEnabled="False"
-                     IsMinimizeButtonEnabled="False" />
+		<TitleBar Grid.ColumnSpan="3" x:Name="RootTitleBar" />
 
 		<Grid Grid.Row="1" Margin="15,15,15,15" Grid.ColumnSpan="3">
 			<Grid.ColumnDefinitions>
@@ -42,7 +39,7 @@
 			</Grid.ColumnDefinitions>
 
 			<Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
-                   Margin="0,0,15,0" VerticalAlignment="Top" />
+                   Margin="0,0,15,0" VerticalAlignment="Top" RenderOptions.BitmapInterpolationMode="HighQuality" />
 
 			<md:MarkdownTextBlock x:Name="MessageMarkdownTextBlock" Grid.Column="1"
                                      VerticalAlignment="Center"
