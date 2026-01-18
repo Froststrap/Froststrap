@@ -42,7 +42,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (iconFilename is null)
                 IconImage.IsVisible = false;
             else
-                IconImage.Source = new Bitmap($"avares://Froststrap.AvaloniaUI/Resources/MessageBox/{iconFilename}.png");
+                IconImage.Source = new Bitmap($"avares://Froststrap/Resources/MessageBox/{iconFilename}.png");
 
             Title = App.ProjectName;
 

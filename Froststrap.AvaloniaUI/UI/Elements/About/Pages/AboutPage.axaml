@@ -32,7 +32,7 @@
             <Grid Margin="0,0,0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
                 <Panel Grid.Column="0">
                     <Image x:Name="Image1" Width="72" Height="72" VerticalAlignment="Center"
-                           Source="avares://Froststrap/Bloxstrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality" />
+                           Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality" />
                     <Image x:Name="Image2" Width="72" Height="72" VerticalAlignment="Center"
                            Source="avares://Froststrap/Resources/BootstrapperStyles/ByfronDialog/Matt.png" RenderOptions.BitmapInterpolationMode="HighQuality"
                            Opacity="0" />

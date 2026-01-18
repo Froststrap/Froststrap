@@ -228,10 +228,6 @@ namespace Froststrap
             App.FrostRPC?.SetPage("Launch Menu");
 
             dialog.Show();
-
-            ProcessNextAction(dialog.CloseAction);
-
-            App.FrostRPC?.ResetPresence();
         }
 
         public static void LaunchRoblox(LaunchMode launchMode)

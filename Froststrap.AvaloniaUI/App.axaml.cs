@@ -185,16 +185,161 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        const string LOG_IDENT = "App::OnStartup";
+
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            Logger.WriteLine(LOG_IDENT, $"Starting {ProjectName} v{Version}");
+
+            var userAgent = new StringBuilder($"{ProjectName}/{Version}");
+
+            if (IsActionBuild)
+            {
+                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from commit {BuildMetadata.CommitHash} ({BuildMetadata.CommitRef})");
+
+                if (IsProductionBuild)
+                    userAgent.Append(" (Production)");
+                else
+                    userAgent.Append($" (Artifact {BuildMetadata.CommitHash}, {BuildMetadata.CommitRef})");
+            }
+            else
+            {
+                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from {BuildMetadata.Machine}");
+
+#if QA_BUILD
+                userAgent.Append(" (QA)");
+#else
+                userAgent.Append($" (Build {Convert.ToBase64String(Encoding.UTF8.GetBytes(BuildMetadata.Machine))})");
+#endif
+            }
+
+            Logger.WriteLine(LOG_IDENT, $"OSVersion: {Environment.OSVersion}");
+            Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
+            Logger.WriteLine(LOG_IDENT, $"Temp path is {Paths.Temp}");
+            Logger.WriteLine(LOG_IDENT, $"WindowsStartMenu path is {Paths.WindowsStartMenu}");
+
+            HttpClient.Timeout = TimeSpan.FromSeconds(60);
+
+            if (!HttpClient.DefaultRequestHeaders.UserAgent.Any())
+                HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
+
             LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
 
-            Logger.WriteLine("App::Startup", $"Starting {ProjectName} v{Version}");
+            using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
+            string? installLocation = null;
+            bool fixInstallLocation = false;
 
-            desktop.MainWindow = new MainWindow
+            if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
             {
-                DataContext = new MainWindowViewModel()
-            };
+                if (Directory.Exists(installLocValue))
+                {
+                    installLocation = installLocValue;
+                }
+                else
+                {
+                    var match = Regex.Match(installLocValue, @"^[a-zA-Z]:\\Users\\([^\\]+)", RegexOptions.IgnoreCase);
+
+                    if (match.Success)
+                    {
+                        string newLocation = installLocValue.Replace(match.Value, Paths.UserProfile, StringComparison.InvariantCultureIgnoreCase);
+
+                        if (Directory.Exists(newLocation))
+                        {
+                            installLocation = newLocation;
+                            fixInstallLocation = true;
+                        }
+                    }
+                }
+            }
+
+            if (installLocation == null && Directory.GetParent(Paths.Process)?.FullName is string processDir)
+            {
+                var files = Directory.GetFiles(processDir).Select(Path.GetFileName).ToArray();
+
+                if (files.Length <= 3 && files.Contains("Settings.json") && files.Contains("State.json"))
+                {
+                    installLocation = processDir;
+                    fixInstallLocation = true;
+                }
+            }
+
+            if (fixInstallLocation && installLocation != null)
+            {
+                var installer = new Installer
+                {
+                    InstallLocation = installLocation,
+                    IsImplicitInstall = true
+                };
+
+                if (installer.CheckInstallLocation())
+                {
+                    Logger.WriteLine(LOG_IDENT, $"Changing install location to '{installLocation}'");
+                    installer.DoInstall();
+                }
+                else
+                {
+                    installLocation = null; // force reinstall
+                }
+            }
+
+            if (installLocation == null)
+            {
+                Logger.Initialize(true);
+                Logger.WriteLine(LOG_IDENT, "Not installed, launching the installer");
+                LaunchHandler.LaunchInstaller();
+            }
+            else
+            {
+                Paths.Initialize(installLocation);
+
+                if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
+                    File.Copy(Paths.Process, Paths.Application);
+
+                Logger.Initialize(LaunchSettings.UninstallFlag.Active);
+
+                if (!Logger.Initialized && !Logger.NoWriteMode)
+                {
+                    Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
+                    Terminate();
+                }
+
+                Task.Run(RemoteData.LoadData); // ok
+
+                Settings.Load();
+                State.Load();
+                FastFlags.Load();
+                GlobalSettings.Load();
+
+                // to fix error System.IO.IOException: No se encuentra el recurso 'ui/style/.xaml'.
+                // when i put in installer dosent work
+                // if i try to fix in wpfuiwindow also dosent work
+                if (Settings.Prop.Theme > Enums.Theme.Custom)
+                {
+                    Settings.Prop.Theme = Enums.Theme.Dark;
+                    Settings.Save();
+                }
+
+                if (Settings.Prop.AllowCookieAccess)
+                    Task.Run(Cookies.LoadCookies);
+
+                if (!Locale.SupportedLocales.ContainsKey(Settings.Prop.Locale))
+                {
+                    Settings.Prop.Locale = "nil";
+                    Settings.Save();
+                }
+
+                Logger.WriteLine(LOG_IDENT, $"Developer mode: {Settings.Prop.DeveloperMode}");
+                Logger.WriteLine(LOG_IDENT, $"Web environment: {Settings.Prop.WebEnvironment}");
+
+                Locale.Set(Settings.Prop.Locale);
+
+                if (!LaunchSettings.BypassUpdateCheck)
+                    Installer.HandleUpgrade();
+
+                WindowsRegistry.RegisterApis();
+
+                LaunchHandler.ProcessLaunchArgs();
+            }
         }
 
         base.OnFrameworkInitializationCompleted();

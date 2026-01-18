@@ -23,6 +23,58 @@
         <AvaloniaResource Include="Resources\Mods\Cursor\**\*.*" />
         <AvaloniaResource Include="Resources\PresetFlags\*" />
     </ItemGroup>
+	
+    <ItemGroup>
+	  <AvaloniaResource Include="Froststrap.png" />
+      <AvaloniaResource Include="Froststrap.ico" />
+      <AvaloniaResource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoDark.jpg" />
+      <AvaloniaResource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoLight.jpg" />
+      <AvaloniaResource Include="Resources\BootstrapperStyles\ByfronDialog\Matt.png" />
+      <AvaloniaResource Include="Resources\Checkmark.ico" />
+      <AvaloniaResource Include="Resources\CrossMark.ico" />
+      <AvaloniaResource Include="Resources\Fonts\NotoSansThai-VariableFont_wdth,wght.ttf" />
+      <AvaloniaResource Include="Resources\Fonts\Rubik-VariableFont_wght.ttf" />
+      <AvaloniaResource Include="Resources\Froststrap Custom Background.png" />
+      <AvaloniaResource Include="Resources\LightEditor.xshd" />
+      <AvaloniaResource Include="Resources\MessageBox\Error.png" />
+      <AvaloniaResource Include="Resources\MessageBox\Information.png" />
+      <AvaloniaResource Include="Resources\MessageBox\Question.png" />
+      <AvaloniaResource Include="Resources\MessageBox\Warning.png" />
+      <AvaloniaResource Include="Resources\RobloxVerified.png" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedAvaloniaResource Include="Resources\CustomBootstrapperSchema.json" />
+      <EmbeddedAvaloniaResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
+      <EmbeddedAvaloniaResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
+      <EmbeddedAvaloniaResource Include="Resources\Icon2008.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\Icon2011.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\Icon2017.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\Icon2019.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\Icon2022.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\Icon2025.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\IconFroststrap.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\IconEarly2015.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\IconLate2015.ico" />
+      <EmbeddedAvaloniaResource Include="Resources\mappings.json" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowFarCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\IBeamCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2006\ArrowCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2006\ArrowFarCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2013\ArrowCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2013\ArrowFarCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\PurpleCross\ArrowCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\PurpleCross\ArrowFarCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\PurpleCross\IBeamCursor.png" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\OldAvatarBackground.rbxl" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\Empty.mp3" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\OldJump.mp3" />
+      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
+      <EmbeddedAvaloniaResource Include="Resources\PresetFlags\Balanced Quality" />
+      <EmbeddedAvaloniaResource Include="Resources\PresetFlags\High Quality" />
+      <EmbeddedAvaloniaResource Include="Resources\PresetFlags\Low Quality" />
+    </ItemGroup>
 
     <!-- NuGet packages -->
     <ItemGroup>
@@ -49,102 +101,62 @@
         <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
         <PackageReference Include="Xaml.Behaviors" Version="11.3.9.3" />
     </ItemGroup>
+	
+    <ItemGroup>
+      <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
+      <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))Z</_Parameter1>
+      <_Parameter2>$(COMPUTERNAME)\$(USERNAME)</_Parameter2>
+      <_Parameter3>$(CommitHash)</_Parameter3>
+      <_Parameter4>$(CommitRef)</_Parameter4>
+      </AssemblyAttribute>
+    </ItemGroup>
+	
+  <ItemGroup>
+    <AdditionalFiles Include="NativeMethods.txt" />
 
-    <!-- Shared logic project references -->
+    <!-- Provide the path to the winmds used as input into the analyzer. -->
+    <CompilerVisibleProperty Include="CsWin32InputMetadataPaths" />
+    <CompilerVisibleProperty Include="CsWin32InputDocPaths" />
+  </ItemGroup>
+
+  <Target Name="AssembleCsWin32InputPaths" BeforeTargets="GenerateMSBuildEditorConfigFileCore">
+    <!-- Roslyn only allows source generators to see msbuild properties, to lift msbuild items into semicolon-delimited properties. -->
+    <PropertyGroup>
+    <CsWin32InputMetadataPaths>@(ProjectionMetadataWinmd->'%(FullPath)','|')</CsWin32InputMetadataPaths>
+    <CsWin32InputDocPaths>@(ProjectionDocs->'%(FullPath)','|')</CsWin32InputDocPaths>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="FixMds" BeforeTargets="CoreCompile" Condition="'@(ProjectionMetadataWinmd)'==''">
     <ItemGroup>
-      <Compile Update="Assets\Resources\Strings.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Strings.resx</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\About\MainWindow.axaml.cs">
-        <DependentUpon>MainWindow.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\AccountManager\MainWindow.axaml.cs">
-        <DependentUpon>MainWindow.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\AccountManager\Pages\AccountsPage.axaml.cs">
-        <DependentUpon>AccountsPage.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\Bootstrapper\CustomDialog.axaml.cs">
-        <DependentUpon>CustomDialog.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\ContextMenu\MenuContainer.axaml.cs">
-        <DependentUpon>MenuContainer.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\ContextMenu\ServerHistory.axaml.cs">
-        <DependentUpon>ServerHistory.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\Editor\BootstrapperEditorWindow.axaml.cs">
-        <DependentUpon>BootstrapperEditorWindow.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\Installer\MainWindow.axaml.cs">
-        <DependentUpon>MainWindow.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\Installer\Pages\CompletionPage.axaml.cs">
-        <DependentUpon>CompletionPage.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\Installer\Pages\InstallPage.axaml.cs">
-        <DependentUpon>InstallPage.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\Installer\Pages\WelcomePage.axaml.cs">
-        <DependentUpon>WelcomePage.axaml</DependentUpon>
-      </Compile>
-      <Compile Update="UI\Elements\Settings\Pages\RobloxSettingsPage.axaml.cs">
-        <DependentUpon>RobloxSettingsPage.axaml</DependentUpon>
-      </Compile>
+      <ProjectionMetadataWinmd Include="$(UserProfile)\.nuget\packages\microsoft.windows.sdk.win32metadata\55.0.45-preview\Windows.Win32.winmd" />
     </ItemGroup>
-    <ItemGroup>
-      <Resource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoDark.jpg" />
-      <Resource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoLight.jpg" />
-      <Resource Include="Resources\BootstrapperStyles\ByfronDialog\Matt.png" />
-      <Resource Include="Resources\Checkmark.ico" />
-      <Resource Include="Resources\CrossMark.ico" />
-      <Resource Include="Resources\Fonts\NotoSansThai-VariableFont_wdth,wght.ttf" />
-      <Resource Include="Resources\Fonts\Rubik-VariableFont_wght.ttf" />
-      <Resource Include="Resources\Froststrap Custom Background.png" />
-      <Resource Include="Resources\LightEditor.xshd" />
-      <Resource Include="Resources\MessageBox\Error.png" />
-      <Resource Include="Resources\MessageBox\Information.png" />
-      <Resource Include="Resources\MessageBox\Question.png" />
-      <Resource Include="Resources\MessageBox\Warning.png" />
-      <Resource Include="Resources\RobloxVerified.png" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="Resources\CustomBootstrapperSchema.json" />
-      <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
-      <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
-      <EmbeddedResource Include="Resources\Icon2008.ico" />
-      <EmbeddedResource Include="Resources\Icon2011.ico" />
-      <EmbeddedResource Include="Resources\Icon2017.ico" />
-      <EmbeddedResource Include="Resources\Icon2019.ico" />
-      <EmbeddedResource Include="Resources\Icon2022.ico" />
-      <EmbeddedResource Include="Resources\Icon2025.ico" />
-      <EmbeddedResource Include="Resources\IconFroststrap.ico" />
-      <EmbeddedResource Include="Resources\IconEarly2015.ico" />
-      <EmbeddedResource Include="Resources\IconLate2015.ico" />
-      <EmbeddedResource Include="Resources\mappings.json" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowFarCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\IBeamCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\From2006\ArrowFarCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\From2013\ArrowFarCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\ArrowFarCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\Cursor\PurpleCross\IBeamCursor.png" />
-      <EmbeddedResource Include="Resources\Mods\OldAvatarBackground.rbxl" />
-      <EmbeddedResource Include="Resources\Mods\Sounds\Empty.mp3" />
-      <EmbeddedResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
-      <EmbeddedResource Include="Resources\Mods\Sounds\OldJump.mp3" />
-      <EmbeddedResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
-      <EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
-      <EmbeddedResource Include="Resources\PresetFlags\High Quality" />
-      <EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
-      <EmbeddedResource Update="Resources\Strings.resx">
-        <Generator>PublicResXFileCodeGenerator</Generator>
-        <LastGenOutput>Strings.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
+  </Target>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+    <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    <AutoGen>True</AutoGen>
+    <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings.Designer.cs">
+    <DesignTime>True</DesignTime>
+    <AutoGen>True</AutoGen>
+    <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
     public class ByfronDialogViewModel : BootstrapperDialogViewModel
     {
         // Using dark theme for default values.
-        public Bitmap ByfronLogoLocation { get; set; } = new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap.AvaloniaUI/Resources/BootstrapperStyles/ByfronDialog/ByfronLogoDark.jpg")));
+        public Bitmap ByfronLogoLocation { get; set; } = new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap/Resources/BootstrapperStyles/ByfronDialog/ByfronLogoDark.jpg")));
 
         public Thickness DialogBorder { get; set; } = new Thickness(0);
 

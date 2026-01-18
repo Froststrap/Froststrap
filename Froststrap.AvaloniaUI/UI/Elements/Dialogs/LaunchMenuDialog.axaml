@@ -43,7 +43,7 @@
 					</Grid.ColumnDefinitions>
 
 					<Image Grid.Column="0" Width="64" Height="64" RenderOptions.BitmapInterpolationMode="HighQuality"
-                           Source="avares://Froststrap.AvaloniaUI/Froststrap.ico" />
+                           Source="avares://Froststrap/Froststrap.ico" />
 					<StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
 						<TextBlock x:Name="LaunchTitle" Text="Froststrap"
                                    FontSize="24" FontWeight="Bold" />
@@ -76,7 +76,7 @@
                         HorizontalContentAlignment="Left"
                         Padding="12">
 					<StackPanel Orientation="Horizontal">
-						<fa:FontIcon FontSize="20" Margin="0,0,12,0" Glyph="&#xE7FC;" />
+						<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Games" />
 						<TextBlock FontSize="14" VerticalAlignment="Center"
                                    Text="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" />
 					</StackPanel>
@@ -88,25 +88,25 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<Button Grid.Column="1" Width="148" Height="60"
-                            Margin="0,8,10,0" VerticalAlignment="Top"
+					<Button Grid.Column="0" Width="148" Height="60"
+                            Margin="0,8,8,0" VerticalAlignment="Top"
                             Command="{Binding LaunchSettingsCommand, Mode=OneTime}"
                             HorizontalContentAlignment="Left"
                             Padding="12">
 						<StackPanel Orientation="Horizontal">
-							<fa:FontIcon FontSize="20" Margin="0,0,12,0" Glyph="&#xE713;" />
+							<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Settings" />
 							<TextBlock FontSize="13" VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Settings}" />
 						</StackPanel>
 					</Button>
 
-					<Button Grid.Column="0" Width="130" Height="60"
-                            Margin="0,8,10,0" VerticalAlignment="Top"
+					<Button Grid.Column="1" Width="130" Height="60"
+                            VerticalAlignment="Top"
                             Command="{Binding LaunchRobloxStudioCommand, Mode=OneTime}"
                             HorizontalContentAlignment="Left"
                             Padding="12">
 						<StackPanel Orientation="Horizontal">
-							<fa:FontIcon FontSize="20" Margin="0,0,12,0" Glyph="&#xE73B;" />
+							<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Play" />
 							<TextBlock FontSize="13" VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Studio}" />
 						</StackPanel>
@@ -121,16 +121,16 @@
                         CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
                         HorizontalContentAlignment="Left"
                         Padding="12">
-					<StackPanel>
-						<StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-							<fa:FontIcon FontSize="20" Margin="0,0,12,0" Glyph="&#xE8C8;" />
+					<StackPanel Orientation="Horizontal">
+						<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Help"/>
+						<StackPanel Orientation="Vertical" Margin="0,0,0,4">
 							<TextBlock FontSize="14" VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" />
-						</StackPanel>
-						<TextBlock Margin="32,0,0,0"
+							<TextBlock
                                    FontSize="12"
                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                    Text="{x:Static resources:Strings.LaunchMenu_Wiki_Description}" />
+						</StackPanel>
 					</StackPanel>
 				</Button>
 			</StackPanel>

@@ -19,7 +19,7 @@
 
 			<!-- Fonts -->
 			<FontFamily x:Key="Rubik">
-				avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf#Rubik
+				avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf
 			</FontFamily>
 
 			<!-- Accent brushes -->
