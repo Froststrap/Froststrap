@@ -24,11 +24,6 @@ namespace Froststrap.UI.Elements.Settings
 		public static ObservableCollection<NavigationViewItem> FooterNavigationItems { get; } = new();
 		public ObservableCollection<NavigationViewItem> NavigationItemsView { get; } = new();
 
-		public static List<string> DefaultNavigationOrder { get; private set; } = new();
-		public static List<string> DefaultFooterOrder { get; private set; } = new();
-
-		public MainWindow() : this(false) { }
-
 		public MainWindow(bool showAlreadyRunningWarning)
 		{
 			var viewModel = new MainWindowViewModel();
@@ -61,9 +56,9 @@ namespace Froststrap.UI.Elements.Settings
 				AlertBar.Severity = (InfoBarSeverity)data.AlertSeverity;
 			});
 
-			ApplyBackdrop();
+            App.WindowsBackdrop();
 
-			var allItems = RootNavigation.MenuItems.Cast<NavigationViewItem>().ToList();
+            var allItems = RootNavigation.MenuItems.Cast<NavigationViewItem>().ToList();
 			var allFooters = RootNavigation.FooterMenuItems.Cast<NavigationViewItem>().ToList();
 
 			MainNavigationItems.Clear();
@@ -71,10 +66,6 @@ namespace Froststrap.UI.Elements.Settings
 
 			FooterNavigationItems.Clear();
 			foreach (var item in allFooters) FooterNavigationItems.Add(item);
-
-			CacheDefaultNavigationOrder();
-			ReorderNavigationItemsFromSettings();
-			RebuildNavigationItems();
 
 			if (lastPage != null)
 				SafeNavigate(lastPage);
@@ -85,12 +76,6 @@ namespace Froststrap.UI.Elements.Settings
 
 			this.Closing += MainWindow_Closing;
 			this.Closed += MainWindow_Closed;
-		}
-
-		private void ApplyBackdrop()
-		{
-			this.TransparencyLevelHint = new[] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur };
-			this.Background = Brushes.Transparent;
 		}
 
 		private void OnNavigationChanged(object? sender, NavigationViewSelectionChangedEventArgs e)
@@ -110,12 +95,6 @@ namespace Froststrap.UI.Elements.Settings
 				return;
 
 			Navigate(page);
-		}
-
-		public void ApplyTheme()
-		{
-			var theme = App.Settings.Prop.Theme;
-			ApplyBackdrop();
 		}
 
 		public void LoadState()
@@ -142,125 +121,6 @@ namespace Froststrap.UI.Elements.Settings
 			await Task.Delay(500);
 			AlreadyRunningTip.IsOpen = true;
 		}
-
-		#region Navigation reorder & persistence helpers
-
-		private void CacheDefaultNavigationOrder()
-		{
-			DefaultNavigationOrder = MainNavigationItems
-				.Select(x => x.Tag?.ToString() ?? string.Empty)
-				.ToList();
-
-			DefaultFooterOrder = FooterNavigationItems
-				.Select(x => x.Tag?.ToString() ?? string.Empty)
-				.ToList();
-		}
-
-		private void RebuildNavigationItems()
-		{
-			RootNavigation.MenuItemsSource = MainNavigationItems;
-			RootNavigation.FooterMenuItemsSource = FooterNavigationItems;
-
-			NavigationItemsView.Clear();
-			foreach (var item in MainNavigationItems)
-				NavigationItemsView.Add(item);
-		}
-
-		public void ApplyNavigationReorder()
-		{
-			RebuildNavigationItems();
-
-			var order = MainNavigationItems
-				.Concat(FooterNavigationItems)
-				.Select(item => item.Tag?.ToString() ?? string.Empty)
-				.Where(s => !string.IsNullOrEmpty(s))
-				.ToList();
-
-			App.Settings.Prop.NavigationOrder = order;
-		}
-
-		private void ReorderNavigationItemsFromSettings()
-		{
-			if (App.Settings.Prop.NavigationOrder == null || App.Settings.Prop.NavigationOrder.Count == 0)
-				return;
-
-			var allItems = MainNavigationItems.Concat(FooterNavigationItems).ToList();
-			var reorderedMain = new List<NavigationViewItem>();
-			var reorderedFooter = new List<NavigationViewItem>();
-
-			foreach (var tag in App.Settings.Prop.NavigationOrder)
-			{
-				var navItem = allItems.FirstOrDefault(i => i.Tag?.ToString() == tag);
-				if (navItem != null)
-				{
-					if (MainNavigationItems.Contains(navItem))
-						reorderedMain.Add(navItem);
-					else if (FooterNavigationItems.Contains(navItem))
-						reorderedFooter.Add(navItem);
-				}
-			}
-
-			foreach (var item in MainNavigationItems.Where(i => !reorderedMain.Contains(i)))
-				reorderedMain.Add(item);
-
-			foreach (var item in FooterNavigationItems.Where(i => !reorderedFooter.Contains(i)))
-				reorderedFooter.Add(item);
-
-			MainNavigationItems.Clear();
-			foreach (var item in reorderedMain) MainNavigationItems.Add(item);
-
-			FooterNavigationItems.Clear();
-			foreach (var item in reorderedFooter) FooterNavigationItems.Add(item);
-		}
-
-		public void ResetNavigationToDefault()
-		{
-			var available = MainNavigationItems.Concat(FooterNavigationItems).ToList();
-
-			var reorderedMain = new List<NavigationViewItem>();
-			var reorderedFooter = new List<NavigationViewItem>();
-
-			foreach (var tag in DefaultNavigationOrder)
-			{
-				var navItem = available.FirstOrDefault(i => i.Tag?.ToString() == tag);
-				if (navItem != null) reorderedMain.Add(navItem);
-			}
-
-			foreach (var tag in DefaultFooterOrder)
-			{
-				var navItem = available.FirstOrDefault(i => i.Tag?.ToString() == tag);
-				if (navItem != null) reorderedFooter.Add(navItem);
-			}
-
-			foreach (var item in available.Where(i => !reorderedMain.Contains(i) && !reorderedFooter.Contains(i)))
-				reorderedMain.Add(item);
-
-			MainNavigationItems.Clear();
-			foreach (var item in reorderedMain) MainNavigationItems.Add(item);
-
-			FooterNavigationItems.Clear();
-			foreach (var item in reorderedFooter) FooterNavigationItems.Add(item);
-
-			RebuildNavigationItems();
-			App.Settings.Prop.NavigationOrder?.Clear();
-		}
-
-		public int MoveNavigationItem(NavigationViewItem item, int direction)
-		{
-			if (item == null || !MainNavigationItems.Contains(item)) return -1;
-
-			int index = MainNavigationItems.IndexOf(item);
-			int newIndex = index + direction;
-
-			if (newIndex < 0 || newIndex >= MainNavigationItems.Count) return -1;
-
-			MainNavigationItems.Move(index, newIndex);
-			ApplyNavigationReorder();
-
-			return newIndex;
-		}
-
-		#endregion
 
 		#region Navigation methods
 

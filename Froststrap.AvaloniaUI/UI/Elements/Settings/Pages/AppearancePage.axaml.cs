@@ -5,37 +5,17 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Settings;
-using FluentAvalonia.UI.Controls;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
 public partial class AppearancePage : UserControl
 {
-    private MainWindow? _mainWindow;
-
     public AppearancePage()
     {
         DataContext = new AppearanceViewModel(this);
         InitializeComponent();
 
         App.FrostRPC?.SetPage("Appearance");
-
-        this.AttachedToVisualTree += (s, e) =>
-        {
-            if (TopLevel.GetTopLevel(this) is MainWindow mainWindow)
-            {
-                _mainWindow = mainWindow;
-
-                ListBoxNavigationItems.ItemsSource = _mainWindow.NavigationItemsView;
-
-                if (ListBoxNavigationItems.ItemCount > 0)
-                    ListBoxNavigationItems.SelectedIndex = 0;
-            }
-
-            UpdateNavigationLockUI();
-        };
-
-        ListBoxNavigationItems.SelectionChanged += ListBoxNavigationItems_SelectionChanged;
     }
 
     private bool _isWindowsBackdropInitialized = false;
@@ -111,13 +91,13 @@ public partial class AppearancePage : UserControl
     {
         if (DataContext is not AppearanceViewModel vm) return;
 
-        vm.GradientStops.Add(new Froststrap.Models.GradientStops { Offset = 0.5, Color = "#000000" });
+        vm.GradientStops.Add(new GradientStops { Offset = 0.5, Color = "#000000" });
         UpdateGradientTheme();
     }
 
     private void OnRemoveGradientStop_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not Button { Tag: Froststrap.Models.GradientStops stop } ||
+        if (sender is not Button { Tag: GradientStops stop } ||
             DataContext is not AppearanceViewModel vm) return;
 
         vm.GradientStops.Remove(stop);
@@ -126,11 +106,11 @@ public partial class AppearancePage : UserControl
 
     private async void OnChangeGradientColor_Click(object? sender, RoutedEventArgs e)
     {
-        if (sender is not Button { Tag: Froststrap.Models.GradientStops stop } ||
+        if (sender is not Button { Tag: GradientStops stop } ||
             DataContext is not AppearanceViewModel vm)
             return;
 
-        var colorPicker = new Avalonia.Controls.ColorPicker
+        var colorPicker = new ColorPicker
         {
             Color = Avalonia.Media.Color.Parse(stop.Color),
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
@@ -141,7 +121,7 @@ public partial class AppearancePage : UserControl
         {
             Content = "OK",
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            Margin = new Avalonia.Thickness(0, 10, 0, 0)
+            Margin = new Thickness(0, 10, 0, 0)
         };
 
         var panel = new StackPanel
@@ -159,7 +139,7 @@ public partial class AppearancePage : UserControl
             WindowStartupLocation = WindowStartupLocation.CenterOwner
         };
 
-        var tcs = new System.Threading.Tasks.TaskCompletionSource<Avalonia.Media.Color?>();
+        var tcs = new TaskCompletionSource<Avalonia.Media.Color?>();
 
         okButton.Click += (_, _) =>
         {
@@ -187,7 +167,7 @@ public partial class AppearancePage : UserControl
 
     private void OnGradientColorHexChanged(object? sender, TextChangedEventArgs e)
     {
-        if (sender is not TextBox { DataContext: Froststrap.Models.GradientStops stop } ||
+        if (sender is not TextBox { DataContext: GradientStops stop } ||
             DataContext is not AppearanceViewModel vm)
             return;
 
@@ -307,7 +287,7 @@ public partial class AppearancePage : UserControl
                 throw new InvalidDataException("Invalid gradient file format.");
             }
 
-            var gradientStops = new List<Froststrap.Models.GradientStops>();
+            var gradientStops = new List<GradientStops>();
 
             foreach (var stopElement in stopsElement.EnumerateArray())
             {
@@ -327,7 +307,7 @@ public partial class AppearancePage : UserControl
                     throw new InvalidDataException("Invalid gradient stop data.");
                 }
 
-                gradientStops.Add(new Froststrap.Models.GradientStops()
+                gradientStops.Add(new GradientStops()
                 {
                     Offset = offset,
                     Color = color
@@ -391,101 +371,4 @@ public partial class AppearancePage : UserControl
     }
 
     private static bool IsValidHexColor(string color) => !string.IsNullOrWhiteSpace(color) && color.StartsWith("#") && color.Length >= 7;
-
-    private void MoveUp_Click(object? sender, RoutedEventArgs e)
-    {
-        if (_mainWindow == null || ListBoxNavigationItems.SelectedItem is not NavigationViewItem selectedItem)
-            return;
-
-        var result = _mainWindow.MoveNavigationItem(selectedItem, -1);
-        if (result != -1)
-        {
-            ListBoxNavigationItems.SelectedItem = selectedItem;
-            ListBoxNavigationItems.ScrollIntoView(selectedItem);
-        }
-
-        UpdateMoveButtons();
-    }
-
-    private void MoveDown_Click(object? sender, RoutedEventArgs e)
-    {
-        if (_mainWindow == null || ListBoxNavigationItems.SelectedItem is not NavigationViewItem selectedItem)
-            return;
-
-        int result = _mainWindow.MoveNavigationItem(selectedItem, +1);
-        if (result != -1)
-        {
-            ListBoxNavigationItems.SelectedItem = selectedItem;
-            ListBoxNavigationItems.ScrollIntoView(selectedItem);
-        }
-
-        UpdateMoveButtons();
-    }
-
-    private void UpdateNavigationLockUI()
-    {
-        bool isLocked = App.Settings.Prop.IsNavigationOrderLocked;
-
-        ResetToDefaultButton.IsEnabled = !isLocked;
-        UpdateMoveButtons();
-
-        ToggleLockOrder.IsChecked = isLocked;
-    }
-
-    private void UpdateMoveButtons()
-    {
-        MoveUpButton.IsEnabled = false;
-        MoveDownButton.IsEnabled = false;
-
-        int idx = ListBoxNavigationItems.SelectedIndex;
-        if (idx < 0) return;
-
-        if (App.Settings.Prop.IsNavigationOrderLocked)
-            return;
-
-        int count = ListBoxNavigationItems.ItemCount;
-        MoveUpButton.IsEnabled = idx > 0;
-        MoveDownButton.IsEnabled = idx < (count - 1);
-    }
-
-    private void LockToggleButton_Checked(object sender, RoutedEventArgs e)
-    {
-        SetNavigationLock(true);
-    }
-
-    private void LockToggleButton_Unchecked(object sender, RoutedEventArgs e)
-    {
-        SetNavigationLock(false);
-    }
-
-    private void SetNavigationLock(bool isLocked)
-    {
-        if (App.Settings.Prop.IsNavigationOrderLocked == isLocked)
-            return;
-
-        App.Settings.Prop.IsNavigationOrderLocked = isLocked;
-        App.State.Save();
-
-        UpdateNavigationLockUI();
-    }
-
-    private void ResetOrder_Click(object sender, RoutedEventArgs e)
-    {
-        if (_mainWindow == null) return;
-
-        _mainWindow.ResetNavigationToDefault();
-
-        ListBoxNavigationItems.ItemsSource = null;
-        ListBoxNavigationItems.ItemsSource = _mainWindow.NavigationItemsView;
-
-        if (ListBoxNavigationItems.ItemCount > 0)
-        {
-            ListBoxNavigationItems.SelectedIndex = 0;
-        }
-    }
-
-    private void ListBoxNavigationItems_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        UpdateMoveButtons();
-    }
 }
