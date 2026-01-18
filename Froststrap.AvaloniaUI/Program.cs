@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 
-namespace Froststrap.AvaloniaUI;
+namespace Froststrap;
 
 sealed class Program
 {

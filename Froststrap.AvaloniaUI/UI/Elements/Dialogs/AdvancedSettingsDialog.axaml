@@ -8,6 +8,8 @@
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
+        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+        x:DataType="vm:AdvancedSettingViewModel"
         Height="375"
         Width="560"
         CanResize="True"

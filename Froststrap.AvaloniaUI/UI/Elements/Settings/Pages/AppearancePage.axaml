@@ -128,7 +128,7 @@
                             
                             <StackPanel Margin="0,12,0,0">
                                 <TextBlock Text="Image Opacity:" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                                <Slider Minimum="0" Maximum="100" Value="{Binding BackgroundOpacity, Mode=TwoWay}" PointerReleased="OnSliderReleased" TickFrequency="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="0"/>
+                                <Slider Minimum="0" Maximum="100" Value="{Binding BackgroundOpacity, Mode=TwoWay}" PointerReleased="OnSliderReleased" TickFrequency="1" IsSnapToTickEnabled="True"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>
@@ -144,24 +144,6 @@
                         SelectionChanged="WindowsBackdropChangeSelectionChanged"
                         ItemsSource="{Binding BackdropOptions}"
                         SelectedItem="{Binding SelectedBackdrop, Mode=TwoWay}" />
-                </controls:OptionControl>
-                
-                <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_Appearance_CustomAppFont_Title}"
-                    Description="{x:Static resources:Strings.Menu_Appearance_CustomAppFont_Description}"
-                >
-                    <StackPanel>
-                        <Button 
-                            Content="Choose Font"
-                            Command="{Binding ManageCustomFontCommand}"
-                            CommandParameter="Choose"
-                            IsVisible="{Binding ChooseCustomFontVisibility, Mode=OneWay}"/>
-                        <Button
-                            Content="Remove Font"
-                            Command="{Binding ManageCustomFontCommand}"
-                            CommandParameter="Remove"
-                            IsVisible="{Binding DeleteCustomFontVisibility, Mode=OneWay}" />
-                    </StackPanel>
                 </controls:OptionControl>
                 
                 <controls:OptionControl
@@ -202,7 +184,7 @@
                     <Button x:Name="MoveUpButton" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_MoveUp}" Click="MoveUp_Click" Margin="0,0,8,0"  />
                     <Button x:Name="MoveDownButton" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_MoveDown}" Click="MoveDown_Click" Margin="0,0,8,0"  />
                     <Button x:Name="ResetToDefaultButton" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_ResetToDefault}" Click="ResetOrder_Click" Margin="0,0,8,0"  />
-                    <ToggleButton x:Name="ToggleLockOrder" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_LockOrder}" IsCheckedChanged="ToggleLockOrder_IsCheckedChanged" />
+                    <ToggleButton x:Name="ToggleLockOrder" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_LockOrder}" IsCheckedChanged="LockToggleButton_Unchecked" />
                 </StackPanel>
                     </Grid>
                 </Expander>
@@ -221,7 +203,9 @@
                     <Button Grid.Column="1" Content="{x:Static resources:Strings.Menu_Appearance_Preview}"  HorizontalAlignment="Stretch" Margin="0,16,0,0" Command="{Binding PreviewBootstrapperCommand}" />
                 </Grid>
                 
-                <Expander Margin="0,8,0,0" IsExpanded="{Binding Path=CustomThemesExpanded, Mode=OneWay}" Styles="{StaticResource NoUserExpansionCardExpanderStyle}">
+
+                <!-- Make NoUserStyleExpander style -->
+                <Expander Margin="0,8,0,0" IsExpanded="{Binding Path=CustomThemesExpanded, Mode=OneWay}">
                     <Expander.Header>
                         <Grid>
                             <Grid>
@@ -263,23 +247,15 @@
                             <Button Grid.Column="0" Margin="0,0,4,0" Content="{x:Static resources:Strings.Common_New}" HorizontalAlignment="Stretch" Command="{Binding AddCustomThemeCommand, Mode=OneTime}"  />
                             <Button Grid.Column="1" Margin="4,0,0,0" Content="{x:Static resources:Strings.Common_Delete}" HorizontalAlignment="Stretch" Theme="{StaticResource DangerButtonStyle}" IsEnabled="{Binding IsCustomThemeSelected, Mode=OneWay}" Command="{Binding DeleteCustomThemeCommand, Mode=OneTime}"  />
                         </Grid>
-                        <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0">
-                            <StackPanel.Styles>
-                                <Style>
-                                    <!-- TODO: Convert to Avalonia -->
-                                    <!-- NOTE: We also need to convert ones in option control, addflagdialog and etc etc -->
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsCustomThemeSelected}" Value="False">
-                                            <Setter Property="StackPanel.Visibility" Value="Hidden"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </StackPanel.Styles>
-                            
-                            <TextBlock Text="{x:Static resources:Strings.Common_Name}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                            
-                            <TextBox Margin="0,4,0,0" Text="{Binding SelectedCustomThemeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                            
+                        <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0"
+                                    IsVisible="{Binding IsCustomThemeSelected}">
+    
+                            <TextBlock Text="{x:Static resources:Strings.Common_Name}" 
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+    
+                            <TextBox Margin="0,4,0,0" 
+                                     Text="{Binding SelectedCustomThemeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+    
                             <Grid Margin="0,8,0,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -287,23 +263,27 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
-                                <Button Grid.Column="0" Margin="0,0,4,0" Content="{x:Static resources:Strings.Common_Rename}" HorizontalAlignment="Stretch" Command="{Binding RenameCustomThemeCommand, Mode=OneTime}"  />
-                                <Button Grid.Column="1" Margin="4,0,4,0" Content="{x:Static resources:Strings.Common_Edit}" HorizontalAlignment="Stretch" Command="{Binding EditCustomThemeCommand, Mode=OneTime}"  />
-                                <Button Grid.Column="2" Margin="4,0,0,0" Content="{x:Static resources:Strings.Common_Export}" HorizontalAlignment="Stretch" Command="{Binding ExportCustomThemeCommand, Mode=OneTime}"  />
+                                <Button Grid.Column="0" Margin="0,0,4,0" 
+                                        Content="{x:Static resources:Strings.Common_Rename}" 
+                                        HorizontalAlignment="Stretch" 
+                                        Command="{Binding RenameCustomThemeCommand, Mode=OneTime}"  />
+                                <Button Grid.Column="1" Margin="4,0,4,0" 
+                                        Content="{x:Static resources:Strings.Common_Edit}" 
+                                        HorizontalAlignment="Stretch" 
+                                        Command="{Binding EditCustomThemeCommand, Mode=OneTime}"  />
+                                <Button Grid.Column="2" Margin="4,0,0,0" 
+                                        Content="{x:Static resources:Strings.Common_Export}" 
+                                        HorizontalAlignment="Stretch" 
+                                        Command="{Binding ExportCustomThemeCommand, Mode=OneTime}"  />
                             </Grid>
                         </StackPanel>
                         
-                        <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" Text="{x:Static resources:Strings.Menu_Appearance_CustomThemes_NoneSelected}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center" >
-                            <TextBlock.Style>
-                                <Style>
-                                    <!-- TODO: Convert to Avalonia -->
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsCustomThemeSelected}" Value="True">
-                                            <Setter Property="TextBlock.Visibility" Value="Hidden"></Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
+                        <TextBlock Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" 
+                                   Text="{x:Static resources:Strings.Menu_Appearance_CustomThemes_NoneSelected}" 
+                                   TextWrapping="Wrap" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center"
+                                   IsVisible="{Binding IsCustomThemeSelected, Converter={x:Static BoolConverters.Not}}">
                         </TextBlock>
                     </Grid>
                 </Expander>
@@ -364,7 +344,7 @@
                                <ColumnDefinition Width="Auto" />
                            </Grid.ColumnDefinitions>
                            <TextBox Grid.Column="0" Margin="0,0,4,0" Text="{Binding CustomIconLocation, Mode=TwoWay}" />
-                           <TextBox Grid.Column="1" Margin="4,0,0,0" Height="35"  Text="{x:Static resources:Strings.Common_Browse}" PointerReleased="{Binding BrowseCustomIconLocationCommand}"  />
+                           <Button Grid.Column="1" Margin="4,0,0,0" Height="35" Content="{x:Static resources:Strings.Common_Browse}" Command="{Binding BrowseCustomIconLocationCommand}"  />
                        </Grid>
                        
                        <TextBlock Grid.Row="3" Grid.Column="1" Margin="0,4,0,0" FontSize="12" Text="{x:Static resources:Strings.Menu_Appearance_CustomisationIcon_Description}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />

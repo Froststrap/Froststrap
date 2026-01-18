@@ -6,6 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
+		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+        x:DataType="vm:ManualCookieDialogViewModel"
         Title="Add Account with Cookie"
         Width="500"
         Height="450"

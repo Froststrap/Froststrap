@@ -11,8 +11,44 @@ namespace Froststrap.UI.Elements.Dialogs
         public FlagProfilesDialog()
         {
             InitializeComponent();
+
+            UpdateVisibility();
+            UpdateOkButton();
+
+            Tabs.SelectionChanged += (s, e) =>
+            {
+                UpdateVisibility();
+                UpdateOkButton();
+            };
+
+            SaveProfile.TextChanged += (s, e) => UpdateOkButton();
+            LoadProfile.SelectionChanged += LoadProfile_SelectionChanged;
+            LoadPresetProfile.SelectionChanged += (s, e) => UpdateOkButton();
+
             LoadProfiles();
             LoadPresetProfiles();
+        }
+
+        private void UpdateVisibility()
+        {
+            bool isTab1 = Tabs.SelectedIndex == 1;
+            ClearFlags.IsVisible = isTab1;
+            DeleteButton.IsVisible = isTab1;
+
+            RenamePanel.IsVisible = isTab1 && LoadProfile.SelectedItem != null;
+        }
+
+        private void UpdateOkButton()
+        {
+            if (OkButton == null) return;
+
+            OkButton.IsEnabled = Tabs.SelectedIndex switch
+            {
+                0 => !string.IsNullOrEmpty(SaveProfile.Text),
+                1 => LoadProfile.SelectedItem != null,
+                2 => LoadPresetProfile.SelectedItem != null,
+                _ => true
+            };
         }
 
         private void LoadProfiles()
@@ -33,13 +69,12 @@ namespace Froststrap.UI.Elements.Dialogs
             }
 
             LoadProfileEmptyText.IsVisible = LoadProfile.Items.Count == 0;
-            RenamePanel.IsVisible = LoadProfile.Items.Count > 0;
 
-            RenameTextBox.Text = string.Empty;
-            RenameTextBox.IsEnabled = false;
+            UpdateVisibility();
+            UpdateOkButton();
         }
 
-        private void LoadProfile_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LoadProfile_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             if (LoadProfile.SelectedItem is string selectedProfile)
             {
@@ -51,6 +86,9 @@ namespace Froststrap.UI.Elements.Dialogs
                 RenameTextBox.Text = string.Empty;
                 RenameTextBox.IsEnabled = false;
             }
+
+            UpdateVisibility();
+            UpdateOkButton();
         }
 
         private async void RenameButton_Click(object sender, RoutedEventArgs e)
@@ -61,7 +99,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 return;
             }
 
-            string newName = RenameTextBox.Text.Trim();
+            string newName = (RenameTextBox.Text ?? "").Trim();
 
             if (string.IsNullOrWhiteSpace(newName))
             {
@@ -190,7 +228,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             try
             {
-                var currentFlags = App.FastFlags.Prop;
+                var currentFlags = App.FastFlags?.Prop;
 
                 if (currentFlags == null)
                 {
@@ -237,25 +275,43 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
+            if (Tabs.SelectedIndex == 0 && string.IsNullOrEmpty(SaveProfile.Text))
+            {
+                Frontend.ShowMessageBox("Profile name cannot be empty", MessageBoxImage.Information, MessageBoxButton.OK);
+                return;
+            }
+
+            if (Tabs.SelectedIndex == 1 && LoadProfile.SelectedItem == null)
+            {
+                Frontend.ShowMessageBox("Please select a profile to load", MessageBoxImage.Information, MessageBoxButton.OK);
+                return;
+            }
+
+            if (Tabs.SelectedIndex == 2 && LoadPresetProfile.SelectedItem == null)
+            {
+                Frontend.ShowMessageBox("Please select a preset profile", MessageBoxImage.Information, MessageBoxButton.OK);
+                return;
+            }
+
             switch (Tabs.SelectedIndex)
             {
                 case 0: // Save tab
                     if (!string.IsNullOrWhiteSpace(SaveProfile.Text))
                     {
-                        App.FastFlags.SaveProfile(SaveProfile.Text);
+                        App.FastFlags?.SaveProfile(SaveProfile.Text);
                     }
                     break;
                 case 1: // Load tab
                     if (LoadProfile.SelectedItem is string selectedProfile)
                     {
-                        App.FastFlags.LoadProfile(selectedProfile, clearFlags: ClearFlags.IsChecked == true);
+                        App.FastFlags?.LoadProfile(selectedProfile, clearFlags: ClearFlags.IsChecked == true);
                     }
                     break;
 
                 case 2: // Preset Flags tab
                     if (LoadPresetProfile.SelectedItem is string selectedPreset)
                     {
-                        App.FastFlags.LoadPresetProfile(selectedPreset, clearFlags: true);
+                        App.FastFlags?.LoadPresetProfile(selectedPreset, clearFlags: true);
                     }
                     break;
             }
@@ -271,7 +327,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (string.IsNullOrEmpty(ProfileName))
                 return;
 
-            App.FastFlags.DeleteProfile(ProfileName);
+            App.FastFlags?.DeleteProfile(ProfileName);
             LoadProfiles();
         }
     }

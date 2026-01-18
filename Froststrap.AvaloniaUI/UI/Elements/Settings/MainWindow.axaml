@@ -18,7 +18,7 @@
 
 	<Grid RowDefinitions="Auto,*,Auto">
 
-		<TitleBar Grid.Row="0" IsFilled="True" Height="32"/>
+		<TitleBar Grid.Row="0" Height="32"/>
 
 		<ui:TeachingTip x:Name="AlreadyRunningTip" Title="{x:Static resources:Strings.Menu_AlreadyRunning_Title}" Subtitle="{x:Static resources:Strings.Menu_AlreadyRunning_Caption}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />
 		<ui:TeachingTip x:Name="SettingsSavedTip" Title="{x:Static resources:Strings.Menu_SettingsSaved_Title}" Subtitle="{x:Static resources:Strings.Menu_SettingsSaved_Message}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />

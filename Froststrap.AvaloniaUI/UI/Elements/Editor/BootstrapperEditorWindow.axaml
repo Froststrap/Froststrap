@@ -1,4 +1,5 @@
-<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Editor.BootstrapperEditorWindow"
+        xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,7 +8,7 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Editor"
-        x:Class="Froststrap.UI.Elements.Editor.BootstrapperEditorWindow"
+        x:DataType="vm:BootstrapperEditorWindowViewModel"
         Title="{Binding Title}"
         Width="1000" Height="500"
         WindowStartupLocation="CenterScreen"
@@ -25,7 +26,7 @@
 
 		<Grid Grid.Row="1">
             <!-- TODO: find diffrent text editor cuz this one only for windows -->
-         <avalonedit:TextEditor x:Name="UIXML" Grid.Column="0" Margin="10,10,10,10" ShowLineNumbers="True" Style="{StaticResource NewTextEditor}" SyntaxHighlighting="XML" />
+         <TextBox x:Name="UIXML" Grid.Column="0" Margin="10,10,10,10" />
 		</Grid>
 
 		<Grid Grid.Row="2" Margin="10,0,10,10" ColumnDefinitions="*, Auto, Auto, Auto">
@@ -52,7 +53,7 @@
                     Margin="12,0,0,0"
                     MinWidth="60"
                     Content="{x:Static resources:Strings.Common_Close}"
-                    Click="CloseButton_Click" />
+                    IsCancel="True" />
 		</Grid>
 
 		<ui:InfoBar Name="SnackbarReplacement"

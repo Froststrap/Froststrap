@@ -7,13 +7,15 @@
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:converters="clr-namespace:Froststrap.UI.Converters"
+		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         Title="Available Channels"
         Width="700"
         MinHeight="350"
         Height="550"
         CanResize="True"
         WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d">
+        mc:Ignorable="d"
+        x:DataType="vm:ChannelListsViewModel">
 
 	<Grid>
 		<Grid.RowDefinitions>

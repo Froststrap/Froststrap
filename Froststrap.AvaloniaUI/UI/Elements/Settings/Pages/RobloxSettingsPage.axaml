@@ -5,19 +5,21 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
-             xmlns:models="clr-namespace:Froststrap.Models"
+             xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
              x:Class="Froststrap.UI.Elements.Settings.Pages.RobloxSettingsPage"
+			 xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+			x:DataType="vm:RobloxSettingsViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
 
 	<UserControl.Resources>
-		<DataTemplate x:Key="TextBoxTemplate" x:DataType="models:SettingControlViewModel">
+		<DataTemplate x:Key="TextBoxTemplate" x:DataType="models:SettingsControl">
 			<TextBox Margin="0,0,5,4"
                      HorizontalAlignment="Stretch"
                      VerticalAlignment="Center"
                      Text="{Binding Value, Mode=TwoWay}" />
 		</DataTemplate>
 
-		<DataTemplate x:Key="SliderTemplate" x:DataType="models:SettingControlViewModel">
+		<DataTemplate x:Key="SliderTemplate" x:DataType="models:SettingsControl">
 			<Grid Margin="0,0,0,4" VerticalAlignment="Center">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -41,13 +43,13 @@
 			</Grid>
 		</DataTemplate>
 
-		<DataTemplate x:Key="ToggleSwitchTemplate" x:DataType="models:SettingControlViewModel">
+		<DataTemplate x:Key="ToggleSwitchTemplate" x:DataType="models:SettingsControl">
 			<ToggleSwitch OnContent="" OffContent=""
                           IsChecked="{Binding TypedValue, Mode=TwoWay}"
                           VerticalAlignment="Center"/>
 		</DataTemplate>
 
-		<DataTemplate x:Key="ComboBoxTemplate" x:DataType="models:SettingControlViewModel">
+		<DataTemplate x:Key="ComboBoxTemplate" x:DataType="models:SettingsControl">
 			<ComboBox Margin="0,0,5,4"
                       HorizontalAlignment="Stretch"
                       ItemsSource="{Binding Options}"

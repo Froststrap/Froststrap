@@ -1,4 +1,4 @@
-﻿using Froststrap.UI.ViewModels.Installer;
+﻿using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs
 {

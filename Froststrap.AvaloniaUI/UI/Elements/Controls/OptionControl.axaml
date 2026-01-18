@@ -1,12 +1,12 @@
 ﻿<UserControl x:Class="Froststrap.UI.Elements.Controls.OptionControl"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
+    xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
     xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
-	xmlns:icon="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    xmlns:icon="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
     x:Name="Control">
 
-	<Border
+    <Border
         Margin="0,8,0,0"
         Padding="14"
         Background="{DynamicResource CardBackgroundBrush}"
@@ -14,68 +14,42 @@
         BorderThickness="1"
         CornerRadius="4">
 
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="*" />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-			<StackPanel Grid.Column="0">
-				<StackPanel Orientation="Horizontal">
-					<TextBlock FontSize="14" Text="{Binding Header, ElementName=Control}" />
+            <StackPanel Grid.Column="0">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="14" Text="{Binding Header, ElementName=Control}" />
 
-					<!-- Help link will use emoji for now -->
-					<TextBlock x:Name="HelpLinkText" Margin="4,0,0,0">
-						<HyperlinkButton
-							Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-							CommandParameter="{Binding HelpLink, ElementName=Control}">
-							<icon:SymbolIcon Symbol="Help"
-									   Foreground="{DynamicResource SystemAccentColorSecondary}">
-								<TextBlock.Styles>
-									<Style Selector="TextBlock:pointerover">
-										<Setter Property="Foreground" Value="{DynamicResource SystemAccentColorTertiary}" />
-									</Style>
-								</TextBlock.Styles>
-							</icon:SymbolIcon>
-						</HyperlinkButton>
+                    <TextBlock x:Name="HelpLinkText" Margin="4,0,0,0"
+                               IsVisible="{Binding HelpLink, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <HyperlinkButton
+                            Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                            CommandParameter="{Binding HelpLink, ElementName=Control}">
+                            <icon:SymbolIcon Symbol="Help" Foreground="{DynamicResource SystemAccentColorSecondary}"/>
+                        </HyperlinkButton>
+                    </TextBlock>
+                </StackPanel>
 
-						<TextBlock.Styles>
-							<Style Selector="#HelpLinkText">
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding HelpLink, ElementName=Control}" Value="{x:Null}">
-										<Setter Property="IsVisible" Value="False" />
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</TextBlock.Styles>
-					</TextBlock>
-				</StackPanel>
+                <ui:MarkdownTextBlock x:Name="MarkdownText"
+                    Margin="0,2,0,0"
+                    FontSize="12"
+                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                    MarkdownText="{Binding Description, ElementName=Control}"
+                    TextWrapping="Wrap"
+                    IsVisible="{Binding Description, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+            </StackPanel>
 
-				<ui:MarkdownTextBlock x:Name="MarkdownText"
-					Margin="0,2,0,0"
-					FontSize="12"
-					Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-					MarkdownText="{Binding Description, ElementName=Control}"
-					TextWrapping="Wrap">
-
-					<ui:MarkdownTextBlock.Styles>
-						<Style Selector="#MarkdownText">
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
-									<Setter Property="IsVisible" Value="False" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</ui:MarkdownTextBlock.Styles>
-				</ui:MarkdownTextBlock>
-			</StackPanel>
-
-			<ContentPresenter
+            <ContentPresenter
                 Grid.Column="1"
                 Margin="1,0,0,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Content="{Binding InnerContent, ElementName=Control}" />
-		</Grid>
-	</Border>
+                Content="{Binding InnerContent, ElementName=Control}" 
+                IsVisible="{Binding InnerContent, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+        </Grid>
+    </Border>
 </UserControl>

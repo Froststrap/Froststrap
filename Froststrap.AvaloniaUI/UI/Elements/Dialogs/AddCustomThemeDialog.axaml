@@ -12,9 +12,7 @@
      x:DataType="vm:AddCustomThemeViewModel"
      Title="Add Custom Theme"
      Width="480"
-     d:DataContext="{d:DesignInstance viewmodels:AddCustomThemeViewModel, IsDesignTimeCreatable=True}"
      Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
-     ExtendsContentIntoTitleBar="True"
      CanResize="False"
      SizeToContent="Height"
      WindowStartupLocation="CenterScreen"
@@ -72,7 +70,7 @@
                     <Button HorizontalAlignment="Stretch"
                             Click="OnImportButtonClicked">
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ui:SymbolIcon Symbol="DocumentArrowUp" /> <!-- piece of shit SymbolIcon has basically nothing -->
+                            <ui:SymbolIcon Symbol="Document" /> <!-- piece of shit SymbolIcon has basically nothing -->
                             <TextBlock Text="{x:Static resources:Strings.Common_ImportFromFile}" />
                         </StackPanel>
                     </Button>

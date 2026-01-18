@@ -7,6 +7,8 @@
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:converters="clr-namespace:Froststrap.UI.Converters"
+        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+        x:DataType="vm:CommunityModInfoViewModel"
         Title="Mod Information"
         MaxWidth="750"
         MaxHeight="290"

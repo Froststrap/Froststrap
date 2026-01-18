@@ -1,6 +1,3 @@
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Froststrap.UI.ViewModels.ContextMenu;
 
 namespace Froststrap.UI.Elements.ContextMenu;

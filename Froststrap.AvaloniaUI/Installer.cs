@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Xml.Linq;
 using Froststrap.AppData;
-using Froststrap.AvaloniaUI;
+using Froststrap;
 using Microsoft.Win32;
 
 namespace Froststrap

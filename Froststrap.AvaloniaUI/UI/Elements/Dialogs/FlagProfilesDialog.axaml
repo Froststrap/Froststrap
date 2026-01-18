@@ -6,7 +6,6 @@
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:converters="clr-namespace:Froststrap.UI.Converters"
         mc:Ignorable="d"
         Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
         MinHeight="300"
@@ -15,10 +14,6 @@
         SizeToContent="Height"
         CanResize="False"
         WindowStartupLocation="CenterScreen">
-
-	<base:AvaloniaWindow.Resources>
-		<converters:RangeConverter x:Key="ValidationConverter" From="0" />
-	</base:AvaloniaWindow.Resources>
 	
 	<Grid>
 		<Grid.RowDefinitions>
@@ -100,60 +95,17 @@
                 Background="{DynamicResource PrimaryBackgroundColor}">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<CheckBox Content="{x:Static resources:Strings.Menu_FlagProfiles_ClearFlags}"
-                         Name="ClearFlags" Margin="0,0,40,0">
-					<CheckBox.Styles>
-						<Style Selector="CheckBox">
-							<Setter Property="IsVisible" Value="False" />
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding SelectedIndex, ElementName=Tabs}" Value="1">
-									<Setter Property="IsVisible" Value="True" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</CheckBox.Styles>
-				</CheckBox>
+                         Name="ClearFlags" Margin="0,0,40,0" />
 
 				<Button Margin="0,0,15,0" MinWidth="100"
                         Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}"
-                        Click="DeleteButton_Click">
-					<Button.Styles>
-						<Style Selector="Button">
-							<Setter Property="IsVisible" Value="False" />
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding SelectedIndex, ElementName=Tabs}" Value="1">
-									<Setter Property="IsVisible" Value="True" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</Button.Styles>
-				</Button>
+                        Click="DeleteButton_Click"
+                        Name="DeleteButton" />
 
 				<Button MinWidth="100"
                         Content="{x:Static resources:Strings.Common_OK}"
-                        Click="OKButton_Click" Name="OkButton">
-					<Button.Styles>
-						<Style Selector="Button">
-							<Setter Property="IsEnabled" Value="False" />
-							<Style.Triggers>
-								<MultiDataTrigger>
-									<MultiDataTrigger.Conditions>
-										<Condition Binding="{Binding SelectedIndex, ElementName=Tabs}" Value="0" />
-										<Condition Binding="{Binding Text.Length, ElementName=SaveProfile, Converter={StaticResource ValidationConverter}}" Value="True" />
-									</MultiDataTrigger.Conditions>
-									<Setter Property="IsEnabled" Value="True" />
-								</MultiDataTrigger>
-
-								<DataTrigger Binding="{Binding SelectedIndex, ElementName=Tabs}" Value="1">
-									<Setter Property="IsEnabled" Value="True" />
-								</DataTrigger>
-
-								<DataTrigger Binding="{Binding SelectedIndex, ElementName=Tabs}" Value="2">
-									<Setter Property="IsEnabled" Value="True" />
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</Button.Styles>
-				</Button>
+                        Click="OKButton_Click" 
+                        Name="OkButton" />
 
 				<Button MinWidth="100" Margin="12,0,0,0"
                         Content="{x:Static resources:Strings.Common_Cancel}"

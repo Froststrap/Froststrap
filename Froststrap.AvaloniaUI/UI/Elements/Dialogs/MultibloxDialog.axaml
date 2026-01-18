@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+        x:DataType="vm:MultibloxViewModel"
         mc:Ignorable="d"
         Title="Multiblox"
         Width="400"

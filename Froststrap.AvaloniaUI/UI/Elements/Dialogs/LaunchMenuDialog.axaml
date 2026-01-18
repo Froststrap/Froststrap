@@ -7,6 +7,8 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
         xmlns:resources="clr-namespace:Froststrap.Resources"
+		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+        x:DataType="vm:LaunchMenuViewModel"
         mc:Ignorable="d"
         Title="Froststrap"
         Width="580"

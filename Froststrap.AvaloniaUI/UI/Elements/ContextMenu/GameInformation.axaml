@@ -30,7 +30,7 @@
             <StackPanel Spacing="10">
                 
                 <StackPanel IsVisible="{Binding HasError}" HorizontalAlignment="Center" Margin="0,20" Spacing="10">
-                    <ui:SymbolIcon Symbol="ErrorCircle24" FontSize="48" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
+                    <ui:SymbolIcon Symbol="WifiWarning" FontSize="48" Foreground="{DynamicResource SystemFillColorCriticalBrush}" />
                     <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" TextAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                     <Button Content="Retry" Command="{Binding RefreshInformationCommand}" HorizontalAlignment="Center" />
                 </StackPanel>
@@ -71,7 +71,7 @@
                             </StackPanel>
                             
                             <StackPanel HorizontalAlignment="Center" Spacing="2">
-                                <ui:SymbolIcon Symbol="Eye24" Foreground="{DynamicResource SystemFillColorAttentionBrush}" />
+                                <ui:SymbolIcon Symbol="WifiWarning" Foreground="{DynamicResource SystemFillColorAttentionBrush}" />
                                 <TextBlock Text="{Binding VisitsCount}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                                 <TextBlock Text="Visits" FontSize="11" Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center"/>
                             </StackPanel>
@@ -115,7 +115,7 @@
         <Border Grid.Row="2" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="15" Spacing="12">
                 <Button Content="Copy Game Link" Command="{Binding CopyGameLinkCommand}" MinWidth="80"/>
-                <Button Content="Close" Click="CloseButton_Click" MinWidth="80"/>
+                <Button Content="Close" IsCancel="True" MinWidth="80"/>
             </StackPanel>
         </Border>
     </Grid>
