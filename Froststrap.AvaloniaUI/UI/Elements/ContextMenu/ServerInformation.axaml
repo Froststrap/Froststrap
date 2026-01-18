@@ -70,7 +70,7 @@
                         Command="{Binding CopyInstanceIdCommand}" />
                 <Button MinWidth="100" 
                         Content="{x:Static res:Strings.Common_Close}" 
-                        Click="CloseButton_Click" />
+                        IsCancel="True" />
             </StackPanel>
         </Border>
     </Grid>

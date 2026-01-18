@@ -1,67 +1,32 @@
 ﻿<UserControl x:Class="Froststrap.UI.Elements.Controls.SquareCard"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
-             mc:Ignorable="d"
+             xmlns:control="clr-namespace:Froststrap.UI.Elements.Controls"
              x:Name="Control">
 
-	<Border Padding="14" Margin="0,6,6,6"
+    <Border Padding="14" Margin="0,6,6,6"
             Background="{DynamicResource CardBackgroundBrush}"
             BorderBrush="{DynamicResource CardBorderBrush}"
             BorderThickness="1"
             CornerRadius="4">
-		<Grid MinHeight="140">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="*"/>
-			</Grid.RowDefinitions>
+        <Grid MinHeight="140" RowDefinitions="Auto,Auto,*">
 
-			<TextBlock x:Name="HeaderTextBlock" Grid.Row="0" FontSize="18" TextWrapping="Wrap"
-                       Text="{Binding Header, ElementName=Control}">
-				<TextBlock.Styles>
-					<Style Selector="#HeaderTextBlock">
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding Header, ElementName=Control}" Value="{x:Null}">
-								<Setter Property="IsVisible" Value="False"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</TextBlock.Styles>
-			</TextBlock>
+            <TextBlock Grid.Row="0" FontSize="18" TextWrapping="Wrap"
+                       Text="{Binding Header, ElementName=Control}"
+                       IsVisible="{Binding Header, ElementName=Control, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 
-			<ui:MarkdownTextBlock x:Name="MarkdownTextBlock" Grid.Row="1" FontSize="14" TextWrapping="Wrap"
-                       Margin="0,6,0,0"
-                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-					MarkdownText="{Binding Description, ElementName=Control}">
-				<ui:MarkdownTextBlock.Style>
-					<Style Selector="#MarkdownTextBlock">
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding Description, ElementName=Control}" Value="{x:Null}">
-								<Setter Property="IsVisible" Value="False"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</ui:MarkdownTextBlock.Style>
-			</ui:MarkdownTextBlock>
+            <control:MarkdownTextBlock Grid.Row="1" FontSize="14" TextWrapping="Wrap"
+                                  Margin="0,6,0,0"
+                                  Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                  MarkdownText="{Binding Description, ElementName=Control}"
+                                  IsVisible="{Binding Description, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
-			<ContentPresenter Grid.Row="2"
+            <ContentPresenter Grid.Row="2"
                               Content="{Binding InnerContent, ElementName=Control}"
                               VerticalAlignment="Bottom"
                               HorizontalAlignment="Stretch"
-                              Margin="0,8,0,0">
-				<ContentPresenter.Styles>
-					<Style Selector="ContentPresenter">
-						<Style.Triggers>
-							<DataTrigger Binding="{Binding InnerContent, ElementName=Control}" Value="{x:Null}">
-								<Setter Property="IsVisible" Value="False"/>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</ContentPresenter.Styles>
-			</ContentPresenter>
-		</Grid>
-	</Border>
+                              Margin="0,8,0,0"
+                              IsVisible="{Binding InnerContent, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+        </Grid>
+    </Border>
 </UserControl>
