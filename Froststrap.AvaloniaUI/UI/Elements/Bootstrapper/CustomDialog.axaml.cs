@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper.Base;
@@ -76,11 +73,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
 			_viewModel = new BootstrapperDialogViewModel(this);
 			DataContext = _viewModel;
-
 			Title = App.Settings.Prop.BootstrapperTitle;
-
-			// Set Icon (Avalonia uses WindowIcon type)
-			// Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIconStream());
+			Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
 
 			this.Closing += CustomDialog_Closing;
 		}
@@ -94,19 +88,15 @@ namespace Froststrap.UI.Elements.Bootstrapper
 		}
 
 		#region IBootstrapperDialog Methods
-		public void ShowBootstrapper()
-		{
-			this.Show();
-		}
+		public void ShowBootstrapper() => this.Show();
 
-		public void CloseBootstrapper()
+        public void CloseBootstrapper()
 		{
 			_isClosing = true;
 			Dispatcher.UIThread.Post(this.Close);
 		}
 
-		public void ShowSuccess(string message, Action? callback)
-			=> BaseFunctions.ShowSuccess(this, message, callback);
-		#endregion
-	}
+        public void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
+        #endregion
+    }
 }

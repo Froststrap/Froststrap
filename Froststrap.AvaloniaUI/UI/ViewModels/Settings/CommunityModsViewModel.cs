@@ -135,8 +135,8 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         [RelayCommand]
-		private async void ShowModInfo(CommunityMod mod)
-		{
+        private async Task ShowModInfoAsync(CommunityMod mod)
+        {
 			if (mod == null) return;
 
 			if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
@@ -144,7 +144,7 @@ namespace Froststrap.UI.ViewModels.Settings
 				var parentWindow = desktop.MainWindow;
 
 				var dialog = new CommunityModInfoDialog(mod);
-				dialog.ShowDialog(parentWindow);
+				await dialog.ShowDialog(parentWindow!);
 			}
 		}
 

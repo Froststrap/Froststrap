@@ -6,11 +6,11 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Froststrap.UI.Utility;
 using Froststrap;
-using Froststrap.UI.Elements.Bootstrapper.Base;
+using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Bootstrapper.Base
 {
-	public class AvaloniaDialogBase : CustomDialog, IBootstrapperDialog
+	public class AvaloniaDialogBase : AvaloniaWindow, IBootstrapperDialog
 	{
 		public const int TaskbarProgressMaximum = 100;
 
@@ -95,27 +95,19 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
 		}
 		#endregion
 
-		#region IBootstrapperDialog Methods
-		public void ShowBootstrapper() => ShowDialog(null);
+        #region IBootstrapperDialog Methods
+        public void ShowBootstrapper() => Show();
 
-		public virtual void CloseBootstrapper()
-		{
-			RunOnUI(() =>
-			{
-				_isClosing = true;
-				Close();
-			});
-		}
-
-        public virtual void ShowSuccess(string message, Action? callback)
+        public virtual void CloseBootstrapper()
         {
-			var dialog = this as CustomDialog;
+            RunOnUI(() =>
+            {
+                _isClosing = true;
+                Close();
+            });
+        }
 
-			if (dialog != null)
-			{
-				dialog.ShowSuccess(message, callback);
-			}
-		}
+        public virtual void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
         #endregion
     }
 }

@@ -11,7 +11,6 @@
  *               of the Nix ecosystem. 
  */
 
-using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PuppeteerExtraSharp;
@@ -21,6 +20,10 @@ using System.Web;
 using Avalonia;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Dialogs;
+
+#if WINDOWS
+using System.Security.Cryptography;
+#endif
 
 namespace Froststrap.Integrations
 {
@@ -99,11 +102,13 @@ namespace Froststrap.Integrations
                 // Not base64 -> plaintext
                 return protectedText ?? string.Empty;
             }
+#if WINDOWS
             catch (CryptographicException)
             {
                 // Could not unprotect -> assume plaintext (or different machine/profile)
                 return protectedText ?? string.Empty;
             }
+#endif
             catch (Exception)
             {
                 return protectedText ?? string.Empty;

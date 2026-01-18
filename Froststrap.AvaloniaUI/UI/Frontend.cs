@@ -107,8 +107,8 @@ namespace Froststrap.UI
                 //BootstrapperStyle.FroststrapDialog => new FroststrapDialog(),
                 //BootstrapperStyle.FluentDialog => new FluentDialog(false),
                 //BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),
-                //BootstrapperStyle.CustomDialog => GetCustomBootstrapper(),
-                //_ => new FluentDialog(false)
+                BootstrapperStyle.CustomDialog => GetCustomBootstrapper(),
+                // _ => new FluentDialog(false)
             };
         }
 
