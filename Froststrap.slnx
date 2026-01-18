@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="Froststrap.AvaloniaUI/Froststrap.AvaloniaUI.csproj" />
+  <Project Path="Froststrap/Froststrap.csproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
   </Properties>
