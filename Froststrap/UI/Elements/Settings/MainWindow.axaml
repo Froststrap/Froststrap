@@ -10,6 +10,7 @@
 	xmlns:page="clr-namespace:Froststrap.UI.Elements.Settings.Pages"
     Title="{x:Static resources:Strings.Menu_Title}"
     Width="1125" Height="700"
+
     MinWidth="250" MinHeight="250"
     WindowStartupLocation="CenterScreen"
     ExtendClientAreaToDecorationsHint="True"

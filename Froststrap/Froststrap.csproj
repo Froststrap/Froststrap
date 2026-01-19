@@ -12,68 +12,10 @@
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
-    <!-- Folders for organization -->
-    <ItemGroup>
-        <Folder Include="Models\" />
-    </ItemGroup>
-
     <!-- Resources needed by Avalonia -->
+    <!-- We don't need that many Avalonia Resources just specify the folder only 😭 -->
     <ItemGroup>
-        <AvaloniaResource Include="Resources\Mods\Sounds\*.mp3" />
-        <AvaloniaResource Include="Resources\Mods\Cursor\**\*.*" />
-        <AvaloniaResource Include="Resources\PresetFlags\*" />
-    </ItemGroup>
-	
-    <ItemGroup>
-	  <AvaloniaResource Include="Froststrap.png" />
-      <AvaloniaResource Include="Froststrap.ico" />
-      <AvaloniaResource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoDark.jpg" />
-      <AvaloniaResource Include="Resources\BootstrapperStyles\ByfronDialog\ByfronLogoLight.jpg" />
-      <AvaloniaResource Include="Resources\BootstrapperStyles\ByfronDialog\Matt.png" />
-      <AvaloniaResource Include="Resources\Checkmark.ico" />
-      <AvaloniaResource Include="Resources\CrossMark.ico" />
-      <AvaloniaResource Include="Resources\Fonts\NotoSansThai-VariableFont_wdth,wght.ttf" />
-      <AvaloniaResource Include="Resources\Fonts\Rubik-VariableFont_wght.ttf" />
-      <AvaloniaResource Include="Resources\Froststrap Custom Background.png" />
-      <AvaloniaResource Include="Resources\LightEditor.xshd" />
-      <AvaloniaResource Include="Resources\MessageBox\Error.png" />
-      <AvaloniaResource Include="Resources\MessageBox\Information.png" />
-      <AvaloniaResource Include="Resources\MessageBox\Question.png" />
-      <AvaloniaResource Include="Resources\MessageBox\Warning.png" />
-      <AvaloniaResource Include="Resources\RobloxVerified.png" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedAvaloniaResource Include="Resources\CustomBootstrapperSchema.json" />
-      <EmbeddedAvaloniaResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
-      <EmbeddedAvaloniaResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
-      <EmbeddedAvaloniaResource Include="Resources\Icon2008.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\Icon2011.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\Icon2017.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\Icon2019.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\Icon2022.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\Icon2025.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\IconFroststrap.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\IconEarly2015.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\IconLate2015.ico" />
-      <EmbeddedAvaloniaResource Include="Resources\mappings.json" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowFarCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\IBeamCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2006\ArrowCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2006\ArrowFarCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2013\ArrowCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\From2013\ArrowFarCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\PurpleCross\ArrowCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\PurpleCross\ArrowFarCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Cursor\PurpleCross\IBeamCursor.png" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\OldAvatarBackground.rbxl" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\Empty.mp3" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\OldGetUp.mp3" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\OldJump.mp3" />
-      <EmbeddedAvaloniaResource Include="Resources\Mods\Sounds\OldWalk.mp3" />
-      <EmbeddedAvaloniaResource Include="Resources\PresetFlags\Balanced Quality" />
-      <EmbeddedAvaloniaResource Include="Resources\PresetFlags\High Quality" />
-      <EmbeddedAvaloniaResource Include="Resources\PresetFlags\Low Quality" />
+		<AvaloniaResource Include="Resources\**" />
     </ItemGroup>
 
     <!-- NuGet packages -->
