@@ -1,9 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Platform.Storage;
+using Froststrap.UI.Elements.Base;
 using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
@@ -79,11 +82,7 @@ public partial class AppearancePage : UserControl
         if (DataContext is AppearanceViewModel vm)
         {
             App.Settings.Prop.CustomGradientStops = vm.GradientStops.ToList();
-
-            if (this.VisualRoot is MainWindow mainWindow)
-            {
-                mainWindow.ApplyTheme();
-            }
+            AvaloniaWindow.RefreshCustomTheme();
         }
     }
 
@@ -117,47 +116,142 @@ public partial class AppearancePage : UserControl
             VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch
         };
 
+        var hexTextBox = new TextBox
+        {
+            Text = stop.Color,
+            Watermark = "#RRGGBB or #AARRGGBB",
+            Margin = new Thickness(0, 10, 0, 0)
+        };
+
+        colorPicker.ColorChanged += (s, args) =>
+        {
+            var color = args.NewColor;
+            hexTextBox.Text = $"#{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
+        };
+
+        hexTextBox.TextChanged += (s, args) =>
+        {
+            if (IsValidHexColor(hexTextBox.Text))
+            {
+                try
+                {
+                    var color = Avalonia.Media.Color.Parse(hexTextBox.Text);
+                    colorPicker.Color = color;
+                }
+                catch { }
+            }
+        };
+
         var okButton = new Button
         {
             Content = "OK",
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            Margin = new Thickness(0, 10, 0, 0),
+            Width = 80
+        };
+
+        var cancelButton = new Button
+        {
+            Content = "Cancel",
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            Margin = new Thickness(0, 5, 0, 0),
+            Width = 80
+        };
+
+        var buttonStack = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Spacing = 10,
             Margin = new Thickness(0, 10, 0, 0)
         };
 
+        buttonStack.Children.Add(okButton);
+        buttonStack.Children.Add(cancelButton);
+
         var panel = new StackPanel
         {
-            Children = { colorPicker, okButton },
-            Margin = new Avalonia.Thickness(10)
+            Children = { colorPicker, hexTextBox, buttonStack },
+            Margin = new Avalonia.Thickness(15)
         };
 
         var pickerWindow = new Window
         {
             Title = "Select Color",
-            Width = 300,
-            Height = 400,
+            Width = 320,
+            Height = 450,
             Content = panel,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            SizeToContent = SizeToContent.Manual
         };
 
-        var tcs = new TaskCompletionSource<Avalonia.Media.Color?>();
+        var tcs = new TaskCompletionSource<string?>();
 
         okButton.Click += (_, _) =>
         {
-            tcs.TrySetResult(colorPicker.Color);
+            tcs.TrySetResult(hexTextBox.Text);
             pickerWindow.Close();
         };
 
-        var rootWindow = this.VisualRoot as Window;
-        if (rootWindow is null) return;
-
-        _ = pickerWindow.ShowDialog(rootWindow);
-        var selectedColor = await tcs.Task;
-
-        if (selectedColor is Avalonia.Media.Color c)
+        cancelButton.Click += (_, _) =>
         {
-            stop.Color = $"#{c.A:X2}{c.R:X2}{c.G:X2}{c.B:X2}";
-            UpdateGradientTheme();
+            tcs.TrySetResult(null);
+            pickerWindow.Close();
+        };
+
+        pickerWindow.KeyDown += (s, args) =>
+        {
+            if (args.Key == Key.Enter)
+            {
+                tcs.TrySetResult(hexTextBox.Text);
+                pickerWindow.Close();
+            }
+            else if (args.Key == Key.Escape)
+            {
+                tcs.TrySetResult(null);
+                pickerWindow.Close();
+            }
+        };
+
+        var rootWindow = this.VisualRoot as Window;
+        if (rootWindow is null)
+        {
+            App.Logger.WriteLine("AppearancePage", "Failed to get root window");
+            return;
         }
+
+        try
+        {
+            App.Logger.WriteLine("AppearancePage", "Opening color picker dialog");
+            await pickerWindow.ShowDialog(rootWindow);
+            var selectedColorHex = await tcs.Task;
+
+            App.Logger.WriteLine("AppearancePage", $"Color picker result: {selectedColorHex}");
+
+            if (!string.IsNullOrEmpty(selectedColorHex))
+            {
+                stop.Color = selectedColorHex;
+
+                var index = vm.GradientStops.IndexOf(stop);
+                if (index >= 0)
+                {
+                    vm.GradientStops[index] = stop;
+                    vm.OnPropertyChanged(nameof(vm.GradientStops));
+                }
+
+                UpdateGradientTheme();
+                App.Logger.WriteLine("AppearancePage", $"Updated color to: {selectedColorHex}");
+            }
+        }
+        catch (Exception ex)
+        {
+            App.Logger.WriteLine("AppearancePage", $"Error in color picker: {ex.Message}");
+        }
+    }
+
+    private void OnSliderValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+    {
+        UpdateGradientTheme();
     }
 
     private void OnSliderReleased(object sender, PointerReleasedEventArgs e)

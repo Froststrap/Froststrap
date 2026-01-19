@@ -1,8 +1,3 @@
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-using System.Security.Cryptography;
-using System.Text;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -10,10 +5,16 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels;
 using Froststrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Froststrap;
 

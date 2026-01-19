@@ -1,24 +1,19 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.Input;
+using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
-using Froststrap.UI.Elements.Settings;
-using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
-using Microsoft.Win32;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
     public class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
-        private readonly Control _page;
+        private readonly UserControl _page;
 
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
         public ICommand BrowseCustomIconLocationCommand => new RelayCommand(BrowseCustomIconLocation);
@@ -78,7 +73,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public AppearanceViewModel(Control page)
+        public AppearanceViewModel(UserControl page)
         {
             _page = page;
 
@@ -106,7 +101,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     ApplyDefaultGradientStops();
                 }
 
-                ((MainWindow)TopLevel.GetTopLevel(_page)!).ApplyTheme();
+                AvaloniaWindow.ApplyGlobalTheme();
                 OnPropertyChanged(nameof(CustomGlobalThemeExpanded));
             }
         }
@@ -120,7 +115,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 App.Settings.Prop.GradientAngle = value;
 
-                ((MainWindow)TopLevel.GetTopLevel(_page)!).ApplyTheme();
+                AvaloniaWindow.ApplyGlobalTheme();
 
                 OnPropertyChanged(nameof(GradientAngle));
             }
@@ -148,7 +143,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                 }
 
-                ((MainWindow)TopLevel.GetTopLevel(_page)!).ApplyTheme();
+                AvaloniaWindow.ApplyGlobalTheme();
                 OnPropertyChanged(nameof(IsGradientMode));
                 OnPropertyChanged(nameof(IsImageMode));
             }
@@ -165,7 +160,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 App.Settings.Prop.BackgroundStretch = value;
-                ((MainWindow)TopLevel.GetTopLevel(_page)!).ApplyTheme();
+                AvaloniaWindow.ApplyGlobalTheme();
             }
         }
 
@@ -225,7 +220,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 App.Settings.Prop.BackgroundImagePath = destinationPath;
 
-                ((MainWindow)TopLevel.GetTopLevel(_page)!).ApplyTheme();
+                AvaloniaWindow.ApplyGlobalTheme();
             }
             catch (Exception ex)
             {
@@ -257,7 +252,7 @@ namespace Froststrap.UI.ViewModels.Settings
             finally
             {
                 App.Settings.Prop.BackgroundImagePath = null;
-                ((MainWindow)TopLevel.GetTopLevel(_page)!).ApplyTheme();
+                AvaloniaWindow.ApplyGlobalTheme();
             }
         }
 
@@ -267,7 +262,7 @@ namespace Froststrap.UI.ViewModels.Settings
             ApplyDefaultGradientStops();
             App.Settings.Prop.CustomGradientStops = GradientStops.ToList();
 
-            ((MainWindow)TopLevel.GetTopLevel(_page)!).ApplyTheme();
+            AvaloniaWindow.ApplyGlobalTheme();
         }
 
         private void InitializeGradientStops()

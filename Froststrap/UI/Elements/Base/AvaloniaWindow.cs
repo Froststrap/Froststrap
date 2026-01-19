@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml.Styling;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
@@ -9,27 +10,21 @@ namespace Froststrap.UI.Elements.Base
 {
     public abstract class AvaloniaWindow : Window
     {
-        private readonly IStyleHost _styleHost;
+        private static ResourceDictionary? _currentTheme;
 
         public AvaloniaWindow()
         {
-            _styleHost = Application.Current as IStyleHost ?? this;
-            ApplyTheme();
+            ApplyGlobalTheme();
         }
 
-        public void ApplyTheme()
+        public static void ApplyGlobalTheme()
         {
-            const int customThemeIndex = 2;
-
             var finalTheme = App.Settings.Prop.Theme.GetFinal();
 
-            RequestedThemeVariant = finalTheme == Enums.Theme.Light ?
+            Application.Current!.RequestedThemeVariant = finalTheme == Enums.Theme.Light ?
                 ThemeVariant.Light : ThemeVariant.Dark;
 
-            if (_styleHost.Styles.Count > customThemeIndex)
-            {
-                _styleHost.Styles.RemoveAt(customThemeIndex);
-            }
+            Application.Current.Resources.Remove("ApplicationBackground");
 
             if (finalTheme == Enums.Theme.Custom)
             {
@@ -46,16 +41,13 @@ namespace Froststrap.UI.Elements.Base
             }
             else
             {
-                ApplyStandardTheme(finalTheme, customThemeIndex);
+                ApplyStandardTheme(finalTheme);
             }
 
-#if QA_BUILD
-            this.BorderBrush = Avalonia.Media.Brushes.Red;
-            this.BorderThickness = new Thickness(4);
-#endif
+            UpdateAllWindows();
         }
 
-        private void ApplyGradientBackground()
+        private static void ApplyGradientBackground()
         {
             double angle = App.Settings.Prop.GradientAngle;
             double angleRad = angle * Math.PI / 180.0;
@@ -71,7 +63,11 @@ namespace Froststrap.UI.Elements.Base
                 EndPoint = new RelativePoint(endX, endY, RelativeUnit.Relative)
             };
 
-            foreach (var stop in App.Settings.Prop.CustomGradientStops.OrderBy(s => s.Offset))
+            customBrush.GradientStops.Clear();
+
+            var currentStops = App.Settings.Prop.CustomGradientStops ?? new List<Models.GradientStops>();
+
+            foreach (var stop in currentStops.OrderBy(s => s.Offset))
             {
                 try
                 {
@@ -81,12 +77,10 @@ namespace Froststrap.UI.Elements.Base
                 catch { }
             }
 
-            Application.Current?.Resources["ApplicationBackground"] = customBrush;
-
-            this.Background = customBrush;
+            SetResource("ApplicationBackground", customBrush);
         }
 
-        private void ApplyImageBackground()
+        private static void ApplyImageBackground()
         {
             if (string.IsNullOrEmpty(App.Settings.Prop.BackgroundImagePath) ||
                 !File.Exists(App.Settings.Prop.BackgroundImagePath))
@@ -113,9 +107,7 @@ namespace Froststrap.UI.Elements.Base
                     Opacity = App.Settings.Prop.BackgroundOpacity
                 };
 
-                Application.Current?.Resources["ApplicationBackground"] = imageBrush;
-
-                this.Background = imageBrush;
+                SetResource("ApplicationBackground", imageBrush);
             }
             catch (Exception ex)
             {
@@ -123,66 +115,144 @@ namespace Froststrap.UI.Elements.Base
             }
         }
 
-        private Color ParseColor(string colorString)
+        private static Color ParseColor(string colorString)
         {
-            if (colorString.StartsWith("#"))
-            {
-                return Color.Parse(colorString);
-            }
-
             return Color.Parse(colorString);
         }
 
-        private void ApplyCustomThemeResources()
+        private static void ApplyCustomThemeResources()
         {
-            var resources = Application.Current?.Resources;
-            if (resources == null) return;
+            RemoveCurrentTheme();
 
-            resources["NewTextEditorBackground"] = new SolidColorBrush(ParseColor("#59000000"));
-            resources["NewTextEditorForeground"] = new SolidColorBrush(Colors.White);
-            resources["NewTextEditorLink"] = new SolidColorBrush(ParseColor("#3A9CEA"));
-            resources["PrimaryBackgroundColor"] = new SolidColorBrush(ParseColor("#19000000"));
-            resources["NormalDarkAndLightBackground"] = new SolidColorBrush(ParseColor("#0FFFFFFF"));
-            resources["ControlFillColorDefault"] = ParseColor("#19000000");
+            SetResource("NewTextEditorBackground", new SolidColorBrush(ParseColor("#59000000")));
+            SetResource("NewTextEditorForeground", new SolidColorBrush(Colors.White));
+            SetResource("NewTextEditorLink", new SolidColorBrush(ParseColor("#3A9CEA")));
+            SetResource("PrimaryBackgroundColor", new SolidColorBrush(ParseColor("#19000000")));
+            SetResource("NormalDarkAndLightBackground", new SolidColorBrush(ParseColor("#0FFFFFFF")));
+            SetResource("ControlFillColorDefault", ParseColor("#19000000"));
         }
 
-        private void ApplyStandardTheme(Theme finalTheme, int customThemeIndex)
+        public static void RefreshCustomTheme()
+        {
+            if (App.Settings.Prop.Theme == Enums.Theme.Custom)
+            {
+                ApplyGradientBackground();
+                UpdateAllWindows();
+            }
+        }
+
+        private static void ApplyStandardTheme(Theme finalTheme)
         {
             try
             {
                 var themeName = Enum.GetName(finalTheme);
                 if (themeName == null) return;
 
+                RemoveCurrentTheme();
+
+                RemoveCustomResources();
+
                 var uri = new Uri($"avares://Froststrap/UI/Style/{themeName}.axaml");
-
-                var style = new StyleInclude(uri)
-                {
-                    Source = uri
-                };
-
-                if (_styleHost.Styles.Count > customThemeIndex)
-                {
-                    _styleHost.Styles[customThemeIndex] = style;
-                }
-                else
-                {
-                    _styleHost.Styles.Add(style);
-                }
-
-                var resources = Application.Current?.Resources;
-                if (resources != null)
-                {
-                    resources.Remove("NewTextEditorBackground");
-                    resources.Remove("NewTextEditorForeground");
-                    resources.Remove("NewTextEditorLink");
-                    resources.Remove("PrimaryBackgroundColor");
-                    resources.Remove("NormalDarkAndLightBackground");
-                    resources.Remove("ControlFillColorDefault");
-                }
+                LoadThemeFromUri(uri);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine("AvaloniaWindow", $"Error loading theme: {ex.Message}");
+            }
+        }
+
+        private static void LoadThemeFromUri(Uri uri)
+        {
+            try
+            {
+                var resources = Application.Current?.Resources;
+                if (resources == null) return;
+
+                var themeDict = (ResourceDictionary)AvaloniaXamlLoader.Load(uri);
+
+                MergeResourceDictionary(resources, themeDict);
+
+                _currentTheme = themeDict;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("AvaloniaWindow", $"Error loading theme from URI: {ex.Message}");
+            }
+        }
+
+        private static void MergeResourceDictionary(IResourceDictionary target, ResourceDictionary source)
+        {
+            foreach (var key in source.Keys)
+            {
+                if (source.TryGetResource(key, null, out var value))
+                {
+                    target[key] = value;
+                }
+            }
+        }
+
+        private static void RemoveCurrentTheme()
+        {
+            if (_currentTheme != null)
+            {
+                var resources = Application.Current?.Resources;
+                if (resources != null)
+                {
+                    foreach (var key in _currentTheme.Keys)
+                    {
+                        resources.Remove(key);
+                    }
+                }
+                _currentTheme = null;
+            }
+        }
+
+        private static void RemoveCustomResources()
+        {
+            var resources = Application.Current?.Resources;
+            if (resources != null)
+            {
+                resources.Remove("NewTextEditorBackground");
+                resources.Remove("NewTextEditorForeground");
+                resources.Remove("NewTextEditorLink");
+                resources.Remove("PrimaryBackgroundColor");
+                resources.Remove("NormalDarkAndLightBackground");
+                resources.Remove("ControlFillColorDefault");
+            }
+        }
+
+        private static void SetResource(string key, object value)
+        {
+            var resources = Application.Current?.Resources;
+            if (resources != null)
+            {
+                resources[key] = value;
+            }
+        }
+
+        private static void UpdateAllWindows()
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                foreach (var window in desktop.Windows)
+                {
+                    if (window is AvaloniaWindow avaloniaWindow)
+                    {
+                        avaloniaWindow.UpdateWindowBackground();
+                    }
+                }
+            }
+        }
+
+        private void UpdateWindowBackground()
+        {
+            if (Application.Current?.Resources.TryGetResource("ApplicationBackground", null, out var background) == true)
+            {
+                this.Background = background as IBrush;
+            }
+            else
+            {
+                this.Background = null;
             }
         }
     }
