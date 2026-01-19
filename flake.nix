@@ -51,6 +51,7 @@
           dotnetCorePackages.sdk_10_0-bin
           csharp-language-server
           just
+        ] ++ lib.optionals pkgs.stdenv.isLinux [
           glib
         ];
 
@@ -74,6 +75,7 @@
             vulkan-loader
             wayland
             libxkbcommon
+
             # X11 libs
             xorg.libX11
             xorg.libICE
@@ -85,11 +87,16 @@
             xorg.xcbutil
           ];
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath runtimeLibs;
+        DYLD_LIBRARY_PATH = pkgs.lib.makeLibraryPath runtimeLibs;
       in
       {
         devShells.default = pkgs.mkShell {
           meta.license = pkgs.lib.licenses.unlicense;
-          inherit nativeBuildInputs buildInputs LD_LIBRARY_PATH;
+          inherit nativeBuildInputs buildInputs;
+        } // pkgs.lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+          inherit LD_LIBRARY_PATH;
+        } // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+          inherit DYLD_LIBRARY_PATH;
         };
 
         formatter = formatters.wrapper;
