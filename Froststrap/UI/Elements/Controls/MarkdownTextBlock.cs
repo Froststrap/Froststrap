@@ -135,6 +135,12 @@ namespace Froststrap.UI.Elements.Controls
 
 		private void UpdateMarkdownContent(string rawDocument)
 		{
+			if (string.IsNullOrEmpty(rawDocument))
+			{
+				Inlines?.Clear();
+				return;
+			}
+
 			_linkRuns.Clear();
 
 			var document = Markdig.Markdown.Parse(rawDocument, _markdownPipeline);
