@@ -44,8 +44,28 @@
 			</ui:NavigationView.MenuItems>
 
 			<ui:NavigationView.FooterMenuItems>
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" Tag="accountmanager" IconSource="People" />
+					<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" Tag="accountmanager" IconSource="People" >
+
+						<Interaction.Behaviors>
+							<EventTriggerBehavior EventName="Tapped">
+								<InvokeCommandAction Command="{Binding OpenAccountManagerCommand}" />
+							</EventTriggerBehavior>
+						</Interaction.Behaviors>
+
+					</ui:NavigationViewItem>	
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Settings}" Tag="channel" IconSource="Settings" />
+				<ui:NavigationViewItem Content="About Me">
+					<ui:NavigationViewItem.IconSource>
+						<ui:SymbolIconSource Symbol="ContactInfo" FontSize="24" />
+					</ui:NavigationViewItem.IconSource>
+
+					<Interaction.Behaviors>
+						<EventTriggerBehavior EventName="Tapped">
+							<InvokeCommandAction Command="{Binding OpenAboutCommand}" />
+						</EventTriggerBehavior>
+					</Interaction.Behaviors>
+
+				</ui:NavigationViewItem>
 			</ui:NavigationView.FooterMenuItems>
 
 			<ui:NavigationView.Content>
@@ -77,7 +97,6 @@
 					<Button Content="{x:Static resources:Strings.Menu_Restart}" Classes="accent" Command="{Binding RestartAppCommand}" />
 					<Button Content="{x:Static resources:Strings.Menu_Save}" Classes="accent" Command="{Binding SaveSettingsCommand}" />
 					<Button Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseWindowCommand}" />
-					<Button Content="About Me" Command="{Binding OpenAboutCommand}" />
 				</StackPanel>
 			</Grid>
 		</Border>

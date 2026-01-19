@@ -89,22 +89,19 @@ namespace Froststrap.UI.Elements.AccountManagers
 		// changing the Content of a ContentControl or Frame
 		public bool Navigate(Type pageType)
 		{
-			if (pageType == typeof(AccountsPage))
-			{
-				// Logic to set the view to AccountsPage
-				// If using a Frame:
-				// RootFrame.Navigate(pageType);
+			var targetItem = RootNavigation.MenuItems
+				.OfType<NavigationViewItem>()
+				.FirstOrDefault(nvi => nvi.Tag is Type t && t == pageType);
 
-				// If using NavigationView directly:
-				foreach (var item in RootNavigation.MenuItems)
-				{
-					if (item is NavigationViewItem nvi && nvi.Tag?.ToString() == "accounts")
-					{
-						RootNavigation.SelectedItem = nvi;
-						return true;
-					}
-				}
+			if (targetItem != null)
+			{
+				RootNavigation.SelectedItem = targetItem;
+				RootFrame.Navigate(pageType);
+				App.State.Prop.LastPage = pageType.FullName!;
+
+				return true;
 			}
+
 			return false;
 		}
 
