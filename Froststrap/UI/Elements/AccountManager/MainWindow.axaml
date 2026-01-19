@@ -5,6 +5,7 @@
              xmlns:pages="clr-namespace:Froststrap.UI.Elements.AccountManagers.Pages"
              xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
              xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+			 xmlns:page="clr-namespace:Froststrap.UI.Elements.AccountManagers.Pages"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              x:Class="Froststrap.UI.Elements.AccountManagers.MainWindow"
              mc:Ignorable="d"
@@ -37,13 +38,13 @@
                                PaneDisplayMode="Left"
                                IsSettingsVisible="False">
 				<ui:NavigationView.MenuItems>
-					<ui:NavigationViewItem Content="Accounts" IconSource="ContactInfo" Tag="accounts" />
+					<ui:NavigationViewItem Content="Accounts" IconSource="ContactInfo" Tag="{x:Type page:AccountsPage}" />
 					<ui:NavigationViewItem Content="Friends" IconSource="People" Tag="friends" x:Name="friends"/>
 					<ui:NavigationViewItem Content="Games" IconSource="Games" Tag="games" x:Name="games"/>
 				</ui:NavigationView.MenuItems>
 
 				<ui:NavigationView.Content>
-					<ContentControl x:Name="RootFrame" />
+					<ui:Frame x:Name="RootFrame" />
 				</ui:NavigationView.Content>
 			</ui:NavigationView>
 		</Grid>
