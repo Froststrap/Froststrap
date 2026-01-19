@@ -92,11 +92,7 @@
       {
         devShells.default = pkgs.mkShell {
           meta.license = pkgs.lib.licenses.unlicense;
-          inherit nativeBuildInputs buildInputs;
-        } // pkgs.lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
-          inherit LD_LIBRARY_PATH;
-        } // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-          inherit DYLD_LIBRARY_PATH;
+          inherit nativeBuildInputs buildInputs LD_LIBRARY_PATH DYLD_LIBRARY_PATH;
         };
 
         formatter = formatters.wrapper;
