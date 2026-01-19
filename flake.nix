@@ -16,6 +16,7 @@
       flake-utils,
       treefmt-nix,
       csharp-ls,
+      self,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
@@ -45,36 +46,54 @@
               };
             };
           })).config.build;
+
+        buildInputs = with pkgs; [
+          dotnetCorePackages.sdk_10_0-bin
+          csharp-language-server
+          just
+          glib
+        ];
+
+        nativeBuildInputs =
+          with pkgs;
+          lib.optionals pkgs.stdenv.isLinux [
+            pkg-config
+            xorg.libxcb
+            xorg.xcbutil
+            libxkbcommon
+            libxkbcommon_8
+          ];
+
+        runtimeLibs =
+          with pkgs;
+          lib.optionals pkgs.stdenv.isLinux [
+            expat
+            fontconfig
+            freetype
+            libGL
+            vulkan-loader
+            wayland
+            libxkbcommon
+            # X11 libs
+            xorg.libX11
+            xorg.libICE
+            xorg.libSM
+            xorg.libXi
+            xorg.libXrandr
+            xorg.libXcursor
+            xorg.libxcb
+            xorg.xcbutil
+          ];
+        LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath runtimeLibs;
       in
       {
         devShells.default = pkgs.mkShell {
           meta.license = pkgs.lib.licenses.unlicense;
-          buildInputs = with pkgs; [
-            dotnetCorePackages.sdk_10_0-bin
-            csharp-language-server
-            just
-          ];
-
-          shellHook =
-            if !pkgs.stdenv.isDarwin then
-              ''
-                #!/bin/bash
-                COMMAND=$(awk -F: -v user=$USER 'user == $1 {print $NF}' /etc/passwd)
-                if [ "$COMMAND" != *bash* ]; then
-                  $COMMAND
-                  exit
-                fi
-              ''
-            else
-              ''
-                #!/bin/bash
-                COMMAND=$(dscl . -read $HOME 'UserShell' | grep --only-matching '/.*')
-                if [ "$COMMAND" != *bash* ]; then
-                  $COMMAND
-                  exit
-                fi
-              '';
+          inherit nativeBuildInputs buildInputs LD_LIBRARY_PATH;
         };
+
+        formatter = formatters.wrapper;
+        checks.formatting = formatters.check self;
       }
     );
 }
