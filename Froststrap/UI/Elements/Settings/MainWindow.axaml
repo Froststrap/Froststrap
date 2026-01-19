@@ -7,6 +7,7 @@
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+	xmlns:page="clr-namespace:Froststrap.UI.Elements.Settings.Pages"
     Title="{x:Static resources:Strings.Menu_Title}"
     Width="1125" Height="700"
     MinWidth="250" MinHeight="250"
@@ -37,8 +38,8 @@
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Mods_Title}" Tag="mods" IconSource="Repair" />
 				<ui:NavigationViewItem Content="Community Mods" Tag="communitymods" IconSource="Shop" />
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags" IconSource="Flag" />
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance" IconSource="Edit" />
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" x:Name="gbs" Tag="robloxsettings" IconSource="AllApps" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="{x:Type page:AppearancePage}" IconSource="Edit" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}"  x:Name="gbs" Tag="{x:Type page:RobloxSettingsPage}" IconSource="AllApps" />
 			</ui:NavigationView.MenuItems>
 
 			<ui:NavigationView.FooterMenuItems>
