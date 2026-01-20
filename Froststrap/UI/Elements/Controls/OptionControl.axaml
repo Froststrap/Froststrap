@@ -3,53 +3,53 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
     xmlns:ui="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:icon="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    xmlns:fa="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
     x:Name="Control">
 
-    <Border
+    <fa:SettingsExpander
         Margin="0,8,0,0"
-        Padding="14"
-        Background="{DynamicResource CardBackgroundBrush}"
-        BorderBrush="{DynamicResource CardBorderBrush}"
-        BorderThickness="1"
-        CornerRadius="4">
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Column="0">
+        IsExpanded="False"
+        Padding="14">
+        
+        <fa:SettingsExpander.Header>
+            <StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="14" Text="{Binding Header, ElementName=Control}" />
-
-                    <TextBlock x:Name="HelpLinkText" Margin="4,0,0,0"
-                               IsVisible="{Binding HelpLink, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <HyperlinkButton
-                            Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                            CommandParameter="{Binding HelpLink, ElementName=Control}">
-                            <icon:SymbolIcon Symbol="Help" Foreground="{DynamicResource SystemAccentColorSecondary}"/>
-                        </HyperlinkButton>
-                    </TextBlock>
+                    <TextBlock 
+                        Text="{Binding Header, ElementName=Control}"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        VerticalAlignment="Center"/>
+                    
+                    <HyperlinkButton
+                        Margin="8,0,0,0"
+                        Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                        CommandParameter="{Binding HelpLink, ElementName=Control}"
+                        IsVisible="{Binding HelpLink, ElementName=Control, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                        ToolTip.Tip="{x:Static resources:Strings.Menu_MoreInfo}"
+                        VerticalAlignment="Center">
+                        <fa:SymbolIcon 
+                            Symbol="Help" 
+                            Foreground="{DynamicResource SystemAccentColorSecondary}"
+                            FontSize="14"/>
+                    </HyperlinkButton>
                 </StackPanel>
-
-                <ui:MarkdownTextBlock x:Name="MarkdownText"
-                    Margin="0,2,0,0"
+                
+                <ui:MarkdownTextBlock 
+                    MarkdownText="{Binding Description, ElementName=Control}"
                     FontSize="12"
                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                    MarkdownText="{Binding Description, ElementName=Control}"
                     TextWrapping="Wrap"
-                    IsVisible="{Binding Description, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    Margin="0,4,0,0"/>
             </StackPanel>
-
-            <ContentPresenter
-                Grid.Column="1"
-                Margin="1,0,0,0"
+        </fa:SettingsExpander.Header>
+        
+        <fa:SettingsExpander.Footer>
+            <ContentPresenter 
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Content="{Binding InnerContent, ElementName=Control}" 
-                IsVisible="{Binding InnerContent, ElementName=Control, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-        </Grid>
-    </Border>
+                Content="{Binding InnerContent, ElementName=Control}"/>
+        </fa:SettingsExpander.Footer>
+        
+    </fa:SettingsExpander>
 </UserControl>

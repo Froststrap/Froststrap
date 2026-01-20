@@ -1,18 +1,19 @@
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.Threading;
+using FluentAvalonia.UI.Controls;
+using FluentAvalonia.UI.Navigation;
+using Froststrap.Resources;
+using Froststrap.UI.Elements.Settings.Pages;
+using Froststrap.UI.ViewModels.Settings;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Media;
-using FluentAvalonia.UI.Controls;
-using FluentAvalonia.UI.Navigation;
-using Froststrap.UI.Elements.Settings.Pages;
-using Froststrap.UI.ViewModels.Settings;
-using Froststrap.Resources;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -48,13 +49,16 @@ namespace Froststrap.UI.Elements.Settings
 			string? lastPageName = App.State.Prop.LastPage;
 			Type? lastPage = lastPageName is null ? null : Type.GetType(lastPageName);
 
-			App.RemoteData.Subscribe((object? sender, EventArgs e) =>
-			{
-				var data = App.RemoteData.Prop;
-				AlertBar.IsVisible = data.AlertEnabled;
-				AlertBar.Message = data.AlertContent;
-				AlertBar.Severity = (InfoBarSeverity)data.AlertSeverity;
-			});
+            App.RemoteData.Subscribe((object? sender, EventArgs e) =>
+            {
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    var data = App.RemoteData.Prop;
+                    AlertBar.IsVisible = data.AlertEnabled;
+                    AlertBar.Message = data.AlertContent;
+                    AlertBar.Severity = (InfoBarSeverity)data.AlertSeverity;
+                });
+            });
 
             App.WindowsBackdrop();
 
