@@ -1,13 +1,20 @@
+using System.Collections.ObjectModel;
 using Avalonia.Threading;
-using Froststrap.Integrations;
 using FluentAvalonia.UI.Controls;
-using Froststrap.UI.Elements.Base;
+using Froststrap.Integrations;
 using Froststrap.UI.Elements.AccountManagers.Pages;
+using Froststrap.UI.Elements.Base;
+using Froststrap.UI.Elements.Settings.Pages;
 
 namespace Froststrap.UI.Elements.AccountManagers
 {
+
 	public partial class MainWindow : AvaloniaWindow
 	{
+		public static ObservableCollection<NavigationViewItem> MainNavigationItems { get; } = new();
+		public static ObservableCollection<NavigationViewItem> FooterNavigationItems { get; } = new();
+		public ObservableCollection<NavigationViewItem> NavigationItemsView { get; } = new();
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -17,12 +24,28 @@ namespace Froststrap.UI.Elements.AccountManagers
 
 			AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
 
-			UpdateNavigationItemsState();
+			string? lastPageName = App.State.Prop.LastPage;
+			Type? lastPage = lastPageName is null ? null : Type.GetType(lastPageName);
+
+			var allItems = RootNavigation.MenuItems.Cast<NavigationViewItem>().ToList();
+			var allFooters = RootNavigation.FooterMenuItems.Cast<NavigationViewItem>().ToList();
+
+			MainNavigationItems.Clear();
+			foreach (var item in allItems) MainNavigationItems.Add(item);
+
+			FooterNavigationItems.Clear();
+			foreach (var item in allFooters) FooterNavigationItems.Add(item);
+
+			if (lastPage != null)
+				SafeNavigate(lastPage);
+			else
+				RootNavigation.SelectedItem = RootNavigation.MenuItems.Cast<NavigationViewItem>().FirstOrDefault();
+
+			RootNavigation.SelectionChanged += OnNavigationChanged;
 		}
 
 		private void OnActiveAccountChanged(AltAccount? account)
 		{
-			// Avalonia's equivalent to Dispatcher.Invoke
 			Dispatcher.UIThread.Invoke(UpdateNavigationItemsState);
 		}
 
@@ -30,7 +53,6 @@ namespace Froststrap.UI.Elements.AccountManagers
 		{
 			bool hasActiveAccount = AccountManager.Shared.ActiveAccount != null;
 
-			// In Avalonia, we use IsVisible and direct Opacity settings
 			if (friends != null)
 			{
 				friends.Opacity = hasActiveAccount ? 1 : 0.5;
@@ -45,13 +67,11 @@ namespace Froststrap.UI.Elements.AccountManagers
 
 			if (!hasActiveAccount)
 			{
-				// Check current navigation selection
 				if (RootNavigation.SelectedItem is NavigationViewItem currentItem)
 				{
 					string? tag = currentItem.Tag?.ToString();
 					if (tag == "friends" || tag == "games")
 					{
-						// Navigate back to accounts if active account is lost
 						Navigate(typeof(AccountsPage));
 					}
 				}
@@ -85,19 +105,40 @@ namespace Froststrap.UI.Elements.AccountManagers
 
 		#region Navigation Methods
 
-		// Navigation in Avalonia (FluentAvalonia) usually works by 
-		// changing the Content of a ContentControl or Frame
+		private void OnNavigationChanged(object? sender, NavigationViewSelectionChangedEventArgs e)
+		{
+			if (e.SelectedItem is NavigationViewItem navItem && navItem.Tag is Type pageType)
+			{
+				Navigate(pageType);
+			}
+		}
+
+		private async void SafeNavigate(Type page)
+		{
+			await Task.Delay(500);
+
+			if (page == typeof(RobloxSettingsPage) && !App.GlobalSettings.Loaded)
+				return;
+
+			Navigate(page);
+		}
+
 		public bool Navigate(Type pageType)
 		{
 			var targetItem = RootNavigation.MenuItems
 				.OfType<NavigationViewItem>()
 				.FirstOrDefault(nvi => nvi.Tag is Type t && t == pageType);
 
-			if (targetItem != null)
+			if (RootFrame.Content?.GetType() != pageType)
 			{
-				RootNavigation.SelectedItem = targetItem;
 				RootFrame.Navigate(pageType);
+
 				App.State.Prop.LastPage = pageType.FullName!;
+
+				if (targetItem != null && RootNavigation.SelectedItem != targetItem)
+				{
+					RootNavigation.SelectedItem = targetItem;
+				}
 
 				return true;
 			}
