@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:conv="clr-namespace:Froststrap.UI.Converters"
@@ -17,13 +18,13 @@
 			<TextBlock Text="{x:Static resources:Strings.About_Translators_Title}"
                        FontWeight="Medium" FontSize="24" />
 
-			<TextBlock Margin="0,4,0,0" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
-				<TextBlock.Text>
+			<controls:MarkdownTextBlock Margin="0,4,0,0" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+				<controls:MarkdownTextBlock.MarkdownText>
 					<Binding Source="{x:Static resources:Strings.About_Translators_Description}"
                              Converter="{StaticResource StringFormatConverter}"
                              ConverterParameter="https://crowdin.com/project/bloxstrap" />
-				</TextBlock.Text>
-			</TextBlock>
+				</controls:MarkdownTextBlock.MarkdownText>
+			</controls:MarkdownTextBlock>
 
 			<Grid Margin="0,16,0,0">
 				<Grid.ColumnDefinitions>

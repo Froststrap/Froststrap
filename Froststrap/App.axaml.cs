@@ -205,7 +205,7 @@ public partial class App : Application
             }
             else
             {
-                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()} from {BuildMetadata.Machine}");
+                Logger.WriteLine(LOG_IDENT, $"Compiled {BuildMetadata.Timestamp.ToFriendlyString()}");
 
 #if QA_BUILD
                 userAgent.Append(" (QA)");
