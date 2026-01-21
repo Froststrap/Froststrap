@@ -3,18 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
         xmlns:resources="clr-namespace:Froststrap.Resources"
 		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         x:DataType="vm:LaunchMenuViewModel"
+        x:Name="RootWindow"
         mc:Ignorable="d"
         Title="Froststrap"
         Width="580"
         SizeToContent="Height"
-        CanResize="True"
-        WindowStartupLocation="CenterScreen">
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1"
+        TransparencyLevelHint="None">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -70,70 +74,65 @@
 				</StackPanel>
 			</Grid>
 
-			<StackPanel Grid.Column="1" Margin="0,9,0,8">
-				<Button Width="285" Height="60" Margin="0,0,0,8"
+			<StackPanel Grid.Column="1" Margin="0,9,0,8" HorizontalAlignment="Center">
+                <Button Width="280" Height="60" Margin="0,0,0,8"
                         Command="{Binding LaunchRobloxCommand, Mode=OneTime}"
                         HorizontalContentAlignment="Left"
                         Padding="12">
-					<StackPanel Orientation="Horizontal">
-						<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Games" />
-						<TextBlock FontSize="14" VerticalAlignment="Center"
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Games" />
+                        <TextBlock FontSize="14" VerticalAlignment="Center"
                                    Text="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" />
-					</StackPanel>
-				</Button>
+                    </StackPanel>
+                </Button>
 
-				<Grid Height="61">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
+                <Grid Width="280" Height="60">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" /> <ColumnDefinition Width="8" />   <ColumnDefinition Width="*" /> </Grid.ColumnDefinitions>
 
-					<Button Grid.Column="0" Width="148" Height="60"
-                            Margin="0,8,8,0" VerticalAlignment="Top"
+                    <Button Grid.Column="0" Height="60" Width="135"
                             Command="{Binding LaunchSettingsCommand, Mode=OneTime}"
                             HorizontalContentAlignment="Left"
                             Padding="12">
-						<StackPanel Orientation="Horizontal">
-							<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Settings" />
-							<TextBlock FontSize="13" VerticalAlignment="Center"
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Settings" />
+                            <TextBlock FontSize="13" VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Settings}" />
-						</StackPanel>
-					</Button>
+                        </StackPanel>
+                    </Button>
 
-					<Button Grid.Column="1" Width="130" Height="60"
-                            VerticalAlignment="Top"
+                    <Button Grid.Column="2" Height="60" Width="135"
                             Command="{Binding LaunchRobloxStudioCommand, Mode=OneTime}"
                             HorizontalContentAlignment="Left"
                             Padding="12">
-						<StackPanel Orientation="Horizontal">
-							<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Play" />
-							<TextBlock FontSize="13" VerticalAlignment="Center"
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Play" />
+                            <TextBlock FontSize="13" VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Studio}" />
-						</StackPanel>
-					</Button>
-				</Grid>
+                        </StackPanel>
+                    </Button>
+                </Grid>
 
-				<Border Height="1" Background="{DynamicResource ControlElevationBorderBrush}"
-                        Margin="12,16,12,16" />
+                <Border Width="280" Height="1" Background="{DynamicResource ControlElevationBorderBrush}"
+                        Margin="0,16,0,16" />
 
-				<Button Width="285" Height="70" Margin="0,10,0,0"
+                <Button Width="280" Height="70"
                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                         CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
                         HorizontalContentAlignment="Left"
                         Padding="12">
-					<StackPanel Orientation="Horizontal">
-						<fa:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Help"/>
-						<StackPanel Orientation="Vertical" Margin="0,0,0,4">
-							<TextBlock FontSize="14" VerticalAlignment="Center"
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon FontSize="20" Margin="0,0,12,0" Symbol="Help"/>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock FontSize="14" VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" />
-							<TextBlock
-                                   FontSize="12"
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                   Text="{x:Static resources:Strings.LaunchMenu_Wiki_Description}" />
-						</StackPanel>
-					</StackPanel>
-				</Button>
-			</StackPanel>
+                            <TextBlock FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                       Text="{x:Static resources:Strings.LaunchMenu_Wiki_Description}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
 		</Grid>
 	</Grid>
 </base:AvaloniaWindow>
