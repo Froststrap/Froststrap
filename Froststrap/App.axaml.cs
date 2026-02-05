@@ -160,8 +160,6 @@ public partial class App : Application
 
             Logger.WriteLine(LOG_IDENT, $"OSVersion: {Environment.OSVersion}");
             Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
-            Logger.WriteLine(LOG_IDENT, $"Temp path is {Paths.Temp}");
-            Logger.WriteLine(LOG_IDENT, $"WindowsStartMenu path is {Paths.WindowsStartMenu}");
 
             HttpClient.Timeout = TimeSpan.FromSeconds(60);
             if (!HttpClient.DefaultRequestHeaders.UserAgent.Any())
@@ -170,96 +168,45 @@ public partial class App : Application
             LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
 
             string? installLocation = null;
-            bool fixInstallLocation = false;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                using var uninstallKey = Registry.CurrentUser.OpenSubKey(UninstallKey);
-                if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
-                {
-                    if (Directory.Exists(installLocValue))
-                    {
-                        installLocation = installLocValue;
-                    }
-                    else
-                    {
-                        var match = Regex.Match(installLocValue, @"^[a-zA-Z]:\\Users\\([^\\]+)", RegexOptions.IgnoreCase);
-                        if (match.Success)
-                        {
-                            string newLocation = installLocValue.Replace(match.Value, Paths.UserProfile, StringComparison.InvariantCultureIgnoreCase);
-                            if (Directory.Exists(newLocation))
-                            {
-                                installLocation = newLocation;
-                                fixInstallLocation = true;
-                            }
-                        }
-                    }
-                }
+                using var key = Registry.CurrentUser.OpenSubKey(UninstallKey);
+                installLocation = key?.GetValue("InstallLocation") as string;
             }
 
-            if (installLocation == null && Directory.GetParent(Paths.Process)?.FullName is string processDir)
+            installLocation ??= AppContext.BaseDirectory;
+
+            Paths.Initialize(installLocation);
+            Logger.Initialize(LaunchSettings.UninstallFlag.Active);
+
+            if (!Logger.Initialized && !Logger.NoWriteMode)
             {
-                var files = Directory.GetFiles(processDir).Select(Path.GetFileName).ToArray();
-                // Logic check: Case sensitive on Linux! Ensure files match exactly.
-                if (files.Length <= 3 && files.Contains("Settings.json") && files.Contains("State.json"))
-                {
-                    installLocation = processDir;
-                    fixInstallLocation = true;
-                }
+                Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
+                Terminate();
             }
 
-            if (fixInstallLocation && installLocation != null)
+            Task.Run(RemoteData.LoadData);
+            Settings.Load();
+            State.Load();
+            FastFlags.Load();
+            GlobalSettings.Load();
+
+            if (Settings.Prop.Theme > Enums.Theme.Custom)
             {
-                var installer = new Installer { InstallLocation = installLocation, IsImplicitInstall = true };
-                if (installer.CheckInstallLocation())
-                {
-                    Logger.WriteLine(LOG_IDENT, $"Changing install location to '{installLocation}'");
-                    installer.DoInstall();
-                }
-                else { installLocation = null; }
+                Settings.Prop.Theme = Enums.Theme.Dark;
+                Settings.Save();
             }
 
-            if (installLocation == null)
-            {
-                Logger.Initialize(true);
-                Logger.WriteLine(LOG_IDENT, "Not installed, launching the installer");
-                LaunchHandler.LaunchInstaller();
-            }
-            else
-            {
-                Paths.Initialize(installLocation);
-                if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
-                    File.Copy(Paths.Process, Paths.Application);
+            if (Settings.Prop.AllowCookieAccess) Task.Run(Cookies.LoadCookies);
+            Locale.Set(Settings.Prop.Locale);
 
-                Logger.Initialize(LaunchSettings.UninstallFlag.Active);
-                if (!Logger.Initialized && !Logger.NoWriteMode)
-                {
-                    Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
-                    Terminate();
-                }
+            if (!LaunchSettings.BypassUpdateCheck) Installer.HandleUpgrade();
 
-                Task.Run(RemoteData.LoadData);
-                Settings.Load();
-                State.Load();
-                FastFlags.Load();
-                GlobalSettings.Load();
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                WindowsRegistry.RegisterApis();
 
-                if (Settings.Prop.Theme > Enums.Theme.Custom)
-                {
-                    Settings.Prop.Theme = Enums.Theme.Dark;
-                    Settings.Save();
-                }
-
-                if (Settings.Prop.AllowCookieAccess) Task.Run(Cookies.LoadCookies);
-                Locale.Set(Settings.Prop.Locale);
-
-                if (!LaunchSettings.BypassUpdateCheck) Installer.HandleUpgrade();
-
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    WindowsRegistry.RegisterApis();
-
-                LaunchHandler.ProcessLaunchArgs();
-            }
+            LaunchHandler.ProcessLaunchArgs();
         }
         base.OnFrameworkInitializationCompleted();
     }
@@ -302,11 +249,6 @@ public partial class App : Application
         if (log) Logger.WriteException("App::FinalizeExceptionHandling", ex);
         if (_showingExceptionDialog) return;
         _showingExceptionDialog = true;
-
-        // Taskbar Progress is Windows-specific. Remove ts its gonna make our life harder.
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && Bootstrapper?.Dialog != null)
-        {
-        }
 
         Frontend.ShowExceptionDialog(ex);
         Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
