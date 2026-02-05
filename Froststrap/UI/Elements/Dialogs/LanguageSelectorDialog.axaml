@@ -9,7 +9,6 @@
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         x:DataType="vm:LanguageSelectorViewModel"
         mc:Ignorable="d"
-        Title="{x:Static resources:Strings.Installer_Title}"
         Width="380"
         SizeToContent="Height"
         CanResize="False"

@@ -201,7 +201,7 @@ public partial class App : Application
             if (Settings.Prop.AllowCookieAccess) Task.Run(Cookies.LoadCookies);
             Locale.Set(Settings.Prop.Locale);
 
-            if (!LaunchSettings.BypassUpdateCheck) Installer.HandleUpgrade();
+            // if (!LaunchSettings.BypassUpdateCheck) Installer.HandleUpgrade();
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WindowsRegistry.RegisterApis();

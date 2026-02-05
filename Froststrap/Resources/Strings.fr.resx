@@ -923,47 +923,11 @@ Sélectionner 'Non' ignorera cet avertissement et continuera l'installation.</va
   <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
     <value>L'entrée pour '{0}' n'est pas valide car le filtre de lieu n'est pas formaté correctement.</value>
   </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Installateur Froststrap</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Bienvenue</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Installer</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Finalisation</value>
-  </data>
   <data name="Common.Navigation.Back" xml:space="preserve">
     <value>Retour</value>
   </data>
   <data name="Common.Navigation.Next" xml:space="preserve">
     <value>Suivant</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Merci d'avoir téléchargé Froststrap.
-
-Les seuls sites officiels pour télécharger Froststrap sont {0} et {1}. Veuillez donc vérifier que vous l'avez obtenu à partir d'une source officielle.
-
-Ce processus d'installation sera rapide et simple, et vous pourrez configurer les paramètres de Froststrap après l'installation.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Veuillez cliquer sur 'Suivant' pour continuer.</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Vous essayez d'installer la version {0} de Froststrap, mais la dernière version disponible est {1}. Souhaitez-vous la télécharger ?</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Choisissez où installer</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox sera également installé à cet emplacement. Modifiez ceci si vous préférez installer tous vos jeux sur un disque séparé. Sinon, il est recommandé de laisser cela tel quel.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Des données existantes ont été trouvées. Vos mods et paramètres vont être restaurés.</value>
   </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Raccourcis</value>
@@ -973,48 +937,6 @@ Ce processus d'installation sera rapide et simple, et vous pourrez configurer le
   </data>
   <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
     <value>Icône du menu Démarrer</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap a été installé avec succès.
-
-Roblox n'a pas encore été installé ; cela se fera lors de votre premier lancement avec Froststrap. Cependant, avant de le faire, vous voudrez peut-être d'abord configurer les paramètres de Froststrap.
-
-Évitez également d'utiliser le raccourci "Roblox Player" pour lancer Roblox, car Froststrap ne se lancera pas avec Roblox. Si vous ne voyez pas Froststrap apparaître lors du lancement depuis le site web, il suffit de lancer Roblox avec Froststrap une fois depuis le bureau pour corriger cela.
-
-Que souhaitez-vous faire ?</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Configurer les paramètres de Froststrap</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Ajustez avec toutes les fonctionnalités qu'il a à offrir</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Installer et lancer Roblox</value>
-  </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Vous lancera dans l'application de bureau une fois que tout est prêt</value>
-  </data>
-  <data name="Uninstaller.Title" xml:space="preserve">
-    <value>Désinstaller Froststrap</value>
-  </data>
-  <data name="Uninstaller.Text" xml:space="preserve">
-    <value>Désinstaller supprimera Froststrap de votre système et reconfigurera automatiquement le lanceur Roblox par défaut s'il est encore installé.
-
-Si vous désinstallez ou réinstallez en raison de problèmes avec Roblox, lisez d'abord [cette page d'aide]({0}).
-
-Le processus de désinstallation peut ne pas être en mesure de se nettoyer entièrement, vous devrez donc peut-être supprimer manuellement les fichiers restants à l'endroit où Froststrap était installé.
-
-Froststrap était installé à l'emplacement suivant : "{1}".</value>
-  </data>
-  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>Garder mes paramètres et mods</value>
-  </data>
-  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>Ils seront conservés là où Froststrap a été installé, et seront automatiquement restaurés lors d'une réinstallation.</value>
-  </data>
-  <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>Désinstaller</value>
   </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Lancer Roblox</value>
