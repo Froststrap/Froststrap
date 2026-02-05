@@ -48,7 +48,7 @@
         <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
         <PackageReference Include="Xaml.Behaviors" Version="11.3.9.3" />
     </ItemGroup>
-	
+
     <ItemGroup>
       <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
       <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))Z</_Parameter1>
@@ -57,7 +57,7 @@
       <_Parameter4>$(CommitRef)</_Parameter4>
       </AssemblyAttribute>
     </ItemGroup>
-	
+
   <ItemGroup>
     <AdditionalFiles Include="NativeMethods.txt" />
     <AvaloniaResource Include="Froststrap.ico" />

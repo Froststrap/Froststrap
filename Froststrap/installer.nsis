@@ -1,0 +1,31 @@
+!include "MUI2.nsh"
+
+Name "Froststrap"
+OutFile "Froststrap-Setup.exe"
+InstallDir "$LOCALAPPDATA\Froststrap"
+
+!insertmacro MUI_PAGE_DIRECTORY
+!insertmacro MUI_PAGE_INSTFILES
+
+Section "Install"
+    SetOutPath "$INSTDIR"
+
+    File /r "bin\Release\net10.0\win-x64\publish\*.*"
+
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Froststrap" "DisplayName" "Froststrap"
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Froststrap" "UninstallString" "$\"$INSTDIR\uninstall.exe$\""
+    WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Froststrap" "InstallLocation" "$INSTDIR"
+
+    WriteRegStr HKCU "Software\Classes\roblox-player" "" "URL:Roblox Player"
+    WriteRegStr HKCU "Software\Classes\roblox-player" "URL Protocol" ""
+    WriteRegStr HKCU "Software\Classes\roblox-player\shell\open\command" "" "$\"$INSTDIR\Froststrap.exe$\" %1"
+
+    WriteUninstaller "$INSTDIR\uninstall.exe"
+SectionEnd
+
+Section "Uninstall"
+    Delete "$INSTDIR\uninstall.exe"
+    RMDir /r "$INSTDIR"
+    DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\Froststrap"
+    DeleteRegKey HKCU "Software\Classes\roblox-player"
+SectionEnd
