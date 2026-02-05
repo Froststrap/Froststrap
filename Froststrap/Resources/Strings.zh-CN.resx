@@ -934,50 +934,11 @@
   <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
     <value>您输入的内容 “{0}” 无效；因为游戏过滤器的格式不正确。</value>
   </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap 安装程序</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>欢迎</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>安装 Froststrap</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>完成</value>
-  </data>
   <data name="Common.Navigation.Back" xml:space="preserve">
     <value>返回</value>
   </data>
   <data name="Common.Navigation.Next" xml:space="preserve">
     <value>下一步</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>感谢您下载 Froststrap。
-
-! 获取 Froststrap 的 唯一 官方网站 是 {0} 和 {1}；因此请确保启动器是从 官方渠道 获取的 !
-（注：一般只有使用真正意义上的 注入器 作弊才会导致封号 (Froststrap 只是在 外部 修改 并未在游戏内修改任何内容)）
-
-安装过程简单明了；安装完成后，您将可以对 Froststrap 的任何设置进行配置。</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>请点击 “下一步” 以继续。</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>您正在尝试安装 Froststrap v{0}；目前最新版本是 Froststrap v{1}。
-您想下载最新版本吗？</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>选择安装位置</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox 本体也将安装至此路径。
-如果您有分类整理电脑的习惯，请更改此项；否则，建议您保持原样。</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>发现数据残留；您的模组和设置将被恢复。</value>
   </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>快捷方式</value>
@@ -987,51 +948,6 @@
   </data>
   <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
     <value>“开始”菜单图标</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap 目前已成功安装到你的电脑上。
-
-但是 Roblox 尚未安装；这将会在您首次使用 Froststrap 启动 Roblox 时发生。
-不过，在此之前；您可能会想先调整 Froststrap 的设置。
-
-此外，请避免 使用默认 Roblox 启动器 “Roblox Player” 快捷方式 来启动 Roblox；因为 Froststrap 不会与 Roblox 一起启动。
-如果您尝试从 网页端 启动 Roblox 时并未显示 Froststrap，只需用 Froststrap 启动一次 Roblox 即可解决。
-
-您想要做什么？</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>更改 Froststrap 的设置</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>利用启动器提供的所有功能进行调整。</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>安装并启动 Roblox</value>
-  </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>一切就绪后，您将会跳转到 Roblox 桌面客户端。</value>
-  </data>
-  <data name="Uninstaller.Title" xml:space="preserve">
-    <value>卸载 Froststrap</value>
-  </data>
-  <data name="Uninstaller.Text" xml:space="preserve">
-    <value>卸载后，Froststrap 将会从系统中移除；并自动重新配置 Roblox 原版启动器。
-
-如果您卸载重装的原因是 Roblox 的问题，请先阅读 [此帮助页]({0})。
-
-卸载过程可能无法完全自行清理，因此您可能需要手动清理安装 Froststrap 时残留的文件。
-
-Froststrap 的安装路径是：
-“{1}”</value>
-  </data>
-  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>保留我的 Froststrap 设置 和 Roblox 模组 (Mods)</value>
-  </data>
-  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>它们将会保存在 Froststrap 安装的位置；重新安装时则会自动恢复。</value>
-  </data>
-  <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>卸载</value>
   </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>启动 Roblox</value>
@@ -1058,9 +974,6 @@ Froststrap 的安装路径是：
 如果没有，请向此 社区分支 的维护者报告这个问题。切勿将此异常向 Froststrap 官方 GitHub Issues 报告；因为这是一个非官方版本。</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
   </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>这些是调出 “多选启动菜单” 的通用快捷方式；稍后可以在设置中创建特定功能的快捷方式。</value>
-  </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
     <value>您可以在此处配置 Froststrap 的快捷启动方式。</value>
   </data>
@@ -1084,9 +997,6 @@ Froststrap 的安装路径是：
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
     <value>目前无法应用 “表情符号” 模组。</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>请等待安装完成。</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>请等待卸载完成。</value>
@@ -1164,11 +1074,6 @@ Froststrap 的安装路径是：
   <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
     <value>由于 Roblox 需要安装或更新，Froststrap 目前无法继续执行。</value>
   </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap 此前已安装到此位置，且安装文件仍然存在；但安装程序无法覆盖旧的可执行文件。
-
-请从安装位置 手动删除 “Froststrap.exe” 或尝试 重新启动系统，最后再重试安装 Froststrap。</value>
-  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>暂不可用</value>
   </data>
@@ -1180,9 +1085,6 @@ Froststrap 的安装路径是：
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox 尚未安装；在尝试使用此选项之前，请至少使用 Froststrap 启动一次 Roblox。</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>您确定要取消安装吗？</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>无法保存 {0}: {1}</value>

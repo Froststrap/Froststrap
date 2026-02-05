@@ -38,13 +38,7 @@ namespace Froststrap
             const string LOG_IDENT = "LaunchHandler::ProcessLaunchArgs";
 
             // this order is specific
-
-            if (App.LaunchSettings.UninstallFlag.Active)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Opening uninstaller");
-                LaunchUninstaller();
-            }
-            else if (App.LaunchSettings.MenuFlag.Active)
+            if (App.LaunchSettings.MenuFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening settings");
                 LaunchSettings();
@@ -84,95 +78,6 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Closing - quiet flag active");
                 App.Terminate();
             }
-        }
-
-        public static void LaunchInstaller()
-        {
-            using var interlock = new InterProcessLock("Installer");
-
-            if (!interlock.IsAcquired)
-            {
-                Frontend.ShowMessageBox(Strings.Dialog_AlreadyRunning_Installer, MessageBoxImage.Stop);
-                App.Terminate();
-                return;
-            }
-
-            if (App.LaunchSettings.UninstallFlag.Active)
-            {
-                Frontend.ShowMessageBox(Strings.Bootstrapper_FirstRunUninstall, MessageBoxImage.Error);
-                App.Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
-                return;
-            }
-
-            if (App.LaunchSettings.QuietFlag.Active)
-            {
-                var installer = new Installer();
-
-                if (!installer.CheckInstallLocation())
-                    App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
-
-                installer.DoInstall();
-
-                interlock.Dispose();
-
-                ProcessLaunchArgs();
-            }
-            else
-            {
-#if QA_BUILD
-                Frontend.ShowMessageBox("You are about to install a QA build of Froststrap. The red window border indicates that this is a QA build.\n\nQA builds are handled completely separately of your standard installation, like a virtual environment.", MessageBoxImage.Information);
-#endif
-
-                new LanguageSelectorDialog().Show();
-
-                var installer = new UI.Elements.Installer.MainWindow();
-                installer.Show();
-
-                interlock.Dispose();
-
-                ProcessNextAction(installer.CloseAction, !installer.Finished);
-            }
-
-        }
-
-        public static void LaunchUninstaller()
-        {
-            using var interlock = new InterProcessLock("Uninstaller");
-
-            if (!interlock.IsAcquired)
-            {
-                Frontend.ShowMessageBox(Strings.Dialog_AlreadyRunning_Uninstaller, MessageBoxImage.Stop);
-                App.Terminate();
-                return;
-            }
-
-            bool confirmed = false;
-            bool keepData = true;
-
-            if (App.LaunchSettings.QuietFlag.Active)
-            {
-                confirmed = true;
-            }
-            else
-            {
-                var dialog = new UninstallerDialog();
-                dialog.Show();
-
-                confirmed = dialog.Confirmed;
-                keepData = dialog.KeepData;
-            }
-
-            if (!confirmed)
-            {
-                App.Terminate();
-                return;
-            }
-
-            Installer.DoUninstall(keepData);
-
-            Frontend.ShowMessageBox(Strings.Bootstrapper_SuccessfullyUninstalled, MessageBoxImage.Information);
-
-            App.Terminate();
         }
 
         public static void LaunchSettings()

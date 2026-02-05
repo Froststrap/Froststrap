@@ -931,49 +931,11 @@
   <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
     <value>値が無効です。このFlag「{0}」のプレースフィルターが正しく入力されていません。</value>
   </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrapインストーラー</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>ようこそ</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>インストール</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>さいごに</value>
-  </data>
   <data name="Common.Navigation.Back" xml:space="preserve">
     <value>戻る</value>
   </data>
   <data name="Common.Navigation.Next" xml:space="preserve">
     <value>次へ</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Froststrapをダウンロードしていただき、ありがとうございます。
-
-Froststrapの公式サイトは{0}または{1}です。
-公式サイトからダウンロードしたことを確認してください。
-
-インストールは簡単かつ短時間で終了します。またインストール後からFroststrapの設定を変更することが出来ます。</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>続けるには「次へ」‪を押してください。</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>現在Froststrap {0}をインストールしようとしていますが、最新版は{1}です。最新版をダウンロードしますか？</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>インストール先を選択</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Robloxもこの場所にインストールされます。別のドライブにインストールしたい場合は変更してください。
-基本的にはデフォルトでの設定をおすすめします。</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>以前のデータが見つかりました。Modと設定は復元されます。</value>
   </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>ショートカット</value>
@@ -983,50 +945,6 @@ Froststrapの公式サイトは{0}または{1}です。
   </data>
   <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
     <value>スタートメニュー</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrapのインストールが完了しました。
-
-Robloxはまだインストールされていません。Froststrapから最初に起動した時にインストールされます。
-まずは、Froststrapの設定を行うことができます。
-
-また、「Roblox Player」ショートカットを使用しないでください。Froststrapを介さずにRobloxが起動します。
-WebサイトからRobloxを起動した際にFroststrapの画面が表示されない場合は、デスクトップからFroststrapを介してRobloxを起動することで解消します。
-
-次の操作を選択してください。</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Froststrapの設定を変更する</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Froststrapのすべての機能を設定できます</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Robloxをインストールして起動する</value>
-  </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>インストール完了後にデスクトップアプリを表示します</value>
-  </data>
-  <data name="Uninstaller.Title" xml:space="preserve">
-    <value>Froststrapをアンインストール</value>
-  </data>
-  <data name="Uninstaller.Text" xml:space="preserve">
-    <value>アンインストールでは、Froststrapをシステムから削除し、インストールされている場合はデフォルトのRobloxランチャーに再設定します。
-
-もしRobloxに関する問題によってアンインストール、または再インストールを行っている場合は、最初に[ヘルプ]({0})を確認してください。
-
-アンインストール作業はすべてのファイルを完全に削除することはできません。Froststrapのインストール場所から手動で削除することができます。
-
-Froststrapのインストール場所: {1}</value>
-  </data>
-  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>設定とModを残す</value>
-  </data>
-  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>Froststrapがインストールされている場所に保存され、再インストール時に自動的に復元されます。</value>
-  </data>
-  <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>アンインストール</value>
   </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Robloxを起動</value>
@@ -1052,10 +970,6 @@ Froststrapのインストール場所: {1}</value>
 解決策が見つからない場合は、エラーをこのフォークのメンテナーに報告してください。絶対に公式版FroststrapのGitHub issuesに投稿しないでください。
 このFroststrapは非公式版です。</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>操作を選択する画面を表示するショートカットです。
-特定の操作のショートカットは、のちほど設定から作成することができます。</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
     <value>Froststrapを簡単に起動する方法を設定できます。</value>
@@ -1158,11 +1072,6 @@ Robloxが[正規のランチャー]({1})で動作するか確認してくださ�
   <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
     <value>続けるにはRobloxのインストールまたはアップデートが必要です。</value>
   </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrapはすでにこの場所にインストールされていますが、古いプログラムに上書きすることができませんでした。
-
-インストール場所から手動でFroststrap.exeを削除、またはPCの再起動を行ってから、再度インストールをお試しください。</value>
-  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>利用不可</value>
   </data>
@@ -1174,9 +1083,6 @@ Robloxが[正規のランチャー]({1})で動作するか確認してくださ�
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Robloxはまだインストールされていません。Froststrapを介してRobloxを起動してからこの設定を行ってください。</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>インストールをキャンセルしますか？</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>{0}の保存に失敗しました。{1}</value>
