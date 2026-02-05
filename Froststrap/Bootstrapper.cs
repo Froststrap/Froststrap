@@ -1512,7 +1512,7 @@ namespace Froststrap
                 // download all the packages synchronously
                 await DownloadPackage(package);
 
-                // we'll extract the runtime installer later if we need to
+                // Extract this later if need be
                 if (package.Name == "WebView2RuntimeInstaller.zip")
                     continue;
 
