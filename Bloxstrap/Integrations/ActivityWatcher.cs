@@ -630,20 +630,6 @@
                                     OnStudioRPCMessage?.Invoke(this, fullMessage);
                                 }
                             }
-                            else if (studioMessage.StudioCommand == "RPCToggle")
-                            {
-                                var toggleData = studioMessage.Data.Deserialize<StudioToggleData>();
-                                if (toggleData != null)
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, $"Received RPCToggle: Enabled={toggleData.Enabled}, Workspace={toggleData.Workspace}");
-                                    var toggleMessage = new StudioMessage
-                                    {
-                                        StudioCommand = studioMessage.StudioCommand,
-                                        Data = JsonSerializer.SerializeToElement(toggleData)
-                                    };
-                                    OnStudioRPCMessage?.Invoke(this, toggleMessage);
-                                }
-                            }
                             else
                             {
                                 OnStudioRPCMessage?.Invoke(this, studioMessage);
