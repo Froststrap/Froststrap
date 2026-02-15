@@ -72,61 +72,14 @@ namespace Bloxstrap.Integrations
 
         public void ProcessRPCMessage(StudioMessage message, bool implicitUpdate = true)
         {
-            const string LOG_IDENT = "StudioDiscordRichPresence::ProcessRPCMessage";
-
-            if (message.StudioCommand == "RPCToggle")
+            if (message.StudioCommand == "SetRichPresence")
             {
-                var toggleData = message.Data.Deserialize<StudioToggleData>();
-                if (toggleData != null)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Processing RPCToggle: Enabled={toggleData.Enabled}");
-                    HandleRPCToggle(toggleData.Enabled);
-                }
-                return;
-            }
-            else if (message.StudioCommand == "SetRichPresence")
-            {
-                if (!_rpcEnabled)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "RPC is disabled, ignoring SetRichPresence message");
-                    return;
-                }
+                if (!_rpcEnabled) return;
 
                 if (_currentPresence is null || _originalPresence is null)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Presence is not set, initializing Studio presence");
                     InitializeStudioPresence();
-                }
 
                 ProcessStudioRichPresence(message, implicitUpdate);
-
-                if (implicitUpdate)
-                    UpdatePresence();
-            }
-        }
-
-        private void HandleRPCToggle(bool enabled)
-        {
-            const string LOG_IDENT = "StudioDiscordRichPresence::HandleRPCToggle";
-
-            _rpcEnabled = enabled;
-            App.Logger.WriteLine(LOG_IDENT, $"RPC is now {(enabled ? "ENABLED" : "DISABLED")}");
-
-            if (enabled)
-            {
-                if (_originalPresence != null)
-                {
-                    _currentPresence = _originalPresence.Clone();
-                    UpdatePresence();
-                }
-                else
-                {
-                    InitializeStudioPresence();
-                }
-            }
-            else
-            {
-                ResetStudioPresence();
             }
         }
 
@@ -180,9 +133,6 @@ namespace Bloxstrap.Integrations
             const string LOG_IDENT = "StudioDiscordRichPresence::ProcessStudioRichPresence";
             StudioRichPresence? presenceData;
 
-            Debug.Assert(_currentPresence is not null);
-            Debug.Assert(_originalPresence is not null);
-
             try
             {
                 presenceData = message.Data.Deserialize<StudioRichPresence>();
@@ -193,67 +143,52 @@ namespace Bloxstrap.Integrations
                 return;
             }
 
-            if (presenceData is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to parse studio message!");
-                return;
-            }
+            if (presenceData is null) return;
 
             if (!string.IsNullOrEmpty(presenceData.Details) && App.Settings.Prop.StudioWorkspaceInfo)
-                _currentPresence.Details = presenceData.Details;
+            {
+                _currentPresence!.Details = presenceData.DevCount > 1
+                    ? $"{presenceData.Details} ({presenceData.DevCount} Developers)"
+                    : presenceData.Details;
+            }
 
             if (!string.IsNullOrEmpty(presenceData.State) && App.Settings.Prop.StudioEditingInfo)
-                _currentPresence.State = presenceData.State;
+                _currentPresence!.State = presenceData.State;
 
             string largeImageKey = "roblox_studio";
             string largeImageText = "Roblox Studio";
 
             if (!string.IsNullOrEmpty(presenceData.ScriptType) && App.Settings.Prop.StudioThumbnailChanging)
             {
-                switch (presenceData.ScriptType.ToLower())
+                largeImageKey = presenceData.ScriptType.ToLower() switch
                 {
-                    case "server":
-                        largeImageKey = "studio_server";
-                        largeImageText = "Editing Server Script";
-                        break;
-                    case "client":
-                        largeImageKey = "studio_client";
-                        largeImageText = "Editing Client Script";
-                        break;
-                    case "server_module":
-                    case "client_module":
-                    case "module":
-                        largeImageKey = "studio_module";
-                        largeImageText = "Editing Module Script";
-                        break;
-                    case "developing":
-                        largeImageKey = "roblox_studio";
-                        largeImageText = "Roblox Studio";
-                        break;
-                }
+                    "server script" => "studio_server",
+                    "local script" => "studio_client",
+                    "module" or "server module" or "client module" => "studio_module",
+                    _ => "roblox_studio"
+                };
+
+                largeImageText = $"Editing {presenceData.ScriptType}";
             }
 
             string smallImageKey = null!;
-            string smallImageText = null!;
-
             if (presenceData.Testing && App.Settings.Prop.StudioShowTesting)
-            {
                 smallImageKey = "play_icon";
-                smallImageText = "Currently Testing";
-            }
 
-            _currentPresence.Assets = new Assets
+            _currentPresence!.Assets = new Assets
             {
                 LargeImageKey = largeImageKey,
                 LargeImageText = largeImageText,
                 SmallImageKey = smallImageKey,
-                SmallImageText = smallImageText
+                SmallImageText = "Currently Testing"
             };
 
-            if (_rpcEnabled)
-            {
-                _originalPresence = _currentPresence.Clone();
-            }
+            if (App.Settings.Prop.StudioGameButton && presenceData.PlaceId > 0 && presenceData.IsPublic)
+                _currentPresence.Buttons = new Button[] { new Button { Label = "Open Roblox Game", Url = $"https://www.roblox.com/games/{presenceData.PlaceId}" } };
+            else
+                _currentPresence.Buttons = null;
+
+            if (_rpcEnabled) _originalPresence = _currentPresence.Clone();
 
             if (implicitUpdate)
                 UpdatePresence();
