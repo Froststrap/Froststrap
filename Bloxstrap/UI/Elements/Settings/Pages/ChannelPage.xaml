@@ -25,18 +25,6 @@
             <ui:ToggleSwitch IsChecked="{Binding UpdateCheckingEnabled, Mode=TwoWay}" />
         </controls:OptionControl>
 
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_Behaviour_DisableHardwareAcceleration_Title}"
-            Description="{x:Static resources:Strings.Menu_Behaviour_DisableHardwareAcceleration_Description}">
-            <ui:ToggleSwitch IsChecked="{Binding HardwareAcceleration, Mode=TwoWay}" Checked="ToggleSwitch_Checked_1" Unchecked="ToggleSwitch_Unchecked_1" />
-        </controls:OptionControl>
-
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_Behaviour_DisableAnimation_Title}"
-            Description="{x:Static resources:Strings.Menu_Behaviour_DisableAnimation_Description}">
-            <ui:ToggleSwitch IsChecked="{Binding DisableAnimations, Mode=TwoWay}" Checked="ToggleSwitch_Checked_2" Unchecked="ToggleSwitch_Unchecked_2" />
-        </controls:OptionControl>
-
         <Separator Margin="0,8,0,6"/>
 
         <TextBlock Text="Roblox" FontSize="20" FontWeight="Bold"/>

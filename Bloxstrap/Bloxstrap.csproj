@@ -9,8 +9,8 @@
     <UseWPF>true</UseWPF>
     <UseWindowsForms>True</UseWindowsForms>
     <ApplicationIcon>Bloxstrap.ico</ApplicationIcon>
-    <Version>1.4.1.0</Version>
-    <FileVersion>1.4.1.0</FileVersion>
+    <Version>1.4.2</Version>
+    <FileVersion>1.4.2</FileVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
@@ -21,6 +21,10 @@
 
   <ItemGroup>
     <Resource Include="Bloxstrap.ico" />
+	<Resource Include="Resources\BootstrapperStyles\TwentyFiveDialog\PlayerLogo.png" />
+    <Resource Include="Resources\BootstrapperStyles\TwentyFiveDialog\Roblox.png" />
+    <Resource Include="Resources\BootstrapperStyles\TwentyFiveDialog\Studio.png" />
+    <Resource Include="Resources\BootstrapperStyles\TwentyFiveDialog\StudioLogo.png" />
     <Resource Include="Resources\Checkmark.ico" />
     <Resource Include="Resources\CrossMark.ico" />
     <Resource Include="Resources\RobloxVerified.png" />

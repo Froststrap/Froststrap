@@ -38,7 +38,7 @@
 
             <Separator/>
 
-            <MenuItem IsEnabled="False" x:Name="PlaytimeMenuItem" Visibility="Collapsed">
+            <MenuItem IsEnabled="False" x:Name="PlaytimeMenuItem">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -51,8 +51,10 @@
                 </MenuItem.Header>
             </MenuItem>
 
+            <Separator/>
+
             <MenuItem x:Name="RichPresenceMenuItem" Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsCheckable="True" IsChecked="True" Visibility="Collapsed" Click="RichPresenceMenuItem_Click" />
-            
+
             <MenuItem x:Name="InviteDeeplinkMenuItem" Visibility="Collapsed" Click="InviteDeeplinkMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
@@ -66,7 +68,7 @@
                 </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem x:Name="RegionJoinningMenuItem" Visibility="Collapsed" Click="AutoJoinRegionMenuItem_Click">
+            <MenuItem x:Name="RegionMenuRoot" Visibility="Collapsed">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -74,9 +76,33 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <ui:SymbolIcon Grid.Column="0" Symbol="Earth24"/>
-                        <TextBlock x:Name="RegionJoinTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Join Region" />
+                        <TextBlock x:Name="RegionJoinTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Region Actions" />
                     </Grid>
                 </MenuItem.Header>
+
+                <MenuItem x:Name="AutoJoinRegionMenuItem" Click="AutoJoinRegionMenuItem_Click">
+                    <MenuItem.Header>
+                        <TextBlock FontWeight="Bold" Text="Join Server" />
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <Separator/>
+
+                <MenuItem StaysOpenOnClick="True">
+                    <MenuItem.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Preferred:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                            <ComboBox x:Name="RegionSelectionComboBox" 
+                          Grid.Column="1" 
+                          Width="150" 
+                          MaxDropDownHeight="200"/>
+                        </Grid>
+                    </MenuItem.Header>
+                </MenuItem>
             </MenuItem>
 
             <MenuItem x:Name="GameInformationMenuItem" Visibility="Collapsed" Click="GameInformaionMenuItem_Click">
@@ -105,7 +131,7 @@
                 </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem x:Name="GameHistoryMenuItem" Click="JoinLastServerMenuItem_Click" Visibility="Collapsed">
+            <MenuItem x:Name="GameHistoryMenuItem" Click="JoinLastServerMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -118,7 +144,7 @@
                 </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem x:Name="CleanMemoryMenuItem" Visibility="Collapsed" Click="CleanMemoryMenuItem_Click">
+            <MenuItem x:Name="CleanMemoryMenuItem"  Click="CleanMemoryMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>

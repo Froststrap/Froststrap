@@ -140,6 +140,10 @@ namespace Bloxstrap
                 Mutex.OpenExisting(name).Close();
                 return true;
             }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
+            }
             catch
             {
                 return false;
@@ -157,10 +161,18 @@ namespace Bloxstrap
             {
                 return true;
             }
-            catch (WaitHandleCannotBeOpenedException)
+            catch
             {
                 return false;
             }
+        }
+
+        public static bool IsRobloxRunning()
+        {
+            Process[] processes = GetProcessesSafe();
+            string processName = Path.GetFileNameWithoutExtension(App.RobloxPlayerAppName);
+
+            return processes.Any(x => x.ProcessName == processName);
         }
 
         public static void KillBackgroundUpdater()

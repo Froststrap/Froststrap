@@ -33,9 +33,6 @@ namespace Bloxstrap
         public const string RobloxPlayerAppName = "RobloxPlayerBeta.exe";
         public const string RobloxStudioAppName = "RobloxStudioBeta.exe";
 
-        // one day ill add studio support
-        public const string RobloxAnselAppName = "eurotrucks2.exe";
-
         // simple shorthand for extremely frequently used and long string - this goes under HKCU
         public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
 
@@ -44,7 +41,7 @@ namespace Bloxstrap
 
         public static BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly().GetCustomAttribute<BuildMetadataAttribute>()!;
 
-        public static string Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+        public static string Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[..^2];
 
         public static Bootstrapper? Bootstrapper { get; set; } = null!;
 
@@ -89,21 +86,6 @@ namespace Bloxstrap
 
         private static bool _showingExceptionDialog = false;
 
-        private static string? _webUrl = null;
-        public static string WebUrl
-        {
-            get 
-            {
-                if (_webUrl != null)
-                    return _webUrl;
-
-                string url = ConstructBloxstrapWebUrl();
-                if (Settings.Loaded) // only cache if settings are done loading
-                    _webUrl = url;
-                return url;
-            }
-        }
-        
         public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
         {
             int exitCodeNum = (int)exitCode;
@@ -148,8 +130,6 @@ namespace Bloxstrap
                 return;
 
             _showingExceptionDialog = true;
-
-            SendLog();
 
             if (Bootstrapper?.Dialog != null)
             {
@@ -224,25 +204,6 @@ namespace Bloxstrap
             }
         }
 
-        public static string ConstructBloxstrapWebUrl()
-        {
-            // dont let user switch web environment if debug mode is not on
-            if (Settings.Prop.WebEnvironment == WebEnvironment.Production || !Settings.Prop.DeveloperMode)
-                return "bloxstraplabs.com";
-
-            string? sub = Settings.Prop.WebEnvironment.GetDescription();
-            return $"web-{sub}.bloxstraplabs.com";
-        }
-
-        public static bool CanSendLogs()
-        {
-            // non developer mode always uses production
-            if (!Settings.Prop.DeveloperMode || Settings.Prop.WebEnvironment == WebEnvironment.Production)
-                return IsProductionBuild;
-
-            return true;
-        }
-
         public static async Task<GithubRelease?> GetLatestRelease()
         {
             const string LOG_IDENT = "App::GetLatestRelease";
@@ -265,39 +226,6 @@ namespace Bloxstrap
             }
 
             return null;
-        }
-
-        public static async void SendStat(string key, string value)
-        {
-            if (!Settings.Prop.EnableAnalytics)
-                return;
-
-            try
-            {
-                await HttpClient.GetAsync($"https://{WebUrl}/metrics/post?key={key}&value={value}");
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteException("App::SendStat", ex);
-            }
-        }
-
-        public static async void SendLog()
-        {
-            if (!Settings.Prop.EnableAnalytics || !CanSendLogs())
-                return;
-
-            try
-            {
-                await HttpClient.PostAsync(
-                $"https://{WebUrl}/metrics/post-exception",
-                new StringContent(Logger.AsDocument)
-                );
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteException("App::SendLog", ex);
-            }
         }
 
         public static void AssertWindowsOSVersion()
@@ -323,17 +251,6 @@ namespace Bloxstrap
             Locale.Initialize();
 
             base.OnStartup(e);
-
-            if (Settings.Prop.DisableAnimations)
-            {
-                HardwareAcceleration.DisableAllAnimations();
-            }
-
-
-            if (Settings.Prop.WPFSoftwareRender)
-            {
-                RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-            }
 
             bool fontApplied = FontManager.ApplySavedCustomFont();
 
@@ -487,9 +404,6 @@ namespace Bloxstrap
                     Settings.Prop.Locale = "nil";
                     Settings.Save();
                 }
-
-                Logger.WriteLine(LOG_IDENT, $"Developer mode: {Settings.Prop.DeveloperMode}");
-                Logger.WriteLine(LOG_IDENT, $"Web environment: {Settings.Prop.WebEnvironment}");
 
                 Locale.Set(Settings.Prop.Locale);
 

@@ -12,36 +12,47 @@
  */
 
 using System.Collections.Concurrent;
+using System.Net.Http.Headers;
 
 namespace Bloxstrap.Integrations
 {
     public class RobloxServerFetcher
     {
         private const string LOG_IDENT = "RobloxServerFetcher";
-        private readonly HttpClient _client = new();
+        private readonly HttpClient _client;
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
 
         private readonly string _serverCacheFilePath = Path.Combine(Paths.Cache, "server_cache.json");
-        private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = new();
+        private ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = new();
 
         private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
 
         public RobloxServerFetcher()
         {
+            var handler = new SocketsHttpHandler
+            {
+                PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+                MaxConnectionsPerServer = 20
+            };
+
+            _client = new HttpClient(handler);
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.UserAgent.ParseAdd("Roblox/Froststrap");
+
             try
             {
                 Directory.CreateDirectory(Paths.Cache);
 
                 if (File.Exists(_serverCacheFilePath))
                 {
-                    string json = File.ReadAllText(_serverCacheFilePath);
-                    var loadedCache = JsonSerializer.Deserialize<ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>>>(json);
+                    using FileStream fs = File.OpenRead(_serverCacheFilePath);
+                    var loadedCache = JsonSerializer.Deserialize<ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>>>(fs);
 
                     if (loadedCache != null)
                     {
                         _serverCache = loadedCache;
-                        App.Logger.WriteLine(LOG_IDENT, $"Successfully loaded server cache for {_serverCache.Count} games from disk.");
+                        App.Logger.WriteLine(LOG_IDENT, $"Loaded {_serverCache.Count} games from disk.");
                     }
                 }
             }
@@ -53,8 +64,6 @@ namespace Bloxstrap.Integrations
 
         public async Task<DateTime?> GetServerUptime(string jobId, long placeId)
         {
-            const string LOG_IDENT_UPTIME = $"{LOG_IDENT}::GetServerUptime";
-
             try
             {
                 var response = await _client.GetAsync($"https://apis.rovalra.com/v1/server_details?place_id={placeId}&server_ids={jobId}");
@@ -66,14 +75,13 @@ namespace Bloxstrap.Integrations
 
                     if (serverTimeRaw?.Servers != null && serverTimeRaw.Servers.Count > 0)
                     {
-                        var server = serverTimeRaw.Servers[0];
-                        return server.FirstSeen;
+                        return serverTimeRaw.Servers[0].FirstSeen;
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_UPTIME, ex);
+                App.Logger.WriteException($"{LOG_IDENT}::Uptime", ex);
             }
 
             return null;
@@ -81,45 +89,24 @@ namespace Bloxstrap.Integrations
 
         public async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> GetDatacentersAsync()
         {
-            const string LOG_IDENT_DATACENTERS = $"{LOG_IDENT}::GetDatacenters";
-
             if (_datacenterIdToRegion != null && _regionList != null)
                 return (_regionList, _datacenterIdToRegion);
 
-            string json;
             try
             {
-                App.Logger.WriteLine(LOG_IDENT_DATACENTERS, "Fetching datacenters...");
-                json = await _client.GetStringAsync(DatacenterUrl).ConfigureAwait(false);
-                App.Logger.WriteLine(LOG_IDENT_DATACENTERS, "Successfully fetched datacenter list from remote API.");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_DATACENTERS, ex);
-                return null;
-            }
-
-            try
-            {
+                var json = await _client.GetStringAsync(DatacenterUrl);
                 var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
 
-                if (datacenterEntries == null)
-                {
-                    App.Logger.WriteLine(LOG_IDENT_DATACENTERS, "Failed to deserialize datacenter JSON.");
-                    return null;
-                }
+                if (datacenterEntries == null) return null;
 
                 var map = new Dictionary<int, string>();
                 var regions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 foreach (var entry in datacenterEntries)
                 {
-                    string city = entry.Location?.City ?? "";
-                    string country = entry.Location?.Country ?? "";
-
-                    string regionKey = string.IsNullOrWhiteSpace(city) && string.IsNullOrWhiteSpace(country)
+                    string regionKey = string.IsNullOrWhiteSpace(entry.Location?.City) && string.IsNullOrWhiteSpace(entry.Location?.Country)
                         ? "Unknown"
-                        : $"{city}, {country}".Trim().Trim(',', ' ');
+                        : $"{entry.Location.City}, {entry.Location.Country}".Trim().Trim(',', ' ');
 
                     regions.Add(regionKey);
 
@@ -129,34 +116,29 @@ namespace Bloxstrap.Integrations
                     }
                 }
 
-                var orderedRegions = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
+                _regionList = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
                 _datacenterIdToRegion = map;
-                _regionList = orderedRegions;
 
                 return (_regionList, _datacenterIdToRegion);
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_DATACENTERS, ex);
+                App.Logger.WriteException($"{LOG_IDENT}::Datacenters", ex);
                 return null;
             }
         }
 
-        private async Task<HttpResponseMessage> SendJoinRequestWithRetriesAsync(long placeId, string jobId, string roblosecurity, int maxAttempts = 3)
+        private async Task<HttpResponseMessage> SendJoinRequestWithRetriesAsync(long placeId, string jobId, string roblosecurity)
         {
-            const string LOG_IDENT_JOIN_REQUEST = $"{LOG_IDENT}::SendJoinRequestWithRetries";
-
             int attempt = 0;
+            const int maxAttempts = 3;
+
             while (true)
             {
                 attempt++;
-
                 var joinReq = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
-                joinReq.Headers.Add("User-Agent", $"Roblox/Froststrap");
                 joinReq.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
                 joinReq.Headers.Add("Origin", "https://roblox.com");
-
-                joinReq.Headers.Remove("Cookie");
                 joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
                 joinReq.Content = new StringContent(JsonSerializer.Serialize(new
@@ -172,24 +154,19 @@ namespace Bloxstrap.Integrations
                     var resp = await _client.SendAsync(joinReq).ConfigureAwait(false);
 
                     if (resp.StatusCode == HttpStatusCode.Unauthorized || resp.StatusCode == HttpStatusCode.Forbidden)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT_JOIN_REQUEST, $"Join request returned {(int)resp.StatusCode}; invalidating cached roblosecurity.");
                         return resp;
-                    }
 
-                    if ((int)resp.StatusCode == 429 || (int)resp.StatusCode >= 500)
+                    if (((int)resp.StatusCode == 429 || (int)resp.StatusCode >= 500) && attempt < maxAttempts)
                     {
-                        if (attempt >= maxAttempts)
-                            return resp;
-                        await Task.Delay(1000 * attempt).ConfigureAwait(false);
+                        await Task.Delay(500 * attempt).ConfigureAwait(false);
                         continue;
                     }
+
                     return resp;
                 }
                 catch (HttpRequestException) when (attempt < maxAttempts)
                 {
-                    await Task.Delay(500 * attempt).ConfigureAwait(false);
-                    continue;
+                    await Task.Delay(250 * attempt).ConfigureAwait(false);
                 }
             }
         }
@@ -197,45 +174,20 @@ namespace Bloxstrap.Integrations
         private bool TryExtractDataCenterId(JsonElement elem, out int dcId)
         {
             dcId = 0;
-            if (elem.ValueKind == JsonValueKind.Object)
+            if (elem.ValueKind != JsonValueKind.Object) return false;
+
+            if (elem.TryGetProperty("DataCenterId", out var dcProp) && dcProp.TryGetInt32(out dcId))
+                return true;
+
+            foreach (var prop in elem.EnumerateObject())
             {
-                foreach (var prop in elem.EnumerateObject())
+                if (prop.Value.ValueKind == JsonValueKind.Number && (prop.Name.Contains("DataCenterId") || prop.Name.Equals("dc")))
                 {
-                    if (prop.NameEquals("DataCenterId") && prop.Value.ValueKind == JsonValueKind.Number && prop.Value.TryGetInt32(out dcId))
-                        return true;
-                    if (prop.Value.ValueKind == JsonValueKind.Number &&
-                        (prop.Name.IndexOf("data", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                         prop.Name.IndexOf("center", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                         prop.Name.Equals("dc", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        if (prop.Value.TryGetInt32(out dcId))
-                            return true;
-                    }
-                    if (prop.Value.ValueKind == JsonValueKind.Object)
-                    {
-                        if (TryExtractDataCenterId(prop.Value, out dcId)) return true;
-                    }
-                    if (prop.Value.ValueKind == JsonValueKind.String)
-                    {
-                        var s = prop.Value.GetString();
-                        if (!string.IsNullOrWhiteSpace(s))
-                        {
-                            if (int.TryParse(s, out var parsedInt))
-                            {
-                                dcId = parsedInt;
-                                return true;
-                            }
-                            if (s.TrimStart().StartsWith("{") || s.TrimStart().StartsWith("["))
-                            {
-                                try
-                                {
-                                    using var nested = JsonDocument.Parse(s);
-                                    if (TryExtractDataCenterId(nested.RootElement, out dcId)) return true;
-                                }
-                                catch { }
-                            }
-                        }
-                    }
+                    if (prop.Value.TryGetInt32(out dcId)) return true;
+                }
+                else if (prop.Value.ValueKind == JsonValueKind.Object)
+                {
+                    if (TryExtractDataCenterId(prop.Value, out dcId)) return true;
                 }
             }
             return false;
@@ -243,232 +195,89 @@ namespace Bloxstrap.Integrations
 
         public async Task<bool> ValidateCookieAsync(string roblosecurityCookie)
         {
-            const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateCookieAsync";
-
             try
             {
-                if (string.IsNullOrWhiteSpace(roblosecurityCookie))
-                {
-                    App.Logger.WriteLine(LOG_IDENT_VALIDATE, "Cookie is null or empty");
-                    return false;
-                }
+                if (string.IsNullOrWhiteSpace(roblosecurityCookie)) return false;
 
                 var request = new HttpRequestMessage(HttpMethod.Get, "https://users.roblox.com/v1/users/authenticated");
                 request.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurityCookie}");
-                request.Headers.Add("User-Agent", "Roblox/Froststrap");
 
                 var response = await _client.SendAsync(request);
-
-                bool isValid = response.StatusCode == HttpStatusCode.OK;
-
-                App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Cookie validation result: {(isValid ? "VALID" : "INVALID")} (Status: {response.StatusCode})");
-                return isValid;
+                return response.StatusCode == HttpStatusCode.OK;
             }
-            catch (Exception ex)
+            catch
             {
-                App.Logger.WriteException(LOG_IDENT_VALIDATE, ex);
                 return false;
             }
         }
 
         public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string roblosecurity, string cursor = "", int sortOrder = 2)
         {
-            const string LOG_IDENT_FETCH = $"{LOG_IDENT}::FetchServerInstances";
+            if (string.IsNullOrWhiteSpace(roblosecurity)) return new FetchResult();
 
-            if (string.IsNullOrWhiteSpace(roblosecurity))
-            {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"No roblosecurity available for place {placeId}");
-                return new FetchResult();
-            }
-
-            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Starting server fetch for place {placeId} with cursor: '{cursor}' and sortOrder: {sortOrder}");
-
-            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Fetching servers for place {placeId} using provided roblosecurity");
+            if (_datacenterIdToRegion == null) await GetDatacentersAsync();
 
             string url = $"https://games.roblox.com/v1/games/{placeId}/servers/Public?sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
 
-            HttpResponseMessage response;
-            try
-            {
-                var req = new HttpRequestMessage(HttpMethod.Get, url);
-                req.Headers.Remove("Cookie");
-                req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
-                response = await _client.SendAsync(req).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                return new FetchResult();
-            }
+            var response = await _client.SendAsync(req).ConfigureAwait(false);
+            if (!response.IsSuccessStatusCode) return new FetchResult();
 
-            if (response.StatusCode == HttpStatusCode.Unauthorized || response.StatusCode == HttpStatusCode.Forbidden)
-            {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Server list request returned {(int)response.StatusCode}; cookies may be invalid.");
-                return new FetchResult();
-            }
+            using var jsonDoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            if (!jsonDoc.RootElement.TryGetProperty("data", out var dataElement)) return new FetchResult();
 
-            if (response.StatusCode == HttpStatusCode.TooManyRequests)
-            {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Rate limited for place {placeId}, waiting...");
-                await Task.Delay(10000).ConfigureAwait(false);
-                return new FetchResult();
-            }
+            string nextCursor = jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cElem) ? cElem.GetString() ?? "" : "";
 
-            if (!response.IsSuccessStatusCode)
-            {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Request failed with status: {(int)response.StatusCode} for place {placeId}");
-                return new FetchResult();
-            }
+            var instances = new ConcurrentBag<ServerInstance>();
+            var placeCache = _serverCache.GetOrAdd(placeId, _ => new ConcurrentDictionary<string, ServerInstance>());
 
-            string responseBody;
-            try
+            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 8 };
+            await Parallel.ForEachAsync(dataElement.EnumerateArray(), parallelOptions, async (serverElem, ct) =>
             {
-                responseBody = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                return new FetchResult();
-            }
+                string jobId = serverElem.GetProperty("id").GetString() ?? "";
+                int playing = serverElem.GetProperty("playing").GetInt32();
+                int maxPlayers = serverElem.GetProperty("maxPlayers").GetInt32();
 
-            using var jsonDoc = JsonDocument.Parse(responseBody);
-            if (!jsonDoc.RootElement.TryGetProperty("data", out var dataElement) || dataElement.ValueKind != JsonValueKind.Array)
-            {
-                App.Logger.WriteLine(LOG_IDENT_FETCH, $"No 'data' array found in response for place {placeId}");
-                return new FetchResult();
-            }
+                if (playing >= maxPlayers) return;
 
-            string nextCursor = "";
-            if (jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cursorElem) && cursorElem.ValueKind == JsonValueKind.String)
-            {
-                nextCursor = cursorElem.GetString() ?? "";
-            }
+                if (placeCache.TryGetValue(jobId, out var cached) && cached.Region != "Unknown")
+                {
+                    instances.Add(cached);
+                    return;
+                }
 
-            var instances = new List<ServerInstance>();
-            int maxConcurrency = 10;
-            var semaphore = new SemaphoreSlim(maxConcurrency);
-
-            var serverTasks = dataElement.EnumerateArray().Select(async serverElem =>
-            {
-                await semaphore.WaitAsync();
                 try
                 {
-                    if (!serverElem.TryGetProperty("id", out var idElem) ||
-                        !serverElem.TryGetProperty("playing", out var playingElem) ||
-                        !serverElem.TryGetProperty("maxPlayers", out var maxElem))
-                    {
-                        return null;
-                    }
+                    var joinResp = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity);
+                    using var parsed = JsonDocument.Parse(await joinResp.Content.ReadAsStringAsync());
 
-                    string jobId = idElem.GetString() ?? "";
-                    int playing = playingElem.GetInt32();
-                    int maxPlayers = maxElem.GetInt32();
+                    int? dcId = null;
+                    if (TryExtractDataCenterId(parsed.RootElement, out int extracted)) dcId = extracted;
 
-                    if (playing >= maxPlayers)
-                    {
-                        return null;
-                    }
+                    string region = (dcId.HasValue && _datacenterIdToRegion!.TryGetValue(dcId.Value, out var mapped)) ? mapped : "Unknown";
+                    DateTime? uptime = region != "Unknown" ? await GetServerUptime(jobId, placeId) : null;
 
-                    ServerInstance? cachedServer = null;
-                    if (string.IsNullOrEmpty(cursor))
-                    {
-                        var cacheForPlace = _serverCache.GetOrAdd(placeId, new ConcurrentDictionary<string, ServerInstance>());
-                        cacheForPlace.TryGetValue(jobId, out cachedServer);
-                    }
-
-                    if (cachedServer != null && cachedServer.DataCenterId.HasValue && cachedServer.Region != "Unknown")
-                    {
-                        return cachedServer;
-                    }
-
-                    int? dataCenterId = null;
-                    string region = "Unknown";
-                    DateTime? firstSeen = null;
-
-                    try
-                    {
-                        var joinResp = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity).ConfigureAwait(false);
-                        string joinContent = await joinResp.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                        using var parsed = JsonDocument.Parse(joinContent);
-
-                        if (TryExtractDataCenterId(parsed.RootElement, out var extracted))
-                        {
-                            dataCenterId = extracted;
-                        }
-                        else if (parsed.RootElement.TryGetProperty("joinScript", out var joinScriptElem))
-                        {
-                            if (TryExtractDataCenterId(joinScriptElem, out extracted))
-                                dataCenterId = extracted;
-                        }
-
-                        if (dataCenterId == null && parsed.RootElement.TryGetProperty("DataCenterId", out var topDc) && topDc.ValueKind == JsonValueKind.Number && topDc.TryGetInt32(out var tdc))
-                            dataCenterId = tdc;
-
-                        if (dataCenterId.HasValue)
-                        {
-                            if (_datacenterIdToRegion == null)
-                            {
-                                var loaded = await GetDatacentersAsync().ConfigureAwait(false);
-                            }
-
-                            if (_datacenterIdToRegion != null && _datacenterIdToRegion.TryGetValue(dataCenterId.Value, out var mappedRegion))
-                                region = mappedRegion;
-                        }
-
-                        if (region != "Unknown")
-                        {
-                            try
-                            {
-                                firstSeen = await GetServerUptime(jobId, placeId);
-                            }
-                            catch (Exception uptimeEx)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT_FETCH, $"Failed to get uptime for server {jobId}: {uptimeEx.Message}");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT_FETCH, $"Failed to get join info for server {jobId}: {ex.Message}");
-                    }
-
-                    var serverInstance = new ServerInstance
+                    var server = new ServerInstance
                     {
                         Id = jobId,
                         Playing = playing,
                         MaxPlayers = maxPlayers,
                         Region = region,
-                        DataCenterId = dataCenterId,
-                        FirstSeen = firstSeen
+                        DataCenterId = dcId,
+                        FirstSeen = uptime
                     };
 
-                    if (dataCenterId.HasValue && region != "Unknown")
-                    {
-                        var cacheForPlace = _serverCache.GetOrAdd(placeId, new ConcurrentDictionary<string, ServerInstance>());
-                        cacheForPlace[jobId] = serverInstance;
-                    }
-
-                    return serverInstance;
+                    if (region != "Unknown") placeCache[jobId] = server;
+                    instances.Add(server);
                 }
-                finally
-                {
-                    semaphore.Release();
-                }
+                catch { }
             });
-
-            var processedServers = await Task.WhenAll(serverTasks);
-            var validServers = processedServers.OfType<ServerInstance>().ToList();
-
-            int newlyFetchedCount = validServers.Count(s =>
-                !string.IsNullOrEmpty(cursor) ||
-                (_serverCache.TryGetValue(placeId, out var placeCache) && !placeCache.ContainsKey(s.Id)));
-
-            App.Logger.WriteLine(LOG_IDENT_FETCH, $"Returning {validServers.Count} servers for Place ID {placeId} ({newlyFetchedCount} newly fetched). NextCursor: {nextCursor}");
 
             return new FetchResult
             {
-                Servers = validServers,
-                NewlyFetchedCount = newlyFetchedCount,
+                Servers = instances.ToList(),
                 NextCursor = nextCursor
             };
         }

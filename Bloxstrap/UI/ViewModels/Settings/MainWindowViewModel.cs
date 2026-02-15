@@ -1,11 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
-using Wpf.Ui.Controls;
-using Wpf.Ui.Appearance;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {

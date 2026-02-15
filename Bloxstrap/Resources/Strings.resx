@@ -392,7 +392,10 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
     <value>Legacy (2011 - 2014)</value>
   </data>
   <data name="Enums.BootstrapperStyle.ProgressDialog" xml:space="preserve">
-    <value>Roblox (~2014)</value>
+    <value>Roblox (2014~2025)</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.TwentyFiveDialog" xml:space="preserve">
+    <value>Roblox (~2025)</value>
   </data>
   <data name="Enums.BootstrapperStyle.VistaDialog" xml:space="preserve">
     <value>Vista (2008 - 2011)</value>
@@ -1841,10 +1844,6 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Installer.InstallationNotFound" xml:space="preserve">
     <value>No bootstrapper installation was found.</value>
-  </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Ansel is not supported.
-You can no longer use Bloxshade with Froststrap.</value>
   </data>
   <data name="Bootstrapper.Status.UpgradingBloxstrap" xml:space="preserve">
     <value>Getting the latest Froststrap...</value>
