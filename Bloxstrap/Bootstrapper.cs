@@ -273,18 +273,6 @@ namespace Bloxstrap
 
                 await SetupPackageDictionaries(); // mods also require it
 
-                // we are checking if eurotrucks2 exists in client directory
-                if (
-                    File.Exists(Path.Combine(AppData.Directory, App.RobloxAnselAppName))
-                    )
-                {
-                    Frontend.ShowMessageBox(
-                        Strings.Bootstrapper_Dialog_AnselDisabled,
-                        MessageBoxImage.Warning
-                    );
-                    await UpgradeRoblox();
-                }
-
                 if (AppData.DistributionState.VersionGuid != _latestVersionGuid || _mustUpgrade)
                 {
                     bool backgroundUpdaterMutexOpen = Utilities.DoesMutexExist("Bloxstrap-BackgroundUpdater");
@@ -604,7 +592,7 @@ namespace Bloxstrap
                     }
                 }
 
-                key.SetValueSafe("www.roblox.com", Deployment.IsDefaultChannel ? "" : Deployment.Channel);
+                key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
 
                 _latestVersionGuid = clientVersion.VersionGuid;
                 _latestVersion = Utilities.ParseVersionSafe(clientVersion.Version);
@@ -925,7 +913,7 @@ namespace Bloxstrap
 
             SetStatus(Strings.Bootstrapper_Status_Starting);
 
-            string[] Names = { App.RobloxPlayerAppName, App.RobloxAnselAppName, App.RobloxStudioAppName };
+            string[] Names = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
             string ResolvedName = null!;
 
             foreach (string Name in Names)
@@ -986,13 +974,46 @@ namespace Bloxstrap
                 logCreatedEvent.Set();
             };
 
+            var autoclosePids = new List<int>();
+
+            // the code you're gonna read ahead is horrible. sorry for the hack, but it works ¯\_(ツ)_/¯
+            // check if prelaunch is checked
+            foreach (var integration in App.Settings.Prop.CustomIntegrations)
+            {
+                if (integration?.PreLaunch == true)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Pre-Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+                    int pid = 0;
+                    try
+                    {
+                        var process = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = integration.Location,
+                            Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                            WorkingDirectory = Path.GetDirectoryName(integration.Location),
+                            UseShellExecute = true
+                        })!;
+                        pid = process.Id;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to pre-launch integration '{integration.Name}'!");
+                        App.Logger.WriteLine(LOG_IDENT, ex.Message);
+                    }
+
+                    if (integration?.AutoClose == true && pid != 0)
+                        autoclosePids.Add(pid);
+
+                    if (integration?.Delay != null)
+                        Thread.Sleep(integration.Delay);
+                }
+            }
+
+            // v2.2.0 - byfron will trip if we keep a process handle open for over a minute, so we're doing this now
             try
             {
                 using var process = Process.Start(startInfo)!;
-
-                // Continue with the rest of your code like _appPid assignment, icon setting, etc.
                 _appPid = process.Id;
-
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
             {
@@ -1024,37 +1045,44 @@ namespace Bloxstrap
 
             _mutex?.ReleaseAsync();
 
-            var autoclosePids = new List<int>();
-
             if (!IsStudioLaunch)
             {
                 // launch custom integrations now if normal roblox
                 foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+                    if (integration == null)
+                        continue;
 
-                    int pid = 0;
+                    if (integration?.PreLaunch == true)
+                        continue; // skip pre-launch integrations
 
-                    try
+                    if (!integration!.SpecifyGame)
                     {
-                        var process = Process.Start(new ProcessStartInfo
+                        App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+
+                        int pid = 0;
+
+                        try
                         {
-                            FileName = integration.Location,
-                            Arguments = integration.LaunchArgs.Replace("\r\n", " "),
-                            WorkingDirectory = Path.GetDirectoryName(integration.Location),
-                            UseShellExecute = true
-                        })!;
+                            var process = Process.Start(new ProcessStartInfo
+                            {
+                                FileName = integration.Location,
+                                Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                                WorkingDirectory = Path.GetDirectoryName(integration.Location),
+                                UseShellExecute = true
+                            })!;
 
-                        pid = process.Id;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}'!");
-                        App.Logger.WriteLine(LOG_IDENT, ex.Message);
-                    }
+                            pid = process.Id;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}'!");
+                            App.Logger.WriteLine(LOG_IDENT, ex.Message);
+                        }
 
-                    if (integration.AutoClose && pid != 0)
-                        autoclosePids.Add(pid);
+                        if (integration.AutoClose && pid != 0)
+                            autoclosePids.Add(pid);
+                    }
                 }
             }
 
@@ -1381,7 +1409,6 @@ namespace Bloxstrap
 
             List<Process> processes = new List<Process>();
             processes.AddRange(Process.GetProcessesByName("RobloxPlayerBeta"));
-            processes.AddRange(Process.GetProcessesByName("eurotrucks2"));
             processes.AddRange(Process.GetProcessesByName("RobloxCrashHandler")); // roblox studio doesnt depend on crash handler being open, so this should be fine
 
             foreach (Process process in processes)
@@ -1516,9 +1543,6 @@ namespace Bloxstrap
             }
 
             await Task.WhenAll(extractionTasks);
-
-            App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
-            await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings);
 
             if (_cancelTokenSource.IsCancellationRequested)
                 return;
@@ -1742,6 +1766,12 @@ namespace Bloxstrap
             var fileTasks = new List<Task<bool>>();
             using var semaphore = new SemaphoreSlim(8); // Limit concurrent file operations
 
+            // we apply it here since RobloxDomain could be changed by the user
+            App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
+            if (!File.Exists(Paths.Modifications + "\\AppSettings.xml"))
+                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
+
+
             foreach (string file in Directory.GetFiles(Paths.Modifications, "*.*", SearchOption.AllDirectories))
             {
                 if (_cancelTokenSource.IsCancellationRequested)
@@ -1762,6 +1792,12 @@ namespace Bloxstrap
 
                 if (relativeFile.EndsWith(".lock"))
                     continue;
+
+                if (relativeFile.EndsWith(".mesh"))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Skipping file: {relativeFile}");
+                    continue;
+                }
 
                 string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
                 bool isDeleteOperation = fileNameWithoutExt.EndsWith("_Delete");

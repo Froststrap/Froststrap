@@ -13,7 +13,6 @@ namespace Bloxstrap.Models.Persistable
         public bool ShowServerUptime { get; set; } = false;
         public bool AutoRejoin { get; set; } = false;
         public bool ShowGameHistoryMenu { get; set; } = true;
-        public List<ActivityData> ServerHistory { get; set; } = new List<ActivityData>();
         public bool PlaytimeCounter { get; set; } = true;
         public TrayDoubleClickAction DoubleClickAction { get; set; } = TrayDoubleClickAction.ServerInfo;
         public bool UseDisableAppPatch { get; set; } = false;
@@ -36,8 +35,9 @@ namespace Bloxstrap.Models.Persistable
         public bool AutoCloseCrashHandler { get; set; } = false;
         public MemoryCleanerInterval MemoryCleanerInterval { get; set; } = MemoryCleanerInterval.Never;
         public ObservableCollection<string> UserExcludedProcesses { get; set; } = new();
-        public int RobloxTrimIntervalSeconds { get; set; } = 300;
-        public bool EnableRobloxTrim { get; set; } = true;
+        public int RobloxTrimIntervalSeconds { get; set; } = 600;
+        // i have no idea why i set it to true :sob:
+        public bool EnableRobloxTrim { get; set; } = false;
         public string Locale { get; set; } = "nil";
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = new List<string>();
@@ -88,21 +88,16 @@ namespace Bloxstrap.Models.Persistable
         // Settings Page
         public bool CheckForUpdates { get; set; } = true;
         public bool WPFSoftwareRender { get; set; } = false;
-        public bool DisableAnimations { get; set; } = false;
         public bool UpdateRoblox { get; set; } = true;
+        public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; } = false;
         public string Channel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
-        public string ChannelHash { get; set; } = "";
 
         // Misc Stuff
         public bool IsNavigationSidebarExpanded { get; set; } = true;
         public string SelectedRegion { get; set; } = string.Empty;
-        public bool EnableAnalytics { get; set; } = false;
-        public bool DebugDisableVersionPackageCleanup { get; set; } = false;
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool ForceLocalData { get; set; } = false;
-        public bool DeveloperMode { get; set; } = false;
-        public WebEnvironment WebEnvironment { get; set; } = WebEnvironment.Production;
+        public bool DebugDisableVersionPackageCleanup { get; set; } = false;
     }
 }

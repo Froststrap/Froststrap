@@ -1,17 +1,12 @@
-﻿using Bloxstrap.Properties;
-using System;
-using System.Configuration;
-using System.IO.Compression;
-using System.Windows.Automation;
-
-namespace Bloxstrap.RobloxInterfaces
+﻿namespace Bloxstrap.RobloxInterfaces
 {
     public static class Deployment
     {
+        public const string DefaultRobloxDomain = "roblox.com";
+
         public const string DefaultChannel = "production";
         
         private const string VersionStudioHash = "version-012732894899482c";
-
 
         public static EventHandler<string>? ChannelChanged;
         private static string _channel = App.Settings.Prop.Channel;
@@ -32,7 +27,11 @@ namespace Bloxstrap.RobloxInterfaces
 
         public static string BinaryType = "WindowsPlayer";
 
+        public static string RobloxDomain => App.Settings.Prop.RobloxDomain;
+
         public static bool IsDefaultChannel => Channel.Equals(DefaultChannel, StringComparison.OrdinalIgnoreCase) || Channel.Equals("live", StringComparison.OrdinalIgnoreCase);
+
+        public static bool IsDefaultRobloxDomain => RobloxDomain.Equals(DefaultRobloxDomain, StringComparison.OrdinalIgnoreCase);
 
         public static string BaseUrl { get; private set; } = null!;
 
@@ -153,7 +152,7 @@ namespace Bloxstrap.RobloxInterfaces
             const string LOG_IDENT = "Deployment::GetUserChannel";
             try
             {
-                HttpResponseMessage response = await App.Cookies.AuthGet($"https://clientsettings.roblox.com/v2/user-channel?binaryType={binaryType}");
+                HttpResponseMessage response = await App.Cookies.AuthGet($"https://clientsettings.{RobloxDomain}/v2/user-channel?binaryType={binaryType}");
                 response.EnsureSuccessStatusCode();
 
                 string content = await response.Content.ReadAsStringAsync();
@@ -178,7 +177,7 @@ namespace Bloxstrap.RobloxInterfaces
 
             try
             {
-                var response = await App.HttpClient.GetAsync($"https://clientsettingscdn.roblox.com/v2/client-version/WindowsPlayer/channel/{channel}");
+                var response = await App.HttpClient.GetAsync($"https://clientsettingscdn.{RobloxDomain}/v2/client-version/WindowsPlayer/channel/{channel}");
                 response.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException ex)
@@ -262,7 +261,7 @@ namespace Bloxstrap.RobloxInterfaces
 
                 try
                 {
-                    request.RequestUri = new Uri("https://clientsettingscdn.roblox.com" + path);
+                    request.RequestUri = new Uri("https://clientsettingscdn." + RobloxDomain + path);
                     clientVersion = await Http.SendJson<ClientVersion>(request);
                 }
                 catch (HttpRequestException httpEx) 
@@ -277,7 +276,7 @@ namespace Bloxstrap.RobloxInterfaces
 
                     try
                     {
-                        request.RequestUri = new Uri("https://clientsettings.roblox.com" + path);
+                        request.RequestUri = new Uri("https://clientsettings." + RobloxDomain + path);
                         clientVersion = await Http.SendJson<ClientVersion>(request);
                     }
                     catch (HttpRequestException httpEx)

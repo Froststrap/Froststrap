@@ -338,21 +338,24 @@
                         Content="{x:Static resources:Strings.Common_Browse}"
                         Icon="Folder24" />
                 </Grid>
-                <TextBlock
-                    Margin="0,8,0,0"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" />
-                <ui:TextBox
-                    Margin="0,4,0,0"
-                    AcceptsReturn="True"
-                    AcceptsTab="True"
-                    PlaceholderText="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}"
-                    Text="{Binding SelectedCustomIntegration.LaunchArgs}"
-                    TextWrapping="Wrap" />
-                <CheckBox
-                    Margin="0,8,0,0"
-                    Content="{x:Static resources:Strings.Menu_Integrations_Custom_SpecifyGame}"
-                    IsChecked="{Binding SelectedCustomIntegration.SpecifyGame, UpdateSourceTrigger=PropertyChanged}" />
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="Launch Delay" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <ui:TextBox Grid.Column="1" Margin="0,0,16,0" PlaceholderText="200" Text="{Binding SelectedCustomIntegration.Delay}" TextWrapping="NoWrap" AcceptsReturn="True" AcceptsTab="True" />
+                    <TextBlock Grid.Column="2" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <ui:TextBox Grid.Column="3" PlaceholderText="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}" Text="{Binding SelectedCustomIntegration.LaunchArgs}" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" />
+                </Grid>
+                <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                    <CheckBox Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoClose}" IsChecked="{Binding SelectedCustomIntegration.AutoClose}" />
+                    <CheckBox Margin="8,0,0,0" Content="Pre Roblox Launch" IsChecked="{Binding SelectedCustomIntegration.PreLaunch}" />
+                    <CheckBox Margin="8,0,0,0" Content="{x:Static resources:Strings.Menu_Integrations_Custom_SpecifyGame}" IsChecked="{Binding SelectedCustomIntegration.SpecifyGame, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
                 <TextBlock
                     Margin="0,8,0,0"
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -368,11 +371,6 @@
                     Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoCloseOnGame}"
                     IsChecked="{Binding SelectedCustomIntegration.AutoCloseOnGame, UpdateSourceTrigger=PropertyChanged}"
                     Visibility="{Binding SelectedCustomIntegration.SpecifyGame, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <CheckBox
-                    Margin="0,8,0,0"
-                    Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoClose}"
-                    IsChecked="{Binding SelectedCustomIntegration.AutoClose, UpdateSourceTrigger=PropertyChanged}"
-                    Visibility="{Binding SelectedCustomIntegration.SpecifyGame, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
             </StackPanel>
             <TextBlock
                 Grid.Row="0"

@@ -99,32 +99,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             LaunchHandler.LaunchUninstaller();
         }
 
-        private void ToggleSwitch_Checked_1(object sender, RoutedEventArgs e)
-        {
-            HardwareAcceleration.MemoryTrimming();
-        }
-
-        private void ToggleSwitch_Unchecked_1(object sender, RoutedEventArgs e)
-        {
-            Frontend.ShowMessageBox(
-            Strings.Menu_Channels_HardwareAccelRestart,
-            MessageBoxImage.Information
-            );
-        }
-
-        private void ToggleSwitch_Checked_2(object sender, RoutedEventArgs e)
-        {
-            HardwareAcceleration.DisableAllAnimations();
-        }
-
-        private void ToggleSwitch_Unchecked_2(object sender, RoutedEventArgs e)
-        {
-            Frontend.ShowMessageBox(
-            Strings.Menu_Channels_DisableAnimationRestart,
-            MessageBoxImage.Information
-            );
-        }
-
         private void OpenChannelListDialog_Click(object sender, RoutedEventArgs e)
         {
             App.FrostRPC?.SetDialog("Channel List");

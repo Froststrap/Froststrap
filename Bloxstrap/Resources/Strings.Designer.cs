@@ -200,16 +200,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ansel is not supported.
-        ///You can no longer use Bloxshade with Froststrap..
-        /// </summary>
-        public static string Bootstrapper_Dialog_AnselDisabled {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Dialog.AnselDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) is out of date, and appears to no longer be receiving updates.\n
         ///Would you like to switch to the default channel ({1})?.
         /// </summary>
@@ -2244,11 +2234,20 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox (~2014).
+        ///   Looks up a localized string similar to Roblox (2014~2025).
         /// </summary>
         public static string Enums_BootstrapperStyle_ProgressDialog {
             get {
                 return ResourceManager.GetString("Enums.BootstrapperStyle.ProgressDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Roblox (~2025).
+        /// </summary>
+        public static string Enums_BootstrapperStyle_TwentyFiveDialog {
+            get {
+                return ResourceManager.GetString("Enums.BootstrapperStyle.TwentyFiveDialog", resourceCulture);
             }
         }
         

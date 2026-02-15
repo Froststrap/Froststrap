@@ -126,17 +126,5 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => App.State.Prop.ForceReinstall || IsRobloxInstallationMissing;
             set => App.State.Prop.ForceReinstall = value;
         }
-
-        public bool DisableAnimations
-        {
-            get => App.Settings.Prop.DisableAnimations;
-            set => App.Settings.Prop.DisableAnimations = value;
-        }
-
-        public bool HardwareAcceleration
-        {
-            get => App.Settings.Prop.WPFSoftwareRender;
-            set => App.Settings.Prop.WPFSoftwareRender = value;
-        }
     }
 }
