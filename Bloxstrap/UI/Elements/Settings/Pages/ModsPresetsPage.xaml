@@ -117,8 +117,7 @@
 
             <Separator Margin="0,8,0,8" />
 
-            <TextBlock
-                        FontSize="20"
+            <TextBlock  FontSize="20"
                         FontWeight="Bold"
                         Text="{x:Static resources:Strings.Common_Miscellaneous}" />
 
@@ -127,18 +126,16 @@
                         Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Description}">
 
                 <StackPanel>
-                    <ui:Button
-                                Command="{Binding ManageCustomFontCommand}"
+                    <ui:Button  Command="{Binding ManageCustomFontCommand}"
                                 Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Choose}"
                                 Icon="DocumentAdd16"
-                                Visibility="{Binding ChooseCustomFontVisibility}" />
+                                Visibility="{Binding IsCustomFontSet, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
-                    <ui:Button
-                                Appearance="Danger"
+                    <ui:Button  Appearance="Danger"
                                 Command="{Binding ManageCustomFontCommand}"
                                 Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Remove}"
                                 Icon="Delete16"
-                                Visibility="{Binding DeleteCustomFontVisibility}" />
+                                Visibility="{Binding IsCustomFontSet, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </controls:OptionControl>
 
@@ -147,18 +144,16 @@
                         Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Description}">
 
                 <StackPanel>
-                    <ui:Button
-                                Command="{Binding AddCustomDeathSoundCommand}"
+                    <ui:Button  Command="{Binding AddCustomDeathSoundCommand}"
                                 Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Choose}"
                                 Icon="DocumentAdd16"
-                                Visibility="{Binding ChooseCustomDeathSoundVisibility}" />
+                                Visibility="{Binding HasCustomDeathSound, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
-                    <ui:Button
-                                Appearance="Danger"
+                    <ui:Button  Appearance="Danger"
                                 Command="{Binding RemoveCustomDeathSoundCommand}"
                                 Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Remove}"
                                 Icon="Delete16"
-                                Visibility="{Binding DeleteCustomDeathSoundVisibility}" />
+                                Visibility="{Binding HasCustomDeathSound, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </controls:OptionControl>
 
@@ -189,18 +184,16 @@
                                 Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Description}">
 
                         <StackPanel>
-                            <ui:Button
-                                        Command="{Binding AddCustomCursorModCommand}"
+                            <ui:Button  Command="{Binding AddCustomCursorModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Choose}"
                                         Icon="DocumentAdd16"
-                                        Visibility="{Binding ChooseCustomCursorVisibility}" />
+                                        Visibility="{Binding HasCustomCursors, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
-                            <ui:Button
-                                        Appearance="Danger"
+                            <ui:Button  Appearance="Danger"
                                         Command="{Binding RemoveCustomCursorModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Remove}"
                                         Icon="Delete16"
-                                        Visibility="{Binding DeleteCustomCursorVisibility}" />
+                                        Visibility="{Binding HasCustomCursors, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </StackPanel>
                     </controls:OptionControl>
 
@@ -209,18 +202,16 @@
                                 Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Description}">
 
                         <StackPanel>
-                            <ui:Button
-                                        Command="{Binding AddCustomShiftlockModCommand}"
+                            <ui:Button  Command="{Binding AddCustomShiftlockModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Choose}"
                                         Icon="DocumentAdd16"
-                                        Visibility="{Binding ChooseCustomShiftlockVisibility}" />
+                                        Visibility="{Binding HasCustomShiftlock, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
 
-                            <ui:Button
-                                        Appearance="Danger"
+                            <ui:Button  Appearance="Danger"
                                         Command="{Binding RemoveCustomShiftlockModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Remove}"
                                         Icon="Delete16"
-                                        Visibility="{Binding DeleteCustomShiftlockVisibility}" />
+                                        Visibility="{Binding HasCustomShiftlock, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </StackPanel>
                     </controls:OptionControl>
 
