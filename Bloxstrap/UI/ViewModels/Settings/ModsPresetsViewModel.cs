@@ -27,8 +27,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand OpenCommunityModsCommand => new RelayCommand(OpenCommunityMods);
         public ICommand OpenModGeneratorCommand => new RelayCommand(OpenModGenerator);
 
-        private void OpenModsFolder() => Process.Start("explorer.exe", Paths.Modifications);
-
         private static readonly Dictionary<string, byte[]> FontHeaders = new()
         {
             { "ttf", new byte[] { 0x00, 0x01, 0x00, 0x00 } },
@@ -72,8 +70,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(ChooseCustomFontVisibility));
             OnPropertyChanged(nameof(DeleteCustomFontVisibility));
         }
-
-        public ICommand OpenModsFolderCommand => new RelayCommand(OpenModsFolder);
 
         public ICommand AddCustomCursorModCommand => new RelayCommand(AddCustomCursorMod);
 
@@ -161,27 +157,27 @@ namespace Bloxstrap.UI.ViewModels.Settings
         }
 
         public Visibility ChooseCustomCursorVisibility =>
-    GetVisibility(Path.Combine(Paths.Modifications, "Content", "textures", "Cursors", "KeyboardMouse"),
+    GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
                   new[] { "ArrowCursor.png", "ArrowFarCursor.png", "MouseLockedCursor.png" }, checkExist: false);
 
         public Visibility DeleteCustomCursorVisibility =>
-            GetVisibility(Path.Combine(Paths.Modifications, "Content", "textures", "Cursors", "KeyboardMouse"),
+            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
                           new[] { "ArrowCursor.png", "ArrowFarCursor.png", "MouseLockedCursor.png" }, checkExist: true);
 
         public Visibility ChooseCustomShiftlockVisibility =>
-            GetVisibility(Path.Combine(Paths.Modifications, "Content", "textures"),
+            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures"),
                           new[] { "MouseLockedCursor.png" }, checkExist: false);
 
         public Visibility DeleteCustomShiftlockVisibility =>
-            GetVisibility(Path.Combine(Paths.Modifications, "Content", "textures"),
+            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures"),
                           new[] { "MouseLockedCursor.png" }, checkExist: true);
 
         public Visibility ChooseCustomDeathSoundVisibility =>
-            GetVisibility(Path.Combine(Paths.Modifications, "Content", "sounds"),
+            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "sounds"),
                           new[] { "oof.ogg" }, checkExist: false);
 
         public Visibility DeleteCustomDeathSoundVisibility =>
-            GetVisibility(Path.Combine(Paths.Modifications, "Content", "sounds"),
+            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "sounds"),
                           new[] { "oof.ogg" }, checkExist: true);
 
         private void AddCustomFile(string[] targetFiles, string targetDir, string dialogTitle, string filter, string failureText, Action postAction = null!)
@@ -248,7 +244,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             AddCustomFile(
                 new[] { "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" },
-                Path.Combine(Paths.Modifications, "Content", "textures", "Cursors", "KeyboardMouse"),
+                Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
                 "Select a PNG Cursor Image",
                 "PNG Images (*.png)|*.png",
                 "cursors",
@@ -263,7 +259,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             RemoveCustomFile(
                 new[] { "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" },
-                Path.Combine(Paths.Modifications, "Content", "textures", "Cursors", "KeyboardMouse"),
+                Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
                 "No custom cursors found to remove.",
                 () =>
                 {
@@ -276,7 +272,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             AddCustomFile(
                 new[] { "MouseLockedCursor.png" },
-                Path.Combine(Paths.Modifications, "Content", "textures"),
+                Path.Combine(Paths.PresetModifications, "Content", "textures"),
                 "Select a PNG Shiftlock Image",
                 "PNG Images (*.png)|*.png",
                 "Shiftlock",
@@ -291,7 +287,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             RemoveCustomFile(
                 new[] { "MouseLockedCursor.png" },
-                Path.Combine(Paths.Modifications, "Content", "textures"),
+                Path.Combine(Paths.PresetModifications, "Content", "textures"),
                 "No custom Shiftlock found to remove.",
                 () =>
                 {
@@ -304,7 +300,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             AddCustomFile(
                 new[] { "oof.ogg" },
-                Path.Combine(Paths.Modifications, "Content", "sounds"),
+                Path.Combine(Paths.PresetModifications, "Content", "sounds"),
                 "Select a Custom Death Sound",
                 "OGG Audio (*.ogg)|*.ogg",
                 "death sound",
@@ -319,7 +315,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             RemoveCustomFile(
                 new[] { "oof.ogg" },
-                Path.Combine(Paths.Modifications, "Content", "sounds"),
+                Path.Combine(Paths.PresetModifications, "Content", "sounds"),
                 "No custom death sound found to remove.",
                 () =>
                 {
@@ -547,7 +543,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             }
 
             string sourceDir = SelectedCustomCursorSet.FolderPath;
-            string targetDir = Path.Combine(Paths.Modifications, "content", "textures");
+            string targetDir = Path.Combine(Paths.PresetModifications, "content", "textures");
             string targetKeyboardMouse = Path.Combine(targetDir, "Cursors", "KeyboardMouse");
 
             try
@@ -608,8 +604,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 return;
             }
 
-            string sourceMouseLocked = Path.Combine(Paths.Modifications, "content", "textures", "MouseLockedCursor.png");
-            string sourceKeyboardMouse = Path.Combine(Paths.Modifications, "content", "textures", "Cursors", "KeyboardMouse");
+            string sourceMouseLocked = Path.Combine(Paths.PresetModifications, "content", "textures", "MouseLockedCursor.png");
+            string sourceKeyboardMouse = Path.Combine(Paths.PresetModifications, "content", "textures", "Cursors", "KeyboardMouse");
 
             string targetBase = SelectedCustomCursorSet.FolderPath;
             string targetMouseLocked = Path.Combine(targetBase, "MouseLockedCursor.png");
