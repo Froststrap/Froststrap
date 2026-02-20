@@ -1693,6 +1693,19 @@ namespace Bloxstrap
 
             Directory.CreateDirectory(Paths.Modifications);
 
+            string sourceSettingsFolder = Path.Combine(Paths.Base, "ClientSettings");
+            string targetSettingsFolder = Path.Combine(_latestVersionDirectory, "ClientSettings");
+
+            if (Directory.Exists(sourceSettingsFolder))
+            {
+                if (Directory.Exists(targetSettingsFolder))
+                {
+                    Directory.Delete(targetSettingsFolder, true);
+                }
+
+                Directory.Move(sourceSettingsFolder, targetSettingsFolder);
+            }
+
             try
             {
                 var activeMods = App.State.Prop.Mods
@@ -1775,20 +1788,13 @@ namespace Bloxstrap
                     string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
                     if (!Directory.Exists(modSource)) continue;
 
-                    bool isPresetMod = modSource.Equals(Paths.PresetModifications, StringComparison.OrdinalIgnoreCase);
-
                     foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
                     {
                         string relativeFile = file.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
 
-                        if (!isPresetMod && relativeFile.Contains("ClientSettings")) continue;
+                        if (relativeFile.EndsWith("ClientSettings")) continue;
                         if (relativeFile.EndsWith(".lock")) continue;
-
-                        if (relativeFile.EndsWith(".mesh"))
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Skipping file: {relativeFile}");
-                            continue;
-                        }
+                        if (relativeFile.EndsWith(".mesh")) continue;
 
                         modFolderFiles.Add(relativeFile);
 

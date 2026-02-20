@@ -15,7 +15,7 @@ namespace Bloxstrap
 
         public override string FileName => "ClientAppSettings.json";
 
-        public override string FileLocation => Path.Combine(Paths.PresetModifications, "ClientSettings", FileName);
+        public override string FileLocation => Path.Combine(Paths.Base, "ClientSettings", FileName);
 
         public bool Changed => !OriginalProp.SequenceEqual(Prop);
 
