@@ -12,11 +12,16 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
         private bool _initialLoad = false;
         private ModsViewModel _viewModel = null!;
         private ModGeneratorViewModel _gviewModel = null!;
+        private CommunityModsViewModel _cviewModel = null!;
 
         public ModsPage()
         {
             _gviewModel = new ModGeneratorViewModel();
             _gviewModel.ReloadModListEvent += (s, e) => _initialLoad = true;
+
+            _cviewModel = new CommunityModsViewModel();
+            _cviewModel.ReloadModListEvent += (s, e) => _initialLoad = true;
+
             SetupViewModel();
 
             InitializeComponent();

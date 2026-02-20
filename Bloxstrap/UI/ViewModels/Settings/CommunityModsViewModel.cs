@@ -21,6 +21,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
         public ICommand OpenModGeneratorCommand => new RelayCommand(OpenModGenerator);
 
+        public event EventHandler? ReloadModListEvent;
+        private void ReloadModList() => ReloadModListEvent?.Invoke(this, EventArgs.Empty);
+
         [ObservableProperty]
         private ObservableCollection<CommunityMod> _mods = new();
 
@@ -297,10 +300,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 mod.IsDownloading = true;
                 mod.DownloadProgress = 0;
 
-                var progress = new Progress<double>(percent =>
-                {
-                    mod.DownloadProgress = percent;
-                });
+                var progress = new Progress<double>(percent => mod.DownloadProgress = percent);
 
                 var tempDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Downloads");
                 Directory.CreateDirectory(tempDir);
@@ -329,56 +329,45 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         MessageBoxImage.Information,
                         MessageBoxButton.OK
                     );
+
                     App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed and selected custom theme: {mod.Name}");
                 }
                 else
                 {
-                    bool hasExistingMods = Directory.Exists(Paths.Modifications) &&
-                                          (Directory.GetFiles(Paths.Modifications).Any() ||
-                                           Directory.GetDirectories(Paths.Modifications)
-                                               .Any(dir => !dir.EndsWith("ClientSettings", StringComparison.OrdinalIgnoreCase)));
+                    string installPath = Path.Combine(Paths.Modifications, mod.Name);
 
-                    if (hasExistingMods)
+                    if (Directory.Exists(installPath))
                     {
                         var result = Frontend.ShowMessageBox(
                             "Existing mods found in the Modifications folder.\n\n" +
-                            $"Would you like to delete existing mods before installing '{mod.Name}'?",
+                            $"Would you like to overwrite the existing mod before installing '{mod.Name}'?",
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo
                         );
 
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            await CleanModificationsDirectoryAsync();
-                        }
+                        if (result != MessageBoxResult.Yes) return;
+
+                        await Task.Run(() => Directory.Delete(installPath, true));
                     }
 
-                    await ExtractZipAsync(tempFile);
+                    await ExtractZipAsync(tempFile, installPath);
+
+                    ReloadModList();
 
                     Frontend.ShowMessageBox(
                         $"Mod '{mod.Name}' installed successfully!",
-                        MessageBoxImage.Information,
-                        MessageBoxButton.OK
+                        MessageBoxImage.Information
                     );
-
-                    App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Installed mod: {mod.Name}");
                 }
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(
-                    ex.Message,
-                    MessageBoxImage.Error,
-                    MessageBoxButton.OK
-                );
-
-                App.Logger.WriteLine($"CommunityModsViewModel::DownloadModAsync", $"Failed to install {mod.Name}: {ex}");
+                Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
+                App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Error: {ex}");
             }
             finally
             {
                 mod.IsDownloading = false;
-                mod.DownloadProgress = 0;
-
                 await CleanupTempFileAsync(tempFile);
             }
         }
@@ -427,21 +416,25 @@ namespace Bloxstrap.UI.ViewModels.Settings
             }
         }
 
-        private async Task ExtractZipAsync(string zipPath)
+        private async Task ExtractZipAsync(string zipPath, string destinationDirectory)
         {
             await Task.Run(() =>
             {
+                Directory.CreateDirectory(destinationDirectory);
                 using var archive = ZipFile.OpenRead(zipPath);
 
                 foreach (var entry in archive.Entries)
                 {
                     if (string.IsNullOrEmpty(entry.Name)) continue;
 
-                    var destinationPath = Path.Combine(Paths.Modifications, entry.FullName);
-                    var destinationDir = Path.GetDirectoryName(destinationPath);
+                    var destinationPath = Path.GetFullPath(Path.Combine(destinationDirectory, entry.FullName));
 
-                    if (!string.IsNullOrEmpty(destinationDir))
-                        Directory.CreateDirectory(destinationDir);
+                    if (!destinationPath.StartsWith(destinationDirectory, StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    var directoryPath = Path.GetDirectoryName(destinationPath);
+                    if (!string.IsNullOrEmpty(directoryPath))
+                        Directory.CreateDirectory(directoryPath);
 
                     entry.ExtractToFile(destinationPath, overwrite: true);
                 }
@@ -482,33 +475,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     }
                 }
             } while (isMoreToRead);
-        }
-
-        private async Task CleanModificationsDirectoryAsync()
-        {
-            if (!Directory.Exists(Paths.Modifications))
-                return;
-
-            var modificationDir = new DirectoryInfo(Paths.Modifications);
-            var keepFolders = new[] { "ClientSettings" };
-
-            await Task.Run(() =>
-            {
-                foreach (var dir in modificationDir.GetDirectories())
-                {
-                    if (!keepFolders.Contains(dir.Name, StringComparer.OrdinalIgnoreCase))
-                    {
-                        try { dir.Delete(true); }
-                        catch { /* Ignore */ }
-                    }
-                }
-
-                foreach (var file in modificationDir.GetFiles())
-                {
-                    try { file.Delete(); }
-                    catch { /* Ignore */ }
-                }
-            });
         }
 
         private async Task CleanupTempFileAsync(string? filePath)
