@@ -42,6 +42,12 @@
     <EmbeddedResource Include="Resources\FroststrapPowerPlans\FroststrapLowLatency.pow" />
     <EmbeddedResource Include="Resources\FroststrapPowerPlans\FroststrapMaximumFPS.pow" />
     <EmbeddedResource Include="Resources\mappings.json" />
+    <EmbeddedResource Include="Resources\SkyboxFix\6c94b9385e52d221f0538aadaceead2d" />
+    <EmbeddedResource Include="Resources\SkyboxFix\7328622d2d509b95dd4dd2c721d1ca8b" />
+    <EmbeddedResource Include="Resources\SkyboxFix\78cb2e93aee0cdbd79b15a866bc93a54" />
+    <EmbeddedResource Include="Resources\SkyboxFix\9244e00ff9fd6cee0bb40a262bb35d31" />
+    <EmbeddedResource Include="Resources\SkyboxFix\a50f6563c50ca4d5dcb255ee5cfab097" />
+    <EmbeddedResource Include="Resources\SkyboxFix\a564ec8aeef3614e788d02f0090089d8" />
     <EmbeddedResource Include="UI\Style\Editor-Theme-Blue.xshd" />
     <EmbeddedResource Include="UI\Style\Editor-Theme-Custom.xshd" />
     <EmbeddedResource Include="UI\Style\Editor-Theme-Dark.xshd" />

@@ -301,13 +301,11 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 mod.DownloadProgress = 0;
 
                 var progress = new Progress<double>(percent => mod.DownloadProgress = percent);
-
                 var tempDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Downloads");
                 Directory.CreateDirectory(tempDir);
                 tempFile = Path.Combine(tempDir, $"{Guid.NewGuid()}.zip");
 
                 await DownloadFileAsync(mod.DownloadUrl, tempFile, progress);
-
                 mod.DownloadProgress = 100;
 
                 if (mod.IsCustomTheme)
@@ -351,6 +349,11 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     }
 
                     await ExtractZipAsync(tempFile, installPath);
+
+                    if (mod.ModType == ModType.SkyBox)
+                    {
+                        await ApplySkyboxFixAsync();
+                    }
 
                     ReloadModList();
 
@@ -647,6 +650,53 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 bitmapImage.Freeze();
 
                 return bitmapImage;
+            });
+        }
+
+        private async Task ApplySkyboxFixAsync()
+        {
+            await Task.Run(() =>
+            {
+                string rbxStorage = Path.Combine(Paths.Roblox, "rbx-storage");
+
+                var files = new Dictionary<string, string>
+                {
+                    { "a564ec8aeef3614e788d02f0090089d8", "a5" },
+                    { "7328622d2d509b95dd4dd2c721d1ca8b", "73" },
+                    { "a50f6563c50ca4d5dcb255ee5cfab097", "a5" },
+                    { "6c94b9385e52d221f0538aadaceead2d", "6c" },
+                    { "9244e00ff9fd6cee0bb40a262bb35d31", "92" },
+                    { "78cb2e93aee0cdbd79b15a866bc93a54", "78" }
+                };
+
+                try
+                {
+                    foreach (var file in files)
+                    {
+                        string targetDir = Path.Combine(rbxStorage, file.Value);
+                        string targetPath = Path.Combine(targetDir, file.Key);
+
+                        Directory.CreateDirectory(targetDir);
+
+                        string resourceName = $"Bloxstrap.Resources.SkyboxFix.{file.Key}";
+                        using var stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+
+                        if (stream == null) continue;
+
+                        if (File.Exists(targetPath))
+                            File.SetAttributes(targetPath, FileAttributes.Normal);
+
+                        using var fileStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write);
+                        stream.CopyTo(fileStream);
+
+                        File.SetAttributes(targetPath, FileAttributes.ReadOnly);
+                    }
+                    App.Logger.WriteLine("CommunityModsViewModel::ApplySkyboxFix", "Skybox fix applied successfully.");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("CommunityModsViewModel::ApplySkyboxFix", $"Failed to apply skybox fix: {ex.Message}");
+                }
             });
         }
     }
