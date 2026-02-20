@@ -45,7 +45,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         private void ManageCustomFont()
         {
-            if (!string.IsNullOrEmpty(TextFontTask.NewState))
+            if (IsCustomFontSet)
             {
                 TextFontTask.NewState = string.Empty;
             }
@@ -67,8 +67,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 TextFontTask.NewState = dialog.FileName;
             }
 
-            OnPropertyChanged(nameof(ChooseCustomFontVisibility));
-            OnPropertyChanged(nameof(DeleteCustomFontVisibility));
+            OnPropertyChanged(nameof(IsCustomFontSet));
         }
 
         public ICommand AddCustomCursorModCommand => new RelayCommand(AddCustomCursorMod);
@@ -81,9 +80,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand AddCustomDeathSoundCommand => new RelayCommand(AddCustomDeathSound);
         public ICommand RemoveCustomDeathSoundCommand => new RelayCommand(RemoveCustomDeathSound);
 
-        public Visibility ChooseCustomFontVisibility => !String.IsNullOrEmpty(TextFontTask.NewState) ? Visibility.Collapsed : Visibility.Visible;
-
-        public Visibility DeleteCustomFontVisibility => !String.IsNullOrEmpty(TextFontTask.NewState) ? Visibility.Visible : Visibility.Collapsed;
+        public bool IsCustomFontSet => !string.IsNullOrEmpty(TextFontTask.NewState);
 
         public ICommand ManageCustomFontCommand => new RelayCommand(ManageCustomFont);
 
@@ -150,37 +147,44 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         }
 
-        private Visibility GetVisibility(string directory, string[] filenames, bool checkExist)
+        private static string CursorPath => Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse");
+        private static string ShiftlockPath => Path.Combine(Paths.PresetModifications, "Content", "textures");
+        private static string SoundPath => Path.Combine(Paths.PresetModifications, "Content", "sounds");
+
+        private static readonly string[] CursorFiles = { "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" };
+        private static readonly string[] ShiftlockFiles = { "MouseLockedCursor.png" };
+        private static readonly string[] SoundFiles = { "oof.ogg" };
+
+        public bool HasCustomCursors => CursorFiles.Any(f => File.Exists(Path.Combine(CursorPath, f)));
+        public bool HasCustomShiftlock => ShiftlockFiles.Any(f => File.Exists(Path.Combine(ShiftlockPath, f)));
+        public bool HasCustomDeathSound => SoundFiles.Any(f => File.Exists(Path.Combine(SoundPath, f)));
+
+        private void RefreshStates()
         {
-            bool anyExist = filenames.Any(name => File.Exists(Path.Combine(directory, name)));
-            return (checkExist ? anyExist : !anyExist) ? Visibility.Visible : Visibility.Collapsed;
+            OnPropertyChanged(nameof(HasCustomCursors));
+            OnPropertyChanged(nameof(HasCustomShiftlock));
+            OnPropertyChanged(nameof(HasCustomDeathSound));
         }
 
-        public Visibility ChooseCustomCursorVisibility =>
-    GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
-                  new[] { "ArrowCursor.png", "ArrowFarCursor.png", "MouseLockedCursor.png" }, checkExist: false);
+        public void AddCustomCursorMod() =>
+            AddCustomFile(CursorFiles, CursorPath, "Select Cursor", "PNG (*.png)|*.png", "cursors", RefreshStates);
 
-        public Visibility DeleteCustomCursorVisibility =>
-            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
-                          new[] { "ArrowCursor.png", "ArrowFarCursor.png", "MouseLockedCursor.png" }, checkExist: true);
+        public void RemoveCustomCursorMod() =>
+            RemoveCustomFile(CursorFiles, CursorPath, "No custom cursors found.", RefreshStates);
 
-        public Visibility ChooseCustomShiftlockVisibility =>
-            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures"),
-                          new[] { "MouseLockedCursor.png" }, checkExist: false);
+        public void AddCustomShiftlockMod() =>
+            AddCustomFile(ShiftlockFiles, ShiftlockPath, "Select Shiftlock", "PNG (*.png)|*.png", "shiftlock", RefreshStates);
 
-        public Visibility DeleteCustomShiftlockVisibility =>
-            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "textures"),
-                          new[] { "MouseLockedCursor.png" }, checkExist: true);
+        public void RemoveCustomShiftlockMod() =>
+            RemoveCustomFile(ShiftlockFiles, ShiftlockPath, "No shiftlock found.", RefreshStates);
 
-        public Visibility ChooseCustomDeathSoundVisibility =>
-            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "sounds"),
-                          new[] { "oof.ogg" }, checkExist: false);
+        public void AddCustomDeathSound() =>
+            AddCustomFile(SoundFiles, SoundPath, "Select Death Sound", "OGG (*.ogg)|*.ogg", "death sound", RefreshStates);
 
-        public Visibility DeleteCustomDeathSoundVisibility =>
-            GetVisibility(Path.Combine(Paths.PresetModifications, "Content", "sounds"),
-                          new[] { "oof.ogg" }, checkExist: true);
+        public void RemoveCustomDeathSound() =>
+            RemoveCustomFile(SoundFiles, SoundPath, "No death sound found.", RefreshStates);
 
-        private void AddCustomFile(string[] targetFiles, string targetDir, string dialogTitle, string filter, string failureText, Action postAction = null!)
+        private void AddCustomFile(string[] targetFiles, string targetDir, string dialogTitle, string filter, string failureText, Action postAction)
         {
             var dialog = new OpenFileDialog
             {
@@ -211,7 +215,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             postAction?.Invoke();
         }
 
-        private void RemoveCustomFile(string[] targetFiles, string targetDir, string notFoundMessage, Action postAction = null!)
+        private void RemoveCustomFile(string[] targetFiles, string targetDir, string notFoundMessage, Action postAction)
         {
             bool anyDeleted = false;
 
@@ -240,89 +244,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             postAction?.Invoke();
         }
 
-        public void AddCustomCursorMod()
-        {
-            AddCustomFile(
-                new[] { "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" },
-                Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
-                "Select a PNG Cursor Image",
-                "PNG Images (*.png)|*.png",
-                "cursors",
-                () =>
-                {
-                    OnPropertyChanged(nameof(ChooseCustomCursorVisibility));
-                    OnPropertyChanged(nameof(DeleteCustomCursorVisibility));
-                });
-        }
-
-        public void RemoveCustomCursorMod()
-        {
-            RemoveCustomFile(
-                new[] { "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" },
-                Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse"),
-                "No custom cursors found to remove.",
-                () =>
-                {
-                    OnPropertyChanged(nameof(ChooseCustomCursorVisibility));
-                    OnPropertyChanged(nameof(DeleteCustomCursorVisibility));
-                });
-        }
-
-        public void AddCustomShiftlockMod()
-        {
-            AddCustomFile(
-                new[] { "MouseLockedCursor.png" },
-                Path.Combine(Paths.PresetModifications, "Content", "textures"),
-                "Select a PNG Shiftlock Image",
-                "PNG Images (*.png)|*.png",
-                "Shiftlock",
-                () =>
-                {
-                    OnPropertyChanged(nameof(ChooseCustomShiftlockVisibility));
-                    OnPropertyChanged(nameof(DeleteCustomShiftlockVisibility));
-                });
-        }
-
-        public void RemoveCustomShiftlockMod()
-        {
-            RemoveCustomFile(
-                new[] { "MouseLockedCursor.png" },
-                Path.Combine(Paths.PresetModifications, "Content", "textures"),
-                "No custom Shiftlock found to remove.",
-                () =>
-                {
-                    OnPropertyChanged(nameof(ChooseCustomShiftlockVisibility));
-                    OnPropertyChanged(nameof(DeleteCustomShiftlockVisibility));
-                });
-        }
-
-        public void AddCustomDeathSound()
-        {
-            AddCustomFile(
-                new[] { "oof.ogg" },
-                Path.Combine(Paths.PresetModifications, "Content", "sounds"),
-                "Select a Custom Death Sound",
-                "OGG Audio (*.ogg)|*.ogg",
-                "death sound",
-                () =>
-                {
-                    OnPropertyChanged(nameof(ChooseCustomDeathSoundVisibility));
-                    OnPropertyChanged(nameof(DeleteCustomDeathSoundVisibility));
-                });
-        }
-
-        public void RemoveCustomDeathSound()
-        {
-            RemoveCustomFile(
-                new[] { "oof.ogg" },
-                Path.Combine(Paths.PresetModifications, "Content", "sounds"),
-                "No custom death sound found to remove.",
-                () =>
-                {
-                    OnPropertyChanged(nameof(ChooseCustomDeathSoundVisibility));
-                    OnPropertyChanged(nameof(DeleteCustomDeathSoundVisibility));
-                });
-        }
         #region Custom Cursor Set
         public ObservableCollection<CustomCursorSet> CustomCursorSets { get; } = new();
 
