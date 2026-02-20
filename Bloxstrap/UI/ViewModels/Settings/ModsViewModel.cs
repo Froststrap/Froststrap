@@ -24,11 +24,28 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand MoveUpCommand => new RelayCommand<ModConfig>(MoveUp);
         public ICommand MoveDownCommand => new RelayCommand<ModConfig>(MoveDown);
         public ICommand DeleteModCommand => new RelayCommand<ModConfig>(DeleteMod);
+        public ICommand OpenModFolderCommand => new RelayCommand<ModConfig>(OpenFolder);
 
         public ModsViewModel()
         {
             SyncDiskWithState();
             LoadModifications();
+        }
+
+        private void OpenFolder(ModConfig? mod)
+        {
+            if (mod == null) return;
+
+            string folderPath = Path.Combine(Paths.Modifications, mod.FolderName);
+
+            if (Directory.Exists(folderPath))
+            {
+                Process.Start("explorer.exe", folderPath);
+            }
+            else
+            {
+                Frontend.ShowMessageBox($"The folder for '{mod.FolderName}' no longer exists.", MessageBoxImage.Error, MessageBoxButton.OK);
+            }
         }
 
         [RelayCommand]

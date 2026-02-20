@@ -15,7 +15,8 @@
     AllowDrop="True" 
     Drop="Page_Drop"
     mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance dmodels:ModsViewModel}">
+    d:DataContext="{d:DesignInstance dmodels:ModsViewModel}"
+    Loaded="Page_Loaded">
 
     <StackPanel Margin="0,0,14,14">
         <TextBlock

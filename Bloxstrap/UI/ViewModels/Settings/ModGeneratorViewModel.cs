@@ -22,6 +22,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand OpenCommunityModsCommand => new RelayCommand(OpenCommunityMods);
         public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
 
+        public event EventHandler? ReloadModListEvent;
+        private void ReloadModList() => ReloadModListEvent?.Invoke(this, EventArgs.Empty);
+
         public ModGeneratorViewModel()
         {
             _ = LoadFontFilesAsync();
@@ -102,51 +105,61 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand GenerateModCommand => new AsyncRelayCommand(GenerateModAsync, () => CanGenerateMod);
 
         private string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
-        private string FontDir => Path.Combine(TempRoot, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+        private string FontDir => Path.Combine(Paths.Cache, "Font Preview");
 
         private async Task LoadFontFilesAsync()
         {
-            if (!Directory.Exists(FontDir)) Directory.CreateDirectory(FontDir);
-
-            var fontFiles = Directory.GetFiles(FontDir).Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf")).ToArray();
-
-            if (fontFiles.Length == 0)
+            try
             {
-                await DownloadFontFilesAsync(FontDir);
-                fontFiles = Directory.GetFiles(FontDir).Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf")).ToArray();
+                if (!Directory.Exists(FontDir))
+                    Directory.CreateDirectory(FontDir);
+
+                var fontFiles = Directory.GetFiles(FontDir)
+                    .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
+                    .ToArray();
+
+                if (fontFiles.Length < 2)
+                {
+                    StatusText = "Downloading preview assets...";
+                    await DownloadFontFilesAsync(FontDir);
+                    fontFiles = Directory.GetFiles(FontDir)
+                        .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
+                        .ToArray();
+                }
+
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    FontDisplayNames.Clear();
+                    foreach (var file in fontFiles)
+                        FontDisplayNames.Add(Path.GetFileNameWithoutExtension(file).Replace("BuilderIcons-", ""));
+
+                    if (FontDisplayNames.Count > 0)
+                        SelectedFontDisplayName = FontDisplayNames[0];
+                });
+
+                StatusText = "Ready to generate mod.";
             }
-
-            var displayNames = fontFiles
-                .Select(f => Path.GetFileNameWithoutExtension(f).Replace("BuilderIcons-", ""))
-                .Distinct()
-                .OrderBy(f => f)
-                .ToList();
-
-            await Application.Current.Dispatcher.InvokeAsync(() => {
-                FontDisplayNames = new ObservableCollection<string>(displayNames);
-                if (displayNames.Count > 0 && SelectedFontDisplayName == null)
-                    SelectedFontDisplayName = displayNames[0];
-            });
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException("ModGenerator::LoadFontFiles", ex);
+                StatusText = "Failed to load preview fonts.";
+            }
         }
 
         private async Task DownloadFontFilesAsync(string fontDir)
         {
-            try
-            {
-                string[] fontUrls = {
-                    "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
-                    "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
-                };
+            string[] fontUrls = {
+        "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
+        "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
+    };
 
-                using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-                foreach (var url in fontUrls)
-                {
-                    var response = await httpClient.GetAsync(url);
-                    if (response.IsSuccessStatusCode)
-                        await File.WriteAllBytesAsync(Path.Combine(fontDir, Path.GetFileName(url)), await response.Content.ReadAsByteArrayAsync());
-                }
+            using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
+            foreach (var url in fontUrls)
+            {
+                var destination = Path.Combine(fontDir, Path.GetFileName(url));
+                var data = await httpClient.GetByteArrayAsync(url);
+                await File.WriteAllBytesAsync(destination, data);
             }
-            catch (Exception ex) { App.Logger?.WriteException("ModGenerator::DownloadFonts", ex); }
         }
 
         private async void OnSelectedFontChanged()
@@ -157,13 +170,23 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 return;
             }
 
-            var fontFiles = Directory.GetFiles(FontDir).Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf")).ToArray();
-            string selectedFont = FindFontFile(SelectedFontDisplayName, fontFiles);
+            var fontFiles = Directory.GetFiles(FontDir)
+                                     .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
+                                     .ToArray();
 
-            if (!string.IsNullOrEmpty(selectedFont) && File.Exists(selectedFont))
+            string selectedFontPath = FindFontFile(SelectedFontDisplayName, fontFiles);
+
+            if (!string.IsNullOrEmpty(selectedFontPath) && File.Exists(selectedFontPath))
             {
-                await LoadGlyphPreviewsAsync(selectedFont);
+                await LoadGlyphPreviewsAsync(selectedFontPath);
             }
+        }
+
+        private string FindFontFile(string displayName, string[] fontFiles)
+        {
+            return fontFiles.FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Equals($"BuilderIcons-{displayName}", StringComparison.OrdinalIgnoreCase))
+                   ?? fontFiles.FirstOrDefault()
+                   ?? string.Empty;
         }
 
         private bool IsFileReady(string filename)
@@ -183,15 +206,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         private async Task LoadGlyphPreviewsAsync(string fontPath)
         {
-            if (!File.Exists(fontPath))
-                return;
+            if (!File.Exists(fontPath)) return;
 
-            int attempts = 0;
-            while (!IsFileReady(fontPath) && attempts < 10)
-            {
-                await Task.Delay(100);
-                attempts++;
-            }
+            if (!IsFileReady(fontPath)) return;
 
             var glyphItems = new ObservableCollection<GlyphItem>();
 
@@ -201,17 +218,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             try
             {
-                GlyphTypeface typeface;
-                try
-                {
-                    typeface = new GlyphTypeface(new Uri(fontPath, UriKind.Absolute));
-                }
-                catch (Exception ex)
-                {
-                    App.Logger?.WriteException("ModsViewModel::LoadGlyphPreviewsAsync_TypefaceInit", ex);
-                    StatusText = "Error loading font preview. The file may be corrupted or busy.";
-                    return;
-                }
+                GlyphTypeface typeface = new GlyphTypeface(new Uri(fontPath, UriKind.Absolute));
 
                 var characterCodes = typeface.CharacterToGlyphMap.Keys
                     .OrderByDescending(c => c)
@@ -234,7 +241,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                                 (50 - bounds.Height) / 2 - bounds.Y
                             );
                             geometry.Transform = translate;
-
                             geometry.Freeze();
 
                             glyphItems.Add(new GlyphItem
@@ -243,25 +249,15 @@ namespace Bloxstrap.UI.ViewModels.Settings
                                 ColorBrush = colorBrush
                             });
                         }
-                        catch
-                        {
-                            // Skip glyphs that fail to render
-                        }
+                        catch { /* Skip malformed glyphs */ }
                     });
                 }
 
-                await Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    GlyphItems = glyphItems;
-                });
+                GlyphItems = glyphItems;
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModsViewModel::LoadGlyphPreviewsAsync", ex);
-                await Application.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    GlyphItems = new ObservableCollection<GlyphItem>();
-                });
+                App.Logger?.WriteException("ModGenerator::LoadGlyphPreviews", ex);
             }
         }
 
@@ -381,7 +377,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                     if (IncludeModifications)
                     {
-                        if (!Directory.Exists(Paths.Modifications)) Directory.CreateDirectory(Paths.Modifications);
+                        string folderName = SolidColorHex;
+                        string targetFolder = Path.Combine(Paths.Modifications, folderName);
+
+                        if (!Directory.Exists(targetFolder))
+                            Directory.CreateDirectory(targetFolder);
+
                         int copiedFiles = 0;
                         var itemsToCopy = new List<string> { Path.Combine(TempRoot, "ExtraContent"), Path.Combine(TempRoot, "content"), infoPath };
 
@@ -389,7 +390,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         {
                             if (File.Exists(item))
                             {
-                                string target = Path.Combine(Paths.Modifications, Path.GetFileName(item));
+                                string target = Path.Combine(targetFolder, Path.GetFileName(item));
                                 File.Copy(item, target, true);
                                 copiedFiles++;
                             }
@@ -398,14 +399,17 @@ namespace Bloxstrap.UI.ViewModels.Settings
                                 foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
                                 {
                                     string rel = Path.GetRelativePath(TempRoot, file);
-                                    string target = Path.Combine(Paths.Modifications, rel);
+                                    string target = Path.Combine(targetFolder, rel);
+
                                     Directory.CreateDirectory(Path.GetDirectoryName(target)!);
                                     File.Copy(file, target, true);
                                     copiedFiles++;
                                 }
                             }
                         }
-                        StatusText = $"Successfully applied modifications ({copiedFiles} files).";
+                        StatusText = $"Successfully applied modifications to folder [{folderName}] ({copiedFiles} files).";
+
+                        ReloadModList();
                     }
                     else
                     {
@@ -474,9 +478,5 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 SolidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
             }
         }
-
-        private string FindFontFile(string displayName, string[] fontFiles) =>
-            fontFiles.FirstOrDefault(f => Path.GetFileNameWithoutExtension(f) == $"BuilderIcons-{displayName}") ??
-            fontFiles.FirstOrDefault() ?? string.Empty;
     }
 }

@@ -9,9 +9,21 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
     public partial class ModsPage
     {
         private string _originalName = "";
+        private bool _initialLoad = false;
         private ModsViewModel _viewModel = null!;
+        private ModGeneratorViewModel _gviewModel = null!;
 
         public ModsPage()
+        {
+            _gviewModel = new ModGeneratorViewModel();
+            _gviewModel.ReloadModListEvent += (s, e) => _initialLoad = true;
+            SetupViewModel();
+
+            InitializeComponent();
+            App.FrostRPC?.SetPage("Mods");
+        }
+
+        private void SetupViewModel()
         {
             _viewModel = new ModsViewModel();
             DataContext = _viewModel;
@@ -19,9 +31,17 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             _viewModel.OpenModGeneratorEvent += OpenModGenerator;
             _viewModel.OpenCommunityModsEvent += OpenCommunityMods;
             _viewModel.OpenPresetModsEvent += OpenPresetMods;
+        }
 
-            InitializeComponent();
-            App.FrostRPC?.SetPage("Mods");
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (!_initialLoad)
+            {
+                _initialLoad = true;
+                return;
+            }
+
+            SetupViewModel();
         }
 
         private void ModName_GotFocus(object sender, RoutedEventArgs e)
