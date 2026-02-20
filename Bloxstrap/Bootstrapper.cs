@@ -1681,71 +1681,46 @@ namespace Bloxstrap
         private async Task<bool> ApplyModifications()
         {
             const string LOG_IDENT = "Bootstrapper::ApplyModifications";
-
             bool success = true;
 
             SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
 
-            // handle file mods
             App.Logger.WriteLine(LOG_IDENT, "Checking file mods...");
 
-            // manifest has been moved to State.json
             File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
-
-            List<string> modFolderFiles = new();
-
             Directory.CreateDirectory(Paths.Modifications);
 
-            // check custom font mod
-            // instead of replacing the fonts themselves, we'll just alter the font family manifests
-
-            string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content\\fonts\\families");
-
-            var fontTask = Task.Run(() =>
+            try
             {
+                // ill make custom fonts work later on
+                string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content\\fonts\\families");
                 if (File.Exists(Paths.CustomFont))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Begin font check");
+                    App.Logger.WriteLine(LOG_IDENT, "Applying custom font family manifests...");
+                    string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
 
+                    Directory.CreateDirectory(familiesFolder);
                     Directory.CreateDirectory(modFontFamiliesFolder);
 
-                    const string path = "rbxasset://fonts/CustomFont.ttf";
+                    const string assetPath = "rbxasset://fonts/CustomFont.ttf";
+                    var jsonFiles = Directory.GetFiles(familiesFolder, "*.json");
 
-                    // lets make sure the content/fonts/families path exists in the version directory
-                    string contentFolder = Path.Combine(_latestVersionDirectory, "content");
-                    Directory.CreateDirectory(contentFolder);
-
-                    string fontsFolder = Path.Combine(contentFolder, "fonts");
-                    Directory.CreateDirectory(fontsFolder);
-
-                    string familiesFolder = Path.Combine(fontsFolder, "families");
-                    Directory.CreateDirectory(familiesFolder);
-
-                    var jsonFiles = Directory.GetFiles(familiesFolder);
-
-                    // Process font files in parallel (up to 4 at a time)
                     Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
                     {
                         string jsonFilename = Path.GetFileName(jsonFilePath);
                         string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
 
-                        if (File.Exists(modFilepath))
-                            return;
-
-                        App.Logger.WriteLine(LOG_IDENT, $"Setting font for {jsonFilename}");
+                        if (File.Exists(modFilepath)) return;
 
                         var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
-
-                        if (fontFamilyData is null)
-                            return;
+                        if (fontFamilyData is null) return;
 
                         bool shouldWrite = false;
-
                         foreach (var fontFace in fontFamilyData.Faces)
                         {
-                            if (fontFace.AssetId != path)
+                            if (fontFace.AssetId != assetPath)
                             {
-                                fontFace.AssetId = path;
+                                fontFace.AssetId = assetPath;
                                 shouldWrite = true;
                             }
                         }
@@ -1753,250 +1728,68 @@ namespace Bloxstrap
                         if (shouldWrite)
                             File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
                     });
-
-                    App.Logger.WriteLine(LOG_IDENT, "End font check");
                 }
                 else if (Directory.Exists(modFontFamiliesFolder))
                 {
                     Directory.Delete(modFontFamiliesFolder, true);
                 }
-            });
 
-            // Process regular file modifications with limited concurrency
-            var fileTasks = new List<Task<bool>>();
-            using var semaphore = new SemaphoreSlim(8); // Limit concurrent file operations
-
-            // we apply it here since RobloxDomain could be changed by the user
-            App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
-            if (!File.Exists(Paths.Modifications + "\\AppSettings.xml"))
-                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
-
-
-            foreach (string file in Directory.GetFiles(Paths.Modifications, "*.*", SearchOption.AllDirectories))
-            {
-                if (_cancelTokenSource.IsCancellationRequested)
-                    return true;
-
-                // get relative directory path
-                string relativeFile = file.Substring(Paths.Modifications.Length + 1);
-
-                // v1.7.0 - README has been moved to the preferences menu now
-                if (relativeFile == "README.txt")
+                if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
                 {
-                    File.Delete(file);
-                    continue;
+                    App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
+                    await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
                 }
 
-                if (!App.Settings.Prop.UseFastFlagManager && String.Equals(relativeFile, "ClientSettings\\ClientAppSettings.json", StringComparison.OrdinalIgnoreCase))
-                    continue;
+                var activeMods = App.State.Prop.Mods
+                            .Where(x => x.Target != "Disabled" && (
+                                        x.Target == "Both" ||
+                                        (IsStudioLaunch && x.Target == "Studio") ||
+                                        (!IsStudioLaunch && x.Target == "Player")))
+                            .OrderBy(x => x.Priority)
+                            .ToList();
 
-                if (relativeFile.EndsWith(".lock"))
-                    continue;
+                List<string> appliedModNames = new();
 
-                if (relativeFile.EndsWith(".mesh"))
+                foreach (var mod in activeMods)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Skipping file: {relativeFile}");
-                    continue;
-                }
+                    if (_cancelTokenSource.IsCancellationRequested) return true;
 
-                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-                bool isDeleteOperation = fileNameWithoutExt.EndsWith("_Delete");
-
-                if (isDeleteOperation)
-                {
-                    string directory = Path.GetDirectoryName(relativeFile) ?? "";
-                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
-                    string originalExtension = Path.GetExtension(relativeFile);
-                    string originalFileName = Path.Combine(directory, originalFileNameWithoutDelete + originalExtension);
-
-                    string originalFileVersionPath = Path.Combine(_latestVersionDirectory, originalFileName);
-
-                    modFolderFiles.Add(relativeFile);
-
-                    fileTasks.Add(Task.Run(async () =>
+                    string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+                    if (!Directory.Exists(modSource))
                     {
-                        await semaphore.WaitAsync();
-                        try
-                        {
-                            if (File.Exists(originalFileVersionPath))
-                            {
-                                Filesystem.AssertReadOnly(originalFileVersionPath);
-                                File.Delete(originalFileVersionPath);
-                                App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} has been deleted from the version folder");
-                                return true;
-                            }
-                            else
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} not found in version folder, nothing to delete");
-                                return true;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete file ({originalFileName})");
-                            App.Logger.WriteException(LOG_IDENT, ex);
-                            return false;
-                        }
-                        finally
-                        {
-                            semaphore.Release();
-                        }
-                    }));
-                }
-                else
-                {
-                    modFolderFiles.Add(relativeFile);
-
-                    string fileModFolder = Path.Combine(Paths.Modifications, relativeFile);
-                    string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
-
-                    fileTasks.Add(Task.Run(async () =>
-                    {
-                        await semaphore.WaitAsync();
-                        try
-                        {
-                            if (File.Exists(fileVersionFolder))
-                            {
-                                var hashTask = Task.Run(() => MD5Hash.FromFile(fileModFolder));
-                                var existingHashTask = Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
-
-                                if (await hashTask == await existingHashTask)
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
-                                    return true;
-                                }
-                            }
-
-                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-
-                            Filesystem.AssertReadOnly(fileVersionFolder);
-                            try
-                            {
-                                File.Copy(fileModFolder, fileVersionFolder, true);
-                                Filesystem.AssertReadOnly(fileVersionFolder);
-                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
-                                return true;
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
-                                App.Logger.WriteException(LOG_IDENT, ex);
-                                return false;
-                            }
-                        }
-                        finally
-                        {
-                            semaphore.Release();
-                        }
-                    }));
-                }
-            }
-
-            var fileResults = await Task.WhenAll(fileTasks);
-            success = success && fileResults.All(r => r);
-
-            await fontTask;
-
-            // the manifest is primarily here to keep track of what files have been
-            // deleted from the modifications folder, so that we know when to restore the original files from the downloaded packages
-            // now check for files that have been deleted from the mod folder according to the manifest
-
-            var fileRestoreMap = new Dictionary<string, List<string>>();
-
-            foreach (string fileLocation in AppData.DistributionState.ModManifest)
-            {
-                if (modFolderFiles.Contains(fileLocation))
-                    continue;
-
-                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
-                bool isDeleteOperation = fileNameWithoutExt.EndsWith("_Delete");
-
-                if (isDeleteOperation)
-                {
-                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
-                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
-                    string originalExtension = Path.GetExtension(fileLocation);
-                    string originalFileName = Path.Combine(directory, originalFileNameWithoutDelete + originalExtension);
-
-                    var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && originalFileName.StartsWith(x.Value));
-                    string packageName = packageMapEntry.Key;
-
-                    // package doesn't exist, likely mistakenly placed file
-                    if (String.IsNullOrEmpty(packageName))
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} was removed but does not belong to a package");
+                        App.Logger.WriteLine(LOG_IDENT, $"Skipping mod '{mod.FolderName}'");
                         continue;
                     }
 
-                    string fileName = originalFileName.Substring(packageMapEntry.Value.Length);
+                    App.Logger.WriteLine(LOG_IDENT, $"Applying Mod: {mod.FolderName} (Priority: {mod.Priority})");
 
-                    if (!fileRestoreMap.ContainsKey(packageName))
-                        fileRestoreMap[packageName] = new();
+                    foreach (string dirPath in Directory.GetDirectories(modSource, "*", SearchOption.AllDirectories))
+                        Directory.CreateDirectory(dirPath.Replace(modSource, _latestVersionDirectory));
 
-                    fileRestoreMap[packageName].Add(fileName);
-
-                    App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} was removed, restoring from {packageName}");
-                }
-                else
-                {
-                    var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && fileLocation.StartsWith(x.Value));
-                    string packageName = packageMapEntry.Key;
-
-                    // package doesn't exist, likely mistakenly placed file
-                    if (String.IsNullOrEmpty(packageName))
+                    foreach (string newPath in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed but does not belong to a package");
-
-                        string versionFileLocation = Path.Combine(_latestVersionDirectory, fileLocation);
-
-                        if (File.Exists(versionFileLocation))
-                            File.Delete(versionFileLocation);
-
-                        continue;
+                        string destPath = newPath.Replace(modSource, _latestVersionDirectory);
+                        Filesystem.AssertReadOnly(destPath);
+                        File.Copy(newPath, destPath, true);
                     }
 
-                    string fileName = fileLocation.Substring(packageMapEntry.Value.Length);
-
-                    if (!fileRestoreMap.ContainsKey(packageName))
-                        fileRestoreMap[packageName] = new();
-
-                    fileRestoreMap[packageName].Add(fileName);
-
-                    App.Logger.WriteLine(LOG_IDENT, $"{fileLocation} was removed, restoring from {packageName}");
+                    appliedModNames.Add(mod.FolderName);
                 }
-            }
 
-            foreach (var entry in fileRestoreMap)
-            {
-                var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
-
-                if (package is not null)
+                if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
                 {
-                    if (_cancelTokenSource.IsCancellationRequested)
-                        return true;
-
-                    await DownloadPackage(package);
-                    ExtractPackage(package, entry.Value);
+                    AppData.DistributionState.ModManifest = appliedModNames;
+                    AppData.DistributionStateManager.Save();
                 }
             }
-
-            // make sure we're not overwriting a new update
-            // if we're the background update process, always overwrite
-            if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
+            catch (Exception ex)
             {
-                AppData.DistributionState.ModManifest = modFolderFiles;
-                AppData.DistributionStateManager.Save();
-            }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"{AppData.DistributionStateManager.ClassName} disk mismatch, not saving ModManifest");
+                App.Logger.WriteLine(LOG_IDENT, "Error during modification application:");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                success = false;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
-
-            if (!success)
-                App.Logger.WriteLine(LOG_IDENT, "Failed to apply all modifications");
-
+            App.Logger.WriteLine(LOG_IDENT, "Finished applying modifications.");
             return success;
         }
 

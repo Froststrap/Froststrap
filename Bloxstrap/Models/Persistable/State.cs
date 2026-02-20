@@ -17,5 +17,7 @@ namespace Bloxstrap.Models.Persistable
         public bool ForceReinstall { get; set; } = false;
 
         public WindowState SettingsWindow { get; set; } = new();
+
+        public List<ModConfig> Mods { get; set; } = new();
     }
 }
