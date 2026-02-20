@@ -33,6 +33,7 @@
         public static string Application { get; private set; } = "";
 
         public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
+        public static string PresetModifications => Path.Combine(Modifications, "Preset Modifications");
 
         public static bool Initialized => !String.IsNullOrEmpty(Base);
 
