@@ -1745,7 +1745,7 @@ namespace Bloxstrap
                                         x.Target == "Both" ||
                                         (IsStudioLaunch && x.Target == "Studio") ||
                                         (!IsStudioLaunch && x.Target == "Player")))
-                            .OrderBy(x => x.Priority)
+                            .OrderByDescending(x => x.Priority)
                             .ToList();
 
                 List<string> appliedModNames = new();

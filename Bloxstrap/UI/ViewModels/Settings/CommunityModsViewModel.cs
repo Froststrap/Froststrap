@@ -1,15 +1,26 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Bloxstrap.UI.Elements.Dialogs;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Bloxstrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
     public partial class CommunityModsViewModel : ObservableObject
     {
+        public event EventHandler? OpenModsEvent;
+        public event EventHandler? OpenModGeneratorEvent;
+        public event EventHandler? OpenPresetModsEvent;
+        private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
+        private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
+        private void OpenModGenerator() => OpenModGeneratorEvent?.Invoke(this, EventArgs.Empty);
+        public ICommand OpenModsCommand => new RelayCommand(OpenMods);
+        public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
+        public ICommand OpenModGeneratorCommand => new RelayCommand(OpenModGenerator);
+
         [ObservableProperty]
         private ObservableCollection<CommunityMod> _mods = new();
 

@@ -7,6 +7,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:dmodels="clr-namespace:Bloxstrap.UI.ViewModels.Settings"
+    xmlns:vmodels="clr-namespace:Bloxstrap.UI.ViewModels"
+    xmlns:controls="clr-namespace:Bloxstrap.UI.Elements.Controls"
+    xmlns:resources="clr-namespace:Bloxstrap.Resources"
     Title="ModsPage" 
     Scrollable="True" 
     AllowDrop="True" 
@@ -19,12 +22,45 @@
             FontSize="14"
             Foreground="{StaticResource TextFillColorSecondaryBrush}"
             Text="Manage your mods and their application order. Mods at the bottom have higher priority and will overwrite mods above them."
-            TextWrapping="Wrap" 
-            Margin="0,0,0,16"/>
+            TextWrapping="Wrap" />
 
-        <ui:InfoBar Severity="Informational" Message="You can drag and drop your mod to auto add it here" />
+        <Grid Margin="0,16,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-        <ui:Button Margin="0,8"
+            <ui:CardAction Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" Command="{Binding OpenCommunityModsCommand}" Icon="BuildingShop20">
+                <StackPanel>
+                    <TextBlock FontSize="14" Text="Community Mods" />
+                    <TextBlock  Margin="0,2,0,0" Padding="0,0,16,0" FontSize="12" Foreground="{StaticResource TextFillColorTertiaryBrush}" Text="Download mods made by other people." TextWrapping="Wrap" />
+                </StackPanel>
+            </ui:CardAction>
+
+            <ui:CardAction Grid.Row="0" Grid.Column="1" Margin="4,0,0,0" Command="{Binding OpenPresetModsCommand}" Icon="ReadingModeMobile24">
+                <StackPanel>
+                    <TextBlock FontSize="14" Text="Preset Mods" TextWrapping="Wrap" />
+                    <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Use our built-in mods." TextWrapping="Wrap" />
+                </StackPanel>
+            </ui:CardAction>
+
+            <ui:CardAction Grid.Row="1" Grid.ColumnSpan="2" Margin="0,7,0,0" VerticalAlignment="Top" Command="{Binding OpenModGeneratorCommand}" Icon="Color20">
+                <StackPanel>
+                    <TextBlock FontSize="14" Text="Mod Generator" TextWrapping="Wrap" />
+                    <controls:MarkdownTextBlock Margin="0,2,0,0" FontSize="12"  Foreground="{StaticResource TextFillColorTertiaryBrush}" MarkdownText="Generate mods easily with a single click by using a hex code color." TextWrapping="Wrap" />
+                </StackPanel>
+            </ui:CardAction>
+        </Grid>
+
+        <Separator Margin="0,8" />
+
+        <ui:InfoBar Severity="Informational" Message="You can drag and drop your mod to auto add it here" Padding="8" IsOpen="True" Title="Important" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
+
+        <ui:Button Margin="0,8,0,8"
            Icon="Add24"
            Content="Add new mod"
            HorizontalAlignment="Stretch"

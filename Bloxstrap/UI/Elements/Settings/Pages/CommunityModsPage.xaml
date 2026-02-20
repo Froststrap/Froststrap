@@ -36,14 +36,47 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <TextBlock Margin="4,0" Grid.Row="0" Text="Easily download community-made mods, Some mods, such as Dark Textures or Higher Brightness, require your in-game graphics level to be 5 or higher." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-            <ui:InfoBar Margin="4,8,0,8" Grid.Row="1" Padding="8" IsOpen="True" Title="Important" Message="Custom skyboxes require the game to have the default roblox skybox." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
+            <Grid Margin="4,12,12,8" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="2" Margin="0,0,0,8">
+                <ui:CardAction Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" Command="{Binding OpenModGeneratorCommand}" Icon="Color20">
+                    <StackPanel>
+                        <TextBlock FontSize="14" Text="Mod Generator" TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12"  Foreground="{StaticResource TextFillColorTertiaryBrush}" Text="Generate mods easily with a single click by using a hex code color." TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+
+                <ui:CardAction Grid.Row="0" Grid.Column="1" Margin="4,0,0,0" Command="{Binding OpenPresetModsCommand}" Icon="ReadingModeMobile24">
+                    <StackPanel>
+                        <TextBlock FontSize="14" Text="Preset Mods" TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Use our built-in mods." TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+
+                <ui:CardAction Grid.Row="1" Grid.ColumnSpan="2" Margin="0,7,0,0" VerticalAlignment="Top" Command="{Binding OpenModsCommand}" Icon="List24">
+                    <StackPanel>
+                        <TextBlock FontSize="14" Text="My Mods" TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Change the applying order of mods." TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+            </Grid>
+
+            <Separator Margin="0,8" Grid.Row="2" />
+
+            <StackPanel Grid.Row="3" Margin="0,0,0,8">
                 <ui:TextBox PlaceholderText="Search mods..." Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,12,0">
                     <ui:TextBox.InputBindings>
                         <KeyBinding Key="Enter" Command="{Binding SearchModsCommand}"/>
@@ -51,7 +84,7 @@
                 </ui:TextBox>
             </StackPanel>
 
-            <WrapPanel Orientation="Horizontal" Grid.Row="3" Margin="0,0,0,8">
+            <WrapPanel Orientation="Horizontal" Grid.Row="4" Margin="0,0,0,8">
                 <ToggleButton 
                         Content="All"
                         IsChecked="{Binding ShowAll}"
@@ -102,7 +135,7 @@
                         Command="{Binding FilterAvatarEditorCommand}"/>
             </WrapPanel>
 
-            <ItemsControl ItemsSource="{Binding Mods}" Grid.Row="4">
+            <ItemsControl ItemsSource="{Binding Mods}" Grid.Row="5">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel Orientation="Horizontal"/>
