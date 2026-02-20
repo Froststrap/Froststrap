@@ -10,7 +10,7 @@
     xmlns:resources="clr-namespace:Bloxstrap.Resources"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="ModsPage"
-    d:DesignHeight="1500"
+    d:DesignHeight="2500"
     d:DesignWidth="800"
     Scrollable="True"
     mc:Ignorable="d">
@@ -233,19 +233,13 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0">
-                                    <TextBlock
-                                                FontSize="14"
-                                                Text="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Title}" />
-                                    <TextBlock
-                                                FontSize="12"
-                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                                Text="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Description}" />
+                                    <TextBlock FontSize="14" Text="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Title}" />
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Description}" />
                                 </StackPanel>
                             </Grid>
                         </ui:CardExpander.Header>
 
                         <Grid MinHeight="300" MaxHeight="500" Margin="-8,4,-8,0">
-
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="340" />
                                 <RowDefinition Height="Auto" />
@@ -255,43 +249,31 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <ListBox
-                                        x:Name="CustomThemesListBox"
-                                        Grid.Row="0"
-                                        Grid.Column="0"
-                                        Margin="0,0,4,0"
-                                        DisplayMemberPath="Name"
-                                        ItemsSource="{Binding CustomCursorSets}"
-                                        SelectedIndex="{Binding SelectedCustomCursorSetIndex, Mode=TwoWay}" />
+                            <ListBox x:Name="CustomThemesListBox"
+                 Grid.Row="0"
+                 Grid.Column="0"
+                 Margin="0,0,4,0"
+                 DisplayMemberPath="Name"
+                 ItemsSource="{Binding CustomCursorSets}"
+                 SelectedIndex="{Binding SelectedCustomCursorSetIndex, Mode=TwoWay}" />
 
-                            <Grid
-                                        Grid.Row="1"
-                                        Grid.Column="0"
-                                        Margin="0,4,4,0">
+                            <Grid Grid.Row="1" Grid.Column="0" Margin="0,4,4,0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ui:Button
-                                            Grid.Column="0"
-                                            Height="32"
-                                            HorizontalAlignment="Stretch"
-                                            Margin="0,0,4,0"
-                                            Command="{Binding AddCustomCursorSetCommand}"
-                                            Content="{x:Static resources:Strings.Common_New}"
-                                            Icon="Add28" />
+                                <ui:Button Grid.Column="0" Height="32" HorizontalAlignment="Stretch" Margin="0,0,4,0"
+                       Command="{Binding AddCustomCursorSetCommand}"
+                       Content="{x:Static resources:Strings.Common_New}"
+                       Icon="Add28" />
 
-                                <ui:Button
-                                            Grid.Column="1"
-                                            Height="32"
-                                            HorizontalAlignment="Stretch"
-                                            Margin="4,0,0,0"
-                                            Appearance="Danger"
-                                            Command="{Binding DeleteCustomCursorSetCommand}"
-                                            Content="{x:Static resources:Strings.Common_Delete}"
-                                            Icon="Delete28"
-                                            IsEnabled="{Binding IsCustomCursorSetSelected}" />
+                                <ui:Button Grid.Column="1" Height="32" HorizontalAlignment="Stretch" Margin="4,0,0,0"
+                       Appearance="Danger"
+                       Command="{Binding DeleteCustomCursorSetCommand}"
+                       Content="{x:Static resources:Strings.Common_Delete}"
+                       Icon="Delete28"
+                       IsEnabled="{Binding IsCustomCursorSetSelected}" />
                             </Grid>
 
                             <StackPanel Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0">
@@ -339,9 +321,11 @@
                                                 <Image Source="{Binding ShiftlockCursorPreview}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Viewbox>
                                         </Border>
-                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0" >
-                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddShiftlockCursorCommand}" Visibility="{Binding AddShiftlockCursorVisibility}" HorizontalAlignment="Stretch" Height="32" />
-                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteShiftlockCursorCommand}" Visibility="{Binding DeleteShiftlockCursorVisibility}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
+                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
+                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddCursorCommand}" CommandParameter="MouseLockedCursor.png" 
+                                   Visibility="{Binding HasShiftlockCursor, Converter={StaticResource InverseBooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Height="32" />
+                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteCursorCommand}" CommandParameter="MouseLockedCursor.png"
+                                   Visibility="{Binding HasShiftlockCursor, Converter={StaticResource BooleanToVisibilityConverter}}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
 
@@ -357,9 +341,11 @@
                                                 <Image Source="{Binding ArrowCursorPreview}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Viewbox>
                                         </Border>
-                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0" >
-                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddArrowCursorCommand}" Visibility="{Binding AddArrowCursorVisibility}" HorizontalAlignment="Stretch" Height="32" />
-                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteArrowCursorCommand}" Visibility="{Binding DeleteArrowCursorVisibility}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
+                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
+                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddCursorCommand}" CommandParameter="ArrowCursor.png"
+                                   Visibility="{Binding HasArrowCursor, Converter={StaticResource InverseBooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Height="32" />
+                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowCursor.png"
+                                   Visibility="{Binding HasArrowCursor, Converter={StaticResource BooleanToVisibilityConverter}}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
 
@@ -375,9 +361,11 @@
                                                 <Image Source="{Binding ArrowFarCursorPreview}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Viewbox>
                                         </Border>
-                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0" >
-                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddArrowFarCursorCommand}" Visibility="{Binding AddArrowFarCursorVisibility}" HorizontalAlignment="Stretch" Height="32" />
-                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteArrowFarCursorCommand}" Visibility="{Binding DeleteArrowFarCursorVisibility}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
+                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
+                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddCursorCommand}" CommandParameter="ArrowFarCursor.png"
+                                   Visibility="{Binding HasArrowFarCursor, Converter={StaticResource InverseBooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Height="32" />
+                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowFarCursor.png"
+                                   Visibility="{Binding HasArrowFarCursor, Converter={StaticResource BooleanToVisibilityConverter}}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
 
@@ -393,9 +381,11 @@
                                                 <Image Source="{Binding IBeamCursorPreview}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                             </Viewbox>
                                         </Border>
-                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0" >
-                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddIBeamCursorCommand}" Visibility="{Binding AddIBeamCursorVisibility}" HorizontalAlignment="Stretch" Height="32" />
-                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteIBeamCursorCommand}" Visibility="{Binding DeleteIBeamCursorVisibility}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
+                                        <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
+                                            <ui:Button Content="Browse" Icon="Folder28" Command="{Binding AddCursorCommand}" CommandParameter="IBeamCursor.png"
+                                   Visibility="{Binding HasIBeamCursor, Converter={StaticResource InverseBooleanToVisibilityConverter}}" HorizontalAlignment="Stretch" Height="32" />
+                                            <ui:Button Content="Remove" Icon="Delete28" Command="{Binding DeleteCursorCommand}" CommandParameter="IBeamCursor.png"
+                                   Visibility="{Binding HasIBeamCursor, Converter={StaticResource BooleanToVisibilityConverter}}" Appearance="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
                                 </Grid>
