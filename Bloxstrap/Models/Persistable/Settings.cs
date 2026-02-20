@@ -50,12 +50,6 @@ namespace Bloxstrap.Models.Persistable
         public RobloxIcon SelectedRobloxIcon { get; set; } = RobloxIcon.Default;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
-        // Mods Page
-        public string ShiftlockCursorSelectedPath { get; set; } = "";
-        public string ArrowCursorSelectedPath { get; set; } = "";
-        public string ArrowFarCursorSelectedPath { get; set; } = "";
-        public string IBeamCursorSelectedPath { get; set; } = "";
-
         // FastFlag Editor/Settings Related
         public bool UseFastFlagManager { get; set; } = true;
         public bool ShowPresetColumn { get; set; } = false;

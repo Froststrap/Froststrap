@@ -1693,19 +1693,6 @@ namespace Bloxstrap
 
             Directory.CreateDirectory(Paths.Modifications);
 
-            string sourceSettingsFolder = Path.Combine(Paths.Base, "ClientSettings");
-            string targetSettingsFolder = Path.Combine(_latestVersionDirectory, "ClientSettings");
-
-            if (Directory.Exists(sourceSettingsFolder))
-            {
-                if (Directory.Exists(targetSettingsFolder))
-                {
-                    Directory.Delete(targetSettingsFolder, true);
-                }
-
-                Directory.Move(sourceSettingsFolder, targetSettingsFolder);
-            }
-
             try
             {
                 var activeMods = App.State.Prop.Mods
@@ -1858,6 +1845,41 @@ namespace Bloxstrap
                 success = success && fileResults.All(r => r);
 
                 await fontTask;
+
+                string sourceSettingsFile = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
+                if (File.Exists(sourceSettingsFile))
+                {
+                    string relativeFile = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                    string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
+
+                    if (!modFolderFiles.Contains(relativeFile))
+                        modFolderFiles.Add(relativeFile);
+
+                    try
+                    {
+                        bool shouldCopy = true;
+                        if (File.Exists(fileVersionFolder))
+                        {
+                            string sourceHash = MD5Hash.FromFile(sourceSettingsFile);
+                            string targetHash = MD5Hash.FromFile(fileVersionFolder);
+                            if (sourceHash == targetHash) shouldCopy = false;
+                        }
+
+                        if (shouldCopy)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "Applying final FFlag override from Base/ClientSettings...");
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            File.Copy(sourceSettingsFile, fileVersionFolder, true);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Failed to apply final ClientSettings override");
+                        App.Logger.WriteException(LOG_IDENT, ex);
+                    }
+                }
 
                 var fileRestoreMap = new Dictionary<string, List<string>>();
 
