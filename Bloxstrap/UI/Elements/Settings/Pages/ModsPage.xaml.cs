@@ -1,17 +1,27 @@
-﻿using System.Windows;
+﻿using Bloxstrap.UI.ViewModels.Settings;
+using System.Windows;
 using System.Windows.Controls;
-using Bloxstrap.UI.ViewModels.Settings;
+using Wpf.Ui.Mvvm.Contracts;
+using Wpf.Ui.Mvvm.Interfaces;
 
 namespace Bloxstrap.UI.Elements.Settings.Pages
 {
     public partial class ModsPage
     {
         private string _originalName = "";
+        private ModsViewModel _viewModel = null!;
 
         public ModsPage()
         {
-            DataContext = new ModsViewModel();
+            _viewModel = new ModsViewModel();
+            DataContext = _viewModel;
+
+            _viewModel.OpenModGeneratorEvent += OpenModGenerator;
+            _viewModel.OpenCommunityModsEvent += OpenCommunityMods;
+            _viewModel.OpenPresetModsEvent += OpenPresetMods;
+
             InitializeComponent();
+            App.FrostRPC?.SetPage("Mods");
         }
 
         private void ModName_GotFocus(object sender, RoutedEventArgs e)
@@ -47,6 +57,30 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             {
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 Task.Run(() => vm.ProcessDroppedFiles(files));
+            }
+        }
+
+        private void OpenModGenerator(object? sender, EventArgs e)
+        {
+            if (Window.GetWindow(this) is INavigationWindow window)
+            {
+                window.Navigate(typeof(ModGeneratorPage));
+            }
+        }
+
+        private void OpenCommunityMods(object? sender, EventArgs e)
+        {
+            if (Window.GetWindow(this) is INavigationWindow window)
+            {
+                window.Navigate(typeof(CommunityModsPage));
+            }
+        }
+
+        private void OpenPresetMods(object? sender, EventArgs e)
+        {
+            if (Window.GetWindow(this) is INavigationWindow window)
+            {
+                window.Navigate(typeof(ModsPresetsPage));
             }
         }
     }

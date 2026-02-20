@@ -4,24 +4,21 @@ using System.Windows;
 
 namespace Bloxstrap.UI.Elements.Settings.Pages
 {
-    /// <summary>
-    /// Interaction logic for CommunityModsPage.xaml
-    /// </summary>
-    public partial class CommunityModsPage
+    public partial class ModGeneratorPage
     {
-        private CommunityModsViewModel _viewModel = null!;
+        private ModGeneratorViewModel _viewModel = null!;
 
-        public CommunityModsPage()
+        public ModGeneratorPage()
         {
-            _viewModel = new CommunityModsViewModel();
+            _viewModel = new ModGeneratorViewModel();
             DataContext = _viewModel;
 
             _viewModel.OpenModsEvent += OpenMods;
-            _viewModel.OpenModGeneratorEvent += OpenModGenerator;
+            _viewModel.OpenCommunityModsEvent += OpenCommunityMods;
             _viewModel.OpenPresetModsEvent += OpenPresetMods;
 
             InitializeComponent();
-            App.FrostRPC?.SetPage("Community Mods");
+            App.FrostRPC?.SetPage("Mod Generator");
         }
 
         private void OpenMods(object? sender, EventArgs e)
@@ -32,11 +29,11 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             }
         }
 
-        private void OpenModGenerator(object? sender, EventArgs e)
+        private void OpenCommunityMods(object? sender, EventArgs e)
         {
             if (Window.GetWindow(this) is INavigationWindow window)
             {
-                window.Navigate(typeof(ModGeneratorPage));
+                window.Navigate(typeof(CommunityModsPage));
             }
         }
 

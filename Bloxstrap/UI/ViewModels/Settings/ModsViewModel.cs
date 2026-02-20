@@ -9,6 +9,16 @@ namespace Bloxstrap.UI.ViewModels.Settings
 {
     public partial class ModsViewModel : NotifyPropertyChangedViewModel
     {
+        public event EventHandler? OpenModGeneratorEvent;
+        public event EventHandler? OpenCommunityModsEvent;
+        public event EventHandler? OpenPresetModsEvent;
+        private void OpenModGenerator() => OpenModGeneratorEvent?.Invoke(this, EventArgs.Empty);
+        private void OpenCommunityMods() => OpenCommunityModsEvent?.Invoke(this, EventArgs.Empty);
+        private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
+        public ICommand OpenModGeneratorCommand => new RelayCommand(OpenModGenerator);
+        public ICommand OpenCommunityModsCommand => new RelayCommand(OpenCommunityMods);
+        public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
+
         public ObservableCollection<ModConfig> Modifications { get; set; } = new();
 
         public ICommand MoveUpCommand => new RelayCommand<ModConfig>(MoveUp);
