@@ -86,6 +86,7 @@
                             <ui:Button Grid.Column="0" 
                                        Icon="Delete24" 
                                        Appearance="Danger"
+                                       Height="35"
                                        Command="{Binding DataContext.DeleteModCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                        CommandParameter="{Binding}" />
 
@@ -108,16 +109,19 @@
 
                             <ui:Button Grid.Column="4" 
                                        Icon="Folder24" 
+                                       Height="35"
                                        Command="{Binding DataContext.OpenModFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                        CommandParameter="{Binding}" />
 
                             <ui:Button Grid.Column="5" Margin="4,0,0,0"
                                        Icon="ArrowUp24" 
+                                       Height="35"
                                        Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                        CommandParameter="{Binding}" />
 
                             <ui:Button Grid.Column="6" Margin="4,0,0,0"
                                        Icon="ArrowDown24" 
+                                       Height="35"
                                        Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                        CommandParameter="{Binding}" />
                         </Grid>
