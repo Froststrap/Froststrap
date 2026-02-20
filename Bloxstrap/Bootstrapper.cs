@@ -1692,11 +1692,30 @@ namespace Bloxstrap
 
             try
             {
-                // ill make custom fonts work later on
-                string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content\\fonts\\families");
-                if (File.Exists(Paths.CustomFont))
+                var activeMods = App.State.Prop.Mods
+                            .Where(x => x.Target != "Disabled" && (
+                                        x.Target == "Both" ||
+                                        (IsStudioLaunch && x.Target == "Studio") ||
+                                        (!IsStudioLaunch && x.Target == "Player")))
+                            .OrderByDescending(x => x.Priority)
+                            .ToList();
+
+                string? customFontModName = null;
+                foreach (var mod in activeMods)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Applying custom font family manifests...");
+                    string potentialPath = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf");
+                    if (File.Exists(potentialPath))
+                    {
+                        customFontModName = mod.FolderName;
+                        break;
+                    }
+                }
+
+                if (customFontModName != null)
+                {
+                    string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Applying custom font family manifests to mod: {customFontModName}");
                     string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
 
                     Directory.CreateDirectory(familiesFolder);
@@ -1729,10 +1748,6 @@ namespace Bloxstrap
                             File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
                     });
                 }
-                else if (Directory.Exists(modFontFamiliesFolder))
-                {
-                    Directory.Delete(modFontFamiliesFolder, true);
-                }
 
                 if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
                 {
@@ -1740,15 +1755,7 @@ namespace Bloxstrap
                     await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
                 }
 
-                var activeMods = App.State.Prop.Mods
-                            .Where(x => x.Target != "Disabled" && (
-                                        x.Target == "Both" ||
-                                        (IsStudioLaunch && x.Target == "Studio") ||
-                                        (!IsStudioLaunch && x.Target == "Player")))
-                            .OrderByDescending(x => x.Priority)
-                            .ToList();
-
-                List<string> appliedModNames = new();
+                HashSet<string> appliedFiles = new(StringComparer.OrdinalIgnoreCase);
 
                 foreach (var mod in activeMods)
                 {
@@ -1757,28 +1764,42 @@ namespace Bloxstrap
                     string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
                     if (!Directory.Exists(modSource))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Skipping mod '{mod.FolderName}'");
+                        App.Logger.WriteLine(LOG_IDENT, $"Skipping mod '{mod.FolderName}' (Directory missing)");
                         continue;
                     }
+
+                    bool isPresetMod = modSource.Equals(Paths.PresetModifications, StringComparison.OrdinalIgnoreCase);
 
                     App.Logger.WriteLine(LOG_IDENT, $"Applying Mod: {mod.FolderName} (Priority: {mod.Priority})");
 
                     foreach (string dirPath in Directory.GetDirectories(modSource, "*", SearchOption.AllDirectories))
+                    {
+                        if (!isPresetMod && dirPath.Split(Path.DirectorySeparatorChar).Contains("ClientSettings"))
+                            continue;
+
                         Directory.CreateDirectory(dirPath.Replace(modSource, _latestVersionDirectory));
+                    }
 
                     foreach (string newPath in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
                     {
-                        string destPath = newPath.Replace(modSource, _latestVersionDirectory);
+                        if (!isPresetMod && newPath.Split(Path.DirectorySeparatorChar).Contains("ClientSettings"))
+                            continue;
+
+                        if (newPath.EndsWith(".mesh", StringComparison.OrdinalIgnoreCase) || newPath.EndsWith(".lock", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        string relativePath = newPath.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
+                        appliedFiles.Add(relativePath);
+
+                        string destPath = Path.Combine(_latestVersionDirectory, relativePath);
                         Filesystem.AssertReadOnly(destPath);
                         File.Copy(newPath, destPath, true);
                     }
-
-                    appliedModNames.Add(mod.FolderName);
                 }
 
                 if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
                 {
-                    AppData.DistributionState.ModManifest = appliedModNames;
+                    AppData.DistributionState.ModManifest = appliedFiles.ToList();
                     AppData.DistributionStateManager.Save();
                 }
             }
