@@ -65,7 +65,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public CommunityModsViewModel()
         {
-            _cacheFolder = Path.Combine(Paths.Cache, "CommunityMods");
+            _cacheFolder = Path.Combine(Paths.Cache, "Community Mods");
             Directory.CreateDirectory(_cacheFolder);
             App.RemoteData.Subscribe(OnRemoteDataLoaded);
         }
