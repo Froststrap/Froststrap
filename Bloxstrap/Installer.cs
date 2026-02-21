@@ -561,6 +561,52 @@ namespace Bloxstrap
                     }
                 }
 
+                if (Utilities.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
+                {
+                    string clientSettingsPath = Path.Combine(Paths.Modifications, "ClientSettings");
+                    string migrationPath = Path.Combine(Paths.Modifications, "Migration from 1.4.1.0");
+
+                    if (Directory.Exists(clientSettingsPath))
+                    {
+                        string targetSettingsPath = Path.Combine(Paths.Base, "ClientSettings");
+
+                        if (Directory.Exists(targetSettingsPath))
+                            Directory.Delete(targetSettingsPath, true);
+
+                        Directory.Move(clientSettingsPath, targetSettingsPath);
+                    }
+
+                    Directory.CreateDirectory(migrationPath);
+
+                    var directoryInfo = new DirectoryInfo(Paths.Modifications);
+
+                    foreach (FileSystemInfo info in directoryInfo.GetFileSystemInfos())
+                    {
+                        if (info.FullName == migrationPath)
+                            continue;
+
+                        string destPath = Path.Combine(migrationPath, info.Name);
+
+                        try
+                        {
+                            if (info.Attributes.HasFlag(FileAttributes.Directory))
+                            {
+                                if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
+                                Directory.Move(info.FullName, destPath);
+                            }
+                            else
+                            {
+                                if (File.Exists(destPath)) File.Delete(destPath);
+                                File.Move(info.FullName, destPath);
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
+                        }
+                    }
+                }
+
                 App.Settings.Save();
                 App.FastFlags.Save();
                 App.State.Save();
