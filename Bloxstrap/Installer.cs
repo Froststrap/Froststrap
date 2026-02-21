@@ -618,6 +618,10 @@ namespace Bloxstrap
                         Directory.Delete(pluginCacheDir, true);
                         App.Logger.WriteLine(LOG_IDENT, "Deleted studio plugin for migration.");
                     }
+
+                    if (File.Exists(Path.Combine(Paths.Cache, "channelCache.json"))) File.Delete(Path.Combine(Paths.Cache, "channelCache.json"));
+                    if (File.Exists(Path.Combine(Paths.Cache, "channelCacheMeta.json"))) File.Delete(Path.Combine(Path.Combine(Paths.Cache, "channelCacheMeta.json")));
+                    if (File.Exists(Path.Combine(Paths.Cache, "DataCentersCache.json"))) File.Delete(Path.Combine(Path.Combine(Paths.Cache, "DataCentersCache.json")));
                 }
 
                 App.Settings.Save();

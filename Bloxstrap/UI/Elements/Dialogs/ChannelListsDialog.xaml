@@ -118,6 +118,7 @@
                     <DataGridTextColumn Header="Channel Name" Binding="{Binding ChannelName}" Width="150" />
                     <DataGridTextColumn Header="Version" Binding="{Binding Version}" Width="*" />
                     <DataGridTextColumn Header="Version GUID" Binding="{Binding VersionGuid}" Width="*" />
+                    <DataGridTextColumn Header="Deployment Date" Binding="{Binding DisplayTimestamp}" Width="160" />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>

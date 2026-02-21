@@ -19,14 +19,12 @@ namespace Bloxstrap.UI.Elements.Dialogs
             {
                 var dataGrid = (DataGrid)sender;
 
-                var selectedItems = dataGrid.SelectedItems.Cast<DeployInfoDisplay>().ToList();
+                var selectedItems = dataGrid.SelectedItems.Cast<ChannelListsViewModel.DeployInfoDisplay>().ToList();
 
                 if (selectedItems.Count > 0)
                 {
                     var textToCopy = string.Join(Environment.NewLine, selectedItems.Select(i => i.ChannelName));
-
                     Clipboard.SetText(textToCopy);
-
                     e.Handled = true;
                 }
             }
