@@ -248,7 +248,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
         }
 
-        private string GetCachePath() => Path.Combine(Paths.Cache, "datacenters_cache.json");
+        private string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
 
         private async Task SaveDatacentersToCacheAsync((List<string> regions, Dictionary<int, string> datacenterMap) data)
         {
