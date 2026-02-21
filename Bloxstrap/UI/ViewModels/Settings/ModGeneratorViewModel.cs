@@ -295,6 +295,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
                     string contentDir = Path.Combine(TempRoot, "content", "textures");
 
+                    string folderName = SolidColorHex;
+
                     Parallel.Invoke(
                         () => SafeExtract(luaZip, luaDir),
                         () => SafeExtract(extraZip, extraDir),
@@ -305,7 +307,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     var mappings = await ModGenerator.LoadMappingsAsync();
 
                     ModGenerator.RecolorAllPngs(TempRoot, _solidColor, mappings, ColorCursors, ColorShiftlock, ColorEmoteWheel);
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor);
+                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, folderName);
 
                     StatusText = "Cleaning up...";
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -356,7 +358,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                     if (IncludeModifications)
                     {
-                        string folderName = SolidColorHex;
                         string targetFolder = Path.Combine(Paths.Modifications, folderName);
                         if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
 
@@ -379,6 +380,35 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         }
                         StatusText = $"Successfully applied modifications ({copiedFiles} files).";
                     }
+                    else
+                    {
+                        StatusText = "Zipping results...";
+
+                        string defaultFileName = $"FroststrapMod_{SolidColorHex}.zip";
+
+                        var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                        {
+                            FileName = defaultFileName,
+                            DefaultExt = ".zip",
+                            Filter = "Zip Archive (.zip)|*.zip"
+                        };
+
+                        bool? result = false;
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
+                        {
+                            result = saveFileDialog.ShowDialog();
+                        });
+
+                        if (result == true)
+                        {
+                            ModGenerator.ZipResult(TempRoot, saveFileDialog.FileName);
+                            StatusText = $"Mod saved to {Path.GetFileName(saveFileDialog.FileName)}";
+                        }
+                        else
+                        {
+                            StatusText = "Mod generation cancelled (no save location).";
+                        }
+                    }
                 });
             }
             catch (Exception ex)
@@ -386,7 +416,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 App.Logger?.WriteException(LOG_IDENT, ex);
                 StatusText = $"Error: {ex.Message}";
             }
-            finally { IsNotGeneratingMod = true; }
+            finally 
+            { 
+                IsNotGeneratingMod = true; 
+            }
         }
 
         private void SafeExtract(string zipPath, string targetDir)

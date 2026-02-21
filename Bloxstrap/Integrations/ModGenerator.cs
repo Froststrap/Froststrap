@@ -116,7 +116,7 @@ public static class ModGenerator
         return result;
     }
 
-    public static async Task RecolorFontsAsync(string froststrapTemp, Color solidColor)
+    public static async Task RecolorFontsAsync(string froststrapTemp, Color solidColor, string modName)
     {
         string fontDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
         if (!Directory.Exists(fontDir)) return;
@@ -124,7 +124,9 @@ public static class ModGenerator
         string exePath = await DownloadModGeneratorExeAsync();
         string hexColor = $"{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}";
 
-        var result = await ExecuteExeAsync(exePath, $"--path \"{fontDir}\" --color {hexColor} --bootstrapper Froststrap", Path.GetDirectoryName(exePath)!);
+        string args = $"--path \"{fontDir}\" --color {hexColor} --bootstrapper Froststrap --mod-name \"{modName}\"";
+
+        var result = await ExecuteExeAsync(exePath, args, Path.GetDirectoryName(exePath)!);
 
         if (result.ExitCode != 0)
             App.Logger?.WriteLine(LOG_IDENT, $"Font Tool Error: {result.Errors}");
