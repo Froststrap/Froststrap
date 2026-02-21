@@ -565,11 +565,12 @@ namespace Bloxstrap
                 {
                     string clientSettingsPath = Path.Combine(Paths.Modifications, "ClientSettings");
                     string migrationPath = Path.Combine(Paths.Modifications, "Migration from 1.4.1.0");
+                    string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
+                    string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+                    string targetSettingsPath = Path.Combine(Paths.Base, "ClientSettings");
 
                     if (Directory.Exists(clientSettingsPath))
                     {
-                        string targetSettingsPath = Path.Combine(Paths.Base, "ClientSettings");
-
                         if (Directory.Exists(targetSettingsPath))
                             Directory.Delete(targetSettingsPath, true);
 
@@ -604,6 +605,18 @@ namespace Bloxstrap
                         {
                             App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
                         }
+                    }
+
+                    if (Directory.Exists(genCacheDir))
+                    {
+                        Directory.Delete(genCacheDir, true);
+                        App.Logger.WriteLine(LOG_IDENT, "Deleted mod-generator cache for migration.");
+                    }
+
+                    if (Directory.Exists(pluginCacheDir))
+                    {
+                        Directory.Delete(pluginCacheDir, true);
+                        App.Logger.WriteLine(LOG_IDENT, "Deleted studio plugin for migration.");
                     }
                 }
 

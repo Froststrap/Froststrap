@@ -16,8 +16,6 @@ namespace Bloxstrap.Models.Persistable
         public bool PlaytimeCounter { get; set; } = true;
         public TrayDoubleClickAction DoubleClickAction { get; set; } = TrayDoubleClickAction.ServerInfo;
         public bool UseDisableAppPatch { get; set; } = false;
-        public bool BlockRobloxRecording { get; set; } = false;
-        public bool BlockRobloxScreenshots { get; set; } = false;
         public bool ShowUsingFroststrapRPC { get; set; } = true;
         public bool UseDiscordRichPresence { get; set; } = true;
         public bool HideRPCButtons { get; set; } = true;

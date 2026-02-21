@@ -237,21 +237,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => App.Settings.Prop.StudioRPC;
             set
             {
-                if (value)
-                {
-                    var result = Frontend.ShowMessageBox(
-                        "This works by adding a custom made froststrap plugin that will log what your doing.\n" +
-                        "Do you want to install the plugin?",
-                        MessageBoxImage.Information,
-                        MessageBoxButton.YesNo
-                    );
-
-                    if (result != MessageBoxResult.Yes)
-                    {
-                        return;
-                    }
-                }
-
                 App.Settings.Prop.StudioRPC = value;
 
                 if (!value)
@@ -266,7 +251,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(ShowTesting));
                 }
 
-                _ = HandleStudioRPCPluginAsync(value);
+                StudioPluginManager.Sync();
             }
         }
 
@@ -296,22 +281,14 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public bool DisableRobloxRecording
         {
-            get => App.Settings.Prop.BlockRobloxRecording;
-            set
-            {
-                App.Settings.Prop.BlockRobloxRecording = value;
-                DisableRecording();
-            }
+            get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"));
+            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
         }
 
         public bool DisableRobloxScreenshots
         {
-            get => App.Settings.Prop.BlockRobloxScreenshots;
-            set
-            {
-                App.Settings.Prop.BlockRobloxScreenshots = value;
-                DisableScreenshots();
-            }
+            get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"));
+            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"), value);
         }
 
         public ObservableCollection<CustomIntegration> CustomIntegrations
@@ -324,153 +301,52 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public int SelectedCustomIntegrationIndex { get; set; }
         public bool IsCustomIntegrationSelected => SelectedCustomIntegration is not null;
 
-        private async Task HandleStudioRPCPluginAsync(bool value)
+        private static bool IsBlocked(string path)
         {
-            string pluginUrl = "https://github.com/Froststrap/FroststrapStudioRPC/releases/latest/download/FroststrapStudioRPC.rbxmx";
-            string pluginFileName = "FroststrapStudioRPC.rbxmx";
-
-            string pluginsPath = Path.Combine(Paths.Roblox, "Plugins");
-            string pluginFile = Path.Combine(pluginsPath, pluginFileName);
-
-            if (value)
+            if (File.Exists(path) && !Directory.Exists(path))
             {
-                try
-                {
-                    Directory.CreateDirectory(pluginsPath);
-
-                    if (File.Exists(pluginFile))
-                    {
-                        File.Delete(pluginFile);
-                    }
-
-                        using (HttpClient client = new HttpClient())
-                        {
-                            byte[] data = await client.GetByteArrayAsync(pluginUrl);
-
-                            await File.WriteAllBytesAsync(pluginFile, data);
-                        }
-                }
-                catch (Exception ex)
-                {
-                    Frontend.ShowMessageBox($"Install failed: {ex.Message}",
-                        MessageBoxImage.Error, MessageBoxButton.OK);
-                }
+                var attr = File.GetAttributes(path);
+                return attr.HasFlag(FileAttributes.ReadOnly);
             }
-            else
-            {
-                if (File.Exists(pluginFile))
-                {
-                    File.Delete(pluginFile);
-                }
-            }
+            return false;
         }
 
-        private static void DisableRecording()
+        private static void SetBlockState(string targetPath, bool block)
         {
-            const string LOG_IDENT = "Watcher::DisableRecording";
-            string videosPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox");
-            string backupPath = videosPath + " (Before Blocking)";
+            const string LOG_IDENT = "Watcher::SetBlockState";
+            string backupPath = targetPath + " (Before Blocking)";
 
             try
             {
-                if (App.Settings.Prop.BlockRobloxRecording)
+                if (block)
                 {
-                    if (Directory.Exists(videosPath))
+                    if (Directory.Exists(targetPath))
                     {
-                        bool hasContent = Directory.EnumerateFileSystemEntries(videosPath).Any();
-
-                        if (hasContent)
+                        if (Directory.EnumerateFileSystemEntries(targetPath).Any())
                         {
-                            if (!Directory.Exists(backupPath))
-                                Directory.Move(videosPath, backupPath);
+                            if (!Directory.Exists(backupPath)) Directory.Move(targetPath, backupPath);
                         }
-                        else
-                        {
-                            Directory.Delete(videosPath);
-                        }
+                        else Directory.Delete(targetPath);
                     }
 
-                    if (!File.Exists(videosPath))
+                    if (!File.Exists(targetPath))
                     {
-                        File.WriteAllBytes(videosPath, Array.Empty<byte>());
-                        File.SetAttributes(videosPath, FileAttributes.ReadOnly);
+                        File.WriteAllBytes(targetPath, Array.Empty<byte>());
+                        File.SetAttributes(targetPath, FileAttributes.ReadOnly);
                     }
                 }
                 else
                 {
-                    if (File.Exists(videosPath) && !Directory.Exists(videosPath))
+                    if (File.Exists(targetPath) && !Directory.Exists(targetPath))
                     {
-                        var attributes = File.GetAttributes(videosPath);
-                        if ((attributes & FileAttributes.ReadOnly) != 0)
-                        {
-                            attributes &= ~FileAttributes.ReadOnly;
-                            File.SetAttributes(videosPath, attributes);
-                        }
-
-                        File.Delete(videosPath);
-                    }
-                    if (!Directory.Exists(videosPath) && Directory.Exists(backupPath))
-                    {
-                        Directory.Move(backupPath, videosPath);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
-            }
-        }
-
-        private static void DisableScreenshots()
-        {
-            const string LOG_IDENT = "Watcher::DisableScreenshots";
-            string picturesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox");
-            string backupPath = picturesPath + " (Before Blocking)";
-
-            try
-            {
-                if (App.Settings.Prop.BlockRobloxScreenshots)
-                {
-                    if (Directory.Exists(picturesPath))
-                    {
-                        bool hasContent = Directory.EnumerateFileSystemEntries(picturesPath).Any();
-
-                        if (hasContent)
-                        {
-                            if (!Directory.Exists(backupPath))
-                            {
-                                Directory.Move(picturesPath, backupPath);
-                            }
-                        }
-                        else
-                        {
-                            Directory.Delete(picturesPath);
-                        }
+                        var attr = File.GetAttributes(targetPath);
+                        File.SetAttributes(targetPath, attr & ~FileAttributes.ReadOnly);
+                        File.Delete(targetPath);
                     }
 
-                    if (!File.Exists(picturesPath))
+                    if (!Directory.Exists(targetPath) && Directory.Exists(backupPath))
                     {
-                        File.WriteAllBytes(picturesPath, Array.Empty<byte>());
-                        File.SetAttributes(picturesPath, FileAttributes.ReadOnly);
-                    }
-                }
-                else
-                {
-                    if (File.Exists(picturesPath) && !Directory.Exists(picturesPath))
-                    {
-                        var attributes = File.GetAttributes(picturesPath);
-                        if ((attributes & FileAttributes.ReadOnly) != 0)
-                        {
-                            attributes &= ~FileAttributes.ReadOnly;
-                            File.SetAttributes(picturesPath, attributes);
-                        }
-
-                        File.Delete(picturesPath);
-                    }
-
-                    if (!Directory.Exists(picturesPath) && Directory.Exists(backupPath))
-                    {
-                        Directory.Move(backupPath, picturesPath);
+                        Directory.Move(backupPath, targetPath);
                     }
                 }
             }

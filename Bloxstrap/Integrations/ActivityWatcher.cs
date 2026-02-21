@@ -61,8 +61,6 @@
 
         private const int HttpPort = 4875;
         private HttpListener? _httpListener;
-        private Thread? _httpListenerThread;
-        private bool _isHttpListenerRunning = false;
         private readonly CancellationTokenSource _httpCancellationTokenSource = new();
 
         public ActivityData Data { get; private set; } = new();
@@ -545,150 +543,82 @@
         {
             try
             {
-        	    if (_httpListener != null && _httpListener.IsListening)
-        	    {
-        	        App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", "HTTP server is already running");
-        	        return;
-        	    }
-
                 _httpListener = new HttpListener();
-
                 _httpListener.Prefixes.Add($"http://localhost:{HttpPort}/");
-
                 _httpListener.Start();
 
-                _isHttpListenerRunning = true;
-                _httpListenerThread = new Thread(() => ListenForHTTPRequests(_httpCancellationTokenSource.Token));
-                _httpListenerThread.IsBackground = true;
-                _httpListenerThread.Name = "StudioRPC-HTTP-Listener";
-                _httpListenerThread.Start();
+                _ = ListenForHTTPRequests(_httpCancellationTokenSource.Token);
 
-                App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", $"HTTP server started on port {HttpPort}");
+                App.Logger.WriteLine("ActivityWatcher", $"Studio RPC server active on port {HttpPort}");
             }
-            catch (HttpListenerException ex) when (ex.ErrorCode == 183) // ERROR_ALREADY_EXISTS
+            catch (Exception ex) { App.Logger.WriteException("ActivityWatcher::Start", ex); }
+        }
+
+        public void StopHTTPServer()
+        {
+            _httpCancellationTokenSource.Cancel();
+
+            if (_httpListener != null)
             {
-                App.Logger.WriteLine("ActivityWatcher::StartHTTPServer", $"Port {HttpPort} is already in use by another process");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException("ActivityWatcher::StartHTTPServer", ex);
+                try { _httpListener.Close(); }
+                catch { }
+                _httpListener = null;
             }
         }
 
-        private async void ListenForHTTPRequests(CancellationToken cancellationToken)
+        private async Task ListenForHTTPRequests(CancellationToken token)
         {
-            while (_isHttpListenerRunning && _httpListener != null && _httpListener.IsListening && !cancellationToken.IsCancellationRequested)
+            while (_httpListener?.IsListening == true && !token.IsCancellationRequested)
             {
                 try
                 {
-                    var context = await _httpListener.GetContextAsync().WaitAsync(cancellationToken);
-                    _ = Task.Run(() => ProcessHTTPRequest(context), cancellationToken);
+                    var context = await _httpListener.GetContextAsync().WaitAsync(token);
+
+                    _ = Task.Run(() => ProcessHTTPRequest(context), token);
                 }
-                catch (HttpListenerException)
-                {
-                    break;
-                }
-                catch (OperationCanceledException)
-                {
-                    break;
-                }
+                catch (OperationCanceledException) { break; }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteException("ActivityWatcher::ListenForHTTPRequests", ex);
-                    await Task.Delay(1000, cancellationToken);
+                    App.Logger.WriteException("ActivityWatcher::HTTPListener", ex);
+                    await Task.Delay(1000, token);
                 }
             }
         }
 
         private void ProcessHTTPRequest(HttpListenerContext context)
         {
-            const string LOG_IDENT = "ActivityWatcher::ProcessHTTPRequest";
+            using var response = context.Response;
 
             try
             {
-                if (context.Request.HttpMethod == "POST" && context.Request.Url?.AbsolutePath == "/rpc")
+                if (context.Request.HttpMethod != "POST" || context.Request.Url?.AbsolutePath != "/rpc")
                 {
-                    using (var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8))
+                    response.StatusCode = 404;
+                    return;
+                }
+
+                using var reader = new StreamReader(context.Request.InputStream, Encoding.UTF8);
+                string json = reader.ReadToEnd();
+                var message = JsonSerializer.Deserialize<StudioMessage>(json);
+
+                if (message != null)
+                {
+                    if (message.StudioCommand == "SetRichPresence")
                     {
-                        string json = reader.ReadToEnd();
-                        App.Logger.WriteLine(LOG_IDENT, $"Received HTTP RPC: {json}");
-
-                        var studioMessage = JsonSerializer.Deserialize<StudioMessage>(json);
-
-                        if (studioMessage != null)
-                        {
-                            if (studioMessage.StudioCommand == "SetRichPresence")
-                            {
-                                var richPresenceData = studioMessage.Data.Deserialize<StudioRichPresence>();
-                                if (richPresenceData != null)
-                                {
-                                    var fullMessage = new StudioMessage
-                                    {
-                                        StudioCommand = studioMessage.StudioCommand,
-                                        Data = JsonSerializer.SerializeToElement(richPresenceData)
-                                    };
-                                    OnStudioRPCMessage?.Invoke(this, fullMessage);
-                                }
-                            }
-                            else
-                            {
-                                OnStudioRPCMessage?.Invoke(this, studioMessage);
-                            }
-                        }
-                        else
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, "Failed to parse JSON message");
-                        }
+                        var richPresenceData = message.Data.Deserialize<StudioRichPresence>();
+                        if (richPresenceData != null)
+                            message.Data = JsonSerializer.SerializeToElement(richPresenceData);
                     }
 
-                    context.Response.StatusCode = 200;
-                    context.Response.Close();
+                    OnStudioRPCMessage?.Invoke(this, message);
+                    response.StatusCode = 200;
                 }
-                else
-                {
-                    context.Response.StatusCode = 404;
-                    context.Response.Close();
-                }
-            }
-            catch (JsonException jsonEx)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"JSON parsing error: {jsonEx.Message}");
-                context.Response.StatusCode = 400;
-                context.Response.Close();
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
-                context.Response.StatusCode = 500;
-                context.Response.Close();
+                App.Logger.WriteLine("ActivityWatcher::ProcessHTTP", $"Error: {ex.Message}");
+                response.StatusCode = 500;
             }
-        }
-
-        private void StopHTTPServer()
-        {
-            _isHttpListenerRunning = false;
-            _httpCancellationTokenSource.Cancel();
-
-            if (_httpListener != null)
-            {
-                try
-                {
-                    _httpListener.Stop();
-                    _httpListener.Close();
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteException("ActivityWatcher::StopHTTPServer", ex);
-                }
-                _httpListener = null;
-            }
-
-            if (_httpListenerThread != null && _httpListenerThread.IsAlive)
-            {
-                _httpListenerThread.Join(2000);
-            }
-
-            _httpCancellationTokenSource.Dispose();
         }
 
         public void LoadGameHistory()
