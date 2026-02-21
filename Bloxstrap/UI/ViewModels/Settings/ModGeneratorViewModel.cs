@@ -356,7 +356,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
                     if (IncludeModifications)
                     {
-                        string folderName = SolidColorHex.Replace("#", "");
+                        string folderName = SolidColorHex;
                         string targetFolder = Path.Combine(Paths.Modifications, folderName);
                         if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
 
