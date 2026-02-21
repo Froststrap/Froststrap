@@ -65,15 +65,15 @@
             <ui:Card Grid.Column="1" VerticalAlignment="Top">
                 <StackPanel>
                     <TextBlock Text="{Binding Mod.Name}" FontSize="28" FontWeight="Bold" TextWrapping="Wrap"/>
-                    <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" FontSize="12" />
-                    <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code is {0}'}" FontSize="12" />
+                    <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                    <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code is {0}'}" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                     
                     <ui:Badge Content="{Binding Mod.ModTypeDisplay}" Appearance="Primary" HorizontalAlignment="Left" Margin="0,8,0,0"/>
 
                     <Separator Margin="0,4" Background="{ui:ThemeResource ControlStrokeColorDefaultBrush}"/>
 
                     <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                    <TextBlock Text="{Binding Mod.Description}" TextWrapping="Wrap" Margin="0,0,0,24" />
+                    <TextBlock Text="{Binding Mod.Description}" TextWrapping="Wrap" Margin="0,0,0,24" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
                     <StackPanel VerticalAlignment="Bottom">
                         <ui:ProgressBar Value="{Binding Mod.DownloadProgress}" Margin="0,0,0,8" Height="4" Visibility="{Binding Mod.IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
