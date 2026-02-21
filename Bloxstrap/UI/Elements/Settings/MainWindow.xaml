@@ -55,22 +55,24 @@
 
             <ui:NavigationCompact x:Name="RootNavigation" Grid.Row="1" Grid.Column="0" Margin="0,0,20,0" Frame="{Binding ElementName=RootFrame}" IsExpanded="{Binding IsSidebarExpanded, Mode=TwoWay}" MaxWidth="215" SelectedPageIndex="0" FooterAlwaysVisible="True">
                 <ui:NavigationCompact.Items>
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" PageType="{x:Type pages:IntegrationsPage}" Icon="Add28" IconSize="20" Tag="integrations" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" PageType="{x:Type pages:BehaviourPage}" Icon="PlaySettings20" IconSize="20" Tag="bootstrapper" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Mods_Title}" PageType="{x:Type pages:ModsPage}" Icon="WrenchScrewdriver20" IconSize="20" Tag="mods" FontWeight="Medium" />
-                    <ui:NavigationItem Content="Community Mods" PageType="{x:Type pages:CommunityModsPage}" Icon="BuildingShop24" IconSize="20" Tag="communitymods" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" IconSize="20" Tag="fastflags" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" PageType="{x:Type pages:AppearancePage}" Icon="PaintBrush24" IconSize="20" Tag="appearance" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" PageType="{x:Type pages:RegionSelectorPage}" Icon="Earth24" IconSize="20" Tag="regionselector" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" PageType="{x:Type pages:RobloxSettingsPage}" Icon="SquareHintApps24" IconSize="20" Tag="robloxsettings" FontWeight="Medium" x:Name="gbs" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Common_Shortcuts}" PageType="{x:Type pages:ShortcutsPage}" Icon="Apps28" IconSize="20" Tag="shortcuts" FontWeight="Medium" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" PageType="{x:Type pages:IntegrationsPage}" Icon="Add28" IconSize="20" Tag="integrations" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" PageType="{x:Type pages:BehaviourPage}" Icon="PlaySettings20" IconSize="20" Tag="bootstrapper" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Mods_Title}" PageType="{x:Type pages:ModsPage}" Icon="WrenchScrewdriver20" IconSize="20" Tag="mods" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" PageType="{x:Type pages:FastFlagsPage}" Icon="Flag24" IconSize="20" Tag="fastflags" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" PageType="{x:Type pages:AppearancePage}" Icon="PaintBrush24" IconSize="20" Tag="appearance" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" PageType="{x:Type pages:RegionSelectorPage}" Icon="Earth24" IconSize="20" Tag="regionselector" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}" PageType="{x:Type pages:RobloxSettingsPage}" Icon="SquareHintApps24" IconSize="20" Tag="robloxsettings" x:Name="gbs" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Common_Shortcuts}" PageType="{x:Type pages:ShortcutsPage}" Icon="Apps28" IconSize="20" Tag="shortcuts" />
 
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="EditSettings20" IconSize="20" Tag="fastflageditor" FontWeight="Medium" Visibility="Collapsed" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_FastFlagEditor_Title}" PageType="{x:Type pages:FastFlagEditorPage}" Icon="EditSettings20" IconSize="20" Tag="fastflageditor" Visibility="Collapsed" />
+                    <ui:NavigationItem Content="Community Mods" PageType="{x:Type pages:CommunityModsPage}" Icon="BuildingShop24" IconSize="20" Tag="communitymods" Visibility="Collapsed" />
+                    <ui:NavigationItem Content="Preset Mods" PageType="{x:Type pages:ModsPresetsPage}" Icon="BuildingShop24" IconSize="20" Tag="presetmods" Visibility="Collapsed" />
+                    <ui:NavigationItem Content="Mod Generator" PageType="{x:Type pages:ModGeneratorPage}" Icon="BuildingShop24" IconSize="20" Tag="modgenerator" Visibility="Collapsed" />
                 </ui:NavigationCompact.Items>
                 <ui:NavigationCompact.Footer>
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" Icon="People24" IconSize="20" Tag="accountmanager"  Command="{Binding OpenAccountManagerCommand, Mode=OneTime}" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Common_Settings}" PageType="{x:Type pages:ChannelPage}" Icon="Settings20" IconSize="20" Tag="channel" FontWeight="Medium" />
-                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_About_Title}" Icon="WeatherSnowflake48" IconSize="21" Margin="0,0,0,12" Command="{Binding OpenAboutCommand, Mode=OneTime}" FontWeight="Medium" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" Icon="People24" IconSize="20" Tag="accountmanager"  Command="{Binding OpenAccountManagerCommand, Mode=OneTime}" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Common_Settings}" PageType="{x:Type pages:ChannelPage}" Icon="Settings20" IconSize="20" Tag="channel" />
+                    <ui:NavigationItem Content="{x:Static resources:Strings.Menu_About_Title}" Icon="WeatherSnowflake48" IconSize="21" Margin="0,0,0,12" Command="{Binding OpenAboutCommand, Mode=OneTime}" />
                 </ui:NavigationCompact.Footer>
             </ui:NavigationCompact>
 

@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:converters="clr-namespace:Bloxstrap.UI.Converters"
+      xmlns:enums="clr-namespace:Bloxstrap.Enums"
       mc:Ignorable="d" 
       d:DesignHeight="900" d:DesignWidth="800"
       Title="Community Mods"
@@ -36,82 +37,150 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <TextBlock Margin="4,0" Grid.Row="0" Text="Easily download community-made mods, Some mods, such as Dark Textures or Higher Brightness, require your in-game graphics level to be 5 or higher." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-            <ui:InfoBar Margin="4,8,0,8" Grid.Row="1" Padding="8" IsOpen="True" Title="Important" Message="Custom skyboxes require the game to have the default roblox skybox." Severity="Informational" IsClosable="False" Background="{DynamicResource PrimaryBackgroundColor}" />
+            <Grid Margin="4,12,12,0" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Row="2" Margin="0,0,0,8">
-                <ui:TextBox PlaceholderText="Search mods..." Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,12,0">
-                    <ui:TextBox.InputBindings>
-                        <KeyBinding Key="Enter" Command="{Binding SearchModsCommand}"/>
-                    </ui:TextBox.InputBindings>
-                </ui:TextBox>
+                <ui:CardAction Grid.Column="0" Margin="0,0,4,0" Command="{Binding OpenModGeneratorCommand}" Icon="Color20">
+                    <StackPanel>
+                        <TextBlock FontSize="14" Text="Mod Generator" TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12"  Foreground="{StaticResource TextFillColorTertiaryBrush}" Text="Generate mods easily with a single click." TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+
+                <ui:CardAction Grid.Column="1" Margin="0,0,0,0" Command="{Binding OpenPresetModsCommand}" Icon="ReadingModeMobile24">
+                    <StackPanel>
+                        <TextBlock FontSize="14" Text="Preset Mods" TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Official built-in mods." TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+
+                <ui:CardAction Grid.Column="2" Margin="4,0,0,0" VerticalAlignment="Top" Command="{Binding OpenModsCommand}" Icon="List24">
+                    <StackPanel>
+                        <TextBlock FontSize="14" Text="My Mods" TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Manage your active mods." TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+            </Grid>
+
+            <Separator Margin="0,8" Grid.Row="2" />
+
+            <StackPanel Grid.Row="3" Margin="0,0,0,8">
+                <ui:TextBox PlaceholderText="Search mods..." Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="4,0,12,0" />
             </StackPanel>
 
-            <WrapPanel Orientation="Horizontal" Grid.Row="3" Margin="0,0,0,8">
-                <ToggleButton 
-                        Content="All"
-                        IsChecked="{Binding ShowAll}"
-                        Margin="4"
-                        Padding="12,6"
-                        Command="{Binding FilterAllCommand}"/>
+            <WrapPanel Orientation="Horizontal" Grid.Row="4" Margin="0,0,0,8">
+                <WrapPanel.Resources>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                        <Setter Property="Margin" Value="4"/>
+                        <Setter Property="Padding" Value="12,6"/>
+                        <Setter Property="IsChecked" Value="False"/>
+                        <Setter Property="Command" Value="{Binding DataContext.SetFilterCommand, RelativeSource={RelativeSource AncestorType=ui:UiPage}}"/>
+                    </Style>
+                </WrapPanel.Resources>
 
-                <ToggleButton 
-                        Content="Color Mods"
-                        IsChecked="{Binding ShowColorMods}"
-                        Margin="4"
-                        Padding="12,6"
-                        Command="{Binding FilterColorModsCommand}"/>
+                <ToggleButton Content="All" CommandParameter="{x:Null}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="{x:Null}">
+                                    <Setter Property="IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
 
-                <ToggleButton 
-                        Content="Custom Themes"
-                        IsChecked="{Binding ShowCustomThemes}"
-                        Margin="4"
-                        Padding="12,6"
-                        Command="{Binding FilterCustomThemesCommand}"/>
+                <ToggleButton Content="Color Mods" CommandParameter="{x:Static enums:ModType.ColorMod}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="{x:Static enums:ModType.ColorMod}">
+                                    <Setter Property="IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ToggleButton Content="Custom Themes" CommandParameter="{x:Static enums:ModType.CustomTheme}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="{x:Static enums:ModType.CustomTheme}">
+                                    <Setter Property="IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ToggleButton Content="Misc Mods" CommandParameter="{x:Static enums:ModType.MiscMod}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="{x:Static enums:ModType.MiscMod}">
+                                    <Setter Property="IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
 
-                <ToggleButton 
-                        Content="Misc Mods"
-                        IsChecked="{Binding ShowMiscMods}"
-                        Margin="4"
-                        Padding="12,6"
-                        Command="{Binding FilterMiscModsCommand}"/>
+                <ToggleButton Content="SkyBox" CommandParameter="{x:Static enums:ModType.SkyBox}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="{x:Static enums:ModType.SkyBox}">
+                                    <Setter Property="IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
 
-                <ToggleButton 
-                        Content="SkyBox"
-                        IsChecked="{Binding ShowSkyBox}"
-                        Margin="4"
-                        Padding="12,6"
-                        Command="{Binding FilterSkyBoxCommand}"/>
-
-                <ToggleButton 
-                        Content="Cursor"
-                        IsChecked="{Binding ShowCursor}"
-                        Margin="4"
-                        Padding="12,6"
-                        Command="{Binding FilterCursorCommand}"/>
-
-                <ToggleButton 
-                        Content="Avatar Editor"
-                        IsChecked="{Binding ShowAvatarEditor}"
-                        Margin="4"
-                        Padding="12,6"
-                        Command="{Binding FilterAvatarEditorCommand}"/>
+                <ToggleButton Content="Cursor" CommandParameter="{x:Static enums:ModType.Cursor}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="{x:Static enums:ModType.Cursor}">
+                                    <Setter Property="IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <ToggleButton Content="Avatar Editor" CommandParameter="{x:Static enums:ModType.AvatarEditor}">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveFilter}" Value="{x:Static enums:ModType.AvatarEditor}">
+                                    <Setter Property="IsChecked" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
             </WrapPanel>
 
-            <ItemsControl ItemsSource="{Binding Mods}" Grid.Row="4">
+            <ItemsControl ItemsSource="{Binding Mods}" Grid.Row="5">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal"/>
+                        <UniformGrid Columns="3" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Width="271"
+                        <Border     VerticalAlignment="Top"
+                                    Height="250"
                                     Margin="4"
                                     Background="{DynamicResource NormalDarkAndLightBackground}"
                                     CornerRadius="4">
@@ -126,7 +195,7 @@
 
                                 <Border Grid.Row="0" CornerRadius="8,8,0,0">
                                     <Grid>
-                                        <Viewbox Stretch="UniformToFill"
+                                        <Viewbox     Stretch="UniformToFill"
                                                      StretchDirection="Both"
                                                      HorizontalAlignment="Center"
                                                      VerticalAlignment="Center">

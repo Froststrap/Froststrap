@@ -60,9 +60,8 @@
         </controls:OptionControl>
         <controls:OptionControl 
             Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
-            Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}"
-            Visibility="Collapsed">
-        <ui:ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
+            Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
+            <ui:ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <ui:CardExpander Margin="0,8,0,0" IsExpanded="True">

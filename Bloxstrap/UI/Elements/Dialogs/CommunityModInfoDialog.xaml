@@ -3,158 +3,84 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="clr-namespace:Bloxstrap.UI.Elements.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Bloxstrap.UI.Elements.Dialogs"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:models="clr-namespace:Bloxstrap.UI.ViewModels"
-    xmlns:control="clr-namespace:Bloxstrap.UI.Elements.Controls"
-    xmlns:resources="clr-namespace:Bloxstrap.Resources"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Mod Information"
-    MaxWidth="750"
-    MaxHeight="290"
+    Width="750" 
+    SizeToContent="Height"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ResizeMode="NoResize"
     ExtendsContentIntoTitleBar="True"
-    WindowStartupLocation="CenterOwner"
-    mc:Ignorable="d">
-    <Grid Background="{DynamicResource ApplicationBackground}">
+    WindowStartupLocation="CenterOwner">
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ui:TitleBar
-            Title="Mod Information"
-            Grid.Row="0"
-            CanMaximize="False"
-            ShowMaximize="False"
-            Icon="pack://application:,,,/Bloxstrap.ico"
-            Padding="8"
-            ShowMinimize="False" />
-        
-        <Grid Grid.Row="1" Margin="8,8,8,4" >
+        <ui:TitleBar Grid.Row="0" Padding="8" Title="Mod Information" CanMaximize="False" Icon="pack://application:,,,/Bloxstrap.ico" />
+
+        <Grid Grid.Row="1" Margin="16,0,16,16">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="260"/>
             </Grid.ColumnDefinitions>
 
-            <Border Grid.Column="0"
-                    CornerRadius="8"
-                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                    Padding="8"
-                    Margin="0,0,12,0"
-                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                    BorderThickness="1"
-                    VerticalAlignment="Top">
-                <Grid MinHeight="200">
-                    <Image Source="{Binding Mod.ThumbnailImage}"
-                           Stretch="Uniform" 
-                           RenderOptions.BitmapScalingMode="HighQuality"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="0" Margin="0,0,16,0">
+                <ui:Card Padding="0" Height="180" ClipToBounds="True" VerticalAlignment="Top">
+                    <Grid>
+                        <Image Source="{Binding Mod.ThumbnailImage}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <ui:ProgressRing IsIndeterminate="True" Visibility="{Binding Mod.IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                    </Grid>
+                </ui:Card>
 
-                    <ui:ProgressRing
-                        Visibility="{Binding Mod.IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        IsIndeterminate="True"
-                        Width="32"
-                        Height="32"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
-                </Grid>
-            </Border>
-
-            <StackPanel Grid.Column="1">
-                <TextBlock Text="{Binding Mod.Name}"
-                       FontSize="28"
-                       FontWeight="Bold"
-                       TextWrapping="Wrap"/>
-
-                <TextBlock Text="{Binding Mod.ModTypeDisplay, StringFormat='Mod Type: {0}'}"
-                       FontSize="14"
-                       TextWrapping="Wrap"
-                       Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
-
-                <TextBlock Text="{Binding Mod.Author, StringFormat='Made By: {0}'}"
-                       FontSize="12"
-                       TextWrapping="Wrap"
-                       Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
-
-                <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code: {0}'}"
-                       FontSize="12" Visibility="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}"
-                       Foreground="{StaticResource TextFillColorSecondaryBrush}"/>
-
-                <Grid Margin="0,8,0,4">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <ui:ProgressBar Grid.ColumnSpan="2" Grid.Row="0"
-                                Margin="0,8"
-                                Value="{Binding Mod.DownloadProgress}" 
-                                Maximum="100"
-                                Height="6"
-                                Visibility="{Binding Mod.IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
-                    <ui:Button Grid.Column="0" Grid.Row="1"
-                                Height="34" 
-                                HorizontalAlignment="Stretch" 
-                                Appearance="Primary" 
-                                Command="{Binding Mod.DownloadCommand}" 
-                                CommandParameter="{Binding Mod}">
-                        <StackPanel Orientation="Horizontal">
-                            <ui:SymbolIcon Filled="True" FontSize="18" Margin="0,0,4,0" Symbol="ArrowDownload24" />
-                            <TextBlock Text="Download" Foreground="{StaticResource TextFillColorSecondaryBrush}" />
-                        </StackPanel>
-                    </ui:Button>
-                </Grid>
-
-                <StackPanel Visibility="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="Preview"
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Margin="0,0,0,8"/>
-
-                    <ScrollViewer Height="105" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding GlyphItems}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Width="52" Height="52" Margin="4"
-                                         Padding="4"
-                                         Background="{DynamicResource PrimaryBackgroundColor}"
-                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                                         BorderThickness="1"
-                                         CornerRadius="6">
-                                        <Viewbox Stretch="Uniform">
-                                            <Path Data="{Binding Data}" Margin="0,0,10,8" Fill="{Binding ColorBrush}"/>
-                                        </Viewbox>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-
-                    <ui:ProgressRing
-                     Visibility="{Binding IsLoadingGlyphs, Converter={StaticResource BooleanToVisibilityConverter}}"
-                     IsIndeterminate="True"
-                     Width="40"
-                     Height="40"
-                     HorizontalAlignment="Center"
-                     VerticalAlignment="Center"
-                     Margin="0,16,0,0"/>
-                </StackPanel>
+                <ui:Card Margin="0,12,0,0" Padding="12" VerticalAlignment="Top" Visibility="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <TextBlock Text="Glyph Preview" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
+                            <Grid>
+                                <ItemsControl ItemsSource="{Binding GlyphItems}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel HorizontalAlignment="Center"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Width="42" Height="42" Margin="4" Padding="4" CornerRadius="6" Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                                <Viewbox Margin="4">
+                                                    <Path Data="{Binding Data}" Fill="{Binding ColorBrush}" Margin="0,24,5,0"/>
+                                                </Viewbox>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <ui:ProgressRing IsIndeterminate="True" Visibility="{Binding IsLoadingGlyphs, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </Grid>
+                        </ScrollViewer>
+                    </StackPanel>
+                </ui:Card>
             </StackPanel>
+
+            <ui:Card Grid.Column="1" VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock Text="{Binding Mod.Name}" FontSize="28" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                    <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code is {0}'}" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                    
+                    <ui:Badge Content="{Binding Mod.ModTypeDisplay}" Appearance="Primary" HorizontalAlignment="Left" Margin="0,8,0,0"/>
+
+                    <Separator Margin="0,4" Background="{ui:ThemeResource ControlStrokeColorDefaultBrush}"/>
+
+                    <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding Mod.Description}" TextWrapping="Wrap" Margin="0,0,0,24" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+
+                    <StackPanel VerticalAlignment="Bottom">
+                        <ui:ProgressBar Value="{Binding Mod.DownloadProgress}" Margin="0,0,0,8" Height="4" Visibility="{Binding Mod.IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <ui:Button Icon="ArrowDownload24" Content="Download" Appearance="Primary" HorizontalAlignment="Stretch" Height="40" Command="{Binding Mod.DownloadCommand}" CommandParameter="{Binding Mod}"/>
+                    </StackPanel>
+                </StackPanel>
+            </ui:Card>
         </Grid>
     </Grid>
 </base:WpfUiWindow>
