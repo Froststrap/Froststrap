@@ -21,9 +21,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
         public ICommand OpenModGeneratorCommand => new RelayCommand(OpenModGenerator);
 
-        public event EventHandler? ReloadModListEvent;
-        private void ReloadModList() => ReloadModListEvent?.Invoke(this, EventArgs.Empty);
-
         [ObservableProperty]
         private ObservableCollection<CommunityMod> _mods = new();
 
@@ -354,8 +351,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     {
                         await ApplySkyboxFixAsync();
                     }
-
-                    ReloadModList();
 
                     Frontend.ShowMessageBox(
                         $"Mod '{mod.Name}' installed successfully!",
