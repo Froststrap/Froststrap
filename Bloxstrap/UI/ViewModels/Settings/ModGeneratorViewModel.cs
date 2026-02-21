@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
-using Microsoft.Win32;
 using System.Collections.ObjectModel;
-using System.IO.Compression;
 using Bloxstrap.Integrations;
 using System.Windows;
 using System.Windows.Input;
@@ -21,9 +19,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand OpenModsCommand => new RelayCommand(OpenMods);
         public ICommand OpenCommunityModsCommand => new RelayCommand(OpenCommunityMods);
         public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
-
-        public event EventHandler? ReloadModListEvent;
-        private void ReloadModList() => ReloadModListEvent?.Invoke(this, EventArgs.Empty);
 
         public ModGeneratorViewModel()
         {
@@ -45,13 +40,41 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 {
                     UpdateSolidColorFromHex(value);
                     UpdateGlyphColors();
+                    OnPropertyChanged(nameof(SelectedMediaColor));
                     StatusText = "Ready to generate mod.";
-                    OnSelectedFontChanged();
                 }
                 else
                 {
                     StatusText = "Enter a valid hex color (e.g., #FF0000)";
                 }
+            }
+        }
+
+        public Color SelectedMediaColor
+        {
+            get => Color.FromRgb(_solidColor.R, _solidColor.G, _solidColor.B);
+            set
+            {
+                _solidColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
+                _solidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+
+                OnPropertyChanged(nameof(SolidColorHex));
+                OnPropertyChanged(nameof(SelectedMediaColor));
+                OnPropertyChanged(nameof(CanGenerateMod));
+
+                UpdateGlyphColors();
+                StatusText = "Ready to generate mod.";
+            }
+        }
+
+        private SolidColorBrush _previewBrush = new(Colors.White);
+        public SolidColorBrush PreviewBrush
+        {
+            get => _previewBrush;
+            set
+            {
+                _previewBrush = value;
+                OnPropertyChanged(nameof(PreviewBrush));
             }
         }
 
@@ -101,7 +124,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         private ObservableCollection<GlyphItem> _glyphItems = new();
         public ObservableCollection<GlyphItem> GlyphItems { get => _glyphItems; set { _glyphItems = value; OnPropertyChanged(nameof(GlyphItems)); } }
 
-        public ICommand OpenColorPickerCommand => new RelayCommand(OpenColorPicker);
         public ICommand GenerateModCommand => new AsyncRelayCommand(GenerateModAsync, () => CanGenerateMod);
 
         private string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
@@ -149,9 +171,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
         private async Task DownloadFontFilesAsync(string fontDir)
         {
             string[] fontUrls = {
-        "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
-        "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
-    };
+                "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
+                "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
+            };
 
             using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             foreach (var url in fontUrls)
@@ -207,22 +229,15 @@ namespace Bloxstrap.UI.ViewModels.Settings
         private async Task LoadGlyphPreviewsAsync(string fontPath)
         {
             if (!File.Exists(fontPath)) return;
-
             if (!IsFileReady(fontPath)) return;
 
             var glyphItems = new ObservableCollection<GlyphItem>();
-
-            var colorBrush = new SolidColorBrush(Color.FromArgb(
-                _solidColor.A, _solidColor.R, _solidColor.G, _solidColor.B));
-            colorBrush.Freeze();
+            UpdateGlyphColors();
 
             try
             {
                 GlyphTypeface typeface = new GlyphTypeface(new Uri(fontPath, UriKind.Absolute));
-
-                var characterCodes = typeface.CharacterToGlyphMap.Keys
-                    .OrderByDescending(c => c)
-                    .ToList();
+                var characterCodes = typeface.CharacterToGlyphMap.Keys.OrderByDescending(c => c).ToList();
 
                 foreach (var characterCode in characterCodes)
                 {
@@ -234,7 +249,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         try
                         {
                             Geometry geometry = typeface.GetGlyphOutline(glyphIndex, 40, 40);
-
                             var bounds = geometry.Bounds;
                             var translate = new TranslateTransform(
                                 (50 - bounds.Width) / 2 - bounds.X,
@@ -246,10 +260,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
                             glyphItems.Add(new GlyphItem
                             {
                                 Data = geometry,
-                                ColorBrush = colorBrush
+                                ColorBrush = PreviewBrush // Shared brush strategy
                             });
                         }
-                        catch { /* Skip malformed glyphs */ }
+                        catch { }
                     });
                 }
 
@@ -287,42 +301,30 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         () => SafeExtract(contentZip, contentDir)
                     );
 
-                    StatusText = "Recoloring assets (this may take a moment)...";
+                    StatusText = "Recoloring assets...";
                     var mappings = await ModGenerator.LoadMappingsAsync();
 
-                    // Perform recoloring
                     ModGenerator.RecolorAllPngs(TempRoot, _solidColor, mappings, ColorCursors, ColorShiftlock, ColorEmoteWheel);
                     await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor);
 
-                    StatusText = "Cleaning up unnecessary files...";
-
-                    // 1. Build the whitelist of paths to keep
+                    StatusText = "Cleaning up...";
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                    foreach (var entry in mappings.Values) preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, Path.Combine(entry))));
 
-                    // Keep mapped files
-                    foreach (var entry in mappings.Values)
-                    {
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, Path.Combine(entry))));
-                    }
-
-                    // Keep Fonts (BuilderIcons)
                     string builderIconsFontDir = Path.Combine(TempRoot, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
                     if (Directory.Exists(builderIconsFontDir))
                     {
                         preservePaths.Add(Path.GetFullPath(builderIconsFontDir));
-                        foreach (var fontFile in Directory.GetFiles(builderIconsFontDir, "*.*"))
-                            preservePaths.Add(Path.GetFullPath(fontFile));
+                        foreach (var fontFile in Directory.GetFiles(builderIconsFontDir, "*.*")) preservePaths.Add(Path.GetFullPath(fontFile));
                     }
 
-                    // Keep Optional UI elements
                     if (ColorCursors)
                     {
                         preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\Cursors\KeyboardMouse\IBeamCursor.png")));
                         preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\Cursors\KeyboardMouse\ArrowCursor.png")));
                         preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\Cursors\KeyboardMouse\ArrowFarCursor.png")));
                     }
-                    if (ColorShiftlock)
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\MouseLockedCursor.png")));
+                    if (ColorShiftlock) preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\MouseLockedCursor.png")));
                     if (ColorEmoteWheel)
                     {
                         string emotesDir = Path.Combine(TempRoot, @"content\textures\ui\Emotes\Large");
@@ -330,107 +332,52 @@ namespace Bloxstrap.UI.ViewModels.Settings
                         foreach (var e in emoteFiles) preservePaths.Add(Path.GetFullPath(Path.Combine(emotesDir, e)));
                     }
 
-                    // 2. Define the deletion logic
                     void DeleteExcept(string dir)
                     {
                         foreach (var file in Directory.GetFiles(dir))
-                        {
-                            if (!preservePaths.Contains(Path.GetFullPath(file)))
-                            {
-                                try { File.Delete(file); } catch { }
-                            }
-                        }
+                            if (!preservePaths.Contains(Path.GetFullPath(file))) try { File.Delete(file); } catch { }
 
                         foreach (var subDir in Directory.GetDirectories(dir))
                         {
-                            // If the directory itself isn't in preservePaths, we check its contents
-                            // unless you add parent folders to preservePaths, we just recurse
                             DeleteExcept(subDir);
-
-                            // If directory is now empty and not whitelisted, delete it
-                            try
-                            {
-                                if (!Directory.EnumerateFileSystemEntries(subDir).Any() && !preservePaths.Contains(Path.GetFullPath(subDir)))
-                                    Directory.Delete(subDir);
-                            }
-                            catch { }
+                            try { if (!Directory.EnumerateFileSystemEntries(subDir).Any() && !preservePaths.Contains(Path.GetFullPath(subDir))) Directory.Delete(subDir); } catch { }
                         }
                     }
 
-                    // Execute cleanup
                     if (Directory.Exists(luaDir)) DeleteExcept(luaDir);
                     if (Directory.Exists(extraDir)) DeleteExcept(extraDir);
                     if (Directory.Exists(contentDir)) DeleteExcept(contentDir);
 
-                    // 3. Create info.json
                     string infoPath = Path.Combine(TempRoot, "info.json");
-                    var infoData = new
-                    {
-                        FroststrapVersion = App.Version,
-                        RobloxVersion = vName,
-                        RobloxVersionHash = vHash,
-                        ColorsUsed = new { SolidColor = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}" }
-                    };
+                    var infoData = new { FroststrapVersion = App.Version, RobloxVersion = vName, RobloxVersionHash = vHash, ColorsUsed = new { SolidColor = SolidColorHex } };
                     await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true }));
 
                     StatusText = "Packaging...";
 
                     if (IncludeModifications)
                     {
-                        string folderName = SolidColorHex;
+                        string folderName = SolidColorHex.Replace("#", "");
                         string targetFolder = Path.Combine(Paths.Modifications, folderName);
-
-                        if (!Directory.Exists(targetFolder))
-                            Directory.CreateDirectory(targetFolder);
+                        if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
 
                         int copiedFiles = 0;
                         var itemsToCopy = new List<string> { Path.Combine(TempRoot, "ExtraContent"), Path.Combine(TempRoot, "content"), infoPath };
 
                         foreach (var item in itemsToCopy)
                         {
-                            if (File.Exists(item))
-                            {
-                                string target = Path.Combine(targetFolder, Path.GetFileName(item));
-                                File.Copy(item, target, true);
-                                copiedFiles++;
-                            }
+                            if (File.Exists(item)) { File.Copy(item, Path.Combine(targetFolder, Path.GetFileName(item)), true); copiedFiles++; }
                             else if (Directory.Exists(item))
                             {
                                 foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
                                 {
-                                    string rel = Path.GetRelativePath(TempRoot, file);
-                                    string target = Path.Combine(targetFolder, rel);
-
+                                    string target = Path.Combine(targetFolder, Path.GetRelativePath(TempRoot, file));
                                     Directory.CreateDirectory(Path.GetDirectoryName(target)!);
                                     File.Copy(file, target, true);
                                     copiedFiles++;
                                 }
                             }
                         }
-                        StatusText = $"Successfully applied modifications to folder [{folderName}] ({copiedFiles} files).";
-
-                        ReloadModList();
-                    }
-                    else
-                    {
-                        var saveDialog = new SaveFileDialog { FileName = "FroststrapMod.zip", Filter = "ZIP Archives (*.zip)|*.zip" };
-                        if (saveDialog.ShowDialog() == true)
-                        {
-                            using (var archive = System.IO.Compression.ZipFile.Open(saveDialog.FileName, ZipArchiveMode.Create))
-                            {
-                                var items = new List<string> { Path.Combine(TempRoot, "ExtraContent"), Path.Combine(TempRoot, "content"), infoPath };
-                                foreach (var item in items)
-                                {
-                                    if (File.Exists(item)) archive.CreateEntryFromFile(item, Path.GetFileName(item));
-                                    else if (Directory.Exists(item))
-                                    {
-                                        foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
-                                            archive.CreateEntryFromFile(file, Path.GetRelativePath(TempRoot, file));
-                                    }
-                                }
-                            }
-                            StatusText = $"Mod saved to: {saveDialog.FileName}";
-                        }
+                        StatusText = $"Successfully applied modifications ({copiedFiles} files).";
                     }
                 });
             }
@@ -439,10 +386,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 App.Logger?.WriteException(LOG_IDENT, ex);
                 StatusText = $"Error: {ex.Message}";
             }
-            finally 
-            { 
-                IsNotGeneratingMod = true; 
-            }
+            finally { IsNotGeneratingMod = true; }
         }
 
         private void SafeExtract(string zipPath, string targetDir)
@@ -453,8 +397,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             new FastZip().ExtractZip(zipPath, targetDir, null);
         }
 
-        private bool IsValidHexColor(string hex) => !string.IsNullOrWhiteSpace(hex) &&
-            Regex.IsMatch(hex, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+        private bool IsValidHexColor(string hex) => !string.IsNullOrWhiteSpace(hex) && Regex.IsMatch(hex, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 
         private void UpdateSolidColorFromHex(string hex)
         {
@@ -464,19 +407,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         private void UpdateGlyphColors()
         {
-            var brush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(_solidColor.R, _solidColor.G, _solidColor.B));
-            brush.Freeze();
-            foreach (var item in GlyphItems) item.ColorBrush = brush;
-        }
-
-        private void OpenColorPicker()
-        {
-            var dlg = new System.Windows.Forms.ColorDialog { AllowFullOpen = true, Color = _solidColor };
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                _solidColor = dlg.Color;
-                SolidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
-            }
+            PreviewBrush.Color = Color.FromRgb(_solidColor.R, _solidColor.G, _solidColor.B);
         }
     }
 }
