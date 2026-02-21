@@ -4,24 +4,21 @@ using System.Windows;
 
 namespace Bloxstrap.UI.Elements.Settings.Pages
 {
-    /// <summary>
-    /// Interaction logic for CommunityModsPage.xaml
-    /// </summary>
-    public partial class CommunityModsPage
+    public partial class ModsPresetsPage
     {
-        private CommunityModsViewModel _viewModel = null!;
+        private ModsPresetsViewModel _viewModel = null!;
 
-        public CommunityModsPage()
+        public ModsPresetsPage()
         {
-            _viewModel = new CommunityModsViewModel();
+            _viewModel = new ModsPresetsViewModel();
             DataContext = _viewModel;
 
             _viewModel.OpenModsEvent += OpenMods;
+            _viewModel.OpenCommunityModsEvent += OpenCommunityMods;
             _viewModel.OpenModGeneratorEvent += OpenModGenerator;
-            _viewModel.OpenPresetModsEvent += OpenPresetMods;
 
             InitializeComponent();
-            App.FrostRPC?.SetPage("Community Mods");
+            App.FrostRPC?.SetPage("Preset Mods");
         }
 
         private void OpenMods(object? sender, EventArgs e)
@@ -32,19 +29,19 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             }
         }
 
+        private void OpenCommunityMods(object? sender, EventArgs e)
+        {
+            if (Window.GetWindow(this) is INavigationWindow window)
+            {
+                window.Navigate(typeof(CommunityModsPage));
+            }
+        }
+
         private void OpenModGenerator(object? sender, EventArgs e)
         {
             if (Window.GetWindow(this) is INavigationWindow window)
             {
                 window.Navigate(typeof(ModGeneratorPage));
-            }
-        }
-
-        private void OpenPresetMods(object? sender, EventArgs e)
-        {
-            if (Window.GetWindow(this) is INavigationWindow window)
-            {
-                window.Navigate(typeof(ModsPresetsPage));
             }
         }
     }

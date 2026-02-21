@@ -16,13 +16,16 @@ namespace Bloxstrap.Models.APIs.Config
         public string DownloadUrl { get; set; } = null!;
 
         [JsonPropertyName("hexcode")]
-        public string? HexCode { get; set; }
+        public string HexCode { get; set; } = null!;
 
         [JsonPropertyName("author")]
-        public string? Author { get; set; }
+        public string Author { get; set; } = null!;
+
+        [JsonPropertyName("description")]
+        public string Description { get; set; } = null!;
 
         [JsonPropertyName("thumbnail")]
-        public string? ThumbnailUrl { get; set; }
+        public string ThumbnailUrl { get; set; } = null!;
 
         [JsonPropertyName("modtype")]
         public ModType ModType { get; set; } = ModType.ColorMod;

@@ -8,141 +8,77 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
 {
     public partial class CommunityModInfoViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private CommunityMod _mod;
+        [ObservableProperty] private CommunityMod _mod;
+        [ObservableProperty] private bool _isLoadingGlyphs = false;
+        [ObservableProperty] private ObservableCollection<GlyphItem> _glyphItems = new();
 
-        [ObservableProperty]
-        private bool _isLoadingGlyphs = true;
-
-        [ObservableProperty]
-        private ObservableCollection<GlyphItem> _glyphItems = new();
-
-        private WpfUiWindow _window;
+        private readonly WpfUiWindow _window;
 
         public CommunityModInfoViewModel(CommunityMod mod, WpfUiWindow window)
         {
             _mod = mod;
             _window = window;
-            _ = LoadGlyphsAsync();
+
+            if (_mod.IsColorMod)
+                _ = LoadGlyphsAsync();
         }
 
         [RelayCommand]
+        private void Close() => _window.Close();
+
         private async Task LoadGlyphsAsync()
         {
+            IsLoadingGlyphs = true;
             try
             {
-                string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
-                string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
-
-                if (!Directory.Exists(fontDir))
-                {
-                    Directory.CreateDirectory(fontDir);
-                }
-
+                string fontDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Fonts");
+                Directory.CreateDirectory(fontDir);
                 string fontPath = Path.Combine(fontDir, "BuilderIcons-Regular.ttf");
 
                 if (!File.Exists(fontPath))
                 {
-                    try
-                    {
-                        const string fontUrl = "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf";
-
-                        App.Logger?.WriteLine("CommunityModInfoViewModel", "Downloading font from GitHub...");
-
-                        using var httpClient = new HttpClient();
-                        httpClient.Timeout = TimeSpan.FromSeconds(30);
-
-                        var response = await httpClient.GetAsync(fontUrl);
-                        response.EnsureSuccessStatusCode();
-
-                        var fontData = await response.Content.ReadAsByteArrayAsync();
-                        await File.WriteAllBytesAsync(fontPath, fontData);
-
-                        App.Logger?.WriteLine("CommunityModInfoViewModel", "Successfully downloaded BuilderIcons-Regular.ttf");
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger?.WriteException("CommunityModInfoViewModel", ex);
-                    }
+                    using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+                    var data = await httpClient.GetByteArrayAsync("https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf");
+                    await File.WriteAllBytesAsync(fontPath, data);
                 }
 
-                if (File.Exists(fontPath))
-                {
-                    await LoadGlyphsFromFontAsync(fontPath);
-                }
-                else
-                {
-                    IsLoadingGlyphs = false;
-                }
+                await GenerateGlyphPreviews(fontPath);
             }
-            catch
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException("CommunityModInfoViewModel", ex);
+            }
+            finally
             {
                 IsLoadingGlyphs = false;
             }
         }
 
-        private async Task LoadGlyphsFromFontAsync(string fontPath)
+        private async Task GenerateGlyphPreviews(string fontPath)
         {
-            try
+            var glyphTypeface = new GlyphTypeface(new Uri(fontPath));
+            var color = Colors.White;
+
+            try { color = (Color)ColorConverter.ConvertFromString(Mod.HexCode ?? "#FFFFFF"); } catch { }
+            var brush = new SolidColorBrush(color);
+            brush.Freeze();
+
+            var codes = glyphTypeface.CharacterToGlyphMap.Keys.OrderByDescending(c => c).Take(25).ToList();
+            var items = new List<GlyphItem>();
+
+            foreach (var code in codes)
             {
-                var glyphTypeface = new GlyphTypeface(new Uri(fontPath));
-                var glyphItems = new List<GlyphItem>();
-
-                SolidColorBrush colorBrush;
-                try
+                if (glyphTypeface.CharacterToGlyphMap.TryGetValue(code, out ushort index))
                 {
-                    var color = (Color)ColorConverter.ConvertFromString(Mod.HexCode ?? "#FFFFFF");
-                    colorBrush = new SolidColorBrush(color);
-                    colorBrush.Freeze();
+                    var geometry = glyphTypeface.GetGlyphOutline(index, 40, 40);
+                    geometry.Freeze();
+                    items.Add(new GlyphItem { Data = geometry, ColorBrush = brush });
                 }
-                catch
-                {
-                    colorBrush = new SolidColorBrush(Colors.White);
-                    colorBrush.Freeze();
-                }
-
-                var characterCodes = glyphTypeface.CharacterToGlyphMap.Keys
-                    .OrderByDescending(c => c)
-                    .Take(100)
-                    .ToList();
-
-                foreach (var characterCode in characterCodes)
-                {
-                    if (!glyphTypeface.CharacterToGlyphMap.TryGetValue(characterCode, out ushort glyphIndex))
-                        continue;
-
-                    var geometry = glyphTypeface.GetGlyphOutline(glyphIndex, 40, 40);
-                    var bounds = geometry.Bounds;
-                    var translate = new TranslateTransform(
-                        (50 - bounds.Width) / 2 - bounds.X,
-                        (50 - bounds.Height) / 2 - bounds.Y
-                    );
-                    geometry.Transform = translate;
-
-                    glyphItems.Add(new GlyphItem
-                    {
-                        Data = geometry,
-                        ColorBrush = colorBrush
-                    });
-                }
-
-                await App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    GlyphItems.Clear();
-                    foreach (var item in glyphItems)
-                    {
-                        GlyphItems.Add(item);
-                    }
-                    IsLoadingGlyphs = false;
-                });
             }
-            catch
-            {
-                await App.Current.Dispatcher.InvokeAsync(() =>
-                {
-                    IsLoadingGlyphs = false;
-                });
-            }
+
+            await App.Current.Dispatcher.InvokeAsync(() => {
+                GlyphItems = new ObservableCollection<GlyphItem>(items);
+            });
         }
     }
 }
