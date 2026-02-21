@@ -308,7 +308,12 @@ namespace Bloxstrap
             // check registry entries for every launch, just in case the stock bootstrapper changes it back
 
             if (IsStudioLaunch)
+            {
                 WindowsRegistry.RegisterStudio();
+
+                App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                StudioPluginManager.Sync();
+            }
             else
                 WindowsRegistry.RegisterPlayer();
 
