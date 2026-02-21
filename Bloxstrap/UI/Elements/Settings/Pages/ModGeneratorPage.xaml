@@ -13,42 +13,52 @@
     Scrollable="True"
     mc:Ignorable="d">
 
-    <Grid Margin="16">
+    <Grid Margin="0,0,14,14">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Margin="0,0,0,16">
+        <TextBlock
+            FontSize="14" Grid.Row="0"
+            Foreground="{StaticResource TextFillColorSecondaryBrush}"
+            Text="{x:Static resources:Strings.Menu_Mods_Description}"
+            TextWrapping="Wrap" />
+
+        <Grid Grid.Row="1" Margin="0,16,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <ui:CardAction Grid.Column="0" Margin="0,0,8,0" Command="{Binding OpenCommunityModsCommand}" Icon="BuildingShop20">
+            <ui:CardAction Grid.Column="0" Margin="0,0,4,0" Command="{Binding OpenCommunityModsCommand}" Icon="BuildingShop20">
                 <StackPanel>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="Community Mods" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                     <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Explore user-created mods." />
                 </StackPanel>
             </ui:CardAction>
 
-            <ui:CardAction Grid.Column="1" Margin="4,0,4,0" Command="{Binding OpenPresetModsCommand}" Icon="ReadingModeMobile24">
+            <ui:CardAction Grid.Column="1" Margin="0,0,0,0" Command="{Binding OpenPresetModsCommand}" Icon="ReadingModeMobile24">
                 <StackPanel>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="Preset Mods" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Official built-in templates." />
+                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Official built-in mods." />
                 </StackPanel>
             </ui:CardAction>
 
-            <ui:CardAction Grid.Column="2" Margin="8,0,0,0" Command="{Binding OpenModsCommand}" Icon="List24">
+            <ui:CardAction Grid.Column="2" Margin="4,0,0,0" Command="{Binding OpenModsCommand}" Icon="List24">
                 <StackPanel>
                     <TextBlock FontSize="14" FontWeight="SemiBold" Text="My Mods" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Manage your active folder." />
+                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Manage your active mods." />
                 </StackPanel>
             </ui:CardAction>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Separator Margin="0,8" Grid.Row="2" />
+
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="340" />
