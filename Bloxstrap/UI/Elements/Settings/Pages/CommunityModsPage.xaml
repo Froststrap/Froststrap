@@ -42,34 +42,31 @@
 
             <TextBlock Margin="4,0" Grid.Row="0" Text="Easily download community-made mods, Some mods, such as Dark Textures or Higher Brightness, require your in-game graphics level to be 5 or higher." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
-            <Grid Margin="4,12,12,8" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+            <Grid Margin="4,12,12,0" Grid.Row="1">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <ui:CardAction Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" Command="{Binding OpenModGeneratorCommand}" Icon="Color20">
+                <ui:CardAction Grid.Column="0" Margin="0,0,4,0" Command="{Binding OpenModGeneratorCommand}" Icon="Color20">
                     <StackPanel>
                         <TextBlock FontSize="14" Text="Mod Generator" TextWrapping="Wrap" />
-                        <TextBlock Margin="0,2,0,0" FontSize="12"  Foreground="{StaticResource TextFillColorTertiaryBrush}" Text="Generate mods easily with a single click by using a hex code color." TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12"  Foreground="{StaticResource TextFillColorTertiaryBrush}" Text="Generate mods easily with a single click." TextWrapping="Wrap" />
                     </StackPanel>
                 </ui:CardAction>
 
-                <ui:CardAction Grid.Row="0" Grid.Column="1" Margin="4,0,0,0" Command="{Binding OpenPresetModsCommand}" Icon="ReadingModeMobile24">
+                <ui:CardAction Grid.Column="1" Margin="0,0,0,0" Command="{Binding OpenPresetModsCommand}" Icon="ReadingModeMobile24">
                     <StackPanel>
                         <TextBlock FontSize="14" Text="Preset Mods" TextWrapping="Wrap" />
-                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Use our built-in mods." TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Official built-in mods." TextWrapping="Wrap" />
                     </StackPanel>
                 </ui:CardAction>
 
-                <ui:CardAction Grid.Row="1" Grid.ColumnSpan="2" Margin="0,7,0,0" VerticalAlignment="Top" Command="{Binding OpenModsCommand}" Icon="List24">
+                <ui:CardAction Grid.Column="2" Margin="4,0,0,0" VerticalAlignment="Top" Command="{Binding OpenModsCommand}" Icon="List24">
                     <StackPanel>
                         <TextBlock FontSize="14" Text="My Mods" TextWrapping="Wrap" />
-                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Change the applying order of mods." TextWrapping="Wrap" />
+                        <TextBlock Margin="0,2,0,0" FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="Manage your active mods." TextWrapping="Wrap" />
                     </StackPanel>
                 </ui:CardAction>
             </Grid>
