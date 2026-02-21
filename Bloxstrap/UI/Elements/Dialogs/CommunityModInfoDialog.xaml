@@ -5,7 +5,8 @@
     xmlns:base="clr-namespace:Bloxstrap.UI.Elements.Base"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="Mod Information"
-    Width="750" Height="480" 
+    Width="750" 
+    SizeToContent="Height"
     Background="{ui:ThemeResource ApplicationBackgroundBrush}"
     ResizeMode="NoResize"
     ExtendsContentIntoTitleBar="True"
@@ -19,31 +20,24 @@
 
         <ui:TitleBar Grid.Row="0" Padding="8" Title="Mod Information" CanMaximize="False" Icon="pack://application:,,,/Bloxstrap.ico" />
 
-        <Grid Grid.Row="1" Margin="16">
+        <Grid Grid.Row="1" Margin="16,0,16,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="320"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <StackPanel Grid.Column="0" Margin="0,0,16,0">
-                <Border CornerRadius="8" Background="{ui:ThemeResource ControlFillColorSecondaryBrush}"
-                        BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="1"
-                        Height="180" ClipToBounds="True">
+                <ui:Card Padding="0" Height="180" ClipToBounds="True" VerticalAlignment="Top">
                     <Grid>
-                        <Image Source="{Binding Mod.ThumbnailImage}" Stretch="UniformToFill" 
-                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Image Source="{Binding Mod.ThumbnailImage}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
                         <ui:ProgressRing IsIndeterminate="True" Visibility="{Binding Mod.IsLoadingThumbnail, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                     </Grid>
-                </Border>
+                </ui:Card>
 
-                <Border Margin="0,12,0,0" CornerRadius="8" Padding="12"
-                        Visibility="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Background="{ui:ThemeResource ControlFillColorDefaultBrush}"
-                        BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="1">
+                <ui:Card Margin="0,12,0,0" Padding="12" VerticalAlignment="Top" Visibility="{Binding Mod.IsColorMod, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel>
-                        <TextBlock Text="Glyph Preview" FontSize="12" FontWeight="SemiBold" 
-                                   Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" Margin="0,0,0,8"/>
-                        <ScrollViewer Height="160" VerticalScrollBarVisibility="Auto">
+                        <TextBlock Text="Glyph Preview" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
                             <Grid>
                                 <ItemsControl ItemsSource="{Binding GlyphItems}">
                                     <ItemsControl.ItemsPanel>
@@ -53,59 +47,40 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Width="42" Height="42" Margin="3" CornerRadius="6"
-                                                    Background="{ui:ThemeResource ControlFillColorTertiaryBrush}">
-                                                <Viewbox Margin="8">
-                                                    <Path Data="{Binding Data}" Fill="{Binding ColorBrush}"/>
+                                            <Border Width="42" Height="42" Margin="4" Padding="4" CornerRadius="6" Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                                <Viewbox Margin="4">
+                                                    <Path Data="{Binding Data}" Fill="{Binding ColorBrush}" Margin="0,24,5,0"/>
                                                 </Viewbox>
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <ui:ProgressRing IsIndeterminate="True" 
-                                                Visibility="{Binding IsLoadingGlyphs, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                <ui:ProgressRing IsIndeterminate="True" Visibility="{Binding IsLoadingGlyphs, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                             </Grid>
                         </ScrollViewer>
                     </StackPanel>
-                </Border>
+                </ui:Card>
             </StackPanel>
 
-            <Border Grid.Column="1" CornerRadius="8" Padding="20"
-                    Background="{ui:ThemeResource ControlFillColorSecondaryBrush}"
-                    BorderBrush="{ui:ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="1">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+            <ui:Card Grid.Column="1" VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock Text="{Binding Mod.Name}" FontSize="28" FontWeight="Bold" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" FontSize="12" />
+                    <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex Code is {0}'}" FontSize="12" />
+                    
+                    <ui:Badge Content="{Binding Mod.ModTypeDisplay}" Appearance="Primary" HorizontalAlignment="Left" Margin="0,8,0,0"/>
 
-                    <StackPanel Grid.Row="0" Margin="0,0,0,16">
-                        <TextBlock Text="{Binding Mod.Name}" FontSize="28" FontWeight="Bold" TextWrapping="Wrap"/>
-                        <ui:Badge Content="{Binding Mod.ModTypeDisplay}" Appearance="Primary" HorizontalAlignment="Left" Margin="0,4,0,0"/>
+                    <Separator Margin="0,4" Background="{ui:ThemeResource ControlStrokeColorDefaultBrush}"/>
+
+                    <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding Mod.Description}" TextWrapping="Wrap" Margin="0,0,0,24" />
+
+                    <StackPanel VerticalAlignment="Bottom">
+                        <ui:ProgressBar Value="{Binding Mod.DownloadProgress}" Margin="0,0,0,8" Height="4" Visibility="{Binding Mod.IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <ui:Button Icon="ArrowDownload24" Content="Download" Appearance="Primary" HorizontalAlignment="Stretch" Height="40" Command="{Binding Mod.DownloadCommand}" CommandParameter="{Binding Mod}"/>
                     </StackPanel>
-
-                    <StackPanel Grid.Row="1">
-                        <TextBlock Text="Details" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" 
-                                   Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
-
-                        <Separator Margin="0,16" Background="{ui:ThemeResource ControlStrokeColorDefaultBrush}"/>
-
-                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                        <TextBlock Text="Adding descriptions later, hella easy but too lazy" 
-                                   TextWrapping="Wrap" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
-                    </StackPanel>
-
-                    <StackPanel Grid.Row="2">
-                        <ui:ProgressBar Value="{Binding Mod.DownloadProgress}" Margin="0,0,0,8" Height="4"
-                                       Visibility="{Binding Mod.IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                        <ui:Button Icon="ArrowDownload24" Content="Download" Appearance="Primary" 
-                                  HorizontalAlignment="Stretch" Height="40"
-                                  Command="{Binding Mod.DownloadCommand}" CommandParameter="{Binding Mod}"/>
-                    </StackPanel>
-                </Grid>
-            </Border>
+                </StackPanel>
+            </ui:Card>
         </Grid>
     </Grid>
 </base:WpfUiWindow>

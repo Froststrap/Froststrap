@@ -63,7 +63,7 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             var brush = new SolidColorBrush(color);
             brush.Freeze();
 
-            var codes = glyphTypeface.CharacterToGlyphMap.Keys.Take(24).ToList().OrderDescending();
+            var codes = glyphTypeface.CharacterToGlyphMap.Keys.OrderByDescending(c => c).Take(25).ToList();
             var items = new List<GlyphItem>();
 
             foreach (var code in codes)
