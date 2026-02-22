@@ -1,7 +1,7 @@
 <Solution>
   <Project Path="Bloxstrap/Bloxstrap.csproj" />
   <Project Path="wpfui/src/Wpf.Ui/Wpf.Ui.csproj" />
-  <Project Path="PixiEditorColorPicker/src/ColorPicker/ColorPicker.csproj" />
+  <Project Path="ColorPicker/src/ColorPicker/ColorPicker.csproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
   </Properties>

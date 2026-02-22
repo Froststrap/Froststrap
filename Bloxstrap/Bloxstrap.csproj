@@ -111,7 +111,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\wpfui\src\Wpf.Ui\Wpf.Ui.csproj" />
-    <ProjectReference Include="..\PixiEditorColorPicker\src\ColorPicker\ColorPicker.csproj" />
+    <ProjectReference Include="..\ColorPicker\src\ColorPicker\ColorPicker.csproj" />
   </ItemGroup>
 
   <ItemGroup>
