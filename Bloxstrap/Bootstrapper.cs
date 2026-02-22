@@ -11,22 +11,19 @@
 #warning "Automatic updater debugging is enabled"
 #endif
 
-using System.ComponentModel;
-using System.Data;
-using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Shell;
-
-using Microsoft.Win32;
-
 using Bloxstrap.AppData;
 using Bloxstrap.RobloxInterfaces;
 using Bloxstrap.UI.Elements.Bootstrapper.Base;
-
 using ICSharpCode.SharpZipLib.Zip;
+using Microsoft.Win32;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Shell;
 
 namespace Bloxstrap
 {
@@ -1753,6 +1750,12 @@ namespace Bloxstrap
                 var fileTasks = new List<Task<bool>>();
                 using var semaphore = new SemaphoreSlim(8);
 
+                App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
+                if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
+                {
+                    await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
+                }
+
                 foreach (var mod in activeMods)
                 {
                     if (_cancelTokenSource.IsCancellationRequested) return true;
@@ -1846,6 +1849,35 @@ namespace Bloxstrap
                 success = success && fileResults.All(r => r);
 
                 await fontTask;
+
+                if (App.Settings.Prop.UseFastFlagManager)
+                {
+                    string source = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
+                    if (File.Exists(source))
+                    {
+                        string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                        string dest = Path.Combine(_latestVersionDirectory, rel);
+                        var info = new FileInfo(source);
+
+                        lock (currentModManifest)
+                            currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
+
+                        try
+                        {
+                            bool exists = File.Exists(dest);
+                            bool match = exists && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+
+                            if (!match)
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                                File.Copy(source, dest, true);
+                                File.SetLastWriteTime(dest, info.LastWriteTime);
+                                App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
+                            }
+                        }
+                        catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+                    }
+                }
 
                 var fileRestoreMap = new Dictionary<string, List<string>>();
 
