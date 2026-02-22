@@ -22,6 +22,9 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
         {
             App.FrostRPC?.SetPage("Roblox Settings");
 
+            if (_viewModel != null) 
+                return;
+
             var mainWindow = (MainWindow)Application.Current.MainWindow;
             mainWindow?.ShowLoading("Loading Roblox Settings...");
 
@@ -34,7 +37,7 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("RobloxSettingsPage", $"Error while loading remote data: {ex}");
+                App.Logger.WriteLine("RobloxSettingsPage::Loaded", $"Error: {ex}");
                 Frontend.ShowMessageBox($"Failed to load Roblox settings:\n\n{ex.Message}", MessageBoxImage.Error);
             }
             finally
@@ -43,8 +46,22 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             }
         }
 
-        private void ValidateUInt32(object sender, TextCompositionEventArgs e) => e.Handled = !uint.TryParse(e.Text, out _);
+        private void ValidateUInt32(object sender, TextCompositionEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                string newText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+                e.Handled = !uint.TryParse(newText, out _);
+            }
+        }
 
-        private void ValidateFloat(object sender, TextCompositionEventArgs e) => e.Handled = !Regex.IsMatch(e.Text, @"^\d*\.?\d*$");
+        private void ValidateFloat(object sender, TextCompositionEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                string newText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
+                e.Handled = !Regex.IsMatch(newText, @"^-?\d*\.?\d*$");
+            }
+        }
     }
 }

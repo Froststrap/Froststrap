@@ -16,7 +16,6 @@
     mc:Ignorable="d">
 
     <ui:UiPage.Resources>
-
         <DataTemplate x:Key="TextBoxTemplate">
             <ui:TextBox
                 Margin="0,0,5,4"
@@ -26,18 +25,13 @@
         </DataTemplate>
 
         <DataTemplate x:Key="SliderTemplate">
-            <Grid
-                Margin="0,0,0,4"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center">
+            <Grid Margin="0,0,0,4" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-
                 <Slider
                     Grid.Column="0"
-                    HorizontalAlignment="Stretch"
                     IsSnapToTickEnabled="True"
                     AutoToolTipPlacement="TopLeft" 
                     AutoToolTipPrecision="1"
@@ -45,24 +39,21 @@
                     Minimum="{Binding MinValue}"
                     TickFrequency="{Binding Step}"
                     Value="{Binding TypedValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
                 <TextBlock
                     Grid.Column="1"
-                    Width="18"
+                    Width="25"
                     Margin="6,0,0,0"
-                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
                     Text="{Binding Value}"
                     TextAlignment="Right" />
             </Grid>
         </DataTemplate>
 
         <DataTemplate x:Key="ToggleSwitchTemplate">
-            <Grid
+            <ui:ToggleSwitch 
                 Margin="0,0,0,4"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center">
-                <ui:ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding TypedValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
+                VerticalAlignment="Center" 
+                IsChecked="{Binding TypedValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </DataTemplate>
 
         <DataTemplate x:Key="ComboBoxTemplate">
@@ -71,43 +62,50 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
                 DisplayMemberPath="DisplayName"
+                SelectedValuePath="Value"
                 ItemsSource="{Binding Options}"
-                SelectedValue="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                SelectedValuePath="Value" />
+                SelectedValue="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </DataTemplate>
 
         <DataTemplate x:Key="Vector2Template">
-            <Grid
-                Margin="0,0,0,4"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center">
+            <Grid Margin="0,0,0,4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-
                 <ui:TextBox
                     Grid.Column="0"
                     Margin="0,0,4,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
                     ClearButtonEnabled="False"
-                    PreviewTextInput="ValidateFloat"
+                    PlaceholderText="X"
                     Text="{Binding VectorX, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
                 <ui:TextBox
                     Grid.Column="1"
                     Margin="4,0,0,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
                     ClearButtonEnabled="False"
-                    PreviewTextInput="ValidateFloat"
+                    PlaceholderText="Y"
                     Text="{Binding VectorY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </DataTemplate>
 
+        <Style x:Key="SettingsContentStyle" TargetType="ContentPresenter">
+            <Setter Property="ContentTemplate" Value="{StaticResource TextBoxTemplate}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Type}" Value="Slider">
+                    <Setter Property="ContentTemplate" Value="{StaticResource SliderTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Type}" Value="ToggleSwitch">
+                    <Setter Property="ContentTemplate" Value="{StaticResource ToggleSwitchTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Type}" Value="ComboBox">
+                    <Setter Property="ContentTemplate" Value="{StaticResource ComboBoxTemplate}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Type}" Value="Vector2">
+                    <Setter Property="ContentTemplate" Value="{StaticResource Vector2Template}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </ui:UiPage.Resources>
-
 
     <StackPanel Margin="0,0,14,14">
         <TextBlock
@@ -122,72 +120,37 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <ui:CardAction
-        Grid.Column="0"
-        Margin="0,0,4,0"
-        Command="{Binding ImportCommand}"
-        Icon="FolderAdd24">
-
-                <TextBlock FontSize="14" Text="Import Roblox Settings" />
+            <ui:CardAction Grid.Column="0" Margin="0,0,4,0" Command="{Binding ImportCommand}" Icon="FolderAdd24">
+                <TextBlock FontSize="14" Text="Import Settings" />
             </ui:CardAction>
-
-            <ui:CardAction
-        Grid.Column="1"
-        Margin="4,0,0,0"
-        VerticalAlignment="Top"
-        Command="{Binding OpenRobloxFolderCommand}"
-        Icon="Folder24">
-
-                <TextBlock FontSize="14" Text="Open Roblox Folder" TextWrapping="Wrap" />
+            <ui:CardAction Grid.Column="1" Margin="4,0,4,0" Command="{Binding OpenRobloxFolderCommand}" Icon="Folder24">
+                <TextBlock FontSize="14" Text="Open Folder" />
             </ui:CardAction>
-
-            <ui:CardAction
-        Grid.Column="2"
-        Margin="4,0,0,0"
-        Command="{Binding ExportCommand}"
-        Icon="Save24">
-
-                <TextBlock FontSize="14" Text="Export Roblox Settings" TextWrapping="Wrap" />
+            <ui:CardAction Grid.Column="2" Margin="4,0,0,0" Command="{Binding ExportCommand}" Icon="Save24">
+                <TextBlock FontSize="14" Text="Export Settings" />
             </ui:CardAction>
         </Grid>
 
         <controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
-            <ui:ToggleSwitch
-                Margin="5,0,0,0"
-                Padding="10,5,10,5"
-                IsChecked="{Binding ReadOnly}" />
+            <ui:ToggleSwitch Margin="5,0,0,0" IsChecked="{Binding ReadOnly}" />
         </controls:OptionControl>
-        
+
         <ItemsControl ItemsSource="{Binding Sections}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="0,8,0,0">
-
                         <Separator Margin="0,8,0,4" />
-
-                        <TextBlock
-                            FontSize="20"
-                            FontWeight="Bold"
-                            Text="{Binding Title}" />
-
+                        <TextBlock FontSize="20" FontWeight="Bold" Text="{Binding Title}" />
                         <ItemsControl ItemsSource="{Binding Controls}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <UniformGrid
-                                        MinWidth="200"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Top"
-                                        Columns="4" />
+                                    <UniformGrid Columns="4" />
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <controls:SquareCard Description="{Binding Description}" Header="{Binding Title}">
-                                        <controls:SquareCard.InnerContent>
-                                            <ContentControl Content="{Binding}" ContentTemplateSelector="{StaticResource SettingsControlSelector}" />
-                                        </controls:SquareCard.InnerContent>
+                                        <ContentPresenter Content="{Binding}" Style="{StaticResource SettingsContentStyle}" />
                                     </controls:SquareCard>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

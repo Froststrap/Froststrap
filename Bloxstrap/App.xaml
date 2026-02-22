@@ -39,7 +39,6 @@
             <converters:StringFormatConverter x:Key="StringFormatConverter" />
             <converters:RangeConverter x:Key="RangeConverter" />
             <converters:EnumNameConverter x:Key="EnumNameConverter" />
-            <converters:SettingsControlTemplateSelector x:Key="SettingsControlSelector" />
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
             <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />

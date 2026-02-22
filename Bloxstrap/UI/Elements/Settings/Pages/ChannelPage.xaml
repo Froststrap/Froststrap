@@ -120,7 +120,7 @@
 
                     <Button Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Content="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels}" Click="OpenChannelListDialog_Click" />
 
-                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Margin="0,16,0,0" Orientation="Horizontal">
+                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
                         <StackPanel.Style>
                             <Style TargetType="StackPanel">
                                 <Setter Property="Visibility" Value="Collapsed" />

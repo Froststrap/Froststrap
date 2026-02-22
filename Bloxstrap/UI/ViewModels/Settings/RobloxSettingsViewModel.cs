@@ -1,25 +1,24 @@
-﻿using Bloxstrap.Models.APIs.Config;
+﻿using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Input;
 using System.Xml.Linq;
+using System.Diagnostics;
+using System.IO;
+using Bloxstrap.Models.APIs.Config;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
     public class RobloxSettingsViewModel : INotifyPropertyChanged
     {
-        private void OpenRobloxFolder() => Process.Start("explorer.exe", Paths.Roblox);
-
-        public ICommand OpenRobloxFolderCommand => new RelayCommand(OpenRobloxFolder);
-
         private readonly RemoteDataManager _remoteDataManager;
-
         public ObservableCollection<SettingsSection> Sections { get; } = new();
-
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ICommand OpenRobloxFolderCommand => new RelayCommand(() => Process.Start("explorer.exe", Paths.Roblox));
+        public ICommand ExportCommand => new RelayCommand(ExportSettings);
+        public ICommand ImportCommand => new RelayCommand(ImportSettings);
 
         public RobloxSettingsViewModel(RemoteDataManager remoteDataManager)
         {
@@ -35,39 +34,34 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         public void LoadFromRemoteConfig()
         {
-            Sections.Clear();
-            var pageConfig = _remoteDataManager.Prop.SettingsPage;
-
-            foreach (var sectionConfig in pageConfig.Sections)
-            {
-                Sections.Add(sectionConfig);
-            }
-
-            SubscribeToControlChanges();
-            OnPropertyChanged(nameof(Sections));
-        }
-
-        private void SubscribeToControlChanges()
-        {
             foreach (var section in Sections)
             {
                 foreach (var control in section.Controls)
-                {
-                    control.PropertyChanged += OnControlPropertyChanged;
-                }
+                    control.PropertyChanged -= OnControlPropertyChanged;
             }
+
+            Sections.Clear();
+            foreach (var sectionConfig in _remoteDataManager.Prop.SettingsPage.Sections)
+            {
+                Sections.Add(sectionConfig);
+                foreach (var control in sectionConfig.Controls)
+                    control.PropertyChanged += OnControlPropertyChanged;
+            }
+
+            OnPropertyChanged(nameof(Sections));
         }
 
         private void OnControlPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is SettingsControl control && control.GBSConfig != null)
+            if (e.PropertyName == nameof(SettingsControl.Value) && sender is SettingsControl control && control.GBSConfig != null)
             {
-                IEnumerable<string> paths = control.GBSConfig.XmlPaths.Count > 0
+                IEnumerable<string> paths = control.GBSConfig.XmlPaths?.Count > 0
                     ? control.GBSConfig.XmlPaths
                     : new[] { control.GBSConfig.XmlPath };
 
                 foreach (var path in paths)
                 {
+                    if (string.IsNullOrWhiteSpace(path)) continue;
                     App.GlobalSettings.SetValue(path, control.GBSConfig.DataType, control.Value);
                 }
             }
@@ -76,47 +70,23 @@ namespace Bloxstrap.UI.ViewModels.Settings
         private void LoadCurrentValuesFromGBS()
         {
             App.GlobalSettings.Load();
-
-            foreach (var section in Sections)
+            foreach (var control in Sections.SelectMany(s => s.Controls).Where(c => c.GBSConfig != null))
             {
-                foreach (var control in section.Controls)
-                {
-                    if (control.GBSConfig != null)
-                    {
-                        IEnumerable<string> paths = control.GBSConfig.XmlPaths.Count > 0
-                            ? control.GBSConfig.XmlPaths
-                            : new[] { control.GBSConfig.XmlPath };
+                var path = control.GBSConfig.XmlPath ?? control.GBSConfig.XmlPaths.FirstOrDefault();
+                if (string.IsNullOrEmpty(path)) continue;
 
-                        if (control.Type == ControlType.ToggleSwitch && paths.Count() > 1)
-                        {
-                            // Logical AND of all values
-                            bool allTrue = paths.All(p =>
-                                App.GlobalSettings.GetValue(p, "bool")?.ToLower() == "true"
-                            );
-
-                            control.Value = allTrue.ToString().ToLower();
-                        }
-                        else if (!string.IsNullOrEmpty(control.GBSConfig.XmlPath))
-                        {
-                            var currentValue = App.GlobalSettings.GetValue(control.GBSConfig.XmlPath, control.GBSConfig.DataType);
-                            control.Value = !string.IsNullOrEmpty(currentValue) ? currentValue : GetDefaultValueForControl(control);
-                        }
-                    }
-                }
+                var val = App.GlobalSettings.GetValue(path, control.GBSConfig.DataType);
+                control.Value = !string.IsNullOrEmpty(val) ? val : GetDefault(control);
             }
         }
 
-        private string GetDefaultValueForControl(SettingsControl control)
+        private string GetDefault(SettingsControl c) => c.Type switch
         {
-            return control.Type switch
-            {
-                ControlType.Slider => control.MinValue.ToString(),
-                ControlType.ToggleSwitch => "false",
-                ControlType.ComboBox when control.Options.Count > 0 => control.Options[0].Value,
-                ControlType.Vector2 => "0,0",
-                _ => ""
-            };
-        }
+            ControlType.ToggleSwitch => "false",
+            ControlType.Vector2 => "0,0",
+            ControlType.ComboBox => c.Options.FirstOrDefault()?.Value ?? "",
+            _ => c.MinValue.ToString()
+        };
 
         public bool ReadOnly
         {
@@ -124,16 +94,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set => App.GlobalSettings.SetReadOnly(value);
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private ICommand? _exportCommand;
-        private ICommand? _importCommand;
-
-        public ICommand ExportCommand => _exportCommand ??= new RelayCommand(ExportSettings);
-        public ICommand ImportCommand => _importCommand ??= new RelayCommand(ImportSettings);
+        protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         private void ExportSettings()
         {
