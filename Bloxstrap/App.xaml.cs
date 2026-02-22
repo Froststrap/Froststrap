@@ -47,8 +47,6 @@ namespace Bloxstrap
 
         public FroststrapRichPresence RichPresence { get; private set; } = null!;
 
-        public static MemoryCleaner MemoryCleaner { get; private set; } = null!;
-
         public static bool IsActionBuild => !String.IsNullOrEmpty(BuildMetadata.CommitRef);
 
         public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);

@@ -205,22 +205,6 @@ namespace Bloxstrap.UI.Elements.ContextMenu
             ShowGameInformationWindow(placeId, universeId);
         }
 
-        private void CleanMemoryMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            const string LOG_IDENT = "MenuContainer::CleanMemoryMenuItem_Click";
-
-            try
-            {
-                _watcher.MemoryCleaner?.CleanMemory();
-                _watcher.MemoryCleaner?.TrimRobloxProcesses();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Exception during manual cleanup: {ex.Message}");
-                Frontend.ShowMessageBox($"Failed to clean memory: {ex.Message}", MessageBoxImage.Error);
-            }
-        }
-
         private void CloseRobloxMenuItem_Click(object sender, RoutedEventArgs e)
         {
             MessageBoxResult result = Frontend.ShowMessageBox(

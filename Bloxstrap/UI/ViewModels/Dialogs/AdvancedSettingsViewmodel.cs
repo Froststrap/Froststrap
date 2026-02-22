@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Bloxstrap.UI.ViewModels.Dialogs
+﻿namespace Bloxstrap.UI.ViewModels.Dialogs
 {
     public class AdvancedSettingViewModel : NotifyPropertyChangedViewModel
     {
