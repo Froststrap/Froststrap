@@ -4,8 +4,6 @@ namespace Bloxstrap.Models.Persistable
 {
     public class Settings
     {
-        // Fishstrap feature to use private channel.
-        public bool AllowCookieAccess { get; set; } = false;
 
         // Integration Page
         public bool EnableActivityTracking { get; set; } = true;
@@ -31,13 +29,8 @@ namespace Bloxstrap.Models.Persistable
 
         // Bootstrapper Page
         public bool ConfirmLaunches { get; set; } = true;
+        public bool AllowCookieAccess { get; set; } = false;
         public bool AutoCloseCrashHandler { get; set; } = false;
-        public MemoryCleanerInterval MemoryCleanerInterval { get; set; } = MemoryCleanerInterval.Never;
-        public ObservableCollection<string> UserExcludedProcesses { get; set; } = new();
-        public int RobloxTrimIntervalSeconds { get; set; } = 600;
-        // i have no idea why i set it to true :sob:
-        public bool EnableRobloxTrim { get; set; } = false;
-        public string Locale { get; set; } = "nil";
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = new List<string>();
         public bool BackgroundUpdatesEnabled { get; set; } = false;
@@ -58,6 +51,7 @@ namespace Bloxstrap.Models.Persistable
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FroststrapDialog;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconBloxstrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.Mica;
+        public string Locale { get; set; } = "nil";
         public string? SelectedCustomTheme { get; set; } = null;
         public List<GradientStops> CustomGradientStops { get; set; } = new()
         {
@@ -75,8 +69,6 @@ namespace Bloxstrap.Models.Persistable
         public string DownloadingStringFormat { get; set; } = Strings.Bootstrapper_Status_Downloading + " {0} - {1}MB / {2}MB";
         public Theme Theme { get; set; } = Theme.Default;
         public string? CustomFontPath { get; set; } = null;
-        public List<string> NavigationOrder { get; set; } = new List<string>();
-        public bool IsNavigationOrderLocked { get; set; } = true;
 
         // Settings Page
         public bool CheckForUpdates { get; set; } = true;

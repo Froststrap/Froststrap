@@ -18,13 +18,6 @@ namespace Bloxstrap.UI.Elements.Settings
     {
         private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
 
-        public static ObservableCollection<NavigationItem> MainNavigationItems { get; } = new ObservableCollection<NavigationItem>();
-        public static ObservableCollection<NavigationItem> FooterNavigationItems { get; } = new ObservableCollection<NavigationItem>();
-        public ObservableCollection<NavigationItem> NavigationItemsView { get; } = new ObservableCollection<NavigationItem>();
-
-        public static List<string> DefaultNavigationOrder { get; private set; } = new();
-        public static List<string> DefaultFooterOrder { get; private set; } = new();
-
         public MainWindow(bool showAlreadyRunningWarning)
         {
             var viewModel = new MainWindowViewModel();
@@ -58,21 +51,6 @@ namespace Bloxstrap.UI.Elements.Settings
             });
 
             App.WindowsBackdrop();
-
-            var allItems = RootNavigation.Items.OfType<NavigationItem>().ToList();
-            var allFooters = RootNavigation.Footer?.OfType<NavigationItem>().ToList() ?? new List<NavigationItem>();
-
-            MainNavigationItems.Clear();
-            foreach (var item in allItems)
-                MainNavigationItems.Add(item);
-
-            FooterNavigationItems.Clear();
-            foreach (var item in allFooters)
-                FooterNavigationItems.Add(item);
-
-            CacheDefaultNavigationOrder();
-            ReorderNavigationItemsFromSettings();
-            RebuildNavigationItems();
 
             if (lastPage != null)
                 SafeNavigate(lastPage);
@@ -125,157 +103,6 @@ namespace Bloxstrap.UI.Elements.Settings
             await Task.Delay(500); // wait for everything to finish loading
             AlreadyRunningSnackbar.Show();
         }
-
-        #region Navigation reorder & persistence helpers
-
-        private void CacheDefaultNavigationOrder()
-        {
-            DefaultNavigationOrder = MainNavigationItems
-                .Select(x => x.Tag?.ToString() ?? string.Empty)
-                .ToList();
-
-            DefaultFooterOrder = FooterNavigationItems
-                .Select(x => x.Tag?.ToString() ?? string.Empty)
-                .ToList();
-        }
-
-        private void RebuildNavigationItems()
-        {
-            RootNavigation.Items.Clear();
-            foreach (var item in MainNavigationItems)
-                RootNavigation.Items.Add(item);
-
-            if (RootNavigation.Footer == null)
-                RootNavigation.Footer = new ObservableCollection<INavigationControl>();
-
-            RootNavigation.Footer.Clear();
-            foreach (var footerItem in FooterNavigationItems)
-                RootNavigation.Footer.Add(footerItem);
-
-            NavigationItemsView.Clear();
-            foreach (var item in MainNavigationItems)
-                NavigationItemsView.Add(item);
-        }
-
-
-        public void ApplyNavigationReorder()
-        {
-            RebuildNavigationItems();
-
-            var order = MainNavigationItems
-                .Concat(FooterNavigationItems)
-                .Select(item => item.Tag?.ToString() ?? string.Empty)
-                .Where(s => !string.IsNullOrEmpty(s))
-                .ToList();
-
-            App.Settings.Prop.NavigationOrder = order;
-        }
-
-        private void ReorderNavigationItemsFromSettings()
-        {
-            if (App.Settings.Prop.NavigationOrder == null || App.Settings.Prop.NavigationOrder.Count == 0)
-                return;
-
-            var allItems = MainNavigationItems.Concat(FooterNavigationItems).ToList();
-
-            var reorderedMain = new List<NavigationItem>();
-            var reorderedFooter = new List<NavigationItem>();
-
-            foreach (var tag in App.Settings.Prop.NavigationOrder)
-            {
-                var navItem = allItems.FirstOrDefault(i => i.Tag?.ToString() == tag);
-                if (navItem != null)
-                {
-                    if (MainNavigationItems.Contains(navItem))
-                        reorderedMain.Add(navItem);
-                    else if (FooterNavigationItems.Contains(navItem))
-                        reorderedFooter.Add(navItem);
-                }
-            }
-
-            foreach (var item in MainNavigationItems)
-            {
-                if (!reorderedMain.Contains(item))
-                    reorderedMain.Add(item);
-            }
-            foreach (var item in FooterNavigationItems)
-            {
-                if (!reorderedFooter.Contains(item))
-                    reorderedFooter.Add(item);
-            }
-
-            MainNavigationItems.Clear();
-            foreach (var item in reorderedMain)
-                MainNavigationItems.Add(item);
-
-            FooterNavigationItems.Clear();
-            foreach (var item in reorderedFooter)
-                FooterNavigationItems.Add(item);
-        }
-
-        public void ResetNavigationToDefault()
-        {
-            var available = RootNavigation.Items.OfType<NavigationItem>()
-                .Concat(RootNavigation.Footer?.OfType<NavigationItem>() ?? Enumerable.Empty<NavigationItem>())
-                .ToList();
-
-            var reorderedMain = new List<NavigationItem>();
-            var reorderedFooter = new List<NavigationItem>();
-
-            foreach (var tag in DefaultNavigationOrder)
-            {
-                var navItem = available.FirstOrDefault(i => i.Tag?.ToString() == tag);
-                if (navItem != null)
-                    reorderedMain.Add(navItem);
-            }
-
-            foreach (var tag in DefaultFooterOrder)
-            {
-                var navItem = available.FirstOrDefault(i => i.Tag?.ToString() == tag);
-                if (navItem != null)
-                    reorderedFooter.Add(navItem);
-            }
-
-            foreach (var item in available)
-            {
-                if (!reorderedMain.Contains(item) && !reorderedFooter.Contains(item))
-                    reorderedMain.Add(item);
-            }
-
-            MainNavigationItems.Clear();
-            foreach (var item in reorderedMain)
-                MainNavigationItems.Add(item);
-
-            FooterNavigationItems.Clear();
-            foreach (var item in reorderedFooter)
-                FooterNavigationItems.Add(item);
-
-            RebuildNavigationItems();
-
-            App.Settings.Prop.NavigationOrder.Clear();
-        }
-
-        public int MoveNavigationItem(NavigationItem item, int direction)
-        {
-            if (item == null) return -1;
-
-            if (!MainNavigationItems.Contains(item))
-                return -1;
-
-            var container = MainNavigationItems;
-
-            int index = container.IndexOf(item);
-            int newIndex = index + direction;
-
-            if (newIndex < 0 || newIndex >= container.Count) return -1;
-
-            container.Move(index, newIndex);
-            ApplyNavigationReorder();
-
-            return newIndex;
-        }
-
-        #endregion Navigation reorder & persistence helpers
 
         #region INavigationWindow methods
 

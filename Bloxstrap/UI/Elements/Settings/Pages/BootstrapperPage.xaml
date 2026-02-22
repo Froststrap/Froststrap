@@ -44,6 +44,12 @@
             </StackPanel>
         </controls:OptionControl>
 
+        <controls:OptionControl 
+                    Header="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Title}"
+                    Description="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Description}">
+            <ui:ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
+        </controls:OptionControl>
+
         <controls:OptionControl
             Header="{x:Static resources:Strings.Menu_Behaviour_OldRobloxIcon_Title}"
             Description="{x:Static resources:Strings.Menu_Behaviour_OldRobloxIcon_Description}">
@@ -126,157 +132,6 @@
             Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}">
             <ui:ToggleSwitch IsChecked="{Binding BackgroundUpdates, Mode=TwoWay}" />
         </controls:OptionControl>
-
-        <ui:CardExpander Margin="0,8,0,0">
-            <ui:CardExpander.Header>
-                <StackPanel Grid.Column="0">
-                    <TextBlock FontSize="14" Text="Memory Optimization" />
-                    <TextBlock FontSize="12" Text="Optimizes memory usage to potentially improve performance and stability." Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                </StackPanel>
-            </ui:CardExpander.Header>
-
-            <StackPanel>
-                <controls:OptionControl 
-                    Header="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Title}"
-                    Description="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Description}">
-                    <ui:ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
-                </controls:OptionControl>
-                
-                <controls:OptionControl
-                    Description="Trims Roblox memory to reduce usage."
-                    Header="Memory Trim">
-                    <ui:ToggleSwitch IsChecked="{Binding EnableRobloxTrim, Mode=TwoWay}" />
-                </controls:OptionControl>
-
-                <controls:OptionControl 
-                    Visibility="{Binding EnableRobloxTrim, Converter={StaticResource BooleanToVisibilityConverter}}"
-                    Description="Sets how often (in seconds) Roblox memory is trimmed. Lower values use more CPU."
-                    Header="Memory Trim Interval">
-                    <ui:TextBox Text="{Binding RobloxTrimSeconds, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="150" />
-                </controls:OptionControl>
-
-                <controls:OptionControl
-                    Description="Cleans your system memory. Uses process exclusions if configured."
-                    Header="System Memory Cleaner">
-                    <ComboBox 
-                        Width="200" 
-                        Padding="10,5,10,5" 
-                        ItemsSource="{Binding MemoryCleanerIntervals, Mode=OneTime}" 
-                        SelectedItem="{Binding MemoryCleanerInterval, Mode=TwoWay}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
-                </controls:OptionControl>
-
-                <ui:CardExpander Margin="0,8,0,0" Visibility="{Binding MemoryCleanerExclusionsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <ui:CardExpander.Header>
-                        <StackPanel Grid.Column="0">
-                            <TextBlock FontSize="14" Text="Process Exclusions" />
-                            <TextBlock FontSize="12" Text="Exclude processes from memory cleaning." Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                        </StackPanel>
-                    </ui:CardExpander.Header>
-
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="250" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <ListBox 
-                            x:Name="ProcessExclusionsListBox"
-                            Height="300" 
-                            Grid.Row="0" 
-                            Grid.Column="0" 
-                            Margin="0,2,4,0" 
-                            ItemsSource="{Binding UserExcludedProcesses, Mode=OneWay}"
-                            SelectedItem="{Binding SelectedProcess, Mode=TwoWay}"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center" Margin="4,1" TextTrimming="CharacterEllipsis" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-
-                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="4,0,0,0">
-                            <TextBlock Text="Add Process Exclusion" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-
-                            <ui:TextBox 
-                                x:Name="ProcessNameTextBox"
-                                Margin="0,4,0,0" 
-                                PlaceholderText="Enter process name (e.g., notepad)"
-                                Text="{Binding NewProcessName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                            <Grid Margin="0,8,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <ui:Button Grid.Column="0"
-                                    Margin="0,0,4,0" 
-                                    Icon="Add28" 
-                                    Content="Add Exclusion" 
-                                    HorizontalAlignment="Stretch"
-                                    Click="AddProcessExclusion_Click" />
-                            </Grid>
-
-                            <StackPanel Margin="0,16,0,0">
-                                <StackPanel.Style>
-                                    <Style TargetType="StackPanel">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsProcessSelected}" Value="False">
-                                                <Setter Property="Visibility" Value="Collapsed" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </StackPanel.Style>
-
-                                <TextBlock Text="Edit Selected Process" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-
-                                <ui:TextBox 
-                                    x:Name="EditProcessNameTextBox"
-                                    Margin="0,4,0,0" 
-                                    PlaceholderText="Edit process name"
-                                    Text="{Binding EditProcessName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-
-                                <Grid Margin="0,8,0,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <ui:Button Grid.Column="0"
-                                        Margin="0,0,4,0" 
-                                        Icon="Save28" 
-                                        Content="Save Changes" 
-                                        HorizontalAlignment="Stretch"
-                                        Click="SaveProcessEdit_Click" />
-                                    
-                                    <ui:Button Grid.Column="1"
-                                        Margin="4,0,0,0" 
-                                        Icon="Delete28" 
-                                        Content="Remove Selected" 
-                                        HorizontalAlignment="Stretch" 
-                                        Appearance="Danger" 
-                                        Click="RemoveSelectedProcessExclusion_Click" />
-                                </Grid>
-                            </StackPanel>
-
-                            <TextBlock 
-                                Margin="0,16,0,0"
-                                FontSize="11" 
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="Excluded processes will not have their memory cleaned. Process names are case-insensitive."
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </Grid>
-                </ui:CardExpander>
-            </StackPanel>
-        </ui:CardExpander>
 
         <ui:CardExpander Grid.Row="1" Margin="0,8,0,0" IsExpanded="True">
             <ui:CardExpander.Header>

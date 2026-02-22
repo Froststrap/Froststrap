@@ -163,43 +163,6 @@
             <ComboBox Width="200" Padding="10,5,10,5" ItemsSource="{Binding Languages, Mode=OneTime}" Text="{Binding SelectedLanguage, Mode=TwoWay}" />
         </controls:OptionControl>
 
-        <ui:CardExpander Margin="0,8,0,0">
-            <ui:CardExpander.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0">
-                        <TextBlock FontSize="14" Text="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_Title}" />
-                        <TextBlock FontSize="12" Text="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_Description}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                    </StackPanel>
-                </Grid>
-            </ui:CardExpander.Header>
-
-            <Grid Margin="0,8,0,0" MinHeight="325">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <ListBox x:Name="ListBoxNavigationItems" Grid.Row="0" Margin="0,0,0,8" SelectedIndex="0" HorizontalContentAlignment="Stretch">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Content}" Padding="4,2"  />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,0" HorizontalAlignment="Left">
-                    <Button x:Name="MoveUpButton" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_MoveUp}" Click="MoveUp_Click" Margin="0,0,8,0"  />
-                    <Button x:Name="MoveDownButton" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_MoveDown}" Click="MoveDown_Click" Margin="0,0,8,0"  />
-                    <Button x:Name="ResetToDefaultButton" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_ResetToDefault}" Click="ResetOrder_Click" Margin="0,0,8,0"  />
-                    <ToggleButton x:Name="ToggleLockOrder" Content="{x:Static resources:Strings.Menu_Appearance_MenuAdjustment_LockOrder}" Checked="LockToggleButton_Checked" Unchecked="LockToggleButton_Unchecked"  />
-                </StackPanel>
-            </Grid>
-        </ui:CardExpander>
-
         <Separator Margin="0,8,0,4"/>
 
         <Grid>
