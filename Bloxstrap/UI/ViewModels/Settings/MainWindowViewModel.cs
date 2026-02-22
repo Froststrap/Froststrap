@@ -9,7 +9,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ICommand OpenAboutCommand => new RelayCommand(OpenAbout);
         public ICommand OpenAccountManagerCommand => new RelayCommand(OpenAccountManager);
         public ICommand SaveSettingsCommand => new RelayCommand(SaveSettings);
-        public ICommand SaveAndLaunchSettingsCommand => new RelayCommand(SaveAndLaunchSettings);
+        public ICommand SaveAndLaunchPlayerCommand => new RelayCommand(() => SaveAndLaunch("player"));
+        public ICommand SaveAndLaunchStudioCommand => new RelayCommand(() => SaveAndLaunch("studio"));
         public ICommand RestartAppCommand => new RelayCommand(RestartApp);
         public ICommand CloseWindowCommand => new RelayCommand(CloseWindow);
 
@@ -87,11 +88,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
             RequestSaveNoticeEvent?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SaveAndLaunchSettings()
+        public void SaveAndLaunch(string mode)
         {
             SaveSettings();
-            if (!App.LaunchSettings.TestModeFlag.Active) // test mode already launches an instance
-                Process.Start(Paths.Application, "-player");
+
+            if (!App.LaunchSettings.TestModeFlag.Active)
+                Process.Start(Paths.Application, $"-{mode.ToLower()}");
             else
                 CloseWindow();
         }

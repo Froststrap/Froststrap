@@ -69,7 +69,6 @@
                     <StackPanel>
                         <TextBlock
                             FontSize="14"
-                            
                             Text="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}" />
                     </StackPanel>
                 </ui:CardAction>
@@ -80,8 +79,6 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-
-
 
                     <!--  Settings Button  -->
                     <ui:CardAction
@@ -101,7 +98,6 @@
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 FontSize="13"
-                                
                                 Text="{x:Static resources:Strings.Common_Settings}" />
                         </StackPanel>
                     </ui:CardAction>
@@ -114,7 +110,6 @@
                         Margin="162,8,10,0"
                         VerticalAlignment="Top"
                         Command="{Binding LaunchRobloxStudioCommand, Mode=OneTime}"
-
                         Icon="TextBulletListSquareToolbox20"
                         IconFilled="False"
                         TabIndex="2">
@@ -122,7 +117,6 @@
                             <TextBlock
                                 HorizontalAlignment="Center"
                                 FontSize="13"
-                                
                                 Text="{x:Static resources:Strings.Common_Studio}" />
                         </StackPanel>
                     </ui:CardAction>
