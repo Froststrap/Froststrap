@@ -102,7 +102,6 @@
     </PackageReference>
 	<PackageReference Include="AvalonEdit" Version="6.3.1.120" />
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-	<PackageReference Include="PixiEditor.ColorPicker" Version="3.4.2.2" />
 	<PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />
 	<PackageReference Include="PuppeteerSharp" Version="21.1.1" />
     <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
@@ -112,6 +111,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\wpfui\src\Wpf.Ui\Wpf.Ui.csproj" />
+    <ProjectReference Include="..\PixiEditorColorPicker\src\ColorPicker\ColorPicker.csproj" />
   </ItemGroup>
 
   <ItemGroup>
