@@ -1689,13 +1689,11 @@ namespace Bloxstrap
             bool success = true;
 
             SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
-
             App.Logger.WriteLine(LOG_IDENT, "Checking file mods...");
 
             File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
 
-            List<string> modFolderFiles = new();
-
+            var currentModManifest = new Dictionary<string, ModFileEntry>();
             Directory.CreateDirectory(Paths.Modifications);
 
             try
@@ -1708,23 +1706,14 @@ namespace Bloxstrap
                             .OrderByDescending(x => x.Priority)
                             .ToList();
 
-                string? customFontModName = null;
-                foreach (var mod in activeMods)
-                {
-                    string potentialPath = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf");
-                    if (File.Exists(potentialPath))
-                    {
-                        customFontModName = mod.FolderName;
-                        break;
-                    }
-                }
+                string? customFontModName = activeMods
+                    .FirstOrDefault(mod => File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))?.FolderName;
 
                 var fontTask = Task.Run(() =>
                 {
                     if (customFontModName != null)
                     {
                         App.Logger.WriteLine(LOG_IDENT, "Begin font check");
-
                         string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
                         string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
 
@@ -1740,8 +1729,6 @@ namespace Bloxstrap
                             string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
 
                             if (File.Exists(modFilepath)) return;
-
-                            App.Logger.WriteLine(LOG_IDENT, $"Setting font for {jsonFilename}");
 
                             var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
                             if (fontFamilyData is null) return;
@@ -1759,19 +1746,12 @@ namespace Bloxstrap
                             if (shouldWrite)
                                 File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
                         });
-
                         App.Logger.WriteLine(LOG_IDENT, "End font check");
                     }
                 });
 
                 var fileTasks = new List<Task<bool>>();
                 using var semaphore = new SemaphoreSlim(8);
-
-                App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
-                if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
-                {
-                    await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
-                }
 
                 foreach (var mod in activeMods)
                 {
@@ -1784,11 +1764,8 @@ namespace Bloxstrap
                     {
                         string relativeFile = file.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
 
-                        if (relativeFile.EndsWith("ClientSettings")) continue;
-                        if (relativeFile.EndsWith(".lock")) continue;
-                        if (relativeFile.EndsWith(".mesh")) continue;
-
-                        modFolderFiles.Add(relativeFile);
+                        if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock") || relativeFile.EndsWith(".mesh"))
+                            continue;
 
                         string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
                         string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
@@ -1798,6 +1775,11 @@ namespace Bloxstrap
                             await semaphore.WaitAsync();
                             try
                             {
+                                var sourceInfo = new FileInfo(file);
+
+                                lock (currentModManifest)
+                                    currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
+
                                 if (fileNameWithoutExt.EndsWith("_Delete"))
                                 {
                                     string directory = Path.GetDirectoryName(fileVersionFolder) ?? "";
@@ -1807,35 +1789,49 @@ namespace Bloxstrap
                                     {
                                         Filesystem.AssertReadOnly(originalFileName);
                                         File.Delete(originalFileName);
-                                        App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} has been deleted from the version folder");
+                                        App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} has been deleted");
                                     }
                                 }
                                 else
                                 {
+                                    bool needsCopy = true;
+
                                     if (File.Exists(fileVersionFolder))
                                     {
-                                        var hashTask = Task.Run(() => MD5Hash.FromFile(file));
-                                        var existingHashTask = Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+                                        var targetInfo = new FileInfo(fileVersionFolder);
 
-                                        if (await hashTask == await existingHashTask)
+                                        if (targetInfo.Length == sourceInfo.Length && targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
                                         {
-                                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
-                                            return true;
+                                            needsCopy = false;
+                                        }
+                                        else if (targetInfo.LastWriteTime == sourceInfo.LastWriteTime || targetInfo.Length != sourceInfo.Length)
+                                        {
+                                            string sourceHash = await Task.Run(() => MD5Hash.FromFile(file));
+                                            string targetHash = await Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+
+                                            if (sourceHash == targetHash)
+                                            {
+                                                needsCopy = false;
+                                                File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                                            }
                                         }
                                     }
 
-                                    Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-                                    Filesystem.AssertReadOnly(fileVersionFolder);
-                                    File.Copy(file, fileVersionFolder, true);
-                                    Filesystem.AssertReadOnly(fileVersionFolder);
-                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
+                                    if (needsCopy)
+                                    {
+                                        Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+                                        Filesystem.AssertReadOnly(fileVersionFolder);
+                                        File.Copy(file, fileVersionFolder, true);
+                                        File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                                        Filesystem.AssertReadOnly(fileVersionFolder);
+                                        App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} copied to version folder");
+                                    }
                                 }
                                 return true;
                             }
                             catch (Exception ex)
                             {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
-                                App.Logger.WriteException(LOG_IDENT, ex);
+                                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}): {ex.Message}");
                                 return false;
                             }
                             finally
@@ -1851,46 +1847,11 @@ namespace Bloxstrap
 
                 await fontTask;
 
-                string sourceSettingsFile = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
-                if (File.Exists(sourceSettingsFile))
-                {
-                    string relativeFile = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                    string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
-
-                    if (!modFolderFiles.Contains(relativeFile))
-                        modFolderFiles.Add(relativeFile);
-
-                    try
-                    {
-                        bool shouldCopy = true;
-                        if (File.Exists(fileVersionFolder))
-                        {
-                            string sourceHash = MD5Hash.FromFile(sourceSettingsFile);
-                            string targetHash = MD5Hash.FromFile(fileVersionFolder);
-                            if (sourceHash == targetHash) shouldCopy = false;
-                        }
-
-                        if (shouldCopy)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, "Applying final FFlag override from Base/ClientSettings...");
-                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-                            Filesystem.AssertReadOnly(fileVersionFolder);
-                            File.Copy(sourceSettingsFile, fileVersionFolder, true);
-                            Filesystem.AssertReadOnly(fileVersionFolder);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to apply final ClientSettings override");
-                        App.Logger.WriteException(LOG_IDENT, ex);
-                    }
-                }
-
                 var fileRestoreMap = new Dictionary<string, List<string>>();
 
-                foreach (string fileLocation in AppData.DistributionState.ModManifest)
+                foreach (var fileLocation in AppData.DistributionState.ModManifest.Keys)
                 {
-                    if (modFolderFiles.Contains(fileLocation))
+                    if (currentModManifest.ContainsKey(fileLocation))
                         continue;
 
                     string targetFile = fileLocation;
@@ -1900,8 +1861,7 @@ namespace Bloxstrap
                     {
                         string directory = Path.GetDirectoryName(fileLocation) ?? "";
                         string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
-                        string originalExtension = Path.GetExtension(fileLocation);
-                        targetFile = Path.Combine(directory, originalFileNameWithoutDelete + originalExtension);
+                        targetFile = Path.Combine(directory, originalFileNameWithoutDelete + Path.GetExtension(fileLocation));
                     }
 
                     var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase));
@@ -1909,7 +1869,6 @@ namespace Bloxstrap
 
                     if (String.IsNullOrEmpty(packageName))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"{targetFile} was removed but does not belong to a package");
                         string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
                         if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
                         continue;
@@ -1919,9 +1878,7 @@ namespace Bloxstrap
                         fileRestoreMap[packageName] = new();
 
                     string internalZipPath = targetFile.Substring(packageMapEntry.Value.Length).TrimStart(Path.DirectorySeparatorChar);
-
                     fileRestoreMap[packageName].Add(internalZipPath);
-                    App.Logger.WriteLine(LOG_IDENT, $"{targetFile} was removed, restoring from {packageName}");
                 }
 
                 foreach (var entry in fileRestoreMap)
@@ -1929,7 +1886,6 @@ namespace Bloxstrap
                     var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
                     if (package is not null)
                     {
-                        if (_cancelTokenSource.IsCancellationRequested) return true;
                         await DownloadPackage(package);
                         ExtractPackage(package, entry.Value);
                     }
@@ -1937,12 +1893,8 @@ namespace Bloxstrap
 
                 if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
                 {
-                    AppData.DistributionState.ModManifest = modFolderFiles;
+                    AppData.DistributionState.ModManifest = currentModManifest;
                     AppData.DistributionStateManager.Save();
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"{AppData.DistributionStateManager.ClassName} disk mismatch, not saving ModManifest");
                 }
 
                 App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
@@ -1952,9 +1904,6 @@ namespace Bloxstrap
                 App.Logger.WriteException(LOG_IDENT, ex);
                 success = false;
             }
-
-            if (!success)
-                App.Logger.WriteLine(LOG_IDENT, "Failed to apply all modifications");
 
             return success;
         }

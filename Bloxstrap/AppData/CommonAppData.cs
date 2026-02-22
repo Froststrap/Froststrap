@@ -23,6 +23,6 @@ namespace Bloxstrap.AppData
 
         public DistributionState DistributionState => DistributionStateManager.Prop;
 
-        public List<string> ModManifest => DistributionState.ModManifest;
+        public Dictionary<string, ModFileEntry> ModManifest => DistributionState.ModManifest;
     }
 }

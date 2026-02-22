@@ -8,6 +8,6 @@
 
         public int Size { get; set; }
 
-        public List<string> ModManifest { get; set; } = new();
+        public Dictionary<string, ModFileEntry> ModManifest { get; set; } = new();
     }
 }
