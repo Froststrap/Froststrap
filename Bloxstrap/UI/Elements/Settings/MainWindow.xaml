@@ -123,12 +123,28 @@
 
             <!-- Save & Launch -->
             <StatusBarItem Grid.Column="2" VerticalAlignment="Center" Margin="0,0,4,0">
-                <ui:Button Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
-                   Appearance="Primary"
-                   Height="32"
-                   FontWeight="Medium"
-                   Padding="14,0"
-                   Command="{Binding SaveAndLaunchSettingsCommand}" />
+                <ui:Button x:Name="LaunchButton"
+               Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
+               Appearance="Primary"
+               Height="32"
+               FontWeight="Medium"
+               Padding="14,0"
+               Click="LaunchButton_Click">
+                    <ui:Button.ContextMenu>
+                        <ContextMenu x:Name="LaunchMenu">
+                            <MenuItem Header="Launch Roblox Player" Command="{Binding SaveAndLaunchPlayerCommand}">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="Games24" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Launch Roblox Studio" Command="{Binding SaveAndLaunchStudioCommand}">
+                                <MenuItem.Icon>
+                                    <ui:SymbolIcon Symbol="TextBulletListSquareToolbox20" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ui:Button.ContextMenu>
+                </ui:Button>
             </StatusBarItem>
 
             <!-- Restart -->
