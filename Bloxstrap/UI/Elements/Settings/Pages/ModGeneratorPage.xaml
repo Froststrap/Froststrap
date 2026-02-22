@@ -113,7 +113,7 @@
                 <ui:Card Margin="0,0,0,12">
                     <StackPanel>
                         <TextBlock FontSize="14" FontWeight="Bold" Text="Appearance" Margin="0,0,0,12" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-                        <colorpicker:SquarePicker Height="200" SelectedColor="{Binding SelectedMediaColor, Mode=TwoWay}" PickerType="HSV" />
+                        <colorpicker:SquarePicker Height="200" SelectedColor="{Binding SelectedMediaColor, Mode=TwoWay}" />
                         <ui:TextBox Text="{Binding SolidColorHex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" PlaceholderText="#FFFFFF" Margin="0,16,0,4"  />
                     </StackPanel>
                 </ui:Card>
