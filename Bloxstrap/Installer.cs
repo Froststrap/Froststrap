@@ -527,7 +527,7 @@ namespace Bloxstrap
                             App.PlayerState.Prop.VersionGuid = legacyRobloxState.Prop.Player.VersionGuid;
                             App.PlayerState.Prop.PackageHashes = legacyRobloxState.Prop.Player.PackageHashes;
                             App.PlayerState.Prop.Size = legacyRobloxState.Prop.Player.Size;
-                            App.PlayerState.Prop.ModManifest = legacyRobloxState.Prop.ModManifest;
+                            App.PlayerState.Prop.ModManifest = legacyRobloxState.Prop.ModManifest.ToDictionary(x => x, x => new ModFileEntry());
 
                             App.StudioState.Prop.VersionGuid = legacyRobloxState.Prop.Studio.VersionGuid;
                             App.StudioState.Prop.PackageHashes = legacyRobloxState.Prop.Studio.PackageHashes;

@@ -24,6 +24,6 @@
 
         DistributionState DistributionState { get; }
 
-        List<string> ModManifest { get; }
+        Dictionary<string, ModFileEntry> ModManifest { get; }
     }
 }
