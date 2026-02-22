@@ -10,11 +10,10 @@ using Bloxstrap.Models.APIs.Config;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
-    public class RobloxSettingsViewModel : INotifyPropertyChanged
+    public class RobloxSettingsViewModel : NotifyPropertyChangedViewModel
     {
         private readonly RemoteDataManager _remoteDataManager;
         public ObservableCollection<SettingsSection> Sections { get; } = new();
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public ICommand OpenRobloxFolderCommand => new RelayCommand(() => Process.Start("explorer.exe", Paths.Roblox));
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
@@ -93,8 +92,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => App.GlobalSettings.GetReadOnly();
             set => App.GlobalSettings.SetReadOnly(value);
         }
-
-        protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
         private void ExportSettings()
         {

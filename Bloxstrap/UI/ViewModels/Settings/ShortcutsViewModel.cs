@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
-    public partial class ShortcutsViewModel : INotifyPropertyChanged
+    public partial class ShortcutsViewModel : NotifyPropertyChangedViewModel
     {
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{App.ProjectName}.lnk");
         public ShortcutTask StartMenuIconTask { get; } = new("StartMenu", Paths.WindowsStartMenu, $"{App.ProjectName}.lnk");
@@ -17,10 +17,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", "-studio");
         public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "-settings");
         public ExtractIconsTask ExtractIconsTask { get; } = new();
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string? propName = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 
         public ObservableCollection<GameSearchResult> SearchResults { get; } = new();
 
@@ -33,7 +29,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 if (_selectedShortcut == value) return;
 
                 _selectedShortcut = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedShortcut));
                 GameShortcutStatus = "";
 
                 if (!string.IsNullOrEmpty(value.GameId))
@@ -60,7 +56,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 if (_selectedSearchResult == value) return;
 
                 _selectedSearchResult = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedSearchResult));
 
                 if (value != null)
                 {
@@ -84,7 +80,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 if (_searchQuery == value) return;
 
                 _searchQuery = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(SearchQuery));
                 OnSearchQueryChanged(value);
             }
         }
@@ -98,7 +94,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 if (_gameShortcutStatus == value) return;
 
                 _gameShortcutStatus = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(GameShortcutStatus));
             }
         }
 

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
+using Bloxstrap.UI.ViewModels;
 
 namespace Bloxstrap.Models
 {
-    public class GlyphItem : INotifyPropertyChanged
+    public class GlyphItem : NotifyPropertyChangedViewModel
     {
         private Geometry? _data;
         private SolidColorBrush? _colorBrush;
@@ -16,7 +17,7 @@ namespace Bloxstrap.Models
             {
                 if (Equals(_data, value)) return;
                 _data = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Data));
             }
         }
 
@@ -27,15 +28,8 @@ namespace Bloxstrap.Models
             {
                 if (Equals(_colorBrush, value)) return;
                 _colorBrush = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(ColorBrush));
             }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
