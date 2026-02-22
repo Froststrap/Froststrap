@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
-    public class ChannelViewModel : NotifyPropertyChangedViewModel, INotifyPropertyChanged
+    public class ChannelViewModel : NotifyPropertyChangedViewModel
     {
         public ChannelViewModel()
         {

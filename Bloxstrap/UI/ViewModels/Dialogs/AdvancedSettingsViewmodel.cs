@@ -2,7 +2,7 @@
 
 namespace Bloxstrap.UI.ViewModels.Dialogs
 {
-    public class AdvancedSettingViewModel : INotifyPropertyChanged
+    public class AdvancedSettingViewModel : NotifyPropertyChangedViewModel
     {
         public static event EventHandler? ShowPresetColumnChanged;
         public static event EventHandler? ShowFlagCountChanged;
@@ -38,9 +38,5 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
                 OnPropertyChanged(nameof(UseAltManually));
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
