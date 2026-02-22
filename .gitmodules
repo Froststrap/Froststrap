@@ -3,5 +3,5 @@
 	url = https://github.com/RealMeddsam/wpfui.git
 
 [submodule "ColorPicker"]
-	path = PixiEditorColorPicker
+	path = ColorPicker
 	url = https://github.com/Froststrap/ColorPicker
