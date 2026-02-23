@@ -245,10 +245,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
                     EditingInfo = value;
                     WorkspaceInfo = value;
                     ShowTesting = value;
+                    StudioGameButton = value;
                     OnPropertyChanged(nameof(ThumbnailChanging));
                     OnPropertyChanged(nameof(EditingInfo));
                     OnPropertyChanged(nameof(WorkspaceInfo));
                     OnPropertyChanged(nameof(ShowTesting));
+                    OnPropertyChanged(nameof(StudioGameButton));
                 }
 
                 StudioPluginManager.Sync();
@@ -277,6 +279,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             get => App.Settings.Prop.StudioShowTesting;
             set => App.Settings.Prop.StudioShowTesting = value;
+        }
+
+        public bool StudioGameButton
+        {
+            get => App.Settings.Prop.StudioGameButton;
+            set => App.Settings.Prop.StudioGameButton = value;
         }
 
         public bool DisableRobloxRecording

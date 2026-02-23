@@ -247,6 +247,13 @@
             <ui:ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
         </controls:OptionControl>
 
+        <controls:OptionControl
+            Header="Join Button"
+            Description="Adds a small button to join the game your working on."
+            IsEnabled="{Binding InnerContent.IsChecked, ElementName=StudioActivityOption, Mode=OneWay}">
+            <ui:ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />
+        </controls:OptionControl>
+
         <Separator Margin="0,8,0,8" />
 
         <TextBlock
