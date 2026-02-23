@@ -52,7 +52,7 @@ jobs:
           draft: true
           prerelease: ${{ contains(github.ref_name, '-') }}
           files: Froststrap-${{ github.ref_name }}.exe
-          name: Froststrap${{ github.ref_name }}
+          name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
 
   release-test:
