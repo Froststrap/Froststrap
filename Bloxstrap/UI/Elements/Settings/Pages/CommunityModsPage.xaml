@@ -41,7 +41,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Margin="4,0" Grid.Row="0" Text="Easily download community-made mods, Some mods, such as Dark Textures or Higher Brightness, require your in-game graphics level to be 5 or higher." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            <TextBlock Margin="4,0" Grid.Row="0" Text="Check out and download community made mods." TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
             <Grid Margin="4,12,12,0" Grid.Row="1">
                 <Grid.ColumnDefinitions>

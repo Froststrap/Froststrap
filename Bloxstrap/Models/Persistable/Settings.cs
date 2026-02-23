@@ -38,7 +38,6 @@ namespace Bloxstrap.Models.Persistable
         public bool Error773Fix { get; set; } = false;
         public int MultibloxInstanceCount { get; set; } = 2;
         public int MultibloxDelayMs { get; set; } = 1500;
-        public RobloxIcon SelectedRobloxIcon { get; set; } = RobloxIcon.Default;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
         // FastFlag Editor/Settings Related
