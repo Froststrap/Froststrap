@@ -26,7 +26,7 @@
 </div>
 
 > [!CAUTION]
-> The repo, [github:RealMeddsam/Froststrap](https://github.com/RealMeddsam/Froststrap.git) and [our website](https://froststrap.github.io), are the **ONLY PLACES** you shall
+> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.github.io), are the **ONLY PLACES** you shall
 > get the binary/executable from, as any other is **NOT** affiliated with us, and is a potential threat. 
 
 ---
@@ -99,17 +99,17 @@ More features are planned to be added, you can also sugguest a feature in our is
 This project is **dual-licensed** under `GPL-3.0-or-later` and `Unlicensed`. 
 
 <!-- Badge defs -->
-[badge-repo-license]: https://img.shields.io/github/license/RealMeddsam/Froststrap?style=for-the-badge&color=37add9
-[badge-repo-downloads]: https://img.shields.io/github/downloads/RealMeddsam/Froststrap/latest/total?style=for-the-badge&color=37add9
-[badge-repo-downloads-total]: https://img.shields.io/github/downloads/RealMeddsam/Froststrap/total?style=for-the-badge&color=37add9
-[badge-repo-latest]: https://img.shields.io/github/v/release/RealMeddsam/Froststrap?style=for-the-badge&color=37add9
-[badge-repo-stars]: https://img.shields.io/github/stars/RealMeddsam/Froststrap?style=for-the-badge&color=37add9
+[badge-repo-license]: https://img.shields.io/github/license/Froststrap/Froststrap?style=for-the-badge&color=37add9
+[badge-repo-downloads]: https://img.shields.io/github/downloads/Froststrap/Froststrap/latest/total?style=for-the-badge&color=37add9
+[badge-repo-downloads-total]: https://img.shields.io/github/downloads/Froststrap/Froststrap/total?style=for-the-badge&color=37add9
+[badge-repo-latest]: https://img.shields.io/github/v/release/Froststrap/Froststrap?style=for-the-badge&color=37add9
+[badge-repo-stars]: https://img.shields.io/github/stars/Froststrap/Froststrap?style=for-the-badge&color=37add9
 [badge-discord]: https://img.shields.io/discord/1364660238963179520?style=for-the-badge&label=discord&color=5865f2
 
-[repo-license]: https://github.com/RealMeddsam/Froststrap/blob/main/LICENSE
-[repo-actions]: https://github.com/RealMeddsam/Froststrap/actions
-[repo-releases]: https://github.com/RealMeddsam/Froststrap/releases
-[repo-latest]: https://github.com/RealMeddsam/Froststrap/releases/latest
-[repo-stargazer]: https://github.com/RealMeddsam/Froststrap/stargazers
+[repo-license]: https://github.com/Froststrap/Froststrap/blob/main/LICENSE
+[repo-actions]: https://github.com/Froststrap/Froststrap/actions
+[repo-releases]: https://github.com/Froststrap/Froststrap/releases
+[repo-latest]: https://github.com/Froststrap/Froststrap/releases/latest
+[repo-stargazer]: https://github.com/Froststrap/Froststrap/stargazers
 
 [discord-invite]: https://discord.gg/KdR9vpRcUN
