@@ -27,7 +27,7 @@ jobs:
       uses: actions/upload-artifact@v6
       with:
         name: Froststrap(Release) (${{ github.sha }})
-        path: .\Bloxstrap\bin\Release\net10.0-windows\win-x64\publish\*
+        path: .\Bloxstrap\bin\Release\net10.0-windows\win-x64\*
 
   release:
     needs: build
