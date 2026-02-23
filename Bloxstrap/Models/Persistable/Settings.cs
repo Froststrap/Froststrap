@@ -72,6 +72,7 @@ namespace Bloxstrap.Models.Persistable
 
         // Settings Page
         public bool CheckForUpdates { get; set; } = true;
+        public bool CheckForPreRelease { get; set; } = false;
         public bool WPFSoftwareRender { get; set; } = false;
         public bool UpdateRoblox { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
