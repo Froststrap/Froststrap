@@ -11,10 +11,16 @@ namespace Bloxstrap.UI.ViewModels.Settings
             Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
         }
 
-        public bool UpdateCheckingEnabled
+        public bool CheckForUpdates
         {
             get => App.Settings.Prop.CheckForUpdates;
             set => App.Settings.Prop.CheckForUpdates = value;
+        }
+
+        public bool CheckForPreRelease
+        {
+            get => App.Settings.Prop.CheckForPreRelease;
+            set => App.Settings.Prop.CheckForPreRelease = value;
         }
 
         public bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled;

@@ -23,11 +23,11 @@ namespace Bloxstrap
 #else
         public const string ProjectName = "Froststrap";
 #endif
-        public const string ProjectOwner = "RealMeddsam";
-        public const string ProjectRepository = "RealMeddsam/Froststrap";
-        public const string ProjectDownloadLink = "https://github.com/RealMeddsam/Froststrap/releases";
+        public const string ProjectOwner = "Froststrap";
+        public const string ProjectRepository = "Froststrap/Froststrap";
+        public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
         public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
-        public const string ProjectSupportLink = "https://github.com/RealMeddsam/Froststrap/issues/new";
+        public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
         public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Data.json";
 
         public const string RobloxPlayerAppName = "RobloxPlayerBeta.exe";
@@ -202,21 +202,30 @@ namespace Bloxstrap
             }
         }
 
-        public static async Task<GithubRelease?> GetLatestRelease()
+        public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
         {
             const string LOG_IDENT = "App::GetLatestRelease";
 
             try
             {
-                var releaseInfo = await Http.GetJson<GithubRelease>($"https://api.github.com/repos/{ProjectRepository}/releases/latest");
+                string url = includePreRelease ? $"https://api.github.com/repos/{ProjectRepository}/releases" : $"https://api.github.com/repos/{ProjectRepository}/releases/latest";
 
-                if (releaseInfo is null || releaseInfo.Assets is null)
+                if (includePreRelease)
                 {
-                    Logger.WriteLine(LOG_IDENT, "Encountered invalid data");
-                    return null;
-                }
+                    var releases = await Http.GetJson<List<GithubRelease>>(url);
 
-                return releaseInfo;
+                    if (releases is null || releases.Count == 0)
+                    {
+                        Logger.WriteLine(LOG_IDENT, "No releases found in the repository.");
+                        return null;
+                    }
+
+                    return releases[0];
+                }
+                else
+                {
+                    return await Http.GetJson<GithubRelease>(url);
+                }
             }
             catch (Exception ex)
             {

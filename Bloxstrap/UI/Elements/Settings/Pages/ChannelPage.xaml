@@ -22,7 +22,13 @@
         <controls:OptionControl 
             Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
             Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}">
-            <ui:ToggleSwitch IsChecked="{Binding UpdateCheckingEnabled, Mode=TwoWay}" />
+            <ui:ToggleSwitch IsChecked="{Binding CheckForUpdates, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="Automatically Update to Pre-Releases"
+            Description="Froststrap will automatically check and update itself to pre-releases when launching Roblox.">
+            <ui:ToggleSwitch IsChecked="{Binding CheckForPreRelease, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <Separator Margin="0,8,0,6"/>
@@ -197,12 +203,6 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-
-            <ui:Button Content="{x:Static resources:Strings.Menu_BottomButtons_Uninstall}" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,0,4,0" Click="UninstallButton_Click" />
-            <ui:Button Content="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,0,4,0" Click="ResetSettings_Click" />
-            <ui:Button Content="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}" Grid.Column="2" HorizontalAlignment="Stretch" Margin="0,0,4,0" Click="ImportSettings_Click" />
-            <ui:Button Content="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0,0,0,0" Click="ExportSettings_Click" />
-
         </Grid>
     </StackPanel>
 </ui:UiPage>

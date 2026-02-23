@@ -11,6 +11,9 @@
         [JsonPropertyName("body")]
         public string Body { get; set; } = null!;
 
+        [JsonPropertyName("prerelease")]
+        public bool Prerelease { get; set; }
+
         [JsonPropertyName("created_at")]
         public string CreatedAt { get; set; } = null!;
 

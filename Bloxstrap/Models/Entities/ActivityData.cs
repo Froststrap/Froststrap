@@ -234,17 +234,7 @@ namespace Bloxstrap.Models.Entities
             {
                 App.Logger.WriteLine("ActivityData::RejoinServer", $"Rejoining server: {PlaceId}/{JobId}");
 
-                string robloxUri = $"roblox://experiences/start?placeId={PlaceId}&gameInstanceId={JobId}";
-
-                if (ServerType == ServerType.Private && !string.IsNullOrEmpty(AccessCode))
-                {
-                    robloxUri += $"&accessCode={AccessCode}";
-                }
-
-                if (!string.IsNullOrEmpty(RPCLaunchData))
-                {
-                    robloxUri += $"&launchData={HttpUtility.UrlEncode(RPCLaunchData)}";
-                }
+                string robloxUri = GetInviteDeeplink(true);
 
                 Process.Start(new ProcessStartInfo
                 {

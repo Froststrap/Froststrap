@@ -1185,6 +1185,12 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "Bootstrapper::CheckForUpdates";
 
+            if (!App.Settings.Prop.CheckForUpdates)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings.");
+                return false;
+            }
+
             if (Process.GetProcessesByName(App.ProjectName).Length > 1)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"More than one {App.ProjectName} instance running, aborting update check.");
@@ -1193,22 +1199,29 @@ namespace Bloxstrap
 
             SetStatus("Checking for Updates...");
 
+            GithubRelease? releaseInfo = null;
+            string version;
+
 #if !DEBUG_UPDATER
-            var releaseInfo = await App.GetLatestRelease();
+            bool includePreRelease = App.Settings.Prop.CheckForPreRelease;
+            releaseInfo = await App.GetLatestRelease(includePreRelease);
+
             if (releaseInfo is null)
                 return false;
 
             string currentVer = App.Version;
             string releaseVer = releaseInfo.TagName;
+            version = releaseVer;
 
             var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
 
             if (versionComparison == VersionComparison.LessThan)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Update available: {currentVer} -> {releaseVer}");
+                string releaseType = releaseInfo.Prerelease ? "Pre-release" : "Stable";
+                App.Logger.WriteLine(LOG_IDENT, $"{releaseType} update available: {currentVer} -> {releaseVer}");
 
                 var result = Frontend.ShowMessageBox(
-                    $"A new version {releaseVer} is available. Would you like to update now?",
+                    $"A new {releaseType.ToLower()} version {releaseVer} is available. Would you like to update now?",
                     MessageBoxImage.Question,
                     MessageBoxButton.YesNo
                 );
@@ -1221,13 +1234,11 @@ namespace Bloxstrap
             }
             else
             {
-                App.Logger.WriteLine(LOG_IDENT, $"No update required. Current version: {currentVer}, Release version: {releaseVer}");
+                App.Logger.WriteLine(LOG_IDENT, $"No update required. Current: {currentVer}, Latest: {releaseVer}");
                 return false;
             }
-
-            string version = releaseVer;
 #else
-    string version = App.Version;
+    version = App.Version;
 #endif
 
             SetStatus(Strings.Bootstrapper_Status_UpgradingBloxstrap);
@@ -1239,7 +1250,13 @@ namespace Bloxstrap
         Directory.CreateDirectory(Paths.TempUpdates);
         File.Copy(Paths.Process, downloadLocation, overwrite: true);
 #else
-                var asset = releaseInfo.Assets![0];
+                if (releaseInfo!.Assets is null || releaseInfo.Assets.Count == 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Release found but no assets were available for download.");
+                    return false;
+                }
+
+                var asset = releaseInfo.Assets[0];
                 string downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
                 Directory.CreateDirectory(Paths.TempUpdates);
 
@@ -1281,13 +1298,12 @@ namespace Bloxstrap
                 {
                     var result = Frontend.ShowMessageBox(
                         string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
-                    MessageBoxImage.Information,
-                    MessageBoxButton.YesNo);
+                        MessageBoxImage.Information,
+                        MessageBoxButton.YesNo);
 
                     if (result == MessageBoxResult.Yes)
-                    {
                         Utilities.ShellExecute(App.ProjectDownloadLink);
-                    }
+
                     return false;
                 }
 
@@ -1304,9 +1320,7 @@ namespace Bloxstrap
                     MessageBoxButton.YesNo);
 
                 if (result == MessageBoxResult.Yes)
-                {
                     Utilities.ShellExecute(App.ProjectDownloadLink);
-                }
             }
 
             return false;

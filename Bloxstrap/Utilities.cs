@@ -37,6 +37,10 @@ namespace Bloxstrap
             if (idx != -1)
                 version = version[..idx];
 
+            int dashIdx = version.IndexOf('-');
+            if (dashIdx != -1)
+                version = version[..dashIdx];
+
             return new Version(version);
         }
 
