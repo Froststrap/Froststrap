@@ -7,9 +7,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
     {
         public BehaviourViewModel()
         {
-            foreach (var entry in RobloxIconEx.Selections)
-                RobloxIcons.Add(new RobloxIconEntry { IconType = (RobloxIcon)entry });
-
             App.Cookies.StateChanged += (object? _, CookieState state) => CookieLoadingFailed = state != CookieState.Success && state != CookieState.Unknown;
         }
 
@@ -118,16 +115,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(CookieLoadingFailed));
             }
         }
-
-        public IEnumerable<RobloxIcon> RobloxIcon { get; } = Enum.GetValues(typeof(RobloxIcon)).Cast<RobloxIcon>();
-
-        public RobloxIcon SelectedRobloxIcon
-        {
-            get => App.Settings.Prop.SelectedRobloxIcon;
-            set => App.Settings.Prop.SelectedRobloxIcon = value;
-        }
-
-        public ObservableCollection<RobloxIconEntry> RobloxIcons { get; set; } = new();
 
         public CleanerOptions SelectedCleanUpMode
         {

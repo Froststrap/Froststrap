@@ -3600,24 +3600,6 @@ namespace Bloxstrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reverts the Roblox taskbar and topbar icons to older versions. May not work if Roblox takes too long to launch..
-        /// </summary>
-        public static string Menu_Behaviour_OldRobloxIcon_Description {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.OldRobloxIcon.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Taskbar Icon.
-        /// </summary>
-        public static string Menu_Behaviour_OldRobloxIcon_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.OldRobloxIcon.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Selects the CPU priority for Roblox..
         /// </summary>
         public static string Menu_Behaviour_ProcessPriority_Description {

@@ -340,85 +340,70 @@ namespace Bloxstrap
                 StartRoblox();
             }
 
-            _ =  HandlePostLaunchOperations(_launchMode);
+            if (!IsStudioLaunch)
+                await HandlePostLaunchOperations();
 
             await mutex.ReleaseAsync();
 
             Dialog?.CloseBootstrapper();
         }
 
-        private async Task HandlePostLaunchOperations(LaunchMode launchMode)
+        private async Task HandlePostLaunchOperations()
         {
             const string LOG_IDENT = "Bootstrapper::PostLaunch";
 
+            SetStatus("Handling Post Launch Operations...");
+
             try
             {
-                // roblox studio automatically sets its icon everytime you do smth
-                if (launchMode == LaunchMode.Player)
-                {
-                    if (App.Settings.Prop.SelectedRobloxIcon != RobloxIcon.Default)
-                    {
-                        var robloxProcess = Process.GetProcessById(_appPid);
-
-                        if (!robloxProcess.HasExited)
-                        {
-                            await SetRobloxWindowIcon(robloxProcess, App.Settings.Prop.SelectedRobloxIcon);
-                        }
-                    }
-                }
-                else
+                if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
                 {
                     await Task.Delay(20000);
-                }
 
-                if (launchMode == LaunchMode.Player)
-                {
-                    if (App.Settings.Prop.AutoCloseCrashHandler)
+                    var processes = Process.GetProcessesByName("RobloxPlayerBeta");
+
+                    if (processes.Length == 0)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Could not find RobloxPlayerBeta process.");
+                        return;
+                    }
+
+                    foreach (var proc in processes)
                     {
                         try
                         {
-                            var crashHandlerProcesses = Process.GetProcessesByName("RobloxCrashHandler");
-
-                            foreach (var proc in crashHandlerProcesses)
+                            ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
                             {
-                                try
-                                {
-                                    proc.Kill();
-                                }
-                                catch (Exception ex)
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, $"Failed to kill RobloxCrashHandler process (PID {proc.Id}): {ex.Message}");
-                                }
-                            }
+                                ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
+                                ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
+                                ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
+                                ProcessPriorityOption.High => ProcessPriorityClass.High,
+                                ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
+                                _ => ProcessPriorityClass.Normal
+                            };
+
+                            proc.PriorityClass = priorityClass;
+                            App.Logger.WriteLine(LOG_IDENT, $"Set RobloxPlayerBeta (PID {proc.Id}) priority to {priorityClass}");
                         }
                         catch (Exception ex)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Error killing RobloxCrashHandler: {ex.Message}");
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to apply settings to PID {proc.Id}: {ex.Message}");
                         }
                     }
                 }
 
-                if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
+                if (App.Settings.Prop.AutoCloseCrashHandler)
                 {
-                    try
-                    {
-                        ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
-                        {
-                            ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
-                            ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
-                            ProcessPriorityOption.Normal => ProcessPriorityClass.Normal,
-                            ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
-                            ProcessPriorityOption.High => ProcessPriorityClass.High,
-                            ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
-                            _ => ProcessPriorityClass.Normal
-                        };
+                    if (App.Settings.Prop.SelectedProcessPriority == ProcessPriorityOption.Normal)
+                        await Task.Delay(20000);
 
-                        var robloxProcess = Process.GetProcessById(_appPid);
-                        robloxProcess.PriorityClass = priorityClass;
-                    }
-                    catch (Exception ex)
+                    foreach (var proc in Process.GetProcessesByName("RobloxCrashHandler"))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Process priority setting failed: {ex}");
+                        try 
+                        { 
+                            proc.Kill(); 
+                        } 
+                        catch { }
                     }
                 }
             }
@@ -844,69 +829,6 @@ namespace Bloxstrap
                     App.Logger.WriteLine(LOG_IDENT, $"Failed to remove read-only attribute: {ex.Message}");
                 }
             }
-        }
-
-        private const int WM_SETICON = 0x80;
-        private const int ICON_SMALL = 0;
-        private const int ICON_BIG = 1;
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        private static extern bool IsWindowVisible(IntPtr hWnd);
-
-        private void ApplyIcon(IntPtr hwnd, Icon icon)
-        {
-            SendMessage(hwnd, WM_SETICON, (IntPtr)ICON_SMALL, icon.Handle);
-            SendMessage(hwnd, WM_SETICON, (IntPtr)ICON_BIG, icon.Handle);
-        }
-
-        private Icon? LoadIcon(RobloxIcon icon)
-        {
-            if (icon == RobloxIcon.Default)
-                return null;
-
-            var resourceName = $"Bloxstrap.Resources.{icon}.ico";
-            var assembly = Assembly.GetExecutingAssembly();
-
-            using Stream? stream = assembly.GetManifestResourceStream(resourceName);
-            return stream != null ? new Icon(stream) : null;
-        }
-
-        private async Task SetRobloxWindowIcon(Process process, RobloxIcon icon)
-        {
-            const string LOG_IDENT = "Bootstrapper::SetRobloxWindowIcon";
-
-            using var iconHandle = LoadIcon(icon);
-
-            if (iconHandle == null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Icon resource '{icon}' not found.");
-                return;
-            }
-
-            var startTime = DateTime.Now;
-
-            while ((DateTime.Now - startTime).TotalSeconds < 20 && !process.HasExited)
-            {
-                try
-                {
-                    var hwnd = process.MainWindowHandle;
-                    if (hwnd == IntPtr.Zero || !IsWindowVisible(hwnd))
-                        continue;
-
-                    ApplyIcon(hwnd, iconHandle);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to set icon: {ex}");
-                }
-
-                await Task.Delay(25);
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, "Icon setting period completed.");
         }
 
         private async void StartRoblox()

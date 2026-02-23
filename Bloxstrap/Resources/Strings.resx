@@ -228,12 +228,6 @@
   <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
     <value>Search Logs</value>
   </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Taskbar Icon</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Reverts the Roblox taskbar and topbar icons to older versions. May not work if Roblox takes too long to launch.</value>
-  </data>
   <data name="Menu.Integrations.BlockVideoRecording.Title" xml:space="preserve">
     <value>Disable Roblox Recording</value>
   </data>
