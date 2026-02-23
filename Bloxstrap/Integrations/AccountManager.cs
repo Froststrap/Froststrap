@@ -257,152 +257,6 @@ namespace Bloxstrap.Integrations
             return a?.SecurityToken;
         }
 
-        public async Task<string> LaunchToPlaceAsync(AltAccount account, long placeId, string jobId = "", bool followUser = false, bool joinVIP = false, bool isTeleport = false)
-        {
-            const string LOG_IDENT_LAUNCH = $"{LOG_IDENT}::LaunchToPlace";
-
-            if (account is null) return "ERROR: No account supplied";
-
-            try
-            {
-                SetActiveAccount(account);
-                SaveAccounts();
-
-                App.Logger.WriteLine(LOG_IDENT_LAUNCH, $"Preparing launch for {account.Username} to place {placeId}.");
-
-                var csrf = await GetCsrfTokenAsync(account.SecurityToken).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(csrf))
-                {
-                    return "ERROR: Failed to obtain CSRF token";
-                }
-
-                var ticket = await GetAuthTicketAsync(account.SecurityToken, csrf, placeId).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(ticket))
-                {
-                    return "ERROR: Failed to obtain authentication ticket";
-                }
-
-                string placeLauncher = BuildPlaceLauncherUrl(placeId, jobId, isTeleport, joinVIP, followUser);
-
-                string browserTrackerId = new Random().Next(100000, 999999).ToString() + new Random().Next(100000, 999999).ToString();
-
-                double launchTime = Math.Floor((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds * 1000);
-
-                string encodedPlaceLauncher = Uri.EscapeDataString(placeLauncher);
-                string launchUri = $"roblox-player:1+launchmode:play+gameinfo:{ticket}+launchtime:{launchTime}+placelauncherurl:{encodedPlaceLauncher}+browsertrackerid:{browserTrackerId}+robloxLocale:en_us+gameLocale:en_us+channel:+LaunchExp:InApp";
-
-                App.Logger.WriteLine(LOG_IDENT_LAUNCH, $"Starting launcher via protocol for user {account.Username}.");
-
-                var psi = new ProcessStartInfo(launchUri)
-                {
-                    UseShellExecute = true
-                };
-
-                Process.Start(psi);
-
-                return "Success";
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_LAUNCH, ex);
-                return $"ERROR: {ex.Message}";
-            }
-        }
-
-        private string BuildPlaceLauncherUrl(long placeId, string jobId, bool isTeleport, bool joinVIP, bool followUser)
-        {
-            if (joinVIP && !string.IsNullOrEmpty(jobId))
-            {
-                return $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestPrivateGame&placeId={placeId}&accessCode={HttpUtility.UrlEncode(jobId)}";
-            }
-
-            if (followUser)
-            {
-                return $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestFollowUser&userId={placeId}";
-            }
-
-            string jobSegment = string.IsNullOrEmpty(jobId) ? "" : $"&gameId={HttpUtility.UrlEncode(jobId)}";
-            string teleportSegment = isTeleport ? "&isTeleport=true" : "";
-            string requestType = string.IsNullOrEmpty(jobId) ? "RequestGame" : "RequestGameJob";
-
-            return $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request={requestType}&placeId={placeId}{jobSegment}{teleportSegment}";
-        }
-
-        public async Task<string?> GetCsrfTokenAsync(string securityCookie)
-        {
-            const string LOG_IDENT_CSRF = $"{LOG_IDENT}::GetCsrfToken";
-
-            try
-            {
-                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
-                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
-                using var client = new HttpClient(handler);
-
-                var req = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
-
-                var resp = await client.SendAsync(req).ConfigureAwait(false);
-
-                if (resp.Headers.TryGetValues("x-csrf-token", out var vals))
-                {
-                    var token = vals.FirstOrDefault();
-                    return token;
-                }
-
-                var headReq = new HttpRequestMessage(HttpMethod.Head, "https://auth.roblox.com/v1/authentication-ticket/");
-                var headResp = await client.SendAsync(headReq).ConfigureAwait(false);
-
-                if (headResp.Headers.TryGetValues("x-csrf-token", out var vals2))
-                {
-                    var token2 = vals2.FirstOrDefault();
-                    return token2;
-                }
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_CSRF, ex);
-                return null;
-            }
-        }
-
-        private async Task<string?> GetAuthTicketAsync(string securityCookie, string csrfToken, long placeId)
-        {
-            const string LOG_IDENT_AUTH_TICKET = $"{LOG_IDENT}::GetAuthTicket";
-
-            try
-            {
-                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
-                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
-                using var client = new HttpClient(handler);
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-
-                var req = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
-                req.Headers.Add("X-CSRF-TOKEN", csrfToken);
-                req.Headers.Referrer = new Uri($"https://www.roblox.com/games/{placeId}/");
-
-                req.Content = new StringContent("{}", Encoding.UTF8, "application/json");
-
-                var resp = await client.SendAsync(req).ConfigureAwait(false);
-
-                if (resp.Headers.TryGetValues("rbx-authentication-ticket", out var vals))
-                {
-                    var ticket = vals.FirstOrDefault();
-                    return ticket;
-                }
-
-                string body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_AUTH_TICKET, ex);
-                return null;
-            }
-        }
-
         public async Task<AltAccount?> AddAccountByQuickSignInAsync()
         {
             const string LOG_IDENT_QUICK_SIGN = $"{LOG_IDENT}::AddAccountByQuickSignIn";
@@ -1360,126 +1214,6 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        internal async void LaunchRobloxWithAccount(AltAccount account)
-        {
-            const string LOG_IDENT_LAUNCH = $"{LOG_IDENT}::LaunchRobloxWithAccount";
-
-            if (account is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT_LAUNCH, "Cannot launch - no account provided");
-                return;
-            }
-
-            try
-            {
-                SetActiveAccount(account);
-                SaveAccounts();
-
-                App.Logger.WriteLine(LOG_IDENT_LAUNCH, $"Launching Roblox for {account.Username}");
-
-                string result = await LaunchToPlaceAsync(account, placeId: 0, jobId: "");
-
-                if (result == "Success")
-                {
-                    App.Logger.WriteLine(LOG_IDENT_LAUNCH, $"Successfully launched Roblox for {account.Username}");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT_LAUNCH, $"Launch failed for {account.Username}: {result}");
-                    FallbackToSystemProtocol();
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_LAUNCH, ex);
-                FallbackToSystemProtocol();
-            }
-        }
-
-        public async Task LaunchAccountToPlaceAsync(AltAccount account, long placeId, string serverId = "")
-        {
-            const string LOG_IDENT_LAUNCH_PLACE = $"{LOG_IDENT}::LaunchAccountToPlace";
-
-            if (account is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT_LAUNCH_PLACE, "Cannot launch - no account provided");
-                return;
-            }
-
-            try
-            {
-                App.Logger.WriteLine(LOG_IDENT_LAUNCH_PLACE, $"Attempting to launch {account.Username} to place {placeId} (server {serverId})");
-
-                SetActiveAccount(account);
-                SaveAccounts();
-
-                var result = await LaunchToPlaceAsync(account, placeId, jobId: serverId).ConfigureAwait(false);
-
-                if (result == "Success")
-                {
-                    App.Logger.WriteLine(LOG_IDENT_LAUNCH_PLACE, $"Successfully launched {account.Username} to place {placeId}");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT_LAUNCH_PLACE, $"Launch failed for {account.Username}: {result}");
-                    FallbackToSystemProtocol(placeId, serverId);
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_LAUNCH_PLACE, ex);
-                FallbackToSystemProtocol(placeId, serverId);
-            }
-        }
-
-        public async Task LaunchAccountByIdentifierAsync(string identifier, long placeId, string serverId = "")
-        {
-            const string LOG_IDENT_LAUNCH_ID = $"{LOG_IDENT}::LaunchAccountByIdentifier";
-
-            var account = GetAccount(identifier);
-            if (account == null)
-            {
-                App.Logger.WriteLine(LOG_IDENT_LAUNCH_ID, $"Account '{identifier}' not found, using fallback launch");
-                FallbackToSystemProtocol(placeId, serverId);
-                return;
-            }
-
-            await LaunchAccountToPlaceAsync(account, placeId, serverId);
-        }
-
-        private void FallbackToSystemProtocol(long placeId = 0, string serverId = "")
-        {
-            const string LOG_IDENT_FALLBACK = $"{LOG_IDENT}::FallbackToSystemProtocol";
-
-            try
-            {
-                string robloxUri;
-
-                if (placeId == 0)
-                {
-                    robloxUri = "roblox-player:";
-                }
-                else
-                {
-                    robloxUri = string.IsNullOrEmpty(serverId)
-                        ? $"roblox://experiences/start?placeId={placeId}"
-                        : $"roblox://experiences/start?placeId={placeId}&gameInstanceId={serverId}";
-                }
-
-                App.Logger.WriteLine(LOG_IDENT_FALLBACK, $"Falling back to system protocol: {robloxUri}");
-
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = robloxUri,
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_FALLBACK, ex);
-            }
-        }
-
         public AltAccount? GetAccount(string identifier)
         {
             return _accounts.FirstOrDefault(acc =>
@@ -1573,6 +1307,129 @@ namespace Bloxstrap.Integrations
             else
             {
                 App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, "All accounts are valid");
+            }
+        }
+
+        public async Task LaunchAccountAsync(AltAccount? account, long placeId = 0, string serverId = "", bool followUser = false, bool joinVIP = false)
+        {
+            const string LOG_IDENT_MAIN = $"{LOG_IDENT}::LaunchAccount";
+
+            if (account is null)
+            {
+                App.Logger.WriteLine(LOG_IDENT_MAIN, "Launch aborted: No account provided.");
+                return;
+            }
+
+            try
+            {
+                SetActiveAccount(account);
+                SaveAccounts();
+
+                App.Logger.WriteLine(LOG_IDENT_MAIN, $"Initiating launch for {account.Username} (Place: {placeId})");
+
+                string result = await ExecuteLaunch(account, placeId, serverId, followUser, joinVIP).ConfigureAwait(false);
+
+                if (result != "Success")
+                {
+                    App.Logger.WriteLine(LOG_IDENT_MAIN, $"Launch failed: {result}. Attempting fallback...");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_MAIN, ex);
+            }
+        }
+
+        private async Task<string> ExecuteLaunch(AltAccount account, long placeId, string jobId, bool followUser, bool joinVIP)
+        {
+            var csrf = await GetCsrfTokenAsync(account.SecurityToken).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(csrf)) return "CSRF_FAIL";
+
+            var ticket = await GetAuthTicketAsync(account.SecurityToken, csrf, placeId).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(ticket)) return "TICKET_FAIL";
+
+            string url = "";
+            if (placeId > 0)
+            {
+                url = followUser ? $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestFollowUser&userId={placeId}" :
+                      (joinVIP && !string.IsNullOrEmpty(jobId)) ? $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestPrivateGame&placeId={placeId}&accessCode={jobId}" :
+                      (!string.IsNullOrEmpty(jobId)) ? $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestGameJob&placeId={placeId}&gameId={jobId}" :
+                      $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestGame&placeId={placeId}";
+            }
+
+            string launcherSegment = string.IsNullOrEmpty(url) ? "" : $"+placelauncherurl:{Uri.EscapeDataString(url)}";
+
+            string browserTrackerId = new Random().Next(1000000000, 2147483647).ToString();
+
+            string launchUri = $"roblox-player:1+launchmode:play+gameinfo:{ticket}{launcherSegment}+browsertrackerid:{browserTrackerId}+robloxLocale:en_us+gameLocale:en_us+channel:";
+
+            Process.Start(new ProcessStartInfo(launchUri) { UseShellExecute = true });
+            return "Success";
+        }
+
+        public async Task<string?> GetCsrfTokenAsync(string securityCookie)
+        {
+            const string LOG_IDENT_CSRF = $"{LOG_IDENT}::GetCsrfToken";
+
+            try
+            {
+                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
+                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
+
+                using var client = new HttpClient(handler);
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+
+                var req = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
+                var resp = await client.SendAsync(req).ConfigureAwait(false);
+
+                if (resp.Headers.TryGetValues("x-csrf-token", out var vals))
+                {
+                    return vals.FirstOrDefault();
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_CSRF, ex);
+                return null;
+            }
+        }
+
+        private async Task<string?> GetAuthTicketAsync(string securityCookie, string csrfToken, long placeId)
+        {
+            const string LOG_IDENT_AUTH_TICKET = $"{LOG_IDENT}::GetAuthTicket";
+
+            try
+            {
+                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
+                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
+
+                using var client = new HttpClient(handler);
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+                client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", csrfToken);
+
+                client.DefaultRequestHeaders.Add("Origin", "https://www.roblox.com");
+                client.DefaultRequestHeaders.Referrer = new Uri($"https://www.roblox.com/games/{placeId}/");
+
+                var req = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
+                req.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+
+                var resp = await client.SendAsync(req).ConfigureAwait(false);
+                if (resp.Headers.TryGetValues("rbx-authentication-ticket", out var vals))
+                {
+                    return vals.FirstOrDefault();
+                }
+
+                string body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                App.Logger.WriteLine(LOG_IDENT_AUTH_TICKET, $"Ticket Error Body: {body}");
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_AUTH_TICKET, ex);
+                return null;
             }
         }
     }

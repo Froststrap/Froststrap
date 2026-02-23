@@ -672,7 +672,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                     {
                         mainWindow?.ShowLoading($"Found server in {selectedRegion}! Joining...");
 
-                        await mgr.LaunchAccountToPlaceAsync(account, placeId, matchingServer.Id);
+                        await mgr.LaunchAccountAsync(account, placeId, matchingServer.Id);
 
                         mainWindow?.ShowLoading("Successfully joined server!");
                         await Task.Delay(750);
@@ -763,7 +763,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             mgr.SetCurrentPlaceId(PlaceId);
             mgr.SetCurrentServerInstanceId(ServerId);
 
-            await mgr.LaunchAccountToPlaceAsync(mgr.ActiveAccount, placeId, ServerId);
+            await mgr.LaunchAccountAsync(mgr.ActiveAccount, placeId, ServerId);
         }
 
         private async Task FetchDiscoveryPageGamesAsync(long userId, CancellationToken token = default)
@@ -1595,7 +1595,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             mgr.SetCurrentPlaceId(PlaceId);
             mgr.SetCurrentServerInstanceId(ServerId);
 
-            await mgr.LaunchAccountToPlaceAsync(mgr.ActiveAccount, placeId, ServerId);
+            await mgr.LaunchAccountAsync(mgr.ActiveAccount, placeId, ServerId);
         }
 
         [RelayCommand]
@@ -1616,7 +1616,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 mgr.SetCurrentPlaceId(PlaceId);
                 mgr.SetCurrentServerInstanceId(ServerId);
 
-                await mgr.LaunchAccountToPlaceAsync(mgr.ActiveAccount, placeId, ServerId);
+                await mgr.LaunchAccountAsync(mgr.ActiveAccount, placeId, ServerId);
             }
             catch (Exception ex)
             {
@@ -1718,7 +1718,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 mgr.SetCurrentPlaceId(PlaceId);
                 mgr.SetCurrentServerInstanceId(accessCode);
 
-                await mgr.LaunchAccountToPlaceAsync(mgr.ActiveAccount, placeId, accessCode);
+                await mgr.LaunchAccountAsync(mgr.ActiveAccount, placeId, accessCode);
             }
             catch (Exception ex)
             {

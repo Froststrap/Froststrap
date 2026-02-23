@@ -621,7 +621,8 @@ namespace Bloxstrap
 
                     if (File.Exists(Path.Combine(Paths.Cache, "channelCache.json"))) File.Delete(Path.Combine(Paths.Cache, "channelCache.json"));
                     if (File.Exists(Path.Combine(Paths.Cache, "channelCacheMeta.json"))) File.Delete(Path.Combine(Path.Combine(Paths.Cache, "channelCacheMeta.json")));
-                    if (File.Exists(Path.Combine(Paths.Cache, "DataCentersCache.json"))) File.Delete(Path.Combine(Path.Combine(Paths.Cache, "DataCentersCache.json")));
+                    if (File.Exists(Path.Combine(Paths.Cache, "datacenters_cache.json"))) File.Delete(Path.Combine(Path.Combine(Paths.Cache, "datacenters_cache.json")));
+                    if (File.Exists(Path.Combine(Paths.Roblox, "LocalStorage", "RobloxCookies.dat"))) File.Delete(Path.Combine(Path.Combine(Paths.Roblox, "LocalStorage", "RobloxCookies.dat")));
                 }
 
                 App.Settings.Save();

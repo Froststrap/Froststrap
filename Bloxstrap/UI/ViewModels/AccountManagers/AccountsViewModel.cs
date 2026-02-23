@@ -382,8 +382,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             if (existingBackendAccount == null)
             {
-                existingBackendAccount = mgr.AddManualAccount(newAccount.SecurityToken, newAccount.UserId,
-                    newAccount.Username, newAccount.DisplayName);
+                existingBackendAccount = mgr.AddManualAccount(newAccount.SecurityToken, newAccount.UserId, newAccount.Username, newAccount.DisplayName);
 
                 if (existingBackendAccount == null)
                 {

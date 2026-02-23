@@ -497,7 +497,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
                 try
                 {
-                    await Manager.LaunchAccountToPlaceAsync(activeAccount, placeId.Value, gameInstanceId);
+                    await Manager.LaunchAccountAsync(activeAccount, placeId.Value, gameInstanceId);
 
                     App.Logger.WriteLine(LOG_IDENT_JOIN_FRIEND, $"Successfully launched game to join {friend.DisplayName} in instance {gameInstanceId}");
                 }
