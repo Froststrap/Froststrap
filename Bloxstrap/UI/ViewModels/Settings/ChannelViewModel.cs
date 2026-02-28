@@ -1,6 +1,7 @@
 ﻿using Bloxstrap.RobloxInterfaces;
 using System.ComponentModel;
 using System.Windows;
+using System.Net;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
@@ -11,16 +12,43 @@ namespace Bloxstrap.UI.ViewModels.Settings
             Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
         }
 
-        public bool CheckForUpdates
+        public int UpdateChannelIndex
         {
-            get => App.Settings.Prop.CheckForUpdates;
-            set => App.Settings.Prop.CheckForUpdates = value;
-        }
+            get
+            {
+                if (App.Settings.Prop.CheckForUpdates)
+                {
+                    if (App.Settings.Prop.CheckForPreRelease)
+                        return 2;
 
-        public bool CheckForPreRelease
-        {
-            get => App.Settings.Prop.CheckForPreRelease;
-            set => App.Settings.Prop.CheckForPreRelease = value;
+                    return 1;                }
+
+                return 0;
+            }
+            set
+            {
+                switch (value)
+                {
+                    case 0: // Disabled
+                        App.Settings.Prop.CheckForUpdates = false;
+                        App.Settings.Prop.CheckForPreRelease = false;
+                        break;
+                    case 1: // Stable
+                        App.Settings.Prop.CheckForUpdates = true;
+                        App.Settings.Prop.CheckForPreRelease = false;
+                        break;
+                    case 2: // Pre-release
+                        App.Settings.Prop.CheckForUpdates = true;
+                        App.Settings.Prop.CheckForPreRelease = true;
+                        break;
+                    default: // Default fallback to Stable
+                        App.Settings.Prop.CheckForUpdates = true;
+                        App.Settings.Prop.CheckForPreRelease = false;
+                        break;
+                }
+
+                OnPropertyChanged(nameof(UpdateChannelIndex));
+            }
         }
 
         public bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled;
