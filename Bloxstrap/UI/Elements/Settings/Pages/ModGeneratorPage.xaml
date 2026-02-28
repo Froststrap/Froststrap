@@ -122,10 +122,10 @@
                     <StackPanel>
                         <TextBlock FontSize="14" FontWeight="Bold" Text="Mod Options" Margin="0,0,0,8" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
 
-                        <ui:ToggleSwitch Content="Apply to Cursors" IsChecked="{Binding ColorCursors}" Margin="0,4"/>
-                        <ui:ToggleSwitch Content="Apply to Shiftlock" IsChecked="{Binding ColorShiftlock}" Margin="0,4"/>
-                        <ui:ToggleSwitch Content="Apply to Emote Wheel" IsChecked="{Binding ColorEmoteWheel}" Margin="0,4"/>
-                        <ui:ToggleSwitch Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="0,4"/>
+                        <CheckBox Content="Apply to Cursors" IsChecked="{Binding ColorCursors}" Margin="0,4"/>
+                        <CheckBox Content="Apply to Shiftlock" IsChecked="{Binding ColorShiftlock}" Margin="0,4"/>
+                        <CheckBox Content="Apply to Emote Wheel" IsChecked="{Binding ColorEmoteWheel}" Margin="0,4"/>
+                        <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="0,4"/>
 
                         <Separator Margin="0,12"/>
 
