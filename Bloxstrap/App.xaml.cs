@@ -313,9 +313,10 @@ namespace Bloxstrap
 
             if (uninstallKey?.GetValue("InstallLocation") is string installLocValue)
             {
+                installLocValue = Environment.ExpandEnvironmentVariables(installLocValue);
                 if (Directory.Exists(installLocValue))
                 {
-                    installLocation = installLocValue;
+                    installLocation = Environment.ExpandEnvironmentVariables(installLocValue);
                 }
                 else
                 {
