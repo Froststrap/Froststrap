@@ -39,7 +39,11 @@
 
         public static void Initialize(string baseDirectory)
         {
-            Base = baseDirectory;
+            Base = Environment.ExpandEnvironmentVariables(baseDirectory);
+            if (!System.IO.Directory.Exists(Base))
+            {
+                System.IO.Directory.CreateDirectory(Base);
+            }
             Downloads = Path.Combine(Base, "Downloads");
             SavedFlagProfiles = Path.Combine(Base, "SavedFlagProfiles");
             Logs = Path.Combine(Base, "Logs");
