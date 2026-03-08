@@ -431,6 +431,7 @@ namespace Bloxstrap
                     App.Logger.WriteLine(LOG_IDENT, $"Worker error: {ex.Message}");
                 }
 
+                // do this so that if the watcher is open, it dosent close
                 if (!App.LaunchSettings.WatcherFlag.Active)
                     App.Terminate();
             });
