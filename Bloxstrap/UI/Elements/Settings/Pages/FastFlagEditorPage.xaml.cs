@@ -52,8 +52,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
         public FastFlagEditorPage()
         {
-            InitializeComponent();
-
             AdvancedSettingViewModel.ShowPresetColumnChanged += (_, _) =>
             {
                 Dispatcher.Invoke(() =>
@@ -69,15 +67,10 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
                 Dispatcher.Invoke(UpdateTotalFlagsCount);
             };
 
-            SetDefaultStates();
+            InitializeComponent();
+
             App.FrostRPC?.SetPage("FastFlag Editor");
         }
-
-        private void SetDefaultStates()
-        {
-            TogglePresetsButton.IsChecked = true;
-        }
-
         public void ReloadList()
         {
             PresetColumn.Visibility = LoadShowPresetColumnSetting() ? Visibility.Visible : Visibility.Collapsed;

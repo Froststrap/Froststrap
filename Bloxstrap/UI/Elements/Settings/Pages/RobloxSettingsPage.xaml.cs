@@ -14,36 +14,9 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
         public RobloxSettingsPage()
         {
+            _viewModel = new RobloxSettingsViewModel();
+            DataContext = _viewModel;
             InitializeComponent();
-            Loaded += RobloxSettingsPage_Loaded;
-        }
-
-        private async void RobloxSettingsPage_Loaded(object sender, RoutedEventArgs e)
-        {
-            App.FrostRPC?.SetPage("Roblox Settings");
-
-            if (_viewModel != null) 
-                return;
-
-            var mainWindow = (MainWindow)Application.Current.MainWindow;
-            mainWindow?.ShowLoading("Loading Roblox Settings...");
-
-            try
-            {
-                await App.RemoteData.WaitUntilDataFetched();
-
-                _viewModel = new RobloxSettingsViewModel(App.RemoteData);
-                DataContext = _viewModel;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("RobloxSettingsPage::Loaded", $"Error: {ex}");
-                Frontend.ShowMessageBox($"Failed to load Roblox settings:\n\n{ex.Message}", MessageBoxImage.Error);
-            }
-            finally
-            {
-                mainWindow?.HideLoading();
-            }
         }
 
         private void ValidateUInt32(object sender, TextCompositionEventArgs e)

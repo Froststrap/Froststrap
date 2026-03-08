@@ -98,6 +98,7 @@
                 Margin="0,0,8,8"
                 VerticalAlignment="Top"
                 Click="ToggleButton_Click"
+                IsChecked="True"
                 Content="{x:Static resources:Strings.Menu_FastFlagEditor_ShowPresetFlags}" />
         </WrapPanel>
 
