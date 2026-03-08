@@ -91,6 +91,10 @@
                     <ui:TextBox Text="{Binding MouseSensitivity}" PreviewTextInput="ValidateFloat" />
                 </controls:SquareCard>
 
+                <controls:SquareCard Header="ShiftLock" Description="Enable shiftlock Automatically.">
+                    <ui:ToggleSwitch IsChecked="{Binding ShiftLock,  Mode=TwoWay}" />
+                </controls:SquareCard>
+
                 <controls:SquareCard Header="1st Person Sensitivity" Description="X and Y sensitivity for first person.">
                     <Grid Margin="0,0,0,4">
                         <Grid.ColumnDefinitions>

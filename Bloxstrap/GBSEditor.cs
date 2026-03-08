@@ -25,6 +25,7 @@ namespace Bloxstrap
 
             // Input Settings
             { "User.MouseSensitivity", "{UserSettings}/float[@name='MouseSensitivity']" },
+            { "User.ShiftLock", "{UserSettings}/token[@name='ControlMode']" },
             { "User.MouseSensitivityFirstPerson", "{UserSettings}/Vector2[@name='MouseSensitivityFirstPerson']" },
             { "User.MouseSensitivityThirdPerson", "{UserSettings}/Vector2[@name='MouseSensitivityThirdPerson']" },
             { "User.CameraYInverted", "{UserSettings}/bool[@name='CameraYInverted']" },
