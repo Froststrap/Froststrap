@@ -59,6 +59,11 @@ namespace Bloxstrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening watcher");
                 LaunchWatcher();
+                if (App.LaunchSettings.PostLaunchFlag.Active)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
+                    LaunchPostLaunch();
+                }
             }
             else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
@@ -79,6 +84,11 @@ namespace Bloxstrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening Bloxshade");
                 LaunchBloxshadeConfig();
+            }
+            else if (App.LaunchSettings.PostLaunchFlag.Active)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
+                LaunchPostLaunch();
             }
             else if (!App.LaunchSettings.QuietFlag.Active)
             {
@@ -370,6 +380,60 @@ namespace Bloxstrap
 
             new BloxshadeDialog().ShowDialog();
             App.SoftTerminate();
+        }
+
+        public static void LaunchPostLaunch()
+        {
+            const string LOG_IDENT = "LaunchHandler::LaunchPostLaunch";
+
+            if (!int.TryParse(App.LaunchSettings.PostLaunchFlag.Data, out int robloxPid))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to parse Roblox PID");
+                App.Terminate();
+                return;
+            }
+
+            Task.Run(async () =>
+            {
+                await Task.Delay(20000);
+
+                try
+                {
+                    var proc = Process.GetProcessById(robloxPid);
+                    if (!proc.HasExited)
+                    {
+                        if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
+                        {
+                            ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
+                            {
+                                ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
+                                ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
+                                ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
+                                ProcessPriorityOption.High => ProcessPriorityClass.High,
+                                ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
+                                _ => ProcessPriorityClass.Normal
+                            };
+                            proc.PriorityClass = priorityClass;
+                            App.Logger.WriteLine(LOG_IDENT, $"Set priority to {priorityClass}");
+                        }
+
+                        if (App.Settings.Prop.AutoCloseCrashHandler)
+                        {
+                            foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
+                            {
+                                try { crashProc.Kill(); } catch { }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Worker error: {ex.Message}");
+                }
+
+                if (!App.LaunchSettings.WatcherFlag.Active)
+                    App.Terminate();
+            });
         }
 
         public static void LaunchBackgroundUpdater()

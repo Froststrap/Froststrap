@@ -12,6 +12,7 @@
 #endif
 
 using Bloxstrap.AppData;
+using Bloxstrap.Models;
 using Bloxstrap.RobloxInterfaces;
 using Bloxstrap.UI.Elements.Bootstrapper.Base;
 using ICSharpCode.SharpZipLib.Zip;
@@ -944,6 +945,15 @@ namespace Bloxstrap
                             autoclosePids.Add(pid);
                     }
                 }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = Paths.Process,
+                    Arguments = $"-postlaunch {_appPid}",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                });
             }
 
             if (App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Any())
