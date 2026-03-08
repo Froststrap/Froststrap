@@ -684,11 +684,13 @@ namespace Bloxstrap
 
             foreach (string fileName in FilesForImporting)
             {
-                string actualSourceFile = fileName;
-                string actualDestFile = fileName;
+                string sourcePath = Path.Combine(sourceDir, fileName);
+                string destinationPath = Path.Combine(InstallLocation, fileName);
 
-                string sourcePath = Path.Combine(sourceDir, actualSourceFile);
-                string destinationPath = Path.Combine(InstallLocation, actualDestFile);
+                if (fileName.Equals("Modifications", StringComparison.OrdinalIgnoreCase))
+                {
+                    destinationPath = Path.Combine(InstallLocation, "Modifications", $"{ImportSource} Mods");
+                }
 
                 try
                 {
