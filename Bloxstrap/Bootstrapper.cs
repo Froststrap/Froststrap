@@ -1104,7 +1104,7 @@ namespace Bloxstrap
         {
             const string LOG_IDENT = "Bootstrapper::CheckForUpdates";
 
-            if (!App.Settings.Prop.CheckForUpdates)
+            if (App.Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings.");
                 return false;
@@ -1122,7 +1122,10 @@ namespace Bloxstrap
             string version;
 
 #if !DEBUG_UPDATER
-            bool includePreRelease = App.Settings.Prop.CheckForPreRelease;
+            UpdateCheck preference = App.Settings.Prop.UpdateChecks;
+
+            bool includePreRelease = (preference == UpdateCheck.Both || preference == UpdateCheck.Test);
+
             releaseInfo = await App.GetLatestRelease(includePreRelease);
 
             if (releaseInfo is null)

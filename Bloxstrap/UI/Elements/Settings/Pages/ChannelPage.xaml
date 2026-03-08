@@ -18,15 +18,18 @@
         <TextBlock Margin="0,0,0,8" Text="{x:Static resources:Strings.Menu_Channel_Description}" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
         <TextBlock Text="Froststrap" FontSize="20" FontWeight="Bold" Margin="0,16,0,0" />
-
         <controls:OptionControl 
-                Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                Description="Choose how Froststrap handles automatic updates.">
+    Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
+    Description="Choose how Froststrap handles automatic updates.">
 
-            <ComboBox SelectedIndex="{Binding UpdateChannelIndex, Mode=TwoWay}" Width="200">
-                <ComboBoxItem Content="Disabled" />
-                <ComboBoxItem Content="Stable" />
-                <ComboBoxItem Content="Pre-release" />
+            <ComboBox ItemsSource="{Binding UpdateCheckValues}" 
+              SelectedItem="{Binding SelectedUpdateCheck, Mode=TwoWay}" 
+              Width="200">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
             </ComboBox>
         </controls:OptionControl>
 
