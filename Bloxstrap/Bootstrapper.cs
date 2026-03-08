@@ -205,7 +205,7 @@ namespace Bloxstrap
                 HandleConnectionError(connectionResult);
 
 #if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
-            if (App.Settings.Prop.CheckForUpdates && !App.LaunchSettings.UpgradeFlag.Active)
+            if (App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled && !App.LaunchSettings.UpgradeFlag.Active)
             {
                 bool updatePresent = await CheckForUpdates();
                 
@@ -340,70 +340,9 @@ namespace Bloxstrap
                 StartRoblox();
             }
 
-            if (!IsStudioLaunch)
-                await HandlePostLaunchOperations();
-
             await mutex.ReleaseAsync();
 
             Dialog?.CloseBootstrapper();
-        }
-
-        private async Task HandlePostLaunchOperations()
-        {
-            const string LOG_IDENT = "Bootstrapper::PostLaunch";
-
-            SetStatus("Handling Post Launch Operations...");
-
-            if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
-            {
-                await Task.Delay(20000);
-
-                var processes = Process.GetProcessesByName("RobloxPlayerBeta");
-
-                if (processes.Length == 0)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Could not find RobloxPlayerBeta process.");
-                    return;
-                }
-
-                foreach (var proc in processes)
-                {
-                    try
-                    {
-                        ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
-                        {
-                            ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
-                            ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
-                            ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
-                            ProcessPriorityOption.High => ProcessPriorityClass.High,
-                            ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
-                            _ => ProcessPriorityClass.Normal
-                        };
-
-                        proc.PriorityClass = priorityClass;
-                        App.Logger.WriteLine(LOG_IDENT, $"Set RobloxPlayerBeta (PID {proc.Id}) priority to {priorityClass}");
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply priority to PID {proc.Id}: {ex.Message}");
-                    }
-                }
-            }
-
-            if (App.Settings.Prop.AutoCloseCrashHandler)
-            {
-                if (App.Settings.Prop.SelectedProcessPriority == ProcessPriorityOption.Normal)
-                    await Task.Delay(20000);
-
-                foreach (var proc in Process.GetProcessesByName("RobloxCrashHandler"))
-                {
-                    try
-                    {
-                        proc.Kill();
-                    }
-                    catch { }
-                }
-            }
         }
 
         /// <summary>

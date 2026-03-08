@@ -55,6 +55,9 @@ namespace Bloxstrap
             if (_watcherData is null)
                 throw new Exception("Watcher data is invalid");
 
+            if (_watcherData.LaunchMode == LaunchMode.Player)
+                _ = HandlePostLaunchOperations(_cancellationTokenSource.Token);
+
             if (App.Settings.Prop.EnableActivityTracking)
             {
                 ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
@@ -140,6 +143,54 @@ namespace Bloxstrap
 
             if (App.LaunchSettings.TestModeFlag.Active)
                 Process.Start(Paths.Process, "-settings -testmode");
+        }
+
+        private async Task HandlePostLaunchOperations(CancellationToken token)
+        {
+            const string LOG_IDENT = "Watcher::PostLaunch";
+
+            try
+            {
+                await Task.Delay(20000, token);
+
+                if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
+                {
+                    var proc = Process.GetProcessById(_watcherData!.ProcessId);
+
+                    if (!proc.HasExited)
+                    {
+                        ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
+                        {
+                            ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
+                            ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
+                            ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
+                            ProcessPriorityOption.High => ProcessPriorityClass.High,
+                            ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
+                            _ => ProcessPriorityClass.Normal
+                        };
+
+                        proc.PriorityClass = priorityClass;
+                        App.Logger.WriteLine(LOG_IDENT, $"Set Roblox priority (PID {proc.Id}) to {priorityClass}");
+                    }
+                }
+
+                if (App.Settings.Prop.AutoCloseCrashHandler)
+                {
+                    foreach (var proc in Process.GetProcessesByName("RobloxCrashHandler"))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        try { proc.Kill(); } catch { }
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Post-launch operations cancelled because Watcher is disposing.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to perform post-launch operations: {ex.Message}");
+            }
         }
 
         public void Dispose()
