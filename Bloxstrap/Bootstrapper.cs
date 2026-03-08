@@ -1575,252 +1575,282 @@ namespace Bloxstrap
 
             File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
 
-            var currentModManifest = new Dictionary<string, ModFileEntry>();
+            var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
             Directory.CreateDirectory(Paths.Modifications);
 
-            try
+            var activeMods = App.State.Prop.Mods
+                                .Where(x => x.Target != "Disabled" && (
+                                            x.Target == "Both" ||
+                                            (IsStudioLaunch && x.Target == "Studio") ||
+                                            (!IsStudioLaunch && x.Target == "Player")))
+                                .OrderBy(x => x.Priority)
+                                .ToList();
+
+            string? activeFontFilename = null;
+            string? customFontModName = activeMods.LastOrDefault(mod =>
             {
-                var activeMods = App.State.Prop.Mods
-                            .Where(x => x.Target != "Disabled" && (
-                                        x.Target == "Both" ||
-                                        (IsStudioLaunch && x.Target == "Studio") ||
-                                        (!IsStudioLaunch && x.Target == "Player")))
-                            .OrderByDescending(x => x.Priority)
-                            .ToList();
-
-                string? customFontModName = activeMods
-                    .FirstOrDefault(mod => File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))?.FolderName;
-
-                var fontTask = Task.Run(() =>
+                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
                 {
-                    if (customFontModName != null)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Begin font check");
-                        string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
-                        string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
-
-                        Directory.CreateDirectory(familiesFolder);
-                        Directory.CreateDirectory(modFontFamiliesFolder);
-
-                        const string path = "rbxasset://fonts/CustomFont.ttf";
-                        var jsonFiles = Directory.GetFiles(familiesFolder, "*.json");
-
-                        Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
-                        {
-                            string jsonFilename = Path.GetFileName(jsonFilePath);
-                            string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
-
-                            if (File.Exists(modFilepath)) return;
-
-                            var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
-                            if (fontFamilyData is null) return;
-
-                            bool shouldWrite = false;
-                            foreach (var fontFace in fontFamilyData.Faces)
-                            {
-                                if (fontFace.AssetId != path)
-                                {
-                                    fontFace.AssetId = path;
-                                    shouldWrite = true;
-                                }
-                            }
-
-                            if (shouldWrite)
-                                File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
-                        });
-                        App.Logger.WriteLine(LOG_IDENT, "End font check");
-                    }
-                });
-
-                var fileTasks = new List<Task<bool>>();
-                using var semaphore = new SemaphoreSlim(8);
-
-                App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
-                if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
-                {
-                    await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
+                    activeFontFilename = "CustomFont.ttf";
+                    return true;
                 }
-
-                foreach (var mod in activeMods)
+                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf")))
                 {
-                    if (_cancelTokenSource.IsCancellationRequested) return true;
-
-                    string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
-                    if (!Directory.Exists(modSource)) continue;
-
-                    foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
-                    {
-                        string relativeFile = file.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
-
-                        if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock") || relativeFile.EndsWith(".mesh"))
-                            continue;
-
-                        string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
-                        string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-
-                        fileTasks.Add(Task.Run(async () =>
-                        {
-                            await semaphore.WaitAsync();
-                            try
-                            {
-                                var sourceInfo = new FileInfo(file);
-
-                                lock (currentModManifest)
-                                    currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
-
-                                if (fileNameWithoutExt.EndsWith("_Delete"))
-                                {
-                                    string directory = Path.GetDirectoryName(fileVersionFolder) ?? "";
-                                    string originalFileName = Path.Combine(directory, fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(fileVersionFolder));
-
-                                    if (File.Exists(originalFileName))
-                                    {
-                                        Filesystem.AssertReadOnly(originalFileName);
-                                        File.Delete(originalFileName);
-                                        App.Logger.WriteLine(LOG_IDENT, $"{originalFileName} has been deleted");
-                                    }
-                                }
-                                else
-                                {
-                                    bool needsCopy = true;
-
-                                    if (File.Exists(fileVersionFolder))
-                                    {
-                                        var targetInfo = new FileInfo(fileVersionFolder);
-
-                                        if (targetInfo.Length == sourceInfo.Length && targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
-                                        {
-                                            needsCopy = false;
-                                        }
-                                        else if (targetInfo.LastWriteTime == sourceInfo.LastWriteTime || targetInfo.Length != sourceInfo.Length)
-                                        {
-                                            string sourceHash = await Task.Run(() => MD5Hash.FromFile(file));
-                                            string targetHash = await Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
-
-                                            if (sourceHash == targetHash)
-                                            {
-                                                needsCopy = false;
-                                                File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
-                                            }
-                                        }
-                                    }
-
-                                    if (needsCopy)
-                                    {
-                                        Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-                                        Filesystem.AssertReadOnly(fileVersionFolder);
-                                        File.Copy(file, fileVersionFolder, true);
-                                        File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
-                                        Filesystem.AssertReadOnly(fileVersionFolder);
-                                        App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} copied to version folder");
-                                    }
-                                }
-                                return true;
-                            }
-                            catch (Exception ex)
-                            {
-                                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}): {ex.Message}");
-                                return false;
-                            }
-                            finally
-                            {
-                                semaphore.Release();
-                            }
-                        }));
-                    }
+                    activeFontFilename = "CustomFont.otf";
+                    return true;
                 }
+                return false;
+            })?.FolderName;
 
-                var fileResults = await Task.WhenAll(fileTasks);
-                success = success && fileResults.All(r => r);
+            if (customFontModName != null && activeFontFilename != null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Executing font patcher for {activeFontFilename}...");
+                string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
+                string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
 
-                await fontTask;
+                Directory.CreateDirectory(familiesFolder);
+                Directory.CreateDirectory(modFontFamiliesFolder);
 
-                if (App.Settings.Prop.UseFastFlagManager)
+                string rbxAssetPath = $"rbxasset://fonts/{activeFontFilename}";
+                var jsonFiles = Directory.GetFiles(familiesFolder, "*.json");
+
+                await Task.Run(() =>
                 {
-                    string source = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
-                    if (File.Exists(source))
+                    Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
                     {
-                        string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                        string dest = Path.Combine(_latestVersionDirectory, rel);
-                        var info = new FileInfo(source);
+                        string jsonFilename = Path.GetFileName(jsonFilePath);
+                        string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
 
-                        lock (currentModManifest)
-                            currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
+                        if (File.Exists(modFilepath)) return;
 
-                        try
+                        var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
+                        if (fontFamilyData is null) return;
+
+                        bool shouldWrite = false;
+                        foreach (var fontFace in fontFamilyData.Faces)
                         {
-                            bool exists = File.Exists(dest);
-                            bool match = exists && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
-
-                            if (!match)
+                            if (fontFace.AssetId != rbxAssetPath)
                             {
-                                Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                                File.Copy(source, dest, true);
-                                File.SetLastWriteTime(dest, info.LastWriteTime);
-                                App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
+                                fontFace.AssetId = rbxAssetPath;
+                                shouldWrite = true;
                             }
                         }
-                        catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
-                    }
-                }
 
-                var fileRestoreMap = new Dictionary<string, List<string>>();
+                        if (shouldWrite)
+                            File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
+                    });
+                });
+                App.Logger.WriteLine(LOG_IDENT, "End font check");
+            }
 
-                foreach (var fileLocation in AppData.DistributionState.ModManifest.Keys)
+            var finalFilesToCopy = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var filesToDelete = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var mod in activeMods)
+            {
+                string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+                if (!Directory.Exists(modSource)) continue;
+
+                foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
                 {
-                    if (currentModManifest.ContainsKey(fileLocation))
+                    string relativeFile = file.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
+
+                    if (relativeFile == "README.txt")
+                    {
+                        File.Delete(file);
+                        continue;
+                    }
+
+                    if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock") || relativeFile.EndsWith(".mesh"))
                         continue;
 
-                    string targetFile = fileLocation;
-                    string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+                    string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
 
                     if (fileNameWithoutExt.EndsWith("_Delete"))
                     {
-                        string directory = Path.GetDirectoryName(fileLocation) ?? "";
-                        string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
-                        targetFile = Path.Combine(directory, originalFileNameWithoutDelete + Path.GetExtension(fileLocation));
+                        string originalRelName = Path.Combine(Path.GetDirectoryName(relativeFile) ?? "", fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(relativeFile));
+                        filesToDelete.Add(originalRelName);
+                        finalFilesToCopy.Remove(originalRelName);
                     }
-
-                    var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase));
-                    string packageName = packageMapEntry.Key;
-
-                    if (String.IsNullOrEmpty(packageName))
+                    else
                     {
-                        string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
-                        if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
-                        continue;
-                    }
-
-                    if (!fileRestoreMap.ContainsKey(packageName))
-                        fileRestoreMap[packageName] = new();
-
-                    string internalZipPath = targetFile.Substring(packageMapEntry.Value.Length).TrimStart(Path.DirectorySeparatorChar);
-                    fileRestoreMap[packageName].Add(internalZipPath);
-                }
-
-                foreach (var entry in fileRestoreMap)
-                {
-                    var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
-                    if (package is not null)
-                    {
-                        await DownloadPackage(package);
-                        ExtractPackage(package, entry.Value);
+                        finalFilesToCopy[relativeFile] = file;
+                        filesToDelete.Remove(relativeFile);
                     }
                 }
-
-                if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
-                {
-                    AppData.DistributionState.ModManifest = currentModManifest;
-                    AppData.DistributionStateManager.Save();
-                }
-
-                App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
             }
-            catch (Exception ex)
+
+            foreach (var relPath in filesToDelete)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
-                success = false;
+                string targetFile = Path.Combine(_latestVersionDirectory, relPath);
+                if (File.Exists(targetFile))
+                {
+                    Filesystem.AssertReadOnly(targetFile);
+                    File.Delete(targetFile);
+                    App.Logger.WriteLine(LOG_IDENT, $"{relPath} has been deleted via _Delete flag");
+
+                    string? parentDir = Path.GetDirectoryName(targetFile);
+                    while (!string.IsNullOrEmpty(parentDir) &&
+                            parentDir.TrimEnd(Path.DirectorySeparatorChar) != _latestVersionDirectory.TrimEnd(Path.DirectorySeparatorChar))
+                    {
+                        if (Directory.Exists(parentDir) && !Directory.EnumerateFileSystemEntries(parentDir).Any())
+                        {
+                            Directory.Delete(parentDir);
+                            parentDir = Path.GetDirectoryName(parentDir);
+                        }
+                        else break;
+                    }
+                }
+                lock (currentModManifest)
+                    currentModManifest[relPath + "_Delete"] = new ModFileEntry { Size = 0, LastModified = DateTime.Now };
             }
+
+            var fileTasks = new List<Task<bool>>();
+            using var semaphore = new SemaphoreSlim(8);
+
+            foreach (var entry in finalFilesToCopy)
+            {
+                if (_cancelTokenSource.IsCancellationRequested) return true;
+
+                string relativeFile = entry.Key;
+                string sourceFile = entry.Value;
+                string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
+
+                fileTasks.Add(Task.Run(async () =>
+                {
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                        var sourceInfo = new FileInfo(sourceFile);
+                        lock (currentModManifest)
+                            currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
+
+                        bool needsCopy = true;
+                        if (File.Exists(fileVersionFolder))
+                        {
+                            var targetInfo = new FileInfo(fileVersionFolder);
+                            if (targetInfo.Length == sourceInfo.Length && targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
+                            {
+                                needsCopy = false;
+                            }
+                            else
+                            {
+                                string sourceHash = await Task.Run(() => MD5Hash.FromFile(sourceFile));
+                                string targetHash = await Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+
+                                if (sourceHash == targetHash)
+                                {
+                                    needsCopy = false;
+                                    File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                                }
+                            }
+                        }
+
+                        if (needsCopy)
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            File.Copy(sourceFile, fileVersionFolder, true);
+                            File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied from mod source");
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}): {ex.Message}");
+                        return false;
+                    }
+                    finally { semaphore.Release(); }
+                }));
+            }
+
+            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
+                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
+
+            var fileResults = await Task.WhenAll(fileTasks);
+            success = success && fileResults.All(r => r);
+
+            if (App.Settings.Prop.UseFastFlagManager)
+            {
+                string source = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
+                if (File.Exists(source))
+                {
+                    string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                    string dest = Path.Combine(_latestVersionDirectory, rel);
+                    var info = new FileInfo(source);
+
+                    lock (currentModManifest)
+                        currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
+
+                    try
+                    {
+                        bool match = File.Exists(dest) && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+                        if (!match)
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                            File.Copy(source, dest, true);
+                            File.SetLastWriteTime(dest, info.LastWriteTime);
+                            App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
+                        }
+                    }
+                    catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+                }
+            }
+
+            var fileRestoreMap = new Dictionary<string, List<string>>();
+
+            foreach (var fileLocation in AppData.DistributionState.ModManifest.Keys)
+            {
+                if (currentModManifest.ContainsKey(fileLocation))
+                    continue;
+
+                string targetFile = fileLocation;
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+
+                if (fileNameWithoutExt.EndsWith("_Delete"))
+                {
+                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
+                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
+                    targetFile = Path.Combine(directory, originalFileNameWithoutDelete + Path.GetExtension(fileLocation));
+                }
+
+                var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase));
+                string packageName = packageMapEntry.Key;
+
+                if (String.IsNullOrEmpty(packageName))
+                {
+                    string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
+                    if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
+                    continue;
+                }
+
+                if (!fileRestoreMap.ContainsKey(packageName))
+                    fileRestoreMap[packageName] = new();
+
+                string internalZipPath = targetFile.Substring(packageMapEntry.Value.Length).TrimStart(Path.DirectorySeparatorChar);
+                fileRestoreMap[packageName].Add(internalZipPath);
+            }
+
+            foreach (var entry in fileRestoreMap)
+            {
+                var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
+                if (package is not null)
+                {
+                    await DownloadPackage(package);
+                    ExtractPackage(package, entry.Value);
+                }
+            }
+
+            if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
+            {
+                AppData.DistributionState.ModManifest = currentModManifest;
+                AppData.DistributionStateManager.Save();
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
 
             return success;
         }
