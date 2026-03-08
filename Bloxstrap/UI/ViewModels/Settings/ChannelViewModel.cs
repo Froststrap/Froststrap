@@ -12,42 +12,15 @@ namespace Bloxstrap.UI.ViewModels.Settings
             Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
         }
 
-        public int UpdateChannelIndex
+        public IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues(typeof(UpdateCheck)).Cast<UpdateCheck>();
+
+        public UpdateCheck SelectedUpdateCheck
         {
-            get
-            {
-                if (App.Settings.Prop.CheckForUpdates)
-                {
-                    if (App.Settings.Prop.CheckForPreRelease)
-                        return 2;
-
-                    return 1;                }
-
-                return 0;
-            }
+            get => App.Settings.Prop.UpdateChecks;
             set
             {
-                switch (value)
-                {
-                    case 0: // Disabled
-                        App.Settings.Prop.CheckForUpdates = false;
-                        App.Settings.Prop.CheckForPreRelease = false;
-                        break;
-                    case 1: // Stable
-                        App.Settings.Prop.CheckForUpdates = true;
-                        App.Settings.Prop.CheckForPreRelease = false;
-                        break;
-                    case 2: // Pre-release
-                        App.Settings.Prop.CheckForUpdates = true;
-                        App.Settings.Prop.CheckForPreRelease = true;
-                        break;
-                    default: // Default fallback to Stable
-                        App.Settings.Prop.CheckForUpdates = true;
-                        App.Settings.Prop.CheckForPreRelease = false;
-                        break;
-                }
-
-                OnPropertyChanged(nameof(UpdateChannelIndex));
+                App.Settings.Prop.UpdateChecks = value;
+                OnPropertyChanged(nameof(SelectedUpdateCheck));
             }
         }
 

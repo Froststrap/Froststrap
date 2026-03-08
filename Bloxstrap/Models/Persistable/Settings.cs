@@ -70,8 +70,7 @@ namespace Bloxstrap.Models.Persistable
         public string? CustomFontPath { get; set; } = null;
 
         // Settings Page
-        public bool CheckForUpdates { get; set; } = true;
-        public bool CheckForPreRelease { get; set; } = false;
+        public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
         public bool WPFSoftwareRender { get; set; } = false;
         public bool UpdateRoblox { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
