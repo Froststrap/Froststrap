@@ -830,6 +830,10 @@ namespace Bloxstrap
 
             SetStatus(Strings.Bootstrapper_Status_Starting);
 
+            if (_launchMode == LaunchMode.Player)
+                if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
+                    _launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
+
             string[] Names = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
             string ResolvedName = null!;
 

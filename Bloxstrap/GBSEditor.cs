@@ -1,162 +1,211 @@
-﻿using System.Xml.Linq;
+﻿using Bloxstrap.Enums.GBSPresets;
+using System.Xml.Linq;
 using System.Xml.XPath;
 
 namespace Bloxstrap
 {
     public class GBSEditor
     {
-        private static readonly Regex PathResolveRegex = new(@"\{(.+?)\}", RegexOptions.Compiled);
-        private static readonly Regex SanitizeNameRegex = new(@"[@'\[\]]", RegexOptions.Compiled);
+        public XDocument? Document { get; set; } = null!;
 
-        public XDocument? Document { get; set; }
-        public bool Loaded { get; private set; }
-        public bool PreviousReadOnlyState { get; set; }
+        public Dictionary<string, string> PresetPaths = new()
+        {
+            // Graphics Settings
+            { "Rendering.FramerateCap", "{UserSettings}/int[@name='FramerateCap']" },
+            { "Rendering.SavedQualityLevel", "{UserSettings}/token[@name='SavedQualityLevel']" },
+            { "Rendering.Fullscreen", "{UserSettings}/bool[@name='Fullscreen']" },
+            { "Rendering.MaxQualityEnabled", "{UserSettings}/bool[@name='MaxQualityEnabled']" },
+            { "Rendering.VignetteEnabled", "{UserSettings}/bool[@name='VignetteEnabled']" },
+            { "Rendering.VignetteEnableOption", "{UserSettings}/bool[@name='VignetteEnabledCustomOption']" },
+
+            // Audio Settings
+            { "Audio.MasterVolume", "{UserSettings}/float[@name='MasterVolume']" },
+            { "Audio.MasterVolumeStudio", "{UserSettings}/float[@name='MasterVolumeStudio']" },
+            { "Audio.PartyVoiceVolume", "{UserSettings}/float[@name='PartyVoiceVolume']" },
+
+            // Input Settings
+            { "User.MouseSensitivity", "{UserSettings}/float[@name='MouseSensitivity']" },
+            { "User.MouseSensitivityFirstPerson", "{UserSettings}/Vector2[@name='MouseSensitivityFirstPerson']" },
+            { "User.MouseSensitivityThirdPerson", "{UserSettings}/Vector2[@name='MouseSensitivityThirdPerson']" },
+            { "User.CameraYInverted", "{UserSettings}/bool[@name='CameraYInverted']" },
+            { "User.HapticStrength", "{UserSettings}/float[@name='HapticStrength']" },
+
+            // Accessibility
+            { "UI.Transparency", "{UserSettings}/float[@name='PreferredTransparency']" },
+            { "UI.ReducedMotion", "{UserSettings}/bool[@name='ReducedMotion']" },
+            { "UI.FontSize", "{UserSettings}/token[@name='PreferredTextSize']" },
+
+            // Miscellaneous Settings
+            { "Misc.PerformanceStatsVisible", "{UserSettings}/bool[@name='PerformanceStatsVisible']" },
+            { "Misc.ChatTranslationEnabled", "{UserSettings}/bool[@name='ChatTranslationEnabled']" },
+            { "Misc.ChatTranslationFTUXShown", "{UserSettings}/bool[@name='ChatTranslationFTUXShown']" },
+            { "User.VREnabled", "{UserSettings}/bool[@name='VREnabled']" }
+        };
+
+        // we are making it easier for ourselves
+        // basically replacing {...} with a path
+        // might expand in the future (studio support)
+        public Dictionary<string, string> RootPaths = new()
+        {
+            { "UserSettings", "//Item[@class='UserGameSettings']/Properties" },
+        };
+
+        public static IReadOnlyDictionary<FontSize, string?> FontSizes => new Dictionary<FontSize, string?>
+        {
+            { FontSize.x1, "1" },
+            { FontSize.x2, "2" },
+            { FontSize.x3, "3" },
+            { FontSize.x4, "4" }
+        };
+
+        public bool Loaded { get; set; } = false;
+
         public string FileLocation => Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
 
-        public readonly Dictionary<string, string> PresetPaths = new(StringComparer.OrdinalIgnoreCase)
+        public void SetPreset(string prefix, object? value)
         {
-            { "Rendering.FramerateCap", "{UserSettings}/int[@name='FramerateCap']" }
-        };
+            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix)))
+                SetValue(pair.Value, value);
+        }
 
-        public readonly Dictionary<string, string> RootPaths = new(StringComparer.OrdinalIgnoreCase)
+        public string? GetPreset(string prefix)
         {
-            { "UserSettings", "//Item[@class='UserGameSettings']/Properties" }
-        };
+            if (!PresetPaths.ContainsKey(prefix))
+                return null;
 
-        public void SetValue(string xmlPath, string dataType, object? value)
+            return GetValue(PresetPaths[prefix]);
+        }
+
+        public void SetValue(string path, object? value)
         {
-            if (!Loaded || Document == null) return;
+            path = ResolvePath(path);
 
-            xmlPath = ResolvePath(xmlPath);
-            XElement? element = Document.XPathSelectElement(xmlPath) ?? CreateElement(xmlPath, dataType);
-
-            if (element == null) return;
-
-            string stringValue = value?.ToString() ?? string.Empty;
-
-            if (dataType.Equals("vector2", StringComparison.OrdinalIgnoreCase))
-            {
-                var parts = stringValue.Split(',');
-                if (parts.Length == 2)
-                {
-                    element.ReplaceNodes(new XElement("X", parts[0]), new XElement("Y", parts[1]));
-                }
+            XElement? element = Document?.XPathSelectElement(path);
+            if (element is null)
                 return;
-            }
 
-            if (dataType.Equals("bool", StringComparison.OrdinalIgnoreCase) && bool.TryParse(stringValue, out bool boolVal))
-                element.Value = boolVal.ToString().ToLower();
-            else
-                element.Value = stringValue;
+            element.Value = value?.ToString()!;
         }
 
-        public string? GetValue(string xmlPath, string dataType)
+        public string? GetValue(string path)
         {
-            if (!Loaded || Document == null) return null;
+            path = ResolvePath(path);
 
-            xmlPath = ResolvePath(xmlPath);
-            XElement? element = Document.XPathSelectElement(xmlPath);
-
-            if (element == null) return null;
-
-            if (dataType.Equals("vector2", StringComparison.OrdinalIgnoreCase))
-            {
-                var x = element.Element("X")?.Value ?? "0";
-                var y = element.Element("Y")?.Value ?? "0";
-                return $"{x},{y}";
-            }
-
-            return element.Value;
+            return Document?.XPathSelectElement(path)?.Value;
         }
 
-        private XElement? CreateElement(string xmlPath, string dataType)
+        public bool previousReadOnlyState;
+
+        public void SetReadOnly(bool readOnly, bool preserveState = false)
         {
+            const string LOG_IDENT = "GBSEditor::SetReadOnly";
+
+            if (!File.Exists(FileLocation))
+                return;
+
             try
             {
-                var segments = xmlPath.Split('/');
-                string nameAttr = SanitizeNameRegex.Replace(segments.Last(), "");
+                FileAttributes attributes = File.GetAttributes(FileLocation);
 
-                XElement newElement = dataType.ToLower() switch
-                {
-                    "vector2" => new XElement("Vector2", new XAttribute("name", nameAttr), new XElement("X", "0"), new XElement("Y", "0")),
-                    "int" or "float" or "bool" or "token" => new XElement(dataType.ToLower(), new XAttribute("name", nameAttr)),
-                    _ => new XElement("string", new XAttribute("name", nameAttr))
-                };
+                if (readOnly)
+                    attributes |= FileAttributes.ReadOnly;
+                else
+                    attributes &= ~FileAttributes.ReadOnly;
 
-                string parentPath = string.Join("/", segments.Take(segments.Length - 1));
-                XElement? parent = Document?.XPathSelectElement(parentPath) ?? Document?.Root;
+                File.SetAttributes(FileLocation, attributes);
 
-                parent?.Add(newElement);
-                return newElement;
+                if (!preserveState)
+                    previousReadOnlyState = readOnly;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("GBSEditor::CreateElement", $"Failed to create element: {ex.Message}");
-                return null;
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to set read-only on {FileLocation}");
+                App.Logger.WriteException(LOG_IDENT, ex);
             }
+        }
+
+        public bool GetReadOnly()
+        {
+            if (!File.Exists(FileLocation))
+                return false;
+
+            return File.GetAttributes(FileLocation).HasFlag(FileAttributes.ReadOnly);
         }
 
         public void Load()
         {
+            string LOG_IDENT = "GBSEditor::Load";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+
+            if (!File.Exists(FileLocation)) // since the file gets created after roblox starts it might not exist yet  
+                return;
+
             try
             {
-                if (File.Exists(FileLocation))
-                {
-                    Document = XDocument.Load(FileLocation);
-                    PreviousReadOnlyState = GetReadOnly();
-                }
-                else
-                {
-                    Document = new XDocument(new XElement("roblox"));
-                }
+                Document = XDocument.Load(FileLocation);
                 Loaded = true;
+
+                previousReadOnlyState = GetReadOnly();
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("GBSEditor::Load", "Failed to load!");
-                App.Logger.WriteException("GBSEditor::Load", ex);
-                Document = new XDocument(new XElement("roblox"));
-                Loaded = true;
+                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+                App.Logger.WriteException(LOG_IDENT, ex);
             }
         }
 
         public virtual void Save()
         {
-            if (!Loaded || Document == null) return;
+            string LOG_IDENT = "GBSEditor::Save";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
 
             try
             {
-                string? directory = Path.GetDirectoryName(FileLocation);
-                if (!string.IsNullOrEmpty(directory)) Directory.CreateDirectory(directory);
-
                 SetReadOnly(false, true);
-                Document.Save(FileLocation);
-                SetReadOnly(PreviousReadOnlyState);
+                Document?.Save(FileLocation);
+
+                SetReadOnly(previousReadOnlyState);
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("GBSEditor::Save", ex);
+                App.Logger.WriteLine(LOG_IDENT, "Failed to save");
+                App.Logger.WriteException(LOG_IDENT, ex);
+
+                return;
             }
+
+            App.Logger.WriteLine(LOG_IDENT, "Save complete!");
         }
 
-        private string ResolvePath(string rawPath) => PathResolveRegex.Replace(rawPath, match => RootPaths.GetValueOrDefault(match.Groups[1].Value, match.Value));
-
-        public void SetReadOnly(bool readOnly, bool preserveState = false)
+        private string ResolvePath(string rawPath)
         {
-            if (!File.Exists(FileLocation)) return;
-            try
+            return Regex.Replace(rawPath, @"\{(.+?)\}", match =>
             {
-                var attr = File.GetAttributes(FileLocation);
-                if (readOnly) attr |= FileAttributes.ReadOnly;
-                else attr &= ~FileAttributes.ReadOnly;
-
-                File.SetAttributes(FileLocation, attr);
-                if (!preserveState) PreviousReadOnlyState = readOnly;
-            }
-            catch (Exception ex) { App.Logger.WriteException("GBSEditor::SetReadOnly", ex); }
+                string key = match.Groups[1].Value;
+                return RootPaths.TryGetValue(key, out var value) ? value : match.Value; ;
+            });
         }
 
-        public bool GetReadOnly() => File.Exists(FileLocation) && File.GetAttributes(FileLocation).HasFlag(FileAttributes.ReadOnly);
+        public string GetVectorValue(string vectorName, string axis)
+        {
+            string basePath = ResolvePath(PresetPaths[vectorName]);
+            XElement? vectorElement = Document?.XPathSelectElement(basePath);
+            return vectorElement?.Element(axis)?.Value ?? "0";
+        }
+
+        public void SetVectorValue(string vectorName, string axis, string value)
+        {
+            string basePath = ResolvePath(PresetPaths[vectorName]);
+            XElement? vectorElement = Document?.XPathSelectElement(basePath);
+
+            XElement? axisElement = vectorElement?.Element(axis);
+            if (axisElement != null)
+            {
+                axisElement.Value = value;
+            }
+        }
 
         public bool ExportSettings(string exportPath)
         {
@@ -183,13 +232,5 @@ namespace Bloxstrap
             }
             catch { return false; }
         }
-
-        public void SetPresets(string prefix, object? value)
-        {
-            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)))
-                SetValue(pair.Value, "string", value);
-        }
-
-        public string? GetPresets(string prefix) => PresetPaths.TryGetValue(prefix, out var path) ? GetValue(path, "string") : null;
     }
 }
