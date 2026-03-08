@@ -168,6 +168,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set => App.GlobalSettings.SetPreset("User.MouseSensitivity", value);
         }
 
+        public bool ShiftLock
+        {
+            get => App.GlobalSettings.GetPreset("User.ShiftLock") == "1";
+            set => App.GlobalSettings.SetPreset("User.ShiftLock", value ? "1" : "0");
+        }
+
         public string MouseSensitivityFirstPersonX
         {
             get => App.GlobalSettings.GetVectorValue("User.MouseSensitivityFirstPerson", "X");
