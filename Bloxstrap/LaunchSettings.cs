@@ -44,6 +44,8 @@ namespace Bloxstrap
 
         public LaunchFlag BloxshadeFlag             { get; } = new("bloxshade");
 
+        public LaunchFlag PostLaunchFlag            { get; } = new("postlaunch");
+
 #if DEBUG
         public bool BypassUpdateCheck => true;
 #else
