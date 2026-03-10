@@ -12,6 +12,7 @@
  */
 
 using Bloxstrap.Integrations;
+using Bloxstrap.RobloxInterfaces;
 using Bloxstrap.UI.ViewModels.AccountManagers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -43,13 +44,14 @@ namespace Bloxstrap.UI.ViewModels.Settings
         [NotifyPropertyChangedFor(nameof(ServerListMessage))]
         [NotifyCanExecuteChangedFor(nameof(SearchCommand), nameof(SearchGamesCommand))] private bool _hasValidCookies;
         [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SearchGamesCommand))] private string _searchQuery = "";
-        [ObservableProperty] private GameSearchResult? _selectedSearchResult;
+        [ObservableProperty] private OmniSearchContent? _selectedSearchResult;
         [ObservableProperty] private int _selectedSortOrder = 2;
         [ObservableProperty] private int _lastFetchProcessedCount;
+        [ObservableProperty] private string? _thumbnailUrl;
 
         public ObservableCollection<string> Regions { get; } = new();
         public ObservableCollection<ServerEntry> Servers { get; } = new();
-        public ObservableCollection<GameSearchResult> SearchResults { get; } = new();
+        public ObservableCollection<OmniSearchContent> SearchResults { get; } = new();
 
         public List<SortOrderComboBoxItem> SortOrderOptions { get; } = new()
         {
@@ -86,7 +88,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         partial void OnSearchQueryChanged(string value)
         {
-            if (long.TryParse(value, out _)) PlaceId = value;
+            if (long.TryParse(value, out var id))
+            {
+                PlaceId = value;
+            }
 
             _searchDebounceCts?.Cancel();
             _searchDebounceCts?.Dispose();
@@ -94,7 +99,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             _ = DebouncedSearchTriggerAsync(_searchDebounceCts.Token);
         }
 
-        partial void OnSelectedSearchResultChanged(GameSearchResult? value)
+        partial void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
             if (value == null) return;
             PlaceId = value.RootPlaceId.ToString();
@@ -119,7 +124,9 @@ namespace Bloxstrap.UI.ViewModels.Settings
             {
                 await Task.Delay(600, token);
                 if (!token.IsCancellationRequested && !IsLoading && !string.IsNullOrWhiteSpace(SearchQuery))
-                    await SearchGamesAsync();
+                {
+                    await SearchGamesAsync(token);
+                }
             }
             catch (OperationCanceledException) { }
         }
@@ -273,18 +280,58 @@ namespace Bloxstrap.UI.ViewModels.Settings
             catch { return null; }
         }
 
-        private async Task SearchGamesAsync()
+        private async Task SearchGamesAsync(CancellationToken token = default)
         {
+            if (string.IsNullOrWhiteSpace(SearchQuery) || long.TryParse(SearchQuery, out _)) return;
+
             IsGameSearchLoading = true;
-            LoadingMessage = "Searching games...";
             try
             {
                 var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
-                foreach (var r in results) SearchResults.Add(r);
-                LoadingMessage = SearchResults.Count == 0 ? "No games found." : "";
+
+                if (token.IsCancellationRequested) return;
+
+                if (results.Any())
+                {
+                    var thumbRequests = results.Select(r => new ThumbnailRequest
+                    {
+                        Type = "GameIcon",
+                        TargetId = (ulong)r.UniverseId,
+                        Size = "128x128"
+                    }).ToList();
+
+                    var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
+
+                    if (token.IsCancellationRequested) return;
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        SearchResults.Clear();
+                        for (int i = 0; i < results.Count; i++)
+                        {
+                            if (i < urls.Length)
+                                results[i].ThumbnailUrl = urls[i];
+                            SearchResults.Add(results[i]);
+                        }
+                    });
+                }
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    SearchResults.Clear();
+                    foreach (var r in results)
+                        SearchResults.Add(r);
+                });
             }
-            catch { LoadingMessage = "Search failed."; }
-            finally { IsGameSearchLoading = false; }
+            catch (OperationCanceledException) { /* This is now handled silently */ }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Game search failed: {ex.Message}");
+            }
+            finally
+            {
+                IsGameSearchLoading = false;
+            }
         }
 
         private async Task LoadMoreServersAsync()

@@ -118,45 +118,68 @@
                                         </Grid.ColumnDefinitions>
 
                                         <ComboBox
-                            x:Name="SearchComboBox"
-                            Grid.Column="0"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Stretch"
-                            MinWidth="200"
-                            MaxWidth="600"
-                            IsEditable="True"
-                            IsTextSearchEnabled="True"
-                            ItemsSource="{Binding SearchResults}"
-                            Loaded="SearchComboBox_Loaded"
-                            LostFocus="SearchComboBox_LostFocus"
-                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
-                            StaysOpenOnEdit="True"
-                            Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            TextSearch.TextPath="RootPlaceId">
+                                            x:Name="SearchComboBox"
+                                            Grid.Column="0"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Stretch"
+                                            MinWidth="200"
+                                            MaxWidth="600"
+                                            IsEditable="True"
+                                            IsTextSearchEnabled="True"
+                                            ItemsSource="{Binding SearchResults}"
+                                            Loaded="SearchComboBox_Loaded"
+                                            LostFocus="SearchComboBox_LostFocus"
+                                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
+                                            StaysOpenOnEdit="True"
+                                            Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                            TextSearch.TextPath="RootPlaceId">
 
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate>
-                                                    <Grid Margin="2,0,2,0">
+                                                    <Grid Margin="0,4,0,4">
                                                         <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto" />
                                                             <ColumnDefinition Width="*" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
 
+                                                        <Border 
+                                                            Grid.Column="0" 
+                                                            Width="32" 
+                                                            Height="32" 
+                                                            Margin="0,0,10,0" 
+                                                            CornerRadius="4" 
+                                                            ClipToBounds="True">
+                                                            <Image 
+                                                                Source="{Binding ThumbnailUrl}" 
+                                                                Stretch="UniformToFill" 
+                                                                RenderOptions.BitmapScalingMode="HighQuality" />
+                                                        </Border>
+
                                                         <TextBlock
-                                            VerticalAlignment="Center"
-                                            FontWeight="Normal"
-                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                            Text="{Binding Name}"
-                                            TextTrimming="CharacterEllipsis" />
+                                                            Grid.Column="1"
+                                                            VerticalAlignment="Center"
+                                                            FontWeight="Normal"
+                                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                            Text="{Binding Name}"
+                                                            TextTrimming="CharacterEllipsis" />
 
                                                         <StackPanel
-                                            Grid.Column="1"
-                                            Margin="8,0,0,0"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                                            <ui:SymbolIcon Margin="0,0,6,0" VerticalAlignment="Center" Filled="True" FontSize="18" Symbol="People24" />
-                                                            <TextBlock VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                                            Grid.Column="2"
+                                                            Margin="8,0,0,0"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Center"
+                                                            Orientation="Horizontal">
+                                                            <ui:SymbolIcon 
+                                                                Margin="0,0,6,0" 
+                                                                VerticalAlignment="Center" 
+                                                                Filled="True" 
+                                                                FontSize="16" 
+                                                                Symbol="People24" />
+                                                            <TextBlock 
+                                                                VerticalAlignment="Center" 
+                                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                                                                Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </DataTemplate>
@@ -164,12 +187,12 @@
                                         </ComboBox>
 
                                         <Button
-                            x:Name="PrivateServersButton"
-                            Grid.Column="1"
-                            Margin="8,0,0,0"
-                            VerticalAlignment="Center"
-                            ToolTip="Private Servers"
-                            Command="{Binding ShowPrivateServersCommand}">
+                                            x:Name="PrivateServersButton"
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Center"
+                                            ToolTip="Private Servers"
+                                            Command="{Binding ShowPrivateServersCommand}">
                                             <ui:SymbolIcon FontSize="20" Filled="False" Symbol="LockClosed20" />
                                         </Button>
                                     </Grid>
