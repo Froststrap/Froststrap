@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.CompilerServices;
+using System.IO;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Windows;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Bloxstrap.UI.ViewModels.Settings
 {
@@ -18,7 +18,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "-settings");
         public ExtractIconsTask ExtractIconsTask { get; } = new();
 
-        public ObservableCollection<GameSearchResult> SearchResults { get; } = new();
+        public ObservableCollection<OmniSearchContent> SearchResults { get; } = new();
 
         private GameShortcut _selectedShortcut = new();
         public GameShortcut SelectedShortcut
@@ -27,44 +27,38 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set
             {
                 if (_selectedShortcut == value) return;
-
                 _selectedShortcut = value;
                 OnPropertyChanged(nameof(SelectedShortcut));
                 GameShortcutStatus = "";
 
                 if (!string.IsNullOrEmpty(value.GameId))
-                {
                     SearchQuery = value.GameId;
-                }
                 else
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        SearchResults.Clear();
-                    });
+                    Application.Current.Dispatcher.Invoke(() => SearchResults.Clear());
                     SelectedSearchResult = null;
                 }
             }
         }
 
-        private GameSearchResult? _selectedSearchResult;
-        public GameSearchResult? SelectedSearchResult
+        private OmniSearchContent? _selectedSearchResult;
+        public OmniSearchContent? SelectedSearchResult
         {
             get => _selectedSearchResult;
             set
             {
                 if (_selectedSearchResult == value) return;
-
                 _selectedSearchResult = value;
                 OnPropertyChanged(nameof(SelectedSearchResult));
 
                 if (value != null)
                 {
                     SelectedShortcut.GameId = value.RootPlaceId.ToString();
-                    SelectedShortcut.GameName = value.Name;
+                    SelectedShortcut.GameName = value.Name ?? "Unknown Game";
                     SearchQuery = value.RootPlaceId.ToString();
+                    
                     _searchDebounceCts?.Cancel();
-                    _ = DownloadIconAsync();
+                    _ = DownloadIconAsync(value.RootPlaceId, value.UniverseId);
 
                     OnPropertyChanged(nameof(SelectedShortcut));
                 }
@@ -78,7 +72,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set
             {
                 if (_searchQuery == value) return;
-
                 _searchQuery = value;
                 OnPropertyChanged(nameof(SearchQuery));
                 OnSearchQueryChanged(value);
@@ -91,15 +84,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
             get => _gameShortcutStatus;
             set
             {
-                if (_gameShortcutStatus == value) return;
-
                 _gameShortcutStatus = value;
                 OnPropertyChanged(nameof(GameShortcutStatus));
             }
         }
 
         public RelayCommand CreateShortcutCommand { get; }
-
         private CancellationTokenSource? _searchDebounceCts;
 
         public ShortcutsViewModel()
@@ -114,10 +104,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    SearchResults.Clear();
-                });
+                Application.Current.Dispatcher.Invoke(() => SearchResults.Clear());
                 return;
             }
 
@@ -125,101 +112,84 @@ namespace Bloxstrap.UI.ViewModels.Settings
             {
                 await DebouncedSearchAsync(_searchDebounceCts.Token);
             }
-            catch (OperationCanceledException)
-            {
-                // Search was cancelled, ignore
-            }
+            catch (OperationCanceledException) { }
         }
 
         private async Task DebouncedSearchAsync(CancellationToken token)
         {
-            try
-            {
-                await Task.Delay(600, token);
-                if (token.IsCancellationRequested) return;
+            await Task.Delay(600, token);
+            if (token.IsCancellationRequested) return;
 
-                await SearchGamesAsync();
+            if (ulong.TryParse(SearchQuery, out ulong gameId))
+            {
+                return;
+            }
 
-                if (SelectedSearchResult == null && ulong.TryParse(SearchQuery, out ulong gameId))
-                {
-                    var matchingGame = SearchResults.FirstOrDefault(r => r.RootPlaceId == (long)gameId);
-                    if (matchingGame != null)
-                    {
-                        SelectedShortcut.GameId = gameId.ToString();
-                        SelectedShortcut.GameName = matchingGame.Name;
-                        _ = DownloadIconAsync();
-                    }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // Search was cancelled, ignore
-            }
-            catch (Exception ex)
-            {
-                GameShortcutStatus = $"Search error: {ex.Message}";
-            }
+            await SearchGamesAsync(token);
         }
 
-        private async Task SearchGamesAsync()
+        private async Task SearchGamesAsync(CancellationToken token)
         {
             try
             {
                 var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery).ConfigureAwait(false);
+                if (token.IsCancellationRequested || results == null) return;
+
+                var topResults = results.Take(8).ToList();
+                
+                var thumbRequests = topResults.Select(r => new ThumbnailRequest
+                {
+                    Type = "GameIcon",
+                    TargetId = (ulong)r.UniverseId,
+                    Size = "128x128"
+                }).ToList();
+
+                var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     SearchResults.Clear();
-
-                    foreach (var result in results.Take(5))
-                        SearchResults.Add(result);
+                    for (int i = 0; i < topResults.Count; i++)
+                    {
+                        if (urls != null && i < urls.Length)
+                            topResults[i].ThumbnailUrl = urls[i] ?? "";
+                        
+                        SearchResults.Add(topResults[i]);
+                    }
                 });
             }
-            catch (Exception ex)
-            {
-                GameShortcutStatus = $"Search failed: {ex.Message}";
-            }
+            catch (Exception ex) { GameShortcutStatus = $"Search failed: {ex.Message}"; }
         }
 
-        private async Task DownloadIconAsync()
+        private async Task DownloadIconAsync(long placeId, long universeId)
         {
-            if (!ulong.TryParse(SelectedShortcut.GameId, out ulong gameId))
-            {
-                GameShortcutStatus = "Invalid Game ID";
-                return;
-            }
-
             try
             {
+                GameShortcutStatus = "Downloading icon...";
+                
                 var request = new ThumbnailRequest
                 {
-                    TargetId = gameId,
-                    Type = "PlaceIcon",
                     Size = "128x128",
+                    TargetId = (ulong)(universeId > 0 ? universeId : placeId),
+                    Type = universeId > 0 ? "GameIcon" : "PlaceIcon",
                     Format = "Png"
                 };
 
                 string? url = await Thumbnails.GetThumbnailUrlAsync(request, CancellationToken.None).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(url))
-                {
-                    GameShortcutStatus = "No icon found";
-                    return;
-                }
+                if (string.IsNullOrEmpty(url)) return;
 
                 using var http = new HttpClient();
                 var imageBytes = await http.GetByteArrayAsync(url).ConfigureAwait(false);
 
                 string hash = ComputeHash(imageBytes);
-                string shortcutsIconDir = Path.Combine(Paths.Cache, "Game Shortcuts");
+                string shortcutsIconDir = Path.Combine(Paths.Cache, "Icons");
                 Directory.CreateDirectory(shortcutsIconDir);
 
                 string pngPath = Path.Combine(shortcutsIconDir, $"{hash}.png");
-                if (!File.Exists(pngPath))
-                {
-                    await File.WriteAllBytesAsync(pngPath, imageBytes);
-                }
-
                 string icoPath = Path.Combine(shortcutsIconDir, $"{hash}.ico");
+
+                if (!File.Exists(pngPath)) await File.WriteAllBytesAsync(pngPath, imageBytes);
+
                 if (!File.Exists(icoPath))
                 {
                     using var stream = new MemoryStream(imageBytes);
@@ -229,59 +199,37 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 }
 
                 SelectedShortcut.IconPath = pngPath;
-
                 OnPropertyChanged(nameof(SelectedShortcut));
-                GameShortcutStatus = "Icon downloaded";
+                GameShortcutStatus = "Ready to create shortcut";
             }
-            catch (Exception ex)
-            {
-                GameShortcutStatus = $"Error downloading icon: {ex.Message}";
-            }
+            catch (Exception ex) { GameShortcutStatus = $"Icon error: {ex.Message}"; }
         }
 
         private void CreateShortcut()
         {
-            if (string.IsNullOrWhiteSpace(SelectedShortcut.GameId))
-            {
-                GameShortcutStatus = "Game ID required";
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(SelectedShortcut.GameId)) return;
 
             try
             {
                 string url = $"roblox://placeId={SelectedShortcut.GameId}/";
                 string safeName = SanitizeFileName(SelectedShortcut.GameName);
-
-                if (string.IsNullOrWhiteSpace(safeName))
-                    safeName = $"Roblox Game {SelectedShortcut.GameId}";
-
                 string shortcutPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), $"{safeName}.url");
-
-                if (File.Exists(shortcutPath))
-                    File.Delete(shortcutPath);
 
                 using var writer = new StreamWriter(shortcutPath);
                 writer.WriteLine("[InternetShortcut]");
                 writer.WriteLine($"URL={url}");
+                writer.WriteLine("IDList=");
 
-                if (!string.IsNullOrEmpty(SelectedShortcut.IconPath) && File.Exists(SelectedShortcut.IconPath))
+                string icoPath = Path.ChangeExtension(SelectedShortcut.IconPath, ".ico");
+                if (File.Exists(icoPath))
                 {
-                    string pngPath = SelectedShortcut.IconPath;
-                    string icoPath = Path.ChangeExtension(pngPath, ".ico");
-
-                    if (File.Exists(icoPath))
-                    {
-                        writer.WriteLine($"IconFile={icoPath}");
-                        writer.WriteLine("IconIndex=0");
-                    }
+                    writer.WriteLine($"IconFile={icoPath}");
+                    writer.WriteLine("IconIndex=0");
                 }
 
-                GameShortcutStatus = $"Shortcut created: {safeName}.url";
+                GameShortcutStatus = "Shortcut created on Desktop!";
             }
-            catch (Exception ex)
-            {
-                GameShortcutStatus = $"Error creating shortcut: {ex.Message}";
-            }
+            catch (Exception ex) { GameShortcutStatus = $"Failed: {ex.Message}"; }
         }
 
         private static void SaveBitmapAsIcon(Bitmap bitmap, Stream output)

@@ -12,11 +12,11 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
         public RegionSelectorPage()
         {
+            DataContext = new RegionSelectorViewModel();
             InitializeComponent();
 
             Loaded += RegionSelectorPage_Loaded;
 
-            DataContext = new RegionSelectorViewModel();
             App.FrostRPC?.SetPage("Region Selector");
         }
 

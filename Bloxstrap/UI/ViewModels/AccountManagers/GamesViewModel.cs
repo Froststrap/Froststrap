@@ -42,10 +42,10 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private string _searchQuery = "";
 
         [ObservableProperty]
-        private ObservableCollection<GameSearchResult> _searchResults = new();
+        private ObservableCollection<OmniSearchContent> _searchResults = new();
 
         [ObservableProperty]
-        private GameSearchResult? _selectedSearchResult;
+        private OmniSearchContent? _selectedSearchResult;
 
         [ObservableProperty]
         private string _serverId = "";
@@ -1789,7 +1789,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
-        partial void OnSelectedSearchResultChanged(GameSearchResult? value)
+        partial void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
             const string LOG_IDENT_SEARCH_RESULT = $"{LOG_IDENT}::OnSelectedSearchResultChanged";
 

@@ -59,36 +59,35 @@
 
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="2,0,2,0">
+                                <Grid Margin="0,4,8,4" Height="48">
                                     <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        VerticalAlignment="Center"
-                                        FontWeight="Normal"
-                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                        Text="{Binding Name}"
-                                        TextTrimming="CharacterEllipsis" />
+                                    <Border Grid.Column="0" Width="48" Height="48">
+                                        <Rectangle RadiusX="8" RadiusY="8">
+                                            <Rectangle.Fill>
+                                                <ImageBrush ImageSource="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Border>
 
-                                    <StackPanel
-                                        Grid.Column="1"
-                                        Margin="8,0,0,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Orientation="Horizontal">
-                                        <ui:SymbolIcon
-                                            Margin="0,0,6,0"
+                                    <TextBlock Grid.Column="1" Margin="12,0,0,0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+
+                                    <StackPanel Grid.Column="2" 
+                                         VerticalAlignment="Center" 
+                                         Orientation="Horizontal" 
+                                         Margin="16,0,0,0">
+                                        <ui:SymbolIcon Symbol="People24" 
+                                                FontSize="16" 
+                                                Margin="0,0,4,0"
+                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                        <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" 
                                             VerticalAlignment="Center"
-                                            Filled="True"
-                                            FontSize="18"
-                                            Symbol="People24" />
-                                        <TextBlock
-                                            VerticalAlignment="Center"
-                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                            FontWeight="Medium"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
