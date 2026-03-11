@@ -188,7 +188,7 @@
 
                 <DockPanel>
                     <ui:Button Command="{Binding CreateGameShortcutCommand}" Appearance="Primary" Content="Create Shortcut" Icon="Add24" />
-                    <TextBlock Text="{Binding ShortcutStatus}" Margin="16,0,0,0" FontSize="12" />
+                    <TextBlock Text="{Binding ShortcutStatus}" Margin="16,8,0,0" FontSize="12" />
                 </DockPanel>
             </StackPanel>
         </ui:CardExpander>
