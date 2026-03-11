@@ -71,6 +71,7 @@ namespace Bloxstrap.Models.Persistable
 
         // Settings Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
+        public bool SaveAndLaunchToPlayer { get; set; } = true;
         public bool WPFSoftwareRender { get; set; } = false;
         public bool UpdateRoblox { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;

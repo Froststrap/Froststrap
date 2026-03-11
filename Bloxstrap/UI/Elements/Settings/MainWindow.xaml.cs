@@ -1,11 +1,9 @@
 ﻿using Bloxstrap.UI.Elements.Settings.Pages;
 using Bloxstrap.UI.ViewModels.Settings;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using Wpf.Ui.Common;
-using Wpf.Ui.Controls;
 using Wpf.Ui.Controls.Interfaces;
 using Wpf.Ui.Mvvm.Contracts;
 
@@ -17,10 +15,10 @@ namespace Bloxstrap.UI.Elements.Settings
     public partial class MainWindow : INavigationWindow
     {
         private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
-
+        private MainWindowViewModel viewModel = null!;
         public MainWindow(bool showAlreadyRunningWarning)
         {
-            var viewModel = new MainWindowViewModel();
+            viewModel = new MainWindowViewModel();
 
             viewModel.RequestSaveNoticeEvent += (_, _) => SettingsSavedSnackbar.Show();
             viewModel.RequestCloseWindowEvent += (_, _) => Close();
@@ -149,11 +147,18 @@ namespace Bloxstrap.UI.Elements.Settings
 
         private void LaunchButton_Click(object sender, RoutedEventArgs e)
         {
-            var menu = LaunchButton.ContextMenu;
-            menu.PlacementTarget = LaunchButton;
-            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
-            menu.VerticalOffset = 50;
-            menu.IsOpen = true;
+            if (App.Settings.Prop.SaveAndLaunchToPlayer)
+            {
+                viewModel.SaveAndLaunch("player");
+            }
+            else
+            {
+                var menu = LaunchButton.ContextMenu;
+                menu.PlacementTarget = LaunchButton;
+                menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Center;
+                menu.VerticalOffset = 50;
+                menu.IsOpen = true;
+            }
         }
 
         public void ShowLoading(string message = "Loading...")

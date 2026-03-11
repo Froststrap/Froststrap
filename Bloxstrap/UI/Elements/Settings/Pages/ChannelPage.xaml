@@ -18,10 +18,7 @@
         <TextBlock Margin="0,0,0,8" Text="{x:Static resources:Strings.Menu_Channel_Description}" FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 
         <TextBlock Text="Froststrap" FontSize="20" FontWeight="Bold" Margin="0,16,0,0" />
-        <controls:OptionControl 
-    Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-    Description="Choose how Froststrap handles automatic updates.">
-
+        <controls:OptionControl Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}" Description="Choose how Froststrap handles automatic updates.">
             <ComboBox ItemsSource="{Binding UpdateCheckValues}" 
               SelectedItem="{Binding SelectedUpdateCheck, Mode=TwoWay}" 
               Width="200">
@@ -31,6 +28,12 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
+        </controls:OptionControl>
+
+        <controls:OptionControl 
+            Header="Save And Launch Action"
+            Description="Adds an option so whenever clicking save and launch, it will ask if to studio or player.">
+            <ui:ToggleSwitch IsChecked="{Binding SaveAndLaunchToPlayer, Mode=TwoWay}" />
         </controls:OptionControl>
 
         <Separator Margin="0,8,0,6"/>
@@ -66,6 +69,7 @@
             </controls:OptionControl.Style>
             <ui:ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
         </controls:OptionControl>
+        
         <controls:OptionControl 
             Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
             Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
