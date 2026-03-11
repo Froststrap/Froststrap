@@ -3,7 +3,7 @@
     public class OmniSearchContent
     {
         [JsonPropertyName("universeId")]
-        public long UniverseId { get; set; }
+        public ulong UniverseId { get; set; }
 
         [JsonPropertyName("rootPlaceId")]
         public long RootPlaceId { get; set; }

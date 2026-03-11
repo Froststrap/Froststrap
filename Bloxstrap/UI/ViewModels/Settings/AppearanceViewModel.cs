@@ -366,7 +366,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set
             {
                 App.Settings.Prop.BootstrapperStyle = value;
-                OnPropertyChanged(nameof(CustomThemesExpanded)); // TODO: only fire when needed
+                OnPropertyChanged(nameof(CustomThemesExpanded));
             }
         }
 

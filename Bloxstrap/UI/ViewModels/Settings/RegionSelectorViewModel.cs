@@ -295,8 +295,8 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 {
                     var thumbRequests = results.Select(r => new ThumbnailRequest
                     {
-                        Type = "GameIcon",
-                        TargetId = (ulong)r.UniverseId,
+                        Type = ThumbnailType.GameIcon,
+                        TargetId = r.UniverseId,
                         Size = "128x128"
                     }).ToList();
 

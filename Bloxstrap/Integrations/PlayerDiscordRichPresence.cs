@@ -98,14 +98,14 @@ namespace Bloxstrap.Integrations
                     new ThumbnailRequest
                     {
                         TargetId = (ulong)smallImg,
-                        Type = "Asset",
+                        Type = ThumbnailType.Asset,
                         Size = "512x512",
                         IsCircular = false
                     },
                     new ThumbnailRequest
                     {
                         TargetId = (ulong)largeImg,
-                        Type = "Asset",
+                        Type = ThumbnailType.Asset,
                         Size = "512x512",
                         IsCircular = false
                     }
@@ -128,7 +128,7 @@ namespace Bloxstrap.Integrations
                 string? url = await Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
                 {
                     TargetId = (ulong)smallImg,
-                    Type = "Asset",
+                    Type = ThumbnailType.Asset,
                     Size = "512x512",
                     IsCircular = false
                 }, token);
@@ -143,7 +143,7 @@ namespace Bloxstrap.Integrations
                 string? url = await Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
                 {
                     TargetId = (ulong)largeImg,
-                    Type = "Asset",
+                    Type = ThumbnailType.Asset,
                     Size = "512x512",
                     IsCircular = false
                 }, token);

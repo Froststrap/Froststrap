@@ -1201,25 +1201,26 @@ namespace Bloxstrap
         #region Roblox Install
         private static bool TryDeleteRobloxInDirectory(string dir)
         {
-            // If neither of these exist in the directory, return true.
-            // This was not implemented properly.
-            string clientPath = Path.Combine(dir, App.RobloxPlayerAppName);
-            if (!File.Exists(clientPath))
+            string[] executables = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
+
+            foreach (string exe in executables)
             {
-                clientPath = Path.Combine(dir, App.RobloxStudioAppName);
-                if (!File.Exists(clientPath))
+                string path = Path.Combine(dir, exe);
+                if (!File.Exists(path))
                     return true;
+
+                try
+                {
+                    File.SetAttributes(path, FileAttributes.Normal);
+                    File.Delete(path);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
 
-            try
-            {
-                File.Delete(clientPath);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            return true;
         }
 
         public static void CleanupVersionsFolder()
@@ -1247,8 +1248,6 @@ namespace Bloxstrap
                     _staticDirectory && (dirName != "WindowsPlayer" && dirName != "WindowsStudio64")
                     )
                 {
-                    // TODO: this is too expensive
-                    //Filesystem.AssertReadOnlyDirectory(dir);
 
                     // check if it's still being used first
                     // we dont want to accidentally delete the files of a running roblox instance
@@ -1258,10 +1257,18 @@ namespace Bloxstrap
                     {
                         Directory.Delete(dir, true);
                     }
-                    catch (UnauthorizedAccessException ex)
+                    catch (UnauthorizedAccessException)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
-                        App.Logger.WriteException(LOG_IDENT, ex);
+                        try
+                        {
+                            Filesystem.AssertReadOnlyDirectory(dir);
+                            Directory.Delete(dir, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir} after fixing attributes.");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                        }
                     }
                     catch (IOException ex)
                     {
@@ -1290,18 +1297,20 @@ namespace Bloxstrap
                 appFlagsKey.DeleteValueSafe(oldClientLocation);
             }
         }
-        private static void KillRobloxPlayers()
+
+        private void KillRobloxPlayers()
         {
             const string LOG_IDENT = "Bootstrapper::KillRobloxPlayers";
 
-            List<Process> processes = new List<Process>();
-            processes.AddRange(Process.GetProcessesByName("RobloxPlayerBeta"));
-            processes.AddRange(Process.GetProcessesByName("RobloxCrashHandler")); // roblox studio doesnt depend on crash handler being open, so this should be fine
+            var processesToKill = new List<Process>();
+            processesToKill.AddRange(Process.GetProcessesByName("RobloxPlayerBeta"));
+            processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
 
-            foreach (Process process in processes)
+            foreach (Process process in processesToKill)
             {
                 try
                 {
+                    App.Logger.WriteLine(LOG_IDENT, $"Terminating process {process.ProcessName} ({process.Id})");
                     process.Kill();
                 }
                 catch (Exception ex)
@@ -1310,8 +1319,29 @@ namespace Bloxstrap
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
-        }
 
+            var studioProcesses = Process.GetProcessesByName("RobloxStudioBeta");
+
+            if (studioProcesses.Any())
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Waiting for Roblox Studio processes to exit...");
+
+                SetStatus("Waitting for Roblox Studio...");
+
+                while (Process.GetProcessesByName("RobloxStudioBeta").Any())
+                {
+                    Thread.Sleep(1000);
+
+                    if (_cancelTokenSource.IsCancellationRequested)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Studio wait cancelled by user.");
+                        return;
+                    }
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, "All Roblox Studio processes closed.");
+            }
+        }
 
         private async Task UpgradeRoblox()
         {
@@ -1347,7 +1377,7 @@ namespace Bloxstrap
             _isInstalling = true;
 
             // make sure nothing is running before continuing upgrade
-            if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && !IsStudioLaunch) // TODO: wait for studio processes to close before updating to prevent data loss
+            if (!App.LaunchSettings.BackgroundUpdaterFlag.Active)
                 KillRobloxPlayers();
 
             // get a fully clean install
