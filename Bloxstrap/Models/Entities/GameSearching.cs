@@ -40,7 +40,7 @@ namespace Bloxstrap.Models.Entities
                     return results;
                 }
 
-                var seenUniverses = new HashSet<long>();
+                var seenUniverses = new HashSet<ulong>();
 
                 foreach (var group in response.SearchResults)
                 {

@@ -1454,9 +1454,9 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 var request = new ThumbnailRequest
                 {
                     TargetId = (ulong)userId,
-                    Type = "AvatarHeadShot",
+                    Type = ThumbnailType.AvatarHeadShot,
                     Size = "75x75",
-                    Format = "Png",
+                    Format = ThumbnailFormat.Png,
                     IsCircular = true
                 };
 

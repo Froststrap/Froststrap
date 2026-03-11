@@ -43,7 +43,6 @@ namespace Bloxstrap.UI.Elements.Dialogs
             int i = count + 1;
             string name = string.Format(Strings.CustomTheme_DefaultName, i);
 
-            // TODO: this sucks
             if (File.Exists(GetThemePath(name)))
                 name = string.Format(Strings.CustomTheme_DefaultName, $"{i}-{Random.Shared.Next(1, 100000)}"); // easy
 

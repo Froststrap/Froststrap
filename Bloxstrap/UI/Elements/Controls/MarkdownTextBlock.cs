@@ -61,7 +61,7 @@ namespace Bloxstrap.UI.Elements.Controls
                     case '=': // marked
                         {
                             var childInline = new Span(GetWpfInlineFromMarkdownInline(emphasisInline.FirstChild));
-                            childInline.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255)); // TODO: better colour?
+                            childInline.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
                             return childInline;
                         }
                 }
