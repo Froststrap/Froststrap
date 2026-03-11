@@ -31,64 +31,58 @@
 
 ---
 
-## Key Improvements Over Bloxstrap
+## Key Improvements Over Bloxstrap and Fishstrap
 
 ### Integrations
-- Player and message logs are now combined into **Logs Menu**
+- Auto-rejoin servers you disconnected from automatically if caused by inactivity
 - Disable Roblox’s built-in screenshot and video recording system
 - Custom Froststrap Discord RPC that shows the current page/dialog
 - Replace "Playing Roblox" with the name of the game you're playing using Custom Status Display
-- Game history logging is now toggleable
 - PlayTime Counter shows both total and session playtime
+- Roblox Studio RPC integrated within Froststrap
+- Change Studio RPC Thumbnail depending on the script opened
+- Show Script type, name, and number of lines of code
 
 ### Bootstrapper
-- Switch between all of the classic Roblox icons for the top bar icon
 - Change the Roblox process priority
 - Automatically close the Roblox Crash Handler to reduce memory usage
-- Integrated cleaner tool to remove leftover files (feature was made by fishstrap first not us)
+- Integrated cleaner tool to remove leftover files
 - Multi-instance launching support
 
 ### Mods
-- Generate Mods using custom gradient colors easily
-- Quick use Custom Cursors and Custom Shiftlocks easily
-- Have multiple Custom Cursor Sets ready for use with the click of a button
-- Easily add custom death sounds
+- Multi-Mod system that allows you to download many mods at once
+- Select when to apply the mod (player/studio)
+- Download mods made by the community within the app
+- Generate mods using a hex code with the option to also color Cursor, Shiftlock or Emote Wheel
+- Change Cursor, Shiftlock, Death Sound, and Game Font by selecting a file
+- Use Custom Cursor Sets to change between your cursors faster
 
 ### FastFlag Enhancements
-- Toggle advanced settings
-- Better Profiles
-- Press Ctrl+Z and Ctrl+Y to Undo/Redo changes
-- Built-in FastFlag lists inside of the profiles dialog
-- Remove invalid/default flags and automatically update outdated ones in one click
-- Use Preset Column to help find which flags are toggleables in fastflag settings
-- FastFlag Warning system to help tell you about ban worthy fastflags
-- Select values quickly using the built-in value selector when adding flags
-- Use Find Flag feature to check all of Robloxs FastFlags
-- Publish and Use other peoples published lists in Public Flag Lists
+- Automatic message when applying mods not in the Roblox AllowList
+- Create or use fastflag profiles
+- Change all of Roblox AllowList FastFlags within FastFlag settings
+- Click Clean List to remove flags not in Roblox AllowList
 
 ### UI & Appearance
 - Fully customizable bootstrapper launcher
 - Change the app font to any font you want
-- Supports animated GIF, image, and gradient backgrounds themes
+- Supports image and gradient background themes
 - Built-in App themes
-- Use element toolbox when creating custom launchers (prob removing soon cuz its hella useless) 
+- Change the window background to Aero, Acrylic, or Mica
 
 ### Settings
-- Disable Hardware Acceleration to lower froststrap memory usage
-- Disable Froststrap Animations to help with performance
-- Fixed auto update that wont go off randomly
-- Easily switch Roblox update channels with action presets
+- Easily switch Roblox update channels
 - Option to fully block Roblox updates
-- Quickly Reset/Import/Export all your settings in one place
-- Use the debug menu to read log files
-- Easily uninstall Froststrap if its not to your liking (you totally shouldnt trust trust)
+- Go from version-xxxxx Roblox folders to a non-changing one
+- View all currently available Roblox channels
 
 ### Extra Features
 - Remembers the last opened tab
-- Import settings from other bootstrappers easily like Fishstrap and Bloxstrap
-- Built-in PC tweaks for performance optimization
+- Import settings from other bootstrappers easily, like Fishstrap and Bloxstrap
 - Create game shortcuts for faster game joining
-- Includes a hidden Easter egg page and game
+- Join your regions more easily using the region selector
+- Join your regions through the system tray when playing a game
+- Built-In Account Manager
 
 More features are planned to be added, you can also sugguest a feature in our issues!
 
@@ -96,7 +90,20 @@ More features are planned to be added, you can also sugguest a feature in our is
 
 ## Licensing
 
-This project is **dual-licensed** under `GPL-3.0-or-later` and `Unlicensed`. 
+Froststrap uses a **multi-license model** depending on the origin of the code:
+
+| Code | License |
+|---|---|
+| Code written or modified by Froststrap | [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) |
+| Upstream code inherited from Fishstrap/Bloxstrap | [MIT](https://opensource.org/licenses/MIT) |
+| Nix-related code (unmodified) | [Unlicense](https://unlicense.org/) |
+
+**In plain terms:**
+- If Froststrap wrote it or touched it, it's **AGPL-3.0** — any modifications must be open-sourced under the same license
+- Code inherited from upstream (Fishstrap / Bloxstrap) remains under its original **MIT** license
+- Nix-specific code is **Unlicensed** (public domain) and is strictly limited to Nix-related functionality
+
+When in doubt about which license applies to a specific file, check the file header or refer to the [LICENSE](./LICENSE) file.
 
 <!-- Badge defs -->
 [badge-repo-license]: https://img.shields.io/github/license/Froststrap/Froststrap?style=for-the-badge&color=37add9

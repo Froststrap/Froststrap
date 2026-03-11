@@ -115,6 +115,12 @@ namespace Bloxstrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StaticDirectory = value;
         }
 
+        public bool SaveAndLaunchToPlayer
+        {
+            get => App.Settings.Prop.SaveAndLaunchToPlayer;
+            set => App.Settings.Prop.SaveAndLaunchToPlayer = value;
+        }
+
         public IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
         {
             { Strings.Menu_Channel_ChangeAction_Automatic, ChannelChangeMode.Automatic },
