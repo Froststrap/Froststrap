@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a>, focused on performance and customization
+    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a> focused on performance and customization.
 </p>
 
 <p align="center">
@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-    If you want to help support our project please consider giving this repo a star!
+    If you want to help support our project, please consider giving this repo a star!
 </p>
 
 <div align="center">
@@ -40,7 +40,7 @@
 - Replace "Playing Roblox" with the name of the game you're playing using Custom Status Display
 - PlayTime Counter shows both total and session playtime
 - Roblox Studio RPC integrated within Froststrap
-- Change Studio RPC Thumbnail depending on the script opened
+- Change the Studio RPC thumbnail depending on the script that is open
 - Show Script type, name, and number of lines of code
 
 ### Bootstrapper
@@ -52,23 +52,23 @@
 ### Mods
 - Multi-Mod system that allows you to download many mods at once
 - Select when to apply the mod (player/studio)
-- Download mods made by the community within the app
+- Download community-made mods directly within the app
 - Generate mods using a hex code with the option to also color Cursor, Shiftlock or Emote Wheel
 - Change Cursor, Shiftlock, Death Sound, and Game Font by selecting a file
 - Use Custom Cursor Sets to change between your cursors faster
 
 ### FastFlag Enhancements
-- Automatic message when applying mods not in the Roblox AllowList
+- Automatic message when applying fflags that are not in the Roblox FFlag Allowlist
 - Create or use fastflag profiles
-- Change all of Roblox AllowList FastFlags within FastFlag settings
-- Click Clean List to remove flags not in Roblox AllowList
+- Change all of Roblox Allowlist FastFlags within FastFlag settings
+- Click Clean List to remove flags not in Roblox FFlag Allowlist
 
 ### UI & Appearance
 - Fully customizable bootstrapper launcher
-- Change the app font to any font you want
+- Change the app font to any font you prefer
 - Supports image and gradient background themes
 - Built-in App themes
-- Change the window background to Aero, Acrylic, or Mica
+- Change the window background to Aero, Acrylic or Mica
 
 ### Settings
 - Easily switch Roblox update channels
@@ -78,13 +78,13 @@
 
 ### Extra Features
 - Remembers the last opened tab
-- Import settings from other bootstrappers easily, like Fishstrap and Bloxstrap
+- Easily import settings from other bootstrappers such as Fishstrap and Bloxstrap
 - Create game shortcuts for faster game joining
-- Join your regions more easily using the region selector
+- Join servers in your region more easily using the region selector
 - Join your regions through the system tray when playing a game
 - Built-In Account Manager
 
-More features are planned to be added, you can also sugguest a feature in our issues!
+More features are planned to be added, you can also suggest a feature in our issues!
 
 ---
 
