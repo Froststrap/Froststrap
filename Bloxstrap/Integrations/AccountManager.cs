@@ -122,7 +122,7 @@ namespace Bloxstrap.Integrations
             SaveAccounts();
         }
 
-        public void SetActiveAccount(long userId)
+        public void SetActiveAccount(long? userId)
         {
             var acc = _accounts.Find(a => a.UserId == userId);
             if (acc != null)
@@ -770,7 +770,6 @@ namespace Bloxstrap.Integrations
         public async Task<AccountManagerAccount?> AddAccountByBrowser()
         {
             const string LOG_IDENT_BROWSER = $"{LOG_IDENT}::AddAccountByBrowser";
-
             var completionSource = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 
             try
@@ -801,7 +800,7 @@ namespace Bloxstrap.Integrations
 
                 if (executablePath == null)
                 {
-                    var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    var localAppData = Paths.LocalAppData;
                     var specificPath = Path.Combine(localAppData, "PuppeteerSharp");
 
                     App.Logger.WriteLine(LOG_IDENT_BROWSER, $"Checking specific path: {specificPath}");

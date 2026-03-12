@@ -25,7 +25,7 @@ namespace Bloxstrap.UI.Elements.AccountManagers
             UpdateNavigationItemsState();
         }
 
-        private void OnActiveAccountChanged(AltAccount? account)
+        private void OnActiveAccountChanged(AccountManagerAccount? account)
         {
             Dispatcher.Invoke(UpdateNavigationItemsState);
         }

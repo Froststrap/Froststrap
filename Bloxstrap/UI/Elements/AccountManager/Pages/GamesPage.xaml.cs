@@ -20,6 +20,21 @@ namespace Bloxstrap.UI.Elements.AccountManagers.Pages
             InitializeComponent();
         }
 
+        private void ServerIdTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SearchComboBox_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SearchComboBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void HorizontalScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (sender is ScrollViewer scrollViewer && !e.Handled)

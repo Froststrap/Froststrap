@@ -32,7 +32,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private string _currentUserUsername = "";
 
         [ObservableProperty]
-        private string _currentUserAvatarUrl = "";
+        private string _currentUserAvatarUrl = null!;
 
         [ObservableProperty]
         private ObservableCollection<Account> _accounts = new();
@@ -97,7 +97,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             _ = InitializeDataAsync();
         }
 
-        private void OnAccountManagerActiveAccountChanged(AltAccount? account)
+        private void OnAccountManagerActiveAccountChanged(AccountManagerAccount? account)
         {
             IsAccountLoggedIn = account != null;
         }
@@ -211,11 +211,9 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
 
             try
             {
-                using var client = new HttpClient();
-
-                var friendsTask = client.GetAsync($"https://friends.roblox.com/v1/users/{userId}/friends/count");
-                var followersTask = client.GetAsync($"https://friends.roblox.com/v1/users/{userId}/followers/count");
-                var followingTask = client.GetAsync($"https://friends.roblox.com/v1/users/{userId}/followings/count");
+                var friendsTask = App.HttpClient.GetAsync($"https://friends.roblox.com/v1/users/{userId}/friends/count");
+                var followersTask = App.HttpClient.GetAsync($"https://friends.roblox.com/v1/users/{userId}/followers/count");
+                var followingTask = App.HttpClient.GetAsync($"https://friends.roblox.com/v1/users/{userId}/followings/count");
 
                 await Task.WhenAll(friendsTask, followersTask, followingTask);
 
@@ -268,7 +266,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
-        private async Task SwitchToAccountAsync(AltAccount account)
+        private async Task SwitchToAccountAsync(AccountManagerAccount account)
         {
             CurrentUserDisplayName = account.DisplayName;
             CurrentUserUsername = $"@{account.Username}";
@@ -296,7 +294,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             {
                 if (!isSameAccount)
                 {
-                    mgr.SetActiveAccount(backendAccount);
+                    mgr.SetActiveAccount(backendAccount.UserId);
                     await SwitchToAccountAsync(backendAccount);
                     IsAccountLoggedIn = true;
                     Frontend.ShowMessageBox($"Switched to account: {SelectedAccount.DisplayName}", MessageBoxImage.Information);
@@ -312,7 +310,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private async Task AddAccount()
         {
             var mgr = Manager;
-            AltAccount? newAccount = null;
+            AccountManagerAccount? newAccount = null;
 
             try
             {
@@ -371,7 +369,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
-        private async Task ProcessNewAccount(AltAccount newAccount)
+        private async Task ProcessNewAccount(AccountManagerAccount newAccount)
         {
             var mgr = Manager;
 
@@ -399,7 +397,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 Accounts.Add(account);
             }
 
-            mgr.SetActiveAccount(existingBackendAccount);
+            mgr.SetActiveAccount(existingBackendAccount.UserId);
 
             CurrentUserDisplayName = existingBackendAccount.DisplayName;
             CurrentUserUsername = $"@{existingBackendAccount.Username}";
@@ -456,7 +454,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 mgr.SetActiveAccount(null);
                 CurrentUserDisplayName = "Not Logged In";
                 CurrentUserUsername = "";
-                CurrentUserAvatarUrl = "";
+                CurrentUserAvatarUrl = null!;
                 IsAccountInformationVisible = false;
             }
 
@@ -480,7 +478,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             mgr.SetActiveAccount(null);
             CurrentUserDisplayName = "Not Logged In";
             CurrentUserUsername = "";
-            CurrentUserAvatarUrl = "";
+            CurrentUserAvatarUrl = null!;
 
             FriendsCount = 0;
             FollowersCount = 0;

@@ -18,7 +18,7 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
         [ObservableProperty]
         private bool _isAddEnabled = true;
 
-        public AltAccount? ValidatedAccount { get; private set; }
+        public AccountManagerAccount? ValidatedAccount { get; private set; }
 
         private ManualCookieDialog _dialog;
 
@@ -72,7 +72,7 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
             _dialog.Close();
         }
 
-        private async Task<AltAccount?> GetAccountInfoFromCookieAsync(string cookie)
+        private async Task<AccountManagerAccount?> GetAccountInfoFromCookieAsync(string cookie)
         {
             try
             {
@@ -98,7 +98,7 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
                 if (userId == 0 || string.IsNullOrEmpty(username))
                     return null;
 
-                return new AltAccount(cookie, userId, username, displayName);
+                return new AccountManagerAccount(cookie, userId, username, displayName);
             }
             catch
             {
