@@ -3,6 +3,14 @@
     "Froststrap (Launch)": {
       "commandName": "Project"
     },
+    "Froststrap (Menu)": {
+      "commandName": "Project",
+      "commandLineArgs": "-menu"
+    },
+    "Froststrap (Account Manager)": {
+      "commandName": "Project",
+      "commandLineArgs": "-accountmanager"
+    },
     "Froststrap (Quiet Launch)": {
       "commandName": "Project",
       "commandLineArgs": "-quiet"
@@ -15,13 +23,9 @@
       "commandName": "Project",
       "commandLineArgs": "-uninstall -quiet"
     },
-    "Froststrap (Menu)": {
-      "commandName": "Project",
-      "commandLineArgs": "-menu"
-    },
     "Froststrap (Deeplink)": {
       "commandName": "Project",
-      "commandLineArgs": "-player \"roblox://experiences/start?placeId=13700835620\""
+      "commandLineArgs": "-player \"roblox://experiences/start?placeId=1818\""
     },
     "Froststrap (Channel Launch)": {
       "commandName": "Project",

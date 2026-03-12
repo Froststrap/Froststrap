@@ -71,6 +71,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
         private bool _isAccountLoggedIn = false;
 
         private AccountManager Manager => AccountManager.Shared;
+        private readonly System.Windows.Threading.DispatcherTimer? _presenceTimer;
 
         public static long? GetActiveUserId()
         {
@@ -91,10 +92,43 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
                 return;
 
             IsAccountLoggedIn = Manager.ActiveAccount != null;
-
             Manager.ActiveAccountChanged += OnAccountManagerActiveAccountChanged;
 
+            _presenceTimer = new System.Windows.Threading.DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(20)
+            };
+            _presenceTimer.Tick += async (s, e) => await RefreshActiveAccountPresenceAsync();
+            _presenceTimer.Start();
+
             _ = InitializeDataAsync();
+        }
+
+        private async Task RefreshActiveAccountPresenceAsync()
+        {
+            var activeUserId = GetActiveUserId();
+
+            if (activeUserId.HasValue && activeUserId.Value != 0)
+            {
+                try
+                {
+                    var presenceData = await Manager.GetUserPresenceAsync(activeUserId.Value);
+
+                    if (presenceData != null)
+                    {
+                        CurrentUserPresence = new AccountPresence(
+                            presenceData.UserPresenceType,
+                            presenceData.LastLocation,
+                            presenceData.StatusColor,
+                            presenceData.ToolTipText
+                        );
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine($"{LOG_IDENT}::RefreshPresence", $"Auto-refresh failed: {ex.Message}");
+                }
+            }
         }
 
         private void OnAccountManagerActiveAccountChanged(AccountManagerAccount? account)
@@ -246,16 +280,36 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             if (userId == 0)
             {
                 IsAccountInformationVisible = false;
+                CurrentUserPresence = null;
                 return;
             }
 
             try
             {
-                var (friends, followers, following) = await GetAccountInformationAsync(userId);
+                var infoTask = GetAccountInformationAsync(userId);
+                var presenceTask = Manager.GetUserPresenceAsync(userId);
 
+                await Task.WhenAll(infoTask, presenceTask);
+
+                var (friends, followers, following) = await infoTask;
                 FriendsCount = friends;
                 FollowersCount = followers;
                 FollowingCount = following;
+
+                var presenceData = await presenceTask;
+                if (presenceData != null)
+                {
+                    CurrentUserPresence = new AccountPresence(
+                        presenceData.UserPresenceType,
+                        presenceData.LastLocation,
+                        presenceData.StatusColor,
+                        presenceData.ToolTipText
+                    );
+                }
+                else
+                {
+                    CurrentUserPresence = null;
+                }
 
                 IsAccountInformationVisible = true;
             }
@@ -263,6 +317,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             {
                 App.Logger.WriteLine($"{LOG_IDENT}::UpdateAccountInformation", $"Exception: {ex.Message}");
                 IsAccountInformationVisible = false;
+                CurrentUserPresence = null;
             }
         }
 
@@ -479,6 +534,7 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             CurrentUserDisplayName = "Not Logged In";
             CurrentUserUsername = "";
             CurrentUserAvatarUrl = null!;
+            CurrentUserPresence = null;
 
             FriendsCount = 0;
             FollowersCount = 0;

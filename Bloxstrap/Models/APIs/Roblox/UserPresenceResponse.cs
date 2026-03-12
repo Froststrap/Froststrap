@@ -1,6 +1,6 @@
 ﻿namespace Bloxstrap.Models.APIs.Roblox
 {
-    public class PresenceResponse
+    public class UserPresenceResponse
     {
         [JsonPropertyName("userPresences")]
         public List<UserPresence> UserPresences { get; set; } = new();

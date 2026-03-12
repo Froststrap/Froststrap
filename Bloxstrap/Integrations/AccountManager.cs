@@ -1056,6 +1056,39 @@ namespace Bloxstrap.Integrations
             }
         }
 
+        public async Task<UserPresence?> GetUserPresenceAsync(long userId)
+        {
+            const string LOG_IDENT_PRESENCE = $"{LOG_IDENT}::GetUserPresence";
+
+            try
+            {
+                var requestData = new { userIds = new[] { userId } };
+                string jsonPayload = JsonConvert.SerializeObject(requestData);
+
+                using var request = new HttpRequestMessage(HttpMethod.Post, "https://presence.roblox.com/v1/presence/users");
+                request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
+
+                var response = await App.HttpClient.SendAsync(request).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_PRESENCE, $"Presence API returned error: {(int)response.StatusCode}");
+                    return null;
+                }
+
+                string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                var result = JsonConvert.DeserializeObject<UserPresenceResponse>(content);
+
+                return result?.UserPresences?.FirstOrDefault(x => x.UserId == userId);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_PRESENCE, ex);
+                return null;
+            }
+        }
+
         public async Task<bool> ValidateAccountAsync(AccountManagerAccount account)
         {
             const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateAccount";
