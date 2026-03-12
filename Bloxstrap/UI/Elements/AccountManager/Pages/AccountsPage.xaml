@@ -13,6 +13,7 @@
     d:DesignHeight="500"
     d:DesignWidth="850"
     Scrollable="True"
+    Unloaded="Page_Unloaded"
     mc:Ignorable="d">
 
     <Grid Margin="0,8,8,8">

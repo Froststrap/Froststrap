@@ -6,19 +6,24 @@
     <SolidColorBrush x:Key="NormalDarkAndLightBackground" Color="#0FFFFFFF" />
     <SolidColorBrush x:Key="ApplicationBackground" Color="#01000000" />
 
-    <Style x:Key="SquareProgressBarStyle" TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
+    <Style
+        x:Key="SquareProgressBarStyle"
+        BasedOn="{StaticResource {x:Type ProgressBar}}"
+        TargetType="ProgressBar">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ProgressBar">
                     <Grid Name="TemplateRoot" SnapsToDevicePixels="True">
-                        <Border Background="{TemplateBinding Background}"
+                        <Border
+                            Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="0" />
 
                         <Rectangle Name="PART_Track" />
 
-                        <Border Name="PART_Indicator"
+                        <Border
+                            Name="PART_Indicator"
                             HorizontalAlignment="Left"
                             Background="{TemplateBinding Foreground}"
                             CornerRadius="0" />
@@ -34,20 +39,25 @@
                         <ControlTemplate TargetType="ProgressBar">
                             <ControlTemplate.Resources>
                                 <Storyboard x:Key="IndeterminateAnim" RepeatBehavior="Forever">
-                                    <DoubleAnimation Storyboard.TargetName="PART_GlowRect"
-                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                                                 From="-200" To="800" Duration="0:0:4" />
+                                    <DoubleAnimation
+                                        Storyboard.TargetName="PART_GlowRect"
+                                        Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                                        From="-200"
+                                        To="800"
+                                        Duration="0:0:4" />
                                 </Storyboard>
                             </ControlTemplate.Resources>
 
                             <Grid Name="TemplateRoot" ClipToBounds="True">
-                                <Border Background="{TemplateBinding Background}"
+                                <Border
+                                    Background="{TemplateBinding Background}"
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     CornerRadius="0" />
 
                                 <Grid Name="AnimationContainer" ClipToBounds="True">
-                                    <Border Name="PART_GlowRect"
+                                    <Border
+                                        Name="PART_GlowRect"
                                         Width="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue=100}"
                                         Height="{TemplateBinding Height}"
                                         HorizontalAlignment="Left"

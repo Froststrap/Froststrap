@@ -1,4 +1,5 @@
 ﻿using Bloxstrap.UI.ViewModels.AccountManagers;
+using System.Windows;
 
 namespace Bloxstrap.UI.Elements.AccountManagers.Pages
 {
@@ -11,6 +12,14 @@ namespace Bloxstrap.UI.Elements.AccountManagers.Pages
             _viewModel = new AccountsViewModel();
             DataContext = _viewModel;
             InitializeComponent();
+        }
+
+        private void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is AccountsViewModel viewModel)
+            {
+                viewModel.Cleanup();
+            }
         }
     }
 }

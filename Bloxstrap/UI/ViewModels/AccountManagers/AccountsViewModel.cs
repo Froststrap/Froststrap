@@ -131,6 +131,15 @@ namespace Bloxstrap.UI.ViewModels.AccountManagers
             }
         }
 
+        public void Cleanup()
+        {
+            if (_presenceTimer.IsEnabled)
+            {
+                _presenceTimer.Stop();
+                App.Logger.WriteLine($"{LOG_IDENT}::Cleanup", "Presence timer stopped.");
+            }
+        }
+
         private void OnAccountManagerActiveAccountChanged(AccountManagerAccount? account)
         {
             IsAccountLoggedIn = account != null;
