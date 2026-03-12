@@ -48,7 +48,7 @@ namespace Bloxstrap.Integrations
 
         public AccountManager()
         {
-            _accountsLocation = Path.Combine(Paths.Base, AccountsFile);
+            _accountsLocation = Path.Combine(Paths.Cache, AccountsFile);
             LoadAccounts();
         }
 

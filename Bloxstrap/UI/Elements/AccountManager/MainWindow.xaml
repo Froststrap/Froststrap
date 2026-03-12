@@ -28,7 +28,7 @@
             Title="Account Manager"
             Grid.Row="0"
             Padding="8"
-            ForceShutdown="False"
+            ForceShutdown="True"
             Icon="pack://application:,,,/Bloxstrap.ico"
             MinimizeToTray="False"
             UseSnapLayout="True" />

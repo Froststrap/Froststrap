@@ -5,7 +5,7 @@ namespace Bloxstrap.UI.Elements.AccountManagers.Pages
 {
     public partial class AccountsPage
     {
-        private AccountsViewModel? _viewModel;
+        private AccountsViewModel _viewModel;
 
         public AccountsPage()
         {
@@ -16,10 +16,7 @@ namespace Bloxstrap.UI.Elements.AccountManagers.Pages
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (DataContext is AccountsViewModel viewModel)
-            {
-                viewModel.Cleanup();
-            }
+            _viewModel?.Cleanup();
         }
     }
 }
