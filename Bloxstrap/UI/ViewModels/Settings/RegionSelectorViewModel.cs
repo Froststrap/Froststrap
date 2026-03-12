@@ -6,13 +6,9 @@
  *  GNU Affero General Public License, version 3 or later.
  *
  *  SPDX-License-Identifier: AGPL-3.0-or-later
- *
- *  Description: Nix flake for shipping for Nix-darwin, Nix, NixOS, and modules
- *               of the Nix ecosystem. 
  */
 
 using Bloxstrap.Integrations;
-using Bloxstrap.UI.ViewModels.AccountManagers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
@@ -341,5 +337,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 await LoadServersAsync();
             IsLoading = false;
         }
+    }
+    public class SortOrderComboBoxItem
+    {
+        public string Content { get; set; } = "";
+        public int Tag { get; set; }
     }
 }

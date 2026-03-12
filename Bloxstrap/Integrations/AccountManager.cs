@@ -6,222 +6,113 @@
  *  GNU Affero General Public License, version 3 or later.
  *
  *  SPDX-License-Identifier: AGPL-3.0-or-later
- *
- *  Description: Nix flake for shipping for Nix-darwin, Nix, NixOS, and modules
- *               of the Nix ecosystem. 
  */
 
-using System.Security.Cryptography;
+using Bloxstrap.UI.Elements.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PuppeteerExtraSharp;
 using PuppeteerExtraSharp.Plugins.ExtraStealth;
 using PuppeteerSharp;
+using System.Security.Cryptography;
 using System.Web;
 using System.Windows;
-using Bloxstrap.UI.Elements.Dialogs;
 
 namespace Bloxstrap.Integrations
 {
-    public record AltAccount(string SecurityToken, long UserId, string Username, string DisplayName);
-
     public class AccountManager
     {
         private const string LOG_IDENT = "AccountManager";
         private const string AccountsFile = "AccountManager.json";
-        private readonly string _accountsLocation;
-        private Browser? _browser;
-        private List<AltAccount> _accounts = new();
-
-        private static readonly byte[] DpapiEntropy = Encoding.UTF8.GetBytes("Froststrap_DPAPI_v1");
-
-        public static AccountManager Shared { get; } = new AccountManager();
-
-        public IReadOnlyList<AltAccount> Accounts => _accounts.AsReadOnly();
-        public AltAccount? ActiveAccount { get; private set; }
 
         public event Action? NoAccountsFound;
 
-        public event Action<AltAccount?>? ActiveAccountChanged;
+        public event Action<AccountManagerAccount?>? ActiveAccountChanged;
 
         public event Action<string, DateTime?>? QuickSignCodeCreated;
         public event Action<string, string?>? QuickSignStatusUpdated;
 
-        public string CurrentPlaceId { get; private set; } = "";
-        public string CurrentServerInstanceId { get; private set; } = "";
+        private readonly string _accountsLocation;
+        private List<AccountManagerAccount> _accounts = new();
+
+        private Browser? _browser;
+        private static readonly byte[] DpapiEntropy = Encoding.UTF8.GetBytes("Froststrap_DPAPI_v1");
+
+        public AccountManagerAccount? ActiveAccount { get; private set; }
+        public long CurrentPlaceId { get; set; }
+        public string CurrentServerInstanceId { get; set; } = "";
+
+        public static AccountManager Shared { get; } = new AccountManager();
+        public IReadOnlyList<AccountManagerAccount> Accounts => _accounts;
+        private string? _browserTrackerId;
 
         public AccountManager()
         {
-            _accountsLocation = Path.Combine(Paths.Cache, AccountsFile);
+            _accountsLocation = Path.Combine(Paths.Base, AccountsFile);
             LoadAccounts();
         }
 
-        private static string ProtectString(string? plaintext)
-        {
-            if (string.IsNullOrEmpty(plaintext))
-                return string.Empty;
-
-            try
-            {
-                var bytes = Encoding.UTF8.GetBytes(plaintext);
-                var protectedBytes = ProtectedData.Protect(bytes, DpapiEntropy, DataProtectionScope.CurrentUser);
-                return Convert.ToBase64String(protectedBytes);
-            }
-            catch (Exception)
-            {
-                return plaintext;
-            }
-        }
-
-        private static string UnprotectString(string? protectedText)
-        {
-            if (string.IsNullOrEmpty(protectedText))
-                return string.Empty;
-
-            try
-            {
-                // Try base64 decode -> unprotect. If it's not base64 or unprotect fails, assume plaintext.
-                var protectedBytes = Convert.FromBase64String(protectedText);
-                var bytes = ProtectedData.Unprotect(protectedBytes, DpapiEntropy, DataProtectionScope.CurrentUser);
-                return Encoding.UTF8.GetString(bytes);
-            }
-            catch (FormatException)
-            {
-                // Not base64 -> plaintext
-                return protectedText ?? string.Empty;
-            }
-            catch (CryptographicException)
-            {
-                // Could not unprotect -> assume plaintext (or different machine/profile)
-                return protectedText ?? string.Empty;
-            }
-            catch (Exception)
-            {
-                return protectedText ?? string.Empty;
-            }
-        }
+        private string Protect(string text) => string.IsNullOrEmpty(text) ? "" : Convert.ToBase64String(ProtectedData.Protect(Encoding.UTF8.GetBytes(text), DpapiEntropy, DataProtectionScope.CurrentUser));
+        private string Unprotect(string text) => string.IsNullOrEmpty(text) ? "" : Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(text), DpapiEntropy, DataProtectionScope.CurrentUser));
 
         public void LoadAccounts()
         {
-            const string LOG_IDENT_LOAD = $"{LOG_IDENT}::LoadAccounts";
-
-            App.Logger.WriteLine(LOG_IDENT_LOAD, "Loading accounts...");
-
-            if (!File.Exists(_accountsLocation))
-            {
-                App.Logger.WriteLine(LOG_IDENT_LOAD, "Accounts file not found.");
-                _accounts = new();
-                NoAccountsFound?.Invoke();
-                return;
-            }
-
-            string json = File.ReadAllText(_accountsLocation);
-            if (string.IsNullOrWhiteSpace(json))
-            {
-                App.Logger.WriteLine(LOG_IDENT_LOAD, "Accounts file is empty.");
-                _accounts = new();
-                NoAccountsFound?.Invoke();
-                return;
-            }
-
+            if (!File.Exists(_accountsLocation)) return;
             try
             {
-                var managerData = JsonConvert.DeserializeObject<AccountManagerData>(json);
-                if (managerData?.Accounts is not null && managerData.Accounts.Any())
+                var data = JsonConvert.DeserializeObject<AccountManagerData>(File.ReadAllText(_accountsLocation));
+                if (data?.Accounts != null)
                 {
-                    _accounts = managerData.Accounts
-                        .Select(acc => new AltAccount(
-                            UnprotectString(acc.SecurityToken),
-                            acc.UserId,
-                            acc.Username,
-                            acc.DisplayName))
-                        .ToList();
-
-                    if (managerData.ActiveAccountId.HasValue)
-                    {
-                        var cachedAccount = _accounts.FirstOrDefault(acc => acc.UserId == managerData.ActiveAccountId.Value);
-                        if (cachedAccount != null)
-                        {
-                            ActiveAccount = cachedAccount;
-                            ActiveAccountChanged?.Invoke(ActiveAccount);
-                            App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored active account from file: {cachedAccount.Username}");
-                        }
-                        else
-                        {
-                            App.Logger.WriteLine(LOG_IDENT_LOAD, $"Saved active account ID {managerData.ActiveAccountId} not found in loaded accounts");
-                            if (_accounts.Any())
-                                SetActiveAccount(_accounts.First());
-                        }
-                    }
-                    else if (_accounts.Any())
-                    {
-                        SetActiveAccount(_accounts.First());
-                    }
-
-                    CurrentPlaceId = managerData.CurrentPlaceId ?? "";
-                    CurrentServerInstanceId = managerData.CurrentServerInstanceId ?? "";
-
-                    App.Logger.WriteLine(LOG_IDENT_LOAD, $"Restored Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT_LOAD, "Accounts file deserialized to empty or null list.");
-                    _accounts = new();
-                    NoAccountsFound?.Invoke();
+                    _accounts = data.Accounts.Select(acc => acc with { SecurityToken = Unprotect(acc.SecurityToken) }).ToList();
+                    if (data.ActiveAccountId.HasValue)
+                        ActiveAccount = _accounts.Find(a => a.UserId == data.ActiveAccountId);
                 }
             }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_LOAD, ex);
-                _accounts = new();
-                NoAccountsFound?.Invoke();
-            }
-
-            if (_accounts.Any())
-            {
-                _ = Task.Run(async () =>
-                {
-                    await Task.Delay(3000);
-                    await ValidateAllAccountsAsync();
-                });
-            }
+            catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
         }
 
         public void SaveAccounts()
         {
-            const string LOG_IDENT_SAVE = $"{LOG_IDENT}::SaveAccounts";
-
-            App.Logger.WriteLine(LOG_IDENT_SAVE, "Saving accounts...");
             try
             {
-                var protectedAccounts = _accounts
-                    .Select(a => new AltAccount(ProtectString(a.SecurityToken), a.UserId, a.Username, a.DisplayName))
-                    .ToList();
-
-                var managerData = new AccountManagerData
+                var data = new AccountManagerData
                 {
-                    Accounts = protectedAccounts,
+                    Accounts = _accounts.Select(acc => acc with { SecurityToken = Protect(acc.SecurityToken) }).ToList(),
                     ActiveAccountId = ActiveAccount?.UserId,
-                    LastUpdated = DateTime.UtcNow,
-                    CurrentPlaceId = CurrentPlaceId,
-                    CurrentServerInstanceId = CurrentServerInstanceId,
+                    LastUpdated = DateTime.UtcNow
                 };
-
-                string json = JsonConvert.SerializeObject(managerData, Formatting.Indented);
-                File.WriteAllText(_accountsLocation, json);
-
-                App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved {_accounts.Count} accounts with active account: {ActiveAccount?.Username ?? "None"}");
-                App.Logger.WriteLine(LOG_IDENT_SAVE, $"Saved Place ID: {CurrentPlaceId}, Server Instance ID: {CurrentServerInstanceId}");
+                File.WriteAllText(_accountsLocation, JsonConvert.SerializeObject(data, Formatting.Indented));
             }
-            catch (Exception ex)
+            catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+        }
+
+        public void UpdateAccountToken(long userId, string newToken)
+        {
+            int index = _accounts.FindIndex(a => a.UserId == userId);
+            if (index != -1)
             {
-                App.Logger.WriteException(LOG_IDENT_SAVE, ex);
+                _accounts[index] = _accounts[index] with { SecurityToken = newToken, LastUsed = DateTime.UtcNow };
+                if (ActiveAccount?.UserId == userId) ActiveAccount = _accounts[index];
+                SaveAccounts();
             }
         }
 
-        public void SetCurrentPlaceId(string placeId)
+        public void CheckAndApplyCookieRotation(long userId, IEnumerable<string> headers)
         {
-            CurrentPlaceId = placeId ?? "";
+            const string KEY = ".ROBLOSECURITY=";
+            var header = headers.FirstOrDefault(h => h.Contains(KEY, StringComparison.OrdinalIgnoreCase));
+            if (header != null)
+            {
+                int start = header.IndexOf(KEY) + KEY.Length;
+                int end = header.IndexOf(';', start);
+                string token = (end == -1 ? header[start..] : header[start..end]).Trim();
+                if (!string.IsNullOrEmpty(token)) UpdateAccountToken(userId, token);
+            }
+        }
+
+        public void SetCurrentPlaceId(long placeId)
+        {
+            CurrentPlaceId = placeId;
             SaveAccounts();
         }
 
@@ -231,23 +122,14 @@ namespace Bloxstrap.Integrations
             SaveAccounts();
         }
 
-        public void SetActiveAccount(AltAccount? account)
+        public void SetActiveAccount(long userId)
         {
-            const string LOG_IDENT_SET_ACTIVE = $"{LOG_IDENT}::SetActiveAccount";
-
-            ActiveAccount = account;
-            App.Logger.WriteLine(LOG_IDENT_SET_ACTIVE, $"Set active account to: {account?.Username ?? "None"}");
-
-            SaveAccounts();
-
-            // Notify listeners that active account changed
-            try
+            var acc = _accounts.Find(a => a.UserId == userId);
+            if (acc != null)
             {
-                ActiveAccountChanged?.Invoke(ActiveAccount);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_SET_ACTIVE, ex);
+                ActiveAccount = acc;
+                ActiveAccountChanged?.Invoke(acc);
+                SaveAccounts();
             }
         }
 
@@ -257,7 +139,7 @@ namespace Bloxstrap.Integrations
             return a?.SecurityToken;
         }
 
-        public async Task<AltAccount?> AddAccountByQuickSignInAsync()
+        public async Task<AccountManagerAccount?> AddAccountByQuickSignInAsync()
         {
             const string LOG_IDENT_QUICK_SIGN = $"{LOG_IDENT}::AddAccountByQuickSignIn";
 
@@ -370,11 +252,9 @@ namespace Bloxstrap.Integrations
 
             try
             {
-                using var client = new HttpClient();
-
                 var content = new StringContent("{}", Encoding.UTF8, "application/json");
 
-                var resp = await client.PostAsync("https://apis.roblox.com/auth-token-service/v1/login/create", content).ConfigureAwait(false);
+                var resp = await App.HttpClient.PostAsync("https://apis.roblox.com/auth-token-service/v1/login/create", content).ConfigureAwait(false);
 
                 if (!resp.IsSuccessStatusCode)
                 {
@@ -434,8 +314,7 @@ namespace Bloxstrap.Integrations
 
             try
             {
-                using var client = new HttpClient();
-                client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+                App.HttpClient.DefaultRequestHeaders.Accept.ParseAdd("application/json");
 
                 var timeout = expirationTime > DateTime.UtcNow ? expirationTime - DateTime.UtcNow : TimeSpan.FromMinutes(2);
                 var deadline = DateTime.UtcNow + timeout;
@@ -464,7 +343,7 @@ namespace Bloxstrap.Integrations
                         request.Headers.Add("Origin", "https://www.roblox.com");
                         request.Headers.Add("Referer", "https://www.roblox.com/");
 
-                        resp = await client.SendAsync(request, token).ConfigureAwait(false);
+                        resp = await App.HttpClient.SendAsync(request, token).ConfigureAwait(false);
 
                         if (resp.StatusCode == HttpStatusCode.Forbidden && resp.Headers.Contains("x-csrf-token"))
                         {
@@ -860,7 +739,7 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        public AltAccount? AddManualAccount(string cookie, long userId, string username, string displayName)
+        public AccountManagerAccount? AddManualAccount(string cookie, long userId, string username, string displayName)
         {
             const string LOG_IDENT_ADD_MANUAL = $"{LOG_IDENT}::AddManualAccount";
 
@@ -873,7 +752,7 @@ namespace Bloxstrap.Integrations
                     return existingAccount;
                 }
 
-                var newAccount = new AltAccount(cookie, userId, username, displayName);
+                var newAccount = new AccountManagerAccount(cookie, userId, username, displayName);
                 _accounts.Add(newAccount);
 
                 SaveAccounts();
@@ -888,7 +767,7 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        public async Task<AltAccount?> AddAccountByBrowser()
+        public async Task<AccountManagerAccount?> AddAccountByBrowser()
         {
             const string LOG_IDENT_BROWSER = $"{LOG_IDENT}::AddAccountByBrowser";
 
@@ -1138,42 +1017,7 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        public bool RemoveAccount(AltAccount account)
-        {
-            const string LOG_IDENT_REMOVE = $"{LOG_IDENT}::RemoveAccount";
-
-            try
-            {
-                int removed = _accounts.RemoveAll(a => a.UserId == account.UserId);
-                if (removed > 0)
-                {
-                    if (ActiveAccount is not null && ActiveAccount.UserId == account.UserId)
-                    {
-                        ActiveAccount = null;
-                    }
-
-                    SaveAccounts();
-
-                    if (ActiveAccount is null && _accounts.Any())
-                    {
-                        SetActiveAccount(_accounts.First());
-                    }
-
-                    App.Logger.WriteLine(LOG_IDENT_REMOVE, $"Removed account {account.Username} ({account.UserId}).");
-                    return true;
-                }
-
-                App.Logger.WriteLine(LOG_IDENT_REMOVE, $"Attempted to remove account {account.Username} but it was not found.");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_REMOVE, ex);
-                return false;
-            }
-        }
-
-        private async Task<AltAccount?> GetAccountInfoFromCookie(string securityCookie)
+        private async Task<AccountManagerAccount?> GetAccountInfoFromCookie(string securityCookie)
         {
             const string LOG_IDENT_GET_INFO = $"{LOG_IDENT}::GetAccountInfoFromCookie";
 
@@ -1204,7 +1048,7 @@ namespace Bloxstrap.Integrations
                     return null;
                 }
 
-                return new AltAccount(securityCookie, userId, username, displayName);
+                return new AccountManagerAccount(securityCookie, userId, username, displayName);
             }
             catch (Exception ex)
             {
@@ -1214,20 +1058,13 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        public AltAccount? GetAccount(string identifier)
-        {
-            return _accounts.FirstOrDefault(acc =>
-                acc.Username.Equals(identifier, StringComparison.OrdinalIgnoreCase) ||
-                acc.UserId.ToString() == identifier);
-        }
-
-        public async Task<bool> ValidateAccountAsync(AltAccount account)
+        public async Task<bool> ValidateAccountAsync(AccountManagerAccount account)
         {
             const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateAccount";
 
             try
             {
-                string decryptedCookie = UnprotectString(account.SecurityToken);
+                string decryptedCookie = Unprotect(account.SecurityToken);
 
                 if (string.IsNullOrEmpty(decryptedCookie))
                 {
@@ -1239,11 +1076,9 @@ namespace Bloxstrap.Integrations
                 handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", decryptedCookie, "/", ".roblox.com"));
 
                 using var client = new HttpClient(handler);
-
                 var response = await client.GetAsync("https://users.roblox.com/v1/users/authenticated");
 
                 bool isValid = response.StatusCode == HttpStatusCode.OK;
-
                 App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: {(isValid ? "Valid" : "Invalid")} (Status: {response.StatusCode})");
 
                 return isValid;
@@ -1255,84 +1090,50 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        public async Task ValidateAllAccountsAsync()
+        public bool RemoveAccount(AccountManagerAccount account)
         {
-            const string LOG_IDENT_VALIDATE_ALL = $"{LOG_IDENT}::ValidateAllAccounts";
-
-            App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, "Starting validation of all accounts...");
-
-            var invalidAccounts = new List<AltAccount>();
-
-            foreach (var account in _accounts.ToList())
-            {
-                bool isValid = await ValidateAccountAsync(account);
-
-                if (!isValid)
-                {
-                    invalidAccounts.Add(account);
-                    App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, $"Account {account.Username} is invalid and will be removed");
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, $"Account {account.Username} is valid, continuing to next account");
-                }
-            }
-
-            foreach (var invalidAccount in invalidAccounts)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    var result = Frontend.ShowMessageBox(
-                        $"Account '{invalidAccount.DisplayName}' (@{invalidAccount.Username}) is no longer valid and will be removed.\n\nReason: Cookie expired or invalid",
-                        MessageBoxImage.Warning,
-                        MessageBoxButton.OK
-                    );
-
-                    RemoveAccount(invalidAccount);
-                });
-            }
-
-            if (invalidAccounts.Count > 0)
-            {
-                App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, $"Removed {invalidAccounts.Count} invalid accounts");
-
-                if (ActiveAccount != null && invalidAccounts.Any(acc => acc.UserId == ActiveAccount.UserId))
-                {
-                    ActiveAccount = _accounts.FirstOrDefault();
-                    ActiveAccountChanged?.Invoke(ActiveAccount);
-                }
-
-                SaveAccounts();
-            }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT_VALIDATE_ALL, "All accounts are valid");
-            }
-        }
-
-        public async Task LaunchAccountAsync(AltAccount? account, long placeId = 0, string serverId = "", bool followUser = false, bool joinVIP = false)
-        {
-            const string LOG_IDENT_MAIN = $"{LOG_IDENT}::LaunchAccount";
-
-            if (account is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT_MAIN, "Launch aborted: No account provided.");
-                return;
-            }
+            const string LOG_IDENT_REMOVE = $"{LOG_IDENT}::RemoveAccount";
 
             try
             {
-                SetActiveAccount(account);
+                int removed = _accounts.RemoveAll(a => a.UserId == account.UserId);
+                if (removed > 0)
+                {
+                    if (ActiveAccount is not null && ActiveAccount.UserId == account.UserId)
+                        ActiveAccount = null;
+
+                    SaveAccounts();
+
+                    if (ActiveAccount is null && _accounts.Any())
+                    {
+                        SetActiveAccount(_accounts.First().UserId);
+                    }
+
+                    App.Logger.WriteLine(LOG_IDENT_REMOVE, $"Removed account {account.Username} ({account.UserId}).");
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT_REMOVE, ex);
+                return false;
+            }
+        }
+
+        public async Task LaunchAccountAsync(AccountManagerAccount? account, long placeId = 0, string serverId = "", bool followUser = false, bool joinVIP = false)
+        {
+            const string LOG_IDENT_MAIN = $"{LOG_IDENT}::LaunchAccount";
+
+            if (account is null) return;
+
+            try
+            {
+                SetActiveAccount(account.UserId);
                 SaveAccounts();
 
-                App.Logger.WriteLine(LOG_IDENT_MAIN, $"Initiating launch for {account.Username} (Place: {placeId})");
-
-                string result = await ExecuteLaunch(account, placeId, serverId, followUser, joinVIP).ConfigureAwait(false);
-
-                if (result != "Success")
-                {
-                    App.Logger.WriteLine(LOG_IDENT_MAIN, $"Launch failed: {result}. Attempting fallback...");
-                }
+                App.Logger.WriteLine(LOG_IDENT_MAIN, $"Initiating launch for {account.Username}");
+                await JoinServer(account, placeId, serverId, followUser, joinVIP).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -1340,82 +1141,85 @@ namespace Bloxstrap.Integrations
             }
         }
 
-        private async Task<string> ExecuteLaunch(AltAccount account, long placeId, string jobId, bool followUser, bool joinVIP)
+        public async Task<string> JoinServer(AccountManagerAccount account, long placeId, string jobId = "", bool followUser = false, bool joinVip = false)
         {
-            var csrf = await GetCsrfTokenAsync(account.SecurityToken).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(csrf)) return "CSRF_FAIL";
+            const string LOG_IDENT_JOIN = "AccountManager::JoinServer";
 
-            var ticket = await GetAuthTicketAsync(account.SecurityToken, csrf, placeId).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(ticket)) return "TICKET_FAIL";
-
-            string url = "";
-            if (placeId > 0)
+            if (string.IsNullOrEmpty(_browserTrackerId))
             {
-                url = followUser ? $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestFollowUser&userId={placeId}" :
-                      (joinVIP && !string.IsNullOrEmpty(jobId)) ? $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestPrivateGame&placeId={placeId}&accessCode={jobId}" :
-                      (!string.IsNullOrEmpty(jobId)) ? $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestGameJob&placeId={placeId}&gameId={jobId}" :
-                      $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestGame&placeId={placeId}";
+                Random r = new Random();
+                _browserTrackerId = r.Next(100000, 175000).ToString() + r.Next(100000, 900000).ToString();
             }
 
-            string launcherSegment = string.IsNullOrEmpty(url) ? "" : $"+placelauncherurl:{Uri.EscapeDataString(url)}";
+            string csrf = await GetCsrfToken(account.SecurityToken).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(csrf))
+                return "ERROR: Account Session Expired.";
+            string? ticket = await GetAuthTicket(account.SecurityToken, csrf, placeId).ConfigureAwait(false);
 
-            string browserTrackerId = new Random().Next(1000000000, 2147483647).ToString();
+            if (string.IsNullOrEmpty(ticket))
+            {
+                App.Logger.WriteLine(LOG_IDENT_JOIN, "Failed to retrieve authentication ticket.");
+                return "ERROR: Invalid Authentication Ticket, re-add the account or try again\n(Failed to get Authentication Ticket, Roblox has probably signed you out)";
+            }
 
-            string launchUri = $"roblox-player:1+launchmode:play+gameinfo:{ticket}{launcherSegment}+browsertrackerid:{browserTrackerId}+robloxLocale:en_us+gameLocale:en_us+channel:";
+            string launcherUrl;
+            if (joinVip)
+            {
+                var match = Regex.Match(jobId, "privateServerLinkCode=(.+)");
+                string linkCode = match.Success ? match.Groups[1].Value : "";
+                launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestPrivateGame&placeId={placeId}&accessCode={jobId}&linkCode={linkCode}";
+            }
+            else if (followUser)
+            {
+                launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestFollowUser&userId={placeId}";
+            }
+            else
+            {
+                string jobIdParam = string.IsNullOrEmpty(jobId) ? "" : $"&gameId={jobId}";
+                string requestType = string.IsNullOrEmpty(jobId) ? "RequestGame" : "RequestGameJob";
+                launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request={requestType}&placeId={placeId}{jobIdParam}&isPlayTogetherGame=false";
+            }
 
-            Process.Start(new ProcessStartInfo(launchUri) { UseShellExecute = true });
-            return "Success";
-        }
+            double launchTime = Math.Floor((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds * 1000);
 
-        public async Task<string?> GetCsrfTokenAsync(string securityCookie)
-        {
-            const string LOG_IDENT_CSRF = $"{LOG_IDENT}::GetCsrfToken";
+            string launchArgs = $"roblox-player:1+launchmode:play+gameinfo:{ticket}+launchtime:{launchTime}+placelauncherurl:{HttpUtility.UrlEncode(launcherUrl)}+browsertrackerid:{_browserTrackerId}+robloxLocale:en_us+gameLocale:en_us+channel:+LaunchExp:InApp";
 
             try
             {
-                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
-                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
-
-                using var client = new HttpClient(handler);
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-
-                var req = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
-                var resp = await client.SendAsync(req).ConfigureAwait(false);
-
-                if (resp.Headers.TryGetValues("x-csrf-token", out var vals))
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
-                    return vals.FirstOrDefault();
-                }
+                    FileName = launchArgs,
+                    UseShellExecute = true
+                });
 
-                return null;
+                return "Success";
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_CSRF, ex);
-                return null;
+                App.Logger.WriteException(LOG_IDENT_JOIN, ex);
+                return $"ERROR: {ex.Message}";
             }
         }
 
-        private async Task<string?> GetAuthTicketAsync(string securityCookie, string csrfToken, long placeId)
+
+        public async Task<string?> GetAuthTicket(string securityCookie, string csrfToken, long placeId)
         {
             const string LOG_IDENT_AUTH_TICKET = $"{LOG_IDENT}::GetAuthTicket";
 
             try
             {
-                var handler = new HttpClientHandler { CookieContainer = new CookieContainer() };
-                handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
+                using var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
 
-                using var client = new HttpClient(handler);
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-                client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", csrfToken);
+                request.Headers.Add("Cookie", $".ROBLOSECURITY={securityCookie}");
+                request.Headers.Add("X-CSRF-TOKEN", csrfToken);
+                request.Headers.Add("Referer", $"https://www.roblox.com/games/{placeId}/");
+                request.Headers.Add("Origin", "https://www.roblox.com");
+                request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 
-                client.DefaultRequestHeaders.Add("Origin", "https://www.roblox.com");
-                client.DefaultRequestHeaders.Referrer = new Uri($"https://www.roblox.com/games/{placeId}/");
+                request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
 
-                var req = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
-                req.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+                var resp = await App.HttpClient.SendAsync(request).ConfigureAwait(false);
 
-                var resp = await client.SendAsync(req).ConfigureAwait(false);
                 if (resp.Headers.TryGetValues("rbx-authentication-ticket", out var vals))
                 {
                     return vals.FirstOrDefault();
@@ -1431,6 +1235,19 @@ namespace Bloxstrap.Integrations
                 App.Logger.WriteException(LOG_IDENT_AUTH_TICKET, ex);
                 return null;
             }
+        }
+
+        private async Task<string> GetCsrfToken(string securityCookie)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/logout");
+            request.Headers.Add("Cookie", $".ROBLOSECURITY={securityCookie}");
+
+            var resp = await App.HttpClient.SendAsync(request).ConfigureAwait(false);
+
+            if (resp.Headers.TryGetValues("X-CSRF-TOKEN", out var tokens))
+                return tokens.FirstOrDefault() ?? "";
+
+            return "";
         }
     }
 }

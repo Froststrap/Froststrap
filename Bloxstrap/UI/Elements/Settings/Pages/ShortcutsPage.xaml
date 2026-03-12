@@ -108,7 +108,10 @@
             <ui:CardExpander.Header>
                 <StackPanel>
                     <TextBlock FontSize="14" Text="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Title}" />
-                    <TextBlock FontSize="12" Text="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Description}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                    <TextBlock
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        Text="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Description}" />
                 </StackPanel>
             </ui:CardExpander.Header>
 
@@ -119,48 +122,88 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <Border Width="100" Height="100" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlAltFillColorQuarternaryBrush}">
-                        <Image Source="{Binding PreviewIconUrl}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Border
+                        Grid.Column="0"
+                        Width="40"
+                        Height="40"
+                        ClipToBounds="True"
+                        CornerRadius="8">
+                        <Image
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="{Binding ThumbnailUrl, TargetNullValue={x:Null}, FallbackValue={x:Null}}"
+                            Stretch="UniformToFill" />
                     </Border>
 
-                    <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding PreviewName}" FontSize="20" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
-                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            <ui:SymbolIcon Symbol="Tag24" FontSize="14" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                            <TextBlock Text="{Binding PreviewId}" FontSize="13" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="16,0,0,0"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Text="{Binding PreviewName}"
+                            TextTrimming="CharacterEllipsis" />
+                        <StackPanel Margin="0,4,0,0" Orientation="Horizontal">
+                            <ui:SymbolIcon
+                                Margin="0,0,6,0"
+                                FontSize="14"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Symbol="Tag24" />
+                            <TextBlock
+                                FontSize="13"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{Binding PreviewId}" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>
 
                 <StackPanel>
-                    <Label Content="Search for a Game" FontWeight="SemiBold" Margin="0,0,0,8"/>
-                    <ComboBox Height="40" 
-                      IsEditable="True" 
-                      StaysOpenOnEdit="True" 
-                      ItemsSource="{Binding SearchResults}"
-                      SelectedItem="{Binding SelectedSearchResult}"
-                      Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      TextSearch.TextPath="Name"
-                      SelectedValuePath="RootPlaceId">
+                    <Label
+                        Margin="0,0,0,8"
+                        Content="Search for a Game"
+                        FontWeight="SemiBold" />
+                    <ComboBox
+                        Height="40"
+                        IsEditable="True"
+                        ItemsSource="{Binding SearchResults}"
+                        SelectedItem="{Binding SelectedSearchResult}"
+                        SelectedValuePath="RootPlaceId"
+                        StaysOpenOnEdit="True"
+                        Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        TextSearch.TextPath="Name">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid Margin="0,4,8,4" Height="40">
+                                <Grid Height="40" Margin="0,4,8,4">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Border Grid.Column="0" Width="40" Height="40">
+                                    <Border
+                                        Grid.Column="0"
+                                        Width="40"
+                                        Height="40">
                                         <Rectangle RadiusX="8" RadiusY="8">
                                             <Rectangle.Fill>
-                                                <ImageBrush ImageSource="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
+                                                <ImageBrush ImageSource="{Binding ThumbnailUrl, TargetNullValue={x:Null}, FallbackValue={x:Null}}" Stretch="UniformToFill" />
                                             </Rectangle.Fill>
                                         </Rectangle>
                                     </Border>
-                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="12,0,0,0" VerticalAlignment="Center" FontWeight="SemiBold"/>
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                        <ui:SymbolIcon Symbol="People24" Margin="0,0,4,0" FontSize="16"/>
-                                        <TextBlock Text="{Binding PlayerCount}"/>
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding Name}" />
+                                    <StackPanel
+                                        Grid.Column="2"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <ui:SymbolIcon
+                                            Margin="0,0,4,0"
+                                            FontSize="16"
+                                            Symbol="People24" />
+                                        <TextBlock Text="{Binding PlayerCount}" />
                                     </StackPanel>
                                 </Grid>
                             </DataTemplate>
@@ -175,20 +218,41 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0">
-                        <Label Content="Server Instance ID" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                        <ui:TextBox Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Icon="DocumentSearch24" PlaceholderText="GUID/JobID" />
+                        <Label
+                            Content="Server Instance ID"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        <ui:TextBox
+                            Margin="0,4,0,0"
+                            Icon="DocumentSearch24"
+                            PlaceholderText="GUID/JobID"
+                            Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                     <StackPanel Grid.Column="2">
-                        <Label Content="Private Access Code" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                        <ui:TextBox Text="{Binding AccessCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Icon="LockClosed24" PlaceholderText="Access Code" />
+                        <Label
+                            Content="Private Access Code"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        <ui:TextBox
+                            Margin="0,4,0,0"
+                            Icon="LockClosed24"
+                            PlaceholderText="Access Code"
+                            Text="{Binding AccessCode, UpdateSourceTrigger=PropertyChanged}" />
                     </StackPanel>
                 </Grid>
 
-                <Separator Margin="0,8"/>
+                <Separator Margin="0,8" />
 
                 <DockPanel>
-                    <ui:Button Command="{Binding CreateGameShortcutCommand}" Appearance="Primary" Content="Create Shortcut" Icon="Add24" />
-                    <TextBlock Text="{Binding ShortcutStatus}" Margin="16,8,0,0" FontSize="12" />
+                    <ui:Button
+                        Appearance="Primary"
+                        Command="{Binding CreateGameShortcutCommand}"
+                        Content="Create Shortcut"
+                        Icon="Add24" />
+                    <TextBlock
+                        Margin="16,8,0,0"
+                        FontSize="12"
+                        Text="{Binding ShortcutStatus}" />
                 </DockPanel>
             </StackPanel>
         </ui:CardExpander>

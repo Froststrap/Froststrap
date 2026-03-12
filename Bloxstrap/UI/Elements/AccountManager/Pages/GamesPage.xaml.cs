@@ -20,30 +20,6 @@ namespace Bloxstrap.UI.Elements.AccountManagers.Pages
             InitializeComponent();
         }
 
-        private void ServerIdTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (_viewModel?.PersistServerIdCommand?.CanExecute(null) == true)
-            {
-                _viewModel.PersistServerIdCommand.Execute(null);
-            }
-        }
-
-        private void SearchComboBox_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (_viewModel != null && !string.IsNullOrEmpty(_viewModel.PlaceId))
-            {
-                SearchComboBox.Text = _viewModel.PlaceId;
-            }
-        }
-
-        private void SearchComboBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (_viewModel?.PersistPlaceIdCommand?.CanExecute(null) == true)
-            {
-                _viewModel.PersistPlaceIdCommand.Execute(null);
-            }
-        }
-
         private void HorizontalScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (sender is ScrollViewer scrollViewer && !e.Handled)

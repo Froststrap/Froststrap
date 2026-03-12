@@ -52,6 +52,9 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
         public FastFlagEditorPage()
         {
+            this.DataContext = this;
+            InitializeComponent();
+
             AdvancedSettingViewModel.ShowPresetColumnChanged += (_, _) =>
             {
                 Dispatcher.Invoke(() =>
@@ -66,8 +69,6 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
             {
                 Dispatcher.Invoke(UpdateTotalFlagsCount);
             };
-
-            InitializeComponent();
 
             App.FrostRPC?.SetPage("FastFlag Editor");
         }
@@ -109,18 +110,13 @@ namespace Bloxstrap.UI.Elements.Settings.Pages
 
         public void UpdateTotalFlagsCount()
         {
-            // Get current flags count from the DataGrid's ItemsSource, safely
             int count = 0;
             if (DataGrid.ItemsSource is IEnumerable<FastFlag> flags)
                 count = flags.Count();
 
-            // Update the TextBlock text with the count
             TotalFlagsTextBlock.Text = $"Total Flags: {count}";
 
-            // Toggle visibility based on the user setting
-            TotalFlagsTextBlock.Visibility = App.Settings.Prop.ShowFlagCount
-                ? Visibility.Visible
-                : Visibility.Collapsed;
+            TotalFlagsTextBlock.Visibility = App.Settings.Prop.ShowFlagCount ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)

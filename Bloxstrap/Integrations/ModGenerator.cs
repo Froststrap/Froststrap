@@ -1,11 +1,11 @@
 ﻿/*
- * Froststrap
- * Copyright (c) Froststrap Team
+ *  Froststrap
+ *  Copyright (c) Froststrap Team
  *
- * This file is part of Froststrap and is distributed under the terms of the
- * GNU Affero General Public License, version 3 or later.
+ *  This file is part of Froststrap and is distributed under the terms of the
+ *  GNU Affero General Public License, version 3 or later.
  *
- * SPDX-License-Identifier: AGPL-3.0-or-later
+ *  SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
 using System.Diagnostics;

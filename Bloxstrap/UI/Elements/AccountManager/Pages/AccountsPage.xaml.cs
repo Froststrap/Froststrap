@@ -8,9 +8,9 @@ namespace Bloxstrap.UI.Elements.AccountManagers.Pages
 
         public AccountsPage()
         {
-            DataContext = new AccountsViewModel();
+            _viewModel = new AccountsViewModel();
+            DataContext = _viewModel;
             InitializeComponent();
-            _viewModel = DataContext as AccountsViewModel;
         }
     }
 }
