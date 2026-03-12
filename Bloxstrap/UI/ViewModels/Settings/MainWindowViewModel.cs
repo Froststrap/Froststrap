@@ -56,7 +56,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
         {
             App.FrostRPC?.SetDialog("Account Manager");
 
-            new Elements.AccountManagers.MainWindow().ShowDialog();
+            Process.Start(Paths.Application, "-accountmanager");
 
             App.FrostRPC?.ClearDialog();
         }
@@ -106,12 +106,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
             await Task.Delay(750);
 
-            var startInfo = new ProcessStartInfo(Environment.ProcessPath!)
-            {
-                Arguments = "-menu"
-            };
-
-            Process.Start(startInfo);
+            Process.Start(Paths.Application, "-menu");
 
             App.FrostRPC?.Dispose();
             CloseWindow();

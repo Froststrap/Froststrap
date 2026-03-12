@@ -12,7 +12,6 @@ namespace Bloxstrap.UI.ViewModels.Settings
 {
     public partial class CommunityModsViewModel : ObservableObject
     {
-        private readonly HttpClient _httpClient = new();
         private readonly string _cacheFolder = Path.Combine(Paths.Cache, "Community Mods");
         private List<CommunityMod> _allMods = new();
         private CancellationTokenSource? _searchCts;
@@ -175,7 +174,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
 
         private async Task DownloadFileAsync(string url, string path, IProgress<double> progress)
         {
-            using var response = await _httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using var response = await App.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
             var totalBytes = response.Content.Headers.ContentLength ?? -1L;
 
@@ -207,7 +206,7 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 }
                 else
                 {
-                    data = await _httpClient.GetByteArrayAsync(mod.ThumbnailUrl);
+                    data = await App.HttpClient.GetByteArrayAsync(mod.ThumbnailUrl);
                     await File.WriteAllBytesAsync(cachePath, data);
                 }
 

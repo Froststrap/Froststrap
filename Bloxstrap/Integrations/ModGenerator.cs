@@ -140,10 +140,9 @@ public static class ModGenerator
 
         if (File.Exists(exePath)) return exePath;
 
-        using var client = new HttpClient();
-        client.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.4.2");
+        App.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.4.2");
 
-        var release = await client.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
+        var release = await App.HttpClient.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
 
         string? url = release?.Assets?
             .FirstOrDefault(a => a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))?
@@ -151,7 +150,7 @@ public static class ModGenerator
 
         url ??= "https://github.com/Froststrap/mod-generator/releases/latest/download/mod_generator.exe";
 
-        var data = await client.GetByteArrayAsync(url);
+        var data = await App.HttpClient.GetByteArrayAsync(url);
         await File.WriteAllBytesAsync(exePath, data);
 
         return exePath;
@@ -174,8 +173,7 @@ public static class ModGenerator
 
             if (!overwrite && File.Exists(path) && new FileInfo(path).Length > 0) return path;
 
-            using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
-            var data = await client.GetByteArrayAsync(url);
+            var data = await App.HttpClient.GetByteArrayAsync(url);
             await File.WriteAllBytesAsync(path, data);
             return path;
         }

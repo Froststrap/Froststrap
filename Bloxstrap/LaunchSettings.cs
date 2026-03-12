@@ -18,6 +18,8 @@ namespace Bloxstrap
 
         public LaunchFlag MultiInstanceWatcherFlag { get; } = new("multiinstancewatcher");
 
+        public LaunchFlag AccountManagerFlag        { get; } = new("accountmanager");
+
         public LaunchFlag BackgroundUpdaterFlag     { get; } = new("backgroundupdater");
 
         public LaunchFlag QuietFlag                 { get; } = new("quiet");

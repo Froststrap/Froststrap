@@ -175,11 +175,10 @@ namespace Bloxstrap.UI.ViewModels.Settings
                 "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
             };
 
-            using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
             foreach (var url in fontUrls)
             {
                 var destination = Path.Combine(fontDir, Path.GetFileName(url));
-                var data = await httpClient.GetByteArrayAsync(url);
+                var data = await App.HttpClient.GetByteArrayAsync(url);
                 await File.WriteAllBytesAsync(destination, data);
             }
         }

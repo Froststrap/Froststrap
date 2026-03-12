@@ -181,10 +181,9 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
                     return;
                 }
 
-                using var client = new HttpClient();
                 string url = $"https://develop.roblox.com/v1/universes/{universeId}/places?isUniverseCreation=false&limit=50&sortOrder=Asc";
 
-                var response = await client.GetAsync(url);
+                var response = await App.HttpClient.GetAsync(url);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -228,8 +227,7 @@ namespace Bloxstrap.UI.ViewModels.ContextMenu
 
             try
             {
-                using var client = new HttpClient();
-                var imageData = await client.GetByteArrayAsync(imageUrl);
+                var imageData = await App.HttpClient.GetByteArrayAsync(imageUrl);
 
                 return await Task.Run(() =>
                 {

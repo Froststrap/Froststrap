@@ -47,10 +47,9 @@
             var asset = release.Assets?.FirstOrDefault(x => x.Name.EndsWith(".rbxmx"));
             if (asset is null) return;
 
-            using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("User-Agent", App.ProjectName);
+            App.HttpClient.DefaultRequestHeaders.Add("User-Agent", App.ProjectName);
 
-            byte[] data = await client.GetByteArrayAsync(asset.BrowserDownloadUrl);
+            byte[] data = await App.HttpClient.GetByteArrayAsync(asset.BrowserDownloadUrl);
 
             Directory.CreateDirectory(Path.GetDirectoryName(PluginFile)!);
             await File.WriteAllBytesAsync(PluginFile, data);
@@ -63,9 +62,8 @@
         {
             try
             {
-                using HttpClient client = new();
-                client.DefaultRequestHeaders.Add("User-Agent", App.ProjectName);
-                var response = await client.GetStringAsync(VersionApiUrl);
+                App.HttpClient.DefaultRequestHeaders.Add("User-Agent", App.ProjectName);
+                var response = await App.HttpClient.GetStringAsync(VersionApiUrl);
                 return JsonSerializer.Deserialize<GithubRelease>(response);
             }
             catch { return null; }

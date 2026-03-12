@@ -16,7 +16,6 @@ namespace Bloxstrap.Integrations
     public class RobloxServerFetcher
     {
         private const string LOG_IDENT = "RobloxServerFetcher";
-        private readonly HttpClient _client;
         private Dictionary<int, string>? _datacenterIdToRegion;
         private List<string>? _regionList;
 
@@ -33,9 +32,8 @@ namespace Bloxstrap.Integrations
                 MaxConnectionsPerServer = 20
             };
 
-            _client = new HttpClient(handler);
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.UserAgent.ParseAdd("Roblox/Froststrap");
+            App.HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            App.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Roblox/Froststrap");
 
             try
             {
@@ -63,7 +61,7 @@ namespace Bloxstrap.Integrations
         {
             try
             {
-                var response = await _client.GetAsync($"https://apis.rovalra.com/v1/server_details?place_id={placeId}&server_ids={jobId}");
+                var response = await App.HttpClient.GetAsync($"https://apis.rovalra.com/v1/server_details?place_id={placeId}&server_ids={jobId}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -91,7 +89,7 @@ namespace Bloxstrap.Integrations
 
             try
             {
-                var json = await _client.GetStringAsync(DatacenterUrl);
+                var json = await App.HttpClient.GetStringAsync(DatacenterUrl);
                 var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
 
                 if (datacenterEntries == null) return null;
@@ -148,7 +146,7 @@ namespace Bloxstrap.Integrations
 
                 try
                 {
-                    var resp = await _client.SendAsync(joinReq).ConfigureAwait(false);
+                    var resp = await App.HttpClient.SendAsync(joinReq).ConfigureAwait(false);
 
                     if (resp.StatusCode == HttpStatusCode.Unauthorized || resp.StatusCode == HttpStatusCode.Forbidden)
                         return resp;
@@ -199,7 +197,7 @@ namespace Bloxstrap.Integrations
                 var request = new HttpRequestMessage(HttpMethod.Get, "https://users.roblox.com/v1/users/authenticated");
                 request.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurityCookie}");
 
-                var response = await _client.SendAsync(request);
+                var response = await App.HttpClient.SendAsync(request);
                 return response.StatusCode == HttpStatusCode.OK;
             }
             catch
@@ -219,7 +217,7 @@ namespace Bloxstrap.Integrations
             var req = new HttpRequestMessage(HttpMethod.Get, url);
             req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
-            var response = await _client.SendAsync(req).ConfigureAwait(false);
+            var response = await App.HttpClient.SendAsync(req).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode) return new FetchResult();
 
             using var jsonDoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());

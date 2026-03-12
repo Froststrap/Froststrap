@@ -6,6 +6,7 @@ using Windows.Win32.Foundation;
 using Bloxstrap.Enums;
 using Bloxstrap.UI.Elements.Dialogs;
 using Bloxstrap.Integrations;
+using Bloxstrap.UI.Elements.AccountManagers;
 
 namespace Bloxstrap
 {
@@ -54,6 +55,11 @@ namespace Bloxstrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening settings");
                 LaunchSettings();
+            }
+            else if (App.LaunchSettings.AccountManagerFlag.Active)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Opening account manager");
+                LaunchAccountManager();
             }
             else if (App.LaunchSettings.WatcherFlag.Active)
             {
@@ -232,6 +238,20 @@ namespace Bloxstrap
 
                 App.Terminate();
             }
+        }
+
+        public static void LaunchAccountManager()
+        {
+            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+            {
+                App.FrostRPC = new FroststrapRichPresence();
+            }
+
+            var dialog = new MainWindow();
+
+            App.FrostRPC?.SetPage("Account Manager");
+
+            dialog.ShowDialog();
         }
 
         public static void LaunchMenu()

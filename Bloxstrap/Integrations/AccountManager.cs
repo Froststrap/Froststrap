@@ -695,10 +695,9 @@ namespace Bloxstrap.Integrations
 
             try
             {
-                using var client = new HttpClient();
                 var payload = new { code = code };
                 var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
-                var resp = await client.PostAsync("https://apis.roblox.com/auth-token-service/v1/login/cancel", content).ConfigureAwait(false);
+                var resp = await App.HttpClient.PostAsync("https://apis.roblox.com/auth-token-service/v1/login/cancel", content).ConfigureAwait(false);
                 if (!resp.IsSuccessStatusCode)
                     App.Logger.WriteLine(LOG_IDENT_CANCEL, $"CancelQuickTokenAsync: cancel returned {(int)resp.StatusCode}");
             }

@@ -49,8 +49,7 @@ namespace Bloxstrap.UI.ViewModels.Dialogs
 
             try
             {
-                using var client = new HttpClient();
-                var json = await client.GetStringAsync(ChannelsJsonUrl);
+                var json = await App.HttpClient.GetStringAsync(ChannelsJsonUrl);
                 var channelNames = JsonSerializer.Deserialize<string[]>(json);
 
                 if (channelNames == null) return;
