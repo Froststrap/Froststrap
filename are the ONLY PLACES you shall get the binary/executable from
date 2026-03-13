@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a> focused on performance and customization.
+    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a> focused on performance, customization, and additional features.
 </p>
 
 <p align="center">
@@ -26,15 +26,15 @@
 </div>
 
 > [!CAUTION]
-> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.github.io), are the **ONLY PLACES** you shall
-> get the binary/executable from, as any other is **NOT** affiliated with us, and is a potential threat. 
+> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.github.io), are the **ONLY PLACES** you should
+> download the binary/executable from, as any other is **NOT** affiliated with us, and is a potential threat. 
 
 ---
 
 ## Key Improvements Over Bloxstrap and Fishstrap
 
 ### Integrations
-- Auto-rejoin servers you disconnected from automatically if caused by inactivity
+- Automatically rejoin servers you were disconnected from due to inactivity
 - Disable Roblox’s built-in screenshot and video recording system
 - Custom Froststrap Discord RPC that shows the current page/dialog
 - Replace "Playing Roblox" with the name of the game you're playing using Custom Status Display
@@ -52,28 +52,28 @@
 ### Mods
 - Multi-Mod system that allows you to download many mods at once
 - Select when to apply the mod (player/studio)
-- Download community-made mods directly within the app
-- Generate mods using a hex code with the option to also color Cursor, Shiftlock or Emote Wheel
-- Change Cursor, Shiftlock, Death Sound, and Game Font by selecting a file
+- Download community-made mods directly from within the app
+- Generate mods using a hex code, with the option to also color Cursor, Shift Lock or Emote Wheel
+- Change Cursor, Shift Lock, Death Sound and Game Font by selecting a file
 - Use Custom Cursor Sets to change between your cursors faster
 
 ### FastFlag Enhancements
 - Automatic message when applying fflags that are not in the Roblox FFlag Allowlist
 - Create or use fastflag profiles
-- Change all of Roblox Allowlist FastFlags within FastFlag settings
-- Click Clean List to remove flags not in Roblox FFlag Allowlist
+- Change all of Roblox Allowlist FastFlags within the FastFlag settings
+- Click Clean List to remove flags that are not in the Roblox FFlag Allowlist
 
 ### UI & Appearance
 - Fully customizable bootstrapper launcher
 - Change the app font to any font you prefer
 - Supports image and gradient background themes
 - Built-in App themes
-- Change the window background to Aero, Acrylic or Mica
+- Change the window background to Aero, Acrylic, or Mica
 
 ### Settings
 - Easily switch Roblox update channels
 - Option to fully block Roblox updates
-- Go from version-xxxxx Roblox folders to a non-changing one
+- Replace Roblox’s changing version-xxxxx folders with a non-changing folder
 - View all currently available Roblox channels
 
 ### Extra Features
@@ -81,10 +81,10 @@
 - Easily import settings from other bootstrappers such as Fishstrap and Bloxstrap
 - Create game shortcuts for faster game joining
 - Join servers in your region more easily using the region selector
-- Join your regions through the system tray when playing a game
+- Join servers in your selected region through the system tray while playing
 - Built-In Account Manager
 
-More features are planned to be added, you can also suggest a feature in our issues!
+More features are planned! You can also suggest new features in the Issues section.
 
 ---
 
