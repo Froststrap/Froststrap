@@ -34,6 +34,10 @@
 
         public LaunchFlag BloxshadeFlag             { get; } = new("bloxshade");
 
+        public LaunchFlag PostLaunchFlag { get; } = new("postlaunch");
+
+        public LaunchFlag GameShortcutFlag { get; } = new("gameshortcut");
+
 #if DEBUG
         public bool BypassUpdateCheck => true;
 #else
@@ -144,6 +148,9 @@
                 ParsePlayer(PlayerFlag.Data);
             else if (StudioFlag.Active)
                 ParseStudio(StudioFlag.Data);
+
+            if (GameShortcutFlag.Active && !string.IsNullOrEmpty(GameShortcutFlag.Data))
+                ParseGameShortcut(GameShortcutFlag.Data);
         }
 
         private void ParsePlayer(string? data)
@@ -192,6 +199,35 @@
                 App.Logger.WriteLine(LOG_IDENT, "Got Roblox Studio local place file");
                 RobloxLaunchArgs = $"-task EditFile -localPlaceFile \"{data}\"";
             }
+        }
+
+        private void ParseGameShortcut(string data)
+        {
+            const string LOG_IDENT = "LaunchSettings::ParseGameShortcut";
+
+            var parts = data.Split(';');
+
+            if (parts.Length < 1)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Insufficient data for game shortcut");
+                return;
+            }
+
+            string placeId = parts[0];
+            string jobId = parts.Length > 1 ? parts[1] : "";
+            string accessCode = parts.Length > 2 ? parts[2] : "";
+
+            string deeplink = $"roblox://experiences/start?placeId={placeId}";
+
+            if (!string.IsNullOrEmpty(accessCode))
+                deeplink += "&accessCode=" + accessCode;
+            else if (!string.IsNullOrEmpty(jobId))
+                deeplink += "&gameInstanceId=" + jobId;
+
+            App.Logger.WriteLine(LOG_IDENT, $"Generated shortcut deeplink: {deeplink}");
+
+            RobloxLaunchMode = LaunchMode.Player;
+            RobloxLaunchArgs = deeplink;
         }
     }
 }

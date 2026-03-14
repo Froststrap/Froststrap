@@ -18,7 +18,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
 		public RobloxSettingsPage()
 		{
-            _viewModel = new RobloxSettingsViewModel(App.RemoteData);
+            _viewModel = new RobloxSettingsViewModel();
             DataContext = _viewModel;
 
             InitializeComponent();

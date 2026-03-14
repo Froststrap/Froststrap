@@ -1,4 +1,5 @@
-﻿using Froststrap.AppData;
+﻿using Froststrap;
+using Froststrap.AppData;
 using System.ComponentModel;
 
 namespace Froststrap
@@ -36,6 +37,10 @@ namespace Froststrap
             int idx = version.IndexOf('+'); // commit info
             if (idx != -1)
                 version = version[..idx];
+
+            int dashIdx = version.IndexOf('-');
+            if (dashIdx != -1)
+                version = version[..dashIdx];
 
             return new Version(version);
         }
@@ -140,6 +145,10 @@ namespace Froststrap
                 Mutex.OpenExisting(name).Close();
                 return true;
             }
+            catch (UnauthorizedAccessException)
+            {
+                return true;
+            }
             catch
             {
                 return false;
@@ -158,14 +167,19 @@ namespace Froststrap
             {
                 return true;
             }
-            catch (WaitHandleCannotBeOpenedException)
-            {
-                return false;
-            }
 #else
             // Not supported on operating systems other than windows
             return false;
 #endif
+        }
+
+
+        public static bool IsRobloxRunning()
+        {
+            Process[] processes = GetProcessesSafe();
+            string processName = Path.GetFileNameWithoutExtension(App.RobloxPlayerAppName);
+
+            return processes.Any(x => x.ProcessName == processName);
         }
 
         public static void KillBackgroundUpdater()

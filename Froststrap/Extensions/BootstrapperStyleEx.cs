@@ -6,11 +6,11 @@
 
         public static IReadOnlyCollection<BootstrapperStyle> Selections => new BootstrapperStyle[]
         {
-            BootstrapperStyle.FroststrapDialog,
             BootstrapperStyle.FluentAeroDialog,
             BootstrapperStyle.FluentDialog,
             BootstrapperStyle.ClassicFluentDialog,
             BootstrapperStyle.ByfronDialog,
+            BootstrapperStyle.TwentyFiveDialog,
             BootstrapperStyle.ProgressDialog,
             BootstrapperStyle.LegacyDialog2011,
             BootstrapperStyle.LegacyDialog2008,

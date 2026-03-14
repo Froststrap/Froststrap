@@ -19,8 +19,6 @@ namespace Froststrap.Models.APIs.Config
         [JsonPropertyName("allowedFastFlags")]
         public string AllowedFastFlags { get; set; } = null!;
 
-        [JsonPropertyName("settingsPage")]
-        public SettingsPageConfig SettingsPage { get; set; } = new();
 
         [JsonPropertyName("mappings")]
         public Dictionary<string, string[]> Mappings { get; set; } = new Dictionary<string, string[]>();

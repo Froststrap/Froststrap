@@ -1,8 +1,6 @@
-﻿using System.Windows.Input;
-
-using CommunityToolkit.Mvvm.Input;
-
+﻿using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.FlagPresets;
+using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
