@@ -1,10 +1,66 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using ReactiveUI;
+using System.Reactive;
+using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class MainWindowViewModel : NotifyPropertyChangedViewModel
+    public class MainWindowViewModel : ReactiveObject, IRoutableViewModel, IScreen
     {
+        private readonly RoutingState _router = new();
+        public RoutingState Router => _router;
+
+        public string? UrlPathSegment => "main";
+        public IScreen HostScreen => this;
+
+        private bool _testModeEnabled;
+        public bool TestModeEnabled
+        {
+            get => _testModeEnabled;
+            set
+            {
+                if (value && !App.State.Prop.TestModeWarningShown)
+                {
+                    var result = Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
+                    if (result != MessageBoxResult.Yes)
+                        return;
+                    App.State.Prop.TestModeWarningShown = true;
+                }
+                this.RaiseAndSetIfChanged(ref _testModeEnabled, value);
+                App.LaunchSettings.TestModeFlag.Active = value;
+            }
+        }
+
+        private bool _isSidebarExpanded;
+        public bool IsSidebarExpanded
+        {
+            get => _isSidebarExpanded;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _isSidebarExpanded, value);
+                App.Settings.Prop.IsNavigationSidebarExpanded = value;
+            }
+        }
+
+        private string _selectedPage = "integrations";
+        public string SelectedPage
+        {
+            get => _selectedPage;
+            set => this.RaiseAndSetIfChanged(ref _selectedPage, value);
+        }
+
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToIntegrationsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToBehaviourCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCommunityModsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFastFlagsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAppearanceCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRobloxSettingsCommand { get; }
+
+        private IRoutableViewModel Wrap(string segment, object settingsViewModel) =>
+            new SettingsPageViewModelWrapper(this, segment, settingsViewModel);
+
         public ICommand OpenAboutCommand => new RelayCommand(OpenAbout);
         public ICommand OpenAccountManagerCommand => new RelayCommand(OpenAccountManager);
         public ICommand SaveSettingsCommand => new RelayCommand(SaveSettings);
@@ -17,28 +73,100 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool GBSEnabled = App.GlobalSettings.Loaded;
         public event EventHandler? SettingsSaved;
 
-        public bool TestModeEnabled
+        public MainWindowViewModel()
         {
-            get => App.LaunchSettings.TestModeFlag.Active;
-            set
-            {
-                if (value && !App.State.Prop.TestModeWarningShown)
+            _testModeEnabled = App.LaunchSettings.TestModeFlag.Active;
+            _isSidebarExpanded = App.Settings.Prop.IsNavigationSidebarExpanded;
+
+            NavigateToIntegrationsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
                 {
-                    var result = Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
-                    if (result != MessageBoxResult.Yes)
-                        return;
-
-                    App.State.Prop.TestModeWarningShown = true;
+                    SelectedPage = "integrations";
+                    return _router.Navigate.Execute(Wrap("integrations", new IntegrationsViewModel()))
+                        .ObserveOn(RxApp.MainThreadScheduler);
                 }
+            );
 
-                App.LaunchSettings.TestModeFlag.Active = value;
+            NavigateToBehaviourCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "behaviour";
+                    return _router.Navigate.Execute(Wrap("behaviour", new BehaviourViewModel()))
+                        .ObserveOn(RxApp.MainThreadScheduler);
+                }
+            );
+
+            NavigateToModsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "mods";
+                    return _router.Navigate.Execute(Wrap("mods", new ModsViewModel()))
+                        .ObserveOn(RxApp.MainThreadScheduler);
+                }
+            );
+
+            NavigateToCommunityModsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "communitymods";
+                    return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
+                        .ObserveOn(RxApp.MainThreadScheduler);
+                }
+            );
+
+            NavigateToFastFlagsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "fastflags";
+                    return _router.Navigate.Execute(Wrap("fastflags", new FastFlagsViewModel()))
+                        .ObserveOn(RxApp.MainThreadScheduler);
+                }
+            );
+
+            NavigateToAppearanceCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "appearance";
+                    return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel(null!)))
+                        .ObserveOn(RxApp.MainThreadScheduler);
+                }
+            );
+
+            NavigateToRobloxSettingsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "robloxsettings";
+                    return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel(App.RemoteData)))
+                        .ObserveOn(RxApp.MainThreadScheduler);
+                }
+            );
+
+            // Load last page or default
+            var lastPageName = App.State.Prop.LastPage;
+            if (lastPageName != null)
+            {
+                NavigateToLastPage(lastPageName);
+            }
+            else
+            {
+                _router.NavigateAndReset.Execute(Wrap("integrations", new IntegrationsViewModel())).Subscribe();
             }
         }
 
-        public bool IsSidebarExpanded
+        private void NavigateToLastPage(string pageTypeName)
         {
-            get => App.Settings.Prop.IsNavigationSidebarExpanded;
-            set => App.Settings.Prop.IsNavigationSidebarExpanded = value;
+            var viewModel = pageTypeName switch
+            {
+                "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel" => (IRoutableViewModel)Wrap("integrations", new IntegrationsViewModel()),
+                "Froststrap.UI.ViewModels.Settings.BehaviourViewModel" => Wrap("behaviour", new BehaviourViewModel()),
+                "Froststrap.UI.ViewModels.Settings.ModsViewModel" => Wrap("mods", new ModsViewModel()),
+                "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel" => Wrap("communitymods", new CommunityModsViewModel()),
+                "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel" => Wrap("fastflags", new FastFlagsViewModel()),
+                "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => Wrap("appearance", new AppearanceViewModel(null!)),
+                "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => Wrap("robloxsettings", new RobloxSettingsViewModel(App.RemoteData)),
+                _ => Wrap("integrations", new IntegrationsViewModel())
+            };
+            _router.Navigate.Execute(viewModel).Subscribe();
         }
 
         private void OpenAbout()
@@ -112,6 +240,20 @@ namespace Froststrap.UI.ViewModels.Settings
 
             App.FrostRPC?.Dispose();
             CloseWindow();
+        }
+
+        private sealed class SettingsPageViewModelWrapper : ReactiveObject, IRoutableViewModel
+        {
+            public SettingsPageViewModelWrapper(IScreen hostScreen, string urlPathSegment, object innerViewModel)
+            {
+                HostScreen = hostScreen;
+                UrlPathSegment = urlPathSegment;
+                InnerViewModel = innerViewModel;
+            }
+
+            public string? UrlPathSegment { get; }
+            public IScreen HostScreen { get; }
+            public object InnerViewModel { get; }
         }
     }
 }
