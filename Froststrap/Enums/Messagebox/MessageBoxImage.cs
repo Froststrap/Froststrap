@@ -8,6 +8,6 @@ namespace Froststrap.Enums.Messagebox
         Error = Icon.Error, 
         Information = Icon.Info, 
         Question = Icon.Question, 
-        Warning = Icon.Warning 
+        Warning = Icon.Warning
     }
 }

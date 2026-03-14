@@ -6,9 +6,6 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         public BehaviourViewModel()
         {
-            foreach (var entry in RobloxIconEx.Selections)
-                RobloxIcons.Add(new RobloxIconEntry { IconType = (RobloxIcon)entry });
-
             App.Cookies.StateChanged += (object? _, CookieState state) => CookieLoadingFailed = state != CookieState.Success && state != CookieState.Unknown;
         }
 
@@ -52,22 +49,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             OnPropertyChanged(nameof(MultiInstances));
-        }
-
-        public bool FramerateUncap
-        {
-            get
-            {
-                string? value = App.GlobalSettings.GetPresets("Rendering.FramerateCap");
-                return int.TryParse(value, out int framerate) && framerate > 240;
-            }
-            set
-            {
-                App.GlobalSettings.SetPresets("Rendering.FramerateCap", value ? "9999" : "-1");
-
-                if (value)
-                    App.GlobalSettings.SetReadOnly(true);
-            }
         }
 
         public bool Error773Fix
@@ -119,16 +100,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(CookieLoadingFailed));
             }
         }
-
-        public IEnumerable<RobloxIcon> RobloxIcon { get; } = Enum.GetValues(typeof(RobloxIcon)).Cast<RobloxIcon>();
-
-        public RobloxIcon SelectedRobloxIcon
-        {
-            get => App.Settings.Prop.SelectedRobloxIcon;
-            set => App.Settings.Prop.SelectedRobloxIcon = value;
-        }
-
-        public ObservableCollection<RobloxIconEntry> RobloxIcons { get; set; } = new();
 
         public CleanerOptions SelectedCleanUpMode
         {

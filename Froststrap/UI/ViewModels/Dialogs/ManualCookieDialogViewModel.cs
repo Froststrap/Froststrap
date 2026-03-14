@@ -1,7 +1,7 @@
-﻿using Froststrap.Integrations;
-using Froststrap.UI.Elements.Dialogs;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.Integrations;
+using Froststrap.UI.Elements.Dialogs;
 using Newtonsoft.Json.Linq;
 
 namespace Froststrap.UI.ViewModels.Dialogs
@@ -31,7 +31,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         {
             if (string.IsNullOrWhiteSpace(CookieInput))
             {
-                await Frontend.ShowMessageBox("Please enter a cookie.", MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox("Please enter a cookie.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -44,17 +44,18 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
                 if (accountInfo == null)
                 {
-                    await Frontend.ShowMessageBox("Invalid cookie. Please check and try again.", MessageBoxImage.Error);
+                    _ = Frontend.ShowMessageBox("Invalid cookie. Please check and try again.", MessageBoxImage.Error);
                     return;
                 }
 
                 ValidatedAccount = accountInfo;
-                _dialog.Close(true);
+                _dialog.DialogResult = true;
+                _dialog.Close();
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine("ManualCookieDialog", $"Validation error: {ex.Message}");
-                await Frontend.ShowMessageBox($"Error validating cookie: {ex.Message}", MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox($"Error validating cookie: {ex.Message}", MessageBoxImage.Error);
             }
             finally
             {
@@ -66,20 +67,21 @@ namespace Froststrap.UI.ViewModels.Dialogs
         [RelayCommand]
         private void Cancel()
         {
-            _dialog.Close(false);
+            _dialog.DialogResult = false;
+            _dialog.Close();
         }
 
         private async Task<AltAccount?> GetAccountInfoFromCookieAsync(string cookie)
         {
             try
             {
-                using var handler = new HttpClientHandler
+                using var handler = new System.Net.Http.HttpClientHandler
                 {
                     CookieContainer = new System.Net.CookieContainer()
                 };
                 handler.CookieContainer.Add(new System.Net.Cookie(".ROBLOSECURITY", cookie, "/", ".roblox.com"));
 
-                using var client = new HttpClient(handler);
+                using var client = new System.Net.Http.HttpClient(handler);
                 var response = await client.GetAsync("https://users.roblox.com/v1/users/authenticated");
 
                 if (!response.IsSuccessStatusCode)

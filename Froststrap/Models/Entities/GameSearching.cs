@@ -1,27 +1,24 @@
 ﻿/*
- *  Froststrap
- *  Copyright (c) Froststrap Team
- *
- *  This file is part of Froststrap and is distributed under the terms of the
- *  GNU Affero General Public License, version 3 or later.
- *
- *  SPDX-License-Identifier: AGPL-3.0-or-later
- *
- *  Description: Nix flake for shipping for Nix-darwin, Nix, NixOS, and modules
- *               of the Nix ecosystem. 
- */
+*  Froststrap
+*  Copyright (c) Froststrap Team
+*
+*  This file is part of Froststrap and is distributed under the terms of the
+*  GNU Affero General Public License, version 3 or later.
+*
+*  SPDX-License-Identifier: AGPL-3.0-or-later
+*/
+
+using Froststrap.RobloxInterfaces;
 
 namespace Froststrap.Models.Entities
 {
     public static class GameSearching
     {
-        const string LOG_IDENT = "GameSearching";
-        private static readonly HttpClient _client = new HttpClient();
+        private const string LOG_IDENT = "GameSearching";
 
-        public static async Task<List<GameSearchResult>> GetGameSearchResultsAsync(string searchQuery)
+        public static async Task<List<OmniSearchContent>> GetGameSearchResultsAsync(string searchQuery)
         {
-            const string SearchApiUrl = "https://apis.roblox.com/search-api/omni-search";
-            var results = new List<GameSearchResult>();
+            var results = new List<OmniSearchContent>();
 
             if (string.IsNullOrWhiteSpace(searchQuery))
             {
@@ -31,68 +28,38 @@ namespace Froststrap.Models.Entities
 
             try
             {
-                string requestUrl = $"{SearchApiUrl}?searchQuery={Uri.EscapeDataString(searchQuery)}&sessionid=0&pageType=Game";
+                string url = $"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(searchQuery)}&sessionid=0&pageType=Game";
 
-                var response = await _client.GetAsync(requestUrl).ConfigureAwait(false);
-                if (!response.IsSuccessStatusCode)
+                var response = await Http.GetJson<OmniSearchResponse>(url);
+
+                if (response?.SearchResults is null)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to fetch search results. Status code: {response.StatusCode}");
+                    App.Logger.WriteLine(LOG_IDENT, "Search API returned no results.");
                     return results;
                 }
 
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                using var jsonDoc = JsonDocument.Parse(content);
+                var seenUniverses = new HashSet<ulong>();
 
-                if (!jsonDoc.RootElement.TryGetProperty("searchResults", out var searchResultsElem) || searchResultsElem.ValueKind != JsonValueKind.Array)
+                foreach (var group in response.SearchResults)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Search API returned no searchResults array.");
-                    return results;
-                }
+                    if (results.Count >= 5) break;
 
-                var seen = new HashSet<long>();
-                int taken = 0;
+                    if (group.Contents is null) continue;
 
-                foreach (var group in searchResultsElem.EnumerateArray())
-                {
-                    if (taken >= 5) break;
-                    if (group.ValueKind != JsonValueKind.Object) continue;
-                    if (!group.TryGetProperty("contents", out var contentsElem) || contentsElem.ValueKind != JsonValueKind.Array) continue;
-
-                    foreach (var contentItem in contentsElem.EnumerateArray())
+                    foreach (var item in group.Contents)
                     {
-                        if (taken >= 5) break;
-                        if (contentItem.ValueKind != JsonValueKind.Object) continue;
+                        if (results.Count >= 5) break;
 
-                        if (!contentItem.TryGetProperty("rootPlaceId", out var rootPlaceElem))
+                        if (item.UniverseId == 0 || !seenUniverses.Add(item.UniverseId))
                             continue;
 
-                        long rootId = 0;
-                        if (rootPlaceElem.ValueKind == JsonValueKind.Number && rootPlaceElem.TryGetInt64(out var num))
-                            rootId = num;
-                        else if (rootPlaceElem.ValueKind == JsonValueKind.String && long.TryParse(rootPlaceElem.GetString(), out var parsed))
-                            rootId = parsed;
-                        else
-                            continue;
-
-                        if (rootId == 0 || !seen.Add(rootId))
-                            continue;
-
-                        string name = "";
-                        if (contentItem.TryGetProperty("name", out var nameElem) && nameElem.ValueKind == JsonValueKind.String)
-                            name = nameElem.GetString() ?? "";
-
-                        int? players = null;
-                        if (contentItem.TryGetProperty("playerCount", out var pcElem) && pcElem.ValueKind == JsonValueKind.Number && pcElem.TryGetInt32(out var pc))
-                            players = pc;
-
-                        results.Add(new GameSearchResult
+                        results.Add(new OmniSearchContent
                         {
-                            RootPlaceId = rootId,
-                            Name = string.IsNullOrWhiteSpace(name) ? $"Place {rootId}" : name,
-                            PlayerCount = players
+                            UniverseId = item.UniverseId,
+                            RootPlaceId = item.RootPlaceId,
+                            Name = item.Name ?? $"Game {item.UniverseId}",
+                            PlayerCount = item.PlayerCount
                         });
-
-                        taken++;
                     }
                 }
             }
@@ -102,12 +69,6 @@ namespace Froststrap.Models.Entities
             }
 
             return results;
-        }
-
-        public static async Task<List<long>> GetPlaceIdsFromSearchQueryAsync(string searchQuery)
-        {
-            var results = await GetGameSearchResultsAsync(searchQuery).ConfigureAwait(false);
-            return results.Select(r => r.RootPlaceId).ToList();
         }
     }
 }

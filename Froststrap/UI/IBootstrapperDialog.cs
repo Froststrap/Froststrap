@@ -3,7 +3,6 @@
     public interface IBootstrapperDialog
     {
         public Bootstrapper? Bootstrapper { get; set; }
-
         string Message { get; set; }
         ProgressBarStyle ProgressStyle { get; set; }
         int ProgressValue { get; set; }

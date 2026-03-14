@@ -13,5 +13,14 @@
 
         [JsonPropertyName("scriptType")]
         public string ScriptType { get; set; } = "developing";
+
+        [JsonPropertyName("placeId")]
+        public long PlaceId { get; set; } = 0;
+
+        [JsonPropertyName("isPublic")]
+        public bool IsPublic { get; set; } = false;
+
+        [JsonPropertyName("devCount")]
+        public int DevCount { get; set; } = 1;
     }
 }

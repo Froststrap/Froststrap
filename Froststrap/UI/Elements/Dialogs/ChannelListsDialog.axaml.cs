@@ -23,7 +23,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 if (sender is DataGrid dataGrid)
                 {
                     var selectedItems = dataGrid.SelectedItems
-                        .OfType<DeployInfoDisplay>()
+                        .OfType<ChannelListsViewModel>()
                         .Select(i => i.ChannelName)
                         .ToList();
 

@@ -4,19 +4,19 @@ namespace Froststrap
 {
     public class FastFlagManager : JsonManager<Dictionary<string, object>>
     {
-        private Dictionary<string, object> OriginalProp = new();
+		private Dictionary<string, object> OriginalProp = new();
 
-        public override string ClassName => nameof(FastFlagManager);
+		public override string ClassName => nameof(FastFlagManager);
 
         public override string LOG_IDENT_CLASS => ClassName;
 
         public override string ProfilesLocation => Path.Combine(Paths.Base, "Profiles");
 
-        public override string FileName => "ClientAppSettings.json";
+		public override string FileName => "ClientAppSettings.json";
 
-        public override string FileLocation => Path.Combine(Paths.Modifications, "ClientSettings", FileName);
+		public override string FileLocation => Path.Combine(Paths.Base, "ClientSettings", FileName);
 
-        public bool Changed => !OriginalProp.SequenceEqual(Prop);
+		public bool Changed => !OriginalProp.SequenceEqual(Prop);
 
         public static IReadOnlyDictionary<string, string> PresetFlags = new Dictionary<string, string>
         {
@@ -70,8 +70,7 @@ namespace Froststrap
             { MSAAMode.Default, null },
             { MSAAMode.x1, "1" },
             { MSAAMode.x2, "2" },
-            { MSAAMode.x4, "4" },
-            { MSAAMode.x8, "8" }
+            { MSAAMode.x4, "4" }
         };
 
         public static IReadOnlyDictionary<QualityLevel, string?> QualityLevels => new Dictionary<QualityLevel, string?>

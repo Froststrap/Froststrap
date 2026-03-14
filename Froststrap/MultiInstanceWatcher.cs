@@ -23,7 +23,7 @@
 
         private static void FireInitialisedEvent()
         {
-            using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-MultiInstanceWatcherInitialisationFinished");
+            using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-MultiInstanceWatcherInitialisationFinished");
             initEventHandle.Set();
         }
 
@@ -33,7 +33,7 @@
 
             // try to get the mutex
             bool acquiredMutex;
-             
+
             // we only need to check one of the mutexes
             using Mutex mutex = new Mutex(false, "ROBLOX_singletonMutex");
 

@@ -9,24 +9,25 @@
         public ulong TargetId { get; set; }
 
         /// <summary>
-        /// TODO: make this an enum
         /// List of valid types can be found at https://thumbnails.roblox.com//docs/index.html
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type { get; set; } = "Avatar";
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public ThumbnailType Type { get; set; } = ThumbnailType.Avatar;
 
         /// <summary>
+        /// TODO: Make it an Enum
         /// List of valid sizes can be found at https://thumbnails.roblox.com//docs/index.html
         /// </summary>
         [JsonPropertyName("size")]
         public string Size { get; set; } = "30x30";
 
         /// <summary>
-        /// TODO: make this an enum
         /// List of valid types can be found at https://thumbnails.roblox.com//docs/index.html
         /// </summary>
         [JsonPropertyName("format")]
-        public string Format { get; set; } = "Png";
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public ThumbnailFormat Format { get; set; } = ThumbnailFormat.Png;
 
         [JsonPropertyName("isCircular")]
         public bool IsCircular { get; set; } = false;

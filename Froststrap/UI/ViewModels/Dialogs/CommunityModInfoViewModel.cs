@@ -1,177 +1,109 @@
 ﻿using Avalonia.Media;
-using Avalonia.Platform;
-using Froststrap.UI.Elements.Base;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Froststrap.UI.Elements.Base;
 using System.Collections.ObjectModel;
-using Avalonia.Threading;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
     public partial class CommunityModInfoViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private CommunityMod _mod;
+        [ObservableProperty] private CommunityMod _mod;
+        [ObservableProperty] private bool _isLoadingGlyphs = false;
+        [ObservableProperty] private ObservableCollection<GlyphItem> _glyphItems = new();
 
-        [ObservableProperty]
-        private bool _isLoadingGlyphs = true;
-
-        [ObservableProperty]
-        private ObservableCollection<GlyphItem> _glyphItems = new();
-
-        private AvaloniaWindow _window;
+        private readonly AvaloniaWindow _window;
 
         public CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window)
         {
             _mod = mod;
             _window = window;
-            _ = LoadGlyphsAsync();
+
+            if (_mod.IsColorMod)
+                _ = LoadGlyphsAsync();
         }
 
         [RelayCommand]
+        private void Close() => _window.Close();
+
         private async Task LoadGlyphsAsync()
         {
+            IsLoadingGlyphs = true;
             try
             {
-                string froststrapTemp = Path.Combine(Path.GetTempPath(), "Froststrap");
-                string fontDir = Path.Combine(froststrapTemp, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
-
-                if (!Directory.Exists(fontDir))
-                {
-                    Directory.CreateDirectory(fontDir);
-                }
-
+                string fontDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Fonts");
+                Directory.CreateDirectory(fontDir);
                 string fontPath = Path.Combine(fontDir, "BuilderIcons-Regular.ttf");
 
                 if (!File.Exists(fontPath))
                 {
-                    try
-                    {
-                        const string fontUrl = "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf";
-
-                        App.Logger?.WriteLine("CommunityModInfoViewModel", "Downloading font from GitHub...");
-
-                        using var httpClient = new HttpClient();
-                        httpClient.Timeout = TimeSpan.FromSeconds(30);
-
-                        var response = await httpClient.GetAsync(fontUrl);
-                        response.EnsureSuccessStatusCode();
-
-                        var fontData = await response.Content.ReadAsByteArrayAsync();
-                        await File.WriteAllBytesAsync(fontPath, fontData);
-
-                        App.Logger?.WriteLine("CommunityModInfoViewModel", "Successfully downloaded BuilderIcons-Regular.ttf");
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger?.WriteException("CommunityModInfoViewModel", ex);
-                    }
+                    using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };
+                    var data = await httpClient.GetByteArrayAsync("https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf");
+                    await File.WriteAllBytesAsync(fontPath, data);
                 }
 
-                if (File.Exists(fontPath))
-                {
-                    await LoadGlyphsFromFontAsync(fontPath);
-                }
-                else
-                {
-                    IsLoadingGlyphs = false;
-                }
+                await GenerateGlyphPreviews(fontPath);
             }
-            catch
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException("CommunityModInfoViewModel", ex);
+            }
+            finally
             {
                 IsLoadingGlyphs = false;
             }
         }
 
-        private async Task LoadGlyphsFromFontAsync(string fontPath)
+        private async Task GenerateGlyphPreviews(string fontPath)
         {
+            var typeface = new Typeface(new Uri($"file://{fontPath}"));
+
+            var color = Colors.White;
             try
             {
-                var fontBytes = await File.ReadAllBytesAsync(fontPath);
-
-                var fontUri = new Uri($"file:///{fontPath.Replace("\\", "/")}");
-                var fontFamily = new Avalonia.Media.FontFamily($"{fontUri}#BuilderIcons");
-                var typeface = new Typeface(fontFamily);
-
-                var glyphItems = new List<GlyphItem>();
-
-                SolidColorBrush colorBrush;
-                try
-                {
-                    var color = Color.Parse(Mod.HexCode ?? "#FFFFFF");
-                    colorBrush = new SolidColorBrush(color);
-                }
-                catch
-                {
-                    colorBrush = new SolidColorBrush(Colors.White);
-                }
-
-                var characterCodes = new List<int>();
-
-                for (int i = 0xE000; i <= 0xF8FF; i++)
-                {
-                    characterCodes.Add(i);
-                    if (characterCodes.Count >= 100)
-                        break;
-                }
-
-                foreach (var characterCode in characterCodes)
-                {
-                    try
-                    {
-                        var character = char.ConvertFromUtf32(characterCode);
-
-                        var formattedText = new FormattedText(
-                            character,
-                            CultureInfo.CurrentCulture,
-                            FlowDirection.LeftToRight,
-                            typeface,
-                            40,
-                            colorBrush
-                        );
-
-                        var geometry = formattedText.BuildGeometry(new Avalonia.Point(0, 0));
-
-                        if (geometry != null)
-                        {
-                            var bounds = geometry.Bounds;
-                            var translate = new TranslateTransform(
-                                (50 - bounds.Width) / 2 - bounds.X,
-                                (50 - bounds.Height) / 2 - bounds.Y
-                            );
-                            geometry.Transform = translate;
-
-                            glyphItems.Add(new GlyphItem
-                            {
-                                Data = geometry,
-                                ColorBrush = colorBrush
-                            });
-                        }
-                    }
-                    catch
-                    {
-                        continue;
-                    }
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    GlyphItems.Clear();
-                    foreach (var item in glyphItems)
-                    {
-                        GlyphItems.Add(item);
-                    }
-                    IsLoadingGlyphs = false;
-                });
+                if (!string.IsNullOrEmpty(Mod.HexCode))
+                    color = Color.Parse(Mod.HexCode);
             }
-            catch (Exception ex)
+            catch { /* Fallback to white */ }
+
+            var brush = new SolidColorBrush(color);
+
+            var fontManager = FontManager.Current;
+
+            var codes = Enumerable.Range(33, 126)
+                .OrderByDescending(c => c)
+                .Take(25)
+                .ToList();
+
+            var items = new List<GlyphItem>();
+
+            foreach (var code in codes)
             {
-                App.Logger?.WriteException("CommunityModInfoViewModel::LoadGlyphsFromFontAsync", ex);
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                var text = char.ConvertFromUtf32(code);
+
+                var geometry = StreamGeometry.Parse("");
+
+                var ft = new FormattedText(
+                    text,
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    FlowDirection.LeftToRight,
+                    typeface,
+                    40,
+                    brush);
+
+                var glyphGeometry = ft.BuildGeometry(new Avalonia.Point(0, 0));
+
+                items.Add(new GlyphItem
                 {
-                    IsLoadingGlyphs = false;
+                    Data = glyphGeometry,
+                    ColorBrush = brush
                 });
             }
+
+            await Dispatcher.UIThread.InvokeAsync(() => {
+                GlyphItems = new ObservableCollection<GlyphItem>(items);
+            });
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     public class EmojiModPresetTask : EnumBaseTask<EmojiType>
     {
-        private string _filePath => Path.Combine(Paths.Modifications, @"content\fonts\TwemojiMozilla.ttf");
+        private string _filePath => Path.Combine(Paths.PresetModifications, @"content\fonts\TwemojiMozilla.ttf");
 
         private IEnumerable<KeyValuePair<EmojiType, string>>? QueryCurrentValue()
         {
@@ -48,7 +48,7 @@
                 {
                     App.Logger.WriteException(LOG_IDENT, ex);
 
-                    Frontend.ShowConnectivityDialog(
+                    await Frontend.ShowConnectivityDialog(
                         String.Format(Strings.Dialog_Connectivity_UnableToConnect, "GitHub"),
                         $"{Strings.Menu_Mods_Presets_EmojiType_Error}\n\n{Strings.Dialog_Connectivity_TryAgainLater}",
                         MessageBoxImage.Warning,

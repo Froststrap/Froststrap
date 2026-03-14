@@ -1,199 +1,109 @@
-﻿using System.Xml.Linq;
+﻿using Froststrap.Enums.GBSPresets;
+using Froststrap;
+using System.Xml.Linq;
 using System.Xml.XPath;
 
 namespace Froststrap
 {
     public class GBSEditor
-    { 
-        // Fishstrap GBSEditor converted into a remote config version
+    {
         public XDocument? Document { get; set; } = null!;
 
         public Dictionary<string, string> PresetPaths = new()
         {
-            { "Rendering.FramerateCap", "{UserSettings}/int[@name='FramerateCap']" }
+            // Graphics Settings
+            { "Rendering.FramerateCap", "{UserSettings}/int[@name='FramerateCap']" },
+            { "Rendering.SavedQualityLevel", "{UserSettings}/token[@name='SavedQualityLevel']" },
+            { "Rendering.Fullscreen", "{UserSettings}/bool[@name='Fullscreen']" },
+            { "Rendering.MaxQualityEnabled", "{UserSettings}/bool[@name='MaxQualityEnabled']" },
+            { "Rendering.VignetteEnabled", "{UserSettings}/bool[@name='VignetteEnabled']" },
+            { "Rendering.VignetteEnableOption", "{UserSettings}/bool[@name='VignetteEnabledCustomOption']" },
+
+            // Audio Settings
+            { "Audio.MasterVolume", "{UserSettings}/float[@name='MasterVolume']" },
+            { "Audio.MasterVolumeStudio", "{UserSettings}/float[@name='MasterVolumeStudio']" },
+            { "Audio.PartyVoiceVolume", "{UserSettings}/float[@name='PartyVoiceVolume']" },
+
+            // Input Settings
+            { "User.MouseSensitivity", "{UserSettings}/float[@name='MouseSensitivity']" },
+            { "User.ShiftLock", "{UserSettings}/token[@name='ControlMode']" },
+            { "User.MouseSensitivityFirstPerson", "{UserSettings}/Vector2[@name='MouseSensitivityFirstPerson']" },
+            { "User.MouseSensitivityThirdPerson", "{UserSettings}/Vector2[@name='MouseSensitivityThirdPerson']" },
+            { "User.CameraYInverted", "{UserSettings}/bool[@name='CameraYInverted']" },
+            { "User.HapticStrength", "{UserSettings}/float[@name='HapticStrength']" },
+
+            // Accessibility
+            { "UI.Transparency", "{UserSettings}/float[@name='PreferredTransparency']" },
+            { "UI.ReducedMotion", "{UserSettings}/bool[@name='ReducedMotion']" },
+            { "UI.FontSize", "{UserSettings}/token[@name='PreferredTextSize']" },
+
+            // Miscellaneous Settings
+            { "Misc.PerformanceStatsVisible", "{UserSettings}/bool[@name='PerformanceStatsVisible']" },
+            { "Misc.ChatTranslationEnabled", "{UserSettings}/bool[@name='ChatTranslationEnabled']" },
+            { "Misc.ChatTranslationFTUXShown", "{UserSettings}/bool[@name='ChatTranslationFTUXShown']" },
+            { "User.VREnabled", "{UserSettings}/bool[@name='VREnabled']" }
         };
 
+        // we are making it easier for ourselves
+        // basically replacing {...} with a path
+        // might expand in the future (studio support)
         public Dictionary<string, string> RootPaths = new()
         {
-            { "UserSettings", "//Item[@class='UserGameSettings']/Properties" }
+            { "UserSettings", "//Item[@class='UserGameSettings']/Properties" },
+        };
+
+        public static IReadOnlyDictionary<FontSize, string?> FontSizes => new Dictionary<FontSize, string?>
+        {
+            { FontSize.x1, "1" },
+            { FontSize.x2, "2" },
+            { FontSize.x3, "3" },
+            { FontSize.x4, "4" }
         };
 
         public bool Loaded { get; set; } = false;
 
         public string FileLocation => Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
 
-        public void SetValue(string xmlPath, string dataType, object? value)
+        public void SetPreset(string prefix, object? value)
         {
-            if (!Loaded) return;
-
-            xmlPath = ResolvePath(xmlPath);
-            XElement? element = Document?.XPathSelectElement(xmlPath);
-
-            if (element is null)
-            {
-                element = CreateElement(xmlPath, dataType);
-                if (element is null) return;
-            }
-
-            string stringValue = value?.ToString() ?? "";
-
-            switch (dataType.ToLower())
-            {
-                case "vector2":
-                    var parts = stringValue.Split(',');
-                    if (parts.Length == 2)
-                    {
-                        element.Elements("X").Remove();
-                        element.Elements("Y").Remove();
-                        element.Add(new XElement("X", parts[0]));
-                        element.Add(new XElement("Y", parts[1]));
-                    }
-                    break;
-                case "int":
-                    if (int.TryParse(stringValue, out int intValue))
-                        element.Value = intValue.ToString();
-                    break;
-                case "float":
-                    if (float.TryParse(stringValue, out float floatValue))
-                        element.Value = floatValue.ToString();
-                    break;
-                case "bool":
-                    if (bool.TryParse(stringValue, out bool boolValue))
-                        element.Value = boolValue.ToString().ToLower();
-                    break;
-                default:
-                    element.Value = stringValue;
-                    break;
-            }
+            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix)))
+                SetValue(pair.Value, value);
         }
 
-        public string? GetValue(string xmlPath, string dataType)
+        public string? GetPreset(string prefix)
         {
-            if (!Loaded) return null;
-
-            xmlPath = ResolvePath(xmlPath);
-            var element = Document?.XPathSelectElement(xmlPath);
-
-            if (element is null)
+            if (!PresetPaths.ContainsKey(prefix))
                 return null;
 
-            if (dataType.ToLower() == "vector2")
-            {
-                var xElement = element.XPathSelectElement("X");
-                var yElement = element.XPathSelectElement("Y");
-
-                if (xElement != null && yElement != null)
-                    return $"{xElement.Value},{yElement.Value}";
-
-                return "0,0";
-            }
-
-            return element.Value;
+            return GetValue(PresetPaths[prefix]);
         }
 
-        private XElement? CreateElement(string xmlPath, string dataType)
+        public void SetValue(string path, object? value)
         {
-            try
-            {
-                var elements = xmlPath.Split('/');
-                var lastElement = elements.Last();
+            path = ResolvePath(path);
 
-                XElement newElement;
-
-                if (dataType.ToLower() == "vector2")
-                {
-                    newElement = new XElement("Vector2",
-                        new XAttribute("name", lastElement.TrimStart('@').Replace("'", "").Replace("[", "").Replace("]", "")),
-                        new XElement("X", "0"),
-                        new XElement("Y", "0")
-                    );
-                }
-                else
-                {
-                    newElement = dataType.ToLower() switch
-                    {
-                        "int" => new XElement("int", new XAttribute("name", lastElement.TrimStart('@').Replace("'", "").Replace("[", "").Replace("]", ""))),
-                        "float" => new XElement("float", new XAttribute("name", lastElement.TrimStart('@').Replace("'", "").Replace("[", "").Replace("]", ""))),
-                        "bool" => new XElement("bool", new XAttribute("name", lastElement.TrimStart('@').Replace("'", "").Replace("[", "").Replace("]", ""))),
-                        "token" => new XElement("token", new XAttribute("name", lastElement.TrimStart('@').Replace("'", "").Replace("[", "").Replace("]", ""))),
-                        _ => new XElement("string", new XAttribute("name", lastElement.TrimStart('@').Replace("'", "").Replace("[", "").Replace("]", "")))
-                    };
-                }
-
-                var parentPath = string.Join("/", elements.Take(elements.Length - 1));
-                var parent = Document?.XPathSelectElement(parentPath) ?? Document?.Root;
-
-                parent?.Add(newElement);
-                return newElement;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("GBSEditor::CreateElement", $"Failed to create element: {ex.Message}");
-                return null;
-            }
-        }
-
-        public void Load()
-        {
-            if (!File.Exists(FileLocation))
-            {
-                Document = new XDocument(new XElement("roblox"));
-                Loaded = true;
+            XElement? element = Document?.XPathSelectElement(path);
+            if (element is null)
                 return;
-            }
 
-            try
-            {
-                Document = XDocument.Load(FileLocation);
-                Loaded = true;
-                previousReadOnlyState = GetReadOnly();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("GBSEditor::Load", "Failed to load!");
-                App.Logger.WriteException("GBSEditor::Load", ex);
-                Document = new XDocument(new XElement("roblox"));
-                Loaded = true;
-            }
+            element.Value = value?.ToString()!;
         }
 
-        public virtual void Save()
+        public string? GetValue(string path)
         {
-            if (!Loaded) return;
+            path = ResolvePath(path);
 
-            try
-            {
-                var directory = Path.GetDirectoryName(FileLocation);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
-                SetReadOnly(false, true);
-                Document?.Save(FileLocation);
-                SetReadOnly(previousReadOnlyState);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("GBSEditor::Save", "Failed to save");
-                App.Logger.WriteException("GBSEditor::Save", ex);
-            }
-        }
-
-        private string ResolvePath(string rawPath)
-        {
-            return Regex.Replace(rawPath, @"\{(.+?)\}", match =>
-            {
-                string key = match.Groups[1].Value;
-                return RootPaths.TryGetValue(key, out var value) ? value : match.Value;
-            });
+            return Document?.XPathSelectElement(path)?.Value;
         }
 
         public bool previousReadOnlyState;
 
         public void SetReadOnly(bool readOnly, bool preserveState = false)
         {
-            if (!File.Exists(FileLocation)) return;
+            const string LOG_IDENT = "GBSEditor::SetReadOnly";
+
+            if (!File.Exists(FileLocation))
+                return;
 
             try
             {
@@ -211,98 +121,118 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("GBSEditor::SetReadOnly", $"Failed to set read-only on {FileLocation}");
-                App.Logger.WriteException("GBSEditor::SetReadOnly", ex);
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to set read-only on {FileLocation}");
+                App.Logger.WriteException(LOG_IDENT, ex);
             }
         }
 
         public bool GetReadOnly()
         {
-            if (!File.Exists(FileLocation)) return false;
+            if (!File.Exists(FileLocation))
+                return false;
+
             return File.GetAttributes(FileLocation).HasFlag(FileAttributes.ReadOnly);
+        }
+
+        public void Load()
+        {
+            string LOG_IDENT = "GBSEditor::Load";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+
+            if (!File.Exists(FileLocation)) // since the file gets created after roblox starts it might not exist yet  
+                return;
+
+            try
+            {
+                Document = XDocument.Load(FileLocation);
+                Loaded = true;
+
+                previousReadOnlyState = GetReadOnly();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public virtual void Save()
+        {
+            string LOG_IDENT = "GBSEditor::Save";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
+
+            try
+            {
+                SetReadOnly(false, true);
+                Document?.Save(FileLocation);
+
+                SetReadOnly(previousReadOnlyState);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to save");
+                App.Logger.WriteException(LOG_IDENT, ex);
+
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Save complete!");
+        }
+
+        private string ResolvePath(string rawPath)
+        {
+            return Regex.Replace(rawPath, @"\{(.+?)\}", match =>
+            {
+                string key = match.Groups[1].Value;
+                return RootPaths.TryGetValue(key, out var value) ? value : match.Value; ;
+            });
+        }
+
+        public string GetVectorValue(string vectorName, string axis)
+        {
+            string basePath = ResolvePath(PresetPaths[vectorName]);
+            XElement? vectorElement = Document?.XPathSelectElement(basePath);
+            return vectorElement?.Element(axis)?.Value ?? "0";
+        }
+
+        public void SetVectorValue(string vectorName, string axis, string value)
+        {
+            string basePath = ResolvePath(PresetPaths[vectorName]);
+            XElement? vectorElement = Document?.XPathSelectElement(basePath);
+
+            XElement? axisElement = vectorElement?.Element(axis);
+            if (axisElement != null)
+            {
+                axisElement.Value = value;
+            }
         }
 
         public bool ExportSettings(string exportPath)
         {
-            if (!File.Exists(FileLocation))
-                return false;
-
             try
             {
-                var directory = Path.GetDirectoryName(exportPath);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
+                if (!File.Exists(FileLocation)) return false;
+                string? dir = Path.GetDirectoryName(exportPath);
+                if (!string.IsNullOrEmpty(dir)) Directory.CreateDirectory(dir);
                 File.Copy(FileLocation, exportPath, true);
                 return true;
             }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("GBSEditor::ExportSettings", $"Failed to export settings: {ex.Message}");
-                return false;
-            }
+            catch { return false; }
         }
 
         public bool ImportSettings(string importPath)
         {
-            if (!File.Exists(importPath))
-                return false;
-
             try
             {
-                var directory = Path.GetDirectoryName(FileLocation);
-                if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-                {
-                    Directory.CreateDirectory(directory);
-                }
-
+                if (!File.Exists(importPath)) return false;
                 SetReadOnly(false, true);
-
                 File.Copy(importPath, FileLocation, true);
-
                 Load();
-
                 return true;
             }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("GBSEditor::ImportSettings", $"Failed to import settings: {ex.Message}");
-                return false;
-            }
-        }
-
-        public void SetPresets(string prefix, object? value)
-        {
-            foreach (var pair in PresetPaths.Where(x => x.Key.StartsWith(prefix)))
-                SetValues(pair.Value, value);
-        }
-
-        public string? GetPresets(string prefix)
-        {
-            if (!PresetPaths.ContainsKey(prefix))
-                return null;
-
-            return GetValues(PresetPaths[prefix]);
-        }
-
-        public void SetValues(string path, object? value)
-        {
-            path = ResolvePath(path);
-
-            XElement? element = Document?.XPathSelectElement(path);
-            if (element is null)
-                return;
-
-            element.Value = value?.ToString()!;
-        }
-
-        public string? GetValues(string path)
-        {
-            path = ResolvePath(path);
-
-            return Document?.XPathSelectElement(path)?.Value;
+            catch { return false; }
         }
     }
 }

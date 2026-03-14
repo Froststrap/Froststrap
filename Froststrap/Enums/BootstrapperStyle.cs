@@ -7,9 +7,9 @@
         LegacyDialog2011,
         ProgressDialog,
         ClassicFluentDialog,
+        TwentyFiveDialog,
         ByfronDialog,
         FluentDialog,
-        FroststrapDialog,
         FluentAeroDialog,
         CustomDialog
     }

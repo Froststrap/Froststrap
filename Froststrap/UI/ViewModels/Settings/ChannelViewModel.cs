@@ -1,19 +1,24 @@
 ﻿using Froststrap.RobloxInterfaces;
-using System.ComponentModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class ChannelViewModel : NotifyPropertyChangedViewModel, INotifyPropertyChanged
+    public class ChannelViewModel : NotifyPropertyChangedViewModel
     {
         public ChannelViewModel()
         {
             Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
         }
 
-        public bool UpdateCheckingEnabled
+        public IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues(typeof(UpdateCheck)).Cast<UpdateCheck>();
+
+        public UpdateCheck SelectedUpdateCheck
         {
-            get => App.Settings.Prop.CheckForUpdates;
-            set => App.Settings.Prop.CheckForUpdates = value;
+            get => App.Settings.Prop.UpdateChecks;
+            set
+            {
+                App.Settings.Prop.UpdateChecks = value;
+                OnPropertyChanged(nameof(SelectedUpdateCheck));
+            }
         }
 
         public bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled;
@@ -107,6 +112,12 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StaticDirectory = value;
         }
 
+        public bool SaveAndLaunchToPlayer
+        {
+            get => App.Settings.Prop.SaveAndLaunchToPlayer;
+            set => App.Settings.Prop.SaveAndLaunchToPlayer = value;
+        }
+
         public IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
         {
             { Strings.Menu_Channel_ChangeAction_Automatic, ChannelChangeMode.Automatic },
@@ -124,18 +135,6 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => App.State.Prop.ForceReinstall || IsRobloxInstallationMissing;
             set => App.State.Prop.ForceReinstall = value;
-        }
-
-        public bool DisableAnimations
-        {
-            get => App.Settings.Prop.DisableAnimations;
-            set => App.Settings.Prop.DisableAnimations = value;
-        }
-
-        public bool HardwareAcceleration
-        {
-            get => App.Settings.Prop.WPFSoftwareRender;
-            set => App.Settings.Prop.WPFSoftwareRender = value;
         }
     }
 }

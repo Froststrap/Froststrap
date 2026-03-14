@@ -4,7 +4,7 @@
     {
         private static GenericTriState _loadStatus = GenericTriState.Unknown;
 
-        public static async void Create(string exePath, string exeArgs, string lnkPath)
+        public static async void Create(string exePath, string exeArgs, string lnkPath, string? iconPath = null)
         {
             const string LOG_IDENT = "Shortcut::Create";
 
@@ -13,7 +13,9 @@
 
             try
             {
-                ShellLink.Shortcut.CreateShortcut(exePath, exeArgs, exePath, 0).WriteToFile(lnkPath);
+                string finalIconPath = string.IsNullOrEmpty(iconPath) ? exePath : iconPath;
+
+                ShellLink.Shortcut.CreateShortcut(exePath, exeArgs, finalIconPath, 0).WriteToFile(lnkPath);
 
                 if (_loadStatus != GenericTriState.Successful)
                     _loadStatus = GenericTriState.Successful;

@@ -4,8 +4,6 @@ namespace Froststrap.Models.Persistable
 {
     public class Settings
     {
-        // Fishstrap feature to use private channel.
-        public bool AllowCookieAccess { get; set; } = false;
 
         // Integration Page
         public bool EnableActivityTracking { get; set; } = true;
@@ -13,12 +11,9 @@ namespace Froststrap.Models.Persistable
         public bool ShowServerUptime { get; set; } = false;
         public bool AutoRejoin { get; set; } = false;
         public bool ShowGameHistoryMenu { get; set; } = true;
-        public List<ActivityData> ServerHistory { get; set; } = new List<ActivityData>();
         public bool PlaytimeCounter { get; set; } = true;
         public TrayDoubleClickAction DoubleClickAction { get; set; } = TrayDoubleClickAction.ServerInfo;
         public bool UseDisableAppPatch { get; set; } = false;
-        public bool BlockRobloxRecording { get; set; } = false;
-        public bool BlockRobloxScreenshots { get; set; } = false;
         public bool ShowUsingFroststrapRPC { get; set; } = true;
         public bool UseDiscordRichPresence { get; set; } = true;
         public bool HideRPCButtons { get; set; } = true;
@@ -29,12 +24,13 @@ namespace Froststrap.Models.Persistable
         public bool StudioEditingInfo { get; set; } = false;
         public bool StudioWorkspaceInfo { get; set; } = false;
         public bool StudioShowTesting { get; set; } = false;
+        public bool StudioGameButton { get; set; } = false;
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = new();
 
         // Bootstrapper Page
         public bool ConfirmLaunches { get; set; } = true;
+        public bool AllowCookieAccess { get; set; } = false;
         public bool AutoCloseCrashHandler { get; set; } = false;
-        public string Locale { get; set; } = "nil";
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = new List<string>();
         public bool BackgroundUpdatesEnabled { get; set; } = false;
@@ -42,14 +38,7 @@ namespace Froststrap.Models.Persistable
         public bool Error773Fix { get; set; } = false;
         public int MultibloxInstanceCount { get; set; } = 2;
         public int MultibloxDelayMs { get; set; } = 1500;
-        public RobloxIcon SelectedRobloxIcon { get; set; } = RobloxIcon.Default;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
-
-        // Mods Page
-        public string ShiftlockCursorSelectedPath { get; set; } = "";
-        public string ArrowCursorSelectedPath { get; set; } = "";
-        public string ArrowFarCursorSelectedPath { get; set; } = "";
-        public string IBeamCursorSelectedPath { get; set; } = "";
 
         // FastFlag Editor/Settings Related
         public bool UseFastFlagManager { get; set; } = true;
@@ -58,9 +47,10 @@ namespace Froststrap.Models.Persistable
         public bool UseAltManually { get; set; } = true;
 
         // Appearance Page
-        public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FroststrapDialog;
+        public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconFroststrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.Mica;
+        public string Locale { get; set; } = "nil";
         public string? SelectedCustomTheme { get; set; } = null;
         public List<GradientStops> CustomGradientStops { get; set; } = new()
         {
@@ -78,27 +68,21 @@ namespace Froststrap.Models.Persistable
         public string DownloadingStringFormat { get; set; } = Strings.Bootstrapper_Status_Downloading + " {0} - {1}MB / {2}MB";
         public Theme Theme { get; set; } = Theme.Default;
         public string? CustomFontPath { get; set; } = null;
-        public List<string> NavigationOrder { get; set; } = new List<string>();
-        public bool IsNavigationOrderLocked { get; set; } = true;
 
         // Settings Page
-        public bool CheckForUpdates { get; set; } = true;
+        public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
+        public bool SaveAndLaunchToPlayer { get; set; } = true;
         public bool WPFSoftwareRender { get; set; } = false;
-        public bool DisableAnimations { get; set; } = false;
         public bool UpdateRoblox { get; set; } = true;
+        public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; } = false;
         public string Channel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
-        public string ChannelHash { get; set; } = "";
 
         // Misc Stuff
         public bool IsNavigationSidebarExpanded { get; set; } = true;
         public string SelectedRegion { get; set; } = string.Empty;
-        public bool EnableAnalytics { get; set; } = false;
-        public bool DebugDisableVersionPackageCleanup { get; set; } = false;
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool ForceLocalData { get; set; } = false;
-        public bool DeveloperMode { get; set; } = false;
-        public WebEnvironment WebEnvironment { get; set; } = WebEnvironment.Production;
+        public bool DebugDisableVersionPackageCleanup { get; set; } = false;
     }
 }
