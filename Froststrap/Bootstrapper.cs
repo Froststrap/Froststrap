@@ -152,7 +152,7 @@ namespace Froststrap
             Dialog.TaskbarProgressValue = taskbarProgressValue;
         }
 
-        private void HandleConnectionError(Exception exception)
+        private async void HandleConnectionError(Exception exception)
         {
             const string LOG_IDENT = "Bootstrapper::HandleConnectionError";
 
@@ -175,7 +175,7 @@ namespace Froststrap
             else
                 message += $"\n\n{Strings.Dialog_Connectivity_RobloxUpgradeSkip}";
 
-            Frontend.ShowConnectivityDialog(
+            await Frontend.ShowConnectivityDialog(
                 String.Format(Strings.Dialog_Connectivity_UnableToConnect, "Roblox"),
                 message,
                 _mustUpgrade ? MessageBoxImage.Error : MessageBoxImage.Warning,
@@ -339,9 +339,9 @@ namespace Froststrap
                 {
                     // show some balloon tips
                     if (!_packageExtractionSuccess)
-                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message, ToolTipIcon.Warning);
+                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
                     else if (!allModificationsApplied)
-                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message, ToolTipIcon.Warning);
+                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
                 }
 
                 StartRoblox();
@@ -2091,7 +2091,7 @@ namespace Froststrap
 
                     if (ex.GetType() == typeof(ChecksumFailedException))
                     {
-                        Frontend.ShowConnectivityDialog(
+                        await Frontend.ShowConnectivityDialog(
                             Strings.Dialog_Connectivity_UnableToDownload,
                             String.Format(Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/Froststraplabs/Froststrap/wiki/Froststrap-is-unable-to-download-Roblox](https://github.com/Froststraplabs/Froststrap/wiki/Froststrap-is-unable-to-download-Roblox)"),
                             MessageBoxImage.Error,
