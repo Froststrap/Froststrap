@@ -15,7 +15,6 @@ public partial class AppearancePage : UserControl
 {
     public AppearancePage()
     {
-        DataContext = new AppearanceViewModel(this);
         InitializeComponent();
 
         App.FrostRPC?.SetPage("Appearance");

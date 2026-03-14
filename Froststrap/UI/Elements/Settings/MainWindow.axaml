@@ -1,102 +1,150 @@
 <base:AvaloniaWindow
-    x:Class="Froststrap.UI.Elements.Settings.MainWindow"
-    x:DataType="vm:MainWindowViewModel"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
-    xmlns:resources="using:Froststrap.Resources"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-	xmlns:page="clr-namespace:Froststrap.UI.Elements.Settings.Pages"
-    Title="{x:Static resources:Strings.Menu_Title}"
-    Width="1125" Height="700"
+	x:Class="Froststrap.UI.Elements.Settings.MainWindow"
+	x:DataType="vm:MainWindowViewModel"
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:resources="using:Froststrap.Resources"
+	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+	Title="{x:Static resources:Strings.Menu_Title}"
+	Width="1125" Height="700"
 
-    MinWidth="250" MinHeight="250"
-    WindowStartupLocation="CenterScreen"
-    ExtendClientAreaToDecorationsHint="True"
-    ExtendClientAreaTitleBarHeightHint="-1"
-    TransparencyLevelHint="Mica"
-    Background="Transparent">
+	MinWidth="250" MinHeight="250"
+	WindowStartupLocation="CenterScreen"
+	ExtendClientAreaToDecorationsHint="True"
+	ExtendClientAreaTitleBarHeightHint="-1"
+	TransparencyLevelHint="Mica"
+	Background="Transparent">
 
 	<Grid RowDefinitions="Auto,*,Auto">
 
-		<TitleBar Grid.Row="0" Height="32"/>
+		<TitleBar Grid.Row="0" Height="32" Background="{DynamicResource LayerFillColorDefaultBrush}" />
 
-		<ui:TeachingTip x:Name="AlreadyRunningTip" Title="{x:Static resources:Strings.Menu_AlreadyRunning_Title}" Subtitle="{x:Static resources:Strings.Menu_AlreadyRunning_Caption}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />
-		<ui:TeachingTip x:Name="SettingsSavedTip" Title="{x:Static resources:Strings.Menu_SettingsSaved_Title}" Subtitle="{x:Static resources:Strings.Menu_SettingsSaved_Message}" PreferredPlacement="Bottom" IsLightDismissEnabled="True" />
+		<Panel Grid.Row="1" Name="NotificationPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,12,0,0" ZIndex="1000" />
 
-		<ui:NavigationView
-            Grid.Row="1"
-            x:Name="RootNavigation"
-            PaneDisplayMode="Left"
-            IsSettingsVisible="False"
-            IsPaneOpen="{Binding IsSidebarExpanded, Mode=TwoWay}"
-            OpenPaneLength="215">
+		<!-- Main Navigation and Content -->
+		<Grid Grid.Row="1" ColumnDefinitions="64,*">
+			<Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+				<ScrollViewer VerticalScrollBarVisibility="Hidden">
+					<StackPanel Spacing="0" VerticalAlignment="Top">
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}"
+						Command="{Binding NavigateToIntegrationsCommand}"
+						Tag="integrations"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Plus" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
 
-			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations" IconSource="Add" />
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="bootstrapper" IconSource="Settings" />
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Mods_Title}" Tag="mods" IconSource="Repair" />
-				<ui:NavigationViewItem Content="Community Mods" Tag="communitymods" IconSource="Shop" />
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags" IconSource="Flag" />
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="{x:Type page:AppearancePage}" IconSource="Edit" />
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RobloxSettings_Title}"  x:Name="gbs" Tag="{x:Type page:RobloxSettingsPage}" IconSource="AllApps" />
-			</ui:NavigationView.MenuItems>
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}"
+						Command="{Binding NavigateToBehaviourCommand}"
+						Tag="behaviour"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Settings" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
 
-			<ui:NavigationView.FooterMenuItems>
-					<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_AccountManager_Title}" Tag="accountmanager" IconSource="People" >
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}"
+						Command="{Binding NavigateToModsCommand}"
+						Tag="mods"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Wrench" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
 
-						<Interaction.Behaviors>
-							<EventTriggerBehavior EventName="Tapped">
-								<InvokeCommandAction Command="{Binding OpenAccountManagerCommand}" />
-							</EventTriggerBehavior>
-						</Interaction.Behaviors>
+					<Button 
+						ToolTip.Tip="Community Mods"
+						Command="{Binding NavigateToCommunityModsCommand}"
+						Tag="communitymods"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Package" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
 
-					</ui:NavigationViewItem>	
-				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Settings}" Tag="channel" IconSource="Settings" />
-				<ui:NavigationViewItem Content="About Me">
-					<ui:NavigationViewItem.IconSource>
-						<ui:SymbolIconSource Symbol="ContactInfo" FontSize="24" />
-					</ui:NavigationViewItem.IconSource>
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}"
+						Command="{Binding NavigateToFastFlagsCommand}"
+						Tag="fastflags"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Flag" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
 
-					<Interaction.Behaviors>
-						<EventTriggerBehavior EventName="Tapped">
-							<InvokeCommandAction Command="{Binding OpenAboutCommand}" />
-						</EventTriggerBehavior>
-					</Interaction.Behaviors>
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}"
+						Command="{Binding NavigateToAppearanceCommand}"
+						Tag="appearance"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Palette" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
 
-				</ui:NavigationViewItem>
-			</ui:NavigationView.FooterMenuItems>
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}"
+						Command="{Binding NavigateToRobloxSettingsCommand}"
+						Tag="robloxsettings"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Gauge" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
 
-			<ui:NavigationView.Content>
-				<Grid RowDefinitions="Auto,*">
-					<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="12" IsOpen="False" />
-					<ui:Frame x:Name="RootFrame" Grid.Row="1" />
-				</Grid>
-			</ui:NavigationView.Content>
-		</ui:NavigationView>
+					<Separator Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
 
-		<Grid x:Name="LoadingOverlay" Grid.Row="1" Grid.RowSpan="2" Background="#A0000000" IsVisible="False">
-			<Border Background="{DynamicResource NavigationRootBoundsBackground}" CornerRadius="12" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center">
+					<!-- Footer Menu Items -->
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}"
+						Command="{Binding OpenAccountManagerCommand}"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Users" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
+
+					<Button 
+						ToolTip.Tip="{x:Static resources:Strings.Common_Settings}"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Zap" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
+
+					<Button 
+						ToolTip.Tip="About Me"
+						Command="{Binding OpenAboutCommand}"
+						Classes="icon-button">
+						<lucideAvalonia:Lucide Icon="Info" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+					</Button>
+						</StackPanel>
+					</ScrollViewer>
+				</Border>
+
+				<Grid Grid.Column="1" RowDefinitions="Auto,*">
+				<Border Grid.Row="0" Padding="12" Background="{DynamicResource LayerFillColorAltBrush}" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+					<TextBlock x:Name="AlertText" Text="" Foreground="{DynamicResource SystemAccentColor}" FontSize="13" />
+				</Border>
+
+				<TransitioningContentControl 
+					x:Name="PageContentControl"
+					Grid.Row="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Background="{DynamicResource LayerFillColorDefaultBrush}" />
+			</Grid>
+		</Grid>
+
+		<Grid x:Name="LoadingOverlay" Grid.Row="1" Grid.RowSpan="2" Background="#A0000000" IsVisible="False" ZIndex="999">
+			<Border Background="{DynamicResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
 				<StackPanel Spacing="15">
-					<TextBlock x:Name="LoadingOverlayText" Text="Loading..." FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-					<ui:ProgressRing IsIndeterminate="True" Width="50" Height="50" />
+					<TextBlock x:Name="LoadingOverlayText" Text="Loading..." FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+					<ProgressBar IsIndeterminate="True" Width="50" Height="4" Foreground="{DynamicResource SystemAccentColor}" />
 				</StackPanel>
 			</Border>
 		</Grid>
 
-		<Border Grid.Row="2" Padding="12" Background="{DynamicResource SystemControlBackgroundChromeMediumLowBrush}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}">
+		<Border Grid.Row="2" Padding="12" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
 			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
 				<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-					<ToggleSwitch IsChecked="{Binding TestModeEnabled}" OnContent="" OffContent="" />
-					<TextBlock Text="{x:Static resources:Strings.Menu_TestMode}" VerticalAlignment="Center" Margin="8,0,0,0" FontWeight="Medium"/>
+					<ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}" OnContent="" OffContent="" />
+					<TextBlock Text="{x:Static resources:Strings.Menu_TestMode}" VerticalAlignment="Center" Margin="8,0,0,0" FontWeight="Medium" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
 				</StackPanel>
 
 				<StackPanel Grid.Column="1" Grid.ColumnSpan="4" Orientation="Horizontal" Spacing="8">
-					<Button Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" Classes="accent" Command="{Binding SaveAndLaunchSettingsCommand}" />
-					<Button Content="{x:Static resources:Strings.Menu_Restart}" Classes="accent" Command="{Binding RestartAppCommand}" />
-					<Button Content="{x:Static resources:Strings.Menu_Save}" Classes="accent" Command="{Binding SaveSettingsCommand}" />
-					<Button Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseWindowCommand}" />
+					<Button Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" Classes="accent" Command="{Binding SaveAndLaunchSettingsCommand}" Background="{DynamicResource SystemAccentColor}" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+					<Button Content="{x:Static resources:Strings.Menu_Restart}" Classes="accent" Command="{Binding RestartAppCommand}" Background="{DynamicResource SystemAccentColor}" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+					<Button Content="{x:Static resources:Strings.Menu_Save}" Classes="accent" Command="{Binding SaveSettingsCommand}" Background="{DynamicResource SystemAccentColor}" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+					<Button Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseWindowCommand}" Background="{DynamicResource LayerFillColorAltBrush}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 				</StackPanel>
 			</Grid>
 		</Border>

@@ -5,12 +5,15 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.UI;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels;
 using Froststrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
+using ReactiveUI;
 using System;
+using System.Reactive.Concurrency;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -34,10 +37,10 @@ public partial class App : Application
 #endif
 
     public const string ProjectOwner = "RealMeddsam";
-    public const string ProjectRepository = "RealMeddsam/Froststrap";
-    public const string ProjectDownloadLink = "https://github.com/RealMeddsam/Froststrap/releases";
+    public const string ProjectRepository = "Froststrap/Froststrap";
+    public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
     public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
-    public const string ProjectSupportLink = "https://github.com/RealMeddsam/Froststrap/issues/new";
+    public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
     public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Data.json";
 
     public const string RobloxPlayerAppName = "RobloxPlayerBeta.exe";
@@ -79,6 +82,9 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+
+        RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
+
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
     }
@@ -201,7 +207,7 @@ public partial class App : Application
             if (Settings.Prop.AllowCookieAccess) Task.Run(Cookies.LoadCookies);
             Locale.Set(Settings.Prop.Locale);
 
-            // if (!LaunchSettings.BypassUpdateCheck) Installer.HandleUpgrade();
+
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WindowsRegistry.RegisterApis();
