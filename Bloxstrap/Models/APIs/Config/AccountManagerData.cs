@@ -1,23 +1,20 @@
-﻿using Bloxstrap.Integrations;
-using Newtonsoft.Json;
-
-namespace Bloxstrap.Models.APIs.Config
+﻿namespace Bloxstrap.Models.APIs.Config
 {
     public class AccountManagerData
     {
-        [JsonProperty("accounts")]
+        [JsonPropertyName("accounts")]
         public List<AccountManagerAccount> Accounts { get; set; } = new();
 
-        [JsonProperty("activeAccountId")]
+        [JsonPropertyName("activeAccountId")]
         public long? ActiveAccountId { get; set; }
 
-        [JsonProperty("lastUpdated")]
+        [JsonPropertyName("lastUpdated")]
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
-        [JsonProperty("currentPlaceId")]
+        [JsonPropertyName("currentPlaceId")]
         public long CurrentPlaceId { get; set; }
 
-        [JsonProperty("currentServerInstanceId")]
+        [JsonPropertyName("currentServerInstanceId")]
         public string CurrentServerInstanceId { get; set; } = "";
     }
 }

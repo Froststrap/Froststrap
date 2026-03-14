@@ -25,8 +25,6 @@ namespace Bloxstrap.Integrations
         private const string LOG_IDENT = "AccountManager";
         private const string AccountsFile = "AccountManager.json";
 
-        public event Action? NoAccountsFound;
-
         public event Action<AccountManagerAccount?>? ActiveAccountChanged;
 
         public event Action<string, DateTime?>? QuickSignCodeCreated;
@@ -79,7 +77,9 @@ namespace Bloxstrap.Integrations
                 {
                     Accounts = _accounts.Select(acc => acc with { SecurityToken = Protect(acc.SecurityToken) }).ToList(),
                     ActiveAccountId = ActiveAccount?.UserId,
-                    LastUpdated = DateTime.UtcNow
+                    LastUpdated = DateTime.UtcNow,
+                    CurrentPlaceId = CurrentPlaceId,
+                    CurrentServerInstanceId = CurrentServerInstanceId,
                 };
                 File.WriteAllText(_accountsLocation, JsonConvert.SerializeObject(data, Formatting.Indented));
             }
