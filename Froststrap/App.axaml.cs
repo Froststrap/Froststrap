@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
@@ -187,7 +188,7 @@ public partial class App : Application
             Task.Run(RemoteData.LoadData);
             _ = Settings.Load();
             _ = State.Load();
-            _ = FastFlags.Load();
+            _ =  FastFlags.Load();
             GlobalSettings.Load();
 
             if (Settings.Prop.Theme > Enums.Theme.Custom)
@@ -242,13 +243,13 @@ public partial class App : Application
         FinalizeExceptionHandling(ex.GetBaseException(), false);
     }
 
-    public static void FinalizeExceptionHandling(Exception ex, bool log = true)
+    public static async void FinalizeExceptionHandling(Exception ex, bool log = true)
     {
         if (log) Logger.WriteException("App::FinalizeExceptionHandling", ex);
         if (_showingExceptionDialog) return;
         _showingExceptionDialog = true;
 
-        Frontend.ShowExceptionDialog(ex);
+        await Frontend.ShowExceptionDialog(ex);
         Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
     }
 }

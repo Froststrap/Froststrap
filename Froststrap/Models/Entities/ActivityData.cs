@@ -140,7 +140,7 @@ namespace Froststrap.Models.Entities
                 GlobalCache.ServerTime[JobId] = firstSeen;
                 serverTimeSemaphore.Release();
 
-                Frontend.ShowConnectivityDialog(
+                await Frontend.ShowConnectivityDialog(
                     string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
                     Strings.ActivityWatcher_LocationQueryFailed,
                     MessageBoxImage.Warning,
@@ -218,7 +218,7 @@ namespace Froststrap.Models.Entities
                 GlobalCache.ServerLocation[MachineAddress] = location;
                 serverQuerySemaphore.Release();
 
-                Frontend.ShowConnectivityDialog(
+                await Frontend.ShowConnectivityDialog(
                     string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com/ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
                     MessageBoxImage.Warning,
