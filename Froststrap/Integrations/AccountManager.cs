@@ -433,7 +433,7 @@ namespace Froststrap.Integrations
                 if (creation == null)
                 {
                     App.Logger.WriteLine(LOG_IDENT_QUICK_SIGN, "Quick Sign-In: failed to create token.");
-                    Frontend.ShowMessageBox("Failed to start Quick Sign-In. Please check your internet connection.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Failed to start Quick Sign-In. Please check your internet connection.", MessageBoxImage.Error);
                     return null;
                 }
 
@@ -465,7 +465,7 @@ namespace Froststrap.Integrations
                 if (!status.Status.Equals("Validated", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine(LOG_IDENT_QUICK_SIGN, $"Quick Sign-In ended with unexpected status: {status.Status}");
-                    Frontend.ShowMessageBox($"Quick Sign-In failed: {status.Status}", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox($"Quick Sign-In failed: {status.Status}", MessageBoxImage.Error);
                     return null;
                 }
 
@@ -473,7 +473,7 @@ namespace Froststrap.Integrations
                 if (string.IsNullOrEmpty(roblosecurity))
                 {
                     App.Logger.WriteLine(LOG_IDENT_QUICK_SIGN, "Quick Sign-In: login exchange failed.");
-                    Frontend.ShowMessageBox("Failed to log in with Quick Sign-In. Please try again.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Failed to log in with Quick Sign-In. Please try again.", MessageBoxImage.Error);
                     return null;
                 }
 
@@ -482,7 +482,7 @@ namespace Froststrap.Integrations
                 {
                     App.Logger.WriteLine(LOG_IDENT_QUICK_SIGN, "Quick Sign-In: failed to get account info with exchanged cookie.");
                     try { await LogoutRoblosecurityAsync(roblosecurity).ConfigureAwait(false); } catch { }
-                    Frontend.ShowMessageBox("Failed to get account information. Please try again.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Failed to get account information. Please try again.", MessageBoxImage.Error);
                     return null;
                 }
 
@@ -501,7 +501,7 @@ namespace Froststrap.Integrations
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT_QUICK_SIGN, ex);
-                Frontend.ShowMessageBox($"Quick Sign-In error: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Quick Sign-In error: {ex.Message}", MessageBoxImage.Error);
                 return null;
             }
             finally

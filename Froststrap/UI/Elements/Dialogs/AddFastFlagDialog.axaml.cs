@@ -41,17 +41,17 @@ namespace Froststrap.UI.Elements.Dialogs
             }
         }
 
-        private void OKButton_Click(object sender, RoutedEventArgs e)
+        private async void OKButton_Click(object sender, RoutedEventArgs e)
         {
             if (Tabs.SelectedIndex == 0 && (string.IsNullOrEmpty(FlagNameTextBox.Text) || string.IsNullOrEmpty(FlagValueTextBox.Text)))
             {
-                Frontend.ShowMessageBox("Flag name and Flag value cannot be empty", MessageBoxImage.Information, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Flag name and Flag value cannot be empty", MessageBoxImage.Information, MessageBoxButton.OK);
                 return;
             }
 
             if (Tabs.SelectedIndex == 1 && string.IsNullOrEmpty(JsonTextBox.Text))
             {
-                Frontend.ShowMessageBox("Json TextBox cannot be empty", MessageBoxImage.Information, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Json TextBox cannot be empty", MessageBoxImage.Information, MessageBoxButton.OK);
                 return;
             }
 

@@ -18,37 +18,12 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
 		public RobloxSettingsPage()
 		{
-			InitializeComponent();
-			this.AttachedToVisualTree += RobloxSettingsPage_AttachedToVisualTree;
+            _viewModel = new RobloxSettingsViewModel(App.RemoteData);
+            DataContext = _viewModel;
+
+            InitializeComponent();
 		}
 
-		private async void RobloxSettingsPage_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
-		{
-			App.FrostRPC?.SetPage("Roblox Settings");
-			var mainWindow = TopLevel.GetTopLevel(this) as MainWindow;
-			mainWindow?.ShowLoading("Loading Roblox Settings...");
-
-			try
-			{
-				await App.RemoteData.WaitUntilDataFetched();
-
-				_viewModel = new RobloxSettingsViewModel(App.RemoteData);
-				DataContext = _viewModel;
-			}
-			catch (Exception ex)
-			{
-				App.Logger.WriteLine("RobloxSettingsPage", $"Error while loading remote data: {ex}");
-
-				Frontend.ShowMessageBox(
-					$"Failed to load Roblox settings:\n\n{ex.Message}",
-					MessageBoxImage.Error
-				);
-			}
-			finally
-			{
-				mainWindow?.HideLoading();
-			}
-		}
 
 		private void ValidateUInt32(object? sender, TextInputEventArgs e)
 		{

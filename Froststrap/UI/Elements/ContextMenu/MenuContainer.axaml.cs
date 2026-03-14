@@ -33,7 +33,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 				_activityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
 				bool playtimeEnabled = App.Settings.Prop.PlaytimeCounter;
-				bool memoryCleanerEnabled = App.Settings.Prop.MemoryCleanerInterval != MemoryCleanerInterval.Never;
 
 				if (_activityWatcher.InRobloxStudio)
 				{
@@ -50,8 +49,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 						if (_activityWatcher.InStudioPlace) _studioPlaceJoinTime = DateTime.Now;
 					}
 					else PlaytimeMenuItem.IsVisible = false;
-
-					CleanMemoryMenuItem.IsVisible = memoryCleanerEnabled;
 				}
 				else
 				{
@@ -60,7 +57,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 
 					if (App.Settings.Prop.AllowCookieAccess) UpdateRegionJoinText();
 
-					CleanMemoryMenuItem.IsVisible = memoryCleanerEnabled;
 					GameHistoryMenuItem.IsVisible = App.Settings.Prop.ShowGameHistoryMenu;
 				}
 			}
@@ -188,14 +184,14 @@ namespace Froststrap.UI.Elements.ContextMenu
 		}
 
 		private void ServerDetailsMenuItem_Click(object sender, RoutedEventArgs e) => ShowServerInformationWindow();
-		private void GameInformaionMenuItem_Click(object sender, RoutedEventArgs e)
+		private async void GameInformaionMenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			long placeId = _activityWatcher?.Data?.PlaceId ?? 0;
 			long universeId = _activityWatcher?.Data?.UniverseId ?? 0;
 
 			if (placeId == 0)
 			{
-				Frontend.ShowMessageBox(
+				await Frontend.ShowMessageBox(
 					"Not currently in a game. Please join a game first to view game information.",
 					MessageBoxImage.Error
 				);
@@ -203,22 +199,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 			}
 
 			ShowGameInformationWindow(placeId, universeId);
-		}
-
-		private void CleanMemoryMenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			const string LOG_IDENT = "MenuContainer::CleanMemoryMenuItem_Click";
-
-			try
-			{
-				_watcher.MemoryCleaner?.CleanMemory();
-				_watcher.MemoryCleaner?.TrimRobloxProcesses();
-			}
-			catch (Exception ex)
-			{
-				App.Logger.WriteLine(LOG_IDENT, $"Exception during manual cleanup: {ex.Message}");
-				Frontend.ShowMessageBox($"Failed to clean memory: {ex.Message}", MessageBoxImage.Error);
-			}
 		}
 
 		private void CloseRobloxMenuItem_Click(object sender, RoutedEventArgs e)
@@ -252,7 +232,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 			{
 				if (_activityWatcher?.InGame != true || _activityWatcher?.Data == null)
 				{
-					Frontend.ShowMessageBox("You need to be in a game to use this feature.", MessageBoxImage.Warning);
+					await Frontend.ShowMessageBox("You need to be in a game to use this feature.", MessageBoxImage.Warning);
 					return;
 				}
 
@@ -261,11 +241,11 @@ namespace Froststrap.UI.Elements.ContextMenu
 				string selectedRegion = App.Settings.Prop.SelectedRegion;
 				if (string.IsNullOrEmpty(selectedRegion))
 				{
-					Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
+					await Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
 					return;
 				}
 
-				MessageBoxResult result = Frontend.ShowMessageBox($"Start searching for {selectedRegion}?", MessageBoxImage.Information, MessageBoxButton.YesNo);
+				MessageBoxResult result = await Frontend.ShowMessageBox($"Start searching for {selectedRegion}?", MessageBoxImage.Information, MessageBoxButton.YesNo);
 				if (result != MessageBoxResult.Yes)
 					return;
 
@@ -274,7 +254,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 			catch (Exception ex)
 			{
 				App.Logger.WriteException(LOG_IDENT, ex);
-				Frontend.ShowMessageBox($"Failed to auto-join: {ex.Message}", MessageBoxImage.Error);
+				await Frontend.ShowMessageBox($"Failed to auto-join: {ex.Message}", MessageBoxImage.Error);
 			}
 		}
 
@@ -290,7 +270,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 			var datacentersResult = await fetcher.GetDatacentersAsync();
 			if (datacentersResult == null)
 			{
-				Frontend.ShowMessageBox("Failed to load regions.", MessageBoxImage.Error);
+				await Frontend.ShowMessageBox("Failed to load regions.", MessageBoxImage.Error);
 				return;
 			}
 
@@ -307,7 +287,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
 				if (!isValid)
 				{
-					Frontend.ShowMessageBox("Dummy cookie is invalid or expired. Please notify us in our discord server.", MessageBoxImage.Error);
+					await Frontend.ShowMessageBox("Dummy cookie is invalid or expired. Please notify us in our discord server.", MessageBoxImage.Error);
 					return;
 				}
 
@@ -316,7 +296,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 			catch (Exception ex)
 			{
 				App.Logger.WriteException(LOG_IDENT, ex);
-				Frontend.ShowMessageBox("Failed to validate cookie.", MessageBoxImage.Error);
+				await Frontend.ShowMessageBox("Failed to validate cookie.", MessageBoxImage.Error);
 				return;
 			}
 
@@ -336,7 +316,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
 					if (matchingServer != null)
 					{
-						MessageBoxResult confirmResult = Frontend.ShowMessageBox(
+						MessageBoxResult confirmResult = await Frontend.ShowMessageBox(
 							$"Found server in {selectedRegion} with {matchingServer.Playing}/{matchingServer.MaxPlayers} players.\nDo you want to join?",
 							MessageBoxImage.Question,
 							MessageBoxButton.YesNo
@@ -368,7 +348,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 				await Task.Delay(250);
 			}
 
-			Frontend.ShowMessageBox($"No {selectedRegion} server found after checking {pagesChecked} pages, Please try another region.", MessageBoxImage.Information);
+			await Frontend.ShowMessageBox($"No {selectedRegion} server found after checking {pagesChecked} pages, Please try another region.", MessageBoxImage.Information);
 		}
 
 		private void UpdateRegionJoinText()

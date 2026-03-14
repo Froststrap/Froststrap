@@ -34,76 +34,76 @@ namespace Froststrap
             ClassName = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
         }
 
-        public virtual bool Load(bool alertFailure = true)
-        {
-            string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
+		public virtual async Task<bool> Load(bool alertFailure = true)
+		{
+			string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
 
-            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+			App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
-            try
-            {
-                if (File.Exists(FileLocation))
-                {
-                    string contents = File.ReadAllText(FileLocation);
+			try
+			{
+				if (File.Exists(FileLocation))
+				{
+					string contents = await File.ReadAllTextAsync(FileLocation);
 
-                    T? settings = JsonSerializer.Deserialize<T>(contents);
+					T? settings = JsonSerializer.Deserialize<T>(contents);
 
-                    if (settings is null)
-                        throw new ArgumentNullException("Deserialization returned null");
+					if (settings is null)
+						throw new ArgumentNullException("Deserialization returned null");
 
-                    _prop = settings;
-                    Loaded = true;
-                    LastFileHash = MD5Hash.FromString(contents);
+					_prop = settings;
+					Loaded = true;
+					LastFileHash = MD5Hash.FromString(contents);
 
-                    App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+					App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
 
-                    return true;
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
-                    Loaded = true;
+					return true;
+				}
+				else
+				{
+					App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
+					Loaded = true;
 
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
-                App.Logger.WriteException(LOG_IDENT, ex);
+					return false;
+				}
+			}
+			catch (Exception ex)
+			{
+				App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+				App.Logger.WriteException(LOG_IDENT, ex);
 
-                if (alertFailure)
-                {
-                    string message = "";
+				if (alertFailure)
+				{
+					string message = "";
 
-                    if (ClassName == nameof(Settings))
-                        message = Strings.JsonManager_SettingsLoadFailed;
-                    else if (ClassName == nameof(FastFlagManager))
-                        message = Strings.JsonManager_FastFlagsLoadFailed;
+					if (ClassName == nameof(Settings))
+						message = Strings.JsonManager_SettingsLoadFailed;
+					else if (ClassName == nameof(FastFlagManager))
+						message = Strings.JsonManager_FastFlagsLoadFailed;
 
-                    if (!String.IsNullOrEmpty(message))
-                        Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
+					if (!String.IsNullOrEmpty(message))
+						await Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
 
-                    try
-                    {
-                        // Create a backup of loaded file
-                        File.Copy(FileLocation, FileLocation + ".bak", true);
-                    }
-                    catch (Exception copyEx)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to create backup file: {FileLocation}.bak");
-                        App.Logger.WriteException(LOG_IDENT, copyEx);
-                    }
-                }
+					try
+					{
+						if (File.Exists(FileLocation))
+							File.Copy(FileLocation, FileLocation + ".bak", true);
+					}
+					catch (Exception copyEx)
+					{
+						App.Logger.WriteLine(LOG_IDENT, $"Failed to create backup file: {FileLocation}.bak");
+						App.Logger.WriteException(LOG_IDENT, copyEx);
+					}
+				}
 
-                Loaded = true;
-                Save();
+				Loaded = true;
+				Save();
 
-                return false;
-            }
-        }
+				return false;
+			}
+		}
 
-        public virtual void Save()
+		public virtual async void Save()
         {
             string LOG_IDENT = $"{LOG_IDENT_CLASS}::Save";
             
@@ -125,7 +125,7 @@ namespace Froststrap
                 App.Logger.WriteException(LOG_IDENT, ex);
 
                 string errorMessage = string.Format(Strings.Bootstrapper_JsonManagerSaveFailed, ClassName, ex.Message);
-                Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Warning);
 
                 return;
             }
@@ -161,7 +161,7 @@ namespace Froststrap
         }
 
 
-        public void SaveProfile(string name)
+        public async void SaveProfile(string name)
         {
             string LOGGER_STRING = "SaveProfile::Profiles";
 
@@ -187,11 +187,11 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
             }
         }
 
-        public void LoadProfile(string? name, bool? clearFlags)
+        public async void LoadProfile(string? name, bool? clearFlags)
         {
             string LOGGER_STRING = "LoadProfile::Profiles";
 
@@ -252,11 +252,11 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
             }
         }
 
-        public void LoadPresetProfile(string? name, bool? clearFlags)
+        public async void LoadPresetProfile(string? name, bool? clearFlags)
         {
             string LOGGER_STRING = "LoadProfile::Profiles";
 
@@ -333,7 +333,7 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
             }
         }
 
@@ -361,7 +361,7 @@ namespace Froststrap
             get
             {
                 if (!Loaded)
-                    Load();
+                    _ = Load();
 
                 return _prop;
             }

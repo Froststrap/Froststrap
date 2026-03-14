@@ -24,11 +24,11 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand EditCustomThemeCommand => new RelayCommand(EditCustomTheme);
         public ICommand ExportCustomThemeCommand => new RelayCommand(ExportCustomTheme);
 
-        private void PreviewBootstrapper()
+        private async void PreviewBootstrapper()
         {
             App.FrostRPC?.SetDialog("Preview Launcher");
 
-            IBootstrapperDialog dialog = App.Settings.Prop.BootstrapperStyle.GetNew();
+            IBootstrapperDialog dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
 
             if (App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.ByfronDialog)
                 dialog.Message = Strings.Bootstrapper_StylePreview_ImageCancel;
@@ -205,7 +205,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void SetBackgroundImage(string sourcePath)
+        private async void SetBackgroundImage(string sourcePath)
         {
             try
             {
@@ -224,7 +224,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(
+                await Frontend.ShowMessageBox(
                     $"Failed to set background image: {ex.Message}",
                     MessageBoxImage.Error,
                     MessageBoxButton.OK
@@ -232,7 +232,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public void ClearBackgroundImage()
+        public async void ClearBackgroundImage()
         {
             try
             {
@@ -243,7 +243,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(
+                await Frontend.ShowMessageBox(
                     $"Failed to clear background image: {ex.Message}",
                     MessageBoxImage.Error,
                     MessageBoxButton.OK
@@ -403,7 +403,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void DeleteCustomTheme()
+        private async void DeleteCustomTheme()
         {
             if (SelectedCustomTheme is null)
                 return;
@@ -415,7 +415,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException("AppearanceViewModel::DeleteCustomTheme", ex);
-                Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, SelectedCustomTheme, ex.Message), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, SelectedCustomTheme, ex.Message), MessageBoxImage.Error);
                 return;
             }
 
@@ -430,7 +430,7 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(IsCustomThemeSelected));
         }
 
-        private void RenameCustomTheme()
+        private async void RenameCustomTheme()
         {
             const string LOG_IDENT = "AppearanceViewModel::RenameCustomTheme";
 
@@ -439,7 +439,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (string.IsNullOrEmpty(SelectedCustomThemeName))
             {
-                Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameEmpty, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameEmpty, MessageBoxImage.Error);
                 return;
             }
 
@@ -450,16 +450,16 @@ namespace Froststrap.UI.ViewModels.Settings
                 switch (validationResult)
                 {
                     case PathValidator.ValidationResult.IllegalCharacter:
-                        Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameIllegalCharacters, MessageBoxImage.Error);
+                        await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameIllegalCharacters, MessageBoxImage.Error);
                         break;
                     case PathValidator.ValidationResult.ReservedFileName:
-                        Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameReserved, MessageBoxImage.Error);
+                        await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameReserved, MessageBoxImage.Error);
                         break;
                     default:
                         App.Logger.WriteLine(LOG_IDENT, $"Got unhandled PathValidator::ValidationResult {validationResult}");
                         Debug.Assert(false);
 
-                        Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_Unknown, MessageBoxImage.Error);
+                        await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_Unknown, MessageBoxImage.Error);
                         break;
                 }
                 return;
@@ -469,7 +469,7 @@ namespace Froststrap.UI.ViewModels.Settings
             string path = Path.Combine(Paths.CustomThemes, SelectedCustomThemeName, "Theme.xml");
             if (File.Exists(path))
             {
-                Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameTaken, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameTaken, MessageBoxImage.Error);
                 return;
             }
 
@@ -480,7 +480,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT, ex);
-                Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_RenameFailed, SelectedCustomTheme, ex.Message), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_RenameFailed, SelectedCustomTheme, ex.Message), MessageBoxImage.Error);
                 return;
             }
 

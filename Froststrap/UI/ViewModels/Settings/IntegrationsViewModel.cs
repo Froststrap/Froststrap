@@ -151,7 +151,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void OpenGameHistory()
+        private async void OpenGameHistory()
         {
             try
             {
@@ -171,7 +171,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 // Handle any errors
-                Frontend.ShowMessageBox($"Failed to open Game History: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox($"Failed to open Game History: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -250,45 +250,50 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.UseDisableAppPatch = value;
         }
 
-        public bool StudioRPCEnabled
-        {
-            get => App.Settings.Prop.StudioRPC;
-            set
-            {
-                if (value)
-                {
-                    var result = Frontend.ShowMessageBox(
-                        "This works by adding a custom made froststrap plugin that will log what your doing.\n" +
-                        "Do you want to install the plugin?",
-                        MessageBoxImage.Information,
-                        MessageBoxButton.YesNo
-                    );
+		public bool StudioRPCEnabled
+		{
+			get => App.Settings.Prop.StudioRPC;
+			set => HandleStudioRPCChangeAsync(value);
+		}
 
-                    if (result != MessageBoxResult.Yes)
-                    {
-                        return;
-                    }
-                }
+		private async void HandleStudioRPCChangeAsync(bool value)
+		{
+			if (value && !App.Settings.Prop.StudioRPC)
+			{
+				var result = await Frontend.ShowMessageBox(
+					"This works by adding a custom made froststrap plugin that will log what your doing.\n" +
+					"Do you want to install the plugin?",
+					MessageBoxImage.Information,
+					MessageBoxButton.YesNo
+				);
 
-                App.Settings.Prop.StudioRPC = value;
+				if (result != MessageBoxResult.Yes)
+				{
+					OnPropertyChanged(nameof(StudioRPCEnabled));
+					return;
+				}
+			}
 
-                if (!value)
-                {
-                    ThumbnailChanging = value;
-                    EditingInfo = value;
-                    WorkspaceInfo = value;
-                    ShowTesting = value;
-                    OnPropertyChanged(nameof(ThumbnailChanging));
-                    OnPropertyChanged(nameof(EditingInfo));
-                    OnPropertyChanged(nameof(WorkspaceInfo));
-                    OnPropertyChanged(nameof(ShowTesting));
-                }
+			App.Settings.Prop.StudioRPC = value;
 
-                _ = HandleStudioRPCPluginAsync(value);
-            }
-        }
+			if (!value)
+			{
+				ThumbnailChanging = value;
+				EditingInfo = value;
+				WorkspaceInfo = value;
+				ShowTesting = value;
+				OnPropertyChanged(nameof(ThumbnailChanging));
+				OnPropertyChanged(nameof(EditingInfo));
+				OnPropertyChanged(nameof(WorkspaceInfo));
+				OnPropertyChanged(nameof(ShowTesting));
+			}
 
-        public bool ThumbnailChanging
+			_ = HandleStudioRPCPluginAsync(value);
+
+			OnPropertyChanged(nameof(StudioRPCEnabled));
+		}
+
+		public bool ThumbnailChanging
         {
             get => App.Settings.Prop.StudioThumbnailChanging;
             set => App.Settings.Prop.StudioThumbnailChanging = value;
@@ -370,7 +375,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 catch (Exception ex)
                 {
-                    Frontend.ShowMessageBox($"Install failed: {ex.Message}",
+                    await Frontend.ShowMessageBox($"Install failed: {ex.Message}",
                         MessageBoxImage.Error, MessageBoxButton.OK);
                 }
             }

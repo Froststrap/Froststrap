@@ -93,9 +93,9 @@ namespace Froststrap
                 // before we open the window, force load the distribution states
                 // some menu viewmodels require the distribution states, which will result in a short freeze once the page is opened
                 if (!App.PlayerState.Loaded)
-                    App.PlayerState.Load();
+                    _ = App.PlayerState.Load();
                 if (!App.StudioState.Loaded)
-                    App.StudioState.Load();
+                    _ = App.StudioState.Load();
 
                 if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
                 {
@@ -135,7 +135,7 @@ namespace Froststrap
             dialog.Show();
         }
 
-        public static void LaunchRoblox(LaunchMode launchMode)
+        public static async void LaunchRoblox(LaunchMode launchMode)
         {
             const string LOG_IDENT = "LaunchHandler::LaunchRoblox";
 
@@ -144,7 +144,7 @@ namespace Froststrap
 
             if (!File.Exists(Path.Combine(Paths.System, "mfplat.dll")))
             {
-                Frontend.ShowMessageBox(Strings.Bootstrapper_WMFNotFound, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Strings.Bootstrapper_WMFNotFound, MessageBoxImage.Error);
 
                 if (!App.LaunchSettings.QuietFlag.Active)
                     Utilities.ShellExecute("https://support.microsoft.com/en-us/topic/media-feature-pack-list-for-windows-n-editions-c1c6fffa-d052-8338-7a79-a4bb980a700a");
@@ -154,7 +154,7 @@ namespace Froststrap
 
             if (App.Settings.Prop.ConfirmLaunches && Mutex.TryOpenExisting("ROBLOX_singletonMutex", out var _) && !App.Settings.Prop.MultiInstanceLaunching)
             {
-                var result = Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
+                var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
 
                 if (result != MessageBoxResult.Yes)
                 {
@@ -171,12 +171,12 @@ namespace Froststrap
             if (!App.LaunchSettings.QuietFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper dialog");
-                dialog = App.Settings.Prop.BootstrapperStyle.GetNew();
+                dialog = await App.Settings.Prop.BootstrapperStyle.GetNew();
                 App.Bootstrapper.Dialog = dialog;
                 dialog.Bootstrapper = App.Bootstrapper;
             }
 
-            Task.Run(App.Bootstrapper.Run).ContinueWith(t =>
+            _ = Task.Run(App.Bootstrapper.Run).ContinueWith(t =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Bootstrapper task has finished");
 

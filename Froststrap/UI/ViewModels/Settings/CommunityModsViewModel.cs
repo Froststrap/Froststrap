@@ -316,7 +316,7 @@ namespace Froststrap.UI.ViewModels.Settings
                         App.Settings.Save();
                     }
 
-                    Frontend.ShowMessageBox(
+                    await Frontend.ShowMessageBox(
                         $"Custom theme '{mod.Name}' installed successfully!\n" +
                         "The theme has been saved to your Custom Themes folder and has been automatically selected as your current theme.",
                         MessageBoxImage.Information,
@@ -333,7 +333,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                     if (hasExistingMods)
                     {
-                        var result = Frontend.ShowMessageBox(
+                        var result = await Frontend.ShowMessageBox(
                             "Existing mods found in the Modifications folder.\n\n" +
                             $"Would you like to delete existing mods before installing '{mod.Name}'?",
                             MessageBoxImage.Question,
@@ -348,7 +348,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                     await ExtractZipAsync(tempFile);
 
-                    Frontend.ShowMessageBox(
+                    await Frontend.ShowMessageBox(
                         $"Mod '{mod.Name}' installed successfully!",
                         MessageBoxImage.Information,
                         MessageBoxButton.OK
@@ -359,7 +359,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(
+                await Frontend.ShowMessageBox(
                     ex.Message,
                     MessageBoxImage.Error,
                     MessageBoxButton.OK

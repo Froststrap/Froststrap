@@ -2,7 +2,7 @@
 {
     static class BootstrapperStyleEx
     {
-        public static IBootstrapperDialog GetNew(this BootstrapperStyle bootstrapperStyle) => Frontend.GetBootstrapperDialog(bootstrapperStyle);
+        public static async Task<IBootstrapperDialog> GetNew(this BootstrapperStyle bootstrapperStyle) => await Frontend.GetBootstrapperDialog(bootstrapperStyle);
 
         public static IReadOnlyCollection<BootstrapperStyle> Selections => new BootstrapperStyle[]
         {

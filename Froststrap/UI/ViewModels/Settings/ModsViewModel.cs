@@ -76,7 +76,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                     if (!FontHeaders.TryGetValue(type, out var expectedHeader) || !expectedHeader.SequenceEqual(fileHeader))
                     {
-                        Frontend.ShowMessageBox("Custom Font Invalid", MessageBoxImage.Error);
+                        await Frontend.ShowMessageBox("Custom Font Invalid", MessageBoxImage.Error);
                         return;
                     }
 
@@ -162,7 +162,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public FontModPresetTask TextFontTask { get; } = new();
 
-        private void OpenCompatSettings()
+        private async void OpenCompatSettings()
         {
             string path = new RobloxPlayerData().ExecutablePath;
 
@@ -172,7 +172,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             else
             {
-                Frontend.ShowMessageBox(Strings.Common_RobloxNotInstalled, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Strings.Common_RobloxNotInstalled, MessageBoxImage.Error);
             }
         }
 
@@ -247,14 +247,14 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox($"Failed to add {failureText}:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to add {failureText}:\n{ex.Message}", MessageBoxImage.Error);
                 return;
             }
 
             postAction?.Invoke();
         }
 
-        private void RemoveCustomFile(string[] targetFiles, string targetDir, string notFoundMessage, Action postAction = null!)
+        private async void RemoveCustomFile(string[] targetFiles, string targetDir, string notFoundMessage, Action postAction = null!)
         {
             bool anyDeleted = false;
 
@@ -270,14 +270,14 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                     catch (Exception ex)
                     {
-                        Frontend.ShowMessageBox($"Failed to remove {name}:\n{ex.Message}", MessageBoxImage.Error);
+                        await Frontend.ShowMessageBox($"Failed to remove {name}:\n{ex.Message}", MessageBoxImage.Error);
                     }
                 }
             }
 
             if (!anyDeleted)
             {
-                Frontend.ShowMessageBox(notFoundMessage, MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(notFoundMessage, MessageBoxImage.Information);
             }
 
             postAction?.Invoke();
@@ -709,7 +709,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private async void OpenColorPicker()
         {
             // TODO: add a color picker library that fits our future ui
-            Frontend.ShowMessageBox("Use the hex color input to specify colors.", MessageBoxImage.Information);
+            await Frontend.ShowMessageBox("Use the hex color input to specify colors.", MessageBoxImage.Information);
         }
 
         private async Task GenerateModAsync()
@@ -1105,7 +1105,7 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(IsCustomCursorSetSelected));
         }
 
-        private void AddCustomCursorSet()
+        private async void AddCustomCursorSet()
         {
             string basePath = Paths.CustomCursors;
             int index = 1;
@@ -1136,11 +1136,11 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException("ModsViewModel::AddCustomCursorSet", ex);
-                Frontend.ShowMessageBox($"Failed to create cursor set:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to create cursor set:\n{ex.Message}", MessageBoxImage.Error);
             }
         }
 
-        private void DeleteCustomCursorSet()
+        private async void DeleteCustomCursorSet()
         {
             if (SelectedCustomCursorSet is null)
                 return;
@@ -1153,7 +1153,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException("ModsViewModel::DeleteCustomCursorSet", ex);
-                Frontend.ShowMessageBox($"Failed to delete cursor set:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to delete cursor set:\n{ex.Message}", MessageBoxImage.Error);
                 return;
             }
 
@@ -1179,7 +1179,7 @@ namespace Froststrap.UI.ViewModels.Settings
             Directory.Move(oldDir, newDir);
         }
 
-        private void RenameCustomCursorSet()
+        private async void RenameCustomCursorSet()
         {
             const string LOG_IDENT = "ModsViewModel::RenameCustomCursorSet";
 
@@ -1188,7 +1188,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (string.IsNullOrWhiteSpace(SelectedCustomCursorSetName))
             {
-                Frontend.ShowMessageBox("Name cannot be empty.", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox("Name cannot be empty.", MessageBoxImage.Error);
                 return;
             }
 
@@ -1204,7 +1204,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 };
 
                 App.Logger.WriteLine(LOG_IDENT, $"Validation result: {validationResult}");
-                Frontend.ShowMessageBox(msg, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(msg, MessageBoxImage.Error);
                 return;
             }
 
@@ -1215,7 +1215,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT, ex);
-                Frontend.ShowMessageBox($"Failed to rename:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to rename:\n{ex.Message}", MessageBoxImage.Error);
                 return;
             }
 
@@ -1230,11 +1230,11 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(SelectedCustomCursorSetIndex));
         }
 
-        private void ApplyCursorSet()
+        private async void ApplyCursorSet()
         {
             if (SelectedCustomCursorSet is null)
             {
-                Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -1246,7 +1246,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (!Directory.Exists(sourceDir))
                 {
-                    Frontend.ShowMessageBox("Selected cursor set folder does not exist.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Selected cursor set folder does not exist.", MessageBoxImage.Error);
                     return;
                 }
 
@@ -1276,12 +1276,12 @@ namespace Froststrap.UI.ViewModels.Settings
                     File.Copy(file, destPath, overwrite: true);
                 }
 
-                Frontend.ShowMessageBox($"Cursor set '{SelectedCustomCursorSet.Name}' applied successfully!", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox($"Cursor set '{SelectedCustomCursorSet.Name}' applied successfully!", MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("ModsViewModel::ApplyCursorSet", ex);
-                Frontend.ShowMessageBox($"Failed to apply cursor set:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to apply cursor set:\n{ex.Message}", MessageBoxImage.Error);
             }
 
             LoadCursorPathsForSelectedSet();
@@ -1292,11 +1292,11 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(DeleteCustomCursorVisibility));
         }
 
-        private void GetCurrentCursorSet()
+        private async void GetCurrentCursorSet()
         {
             if (SelectedCustomCursorSet is null)
             {
-                Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -1341,13 +1341,13 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                 }
 
-                Frontend.ShowMessageBox("Current cursor set copied into selected folder.", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox("Current cursor set copied into selected folder.", MessageBoxImage.Information);
                 NotifyCursorVisibilities();
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("ModsViewModel::GetCurrentCursorSet", ex);
-                Frontend.ShowMessageBox($"Failed to get current cursor set:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to get current cursor set:\n{ex.Message}", MessageBoxImage.Error);
             }
 
             LoadCursorPathsForSelectedSet();
@@ -1419,7 +1419,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException("ModsViewModel::ExportCursorSet", ex);
-                Frontend.ShowMessageBox($"Failed to export cursor set:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to export cursor set:\n{ex.Message}", MessageBoxImage.Error);
                 return;
             }
 
@@ -1430,7 +1430,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomCursorSet is null)
             {
-                Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -1503,12 +1503,12 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 Directory.Delete(tempPath, recursive: true);
 
-                Frontend.ShowMessageBox("Cursor set imported successfully.", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox("Cursor set imported successfully.", MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("ModsViewModel::ImportCursorSet", ex);
-                Frontend.ShowMessageBox($"Failed to import cursor set:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to import cursor set:\n{ex.Message}", MessageBoxImage.Error);
             }
 
             LoadCursorPathsForSelectedSet();
@@ -1546,7 +1546,7 @@ namespace Froststrap.UI.ViewModels.Settings
             return Path.Combine(dir, fileName);
         }
 
-        private void DeleteCursorImage(string fileName)
+        private async void DeleteCursorImage(string fileName)
         {
             string? destPath = GetCursorTargetPath(fileName);
             if (destPath is null || !File.Exists(destPath))
@@ -1561,7 +1561,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException($"ModsViewModel::Delete{fileName}", ex);
-                Frontend.ShowMessageBox($"Failed to delete {fileName}:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to delete {fileName}:\n{ex.Message}", MessageBoxImage.Error);
             }
 
             LoadCursorPathsForSelectedSet();
@@ -1586,7 +1586,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomCursorSet is null)
             {
-                Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select a cursor set first.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -1631,7 +1631,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex)
             {
                 App.Logger.WriteException($"ModsViewModel::Add{fileName}", ex);
-                Frontend.ShowMessageBox($"Failed to add {fileName}:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to add {fileName}:\n{ex.Message}", MessageBoxImage.Error);
             }
 
             LoadCursorPathsForSelectedSet();

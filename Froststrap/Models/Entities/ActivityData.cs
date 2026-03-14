@@ -229,7 +229,7 @@ namespace Froststrap.Models.Entities
             }
         }
 
-        public void RejoinServer(bool CloseRoblox = true)
+        public async void RejoinServer(bool CloseRoblox = true)
         {
             try
             {
@@ -259,7 +259,7 @@ namespace Froststrap.Models.Entities
             catch (Exception ex)
             {
                 App.Logger.WriteException("ActivityData::RejoinServer", ex);
-                Frontend.ShowMessageBox($"Failed to rejoin server: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to rejoin server: {ex.Message}", MessageBoxImage.Error);
             }
         }
 

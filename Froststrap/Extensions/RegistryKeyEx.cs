@@ -4,7 +4,7 @@ namespace Froststrap.Extensions
 {
     public static class RegistryKeyEx
     {
-        public static void SetValueSafe(this RegistryKey registryKey, string? name, object value)
+        public static async void SetValueSafe(this RegistryKey registryKey, string? name, object value)
         {
             try
             {
@@ -13,12 +13,12 @@ namespace Froststrap.Extensions
             }
             catch (UnauthorizedAccessException)
             {
-                Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
         }
 
-        public static void DeleteValueSafe(this RegistryKey registryKey, string name)
+        public static async void DeleteValueSafe(this RegistryKey registryKey, string name)
         {
             try
             {
@@ -27,7 +27,7 @@ namespace Froststrap.Extensions
             }
             catch (UnauthorizedAccessException)
             {
-                Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Strings.Dialog_RegistryWriteError, MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
             }
         }

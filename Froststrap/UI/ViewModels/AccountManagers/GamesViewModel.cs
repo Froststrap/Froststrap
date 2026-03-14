@@ -624,7 +624,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 if (datacentersResult == null)
                 {
-                    Frontend.ShowMessageBox("Failed to load server regions. Please try again later.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Failed to load server regions. Please try again later.", MessageBoxImage.Error);
                     return;
                 }
 
@@ -645,7 +645,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 if (string.IsNullOrWhiteSpace(cookie))
                 {
-                    Frontend.ShowMessageBox("Cannot find a cookie to use, Please log in to account manager.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Cannot find a cookie to use, Please log in to account manager.", MessageBoxImage.Error);
                     return;
                 }
 
@@ -653,7 +653,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 if (string.IsNullOrWhiteSpace(selectedRegion))
                 {
-                    Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
                     return;
                 }
 
@@ -693,14 +693,14 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                     }
                     else
                     {
-                        Frontend.ShowMessageBox($"Could not find a server in {selectedRegion} after searching all available servers.", MessageBoxImage.Information);
+                        await Frontend.ShowMessageBox($"Could not find a server in {selectedRegion} after searching all available servers.", MessageBoxImage.Information);
                         return;
                     }
 
                     await Task.Delay(500);
                 }
 
-                Frontend.ShowMessageBox($"Could not find a server in {selectedRegion} after {maxAttempts} pages. Try selecting a different region.", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox($"Could not find a server in {selectedRegion} after {maxAttempts} pages. Try selecting a different region.", MessageBoxImage.Information);
             }
             finally
             {
@@ -714,7 +714,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
             if (placeId == 0)
             {
-                Frontend.ShowMessageBox("Invalid Place ID.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Invalid Place ID.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -723,13 +723,13 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             var mgr = AccountManager.Shared;
             if (mgr?.ActiveAccount is null)
             {
-                Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(App.Settings.Prop.SelectedRegion))
             {
-                Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select a region in Region Selector first.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -742,7 +742,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT_AUTO_JOIN, $"Exception: {ex.Message}");
-                Frontend.ShowMessageBox($"Failed to find and join server: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to find and join server: {ex.Message}", MessageBoxImage.Error);
             }
             finally
             {
@@ -757,13 +757,13 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             var mgr = AccountManager.Shared;
             if (mgr?.ActiveAccount is null)
             {
-                Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                 return;
             }
 
             if (placeId == 0)
             {
-                Frontend.ShowMessageBox("Invalid Place ID.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Invalid Place ID.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -1562,7 +1562,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             {
                 if (string.IsNullOrWhiteSpace(PlaceId) || !long.TryParse(PlaceId, out long placeId) || placeId == 0)
                 {
-                    Frontend.ShowMessageBox("Please select a game first or enter a valid Place ID.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox("Please select a game first or enter a valid Place ID.", MessageBoxImage.Warning);
                     return;
                 }
 
@@ -1583,19 +1583,19 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             var mgr = AccountManager.Shared;
             if (mgr?.ActiveAccount is null)
             {
-                Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(PlaceId))
             {
-                Frontend.ShowMessageBox("Please enter a Place ID.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please enter a Place ID.", MessageBoxImage.Warning);
                 return;
             }
 
             if (!long.TryParse(PlaceId, out long placeId))
             {
-                Frontend.ShowMessageBox("Please enter a valid Place ID.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please enter a valid Place ID.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -1614,7 +1614,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             var mgr = AccountManager.Shared;
             if (mgr?.ActiveAccount is null)
             {
-                Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -1629,7 +1629,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT_SUBPLACE, $"Exception: {ex.Message}");
-                Frontend.ShowMessageBox($"Failed to launch subplace: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to launch subplace: {ex.Message}", MessageBoxImage.Error);
             }
         }
 
@@ -1712,13 +1712,13 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                 var mgr = AccountManager.Shared;
                 if (mgr?.ActiveAccount is null)
                 {
-                    Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                     return;
                 }
 
                 if (!long.TryParse(PlaceId, out long placeId) || placeId == 0)
                 {
-                    Frontend.ShowMessageBox("Please select a game first (set Place ID).", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox("Please select a game first (set Place ID).", MessageBoxImage.Warning);
                     return;
                 }
 
@@ -1731,7 +1731,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT_JOIN, $"Exception: {ex.Message}");
-                Frontend.ShowMessageBox($"Failed to join server: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to join server: {ex.Message}", MessageBoxImage.Error);
             }
             finally
             {

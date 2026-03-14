@@ -4,7 +4,7 @@
     {
         private static GenericTriState _loadStatus = GenericTriState.Unknown;
 
-        public static void Create(string exePath, string exeArgs, string lnkPath)
+        public static async void Create(string exePath, string exeArgs, string lnkPath)
         {
             const string LOG_IDENT = "Shortcut::Create";
 
@@ -28,7 +28,7 @@
 
                 _loadStatus = GenericTriState.Failed;
 
-                Frontend.ShowMessageBox(Strings.Dialog_CannotCreateShortcuts, MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(Strings.Dialog_CannotCreateShortcuts, MessageBoxImage.Warning);
             }
         }
     }
