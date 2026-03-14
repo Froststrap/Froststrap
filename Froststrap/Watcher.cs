@@ -15,8 +15,6 @@ namespace Froststrap
 
         public readonly IntegrationWatcher? IntegrationWatcher;
 
-        public readonly MemoryCleaner? MemoryCleaner;
-
         public readonly PlayerDiscordRichPresence? PlayerRichPresence;
         public readonly StudioDiscordRichPresence? StudioRichPresence;
 
@@ -56,8 +54,6 @@ namespace Froststrap
 
             if (_watcherData is null)
                 throw new Exception("Watcher data is invalid");
-
-            MemoryCleaner = new MemoryCleaner();
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
@@ -162,7 +158,6 @@ namespace Froststrap
             }
 
             IntegrationWatcher?.Dispose();
-            MemoryCleaner?.Dispose();
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();
             StudioRichPresence?.Dispose();

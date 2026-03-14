@@ -288,7 +288,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
         {
             if (SelectedAccount is null)
             {
-                Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -303,11 +303,11 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                     mgr.SetActiveAccount(backendAccount);
                     await SwitchToAccountAsync(backendAccount);
                     IsAccountLoggedIn = true;
-                    Frontend.ShowMessageBox($"Switched to account: {SelectedAccount.DisplayName}", MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox($"Switched to account: {SelectedAccount.DisplayName}", MessageBoxImage.Information);
                 }
                 else
                 {
-                    Frontend.ShowMessageBox($"{SelectedAccount.DisplayName} is already the active account.", MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox($"{SelectedAccount.DisplayName} is already the active account.", MessageBoxImage.Information);
                 }
             }
         }
@@ -327,7 +327,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                     if (newAccount is null)
                     {
-                        Frontend.ShowMessageBox("Quick Sign-In was cancelled or failed. Please try again or use browser login.", MessageBoxImage.Information);
+                        await Frontend.ShowMessageBox("Quick Sign-In was cancelled or failed. Please try again or use browser login.", MessageBoxImage.Information);
                         return;
                     }
                 }
@@ -351,7 +351,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             catch (Exception ex)
             {
                 App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", $"Exception: {ex.Message}");
-                Frontend.ShowMessageBox($"Failed to add account: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to add account: {ex.Message}", MessageBoxImage.Error);
             }
             finally
             {
@@ -394,7 +394,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 if (existingBackendAccount == null)
                 {
-                    Frontend.ShowMessageBox("Failed to add account to backend.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Failed to add account to backend.", MessageBoxImage.Error);
                     return;
                 }
             }
@@ -422,7 +422,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
             await UpdateAccountInformationAsync(existingBackendAccount.UserId);
 
-            Frontend.ShowMessageBox($"Added and switched to account: {existingBackendAccount.DisplayName}", MessageBoxImage.Information);
+            await Frontend.ShowMessageBox($"Added and switched to account: {existingBackendAccount.DisplayName}", MessageBoxImage.Information);
         }
 
         [RelayCommand]
@@ -432,18 +432,18 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             var target = account ?? SelectedAccount;
             if (target is null)
             {
-                Frontend.ShowMessageBox("Please select an account to delete.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select an account to delete.", MessageBoxImage.Warning);
                 return;
             }
 
             var backendAccount = mgr.Accounts.FirstOrDefault(acc => acc.UserId == target.Id);
             if (backendAccount is null)
             {
-                Frontend.ShowMessageBox("Selected account could not be found in the backend.", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox("Selected account could not be found in the backend.", MessageBoxImage.Error);
                 return;
             }
 
-            var result = Frontend.ShowMessageBox(
+            var result = await Frontend.ShowMessageBox(
                 $"Delete account '{target.DisplayName}' (@{target.Username})?",
                 MessageBoxImage.Warning,
                 MessageBoxButton.YesNo
@@ -455,7 +455,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             bool removed = mgr.RemoveAccount(backendAccount);
             if (!removed)
             {
-                Frontend.ShowMessageBox("Failed to delete account.", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox("Failed to delete account.", MessageBoxImage.Error);
                 return;
             }
 
@@ -485,7 +485,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
         }
 
         [RelayCommand]
-        private void SignOut()
+        private async Task SignOut()
         {
             var mgr = Manager;
             mgr.SetActiveAccount(null);
@@ -502,7 +502,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             SelectedAccount = null;
             OnPropertyChanged(nameof(Accounts));
 
-            Frontend.ShowMessageBox("Signed out successfully.", MessageBoxImage.Information);
+            await Frontend.ShowMessageBox("Signed out successfully.", MessageBoxImage.Information);
         }
     }
 }

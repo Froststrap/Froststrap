@@ -14,7 +14,7 @@
 
         public string AsDocument => String.Join('\n', History);
 
-        public void Initialize(bool useTempDir = false)
+        public async void Initialize(bool useTempDir = false)
         {
             const string LOG_IDENT = "Logger::Initialize";
 
@@ -55,7 +55,7 @@
 
                 WriteLine(LOG_IDENT, $"Failed to initialize because Froststrap cannot write to {directory}");
 
-                Frontend.ShowMessageBox(
+                await Frontend.ShowMessageBox(
                     String.Format(Strings.Logger_NoWriteMode, directory), 
                     MessageBoxImage.Warning, 
                     MessageBoxButton.OK

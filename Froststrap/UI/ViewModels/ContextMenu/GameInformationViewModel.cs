@@ -302,7 +302,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             {
                 await topLevel.Clipboard.SetTextAsync(gameUrl);
 
-                Frontend.ShowMessageBox(
+                await Frontend.ShowMessageBox(
                     "Copied game link successfully.",
                     MessageBoxImage.Information
                 );

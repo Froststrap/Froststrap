@@ -94,15 +94,6 @@
 				</MenuItem.Header>
 			</MenuItem>
 
-			<MenuItem x:Name="CleanMemoryMenuItem" IsVisible="False" Click="CleanMemoryMenuItem_Click">
-				<MenuItem.Header>
-					<Grid ColumnDefinitions="24, *">
-						<ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
-						<TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Clean Memory" />
-					</Grid>
-				</MenuItem.Header>
-			</MenuItem>
-
 			<MenuItem Click="CloseRobloxMenuItem_Click">
 				<MenuItem.Header>
 					<Grid ColumnDefinitions="24, *">

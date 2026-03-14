@@ -16,7 +16,7 @@ namespace Froststrap.Extensions
             return bitmap;
         }
 
-        public static Bitmap GetBitmapFromStream(Stream stream, bool handleException = true)
+        public static async Task<Bitmap> GetBitmapFromStream(Stream stream, bool handleException = true)
         {
             if (handleException)
             {
@@ -28,7 +28,7 @@ namespace Froststrap.Extensions
                 catch (Exception ex)
                 {
                     App.Logger.WriteException("IconEx::GetBitmapFromStream", ex);
-                    Frontend.ShowMessageBox(string.Format(Strings.Dialog_IconLoadFailed, ex.Message));
+                    await Frontend.ShowMessageBox(string.Format(Strings.Dialog_IconLoadFailed, ex.Message));
                     return BootstrapperIcon.IconFroststrap.GetIcon();
                 }
             }

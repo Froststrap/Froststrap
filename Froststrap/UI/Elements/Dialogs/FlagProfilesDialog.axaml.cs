@@ -95,7 +95,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (LoadProfile.SelectedItem is not string oldProfileName)
             {
-                Frontend.ShowMessageBox("Please select a profile to rename.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Please select a profile to rename.", MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -103,7 +103,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (string.IsNullOrWhiteSpace(newName))
             {
-                Frontend.ShowMessageBox("New profile name cannot be empty.", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("New profile name cannot be empty.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -111,7 +111,7 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 if (newName.Contains(c))
                 {
-                    Frontend.ShowMessageBox($"Profile name contains invalid character '{c}'.", MessageBoxImage.Error, MessageBoxButton.OK);
+                    await Frontend.ShowMessageBox($"Profile name contains invalid character '{c}'.", MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
             }
@@ -122,7 +122,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (File.Exists(newPath))
             {
-                Frontend.ShowMessageBox("A profile with that name already exists.", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("A profile with that name already exists.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -134,7 +134,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox($"Failed to rename profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox($"Failed to rename profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -142,7 +142,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (LoadProfile.SelectedItem is not string selectedProfile)
             {
-                Frontend.ShowMessageBox("Please select a profile to copy.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Please select a profile to copy.", MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -151,7 +151,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (!File.Exists(profilePath))
             {
-                Frontend.ShowMessageBox("Selected profile file not found.", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Selected profile file not found.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -162,7 +162,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 if (flags == null)
                 {
-                    Frontend.ShowMessageBox("Failed to parse the selected profile.", MessageBoxImage.Error, MessageBoxButton.OK);
+                    await Frontend.ShowMessageBox("Failed to parse the selected profile.", MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
 
@@ -214,7 +214,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox($"Failed to copy profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox($"Failed to copy profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -222,7 +222,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (LoadProfile.SelectedItem is not string selectedProfile)
             {
-                Frontend.ShowMessageBox("Please select a profile to update.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Please select a profile to update.", MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -232,7 +232,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 if (currentFlags == null)
                 {
-                    Frontend.ShowMessageBox("Failed to get current FastFlags.", MessageBoxImage.Error, MessageBoxButton.OK);
+                    await Frontend.ShowMessageBox("Failed to get current FastFlags.", MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
 
@@ -251,7 +251,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox($"Failed to update profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox($"Failed to update profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -273,23 +273,23 @@ namespace Froststrap.UI.Elements.Dialogs
             }
         }
 
-        private void OKButton_Click(object sender, RoutedEventArgs e)
+        private async void OKButton_Click(object sender, RoutedEventArgs e)
         {
             if (Tabs.SelectedIndex == 0 && string.IsNullOrEmpty(SaveProfile.Text))
             {
-                Frontend.ShowMessageBox("Profile name cannot be empty", MessageBoxImage.Information, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Profile name cannot be empty", MessageBoxImage.Information, MessageBoxButton.OK);
                 return;
             }
 
             if (Tabs.SelectedIndex == 1 && LoadProfile.SelectedItem == null)
             {
-                Frontend.ShowMessageBox("Please select a profile to load", MessageBoxImage.Information, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Please select a profile to load", MessageBoxImage.Information, MessageBoxButton.OK);
                 return;
             }
 
             if (Tabs.SelectedIndex == 2 && LoadPresetProfile.SelectedItem == null)
             {
-                Frontend.ShowMessageBox("Please select a preset profile", MessageBoxImage.Information, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox("Please select a preset profile", MessageBoxImage.Information, MessageBoxButton.OK);
                 return;
             }
 

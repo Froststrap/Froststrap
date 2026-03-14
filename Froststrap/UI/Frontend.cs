@@ -1,30 +1,36 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Notifications;
 using Avalonia.Media;
 using Avalonia.Threading;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Enums;
-using Froststrap.UI.Elements.Dialogs;
-using MsBox.Avalonia.Dto;
 using Froststrap.UI.Elements.Bootstrapper;
+using Froststrap.UI.Elements.Dialogs;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 
 namespace Froststrap.UI
 {
     public static class Frontend
     {
-        public static MessageBoxResult ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.None,
-            MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
+        private static WindowNotificationManager? _notificationManager;
+
+        public static async Task<MessageBoxResult> ShowMessageBox(
+                string message,
+                MessageBoxImage icon = MessageBoxImage.None,
+                MessageBoxButton buttons = MessageBoxButton.OK,
+                MessageBoxResult defaultResult = MessageBoxResult.None)
         {
             App.Logger.WriteLine("Frontend::ShowMessageBox", message);
 
             if (App.LaunchSettings.QuietFlag.Active)
                 return defaultResult;
 
-            return ShowFluentMessageBox(message, icon, buttons);
+            return await ShowFluentMessageBox(message, icon, buttons);
         }
 
-        public static void ShowPlayerErrorDialog(bool crash = false)
+        public static async Task ShowPlayerErrorDialog(bool crash = false)
         {
             if (App.LaunchSettings.QuietFlag.Active)
                 return;
@@ -34,40 +40,44 @@ namespace Froststrap.UI
             if (crash)
                 topLine = Strings.Dialog_PlayerError_Crash;
 
-            string info = string.Format(
+            string info = String.Format(
                 Strings.Dialog_PlayerError_HelpInformation,
                 $"https://github.com/{App.ProjectRepository}/wiki/Roblox-crashes-or-does-not-launch",
-                $"https://github.com/{App.ProjectRepository}/wiki/Switching-between-Roblox-and-Froststrap"
+                $"https://github.com/{App.ProjectRepository}/wiki/Switching-between-Roblox-and-Bloxstrap"
             );
 
-            ShowMessageBox($"{topLine}\n\n{info}", MessageBoxImage.Error);
+            await ShowMessageBox($"{topLine}\n\n{info}", MessageBoxImage.Error);
         }
 
-        public static void ShowExceptionDialog(Exception exception)
+        public static async Task ShowExceptionDialog(Exception exception)
         {
             if (App.LaunchSettings.QuietFlag.Active)
                 return;
 
-            Dispatcher.UIThread.Invoke(() =>
+            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+            if (mainWindow != null)
             {
                 var dialog = new ExceptionDialog(exception);
-                dialog.ShowDialog(GetCurrentWindow());
-            });
+                await dialog.ShowDialog(mainWindow);
+            }
         }
 
-        public static void ShowConnectivityDialog(string title, string description, MessageBoxImage image, Exception exception)
+        public static async Task ShowConnectivityDialog(string title, string description, MessageBoxImage image, Exception exception)
         {
             if (App.LaunchSettings.QuietFlag.Active)
                 return;
 
-            Dispatcher.UIThread.Invoke(() =>
+            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+            if (mainWindow != null)
             {
                 var dialog = new ConnectivityDialog(title, description, image, exception);
-                dialog.ShowDialog(GetCurrentWindow());
-            });
+                await dialog.ShowDialog(mainWindow);
+            }
         }
 
-        private static IBootstrapperDialog GetCustomBootstrapper()
+        private static async Task<IBootstrapperDialog> GetCustomBootstrapper()
         {
             const string LOG_IDENT = "Frontend::GetCustomBootstrapper";
 
@@ -87,160 +97,92 @@ namespace Froststrap.UI
                 App.Logger.WriteException(LOG_IDENT, ex);
 
                 if (!App.LaunchSettings.QuietFlag.Active)
-                    Frontend.ShowMessageBox($"Failed to setup custom bootstrapper: {ex.Message}.\nDefaulting to Fluent.", MessageBoxImage.Error);
+                    await ShowMessageBox($"Failed to setup custom bootstrapper: {ex.Message}.\nDefaulting to Fluent.", MessageBoxImage.Error);
 
-                return GetBootstrapperDialog(BootstrapperStyle.FluentDialog);
+                return await GetBootstrapperDialog(BootstrapperStyle.FluentDialog);
             }
         }
 
-        public static IBootstrapperDialog GetBootstrapperDialog(BootstrapperStyle style)
+        public static async Task<IBootstrapperDialog> GetBootstrapperDialog(BootstrapperStyle style)
         {
-            return style switch
+            switch (style)
             {
-                // TODO: ADD ACTUAL DIALOGS
-                //BootstrapperStyle.VistaDialog => new VistaDialog(),
-                //BootstrapperStyle.LegacyDialog2008 => new LegacyDialog2008(),
-                //BootstrapperStyle.LegacyDialog2011 => new LegacyDialog2011(),
-                //BootstrapperStyle.ProgressDialog => new ProgressDialog(),
-                //BootstrapperStyle.ClassicFluentDialog => new ClassicFluentDialog(),
-                //BootstrapperStyle.ByfronDialog => new ByfronDialog(),
-                //BootstrapperStyle.FroststrapDialog => new FroststrapDialog(),
-                //BootstrapperStyle.FluentDialog => new FluentDialog(false),
-                //BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),
-                BootstrapperStyle.CustomDialog => GetCustomBootstrapper(),
-                // _ => new FluentDialog(false)
-            };
+                //case BootstrapperStyle.VistaDialog:
+                //return new VistaDialog();
+
+                //case BootstrapperStyle.LegacyDialog2008:
+                //return new LegacyDialog2008();
+
+                //case BootstrapperStyle.LegacyDialog2011:
+                //return new LegacyDialog2011();
+
+                //case BootstrapperStyle.ProgressDialog:
+                //return new ProgressDialog();
+
+                //case BootstrapperStyle.ClassicFluentDialog:
+                //return new ClassicFluentDialog();
+
+                //case BootstrapperStyle.ByfronDialog:
+                // return new ByfronDialog();
+
+                //case BootstrapperStyle.FroststrapDialog:
+                //return new FroststrapDialog();
+
+                //case BootstrapperStyle.FluentDialog:
+                // return new FluentDialog(false);
+
+                //case BootstrapperStyle.FluentAeroDialog:
+                //return new FluentDialog(true);
+
+                //case BootstrapperStyle.CustomDialog:
+                default:
+                    return await GetCustomBootstrapper();
+
+                    //default:
+                    //return new FluentDialog(false);
+            }
         }
 
-        private static MessageBoxResult ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons)
+        private static async Task<MessageBoxResult> ShowFluentMessageBox(
+                string message,
+                MessageBoxImage icon,
+                MessageBoxButton buttons)
         {
-            var iconEnum = icon switch
+            return await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                MessageBoxImage.Error => Icon.Error,
-                MessageBoxImage.Warning => Icon.Warning,
-                MessageBoxImage.Information => Icon.Info,
-                MessageBoxImage.Question => Icon.Question,
-                MessageBoxImage.None => Icon.None,
-                _ => Icon.None
-            };
-
-            var buttonEnum = buttons switch
-            {
-                MessageBoxButton.OK => ButtonEnum.Ok,
-                MessageBoxButton.OKCancel => ButtonEnum.OkCancel,
-                MessageBoxButton.YesNo => ButtonEnum.YesNo,
-                MessageBoxButton.YesNoCancel => ButtonEnum.YesNoCancel,
-                _ => ButtonEnum.Ok
-            };
-
-            var messageBox = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
-            {
-                ButtonDefinitions = buttonEnum,
-                ContentTitle = App.ProjectName,
-                ContentMessage = message,
-                Icon = iconEnum,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                CanResize = false,
-                ShowInCenter = true,
-                SizeToContent = SizeToContent.WidthAndHeight,
-                MaxWidth = 600,
-                MaxHeight = 400
-            });
-
-            var result = messageBox.ShowWindowDialogAsync(GetCurrentWindow()).GetAwaiter().GetResult();
-
-            return result switch
-            {
-                ButtonResult.Ok => MessageBoxResult.OK,
-                ButtonResult.Yes => MessageBoxResult.Yes,
-                ButtonResult.No => MessageBoxResult.No,
-                ButtonResult.Cancel => MessageBoxResult.Cancel,
-                ButtonResult.Abort => MessageBoxResult.Cancel,
-                _ => MessageBoxResult.None
-            };
-        }
-
-        private static Window GetCurrentWindow()
-        {
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime)
-            {
-                foreach (var window in desktopLifetime.Windows)
+                var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    if (window.IsActive)
-                        return window;
+                    ContentMessage = message,
+                    ContentTitle = "Notification",
+                    ButtonDefinitions = (ButtonEnum)buttons,
+                    Icon = (Icon)icon,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                });
+
+                var result = await box.ShowAsync();
+                return (MessageBoxResult)result;
+            });
+        }
+        public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5)
+        {
+            if (_notificationManager == null)
+            {
+                var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+                if (mainWindow != null)
+                {
+                    _notificationManager = new WindowNotificationManager(mainWindow)
+                    {
+                        Position = NotificationPosition.BottomRight,
+                        MaxItems = 3
+                    };
                 }
-
-                if (desktopLifetime.MainWindow is not null)
-                    return desktopLifetime.MainWindow;
-
-                throw new InvalidOperationException("No active or main window found");
             }
 
-            throw new InvalidOperationException("No active window found");
-        }
-
-        public static void ShowBalloonTip(string title, string message, object? icon = null, int timeout = 5)
-        {
-            // TODO: Implement tray icon support for Avalonia
-
-            Dispatcher.UIThread.Invoke(() =>
-            {
-                ShowNotificationWindow(title, message, timeout);
-            });
-        }
-
-        private static void ShowNotificationWindow(string title, string message, int timeoutSeconds)
-        {
-            // Create a simple notification window
-            var notification = new Window
-            {
-                Title = title,
-                Width = 300,
-                Height = 100,
-                WindowStartupLocation = WindowStartupLocation.Manual,
-                ShowInTaskbar = false,
-                CanResize = false,
-                Background = new SolidColorBrush(Colors.DarkSlateGray),
-                Foreground = new SolidColorBrush(Colors.White),
-                SizeToContent = SizeToContent.WidthAndHeight,
-                Topmost = true
-            };
-
-            var screen = notification.Screens?.Primary;
-            if (screen != null)
-            {
-                notification.Position = new PixelPoint(
-                    (int)(screen.WorkingArea.Right - 320),
-                    (int)(screen.WorkingArea.Bottom - 120)
-                );
-            }
-
-            var content = new StackPanel
-            {
-                Margin = new Thickness(10),
-                Spacing = 5
-            };
-
-            content.Children.Add(new TextBlock
-            {
-                Text = title,
-                FontWeight = FontWeight.Bold,
-                TextWrapping = TextWrapping.Wrap
-            });
-
-            content.Children.Add(new TextBlock
-            {
-                Text = message,
-                TextWrapping = TextWrapping.Wrap
-            });
-
-            notification.Content = content;
-            notification.Show();
-
-            Task.Delay(timeoutSeconds * 1000).ContinueWith(_ =>
-            {
-                Dispatcher.UIThread.Invoke(() => notification.Close());
-            });
+            _notificationManager?.Show(new Notification(
+                title,
+                message,
+                type,
+                TimeSpan.FromSeconds(timeoutSeconds)));
         }
     }
 }

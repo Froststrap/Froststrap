@@ -619,7 +619,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (string.IsNullOrWhiteSpace(SelectedRegion))
             {
-                Frontend.ShowMessageBox("Please select a region first.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please select a region first.", MessageBoxImage.Warning);
                 return;
             }
 

@@ -1,10 +1,12 @@
-﻿namespace Froststrap.Enums.Messagebox
+﻿using MsBox.Avalonia.Enums;
+
+namespace Froststrap.Enums.Messagebox
 {
-    public enum MessageBoxButton
-    {
-        OK = 0,
-        OKCancel = 1,
-        YesNoCancel = 2,
-        YesNo = 3
+    public enum MessageBoxButton 
+    { 
+        OK = ButtonEnum.Ok, 
+        OKCancel = ButtonEnum.OkCancel, 
+        YesNo = ButtonEnum.YesNo, 
+        YesNoCancel = ButtonEnum.YesNoCancel 
     }
 }

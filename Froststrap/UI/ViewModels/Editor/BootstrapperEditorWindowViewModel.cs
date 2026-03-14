@@ -22,7 +22,7 @@ namespace Froststrap.UI.ViewModels.Editor
 
         public bool CodeChanged { get; set; } = false;
 
-        private void Preview()
+        private async void Preview()
         {
             const string LOG_IDENT = "BootstrapperEditorWindowViewModel::Preview";
 
@@ -43,7 +43,7 @@ namespace Froststrap.UI.ViewModels.Editor
                 App.Logger.WriteLine(LOG_IDENT, "Failed to preview custom theme");
                 App.Logger.WriteException(LOG_IDENT, ex);
 
-                Frontend.ShowMessageBox(
+                await Frontend.ShowMessageBox(
                     string.Format(Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
                     MessageBoxImage.Error,
                     MessageBoxButton.OK

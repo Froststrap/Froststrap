@@ -23,7 +23,7 @@ public partial class AppearancePage : UserControl
 
     private bool _isWindowsBackdropInitialized = false;
 
-    private void WindowsBackdropChangeSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void WindowsBackdropChangeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!_isWindowsBackdropInitialized)
         {
@@ -34,7 +34,7 @@ public partial class AppearancePage : UserControl
         if (e.AddedItems.Count == 0)
             return;
 
-        var result = Frontend.ShowMessageBox(
+        var result = await Frontend.ShowMessageBox(
             "You need to restart the app for the changes to apply. Do you want to restart now?",
             MessageBoxImage.Information,
             MessageBoxButton.YesNo
@@ -324,14 +324,14 @@ public partial class AppearancePage : UserControl
                 throw new InvalidOperationException("Could not get local file path");
             }
 
-            Frontend.ShowMessageBox(
+            await Frontend.ShowMessageBox(
                 "Gradient exported successfully!",
                 MessageBoxImage.Information,
                 MessageBoxButton.OK);
         }
         catch (Exception ex)
         {
-            Frontend.ShowMessageBox(
+            await Frontend.ShowMessageBox(
                 $"Failed to export gradient: {ex.Message}",
                 MessageBoxImage.Error,
                 MessageBoxButton.OK);
@@ -429,14 +429,14 @@ public partial class AppearancePage : UserControl
 
             UpdateGradientTheme();
 
-            Frontend.ShowMessageBox(
+            await Frontend.ShowMessageBox(
                 "Gradient imported successfully!",
                 MessageBoxImage.Information,
                 MessageBoxButton.OK);
         }
         catch (Exception ex)
         {
-            Frontend.ShowMessageBox(
+            await Frontend.ShowMessageBox(
                 $"Failed to import gradient: {ex.Message}",
                 MessageBoxImage.Error,
                 MessageBoxButton.OK);

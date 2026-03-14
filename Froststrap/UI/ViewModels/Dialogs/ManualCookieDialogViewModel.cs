@@ -31,7 +31,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         {
             if (string.IsNullOrWhiteSpace(CookieInput))
             {
-                Frontend.ShowMessageBox("Please enter a cookie.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please enter a cookie.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -44,7 +44,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
                 if (accountInfo == null)
                 {
-                    Frontend.ShowMessageBox("Invalid cookie. Please check and try again.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Invalid cookie. Please check and try again.", MessageBoxImage.Error);
                     return;
                 }
 
@@ -54,7 +54,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             catch (Exception ex)
             {
                 App.Logger.WriteLine("ManualCookieDialog", $"Validation error: {ex.Message}");
-                Frontend.ShowMessageBox($"Error validating cookie: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Error validating cookie: {ex.Message}", MessageBoxImage.Error);
             }
             finally
             {

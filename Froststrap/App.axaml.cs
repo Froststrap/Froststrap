@@ -54,8 +54,6 @@ public partial class App : Application
 
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
     public FroststrapRichPresence RichPresence { get; private set; } = null!;
-    public static MemoryCleaner MemoryCleaner { get; private set; } = null!;
-
     public static bool IsActionBuild => !String.IsNullOrEmpty(BuildMetadata.CommitRef);
     public static bool IsProductionBuild => IsActionBuild && BuildMetadata.CommitRef.StartsWith("tag", StringComparison.Ordinal);
     public static bool IsPlayerInstalled => PlayerState.IsSaved && !String.IsNullOrEmpty(PlayerState.Prop.VersionGuid);
@@ -187,9 +185,9 @@ public partial class App : Application
             }
 
             Task.Run(RemoteData.LoadData);
-            Settings.Load();
-            State.Load();
-            FastFlags.Load();
+            _ = Settings.Load();
+            _ = State.Load();
+            _ = FastFlags.Load();
             GlobalSettings.Load();
 
             if (Settings.Prop.Theme > Enums.Theme.Custom)

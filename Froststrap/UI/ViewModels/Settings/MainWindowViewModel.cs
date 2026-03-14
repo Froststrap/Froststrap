@@ -20,19 +20,30 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool TestModeEnabled
         {
             get => App.LaunchSettings.TestModeFlag.Active;
-            set
-            {
-                if (value && !App.State.Prop.TestModeWarningShown)
-                {
-                    var result = Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
-                    if (result != MessageBoxResult.Yes)
-                        return;
+            set => HandleTestModeChangeAsync(value);
+        }
 
-                    App.State.Prop.TestModeWarningShown = true;
+        private async void HandleTestModeChangeAsync(bool value)
+        {
+            if (value && !App.State.Prop.TestModeWarningShown)
+            {
+                var result = await Frontend.ShowMessageBox(
+                    Strings.Menu_TestMode_Prompt,
+                    MessageBoxImage.Information,
+                    MessageBoxButton.YesNo
+                );
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    OnPropertyChanged(nameof(TestModeEnabled));
+                    return;
                 }
 
-                App.LaunchSettings.TestModeFlag.Active = value;
+                App.State.Prop.TestModeWarningShown = true;
             }
+
+            App.LaunchSettings.TestModeFlag.Active = value;
+            OnPropertyChanged(nameof(TestModeEnabled));
         }
 
         public bool IsSidebarExpanded

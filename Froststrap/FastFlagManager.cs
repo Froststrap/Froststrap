@@ -203,23 +203,23 @@ namespace Froststrap
             OriginalProp = new(Prop);
         }
 
-        public override bool Load(bool alertFailure = true)
-        {
-            bool result = base.Load(alertFailure);
+		public override async Task<bool> Load(bool alertFailure = true)
+		{
+			bool result = await base.Load(alertFailure);
 
-            // clone the dictionary
-            OriginalProp = new(Prop);
+			// clone the dictionary
+			OriginalProp = new(Prop);
 
-            if (App.Settings.Prop.UseAltManually)
-            {
-                if (GetPreset("Rendering.ManualFullscreen") != "False")
-                    SetPreset("Rendering.ManualFullscreen", "False");
-            }
+			if (App.Settings.Prop.UseAltManually)
+			{
+				if (GetPreset("Rendering.ManualFullscreen") != "False")
+					SetPreset("Rendering.ManualFullscreen", "False");
+			}
 
-            return result;
-        }
+			return result;
+		}
 
-        public void DeleteProfile(string Profile)
+		public async void DeleteProfile(string Profile)
         {
             try
             {
@@ -235,7 +235,7 @@ namespace Froststrap
             }
             catch (Exception ex)
             {
-                Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(ex.Message, MessageBoxImage.Error);
             }
         }
 

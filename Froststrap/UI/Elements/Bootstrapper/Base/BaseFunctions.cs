@@ -2,9 +2,9 @@
 {
     static class BaseFunctions
     {
-        public static void ShowSuccess(string message, Action? callback)
+        public static async void ShowSuccess(string message, Action? callback)
         {
-            Frontend.ShowMessageBox(message, MessageBoxImage.Information);
+            await Frontend.ShowMessageBox(message, MessageBoxImage.Information);
 
             if (callback is not null)
                 callback();

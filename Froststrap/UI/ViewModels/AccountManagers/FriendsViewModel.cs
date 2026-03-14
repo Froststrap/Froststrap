@@ -458,20 +458,20 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                 if (friend == null)
                 {
                     App.Logger.WriteLine(LOG_IDENT_JOIN_FRIEND, "Friend parameter is null");
-                    Frontend.ShowMessageBox("Invalid friend information.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox("Invalid friend information.", MessageBoxImage.Warning);
                     return;
                 }
 
                 var activeAccount = Manager.ActiveAccount;
                 if (activeAccount is null)
                 {
-                    Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
                     return;
                 }
 
                 if (friend.PresenceType != 2)
                 {
-                    Frontend.ShowMessageBox($"{friend.DisplayName} is not currently in a game.", MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox($"{friend.DisplayName} is not currently in a game.", MessageBoxImage.Information);
                     return;
                 }
 
@@ -479,7 +479,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 if (presenceData == null || !presenceData.TryGetValue(friend.Id, out var friendPresence) || friendPresence == null)
                 {
-                    Frontend.ShowMessageBox($"Unable to get game information for {friend.DisplayName}.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox($"Unable to get game information for {friend.DisplayName}.", MessageBoxImage.Warning);
                     return;
                 }
 
@@ -488,7 +488,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 if (!placeId.HasValue || placeId.Value == 0)
                 {
-                    Frontend.ShowMessageBox($"Unable to determine the game {friend.DisplayName} is playing.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox($"Unable to determine the game {friend.DisplayName} is playing.", MessageBoxImage.Warning);
                     return;
                 }
 
@@ -496,7 +496,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 if (string.IsNullOrEmpty(gameInstanceId))
                 {
-                    Frontend.ShowMessageBox($"Unable to get server information for {friend.DisplayName}'s game.", MessageBoxImage.Warning);
+                    await Frontend.ShowMessageBox($"Unable to get server information for {friend.DisplayName}'s game.", MessageBoxImage.Warning);
                     return;
                 }
 
@@ -509,13 +509,13 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                 catch (Exception ex)
                 {
                     App.Logger.WriteLine(LOG_IDENT_JOIN_FRIEND, $"Exception during launch: {ex.Message}");
-                    Frontend.ShowMessageBox($"Failed to join {friend.DisplayName}'s game: {ex.Message}", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox($"Failed to join {friend.DisplayName}'s game: {ex.Message}", MessageBoxImage.Error);
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT_JOIN_FRIEND, $"Exception: {ex.Message}");
-                Frontend.ShowMessageBox($"Failed to join {friend?.DisplayName ?? "friend"}: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Failed to join {friend?.DisplayName ?? "friend"}: {ex.Message}", MessageBoxImage.Error);
             }
         }
 

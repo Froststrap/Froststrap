@@ -142,7 +142,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (!File.Exists(App.GlobalSettings.FileLocation))
             {
-                Frontend.ShowMessageBox("No GBS settings file found to export.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("No GBS settings file found to export.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -181,12 +181,12 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (success)
                 {
-                    Frontend.ShowMessageBox($"Settings exported successfully to {file.Path.LocalPath}",
+                    await Frontend.ShowMessageBox($"Settings exported successfully to {file.Path.LocalPath}",
                         MessageBoxImage.Information);
                 }
                 else
                 {
-                    Frontend.ShowMessageBox("Failed to export settings. Make sure Roblox is not running and try again.",
+                    await Frontend.ShowMessageBox("Failed to export settings. Make sure Roblox is not running and try again.",
                         MessageBoxImage.Error);
                 }
             }
@@ -226,19 +226,19 @@ namespace Froststrap.UI.ViewModels.Settings
                     var doc = XDocument.Load(filePath);
                     if (doc.Root?.Name != "roblox")
                     {
-                        Frontend.ShowMessageBox("The selected file does not appear to be a valid GBS settings file.",
+                        await Frontend.ShowMessageBox("The selected file does not appear to be a valid GBS settings file.",
                             MessageBoxImage.Warning);
                         return;
                     }
                 }
                 catch
                 {
-                    Frontend.ShowMessageBox("The selected file is not a valid XML file.",
+                    await Frontend.ShowMessageBox("The selected file is not a valid XML file.",
                         MessageBoxImage.Warning);
                     return;
                 }
 
-                var result = Frontend.ShowMessageBox(
+                var result = await Frontend.ShowMessageBox(
                     "This will replace all your current Roblox settings with the imported ones. Are you sure you want to continue?",
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
@@ -251,12 +251,12 @@ namespace Froststrap.UI.ViewModels.Settings
                     {
                         LoadCurrentValuesFromGBS();
 
-                        Frontend.ShowMessageBox("Settings imported successfully!",
+                        await Frontend.ShowMessageBox("Settings imported successfully!",
                             MessageBoxImage.Information);
                     }
                     else
                     {
-                        Frontend.ShowMessageBox("Failed to import settings. Make sure Roblox is not running and try again.",
+                        await Frontend.ShowMessageBox("Failed to import settings. Make sure Roblox is not username and try again.",
                             MessageBoxImage.Error);
                     }
                 }

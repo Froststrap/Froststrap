@@ -242,9 +242,9 @@ namespace Froststrap
             // reload our configs since they've likely changed by now
             if (mutexExists)
             {
-                App.Settings.Load();
-                App.State.Load();
-                AppData.DistributionStateManager.Load();
+                _ = App.Settings.Load();
+                _ = App.State.Load();
+                _ = AppData.DistributionStateManager.Load();
             }
 
             if (!_noConnection)
@@ -275,7 +275,7 @@ namespace Froststrap
                     File.Exists(Path.Combine(AppData.Directory, App.RobloxAnselAppName))
                     )
                 {
-                    Frontend.ShowMessageBox(
+                    await Frontend.ShowMessageBox(
                         Strings.Bootstrapper_Dialog_AnselDisabled,
                         MessageBoxImage.Warning
                     );
@@ -513,7 +513,7 @@ namespace Froststrap
 
                         string DisplayChannel = !String.IsNullOrEmpty(match.Groups[1].Value) ? match.Groups[1].Value : Deployment.DefaultChannel;
 
-                        var Result = Frontend.ShowMessageBox(
+                        var Result = await Frontend.ShowMessageBox(
                         String.Format(Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange,
                         DisplayChannel, App.Settings.Prop.Channel),
                         MessageBoxImage.Question,
@@ -565,7 +565,7 @@ namespace Froststrap
                         // Only prompt if user has channel switching mode set to something other than Automatic.
                         if (App.Settings.Prop.ChannelChangeMode != ChannelChangeMode.Automatic)
                         {
-                            Frontend.ShowMessageBox(
+                            await Frontend.ShowMessageBox(
                                 String.Format(
                                     Strings.Boostrapper_Dialog_UnauthorizedChannel,
                                     Deployment.Channel,
@@ -586,7 +586,7 @@ namespace Froststrap
 
                 if (clientVersion.IsBehindDefaultChannel && App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt)
                 {
-                    MessageBoxResult action = Frontend.ShowMessageBox(
+                    MessageBoxResult action = await Frontend.ShowMessageBox(
                             String.Format(Strings.Bootstrapper_Dialog_ChannelOutOfDate, Deployment.Channel, Deployment.DefaultChannel),
                             MessageBoxImage.Warning,
                             MessageBoxButton.YesNo
@@ -1192,7 +1192,7 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Update available: {currentVer} -> {releaseVer}");
 
-                var result = Frontend.ShowMessageBox(
+                var result = await Frontend.ShowMessageBox(
                     $"A new version {releaseVer} is available. Would you like to update now?",
                     MessageBoxImage.Question,
                     MessageBoxButton.YesNo
@@ -1264,7 +1264,7 @@ namespace Froststrap
                 var process = Process.Start(startInfo);
                 if (process == null)
                 {
-                    var result = Frontend.ShowMessageBox(
+                    var result = await Frontend.ShowMessageBox(
                         string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
                     MessageBoxImage.Information,
                     MessageBoxButton.YesNo);
@@ -1283,7 +1283,7 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the auto-updater");
                 App.Logger.WriteException(LOG_IDENT, ex);
 
-                var result = Frontend.ShowMessageBox(
+                var result = await Frontend.ShowMessageBox(
                     string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
                     MessageBoxImage.Information,
                     MessageBoxButton.YesNo);
@@ -1429,7 +1429,7 @@ namespace Froststrap
 
             if (CancelUpgrade && !Directory.Exists(_latestVersionDirectory))
             {
-                Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
+                await Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
             }
             else if (CancelUpgrade)
             {
@@ -1478,7 +1478,7 @@ namespace Froststrap
 
             if (Filesystem.GetFreeDiskSpace(Paths.Base) < totalSizeRequired)
             {
-                Frontend.ShowMessageBox(Strings.Bootstrapper_NotEnoughSpace, MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(Strings.Bootstrapper_NotEnoughSpace, MessageBoxImage.Error);
                 App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
                 return;
             }
@@ -1550,7 +1550,7 @@ namespace Froststrap
                 }
                 else
                 {
-                    var result = Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
+                    var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
 
                     if (result != MessageBoxResult.Yes)
                     {
