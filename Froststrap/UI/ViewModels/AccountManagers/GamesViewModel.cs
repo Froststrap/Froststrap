@@ -928,7 +928,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 					}
 				}
 
-				await Dispatcher.UIThread.BeginInvoke(() =>
+				await Dispatcher.UIThread.InvokeAsync(() =>
 				{
 					DiscoveryGames.Clear();
 					foreach (var g in fetchedGamesOrdered)
@@ -1037,7 +1037,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 					.Take(50)
 					.ToList();
 
-				await Dispatcher.UIThread.BeginInvoke(new Action(() =>
+				await Dispatcher.UIThread.InvokeAsync(new Action(() =>
 				{
 					ContinuePlayingGames.Clear();
 					foreach (var game in continuePlayingList)
@@ -1256,7 +1256,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 					}
 				}
 
-				await Dispatcher.UIThread.BeginInvoke(() =>
+				await Dispatcher.UIThread.InvokeAsync(() =>
 				{
 					FavoriteGames.Clear();
 					foreach (var game in favoriteGamesList)

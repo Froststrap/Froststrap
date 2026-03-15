@@ -130,10 +130,10 @@ namespace Froststrap.UI.Elements.ContextMenu
 				ServerDetailsMenuItem.IsVisible = false;
 				GameInformationMenuItem.IsVisible = false;
 				if (App.Settings.Prop.AllowCookieAccess) RegionJoinningMenuItem.IsVisible = false;
-                RegionMenuRoot.Visibility = Visibility.Collapsed;
-                _serverInformationWindow?.Close();
-                _gameInformationWindow?.Close();
-            });
+					RegionMenuRoot.IsVisible = false;
+					_serverInformationWindow?.Close();
+					_gameInformationWindow?.Close();
+				});
 
         private void ActivityWatcher_OnStudioPlaceOpened(object? sender, EventArgs e)
         {

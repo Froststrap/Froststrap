@@ -906,7 +906,6 @@ namespace Froststrap
 
             _mutex?.ReleaseAsync();
 
-            var autoclosePids = new List<int>();
 
 			if (!IsStudioLaunch)
 			{
@@ -1838,8 +1837,8 @@ namespace Froststrap
 
 			var fileRestoreMap = new Dictionary<string, List<string>>();
 
-			foreach (var fileLocation in AppData.DistributionState.ModManifest.Keys)
-			{
+            foreach (var fileLocation in AppData.DistributionState.ModManifest)
+            {
 				if (currentModManifest.ContainsKey(fileLocation))
 					continue;
 
@@ -1882,8 +1881,8 @@ namespace Froststrap
 
 			if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
 			{
-				AppData.DistributionState.ModManifest = currentModManifest;
-				AppData.DistributionStateManager.Save();
+                AppData.DistributionState.ModManifest = currentModManifest.Keys.ToList(); 
+                AppData.DistributionStateManager.Save();
 			}
 
 			App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
