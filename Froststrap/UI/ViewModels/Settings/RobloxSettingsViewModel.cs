@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.Input;
 using Froststrap.Enums.GBSPresets;
 using System.Windows.Input;
 using System.Xml.Linq;
@@ -11,7 +12,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
         public ICommand ImportCommand => new RelayCommand(ImportSettings);
 
-        private void ExportSettings()
+        private async void ExportSettings()
         {
             if (!File.Exists(App.GlobalSettings.FileLocation))
             {
@@ -19,21 +20,29 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            var saveFileDialog = new Microsoft.Win32.SaveFileDialog
-            {
-                Filter = "GBS Settings File (*.xml)|*.xml|All files (*.*)|*.*",
-                DefaultExt = ".xml",
-                FileName = "BloxstrapRobloxSettings.xml",
-                Title = "Export GBS Settings"
-            };
+            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                             ? desktop.MainWindow
+                             : null;
 
-            if (saveFileDialog.ShowDialog() == true)
+            if (visualRoot == null) return;
+
+            var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
-                bool success = App.GlobalSettings.ExportSettings(saveFileDialog.FileName);
+                Title = "Export GBS Settings",
+                SuggestedFileName = "FroststrapRobloxSettings.xml",
+                DefaultExtension = ".xml",
+                FileTypeChoices = new[]
+                { new FilePickerFileType("GBS Settings File") { Patterns = new[] { "*.xml" } }}
+            });
+
+            if (file != null)
+            {
+                string localPath = file.Path.LocalPath;
+                bool success = App.GlobalSettings.ExportSettings(localPath);
 
                 if (success)
                 {
-                    _ = Frontend.ShowMessageBox($"Settings exported successfully to {saveFileDialog.FileName}", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox($"Settings exported successfully to {localPath}", MessageBoxImage.Information);
                 }
                 else
                 {
@@ -44,48 +53,57 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async void ImportSettings()
         {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog
-            {
-                Filter = "GBS Settings File (*.xml)|*.xml|All files (*.*)|*.*",
-                DefaultExt = ".xml",
-                Title = "Import GBS Settings"
-            };
+            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                             ? desktop.MainWindow
+                             : null;
 
-            if (openFileDialog.ShowDialog() == true)
+            if (visualRoot == null) return;
+
+            var result = await visualRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                try
+                Title = "Import GBS Settings",
+                AllowMultiple = false,
+                FileTypeFilter = new[]
+                { new FilePickerFileType("GBS Settings File") { Patterns = new[] { "*.xml" } } }
+            });
+
+            var selectedFile = result.FirstOrDefault();
+            if (selectedFile == null) return;
+
+            string localPath = selectedFile.Path.LocalPath;
+
+            try
+            {
+                var doc = XDocument.Load(localPath);
+                if (doc.Root?.Name != "roblox")
                 {
-                    var doc = XDocument.Load(openFileDialog.FileName);
-                    if (doc.Root?.Name != "roblox")
-                    {
-                        _ = Frontend.ShowMessageBox("The selected file does not appear to be a valid GBS settings file.", MessageBoxImage.Warning);
-                        return;
-                    }
-                }
-                catch
-                {
-                    _ = Frontend.ShowMessageBox("The selected file is not a valid XML file.", MessageBoxImage.Warning);
+                    _ = Frontend.ShowMessageBox("The selected file does not appear to be a valid GBS settings file.", MessageBoxImage.Warning);
                     return;
                 }
+            }
+            catch
+            {
+                _ = Frontend.ShowMessageBox("The selected file is not a valid XML file.", MessageBoxImage.Warning);
+                return;
+            }
 
-                var result = await Frontend.ShowMessageBox(
-                    "This will replace all your current Roblox settings with the imported ones. Are you sure you want to continue?",
-                    MessageBoxImage.Warning,
-                    MessageBoxButton.YesNo);
+            var confirm = await Frontend.ShowMessageBox(
+                "This will replace all your current Roblox settings with the imported ones. Are you sure you want to continue?",
+                MessageBoxImage.Warning,
+                MessageBoxButton.YesNo);
 
-                if (result == MessageBoxResult.Yes)
+            if (confirm == MessageBoxResult.Yes)
+            {
+                bool success = App.GlobalSettings.ImportSettings(localPath);
+
+                if (success)
                 {
-                    bool success = App.GlobalSettings.ImportSettings(openFileDialog.FileName);
-
-                    if (success)
-                    {
-                        App.GlobalSettings.Load();
-                        _ = Frontend.ShowMessageBox("Settings imported successfully!", MessageBoxImage.Information);
-                    }
-                    else
-                    {
-                        _ = Frontend.ShowMessageBox("Failed to import settings. Make sure Roblox is not running and try again.", MessageBoxImage.Error);
-                    }
+                    App.GlobalSettings.Load();
+                    _ = Frontend.ShowMessageBox("Settings imported successfully!", MessageBoxImage.Information);
+                }
+                else
+                {
+                    _ = Frontend.ShowMessageBox("Failed to import settings. Make sure Roblox is not running and try again.", MessageBoxImage.Error);
                 }
             }
         }

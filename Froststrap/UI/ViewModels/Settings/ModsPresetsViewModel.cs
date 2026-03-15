@@ -1,9 +1,11 @@
 ﻿using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.AppData;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -36,7 +38,7 @@ namespace Froststrap.UI.ViewModels.Settings
             NotifyCursorStates();
         }
 
-        private void ManageCustomFont()
+        private async void ManageCustomFont()
         {
             if (IsCustomFontSet)
             {
@@ -44,12 +46,27 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             else
             {
-                var dialog = new OpenFileDialog { Filter = $"{Strings.Menu_FontFiles}|*.ttf;*.otf;*.ttc" };
+                var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                                 ? desktop.MainWindow
+                                 : null;
 
-                if (dialog.ShowDialog() != true) return;
+                if (visualRoot == null) return;
 
-                string type = Path.GetExtension(dialog.FileName).TrimStart('.').ToLowerInvariant();
-                byte[] fileHeader = File.ReadAllBytes(dialog.FileName).Take(4).ToArray();
+                var files = await visualRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+                {
+                    Title = Strings.Menu_FontFiles,
+                    AllowMultiple = false,
+                    FileTypeFilter = new[]
+                    { new FilePickerFileType("Font Files") { Patterns = new[] { "*.ttf", "*.otf", "*.ttc" } } }
+                });
+
+                var selectedFile = files.FirstOrDefault();
+                if (selectedFile == null) return;
+
+                string filePath = selectedFile.Path.LocalPath;
+
+                string type = Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
+                byte[] fileHeader = File.ReadAllBytes(filePath).Take(4).ToArray();
 
                 if (!FontHeaders.TryGetValue(type, out var expectedHeader) || !expectedHeader.SequenceEqual(fileHeader))
                 {
@@ -57,7 +74,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     return;
                 }
 
-                TextFontTask.NewState = dialog.FileName;
+                TextFontTask.NewState = filePath;
             }
 
             OnPropertyChanged(nameof(IsCustomFontSet));
@@ -129,15 +146,30 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public FontModPresetTask TextFontTask { get; } = new();
 
+        [DllImport("shell32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern int SHObjectProperties(IntPtr hwnd, uint dwType, string szObject, string szPage);
+
+        private const uint SHOP_FILEPATH = 0x00000002;
+
         private void OpenCompatSettings()
         {
             string path = new RobloxPlayerData().ExecutablePath;
 
             if (File.Exists(path))
-                PInvoke.SHObjectProperties(HWND.Null, SHOP_TYPE.SHOP_FILEPATH, path, "Compatibility");
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    SHObjectProperties(IntPtr.Zero, SHOP_FILEPATH, path, "Compatibility");
+                }
+                else                
+                {
+                    _ = Frontend.ShowMessageBox("Compatibility settings are only available on Windows.", MessageBoxImage.Information);
+                }
+            }
             else
+            {
                 _ = Frontend.ShowMessageBox(Strings.Common_RobloxNotInstalled, MessageBoxImage.Error);
-
+            }
         }
 
         private static string CursorPath => Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse");
@@ -177,18 +209,29 @@ namespace Froststrap.UI.ViewModels.Settings
         public void RemoveCustomDeathSound() =>
             RemoveCustomFile(SoundFiles, SoundPath, "No death sound found.", RefreshStates);
 
-        private void AddCustomFile(string[] targetFiles, string targetDir, string dialogTitle, string filter, string failureText, Action postAction)
+        private async void AddCustomFile(string[] targetFiles, string targetDir, string dialogTitle, string filter, string failureText, Action postAction)
         {
-            var dialog = new OpenFileDialog
+            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                             ? desktop.MainWindow
+                             : null;
+
+            if (visualRoot == null) return;
+
+            var options = new FilePickerOpenOptions
             {
-                Filter = filter,
-                Title = dialogTitle
+                Title = dialogTitle,
+                AllowMultiple = false,
+                FileTypeFilter = new[]
+                { new FilePickerFileType("Files") { Patterns = new[] { "*.*" } } }
             };
 
-            if (dialog.ShowDialog() != true)
+            var result = await visualRoot.StorageProvider.OpenFilePickerAsync(options);
+            var selectedFile = result.FirstOrDefault();
+
+            if (selectedFile == null)
                 return;
 
-            string sourcePath = dialog.FileName;
+            string sourcePath = selectedFile.Path.LocalPath;
             Directory.CreateDirectory(targetDir);
 
             try
@@ -377,35 +420,72 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex) { App.Logger.WriteException("ModsViewModel::ApplyCursorSet", ex); }
         }
 
-        private void ExportCursorSet()
+        private async void ExportCursorSet()
         {
             if (SelectedCustomCursorSet is null) return;
-            var dialog = new SaveFileDialog { FileName = $"{SelectedCustomCursorSet.Name}.zip", Filter = "Zip Archive|*.zip" };
-            if (dialog.ShowDialog() != true) return;
+
+            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                             ? desktop.MainWindow
+                             : null;
+
+            if (visualRoot == null) return;
+
+            var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            {
+                Title = "Export Cursor Set",
+                SuggestedFileName = $"{SelectedCustomCursorSet.Name}.zip",
+                DefaultExtension = ".zip",
+                FileTypeChoices = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } }
+            });
+
+            if (file == null) return;
 
             try
             {
-                if (File.Exists(dialog.FileName)) File.Delete(dialog.FileName);
-                System.IO.Compression.ZipFile.CreateFromDirectory(SelectedCustomCursorSet.FolderPath, dialog.FileName);
-                Process.Start("explorer.exe", $"/select,\"{dialog.FileName}\"");
+                string localPath = file.Path.LocalPath;
+                if (File.Exists(localPath)) File.Delete(localPath);
+                System.IO.Compression.ZipFile.CreateFromDirectory(SelectedCustomCursorSet.FolderPath, localPath);
+
+                if (OperatingSystem.IsWindows())
+                    Process.Start("explorer.exe", $"/select,\"{localPath}\"");
             }
             catch (Exception ex) { App.Logger.WriteException("ModsViewModel::ExportCursorSet", ex); }
         }
 
-        private void ImportCursorSet()
+        private async void ImportCursorSet()
         {
             if (SelectedCustomCursorSet is null) return;
-            var dialog = new OpenFileDialog { Filter = "Zip Archive|*.zip" };
-            if (dialog.ShowDialog() != true) return;
+
+            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                             ? desktop.MainWindow
+                             : null;
+
+            if (visualRoot == null) return;
+
+            var result = await visualRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Import Cursor Set",
+                AllowMultiple = false,
+                FileTypeFilter = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } }
+            });
+
+            var selectedFile = result.FirstOrDefault();
+            if (selectedFile == null) return;
 
             try
             {
+                string sourcePath = selectedFile.Path.LocalPath;
                 string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                System.IO.Compression.ZipFile.ExtractToDirectory(dialog.FileName, tempPath);
+                System.IO.Compression.ZipFile.ExtractToDirectory(sourcePath, tempPath);
+
                 foreach (string file in Directory.GetFiles(tempPath, "*.png", SearchOption.AllDirectories))
                 {
                     string? dest = GetCursorTargetPath(Path.GetFileName(file));
-                    if (dest != null) { if (File.Exists(dest)) File.Delete(dest); File.Copy(file, dest); }
+                    if (dest != null)
+                    {
+                        if (File.Exists(dest)) File.Delete(dest);
+                        File.Copy(file, dest);
+                    }
                 }
                 Directory.Delete(tempPath, true);
                 LoadCursorPathsForSelectedSet();
@@ -414,16 +494,36 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex) { App.Logger.WriteException("ModsViewModel::ImportCursorSet", ex); }
         }
 
-        private void AddCursorImage(string? fileName)
+        private async void AddCursorImage(string? fileName)
         {
             if (SelectedCustomCursorSet is null || fileName is null) return;
-            var dialog = new OpenFileDialog { Filter = "PNG files (*.png)|*.png" };
-            if (dialog.ShowDialog() != true) return;
+
+            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                             ? desktop.MainWindow
+                             : null;
+
+            if (visualRoot == null) return;
+
+            var result = await visualRoot.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select Cursor Image",
+                AllowMultiple = false,
+                FileTypeFilter = new[] { new FilePickerFileType("PNG files") { Patterns = new[] { "*.png" } } }
+            });
+
+            var selectedFile = result.FirstOrDefault();
+            if (selectedFile == null) return;
 
             try
             {
+                string sourcePath = selectedFile.Path.LocalPath;
                 string? dest = GetCursorTargetPath(fileName);
-                if (dest != null) { File.Copy(dialog.FileName, dest, true); UpdateCursorPathAndPreview(fileName, dest); NotifyCursorStates(); }
+                if (dest != null)
+                {
+                    File.Copy(sourcePath, dest, true);
+                    UpdateCursorPathAndPreview(fileName, dest);
+                    NotifyCursorStates();
+                }
             }
             catch (Exception ex) { App.Logger.WriteException("ModsViewModel::AddCursor", ex); }
         }
@@ -475,23 +575,21 @@ namespace Froststrap.UI.ViewModels.Settings
             UpdateCursorPathAndPreview("IBeamCursor.png", string.IsNullOrEmpty(kbDir) ? "" : Path.Combine(kbDir, "IBeamCursor.png"));
         }
 
-        private static Bitmap? LoadImageSafely(string path)
+        private static Avalonia.Media.Imaging.Bitmap? LoadImageSafely(string path)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path)) return null;
             try
             {
-                var bitmap = new Bitmap();
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
-                    bitmap.BeginInit();
-                    bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmap.StreamSource = stream;
-                    bitmap.EndInit();
+                    return new Avalonia.Media.Imaging.Bitmap(stream);
                 }
-                bitmap.Freeze();
-                return bitmap;
             }
-            catch { return null; }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException("ModsPresetsViewModel::LoadImageSafely", ex);
+                return null;
+            }
         }
 
         public string ShiftlockCursorSelectedPath { get; set; } = "";

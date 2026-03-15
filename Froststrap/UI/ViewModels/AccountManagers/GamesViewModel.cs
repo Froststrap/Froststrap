@@ -1792,28 +1792,6 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 			}
 		}
 
-		private void OnSelectedSearchResultChanged(OmniSearchContent? value)
-		{
-			const string LOG_IDENT_SEARCH_RESULT = $"{LOG_IDENT}::OnSelectedSearchResultChanged";
-
-			if (value != null)
-			{
-				PlaceId = value.RootPlaceId.ToString();
-				SearchQuery = value.RootPlaceId.ToString();
-
-				_ = LoadGameThumbnailAsync(value.RootPlaceId);
-				_ = LoadSubplacesForSelectedGameAsync();
-
-				_searchDebounceCts?.Cancel();
-				App.Logger.WriteLine(LOG_IDENT_SEARCH_RESULT, $"Selected game: {value.Name} ({PlaceId})");
-			}
-			else
-			{
-				ResetGameDetails();
-				Subplaces.Clear();
-			}
-		}
-
 		partial void OnSelectedRegionChanged(string? value)
 		{
 			const string LOG_IDENT_REGION = $"{LOG_IDENT}::OnSelectedRegionChanged";

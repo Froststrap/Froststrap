@@ -364,7 +364,7 @@ namespace Froststrap.Integrations
 				catch (Exception ex)
 				{
 					App.Logger.WriteException(LOG_IDENT, ex);
-					Frontend.ShowMessageBox($"{Strings.ActivityWatcher_RichPresenceLoadFailed}\n\n{ex.Message}", MessageBoxImage.Warning);
+					_ = Frontend.ShowMessageBox($"{Strings.ActivityWatcher_RichPresenceLoadFailed}\n\n{ex.Message}", MessageBoxImage.Warning);
 					return false;
 				}
 

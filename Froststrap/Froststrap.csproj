@@ -9,6 +9,7 @@
 		<FileVersion>2.0.0</FileVersion>
         <AssemblyName>Froststrap</AssemblyName>
         <RootNamespace>Froststrap</RootNamespace>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 

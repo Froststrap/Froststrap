@@ -7,132 +7,161 @@
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
              x:Class="Froststrap.UI.Elements.Settings.Pages.RobloxSettingsPage"
-			 xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-			x:DataType="vm:RobloxSettingsViewModel"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+             x:DataType="vm:RobloxSettingsViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
+	<ScrollViewer>
+		<StackPanel Margin="0,0,14,14">
+			<TextBlock
+				Margin="0,0,0,16"
+				FontSize="14"
+				Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+				Text="{x:Static resources:Strings.Menu_GBSEditor_Description}" />
 
-	<UserControl.Resources>
-		<DataTemplate x:Key="TextBoxTemplate" x:DataType="models:SettingsControl">
-			<TextBox Margin="0,0,5,4"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Center"
-                     Text="{Binding Value, Mode=TwoWay}" />
-		</DataTemplate>
-
-		<DataTemplate x:Key="SliderTemplate" x:DataType="models:SettingsControl">
-			<Grid Margin="0,0,0,4" VerticalAlignment="Center">
+			<Grid Margin="0,0,0,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-
-				<Slider Grid.Column="0"
-                        HorizontalAlignment="Stretch"
-                        IsSnapToTickEnabled="True"
-                        Maximum="{Binding MaxValue}"
-                        Minimum="{Binding MinValue}"
-                        TickFrequency="{Binding Step}"
-                        Value="{Binding TypedValue, Mode=TwoWay}" />
-
-				<TextBlock Grid.Column="1"
-                           Width="24"
-                           Margin="8,0,0,0"
-                           VerticalAlignment="Center"
-                           Text="{Binding Value}"
-                           TextAlignment="Right" />
-			</Grid>
-		</DataTemplate>
-
-		<DataTemplate x:Key="ToggleSwitchTemplate" x:DataType="models:SettingsControl">
-			<ToggleSwitch OnContent="" OffContent=""
-                          IsChecked="{Binding TypedValue, Mode=TwoWay}"
-                          VerticalAlignment="Center"/>
-		</DataTemplate>
-
-		<DataTemplate x:Key="ComboBoxTemplate" x:DataType="models:SettingsControl">
-			<ComboBox Margin="0,0,5,4"
-                      HorizontalAlignment="Stretch"
-                      ItemsSource="{Binding Options}"
-                      SelectedItem="{Binding Value, Mode=TwoWay}">
-				<ComboBox.ItemTemplate>
-					<DataTemplate>
-						<TextBlock Text="{Binding DisplayName}" />
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
-			</ComboBox>
-		</DataTemplate>
-	</UserControl.Resources>
-
-	<ScrollViewer>
-		<StackPanel Margin="18">
-			<TextBlock Margin="0,0,0,16"
-                       FontSize="14"
-                       Theme="{StaticResource CaptionTextBlockStyle}"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                       Text="{x:Static resources:Strings.Menu_GBSEditor_Description}"
-                       TextWrapping="Wrap" />
-
-			<UniformGrid Columns="3" Margin="0,0,0,16">
-				<Button Margin="0,0,4,0" Command="{Binding ImportCommand}" HorizontalAlignment="Stretch">
+				<Button Grid.Column="0" Margin="0,0,4,0" Command="{Binding ImportCommand}" HorizontalAlignment="Stretch">
 					<StackPanel Orientation="Horizontal" Spacing="8">
 						<ui:SymbolIcon Symbol="NewFolder" />
 						<TextBlock Text="Import Settings" />
 					</StackPanel>
 				</Button>
-
-				<Button Margin="4,0,4,0" Command="{Binding OpenRobloxFolderCommand}" HorizontalAlignment="Stretch">
+				<Button Grid.Column="1" Margin="4,0,4,0" Command="{Binding OpenRobloxFolderCommand}" HorizontalAlignment="Stretch">
 					<StackPanel Orientation="Horizontal" Spacing="8">
 						<ui:SymbolIcon Symbol="Folder" />
 						<TextBlock Text="Open Folder" />
 					</StackPanel>
 				</Button>
-
-				<Button Margin="4,0,0,0" Command="{Binding ExportCommand}" HorizontalAlignment="Stretch">
+				<Button Grid.Column="2" Margin="4,0,0,0" Command="{Binding ExportCommand}" HorizontalAlignment="Stretch">
 					<StackPanel Orientation="Horizontal" Spacing="8">
 						<ui:SymbolIcon Symbol="Save" />
 						<TextBlock Text="Export Settings" />
 					</StackPanel>
 				</Button>
-			</UniformGrid>
+			</Grid>
 
-			<ui:SettingsExpander Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}"
-                                 Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}">
-				<ui:SettingsExpander.Footer>
-					<ToggleSwitch IsChecked="{Binding ReadOnly}" OnContent="" OffContent="" />
-				</ui:SettingsExpander.Footer>
-			</ui:SettingsExpander>
+			<controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
+				<ToggleSwitch Margin="5,0,0,0" IsChecked="{Binding ReadOnly}" />
+			</controls:OptionControl>
 
-			<ItemsControl ItemsSource="{Binding Sections}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<StackPanel Margin="0,16,0,0">
-							<Separator />
-							<TextBlock FontSize="20"
-                                       FontWeight="SemiBold"
-                                       Margin="0,12,0,8"
-                                       Text="{Binding Title}" />
+			<StackPanel>
+				<Separator Margin="0,8" />
+				<TextBlock FontSize="20" FontWeight="Bold" Text="Graphics Settings" Margin="0,0,0,8" />
+				<UniformGrid Columns="4">
+					<controls:SquareCard Header="Framerate Limit" Description="Set a custom FPS cap. Use -1 for default.">
+						<TextBox Text="{Binding FramerateCap, Mode=TwoWay}" />
+					</controls:SquareCard>
 
-							<ItemsControl ItemsSource="{Binding Controls}">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<UniformGrid Columns="4" />
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
+					<controls:SquareCard Header="Start Quality" Description="Quality level on game join.">
+						<Slider Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+					</controls:SquareCard>
 
-								<ItemsControl.ItemTemplate>
-									<DataTemplate>
-										<controls:SquareCard Header="{Binding Title}"
-                                                             Description="{Binding Description}">
-											<ContentControl Content="{Binding}"
-                                                           ContentTemplate="{StaticResource TextBoxTemplate}" />
-										</controls:SquareCard>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</StackPanel>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+					<controls:SquareCard Header="Fullscreen" Description="Start Roblox in fullscreen mode.">
+						<ToggleSwitch IsChecked="{Binding Fullscreen, Mode=TwoWay}" />
+					</controls:SquareCard>
+
+					<controls:SquareCard Header="Max Quality" Description="Enables higher MSAA levels.">
+						<ToggleSwitch IsChecked="{Binding MaxQualityEnabled, Mode=TwoWay}" />
+					</controls:SquareCard>
+
+					<controls:SquareCard Header="Vignette" Description="Toggle the screen vignette effect.">
+						<ToggleSwitch IsChecked="{Binding VignetteEnabled, Mode=TwoWay}" />
+					</controls:SquareCard>
+				</UniformGrid>
+
+				<Separator Margin="0,8" />
+				<TextBlock FontSize="20" FontWeight="Bold" Text="Audio Settings" Margin="0,0,0,8" />
+				<UniformGrid Columns="4">
+					<controls:SquareCard Header="Master Volume" Description="Global volume level.">
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolume}" />
+					</controls:SquareCard>
+					<controls:SquareCard Header="Studio Volume" Description="Volume for Roblox Studio.">
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolumeStudio}" />
+					</controls:SquareCard>
+					<controls:SquareCard Header="Party Volume" Description="Volume for party voice mode.">
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding PartyVoiceVolume}" />
+					</controls:SquareCard>
+				</UniformGrid>
+
+				<Separator Margin="0,8" />
+				<TextBlock FontSize="20" FontWeight="Bold" Text="Input Settings" Margin="0,0,0,8" />
+				<UniformGrid Columns="4">
+					<controls:SquareCard Header="Sensitivity" Description="Global camera sensitivity.">
+						<TextBox Text="{Binding MouseSensitivity}" />
+					</controls:SquareCard>
+					<controls:SquareCard Header="ShiftLock" Description="Enable shiftlock Automatically.">
+						<ToggleSwitch IsChecked="{Binding ShiftLock, Mode=TwoWay}" />
+					</controls:SquareCard>
+
+					<controls:SquareCard Header="1st Person Sensitivity" Description="X and Y sensitivity for first person.">
+						<Grid Margin="0,0,0,4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+							<TextBox Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityFirstPersonX, Mode=TwoWay}" />
+							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+							<TextBox Grid.Column="3" Text="{Binding MouseSensitivityFirstPersonY, Mode=TwoWay}" />
+						</Grid>
+					</controls:SquareCard>
+
+					<controls:SquareCard Header="3rd Person Sensitivity" Description="X and Y sensitivity for third person.">
+						<Grid Margin="0,0,0,4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+							<TextBox Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityThirdPersonX, Mode=TwoWay}" />
+							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+							<TextBox Grid.Column="3" Text="{Binding MouseSensitivityThirdPersonY, Mode=TwoWay}" />
+						</Grid>
+					</controls:SquareCard>
+
+					<controls:SquareCard Header="Invert Y" Description="Invert camera Y axis.">
+						<ToggleSwitch IsChecked="{Binding CameraYInverted}" />
+					</controls:SquareCard>
+					<controls:SquareCard Header="Haptic Strength" Description="Controller vibration strength.">
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding HapticStrength}" />
+					</controls:SquareCard>
+				</UniformGrid>
+
+				<Separator Margin="0,8" />
+				<TextBlock FontSize="20" FontWeight="Bold" Text="Accessibility &amp; Misc" Margin="0,0,0,8" />
+				<UniformGrid Columns="4">
+					<controls:SquareCard Header="UI Transparency" Description="Adjust transparency of UI elements.">
+						<TextBox Text="{Binding UITransparency}" />
+					</controls:SquareCard>
+					<controls:SquareCard Header="Text Size" Description="Preferred display text size.">
+						<ComboBox ItemsSource="{Binding FontSizes}"
+								  SelectedValue="{Binding SelectedFontSize}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Key}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</controls:SquareCard>
+					<controls:SquareCard Header="Reduced Motion" Description="Reduces UI animations.">
+						<ToggleSwitch IsChecked="{Binding ReducedMotion}" />
+					</controls:SquareCard>
+					<controls:SquareCard Header="Perf Stats" Description="Show performance overlay.">
+						<ToggleSwitch IsChecked="{Binding PerformanceStatsVisible}" />
+					</controls:SquareCard>
+					<controls:SquareCard Header="VR Mode" Description="Enable Virtual Reality support.">
+						<ToggleSwitch IsChecked="{Binding VREnabled}" />
+					</controls:SquareCard>
+				</UniformGrid>
+			</StackPanel>
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>

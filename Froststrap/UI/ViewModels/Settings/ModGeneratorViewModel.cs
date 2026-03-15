@@ -1,4 +1,6 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap;
@@ -28,7 +30,7 @@ namespace Froststrap.UI.ViewModels.Settings
             _ = LoadFontFilesAsync();
         }
 
-        private System.Drawing.Color _solidColor = System.Drawing.Color.White;
+        private Color _solidColor = Colors.White;
         private string _solidColorHex = "#FFFFFF";
         public string SolidColorHex
         {
@@ -58,7 +60,7 @@ namespace Froststrap.UI.ViewModels.Settings
             get => Color.FromRgb(_solidColor.R, _solidColor.G, _solidColor.B);
             set
             {
-                _solidColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
+                _solidColor = Color.FromArgb(value.A, value.R, value.G, value.B);
                 _solidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
 
                 OnPropertyChanged(nameof(SolidColorHex));
@@ -231,39 +233,48 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task LoadGlyphPreviewsAsync(string fontPath)
         {
-            if (!File.Exists(fontPath)) return;
-            if (!IsFileReady(fontPath)) return;
+            if (!File.Exists(fontPath) || !IsFileReady(fontPath)) return;
 
             var glyphItems = new ObservableCollection<GlyphItem>();
             UpdateGlyphColors();
 
             try
             {
-                GlyphTypeface typeface = new GlyphTypeface(new Uri(fontPath, UriKind.Absolute));
-                var characterCodes = typeface.CharacterToGlyphMap.Keys.OrderByDescending(c => c).ToList();
+                var fontFamily = new Avalonia.Media.FontFamily($"name:file://{fontPath.Replace("\\", "/")}");
+                var typeface = new Typeface(fontFamily);
+
+                // Standard printable range for preview
+                var characterCodes = Enumerable.Range(33, 126).OrderByDescending(c => c).ToList();
 
                 foreach (var characterCode in characterCodes)
                 {
-                    if (!typeface.CharacterToGlyphMap.TryGetValue(characterCode, out ushort glyphIndex))
-                        continue;
+                    string text = char.ConvertFromUtf32(characterCode);
 
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         try
                         {
-                            Geometry geometry = typeface.GetGlyphOutline(glyphIndex, 40, 40);
-                            var bounds = geometry.Bounds;
+                            var ft = new FormattedText(
+                                text,
+                                System.Globalization.CultureInfo.CurrentCulture,
+                                FlowDirection.LeftToRight,
+                                typeface,
+                                40,
+                                PreviewBrush);
+
+                            var geometry = ft.BuildGeometry(new Avalonia.Point(0, 0));
+
+                            var bounds = geometry!.Bounds;
                             var translate = new TranslateTransform(
                                 (50 - bounds.Width) / 2 - bounds.X,
                                 (50 - bounds.Height) / 2 - bounds.Y
                             );
                             geometry.Transform = translate;
-                            geometry.Freeze();
 
                             glyphItems.Add(new GlyphItem
                             {
                                 Data = geometry,
-                                ColorBrush = PreviewBrush // Shared brush strategy
+                                ColorBrush = PreviewBrush
                             });
                         }
                         catch { }
@@ -383,34 +394,40 @@ namespace Froststrap.UI.ViewModels.Settings
                         }
                         StatusText = $"Successfully applied modifications ({copiedFiles} files).";
                     }
+                    // ... inside GenerateModAsync, after the Packaging section ...
+
                     else
                     {
                         StatusText = "Zipping results...";
 
-                        string defaultFileName = $"FroststrapMod_{SolidColorHex}.zip";
-
-                        var saveFileDialog = new Microsoft.Win32.SaveFileDialog
+                        await Dispatcher.UIThread.InvokeAsync(async () =>
                         {
-                            FileName = defaultFileName,
-                            DefaultExt = ".zip",
-                            Filter = "Zip Archive (.zip)|*.zip"
-                        };
+                            // Accessing the window in Avalonia:
+                            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
+                                             ? desktop.MainWindow
+                                             : null;
 
-                        bool? result = false;
-                        await Dispatcher.UIThread.InvokeAsync(() =>
-                        {
-                            result = saveFileDialog.ShowDialog();
+                            if (visualRoot == null) return;
+
+                            var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                            {
+                                Title = "Save Froststrap Mod",
+                                SuggestedFileName = $"FroststrapMod_{SolidColorHex}.zip",
+                                DefaultExtension = ".zip",
+                                FileTypeChoices = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } }
+                            });
+
+                            if (file != null)
+                            {
+                                string localPath = file.Path.LocalPath;
+                                ModGenerator.ZipResult(TempRoot, localPath);
+                                StatusText = $"Mod saved to {Path.GetFileName(localPath)}";
+                            }
+                            else
+                            {
+                                StatusText = "Mod generation cancelled.";
+                            }
                         });
-
-                        if (result == true)
-                        {
-                            ModGenerator.ZipResult(TempRoot, saveFileDialog.FileName);
-                            StatusText = $"Mod saved to {Path.GetFileName(saveFileDialog.FileName)}";
-                        }
-                        else
-                        {
-                            StatusText = "Mod generation cancelled (no save location).";
-                        }
                     }
                 });
             }
@@ -437,8 +454,14 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void UpdateSolidColorFromHex(string hex)
         {
-            try { _solidColor = System.Drawing.ColorTranslator.FromHtml(hex); }
-            catch { _solidColor = System.Drawing.Color.White; }
+            try
+            {
+                _solidColor = Color.Parse(hex);
+            }
+            catch
+            {
+                _solidColor = Colors.White;
+            }
         }
 
         private void UpdateGlyphColors()

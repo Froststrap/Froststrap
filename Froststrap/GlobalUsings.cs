@@ -24,7 +24,7 @@ global using Froststrap.Models.APIs.GitHub;
 global using Froststrap.Models.APIs.Roblox;
 global using Froststrap.Models.APIs.RoValra;
 global using Froststrap.Models.Attributes;
-global using Froststrap.Models.FroststrapRPC;
+global using Froststrap.Models.BloxstrapRPC;
 global using Froststrap.Models.Entities;
 global using Froststrap.Models.FroststrapStudioRPC;
 global using Froststrap.Models.Manifest;

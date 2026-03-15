@@ -54,10 +54,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 IsLoadingGlyphs = false;
             }
         }
-
         private async Task GenerateGlyphPreviews(string fontPath)
         {
-            var typeface = new Typeface(new Uri($"file://{fontPath}"));
+            var fontFamily = new Avalonia.Media.FontFamily($"name:file://{fontPath}");
+            var typeface = new Typeface(fontFamily);
 
             var color = Colors.White;
             try
@@ -68,8 +68,6 @@ namespace Froststrap.UI.ViewModels.Dialogs
             catch { /* Fallback to white */ }
 
             var brush = new SolidColorBrush(color);
-
-            var fontManager = FontManager.Current;
 
             var codes = Enumerable.Range(33, 126)
                 .OrderByDescending(c => c)
@@ -82,11 +80,9 @@ namespace Froststrap.UI.ViewModels.Dialogs
             {
                 var text = char.ConvertFromUtf32(code);
 
-                var geometry = StreamGeometry.Parse("");
-
                 var ft = new FormattedText(
                     text,
-                    System.Globalization.CultureInfo.CurrentCulture,
+                    CultureInfo.CurrentCulture,
                     FlowDirection.LeftToRight,
                     typeface,
                     40,

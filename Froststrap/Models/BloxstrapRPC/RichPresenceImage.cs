@@ -1,4 +1,4 @@
-﻿namespace Froststrap.Models.FroststrapRPC
+﻿namespace Froststrap.Models.BloxstrapRPC
 {
     class RichPresenceImage
     {
