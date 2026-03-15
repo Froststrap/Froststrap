@@ -1,5 +1,5 @@
 <base:AvaloniaWindow x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer"
-		xmlns="https://github.com/avaloniaui"
+        xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -7,7 +7,6 @@
         xmlns:local="clr-namespace:Froststrap.UI.Elements.ContextMenu"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-		xmlns:fa="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d"
         Title="ContextMenuContainer"
         Width="0" Height="0"
@@ -15,9 +14,8 @@
         SystemDecorations="None"
         WindowStartupLocation="Manual"
         Opacity="0">
-
-	<Window.ContextMenu>
-		<ContextMenu>
+    <Window.ContextMenu>
+        <ContextMenu>
             <MenuItem IsEnabled="False">
                 <MenuItem.Header>
                     <Grid>
@@ -25,14 +23,12 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" Source="pack://application:,,,/Bloxstrap.ico" RenderOptions.BitmapScalingMode="HighQuality" />
+                        <Image Grid.Column="0" Source="/Bloxstrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality" />
                         <TextBlock x:Name="VersionTextBlock" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Grid.Column="1" VerticalAlignment="Center" Margin="6,0,0,0" Text="Bloxstrap v2.4.1" />
                     </Grid>
                 </MenuItem.Header>
             </MenuItem>
-
             <Separator/>
-
             <MenuItem IsEnabled="False" x:Name="PlaytimeMenuItem">
                 <MenuItem.Header>
                     <Grid>
@@ -40,50 +36,46 @@
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Timer24" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Clock" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                         <TextBlock x:Name="PlaytimeTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Total: 00:00" />
                     </Grid>
                 </MenuItem.Header>
             </MenuItem>
-
             <Separator/>
-
-            <MenuItem x:Name="RichPresenceMenuItem" Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsCheckable="True" IsChecked="True" Visibility="Collapsed" Click="RichPresenceMenuItem_Click" />
-
-            <MenuItem x:Name="InviteDeeplinkMenuItem" Visibility="Collapsed" Click="InviteDeeplinkMenuItem_Click">
+            
+            <MenuItem x:Name="RichPresenceMenuItem" Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" />
+            
+            <MenuItem x:Name="InviteDeeplinkMenuItem" IsVisible="False" Click="InviteDeeplinkMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="ClipboardLink24"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Link"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" />
-                    </Grid>
+                    </Grid>                
                 </MenuItem.Header>
             </MenuItem>
-
-            <MenuItem x:Name="RegionMenuRoot" Visibility="Collapsed">
+            
+            <MenuItem x:Name="RegionMenuRoot" IsVisible="False">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Earth24"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Earth"/>
                         <TextBlock x:Name="RegionJoinTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Region Actions" />
                     </Grid>
                 </MenuItem.Header>
-
                 <MenuItem x:Name="AutoJoinRegionMenuItem" Click="AutoJoinRegionMenuItem_Click">
                     <MenuItem.Header>
                         <TextBlock FontWeight="Bold" Text="Join Server" />
                     </MenuItem.Header>
                 </MenuItem>
-
                 <Separator/>
-
-                <MenuItem StaysOpenOnClick="True">
+                <MenuItem>
                     <MenuItem.Header>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -91,36 +83,33 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Preferred:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                            <ComboBox x:Name="RegionSelectionComboBox" 
-                          Grid.Column="1" 
-                          Width="150" 
-                          MaxDropDownHeight="200"/>
+                            <ComboBox x:Name="RegionSelectionComboBox" Grid.Column="1" Width="150" MaxDropDownHeight="200"/>
                         </Grid>
                     </MenuItem.Header>
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem x:Name="GameInformationMenuItem" Visibility="Collapsed" Click="GameInformaionMenuItem_Click">
+            <MenuItem x:Name="GameInformationMenuItem" IsVisible="False" Click="GameInformaionMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Games24"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Game Information" />
                     </Grid>
                 </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem x:Name="ServerDetailsMenuItem" Visibility="Collapsed" Click="ServerDetailsMenuItem_Click">
+            <MenuItem x:Name="ServerDetailsMenuItem" IsVisible="False" Click="ServerDetailsMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Info28"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" />
                     </Grid>
                 </MenuItem.Header>
@@ -133,7 +122,7 @@
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="History24"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" />
                     </Grid>
                 </MenuItem.Header>
@@ -146,7 +135,7 @@
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="WindowHeaderHorizontalOff20"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Target"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_CloseRoblox}" />
                     </Grid>
                 </MenuItem.Header>
@@ -159,11 +148,11 @@
                             <ColumnDefinition Width="24" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="DismissCircle24"/>
+                        <ui:SymbolIcon Grid.Column="0" Symbol="Dismiss"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Close Watcher" />
                     </Grid>
                 </MenuItem.Header>
             </MenuItem>
         </ContextMenu>
-	</Window.ContextMenu>
+    </Window.ContextMenu>
 </base:AvaloniaWindow>

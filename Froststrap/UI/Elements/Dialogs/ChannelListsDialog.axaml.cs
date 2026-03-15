@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using Froststrap.UI.ViewModels.Dialogs;
 using System;
 using System.Linq;
+using static Froststrap.UI.ViewModels.Dialogs.ChannelListsViewModel;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
@@ -23,7 +24,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 if (sender is DataGrid dataGrid)
                 {
                     var selectedItems = dataGrid.SelectedItems
-                        .OfType<ChannelListsViewModel>()
+                        .OfType<DeployInfoDisplay>()
                         .Select(i => i.ChannelName)
                         .ToList();
 

@@ -1,40 +1,43 @@
-using System;
-using System.Text.RegularExpressions;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
-using Avalonia.Interactivity;
-using Froststrap.Models;
 using Froststrap.UI.ViewModels.Settings;
-using Froststrap;
-using Froststrap.UI.Elements.Settings;
+using System.Text.RegularExpressions;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-	public partial class RobloxSettingsPage : UserControl
-	{
-		private RobloxSettingsViewModel? _viewModel;
+    public partial class RobloxSettingsPage : UserControl
+    {
+        private readonly RobloxSettingsViewModel _viewModel;
 
-		public RobloxSettingsPage()
-		{
+        public RobloxSettingsPage()
+        {
             _viewModel = new RobloxSettingsViewModel();
             DataContext = _viewModel;
-
             InitializeComponent();
-		}
+        }
 
+        private void ValidateUInt32(object? sender, TextInputEventArgs e)
+        {
+            if (sender is TextBox textBox && !string.IsNullOrEmpty(e.Text))
+            {
+                string currentText = textBox.Text ?? string.Empty;
+                int caretIndex = textBox.CaretIndex;
+                string newText = currentText.Insert(caretIndex, e.Text);
 
-		private void ValidateUInt32(object? sender, TextInputEventArgs e)
-		{
-			if (string.IsNullOrEmpty(e.Text)) return;
-			e.Handled = !uint.TryParse(e.Text, out _);
-		}
+                e.Handled = !uint.TryParse(newText, out _);
+            }
+        }
 
-		private void ValidateFloat(object? sender, TextInputEventArgs e)
-		{
-			if (string.IsNullOrEmpty(e.Text)) return;
-			e.Handled = !Regex.IsMatch(e.Text, @"^[0-9.]+$");
-		}
-	}
+        private void ValidateFloat(object? sender, TextInputEventArgs e)
+        {
+            if (sender is TextBox textBox && !string.IsNullOrEmpty(e.Text))
+            {
+                string currentText = textBox.Text ?? string.Empty;
+                int caretIndex = textBox.CaretIndex;
+                string newText = currentText.Insert(caretIndex, e.Text);
+
+                e.Handled = !Regex.IsMatch(newText, @"^-?\d*\.?\d*$");
+            }
+        }
+    }
 }

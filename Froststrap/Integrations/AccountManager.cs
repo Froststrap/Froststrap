@@ -11,6 +11,7 @@
 *               of the Nix ecosystem. 
 */
 
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Dialogs;
 using Newtonsoft.Json;
@@ -464,7 +465,7 @@ namespace Froststrap.Integrations
 									{
 										try
 										{
-											if (Application.Current != null && Application.Current.Dispatcher != null && !Application.Current.Dispatcher.HasShutdownFinished)
+											if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 											{
 												Dispatcher.UIThread.Invoke(() =>
 												{
@@ -556,7 +557,7 @@ namespace Froststrap.Integrations
 						{
 							try
 							{
-								if (Application.Current != null && Application.Current.Dispatcher != null && !Application.Current.Dispatcher.HasShutdownFinished)
+								if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 								{
 									Dispatcher.UIThread.Invoke(() =>
 									{
@@ -605,7 +606,7 @@ namespace Froststrap.Integrations
 				{
 					try
 					{
-						if (Application.Current != null && Application.Current.Dispatcher != null && !Application.Current.Dispatcher.HasShutdownFinished)
+						if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 						{
 							Dispatcher.UIThread.Invoke(() =>
 							{

@@ -22,13 +22,31 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (value && !App.State.Prop.TestModeWarningShown)
                 {
-                    var result = Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
-                    if (result != MessageBoxResult.Yes)
-                        return;
-                    App.State.Prop.TestModeWarningShown = true;
+                    _ = ShowTestModeWarningAsync();
+                    return;
                 }
+
                 this.RaiseAndSetIfChanged(ref _testModeEnabled, value);
                 App.LaunchSettings.TestModeFlag.Active = value;
+            }
+        }
+
+        private async Task ShowTestModeWarningAsync()
+        {
+            var result = await Frontend.ShowMessageBox(
+                Strings.Menu_TestMode_Prompt,
+                MessageBoxImage.Warning,
+                MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                App.State.Prop.TestModeWarningShown = true;
+
+                TestModeEnabled = true;
+            }
+            else
+            {
+                this.RaisePropertyChanged(nameof(TestModeEnabled));
             }
         }
 
@@ -172,7 +190,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 () =>
                 {
                     SelectedPage = "robloxsettings";
-                    return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel(App.RemoteData)))
+                    return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
@@ -203,7 +221,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel" => Wrap("communitymods", new CommunityModsViewModel()),
                 "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel" => Wrap("fastflags", new FastFlagsViewModel()),
                 "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => Wrap("appearance", new AppearanceViewModel(null!)),
-                "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => Wrap("robloxsettings", new RobloxSettingsViewModel(App.RemoteData)),
+                "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => Wrap("robloxsettings", new RobloxSettingsViewModel()),
                 _ => Wrap("integrations", new IntegrationsViewModel())
             };
             _router.Navigate.Execute(viewModel).Subscribe();

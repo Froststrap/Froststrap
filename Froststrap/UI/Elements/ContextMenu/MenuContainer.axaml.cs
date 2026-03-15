@@ -40,7 +40,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 					ServerDetailsMenuItem.IsVisible = false;
 					GameInformationMenuItem.IsVisible = false;
 					GameHistoryMenuItem.IsVisible = false;
-					RegionJoinningMenuItem.IsVisible = false;
+                    RegionMenuRoot.IsVisible = false;
 
 					if (playtimeEnabled)
 					{
@@ -52,12 +52,14 @@ namespace Froststrap.UI.Elements.ContextMenu
 				}
 				else
 				{
-					PlaytimeMenuItem.IsVisible = playtimeEnabled;
-					if (playtimeEnabled) StartTotalPlaytimeTimer();
+                    if (App.Settings.Prop.PlaytimeCounter)
+                        StartTotalPlaytimeTimer();
 
-					if (App.Settings.Prop.AllowCookieAccess) UpdateRegionJoinText();
 
-					GameHistoryMenuItem.IsVisible = App.Settings.Prop.ShowGameHistoryMenu;
+                    UpdateRegionJoinUI();
+                    PopulateRegionMenu();
+
+                    GameHistoryMenuItem.IsVisible = App.Settings.Prop.ShowGameHistoryMenu;
 				}
 			}
 
@@ -121,7 +123,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 				if (_activityWatcher?.Data.ServerType == ServerType.Public) InviteDeeplinkMenuItem.IsVisible = true;
 				ServerDetailsMenuItem.IsVisible = true;
 				GameInformationMenuItem.IsVisible = true;
-                RegionMenuRoot.Visibility = Visibility.Visible;
+                RegionMenuRoot.IsVisible = true;
 			});
 
 		private void ActivityWatcher_OnGameLeave(object? sender, EventArgs e) =>
@@ -129,7 +131,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 				InviteDeeplinkMenuItem.IsVisible = false;
 				ServerDetailsMenuItem.IsVisible = false;
 				GameInformationMenuItem.IsVisible = false;
-				if (App.Settings.Prop.AllowCookieAccess) RegionJoinningMenuItem.IsVisible = false;
 					RegionMenuRoot.IsVisible = false;
 					_serverInformationWindow?.Close();
 					_gameInformationWindow?.Close();

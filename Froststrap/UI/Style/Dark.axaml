@@ -1,76 +1,55 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:base="clr-namespace:Froststrap.UI.Elements.Base">
-    <SolidColorBrush x:Key="NewTextEditorBackground" Color="#2D2D2D" />
-    <SolidColorBrush x:Key="NewTextEditorForeground" Color="White" />
-    <SolidColorBrush x:Key="NewTextEditorLink" Color="#3A9CEA" />
-    <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#19000000" />
-    <SolidColorBrush x:Key="NormalDarkAndLightBackground" Color="#0FFFFFFF" />
-    <SolidColorBrush x:Key="ApplicationBackground" Color="#01000000" />
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<Style x:Key="SquareProgressBarStyle" TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
+	<Styles.Resources>
+		<SolidColorBrush x:Key="NewTextEditorBackground" Color="#2D2D2D" />
+		<SolidColorBrush x:Key="NewTextEditorForeground" Color="White" />
+		<SolidColorBrush x:Key="NewTextEditorLink" Color="#3A9CEA" />
+		<SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#19000000" />
+		<SolidColorBrush x:Key="NormalDarkAndLightBackground" Color="#0FFFFFFF" />
+
+		<SolidColorBrush x:Key="ApplicationBackground" Color="#01000000" />
+		<Color x:Key="ControlFillColorDefault">#19000000</Color>
+	</Styles.Resources>
+
+	<Style Selector="ProgressBar.Square">
+		<Setter Property="Background" Value="{StaticResource PrimaryBackgroundColor}" />
+		<Setter Property="Foreground" Value="{StaticResource NewTextEditorForeground}" />
 		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ProgressBar">
-					<Grid Name="TemplateRoot" SnapsToDevicePixels="True">
-						<Border Background="{TemplateBinding Background}"
+			<ControlTemplate>
+				<Grid Name="TemplateRoot" ClipToBounds="True">
+					<Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="0" />
 
-						<Rectangle Name="PART_Track" />
-
-						<Border Name="PART_Indicator"
-                            HorizontalAlignment="Left"
-                            Background="{TemplateBinding Foreground}"
-                            CornerRadius="0" />
-					</Grid>
-				</ControlTemplate>
-			</Setter.Value>
+					<Border Name="PART_Indicator"
+                           HorizontalAlignment="Left"
+                           Background="{TemplateBinding Foreground}">
+						<Border.Transitions>
+							<Transitions>
+								<DoubleTransition Property="Width" Duration="0:0:0.1" />
+							</Transitions>
+						</Border.Transitions>
+					</Border>
+				</Grid>
+			</ControlTemplate>
 		</Setter>
-
-		<Style.Triggers>
-			<Trigger Property="IsIndeterminate" Value="True">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="ProgressBar">
-							<ControlTemplate.Resources>
-								<Storyboard x:Key="IndeterminateAnim" RepeatBehavior="Forever">
-									<DoubleAnimation Storyboard.TargetName="PART_GlowRect"
-                                                 Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
-                                                 From="-200" To="800" Duration="0:0:4" />
-								</Storyboard>
-							</ControlTemplate.Resources>
-
-							<Grid Name="TemplateRoot" ClipToBounds="True">
-								<Border Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    CornerRadius="0" />
-
-								<Grid Name="AnimationContainer" ClipToBounds="True">
-									<Border Name="PART_GlowRect"
-                                        Width="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue=100}"
-                                        Height="{TemplateBinding Height}"
-                                        HorizontalAlignment="Left"
-                                        Background="{TemplateBinding Foreground}"
-                                        CornerRadius="0">
-										<Border.RenderTransform>
-											<TranslateTransform X="-200" />
-										</Border.RenderTransform>
-									</Border>
-								</Grid>
-							</Grid>
-
-							<ControlTemplate.Triggers>
-								<EventTrigger RoutedEvent="Loaded">
-									<BeginStoryboard Storyboard="{StaticResource IndeterminateAnim}" />
-								</EventTrigger>
-							</ControlTemplate.Triggers>
-
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Trigger>
-		</Style.Triggers>
 	</Style>
-	
-</ResourceDictionary>
+
+	<Style Selector="ProgressBar.Square:indeterminate /template/ Border#PART_Indicator">
+		<Style.Animations>
+			<Animation Duration="0:0:4" IterationCount="Infinite">
+				<KeyFrame KeyTime="0:0:0">
+					<Setter Property="TranslateTransform.X" Value="-200"/>
+				</KeyFrame>
+				<KeyFrame KeyTime="0:0:4">
+					<Setter Property="TranslateTransform.X" Value="800"/>
+				</KeyFrame>
+			</Animation>
+		</Style.Animations>
+		<Setter Property="Width" Value="100" />
+		<Setter Property="RenderTransform" Value="translate(-200px, 0px)"/>
+	</Style>
+
+</Styles>

@@ -197,16 +197,28 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static void SaveBitmapAsIcon(Bitmap bitmap, Stream output)
         {
-            using var resized = new Bitmap(bitmap, new System.Drawing.Size(64, 64));
+            var pixelSize = new Avalonia.PixelSize(64, 64);
+
+            using var resized = bitmap.CreateScaledBitmap(pixelSize, BitmapInterpolationMode.HighQuality);
+
             using var stream = new MemoryStream();
-            resized.Save(stream, ImageFormat.Png);
+            resized.Save(stream);
             byte[] pngBytes = stream.ToArray();
 
             using var writer = new BinaryWriter(output);
-            writer.Write((short)0); writer.Write((short)1); writer.Write((short)1);
-            writer.Write((byte)64); writer.Write((byte)64); writer.Write((byte)0);
-            writer.Write((byte)0); writer.Write((short)1); writer.Write((short)32);
-            writer.Write(pngBytes.Length); writer.Write(22);
+            writer.Write((short)0);
+            writer.Write((short)1);
+            writer.Write((short)1);
+
+            writer.Write((byte)64);
+            writer.Write((byte)64);
+            writer.Write((byte)0);
+            writer.Write((byte)0);
+            writer.Write((short)1);
+            writer.Write((short)32);
+
+            writer.Write(pngBytes.Length);
+            writer.Write(22);
             writer.Write(pngBytes);
         }
 
