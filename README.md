@@ -109,11 +109,13 @@ When in doubt about which license applies to a specific file, check the file hea
 
 ### To support the development of Froststrap, consider giving the repository a star.
 
-<a href="https://www.star-history.com/?repos=Froststrap%2FFroststrap&type=timeline&legend=top-left">
+## Star History
+
+<a href="https://www.star-history.com/?repos=Froststrap%2FFroststrap%2CRealMeddsam%2FFroststrap%2CMeddsam%2FFroststrap&type=timeline&legend=top-left">
  <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=Froststrap/Froststrap&type=timeline&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=Froststrap/Froststrap&type=timeline&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=Froststrap/Froststrap&type=timeline&legend=top-left" />
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=Froststrap/Froststrap%2CRealMeddsam/Froststrap%2CMeddsam/Froststrap&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=Froststrap/Froststrap%2CRealMeddsam/Froststrap%2CMeddsam/Froststrap&type=timeline&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=Froststrap/Froststrap%2CRealMeddsam/Froststrap%2CMeddsam/Froststrap&type=timeline&legend=top-left" />
  </picture>
 </a>
 
