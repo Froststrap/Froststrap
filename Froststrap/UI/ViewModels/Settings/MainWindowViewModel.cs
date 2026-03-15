@@ -78,12 +78,23 @@ namespace Froststrap.UI.ViewModels.Settings
             _testModeEnabled = App.LaunchSettings.TestModeFlag.Active;
             _isSidebarExpanded = App.Settings.Prop.IsNavigationSidebarExpanded;
 
+            // Shared exception handler for all commands
+            var commandExceptionHandler = new Action<Exception>(ex =>
+            {
+                App.Logger.WriteException("MainWindowViewModel::NavigationCommand", ex);
+            });
+
             NavigateToIntegrationsCommand = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
                     SelectedPage = "integrations";
                     return _router.Navigate.Execute(Wrap("integrations", new IntegrationsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler);
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
                 }
             );
 
@@ -92,7 +103,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "behaviour";
                     return _router.Navigate.Execute(Wrap("behaviour", new BehaviourViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler);
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
                 }
             );
 
@@ -101,7 +117,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "mods";
                     return _router.Navigate.Execute(Wrap("mods", new ModsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler);
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
                 }
             );
 
@@ -110,7 +131,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "communitymods";
                     return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler);
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
                 }
             );
 
@@ -119,7 +145,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "fastflags";
                     return _router.Navigate.Execute(Wrap("fastflags", new FastFlagsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler);
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
                 }
             );
 
@@ -128,7 +159,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "appearance";
                     return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel(null!)))
-                        .ObserveOn(RxApp.MainThreadScheduler);
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
                 }
             );
 
@@ -137,11 +173,15 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "robloxsettings";
                     return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel(App.RemoteData)))
-                        .ObserveOn(RxApp.MainThreadScheduler);
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
                 }
             );
 
-            // Load last page or default
             var lastPageName = App.State.Prop.LastPage;
             if (lastPageName != null)
             {
@@ -217,7 +257,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SaveAndLaunchSettings()
         {
             SaveSettings();
-            if (!App.LaunchSettings.TestModeFlag.Active) // test mode already launches an instance
+            if (!App.LaunchSettings.TestModeFlag.Active)
                 Process.Start(Paths.Application, "-player");
             else
                 CloseWindow();
