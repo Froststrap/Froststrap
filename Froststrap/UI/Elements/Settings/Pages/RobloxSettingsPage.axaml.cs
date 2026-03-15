@@ -1,7 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Froststrap.UI.ViewModels.Settings;
-using System.Text.RegularExpressions;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {

@@ -5,12 +5,13 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
+using FluentAvalonia.Styling;
 
 namespace Froststrap.UI.Elements.Base
 {
     public abstract class AvaloniaWindow : Window
     {
-        private static ResourceDictionary? _currentTheme;
+        private static IResourceDictionary? _currentTheme;
 
         public AvaloniaWindow()
         {
@@ -21,30 +22,40 @@ namespace Froststrap.UI.Elements.Base
         {
             var finalTheme = App.Settings.Prop.Theme.GetFinal();
 
-            Application.Current!.RequestedThemeVariant = finalTheme == Enums.Theme.Light ?
-                ThemeVariant.Light : ThemeVariant.Dark;
+            ThemeVariant targetVariant = finalTheme == Enums.Theme.Light ? ThemeVariant.Light : ThemeVariant.Dark;
 
-            Application.Current.Resources.Remove("ApplicationBackground");
-
-            if (finalTheme == Enums.Theme.Custom)
+            if (Application.Current != null)
             {
-                if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
+                Application.Current.RequestedThemeVariant = targetVariant;
+
+                var faTheme = Application.Current.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+                if (faTheme != null)
                 {
-                    ApplyGradientBackground();
-                }
-                else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
-                {
-                    ApplyImageBackground();
+                    faTheme.PreferSystemTheme = false;
                 }
 
-                ApplyCustomThemeResources();
-            }
-            else
-            {
-                ApplyStandardTheme(finalTheme);
-            }
+                Application.Current.Resources.Remove("ApplicationBackground");
 
-            UpdateAllWindows();
+                if (finalTheme == Enums.Theme.Custom)
+                {
+                    if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
+                    {
+                        ApplyGradientBackground();
+                    }
+                    else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
+                    {
+                        ApplyImageBackground();
+                    }
+
+                    ApplyCustomThemeResources();
+                }
+                else
+                {
+                    ApplyStandardTheme(finalTheme);
+                }
+
+                UpdateAllWindows();
+            }
         }
 
         private static void ApplyGradientBackground()
@@ -168,11 +179,18 @@ namespace Froststrap.UI.Elements.Base
                 var resources = Application.Current?.Resources;
                 if (resources == null) return;
 
-                var themeDict = (ResourceDictionary)AvaloniaXamlLoader.Load(uri);
+                var loaded = AvaloniaXamlLoader.Load(uri);
 
-                MergeResourceDictionary(resources, themeDict);
-
-                _currentTheme = themeDict;
+                if (loaded is Styles styleSheet)
+                {
+                    MergeResourceDictionary(resources, styleSheet.Resources);
+                    _currentTheme = styleSheet.Resources;
+                }
+                else if (loaded is ResourceDictionary themeDict)
+                {
+                    MergeResourceDictionary(resources, themeDict);
+                    _currentTheme = themeDict;
+                }
             }
             catch (Exception ex)
             {
@@ -180,7 +198,7 @@ namespace Froststrap.UI.Elements.Base
             }
         }
 
-        private static void MergeResourceDictionary(IResourceDictionary target, ResourceDictionary source)
+        private static void MergeResourceDictionary(IResourceDictionary target, IResourceDictionary source)
         {
             foreach (var key in source.Keys)
             {

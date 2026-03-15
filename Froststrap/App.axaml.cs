@@ -250,7 +250,7 @@ public const string ProjectRepository = "Froststrap/Froststrap";
         return null;
     }
 
-    public override void OnFrameworkInitializationCompleted()
+    public override async void OnFrameworkInitializationCompleted()
     {
         const string LOG_IDENT = "App::OnStartup";
 
@@ -302,22 +302,24 @@ public const string ProjectRepository = "Froststrap/Froststrap";
                 Terminate();
             }
 
-            Task.Run(RemoteData.LoadData);
-            _ = Settings.Load();
-            _ = State.Load();
-            _ =  FastFlags.Load();
+            _ = Task.Run(RemoteData.LoadData);
+            await Settings.Load();
+            await State.Load();
+            await FastFlags.Load();
             GlobalSettings.Load();
 
-            if (Settings.Prop.Theme > Enums.Theme.Custom)
+            if (Settings.Prop.Theme > Theme.Custom)
             {
-                Settings.Prop.Theme = Enums.Theme.Dark;
+                Settings.Prop.Theme = Theme.Dark;
                 Settings.Save();
             }
 
-            if (Settings.Prop.AllowCookieAccess) Task.Run(Cookies.LoadCookies);
+            AvaloniaWindow.ApplyGlobalTheme();
+
             Locale.Set(Settings.Prop.Locale);
 
-
+            if (Settings.Prop.AllowCookieAccess)  
+                await Task.Run(Cookies.LoadCookies);
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WindowsRegistry.RegisterApis();
