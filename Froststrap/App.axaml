@@ -39,12 +39,10 @@
 
 		<Style Selector="Button.icon-button:pointerover">
 			<Setter Property="Background" Value="#333333" />
-			<Setter Property="Foreground" Value="#ffffff" />
 		</Style>
 
 		<Style Selector="Button.icon-button:pressed">
-			<Setter Property="Background" Value="#00d4ff" />
-			<Setter Property="Foreground" Value="#000000" />
+			<Setter Property="Background" Value="#333333" />
 		</Style>
 	</Application.Styles>
 

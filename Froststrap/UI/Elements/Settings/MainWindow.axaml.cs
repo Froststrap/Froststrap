@@ -69,7 +69,10 @@ namespace Froststrap.UI.Elements.Settings
         private void UpdatePageView(IRoutableViewModel? viewModel)
         {
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
-            if (pageControl == null || viewModel == null)
+            if (pageControl == null)
+                return;
+
+            if (viewModel == null)
                 return;
 
             object dataContext = viewModel;
@@ -84,9 +87,10 @@ namespace Froststrap.UI.Elements.Settings
 
             var view = ResolveViewForViewModel(viewModel);
             if (view != null)
+            {
                 view.DataContext = dataContext;
-
-            pageControl.Content = view;
+                pageControl.Content = view;
+            }
         }
 
         private void UpdateSelectedButtonStyle(string selectedPage)
@@ -110,34 +114,31 @@ namespace Froststrap.UI.Elements.Settings
 
         private void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
         {
-            IBrush? accentBrush = null;
-            if (this.TryGetResource("SystemAccentColor", ThemeVariant.Default, out var accentObj))
-                accentBrush = accentObj as IBrush;
             var unselectedBrush = new SolidColorBrush(Color.Parse("#888888"));
+            var selectedBrush = new SolidColorBrush(Color.Parse("#00d4ff"));
+            var highlightBgColor = new SolidColorBrush(Color.Parse("#333333"));
 
             foreach (var child in stackPanel.Children)
             {
                 if (child is Button button && button.Tag is string tag)
                 {
-                    if (tag == selectedPage)
-                    {
-                        button.Background = new SolidColorBrush(Colors.Transparent);
-                        button.Foreground = accentBrush ?? new SolidColorBrush(Color.Parse("#00d4ff"));
+                    var isSelected = tag == selectedPage;
 
-                        if (button.Content is LucideAvalonia.Lucide lucideIcon)
-                        {
-                            lucideIcon.StrokeBrush = accentBrush ?? new SolidColorBrush(Color.Parse("#00d4ff"));
-                        }
+                    if (isSelected)
+                    {
+                        button.Background = highlightBgColor;
+                        button.Foreground = selectedBrush;
                     }
                     else
                     {
                         button.Background = new SolidColorBrush(Colors.Transparent);
                         button.Foreground = unselectedBrush;
+                    }
 
-                        if (button.Content is LucideAvalonia.Lucide lucideIcon)
-                        {
-                            lucideIcon.StrokeBrush = unselectedBrush;
-                        }
+                    // Find and update the Lucide icon if it exists
+                    if (button.Content is LucideAvalonia.Lucide lucideIcon)
+                    {
+                        lucideIcon.StrokeBrush = isSelected ? selectedBrush : unselectedBrush;
                     }
                 }
             }
@@ -145,20 +146,45 @@ namespace Froststrap.UI.Elements.Settings
 
         private Control? ResolveViewForViewModel(IRoutableViewModel viewModel)
         {
-            var viewModelType = viewModel.GetType();
-            var viewModelName = viewModelType.Name;
+            var actualViewModelType = viewModel.GetType();
+            var innerVmProp = actualViewModelType.GetProperty("InnerViewModel");
+            if (innerVmProp != null)
+            {
+                var innerVm = innerVmProp.GetValue(viewModel);
+                if (innerVm != null)
+                    actualViewModelType = innerVm.GetType();
+            }
+
+            var viewModelName = actualViewModelType.Name;
             var viewName = viewModelName.Replace("ViewModel", "");
 
             var viewTypeNames = new[]
             {
+                $"Froststrap.UI.Elements.Settings.Pages.{viewName}Page",
                 $"Froststrap.UI.Elements.Settings.Pages.{viewName}",
+                $"Froststrap.UI.Elements.Settings.{viewName}Page",
                 $"Froststrap.UI.Elements.Settings.{viewName}",
+                $"Froststrap.UI.Elements.{viewName}Page",
                 $"Froststrap.UI.Elements.{viewName}"
             };
 
+            // Try to find the type in all loaded assemblies
             foreach (var viewTypeName in viewTypeNames)
             {
+                // First try Type.GetType
                 var viewType = Type.GetType(viewTypeName);
+
+                // If not found, search in loaded assemblies
+                if (viewType == null)
+                {
+                    try
+                    {
+                        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                        viewType = assembly.GetType(viewTypeName, false);
+                    }
+                    catch { }
+                }
+
                 if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
                 {
                     try
