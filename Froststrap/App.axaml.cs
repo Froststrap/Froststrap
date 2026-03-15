@@ -6,12 +6,15 @@ using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.UI;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels;
 using Froststrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
+using ReactiveUI;
 using System;
+using System.Reactive.Concurrency;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,8 +36,8 @@ public partial class App : Application
 #else
     public const string ProjectName = "Froststrap";
 #endif
-    public const string ProjectOwner = "Froststrap";
-    public const string ProjectRepository = "Froststrap/Froststrap";
+public const string ProjectOwner = "Froststrap";
+public const string ProjectRepository = "Froststrap/Froststrap";
     public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
     public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
     public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
@@ -171,6 +174,9 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+
+        RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
+
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
     }
@@ -311,7 +317,7 @@ public partial class App : Application
             if (Settings.Prop.AllowCookieAccess) Task.Run(Cookies.LoadCookies);
             Locale.Set(Settings.Prop.Locale);
 
-            // if (!LaunchSettings.BypassUpdateCheck) Installer.HandleUpgrade();
+
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WindowsRegistry.RegisterApis();
