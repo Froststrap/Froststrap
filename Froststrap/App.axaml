@@ -10,48 +10,12 @@
 		<sty:FluentAvaloniaTheme PreferSystemTheme="True" />
 
 		<StyleInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
-
-		<Style Selector="Button.icon-button">
-			<Setter Property="Background" Value="Transparent" />
-			<Setter Property="Foreground" Value="#888888" />
-			<Setter Property="Padding" Value="0" />
-			<Setter Property="MinWidth" Value="64" />
-			<Setter Property="Height" Value="64" />
-			<Setter Property="BorderThickness" Value="0" />
-			<Setter Property="Cursor" Value="Hand" />
-			<Setter Property="CornerRadius" Value="4" />
-			<Setter Property="Template">
-				<ControlTemplate TargetType="Button">
-					<Border
-                        Name="PART_BorderBackground"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="8"
-                        Padding="{TemplateBinding Padding}"
-                        Margin="8">
-						<ContentPresenter
-                            Name="PART_ContentPresenter"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center" />
-					</Border>
-				</ControlTemplate>
-			</Setter>
-		</Style>
-
-		<Style Selector="Button.icon-button:pointerover">
-			<Setter Property="Background" Value="#333333" />
-		</Style>
-
-		<Style Selector="Button.icon-button:pressed">
-			<Setter Property="Background" Value="#333333" />
-		</Style>
+		<StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
 	</Application.Styles>
 
 	<Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
 			</ResourceDictionary.MergedDictionaries>
 			<FontFamily x:Key="Rubik">
 				avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf

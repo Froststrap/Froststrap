@@ -1,7 +1,57 @@
-﻿<ResourceDictionary
-	xmlns="https://github.com/avaloniaui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:ui="using:FluentAvalonia.UI.Controls">
+﻿<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:ui="using:FluentAvalonia.UI.Controls"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia">
 
 	<!--  TODO: Create card expander replacement for NoUserExpansionCardExpanderStyle and text editor  -->
-</ResourceDictionary>
+
+	<!-- Icon Button Style -->
+	<Design.PreviewWith>
+		<StackPanel Spacing="10" Margin="20" Background="#2D2D2D">
+			<Button Classes="icon-button">
+				<Panel IsHitTestVisible="False">
+					<lucideAvalonia:Lucide Icon="Info" StrokeThickness="1.5" Width="16" Height="16" />
+				</Panel>
+			</Button>
+		</StackPanel>
+	</Design.PreviewWith>
+
+	<Style Selector="Button.icon-button">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Foreground" Value="#888888" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="MinWidth" Value="64" />
+		<Setter Property="Height" Value="64" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="Template">
+			<ControlTemplate TargetType="Button">
+				<Border
+					Name="PART_BorderBackground"
+					Background="{TemplateBinding Background}"
+					CornerRadius="8"
+					Padding="{TemplateBinding Padding}"
+					Margin="8">
+					<ContentPresenter
+						Name="PART_ContentPresenter"
+						Content="{TemplateBinding Content}"
+						ContentTemplate="{TemplateBinding ContentTemplate}"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center" />
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="Button.icon-button:pointerover">
+		<Setter Property="Background" Value="#333333" />
+		<Setter Property="Foreground" Value="#888888" />
+	</Style>
+
+	<Style Selector="Button.icon-button:pressed">
+		<Setter Property="Background" Value="#333333" />
+		<Setter Property="Foreground" Value="#888888" />
+	</Style>
+</Styles>
