@@ -15,13 +15,11 @@
 
     <!-- Resources needed by Avalonia -->
     <!-- We don't need that many Avalonia Resources just specify the folder only 😭 -->
-    <ItemGroup>
+	<ItemGroup>
 		<AvaloniaResource Include="Resources\**" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Remove="Froststrap.ico" />
-      <None Remove="Froststrap.png" />
-    </ItemGroup>
+		<AvaloniaResource Include="Froststrap.ico" />
+		<AvaloniaResource Include="Froststrap.png" />
+	</ItemGroup>
 
     <!-- NuGet packages -->
     <ItemGroup>
@@ -61,8 +59,6 @@
 
   <ItemGroup>
     <AdditionalFiles Include="NativeMethods.txt" />
-    <AvaloniaResource Include="Froststrap.ico" />
-    <AvaloniaResource Include="Froststrap.png" />
 
     <!-- Provide the path to the winmds used as input into the analyzer. -->
     <CompilerVisibleProperty Include="CsWin32InputMetadataPaths" />
