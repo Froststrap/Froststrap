@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a>, focused on performance and customization
+    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a> focused on performance, customization, and additional features.
 </p>
 
 <p align="center">
@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-    If you want to help support our project please consider giving this repo a star!
+    If you want to help support our project, please consider giving this repo a star!
 </p>
 
 <div align="center">
@@ -26,90 +26,116 @@
 </div>
 
 > [!CAUTION]
-> The repo, [github:RealMeddsam/Froststrap](https://github.com/RealMeddsam/Froststrap.git) and [our website](https://froststrap.github.io), are the **ONLY PLACES** you shall
-> get the binary/executable from, as any other is **NOT** affiliated with us, and is a potential threat. 
+> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.github.io), are the **ONLY PLACES** you should
+> download the binary/executable from, as any other is **NOT** affiliated with us, and is a potential threat.
 
 ---
 
-## Key Improvements Over Bloxstrap
+## Key Improvements Over Bloxstrap and Fishstrap
 
 ### Integrations
-- Player and message logs are now combined into **Logs Menu**
+
+- Automatically rejoin servers you were disconnected from due to inactivity
 - Disable Roblox’s built-in screenshot and video recording system
 - Custom Froststrap Discord RPC that shows the current page/dialog
 - Replace "Playing Roblox" with the name of the game you're playing using Custom Status Display
-- Game history logging is now toggleable
 - PlayTime Counter shows both total and session playtime
+- Roblox Studio RPC integrated within Froststrap
+- Change the Studio RPC thumbnail depending on the script that is open
+- Show Script type, name, and number of lines of code
 
 ### Bootstrapper
-- Switch between all of the classic Roblox icons for the top bar icon
+
 - Change the Roblox process priority
 - Automatically close the Roblox Crash Handler to reduce memory usage
-- Integrated cleaner tool to remove leftover files (feature was made by fishstrap first not us)
+- Integrated cleaner tool to remove leftover files
 - Multi-instance launching support
 
 ### Mods
-- Generate Mods using custom gradient colors easily
-- Quick use Custom Cursors and Custom Shiftlocks easily
-- Have multiple Custom Cursor Sets ready for use with the click of a button
-- Easily add custom death sounds
+
+- Multi-Mod system that allows you to download many mods at once
+- Select when to apply the mod (player/studio)
+- Download community-made mods directly from within the app
+- Generate mods using a hex code, with the option to also color Cursor, Shift Lock or Emote Wheel
+- Change Cursor, Shift Lock, Death Sound and Game Font by selecting a file
+- Use Custom Cursor Sets to change between your cursors faster
 
 ### FastFlag Enhancements
-- Toggle advanced settings
-- Better Profiles
-- Press Ctrl+Z and Ctrl+Y to Undo/Redo changes
-- Built-in FastFlag lists inside of the profiles dialog
-- Remove invalid/default flags and automatically update outdated ones in one click
-- Use Preset Column to help find which flags are toggleables in fastflag settings
-- FastFlag Warning system to help tell you about ban worthy fastflags
-- Select values quickly using the built-in value selector when adding flags
-- Use Find Flag feature to check all of Robloxs FastFlags
-- Publish and Use other peoples published lists in Public Flag Lists
+
+- Automatic message when applying fflags that are not in the Roblox FFlag Allowlist
+- Create or use fastflag profiles
+- Change all of Roblox Allowlist FastFlags within the FastFlag settings
+- Click Clean List to remove flags that are not in the Roblox FFlag Allowlist
 
 ### UI & Appearance
+
 - Fully customizable bootstrapper launcher
-- Change the app font to any font you want
-- Supports animated GIF, image, and gradient backgrounds themes
+- Change the app font to any font you prefer
+- Supports image and gradient background themes
 - Built-in App themes
-- Use element toolbox when creating custom launchers (prob removing soon cuz its hella useless) 
+- Change the window background to Aero, Acrylic, or Mica
 
 ### Settings
-- Disable Hardware Acceleration to lower froststrap memory usage
-- Disable Froststrap Animations to help with performance
-- Fixed auto update that wont go off randomly
-- Easily switch Roblox update channels with action presets
+
+- Easily switch Roblox update channels
 - Option to fully block Roblox updates
-- Quickly Reset/Import/Export all your settings in one place
-- Use the debug menu to read log files
-- Easily uninstall Froststrap if its not to your liking (you totally shouldnt trust trust)
+- Replace Roblox’s changing version-xxxxx folders with a non-changing folder
+- View all currently available Roblox channels
 
 ### Extra Features
-- Remembers the last opened tab
-- Import settings from other bootstrappers easily like Fishstrap and Bloxstrap
-- Built-in PC tweaks for performance optimization
-- Create game shortcuts for faster game joining
-- Includes a hidden Easter egg page and game
 
-More features are planned to be added, you can also sugguest a feature in our issues!
+- Remembers the last opened tab
+- Easily import settings from other bootstrappers such as Fishstrap and Bloxstrap
+- Create game shortcuts for faster game joining
+- Join servers in your region more easily using the region selector
+- Join servers in your selected region through the system tray while playing
+- Built-In Account Manager
+
+More features are planned! You can also suggest new features in the Issues section.
 
 ---
 
 ## Licensing
 
-This project is **dual-licensed** under `GPL-3.0-or-later` and `Unlicensed`. 
+Froststrap uses a **multi-license model** depending on the origin of the code:
+
+| Code                                             | License                                                   |
+| ------------------------------------------------ | --------------------------------------------------------- |
+| Code written or modified by Froststrap           | [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.en.html) |
+| Upstream code inherited from Fishstrap/Bloxstrap | [MIT](https://opensource.org/licenses/MIT)                |
+| Nix-related code (unmodified)                    | [Unlicense](https://unlicense.org/)                       |
+
+**In plain terms:**
+
+- If Froststrap wrote it or touched it, it's **AGPL-3.0** — any modifications must be open-sourced under the same license
+- Code inherited from upstream (Fishstrap / Bloxstrap) remains under its original **MIT** license
+- Nix-specific code is **Unlicensed** (public domain) and is strictly limited to Nix-related functionality
+
+When in doubt about which license applies to a specific file, check the file header or refer to the [LICENSE](./LICENSE) file.
+
+## Star History
+
+### To support the development of Froststrap, consider giving the repository a star.
+
+<a href="https://www.star-history.com/?repos=Froststrap%2FFroststrap%2CRealMeddsam%2FFroststrap%2CMeddsam%2FFroststrap&type=timeline&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=Froststrap/Froststrap%2CRealMeddsam/Froststrap%2CMeddsam/Froststrap&type=timeline&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=Froststrap/Froststrap%2CRealMeddsam/Froststrap%2CMeddsam/Froststrap&type=timeline&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=Froststrap/Froststrap%2CRealMeddsam/Froststrap%2CMeddsam/Froststrap&type=timeline&legend=top-left" />
+ </picture>
+</a>
 
 <!-- Badge defs -->
-[badge-repo-license]: https://img.shields.io/github/license/RealMeddsam/Froststrap?style=for-the-badge&color=37add9
-[badge-repo-downloads]: https://img.shields.io/github/downloads/RealMeddsam/Froststrap/latest/total?style=for-the-badge&color=37add9
-[badge-repo-downloads-total]: https://img.shields.io/github/downloads/RealMeddsam/Froststrap/total?style=for-the-badge&color=37add9
-[badge-repo-latest]: https://img.shields.io/github/v/release/RealMeddsam/Froststrap?style=for-the-badge&color=37add9
-[badge-repo-stars]: https://img.shields.io/github/stars/RealMeddsam/Froststrap?style=for-the-badge&color=37add9
+
+[badge-repo-license]: https://img.shields.io/github/license/Froststrap/Froststrap?style=for-the-badge&color=37add9
+[badge-repo-downloads]: https://img.shields.io/github/downloads/Froststrap/Froststrap/latest/total?style=for-the-badge&color=37add9
+[badge-repo-downloads-total]: https://img.shields.io/github/downloads/Froststrap/Froststrap/total?style=for-the-badge&color=37add9
+[badge-repo-latest]: https://img.shields.io/github/v/release/Froststrap/Froststrap?style=for-the-badge&color=37add9
+[badge-repo-stars]: https://img.shields.io/github/stars/Froststrap/Froststrap?style=for-the-badge&color=37add9
 [badge-discord]: https://img.shields.io/discord/1364660238963179520?style=for-the-badge&label=discord&color=5865f2
-
-[repo-license]: https://github.com/RealMeddsam/Froststrap/blob/main/LICENSE
-[repo-actions]: https://github.com/RealMeddsam/Froststrap/actions
-[repo-releases]: https://github.com/RealMeddsam/Froststrap/releases
-[repo-latest]: https://github.com/RealMeddsam/Froststrap/releases/latest
-[repo-stargazer]: https://github.com/RealMeddsam/Froststrap/stargazers
-
+[repo-license]: https://github.com/Froststrap/Froststrap/blob/main/LICENSE
+[repo-actions]: https://github.com/Froststrap/Froststrap/actions
+[repo-releases]: https://github.com/Froststrap/Froststrap/releases
+[repo-latest]: https://github.com/Froststrap/Froststrap/releases/latest
+[repo-stargazer]: https://github.com/Froststrap/Froststrap/stargazers
 [discord-invite]: https://discord.gg/KdR9vpRcUN
