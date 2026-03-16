@@ -85,7 +85,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToIntegrationsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToBehaviourCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCommunityModsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFastFlagsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAppearanceCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRobloxSettingsCommand { get; }
@@ -316,7 +315,7 @@ namespace Froststrap.UI.ViewModels.Settings
             CloseWindow();
         }
 
-        private sealed class SettingsPageViewModelWrapper : ReactiveObject, IRoutableViewModel
+        internal sealed class SettingsPageViewModelWrapper : ReactiveObject, IRoutableViewModel
         {
             public SettingsPageViewModelWrapper(IScreen hostScreen, string urlPathSegment, object innerViewModel)
             {

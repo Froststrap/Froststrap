@@ -6,12 +6,8 @@ namespace Froststrap.UI.Elements.Settings.Pages
 {
     public partial class RobloxSettingsPage : UserControl
     {
-        private readonly RobloxSettingsViewModel _viewModel;
-
         public RobloxSettingsPage()
         {
-            _viewModel = new RobloxSettingsViewModel();
-            DataContext = _viewModel;
             InitializeComponent();
         }
 

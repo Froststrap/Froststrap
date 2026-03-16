@@ -78,11 +78,7 @@ namespace Froststrap.UI.Elements.Settings
         private void UpdatePageView(IRoutableViewModel? viewModel)
         {
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
-            if (pageControl == null)
-                return;
-
-            if (viewModel == null)
-                return;
+            if (pageControl == null || viewModel == null) return;
 
             object dataContext = viewModel;
 
@@ -94,7 +90,8 @@ namespace Froststrap.UI.Elements.Settings
                     dataContext = inner;
             }
 
-            var view = ResolveViewForViewModel(viewModel);
+            var view = ResolveViewForViewModel(dataContext);
+
             if (view != null)
             {
                 view.DataContext = dataContext;
@@ -153,16 +150,9 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private Control? ResolveViewForViewModel(IRoutableViewModel viewModel)
+        private Control? ResolveViewForViewModel(object viewModel)
         {
             var actualViewModelType = viewModel.GetType();
-            var innerVmProp = actualViewModelType.GetProperty("InnerViewModel");
-            if (innerVmProp != null)
-            {
-                var innerVm = innerVmProp.GetValue(viewModel);
-                if (innerVm != null)
-                    actualViewModelType = innerVm.GetType();
-            }
 
             var viewModelName = actualViewModelType.Name;
             var viewName = viewModelName.Replace("ViewModel", "");
@@ -172,9 +162,7 @@ namespace Froststrap.UI.Elements.Settings
                 $"Froststrap.UI.Elements.Settings.Pages.{viewName}Page",
                 $"Froststrap.UI.Elements.Settings.Pages.{viewName}",
                 $"Froststrap.UI.Elements.Settings.{viewName}Page",
-                $"Froststrap.UI.Elements.Settings.{viewName}",
-                $"Froststrap.UI.Elements.{viewName}Page",
-                $"Froststrap.UI.Elements.{viewName}"
+                $"Froststrap.UI.Elements.Settings.{viewName}"
             };
 
             // Try to find the type in all loaded assemblies
@@ -198,12 +186,7 @@ namespace Froststrap.UI.Elements.Settings
                 {
                     try
                     {
-                        var view = Activator.CreateInstance(viewType) as Control;
-                        if (view != null)
-                        {
-                            view.DataContext = viewModel;
-                            return view;
-                        }
+                        return Activator.CreateInstance(viewType) as Control;
                     }
                     catch (Exception ex)
                     {
@@ -212,6 +195,7 @@ namespace Froststrap.UI.Elements.Settings
                 }
             }
 
+            App.Logger.WriteLine("MainWindow", $"Could not find any view for {viewModelName}");
             return null;
         }
 
