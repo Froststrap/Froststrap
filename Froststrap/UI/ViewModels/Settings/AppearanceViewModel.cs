@@ -379,29 +379,34 @@ namespace Froststrap.UI.ViewModels.Settings
             Directory.Move(oldDir, newDir);
         }
 
-        private async void AddCustomTheme()
-        {
-            App.FrostRPC?.SetDialog("Add Custom Launcher");
+		private async void AddCustomTheme()
+		{
+			App.FrostRPC?.SetDialog("Add Custom Launcher");
 
-			var parentWindow = (Window)TopLevel.GetTopLevel(_page)!;
+			var mainWindow = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+				? desktop.MainWindow
+				: null;
+
+			if (mainWindow == null)
+				return;
 
 			var dialog = new AddCustomThemeDialog();
-            await dialog.ShowDialog(parentWindow);
+			await dialog.ShowDialog((Window)mainWindow);
 
-            App.FrostRPC?.ClearDialog();
+			App.FrostRPC?.ClearDialog();
 
-            if (dialog.Created)
-            {
-                CustomThemes.Add(dialog.ThemeName);
-                SelectedCustomThemeIndex = CustomThemes.Count - 1;
+			if (dialog.Created)
+			{
+				CustomThemes.Add(dialog.ThemeName);
+				SelectedCustomThemeIndex = CustomThemes.Count - 1;
 
-                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-                OnPropertyChanged(nameof(IsCustomThemeSelected));
+				OnPropertyChanged(nameof(SelectedCustomThemeIndex));
+				OnPropertyChanged(nameof(IsCustomThemeSelected));
 
-                if (dialog.OpenEditor)
-                    EditCustomTheme();
-            }
-        }
+				if (dialog.OpenEditor)
+					EditCustomTheme();
+			}
+		}
 
         private async void DeleteCustomTheme()
         {
@@ -491,18 +496,24 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(SelectedCustomThemeIndex));
         }
 
-        private async void EditCustomTheme()
-        {
-            if (SelectedCustomTheme is null)
-                return;
+		private async void EditCustomTheme()
+		{
+			if (SelectedCustomTheme is null)
+				return;
 
-            App.FrostRPC?.SetDialog("Edit Custom Theme");
+			App.FrostRPC?.SetDialog("Edit Custom Theme");
 
-			var parentWindow = (Window)TopLevel.GetTopLevel(_page)!;
-			await new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog(parentWindow);
+			var mainWindow = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+				? desktop.MainWindow
+				: null;
 
-            App.FrostRPC?.ClearDialog();
-        }
+			if (mainWindow == null)
+				return;
+
+			await new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog((Window)mainWindow);
+
+			App.FrostRPC?.ClearDialog();
+		}
 
         private async void ExportCustomTheme()
         {

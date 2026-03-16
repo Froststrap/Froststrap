@@ -84,9 +84,12 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             const string LOG_IDENT = "AddCustomThemeDialog::ValidateCreateNew";
 
+            _viewModel.NameError = "";
+
             if (string.IsNullOrEmpty(_viewModel.Name))
             {
                 _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameEmpty;
+                App.Logger.WriteLine(LOG_IDENT, "Name is empty");
                 return false;
             }
 
@@ -110,6 +113,7 @@ namespace Froststrap.UI.Elements.Dialogs
                         break;
                 }
 
+                App.Logger.WriteLine(LOG_IDENT, $"Validation failed: {_viewModel.NameError}");
                 return false;
             }
 
@@ -118,9 +122,11 @@ namespace Froststrap.UI.Elements.Dialogs
             if (File.Exists(path))
             {
                 _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameTaken;
+                App.Logger.WriteLine(LOG_IDENT, "Theme name already exists");
                 return false;
             }
 
+            App.Logger.WriteLine(LOG_IDENT, $"Validation passed for theme: {_viewModel.Name}");
             return true;
         }
 
@@ -161,16 +167,31 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private void CreateNew()
         {
+            const string LOG_IDENT = "AddCustomThemeDialog::CreateNew";
+            App.Logger.WriteLine(LOG_IDENT, $"Attempting to create new theme: {_viewModel.Name}");
+
             if (!ValidateCreateNew())
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Validation failed, aborting");
                 return;
+            }
 
-            CreateCustomTheme(_viewModel.Name, _viewModel.Template);
+            try
+            {
+                CreateCustomTheme(_viewModel.Name, _viewModel.Template);
+                App.Logger.WriteLine(LOG_IDENT, $"Theme created successfully: {_viewModel.Name}");
 
-            Created = true;
-            ThemeName = _viewModel.Name;
-            OpenEditor = true;
+                Created = true;
+                ThemeName = _viewModel.Name;
+                OpenEditor = true;
 
-            Close();
+                Close();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Exception creating theme: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
         }
 
         private static void MoveDirectoryContents(string sourceDir, string targetDir)
@@ -248,10 +269,19 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private void OnOkButtonClicked(object sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            const string LOG_IDENT = "AddCustomThemeDialog::OnOkButtonClicked";
+            App.Logger.WriteLine(LOG_IDENT, $"OK button clicked. SelectedTab: {_viewModel.SelectedTab}");
+
             if (_viewModel.SelectedTab == CreateNewTabId)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Creating new theme");
                 CreateNew();
+            }
             else
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Importing theme");
                 Import();
+            }
         }
 
         private async void OnImportButtonClicked(object sender, Avalonia.Interactivity.RoutedEventArgs e)
