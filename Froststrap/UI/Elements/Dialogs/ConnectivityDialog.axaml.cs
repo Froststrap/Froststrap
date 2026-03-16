@@ -4,9 +4,13 @@ namespace Froststrap.UI.Elements.Dialogs
 {
     public partial class ConnectivityDialog : Base.AvaloniaWindow
     {
-        public ConnectivityDialog(string title, string description, MessageBoxImage image, Exception exception)
+        public ConnectivityDialog()
         {
             InitializeComponent();
+        }
+
+        public ConnectivityDialog(string title, string description, MessageBoxImage image, Exception exception) : this()
+        {
 
             App.FrostRPC?.SetDialog("Connectivity");
 

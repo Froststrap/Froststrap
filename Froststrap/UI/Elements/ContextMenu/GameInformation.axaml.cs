@@ -7,9 +7,13 @@ namespace Froststrap.UI.Elements.ContextMenu;
 
 public partial class GameInformation : Base.AvaloniaWindow
 {
-    public GameInformation(long placeId, long universeId)
+    public GameInformation()
     {
-		DataContext = new GameInformationViewModel(placeId, universeId);
-		InitializeComponent();
+        InitializeComponent();
+    }
+
+    public GameInformation(long placeId, long universeId) : this()
+    {
+        DataContext = new GameInformationViewModel(placeId, universeId);
     }
 }
