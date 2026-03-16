@@ -1,9 +1,10 @@
 ﻿using Avalonia;
-using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Metadata;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public partial class SquareCard : UserControl
+    public class SquareCard : TemplatedControl
     {
         public static readonly StyledProperty<string> HeaderProperty =
             AvaloniaProperty.Register<SquareCard, string>(nameof(Header));
@@ -26,15 +27,11 @@ namespace Froststrap.UI.Elements.Controls
             set => SetValue(DescriptionProperty, value);
         }
 
+        [Content]
         public object InnerContent
         {
             get => GetValue(InnerContentProperty);
             set => SetValue(InnerContentProperty, value);
-        }
-
-        public SquareCard()
-        {
-            InitializeComponent();
         }
     }
 }
