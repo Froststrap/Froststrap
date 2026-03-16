@@ -151,30 +151,26 @@ namespace Froststrap.UI.Elements.Controls
                 if (string.IsNullOrEmpty(url))
                     return GetAvaloniaInlineFromMarkdownInline(textInline);
 
-                var childInline = GetAvaloniaInlineFromMarkdownInline(textInline);
-                if (childInline == null) return null;
+                string linkText = textInline?.ToString() ?? "";
 
-                string linkText = "";
-                if (childInline is Run childRun)
+                var hyperlinkControl = new Hyperlink(linkText, url)
                 {
-                    linkText = childRun.Text ?? "";
-                }
-                else if (childInline is Span childSpan && childSpan.Inlines.Count > 0 && childSpan.Inlines[0] is Run spanRun)
-                {
-                    linkText = spanRun.Text ?? "";
-                }
-                else
-                {
-                    linkText = childInline.ToString() ?? "";
-                }
+                    LinkForeground = LinkForeground
+                };
 
-                if (!string.IsNullOrEmpty(linkText))
+                if (hyperlinkControl.Content == null)
                 {
-                    return new Hyperlink(linkText, url)
+                    hyperlinkControl.Content = new TextBlock
                     {
-                        LinkForeground = LinkForeground
+                        Text = linkText,
+                        TextDecorations = TextDecorationCollection.Parse("Underline")
                     };
                 }
+
+                return new InlineUIContainer(hyperlinkControl)
+                {
+                    BaselineAlignment = BaselineAlignment.Center
+                };
             }
             else if (inline is LineBreakInline)
             {

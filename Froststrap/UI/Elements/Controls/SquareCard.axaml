@@ -48,5 +48,4 @@
 	<Style Selector="controls|SquareCard:pointerover">
 		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
 	</Style>
-
 </Styles>

@@ -745,8 +745,7 @@ Would you like to upgrade your currently installed version?</value>
     <value>Preview</value>
   </data>
   <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
-    <value>Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista.
-For more custom launchers, visit the official Froststrap Discord server.</value>
+    <value>Choose a launch screen style. Note: Dark theme isn’t supported for Legacy or Vista, For more custom launchers, visit the official Froststrap Discord server.</value>
   </data>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Launcher</value>

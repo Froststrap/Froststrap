@@ -1,0 +1,78 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
+
+	<Style Selector="controls|CardExpander">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4" Margin="0,4" ClipToBounds="True">
+					<StackPanel>
+						<ToggleButton Name="HeaderButton" Padding="16,12" Background="Transparent" BorderThickness="0"
+                                      HorizontalAlignment="Stretch"
+                                      IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+							<ToggleButton.Template>
+								<ControlTemplate>
+									<Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+										<Grid ColumnDefinitions="*,Auto,Auto">
+											<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+												<TextBlock Text="{Binding $parent[controls:CardExpander].Header}" FontSize="14" FontWeight="Normal" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="Wrap" />
+												<controls:MarkdownTextBlock MarkdownText="{Binding $parent[controls:CardExpander].Description}" FontSize="12"
+                                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                           IsVisible="{Binding $parent[controls:CardExpander].Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+											</StackPanel>
+
+											<ContentPresenter Grid.Column="1"
+                                                              Content="{Binding $parent[controls:CardExpander].HeaderContent}"
+                                                              Margin="0,0,12,0"
+                                                              VerticalAlignment="Center" />
+
+											<Path Name="ExpanderIcon" Grid.Column="2" Width="10" Height="6" Data="M 1,1 L 5,5 L 9,1"
+                                                  Stroke="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1" StrokeLineCap="Round" VerticalAlignment="Center">
+												<Path.Transitions>
+													<Transitions>
+														<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut"/>
+													</Transitions>
+												</Path.Transitions>
+											</Path>
+										</Grid>
+									</Border>
+								</ControlTemplate>
+							</ToggleButton.Template>
+						</ToggleButton>
+
+						<Border Name="PART_ContentContainer"
+                                ClipToBounds="True">
+							<Border.Transitions>
+								<Transitions>
+									<DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut"/>
+									<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="LinearEasing"/>
+								</Transitions>
+							</Border.Transitions>
+
+							<ContentPresenter Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              Padding="16"/>
+						</Border>
+					</StackPanel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="controls|CardExpander[IsExpanded=True] Path#ExpanderIcon">
+		<Setter Property="RenderTransform" Value="rotate(180deg)" />
+	</Style>
+	<Style Selector="controls|CardExpander[IsExpanded=False] Border#PART_ContentContainer">
+		<Setter Property="Height" Value="0" />
+		<Setter Property="Opacity" Value="0" />
+	</Style>
+	<Style Selector="controls|CardExpander[IsExpanded=True] Border#PART_ContentContainer">
+		<Setter Property="Opacity" Value="1" />
+	</Style>
+</Styles>

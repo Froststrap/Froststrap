@@ -10,15 +10,15 @@
 		<sty:FluentAvaloniaTheme PreferSystemTheme="True" />
 
 		<StyleInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
+		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
+		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardExpander.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
 	</Application.Styles>
 
 	<Application.Resources>
 		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-			</ResourceDictionary.MergedDictionaries>
 			<FontFamily x:Key="Rubik">
 				avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf
 			</FontFamily>

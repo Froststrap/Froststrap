@@ -3,36 +3,35 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Metadata;
 
-// TODO: Add back helplink with its icon
 namespace Froststrap.UI.Elements.Controls
 {
     public partial class OptionControl : TemplatedControl
     {
-        public static readonly StyledProperty<string> HeaderProperty =
-            AvaloniaProperty.Register<OptionControl, string>(nameof(Header));
+        public static readonly StyledProperty<string?> HeaderProperty =
+            AvaloniaProperty.Register<OptionControl, string?>(nameof(Header));
 
-        public static readonly StyledProperty<string> DescriptionProperty =
-            AvaloniaProperty.Register<OptionControl, string>(nameof(Description));
+        public static readonly StyledProperty<string?> DescriptionProperty =
+            AvaloniaProperty.Register<OptionControl, string?>(nameof(Description));
 
-        public static readonly StyledProperty<string> HelpLinkProperty =
-            AvaloniaProperty.Register<OptionControl, string>(nameof(HelpLink));
+        public static readonly StyledProperty<string?> HelpLinkProperty =
+            AvaloniaProperty.Register<OptionControl, string?>(nameof(HelpLink));
 
         public static readonly StyledProperty<object?> InnerContentProperty =
             AvaloniaProperty.Register<OptionControl, object?>(nameof(InnerContent));
 
-        public string Header
+        public string? Header
         {
             get => GetValue(HeaderProperty);
             set => SetValue(HeaderProperty, value);
         }
 
-        public string Description
+        public string? Description
         {
             get => GetValue(DescriptionProperty);
             set => SetValue(DescriptionProperty, value);
         }
 
-        public string HelpLink
+        public string? HelpLink
         {
             get => GetValue(HelpLinkProperty);
             set => SetValue(HelpLinkProperty, value);

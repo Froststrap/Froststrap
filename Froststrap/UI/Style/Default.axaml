@@ -2,9 +2,80 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-		xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia">
+		xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
 	<!--  TODO: Create card expander replacement for NoUserExpansionCardExpanderStyle and text editor  -->
+	<Style Selector="controls|CardExpander.NoUserExpansion">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="ContentBorder"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						ClipToBounds="True"
+						Margin="0,4">
+					<StackPanel>
+						<Border Padding="16,12">
+							<Grid ColumnDefinitions="*, Auto,">
+								<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+									<ContentPresenter Content="{TemplateBinding Header}"
+													  FontSize="14"
+													  FontWeight="Normal"
+													  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+													  TextWrapping="Wrap"/>
+									<controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
+											   FontSize="12"
+											   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+											   IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+											   TextWrapping="Wrap"/>
+								</StackPanel>
+
+								<ContentPresenter Grid.Column="1"
+												  Content="{TemplateBinding HeaderContent}"
+												  VerticalAlignment="Center"
+											      HorizontalAlignment="Right"
+												  Margin="16,0,0,0"/>
+							</Grid>
+						</Border>
+
+						<Border Name="PART_ContentContainer" ClipToBounds="True">
+							<Border.Transitions>
+								<Transitions>
+									<DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut"/>
+									<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="LinearEasing"/>
+								</Transitions>
+							</Border.Transitions>
+
+							<ContentPresenter Name="PART_ContentPresenter"
+											  Content="{TemplateBinding Content}"
+											  Padding="16"/>
+						</Border>
+					</StackPanel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=True] Border#PART_ContentContainer">
+		<Setter Property="Opacity" Value="1" />
+		<Setter Property="BorderThickness" Value="0,1,0,0" />
+	</Style>
+
+	<Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=False] Border#PART_ContentContainer">
+		<Setter Property="Opacity" Value="0" />
+		<Setter Property="Height" Value="0" />
+		<Setter Property="BorderThickness" Value="0" />
+	</Style>
+
+	<Style Selector="controls|CardExpander.NoUserExpansion:pointerover">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+	</Style>
 
 	<!-- Icon Button Style -->
 	<Design.PreviewWith>
