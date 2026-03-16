@@ -53,14 +53,6 @@
 					</Button>
 
 					<Button 
-						ToolTip.Tip="Community Mods"
-						Command="{Binding NavigateToCommunityModsCommand}"
-						Tag="communitymods"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Package" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
-
-					<Button 
 						ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}"
 						Command="{Binding NavigateToFastFlagsCommand}"
 						Tag="fastflags"
