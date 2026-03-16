@@ -7,9 +7,13 @@ namespace Froststrap.UI.Elements.Dialogs
     {
         const int MAX_GITHUB_URL_LENGTH = 8192;
 
-        public ExceptionDialog(Exception exception)
+        public ExceptionDialog()
         {
             InitializeComponent();
+        }
+
+        public ExceptionDialog(Exception exception) : this()
+        {
 
             App.FrostRPC?.SetDialog("Exception");
 
@@ -28,11 +32,10 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (issueUrl.Length > MAX_GITHUB_URL_LENGTH)
             {
-                // url is way too long for github. remove the log parameter.
                 issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}";
 
                 if (issueUrl.Length > MAX_GITHUB_URL_LENGTH)
-                    issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml"; // bruh
+                    issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml";
             }
 
             string helpMessage = String.Format(Strings.Dialog_Exception_Info_2, wikiUrl, issueUrl);
@@ -53,7 +56,6 @@ namespace Froststrap.UI.Elements.Dialogs
                 }
                 else
                 {
-                    // Copy to clipboard
                     var topLevel = TopLevel.GetTopLevel(this);
                     if (topLevel?.Clipboard != null)
                     {

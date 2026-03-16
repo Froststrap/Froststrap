@@ -20,7 +20,12 @@ namespace Froststrap.UI.Elements.Settings
         private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
         private MainWindowViewModel? _viewModel;
 
-        public MainWindow(bool showAlreadyRunningWarning)
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        public MainWindow(bool showAlreadyRunningWarning) : this()
         {
             var viewModel = new MainWindowViewModel();
             _viewModel = viewModel;
@@ -29,8 +34,6 @@ namespace Froststrap.UI.Elements.Settings
             viewModel.RequestCloseWindowEvent += (_, _) => Close();
 
             DataContext = viewModel;
-
-            InitializeComponent();
 
             App.Logger.WriteLine("MainWindow", "Initializing settings window");
 

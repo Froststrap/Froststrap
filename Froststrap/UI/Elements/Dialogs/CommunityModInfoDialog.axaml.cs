@@ -4,11 +4,15 @@ namespace Froststrap.UI.Elements.Dialogs
 {
     public partial class CommunityModInfoDialog : Base.AvaloniaWindow
     {
-        public CommunityModInfoViewModel ViewModel { get; }
+        public CommunityModInfoViewModel? ViewModel { get; private set; }
 
-        public CommunityModInfoDialog(CommunityMod mod)
+        public CommunityModInfoDialog()
         {
             InitializeComponent();
+        }
+
+        public CommunityModInfoDialog(CommunityMod mod) : this()
+        {
             ViewModel = new CommunityModInfoViewModel(mod, this);
             DataContext = ViewModel;
         }

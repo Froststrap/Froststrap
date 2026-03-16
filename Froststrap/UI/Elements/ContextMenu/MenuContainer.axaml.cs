@@ -7,8 +7,8 @@ namespace Froststrap.UI.Elements.ContextMenu
 {
 	public partial class MenuContainer : Base.AvaloniaWindow
 	{
-		private readonly Watcher _watcher;
-		private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
+		private readonly Watcher? _watcher;
+		private ActivityWatcher? _activityWatcher => _watcher?.ActivityWatcher;
 
 		private ServerInformation? _serverInformationWindow;
 		private GameInformation? _gameInformationWindow;
@@ -20,54 +20,60 @@ namespace Froststrap.UI.Elements.ContextMenu
 		private DispatcherTimer? _playtimeTimer;
 		private DateTime? _studioPlaceJoinTime = null;
 
-		public MenuContainer(Watcher watcher)
-		{
-			InitializeComponent();
-			_watcher = watcher;
+        public MenuContainer()
+        {
+            InitializeComponent();
+        }
 
-			if (_activityWatcher is not null)
-			{
-				_activityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
-				_activityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
-				_activityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
-				_activityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
+        public MenuContainer(Watcher watcher) : this()
+        {
+            _watcher = watcher;
 
-				bool playtimeEnabled = App.Settings.Prop.PlaytimeCounter;
+            if (_activityWatcher is not null)
+            {
+                {
+                    _activityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
+                    _activityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
+                    _activityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
+                    _activityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
-				if (_activityWatcher.InRobloxStudio)
-				{
-					InviteDeeplinkMenuItem.IsVisible = false;
-					ServerDetailsMenuItem.IsVisible = false;
-					GameInformationMenuItem.IsVisible = false;
-					GameHistoryMenuItem.IsVisible = false;
-                    RegionMenuRoot.IsVisible = false;
+                    bool playtimeEnabled = App.Settings.Prop.PlaytimeCounter;
 
-					if (playtimeEnabled)
-					{
-						StartTotalPlaytimeTimer();
-						PlaytimeMenuItem.IsVisible = true;
-						if (_activityWatcher.InStudioPlace) _studioPlaceJoinTime = DateTime.Now;
-					}
-					else PlaytimeMenuItem.IsVisible = false;
-				}
-				else
-				{
-                    if (App.Settings.Prop.PlaytimeCounter)
-                        StartTotalPlaytimeTimer();
+                    if (_activityWatcher.InRobloxStudio)
+                    {
+                        InviteDeeplinkMenuItem.IsVisible = false;
+                        ServerDetailsMenuItem.IsVisible = false;
+                        GameInformationMenuItem.IsVisible = false;
+                        GameHistoryMenuItem.IsVisible = false;
+                        RegionMenuRoot.IsVisible = false;
+
+                        if (playtimeEnabled)
+                        {
+                            StartTotalPlaytimeTimer();
+                            PlaytimeMenuItem.IsVisible = true;
+                            if (_activityWatcher.InStudioPlace) _studioPlaceJoinTime = DateTime.Now;
+                        }
+                        else PlaytimeMenuItem.IsVisible = false;
+                    }
+                    else
+                    {
+                        if (App.Settings.Prop.PlaytimeCounter)
+                            StartTotalPlaytimeTimer();
 
 
-                    UpdateRegionJoinUI();
-                    PopulateRegionMenu();
+                        UpdateRegionJoinUI();
+                        PopulateRegionMenu();
 
-                    GameHistoryMenuItem.IsVisible = App.Settings.Prop.ShowGameHistoryMenu;
-				}
-			}
+                        GameHistoryMenuItem.IsVisible = App.Settings.Prop.ShowGameHistoryMenu;
+                    }
+                }
 
-			RichPresenceMenuItem.IsVisible = (_watcher.PlayerRichPresence is not null || _watcher.StudioRichPresence is not null);
-			VersionTextBlock.Text = $"{App.ProjectName} v{App.Version}";
+                RichPresenceMenuItem.IsVisible = (_watcher.PlayerRichPresence is not null || _watcher.StudioRichPresence is not null);
+                VersionTextBlock.Text = $"{App.ProjectName} v{App.Version}";
 
-			this.Opened += Window_Opened;
-		}
+                this.Opened += Window_Opened;
+            }
+        }
 
 		private void StartTotalPlaytimeTimer()
 		{
@@ -96,7 +102,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 		{
 			if (_serverInformationWindow is null)
 			{
-				_serverInformationWindow = new(_watcher);
+				_serverInformationWindow = new(_watcher!);
 				_serverInformationWindow.Closed += (_, _) => _serverInformationWindow = null;
 			}
 
@@ -158,14 +164,14 @@ namespace Froststrap.UI.Elements.ContextMenu
 		}
 
 		private void Window_Closed(object sender, EventArgs e) => App.Logger.WriteLine("MenuContainer::Window_Closed", "Context menu container closed");
-        private void CloseWatcheMenuItem_Click(object sender, RoutedEventArgs e) => _watcher.Dispose();
+        private void CloseWatcheMenuItem_Click(object sender, RoutedEventArgs e) => _watcher?.Dispose();
 
         private void RichPresenceMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var isChecked = ((MenuItem)sender).IsChecked;
 
-            _watcher.PlayerRichPresence?.SetVisibility(isChecked);
-			_watcher.StudioRichPresence?.SetVisibility(isChecked);
+            _watcher?.PlayerRichPresence?.SetVisibility(isChecked);
+			_watcher?.StudioRichPresence?.SetVisibility(isChecked);
 		}
 
 		private void InviteDeeplinkMenuItem_Click(object sender, RoutedEventArgs e)
@@ -194,7 +200,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
 		private void CloseRobloxMenuItem_Click(object sender, RoutedEventArgs e)
 		{
-			_watcher.KillRobloxProcess();
+			_watcher?.KillRobloxProcess();
 		}
 
 		private void JoinLastServerMenuItem_Click(object sender, RoutedEventArgs e)
@@ -299,7 +305,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                             UseShellExecute = true
                         });
 
-                        _watcher.KillRobloxProcess();
+                        _watcher?.KillRobloxProcess();
                         return;
                     }
                     else

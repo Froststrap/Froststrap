@@ -1,147 +1,280 @@
 <base:AvaloniaWindow
-	x:Class="Froststrap.UI.Elements.Settings.MainWindow"
-	x:DataType="vm:MainWindowViewModel"
-	xmlns="https://github.com/avaloniaui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:resources="using:Froststrap.Resources"
-	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-	Title="{x:Static resources:Strings.Menu_Title}"
-	Width="1125" Height="700"
+    x:Class="Froststrap.UI.Elements.Settings.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    Title="{x:Static resources:Strings.Menu_Title}"
+    Width="1125"
+    Height="700"
+    MinWidth="250"
+    MinHeight="250"
+    x:DataType="vm:MainWindowViewModel"
+    Background="Transparent"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    ExtendClientAreaToDecorationsHint="True"
+    TransparencyLevelHint="Mica"
+    WindowStartupLocation="CenterScreen">
 
-	MinWidth="250" MinHeight="250"
-	WindowStartupLocation="CenterScreen"
-	ExtendClientAreaToDecorationsHint="True"
-	ExtendClientAreaTitleBarHeightHint="-1"
-	TransparencyLevelHint="Mica"
-	Background="Transparent">
+    <Grid RowDefinitions="Auto,*,Auto">
 
-	<Grid RowDefinitions="Auto,*,Auto">
+        <TitleBar
+            Grid.Row="0"
+            Height="32"
+            Background="{DynamicResource LayerFillColorDefaultBrush}" />
 
-		<TitleBar Grid.Row="0" Height="32" Background="{DynamicResource LayerFillColorDefaultBrush}" />
+        <Panel
+            Name="NotificationPanel"
+            Grid.Row="1"
+            Margin="0,12,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            ZIndex="1000" />
 
-		<Panel Grid.Row="1" Name="NotificationPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,12,0,0" ZIndex="1000" />
+        <!--  Main Navigation and Content  -->
+        <Grid
+            Name="MainGrid"
+            Grid.Row="1"
+            ColumnDefinitions="64,*">
+            <Border
+                Grid.Column="0"
+                Background="{DynamicResource LayerFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                BorderThickness="0,0,1,0">
+                <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                    <StackPanel VerticalAlignment="Top" Spacing="0">
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding NavigateToIntegrationsCommand}"
+                            Tag="integrations"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Plus"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-		<!-- Main Navigation and Content -->
-		<Grid Grid.Row="1" ColumnDefinitions="64,*" Name="MainGrid">
-			<Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
-				<ScrollViewer VerticalScrollBarVisibility="Hidden">
-					<StackPanel Spacing="0" VerticalAlignment="Top">
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}"
-						Command="{Binding NavigateToIntegrationsCommand}"
-						Tag="integrations"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Plus" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding NavigateToBehaviourCommand}"
+                            Tag="behaviour"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Settings"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}"
-						Command="{Binding NavigateToBehaviourCommand}"
-						Tag="behaviour"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Settings" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding NavigateToModsCommand}"
+                            Tag="mods"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Wrench"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}"
-						Command="{Binding NavigateToModsCommand}"
-						Tag="mods"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Wrench" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding NavigateToFastFlagsCommand}"
+                            Tag="fastflags"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Flag"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}"
-						Command="{Binding NavigateToFastFlagsCommand}"
-						Tag="fastflags"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Flag" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding NavigateToAppearanceCommand}"
+                            Tag="appearance"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Palette"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}"
-						Command="{Binding NavigateToAppearanceCommand}"
-						Tag="appearance"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Palette" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding NavigateToRobloxSettingsCommand}"
+                            Tag="robloxsettings"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Gauge"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}"
-						Command="{Binding NavigateToRobloxSettingsCommand}"
-						Tag="robloxsettings"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Gauge" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
-					<Separator Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
+                        <!--  Footer Menu Items  -->
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding OpenAccountManagerCommand}"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Users"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-					<!-- Footer Menu Items -->
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}"
-						Command="{Binding OpenAccountManagerCommand}"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Users" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Button Classes="icon-button" ToolTip.Tip="{x:Static resources:Strings.Common_Settings}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Zap"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
 
-					<Button 
-						ToolTip.Tip="{x:Static resources:Strings.Common_Settings}"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Zap" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding OpenAboutCommand}"
+                            ToolTip.Tip="About Me">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Info"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
 
-					<Button 
-						ToolTip.Tip="About Me"
-						Command="{Binding OpenAboutCommand}"
-						Classes="icon-button">
-						<lucideAvalonia:Lucide Icon="Info" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
-					</Button>
-						</StackPanel>
-					</ScrollViewer>
-				</Border>
+            <Grid Grid.Column="1" RowDefinitions="Auto,*">
+                <Border
+                    Grid.Row="0"
+                    Padding="20,16"
+                    Background="{DynamicResource LayerFillColorAltBrush}"
+                    BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                    BorderThickness="0,0,0,1">
+                    <StackPanel Spacing="4">
+                        <TextBlock
+                            x:Name="PageTitleText"
+                            FontSize="24"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                            Text="{Binding CurrentPageTitle}" />
+                        <TextBlock
+                            x:Name="PageDescriptionText"
+                            FontSize="13"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{Binding CurrentPageDescription}" />
+                    </StackPanel>
+                </Border>
 
-				<Grid Grid.Column="1" RowDefinitions="Auto,*">
-				<Border Grid.Row="0" Padding="20,16" Background="{DynamicResource LayerFillColorAltBrush}" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
-					<StackPanel Spacing="4">
-						<TextBlock x:Name="PageTitleText" Text="{Binding CurrentPageTitle}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="24" FontWeight="SemiBold" />
-						<TextBlock x:Name="PageDescriptionText" Text="{Binding CurrentPageDescription}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="13" />
-					</StackPanel>
-				</Border>
+                <TransitioningContentControl
+                    x:Name="PageContentControl"
+                    Grid.Row="1"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource LayerFillColorDefaultBrush}" />
+            </Grid>
+        </Grid>
 
-				<TransitioningContentControl 
-					x:Name="PageContentControl"
-					Grid.Row="1"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch"
-					Background="{DynamicResource LayerFillColorDefaultBrush}" />
-			</Grid>
-		</Grid>
+        <Grid
+            x:Name="LoadingOverlay"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Background="#A0000000"
+            IsVisible="False"
+            ZIndex="999">
+            <Border
+                Padding="30"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource LayerFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel Spacing="15">
+                    <TextBlock
+                        x:Name="LoadingOverlayText"
+                        HorizontalAlignment="Center"
+                        FontSize="20"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="Loading..." />
+                    <ProgressBar
+                        Width="50"
+                        Height="4"
+                        Foreground="{DynamicResource SystemAccentColor}"
+                        IsIndeterminate="True" />
+                </StackPanel>
+            </Border>
+        </Grid>
 
-		<Grid x:Name="LoadingOverlay" Grid.Row="1" Grid.RowSpan="2" Background="#A0000000" IsVisible="False" ZIndex="999">
-			<Border Background="{DynamicResource LayerFillColorDefaultBrush}" CornerRadius="8" Padding="30" HorizontalAlignment="Center" VerticalAlignment="Center" BorderThickness="1" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
-				<StackPanel Spacing="15">
-					<TextBlock x:Name="LoadingOverlayText" Text="Loading..." FontSize="20" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-					<ProgressBar IsIndeterminate="True" Width="50" Height="4" Foreground="{DynamicResource SystemAccentColor}" />
-				</StackPanel>
-			</Border>
-		</Grid>
+        <Border
+            Grid.Row="2"
+            Padding="12"
+            Background="{DynamicResource LayerFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                    <ToggleSwitch
+                        IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
+                        OffContent=""
+                        OnContent="" />
+                    <TextBlock
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        FontWeight="Medium"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{x:Static resources:Strings.Menu_TestMode}" />
+                </StackPanel>
 
-		<Border Grid.Row="2" Padding="12" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,1,0,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
-			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
-				<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-					<ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}" OnContent="" OffContent="" />
-					<TextBlock Text="{x:Static resources:Strings.Menu_TestMode}" VerticalAlignment="Center" Margin="8,0,0,0" FontWeight="Medium" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-				</StackPanel>
-
-				<StackPanel Grid.Column="1" Grid.ColumnSpan="4" Orientation="Horizontal" Spacing="8">
-					<Button Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" Classes="accent" Command="{Binding SaveAndLaunchSettingsCommand}" Background="{DynamicResource SystemAccentColor}" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-					<Button Content="{x:Static resources:Strings.Menu_Restart}" Classes="accent" Command="{Binding RestartAppCommand}" Background="{DynamicResource SystemAccentColor}" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-					<Button Content="{x:Static resources:Strings.Menu_Save}" Classes="accent" Command="{Binding SaveSettingsCommand}" Background="{DynamicResource SystemAccentColor}" Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-					<Button Content="{x:Static resources:Strings.Common_Close}" Command="{Binding CloseWindowCommand}" Background="{DynamicResource LayerFillColorAltBrush}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-				</StackPanel>
-			</Grid>
-		</Border>
-	</Grid>
+                <StackPanel
+                    Grid.Column="1"
+                    Grid.ColumnSpan="4"
+                    Orientation="Horizontal"
+                    Spacing="8">
+                    <Button
+                        Background="{DynamicResource SystemAccentColor}"
+                        Classes="accent"
+                        Command="{Binding SaveAndLaunchSettingsCommand}"
+                        Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
+                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+                    <Button
+                        Background="{DynamicResource SystemAccentColor}"
+                        Classes="accent"
+                        Command="{Binding RestartAppCommand}"
+                        Content="{x:Static resources:Strings.Menu_Restart}"
+                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+                    <Button
+                        Background="{DynamicResource SystemAccentColor}"
+                        Classes="accent"
+                        Command="{Binding SaveSettingsCommand}"
+                        Content="{x:Static resources:Strings.Menu_Save}"
+                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+                    <Button
+                        Background="{DynamicResource LayerFillColorAltBrush}"
+                        Command="{Binding CloseWindowCommand}"
+                        Content="{x:Static resources:Strings.Common_Close}"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </base:AvaloniaWindow>

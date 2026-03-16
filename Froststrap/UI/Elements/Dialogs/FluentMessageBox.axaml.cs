@@ -14,10 +14,13 @@ namespace Froststrap.UI.Elements.Dialogs
     {
         public MessageBoxResult Result = MessageBoxResult.None;
 
-        public FluentMessageBox(string message, MessageBoxImage image, MessageBoxButton buttons)
+        public FluentMessageBox()
         {
             InitializeComponent();
+        }
 
+        public FluentMessageBox(string message, MessageBoxImage image, MessageBoxButton buttons) : this()
+        {
             string? iconFilename = null;
 
             switch (image)

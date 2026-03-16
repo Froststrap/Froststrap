@@ -4,9 +4,13 @@ namespace Froststrap.UI.Elements.ContextMenu;
 
 public partial class ServerInformation : Base.AvaloniaWindow
 {
-    public ServerInformation(Watcher watcher)
+    public ServerInformation()
     {
-		DataContext = new ServerInformationViewModel(watcher);
-		InitializeComponent();
+        InitializeComponent();
+    }
+
+    public ServerInformation(Watcher watcher) : this()
+    {
+        DataContext = new ServerInformationViewModel(watcher);
     }
 }
