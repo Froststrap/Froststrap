@@ -28,7 +28,7 @@
 								<controls:Hyperlink Url="{TemplateBinding HelpLink}"
 													Margin="6,2,0,0"
 													VerticalAlignment="Center"
-													ClipToBounds="False">
+													ClipToBounds="False"
 													IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 													ToolTip.Tip="{x:Static resources:Strings.Menu_MoreInfo}">
 									<Path Name="HelpIcon"
