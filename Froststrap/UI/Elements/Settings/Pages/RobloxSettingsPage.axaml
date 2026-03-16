@@ -12,12 +12,6 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
 	<ScrollViewer>
 		<StackPanel Margin="0,0,14,14">
-			<TextBlock
-				Margin="0,0,0,16"
-				FontSize="14"
-				Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-				Text="{x:Static resources:Strings.Menu_GBSEditor_Description}" />
-
 			<Grid Margin="0,0,0,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
