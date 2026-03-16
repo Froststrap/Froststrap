@@ -111,8 +111,11 @@
 				</Border>
 
 				<Grid Grid.Column="1" RowDefinitions="Auto,*">
-				<Border Grid.Row="0" Padding="12" Background="{DynamicResource LayerFillColorAltBrush}" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
-					<TextBlock x:Name="AlertText" Text="" Foreground="{DynamicResource SystemAccentColor}" FontSize="13" />
+				<Border Grid.Row="0" Padding="20,16" Background="{DynamicResource LayerFillColorAltBrush}" BorderThickness="0,0,0,1" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+					<StackPanel Spacing="4">
+						<TextBlock x:Name="PageTitleText" Text="{Binding CurrentPageTitle}" Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="24" FontWeight="SemiBold" />
+						<TextBlock x:Name="PageDescriptionText" Text="{Binding CurrentPageDescription}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontSize="13" />
+					</StackPanel>
 				</Border>
 
 				<TransitioningContentControl 

@@ -47,8 +47,17 @@ namespace Froststrap.UI.Elements.Settings
                     var alertText = this.FindControl<TextBlock>("AlertText");
                     if (alertText != null)
                     {
-                        alertText.IsVisible = data.AlertEnabled;
-                        alertText.Text = data.AlertContent;
+                        // Only show alert if AlertEnabled is true, otherwise show the CurrentPageTitle
+                        if (data.AlertEnabled)
+                        {
+                            alertText.IsVisible = true;
+                            alertText.Text = data.AlertContent;
+                        }
+                        else
+                        {
+                            alertText.IsVisible = true;
+                            // Let the binding handle the text from CurrentPageTitle
+                        }
                     }
                 });
             });

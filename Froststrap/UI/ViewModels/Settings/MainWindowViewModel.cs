@@ -68,6 +68,20 @@ namespace Froststrap.UI.ViewModels.Settings
             set => this.RaiseAndSetIfChanged(ref _selectedPage, value);
         }
 
+        private string _currentPageTitle = "Integrations";
+        public string CurrentPageTitle
+        {
+            get => _currentPageTitle;
+            set => this.RaiseAndSetIfChanged(ref _currentPageTitle, value);
+        }
+
+        private string _currentPageDescription = "";
+        public string CurrentPageDescription
+        {
+            get => _currentPageDescription;
+            set => this.RaiseAndSetIfChanged(ref _currentPageDescription, value);
+        }
+
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToIntegrationsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToBehaviourCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModsCommand { get; }
@@ -106,6 +120,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 () =>
                 {
                     SelectedPage = "integrations";
+                    CurrentPageTitle = "Integrations";
+                    CurrentPageDescription = Resources.Strings.Menu_Integrations_Description;
                     return _router.Navigate.Execute(Wrap("integrations", new IntegrationsViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -120,6 +136,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 () =>
                 {
                     SelectedPage = "behaviour";
+                    CurrentPageTitle = "Behaviour";
+                    CurrentPageDescription = Resources.Strings.Menu_Behaviour_Description;
                     return _router.Navigate.Execute(Wrap("behaviour", new BehaviourViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -134,6 +152,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 () =>
                 {
                     SelectedPage = "mods";
+                    CurrentPageTitle = "Mods";
+                    CurrentPageDescription = Resources.Strings.Menu_Mods_Description;
                     return _router.Navigate.Execute(Wrap("mods", new ModsViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -144,24 +164,14 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
             );
 
-            NavigateToCommunityModsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "communitymods";
-                    return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
+
 
             NavigateToFastFlagsCommand = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
                     SelectedPage = "fastflags";
+                    CurrentPageTitle = "Fast Flags";
+                    CurrentPageDescription = Resources.Strings.Menu_FastFlagEditor_Description;
                     return _router.Navigate.Execute(Wrap("fastflags", new FastFlagsViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -176,6 +186,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 () =>
                 {
                     SelectedPage = "appearance";
+                    CurrentPageTitle = "Appearance";
+                    CurrentPageDescription = Resources.Strings.Menu_Appearance_Description;
                     return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel(null!)))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -190,6 +202,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 () =>
                 {
                     SelectedPage = "robloxsettings";
+                    CurrentPageTitle = "Roblox Settings";
+                    CurrentPageDescription = Resources.Strings.Menu_GBSEditor_Description;
                     return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -213,17 +227,19 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void NavigateToLastPage(string pageTypeName)
         {
-            var viewModel = pageTypeName switch
+            var (viewModel, title, description) = pageTypeName switch
             {
-                "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel" => (IRoutableViewModel)Wrap("integrations", new IntegrationsViewModel()),
-                "Froststrap.UI.ViewModels.Settings.BehaviourViewModel" => Wrap("behaviour", new BehaviourViewModel()),
-                "Froststrap.UI.ViewModels.Settings.ModsViewModel" => Wrap("mods", new ModsViewModel()),
-                "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel" => Wrap("communitymods", new CommunityModsViewModel()),
-                "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel" => Wrap("fastflags", new FastFlagsViewModel()),
-                "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => Wrap("appearance", new AppearanceViewModel(null!)),
-                "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => Wrap("robloxsettings", new RobloxSettingsViewModel()),
-                _ => Wrap("integrations", new IntegrationsViewModel())
+                "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel" => ((IRoutableViewModel)Wrap("integrations", new IntegrationsViewModel()), "Integrations", "Connect third-party apps to enhance your Roblox experience."),
+                "Froststrap.UI.ViewModels.Settings.BehaviourViewModel" => (Wrap("behaviour", new BehaviourViewModel()), "Behaviour", "Customize how Froststrap behaves and operates."),
+                "Froststrap.UI.ViewModels.Settings.ModsViewModel" => (Wrap("mods", new ModsViewModel()), "Mods", "Manage and customize game modifications."),
+                "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel" => (Wrap("communitymods", new CommunityModsViewModel()), "Community Mods", "Browse and install mods created by the community."),
+                "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel" => (Wrap("fastflags", new FastFlagsViewModel()), "Fast Flags", "Configure advanced Roblox feature flags."),
+                "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => (Wrap("appearance", new AppearanceViewModel(null!)), "Appearance", "Configure how Froststrap should look."),
+                "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => (Wrap("robloxsettings", new RobloxSettingsViewModel()), "Roblox Settings", "Configure Roblox-specific settings and options."),
+                _ => (Wrap("integrations", new IntegrationsViewModel()), "Integrations", "Connect third-party apps to enhance your Roblox experience.")
             };
+            CurrentPageTitle = title;
+            CurrentPageDescription = description;
             _router.Navigate.Execute(viewModel).Subscribe();
         }
 
