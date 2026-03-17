@@ -14,6 +14,7 @@
     MinHeight="250"
     x:DataType="vm:MainWindowViewModel"
     Background="Transparent"
+	SystemDecorations="None"
     ExtendClientAreaTitleBarHeightHint="-1"
     ExtendClientAreaToDecorationsHint="True"
     TransparencyLevelHint="Mica"
@@ -21,7 +22,9 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <TitleBar
+        <controls:TitleBar
+			Title="Froststrap"
+			Icon="avares://Froststrap/Froststrap.ico"
             Grid.Row="0"
             Height="32"
             Background="{DynamicResource LayerFillColorDefaultBrush}" />
