@@ -119,11 +119,11 @@ namespace Froststrap.UI
                 //case BootstrapperStyle.ProgressDialog:
                 //return new ProgressDialog();
 
-                //case BootstrapperStyle.ClassicFluentDialog:
-                //return new ClassicFluentDialog();
+                case BootstrapperStyle.ClassicFluentDialog:
+                    return new ClassicFluentDialog();
 
                 case BootstrapperStyle.ByfronDialog:
-                 return new ByfronDialog();
+                    return new ByfronDialog();
 
                 //case BootstrapperStyle.FroststrapDialog:
                 //return new FroststrapDialog();
