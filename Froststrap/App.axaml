@@ -14,6 +14,7 @@
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardExpander.axaml" />
+		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
 	</Application.Styles>
 
