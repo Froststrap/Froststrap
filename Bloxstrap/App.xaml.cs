@@ -3,13 +3,10 @@ using Microsoft.Win32;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Shell;
 using System.Windows.Threading;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
-using Wpf.Ui.Hardware;
 
 namespace Bloxstrap
 {
