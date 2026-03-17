@@ -1,8 +1,5 @@
-﻿#if WINDOWS
-using System.Security.Cryptography;
-#endif
+﻿using System.Runtime.InteropServices;
 
-// TODO: Make Linux equivalent for reading Cookie (Sober puts your cookie in plain text so its not that hard)
 namespace Froststrap
 {
     public class CookiesManager
@@ -104,12 +101,21 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, $"Unknown cookie version: {cookies.Version}");
 
                 byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
+                byte[] unencryptedData;
 
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
 #if WINDOWS
-                byte[] unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
+                    unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
 #else
-                byte[] unencryptedData = Array.Empty<byte>();
+                    unencryptedData = Array.Empty<byte>();
 #endif
+                }
+                else
+                {
+                    // For Linux/Sober (Plaintext)
+                    unencryptedData = encryptedData;
+                }
 
                 string rawCookies = Encoding.UTF8.GetString(unencryptedData);
                 Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
