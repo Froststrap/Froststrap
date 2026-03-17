@@ -8,13 +8,11 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO.Compression;
 using System.Net.Http.Json;
 using System.Reflection;
-using System.Text.Json;
 
 namespace Bloxstrap.Integrations;
 
