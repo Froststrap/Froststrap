@@ -122,8 +122,8 @@ namespace Froststrap.UI
                 //case BootstrapperStyle.ClassicFluentDialog:
                 //return new ClassicFluentDialog();
 
-                //case BootstrapperStyle.ByfronDialog:
-                // return new ByfronDialog();
+                case BootstrapperStyle.ByfronDialog:
+                 return new ByfronDialog();
 
                 //case BootstrapperStyle.FroststrapDialog:
                 //return new FroststrapDialog();

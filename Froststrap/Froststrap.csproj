@@ -90,9 +90,6 @@
     <AutoGen>True</AutoGen>
     <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
-    <Compile Update="UI\Elements\Settings\Pages\RegionSelectorPage.axaml.cs">
-      <DependentUpon>RegionSelectorPage.axaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>

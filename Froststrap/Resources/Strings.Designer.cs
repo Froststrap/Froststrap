@@ -2172,7 +2172,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fake Byfron (2023).
+        ///   Looks up a localized string similar to Fake Byfron (~2023).
         /// </summary>
         public static string Enums_BootstrapperStyle_ByfronDialog {
             get {
@@ -2217,16 +2217,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap.
-        /// </summary>
-        public static string Enums_BootstrapperStyle_FroststrapDialog {
-            get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.FroststrapDialog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Legacy (2008 - 2011).
+        ///   Looks up a localized string similar to Legacy (2008 ~ 2011).
         /// </summary>
         public static string Enums_BootstrapperStyle_LegacyDialog2008 {
             get {
@@ -2235,7 +2226,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Legacy (2011 - 2014).
+        ///   Looks up a localized string similar to Legacy (2011 ~ 2014).
         /// </summary>
         public static string Enums_BootstrapperStyle_LegacyDialog2011 {
             get {
@@ -2244,7 +2235,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox (~2014).
+        ///   Looks up a localized string similar to Roblox (2014 ~ 2025).
         /// </summary>
         public static string Enums_BootstrapperStyle_ProgressDialog {
             get {
@@ -2253,7 +2244,16 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Vista (2008 - 2011).
+        ///   Looks up a localized string similar to Roblox (~2025).
+        /// </summary>
+        public static string Enums_BootstrapperStyle_TwentyFiveDialog {
+            get {
+                return ResourceManager.GetString("Enums.BootstrapperStyle.TwentyFiveDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vista (2008 ~ 2011).
         /// </summary>
         public static string Enums_BootstrapperStyle_VistaDialog {
             get {
@@ -2352,7 +2352,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2006 (Cartoony).
+        ///   Looks up a localized string similar to ~2006 (Cartoony).
         /// </summary>
         public static string Enums_CursorType_From2006 {
             get {
@@ -2361,7 +2361,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 2013 (Angular).
+        ///   Looks up a localized string similar to ~2013 (Angular).
         /// </summary>
         public static string Enums_CursorType_From2013 {
             get {
