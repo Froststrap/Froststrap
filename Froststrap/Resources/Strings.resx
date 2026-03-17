@@ -385,18 +385,6 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
   <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
     <value>Froststrap (Glass)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2008" xml:space="preserve">
-    <value>Legacy (2008 ~ 2011)</value>
-  </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2011" xml:space="preserve">
-    <value>Legacy (2011 ~ 2014)</value>
-  </data>
-  <data name="Enums.BootstrapperStyle.ProgressDialog" xml:space="preserve">
-    <value>Roblox (2014 ~ 2025)</value>
-  </data>
-  <data name="Enums.BootstrapperStyle.VistaDialog" xml:space="preserve">
-    <value>Vista (2008 ~ 2011)</value>
-  </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
     <value>~2006 (Cartoony)</value>
   </data>

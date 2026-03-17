@@ -2217,47 +2217,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Legacy (2008 ~ 2011).
-        /// </summary>
-        public static string Enums_BootstrapperStyle_LegacyDialog2008 {
-            get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.LegacyDialog2008", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Legacy (2011 ~ 2014).
-        /// </summary>
-        public static string Enums_BootstrapperStyle_LegacyDialog2011 {
-            get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.LegacyDialog2011", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Roblox (2014 ~ 2025).
-        /// </summary>
-        public static string Enums_BootstrapperStyle_ProgressDialog {
-            get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.ProgressDialog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Roblox (~2025).
         /// </summary>
         public static string Enums_BootstrapperStyle_TwentyFiveDialog {
             get {
                 return ResourceManager.GetString("Enums.BootstrapperStyle.TwentyFiveDialog", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Vista (2008 ~ 2011).
-        /// </summary>
-        public static string Enums_BootstrapperStyle_VistaDialog {
-            get {
-                return ResourceManager.GetString("Enums.BootstrapperStyle.VistaDialog", resourceCulture);
             }
         }
         
