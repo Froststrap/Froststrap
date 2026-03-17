@@ -1,0 +1,200 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+             xmlns:models="clr-namespace:Froststrap.Models.APIs.Roblox"
+             x:Class="Froststrap.UI.Elements.Settings.Pages.RegionSelectorPage"
+             x:DataType="vm:RegionSelectorViewModel"
+             d:DesignHeight="590"
+             d:DesignWidth="900"
+             mc:Ignorable="d">
+
+    <ScrollViewer>
+        <Grid Margin="0,0,14,14" RowDefinitions="Auto,Auto,*">
+            <StackPanel Grid.Row="0" Margin="0,0,0,16" Spacing="4">
+                <controls:MarkdownTextBlock
+                    FontSize="14"
+                    MarkdownText="{Binding Source={x:Static resources:Strings.Menu_RegionSelector_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://www.rovalra.com'}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+
+            <Border
+                Grid.Row="1"
+                Margin="0,0,0,16"
+                Padding="16"
+                CornerRadius="8">
+                <StackPanel Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Text="{x:Static resources:Strings.Menu_RegionSelector_FindGame}" />
+
+                        <AutoCompleteBox
+                            x:Name="SearchComboBox"
+                            MinWidth="200"
+                            MaxWidth="500"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding SearchResults}"
+                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
+                            Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            FilterMode="Contains"
+                            ValueMemberBinding="{Binding RootPlaceId}">
+                            <AutoCompleteBox.ItemTemplate>
+                                <DataTemplate DataType="models:OmniSearchContent">
+                                    <Grid Margin="0,4,8,4" Height="48" ColumnDefinitions="Auto,*,Auto">
+                                        <Border Grid.Column="0" Width="48" Height="48" CornerRadius="8">
+                                            <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
+                                        </Border>
+
+                                        <TextBlock Grid.Column="1" Margin="12,0,0,0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis" />
+
+                                        <StackPanel Grid.Column="2" 
+                                             VerticalAlignment="Center" 
+                                             Orientation="Horizontal" 
+                                             Margin="16,0,0,0"
+                                             Spacing="4">
+                                            <ui:SymbolIcon Symbol="People" FontSize="16" />
+                                            <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" 
+                                                VerticalAlignment="Center"
+                                                FontWeight="Medium" />
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </AutoCompleteBox.ItemTemplate>
+                        </AutoCompleteBox>
+
+                        <TextBlock
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{x:Static resources:Strings.Menu_RegionSelector_ServerSize}" />
+
+                        <ComboBox
+                            x:Name="SortOrderComboBox"
+                            Width="150"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding SortOrderOptions}"
+                            SelectedValue="{Binding SelectedSortOrder}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Content}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Text="{x:Static resources:Strings.Menu_RegionSelector_Region}" />
+
+                            <ComboBox
+                                x:Name="RegionComboBox"
+                                Width="200"
+                                VerticalAlignment="Center"
+                                ItemsSource="{Binding Regions}"
+                                SelectedItem="{Binding SelectedRegion}" />
+
+                            <Button
+                                Width="100"
+                                VerticalAlignment="Center"
+                                Command="{Binding SearchCommand}"
+                                CommandParameter="{Binding Text, ElementName=SearchComboBox}"
+                                Content="{x:Static resources:Strings.Common_Search}" />
+
+                            <Button
+                                Width="100"
+                                VerticalAlignment="Center"
+                                Command="{Binding LoadMoreCommand}"
+                                Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Grid Grid.Row="2">
+                <DataGrid
+                    AutoGenerateColumns="False"
+                    HeadersVisibility="Column"
+                    IsReadOnly="True"
+                    ItemsSource="{Binding Servers}"
+                    SelectionMode="Single">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Width="40"
+                            Binding="{Binding Number}"
+                            Header="#" />
+
+                        <DataGridTextColumn
+                            Width="*"
+                            Binding="{Binding ServerId}"
+                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_ServerID}" />
+
+                        <DataGridTextColumn
+                            Width="150"
+                            Binding="{Binding Uptime}"
+                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_ServerUptime}" />
+
+                        <DataGridTextColumn
+                            Width="80"
+                            Binding="{Binding Players}"
+                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_Players}" />
+
+                        <DataGridTextColumn
+                            Width="120"
+                            Binding="{Binding Region}"
+                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_Region}" />
+
+                        <DataGridTemplateColumn Width="100" Header="Join">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button
+                                        Width="100"
+                                        Height="28"
+                                        HorizontalAlignment="Center"
+                                        Command="{Binding JoinCommand}"
+                                        Content="{x:Static resources:Strings.Menu_RegionSelector_Servers_Join}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <TextBlock
+                    Margin="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="Medium"
+                    IsHitTestVisible="False"
+                    Text="{Binding ServerListMessage}"
+                    TextWrapping="Wrap"
+                    IsVisible="{Binding IsServerListEmptyAndNotLoading}" />
+
+                <Grid IsVisible="{Binding ShowLoadingIndicator}">
+                    <StackPanel
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        Spacing="12">
+                        <ui:ProgressRing
+                            Width="32"
+                            Height="32"
+                            IsIndeterminate="True" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="Medium"
+                            Text="{Binding LoadingMessage}" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

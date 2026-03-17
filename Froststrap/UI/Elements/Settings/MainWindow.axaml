@@ -112,6 +112,19 @@
 
                         <Button
                             Classes="icon-button"
+                            Command="{Binding NavigateToRegionSelectorCommand}"
+                            Tag="region selector"
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Description}">
+                            <lucideAvalonia:Lucide
+                                Width="16"
+                                Height="16"
+                                Icon="Globe"
+                                StrokeBrush="#888888"
+                                StrokeThickness="1.5" />
+                        </Button>
+
+                        <Button
+                            Classes="icon-button"
                             Command="{Binding NavigateToRobloxSettingsCommand}"
                             Tag="robloxsettings"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}">
