@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class AppearanceViewModel : NotifyPropertyChangedViewModel
+    public partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
         private readonly UserControl _page;
 
@@ -82,22 +82,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
             PopulateCustomThemes();
         }
-
-        public IEnumerable<Theme> Themes { get; } = Enum.GetValues(typeof(Theme)).Cast<Theme>();
-
-        public Theme Theme
-        {
-            get => App.Settings.Prop.Theme;
-            set
-            {
-                App.Settings.Prop.Theme = value;
-
-                AvaloniaWindow.ApplyTheme();
-                OnPropertyChanged(nameof(CustomThemeExpanded));
-            }
-        }
-
-        public bool CustomThemeExpanded => App.Settings.Prop.Theme == Theme.Custom;
 
         public static List<string> Languages => Locale.GetLanguages();
 
@@ -422,5 +406,247 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ObservableCollection<string> CustomThemes { get; set; } = new();
         public bool IsCustomThemeSelected => SelectedCustomTheme is not null;
+
+
+
+        #region Custom App Themes
+        public IEnumerable<Theme> Themes { get; } = Enum.GetValues(typeof(Theme)).Cast<Theme>();
+
+        public Theme Theme
+        {
+            get => App.Settings.Prop.Theme;
+            set
+            {
+                App.Settings.Prop.Theme = value;
+                OnPropertyChanged(nameof(Theme));
+                OnPropertyChanged(nameof(CustomThemeExpanded));
+                ApplyThemeUpdate();
+            }
+        }
+
+        public bool CustomThemeExpanded => App.Settings.Prop.Theme == Theme.Custom;
+
+        public IEnumerable<BackgroundMode> BackgroundTypes { get; } = Enum.GetValues(typeof(BackgroundMode)).Cast<BackgroundMode>();
+        public IEnumerable<BackgroundStretch> BackgroundStretches { get; } = Enum.GetValues(typeof(BackgroundStretch)).Cast<BackgroundStretch>();
+
+        public BackgroundMode BackgroundType
+        {
+            get => App.Settings.Prop.BackgroundType;
+            set
+            {
+                App.Settings.Prop.BackgroundType = value;
+                OnPropertyChanged(nameof(BackgroundType));
+                OnPropertyChanged(nameof(IsGradientMode));
+                OnPropertyChanged(nameof(IsImageMode));
+                ApplyThemeUpdate();
+            }
+        }
+
+        public BackgroundStretch BackgroundStretch
+        {
+            get => App.Settings.Prop.BackgroundStretch;
+            set
+            {
+                App.Settings.Prop.BackgroundStretch = value;
+                OnPropertyChanged(nameof(BackgroundStretch));
+                ApplyThemeUpdate();
+            }
+        }
+
+        public double BackgroundOpacity
+        {
+            get => App.Settings.Prop.BackgroundOpacity;
+            set
+            {
+                App.Settings.Prop.BackgroundOpacity = value;
+                OnPropertyChanged(nameof(BackgroundOpacity));
+                ApplyThemeUpdate();
+            }
+        }
+
+        public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
+        public bool IsImageMode => BackgroundType == BackgroundMode.Image;
+
+        private double _gradientAngle;
+        public double GradientAngle
+        {
+            get => _gradientAngle;
+            set
+            {
+                _gradientAngle = value;
+                OnPropertyChanged(nameof(GradientAngle));
+                ApplyThemeUpdate();
+            }
+        }
+
+        public ObservableCollection<GradientStops> GradientStops { get; } = new();
+
+        private ICommand? _addGradientStopCommand;
+        public ICommand AddGradientStopCommand => _addGradientStopCommand ??= new RelayCommand(async () => await AddGradientStop());
+
+        private ICommand? _resetGradientCommand;
+        public ICommand ResetGradientCommand => _resetGradientCommand ??= new RelayCommand(() => ResetGradient());
+
+        private ICommand? _removeGradientStopCommand;
+        public ICommand RemoveGradientStopCommand => _removeGradientStopCommand ??= new RelayCommand<GradientStops>(stop =>
+        {
+            if (stop != null)
+                RemoveGradientStop(stop);
+        });
+
+        private ICommand? _exportGradientCommand;
+        public ICommand ExportGradientCommand => _exportGradientCommand ??= new RelayCommand<TopLevel>(async topLevel =>
+        {
+            if (topLevel != null)
+                await ExportGradient(topLevel);
+        });
+
+        private ICommand? _importGradientCommand;
+        public ICommand ImportGradientCommand => _importGradientCommand ??= new RelayCommand<TopLevel>(async topLevel =>
+        {
+            if (topLevel != null)
+                await ImportGradient(topLevel);
+        });
+
+        private ICommand? _selectImageCommand;
+        public ICommand SelectImageCommand => _selectImageCommand ??= new RelayCommand<TopLevel>(async tl =>
+        {
+            if (tl == null) return;
+
+            var files = await tl.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select Background Image",
+                FileTypeFilter = new[] { FilePickerFileTypes.ImageAll },
+                AllowMultiple = false
+            });
+
+            var file = files.FirstOrDefault();
+            if (file != null)
+            {
+                App.Settings.Prop.BackgroundImagePath = file.Path.LocalPath;
+                ApplyThemeUpdate();
+            }
+        });
+
+        private ICommand? _clearImageCommand;
+        public ICommand ClearImageCommand => _clearImageCommand ??= new RelayCommand(() =>
+        {
+            App.Settings.Prop.BackgroundImagePath = string.Empty;
+            ApplyThemeUpdate();
+        });
+
+        private ICommand? _openColorPickerCommand;
+        public ICommand OpenColorPickerCommand => _openColorPickerCommand ??= new RelayCommand<GradientStops>(async stop =>
+        {
+            if (stop == null) return;
+
+            var mainWindow = (App.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+
+            if (mainWindow == null) return;
+
+            var dialog = new ColorPickerDialog(stop.Color);
+
+            var result = await dialog.ShowDialog<string>(mainWindow);
+
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                stop.Color = result;
+                ApplyThemeUpdate();
+            }
+        });
+
+        private async Task AddGradientStop()
+        {
+            GradientStops.Add(new GradientStops { Offset = 0.5, Color = "#000000" });
+            ApplyThemeUpdate();
+        }
+
+        private void RemoveGradientStop(GradientStops stop)
+        {
+            if (stop == null) return;
+            GradientStops.Remove(stop);
+            ApplyThemeUpdate();
+        }
+
+        private void ResetGradient()
+        {
+            GradientStops.Clear();
+            _gradientAngle = 0;
+            OnPropertyChanged(nameof(GradientAngle));
+            ApplyThemeUpdate();
+        }
+
+        private async Task ExportGradient(TopLevel topLevel)
+        {
+            var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            {
+                Title = "Export Gradient",
+                FileTypeChoices = new[] { new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } } },
+                SuggestedFileName = "Froststrap Gradient Background.json"
+            });
+
+            if (file == null) return;
+
+            var data = new
+            {
+                GradientStops = GradientStops.Select(s => new { s.Offset, s.Color }).ToList(),
+                GradientAngle = GradientAngle
+            };
+
+            using var stream = await file.OpenWriteAsync();
+            await JsonSerializer.SerializeAsync(stream, data, new JsonSerializerOptions { WriteIndented = true });
+        }
+
+        private async Task ImportGradient(TopLevel topLevel)
+        {
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Import Gradient",
+                FileTypeFilter = new[] { new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } } },
+                AllowMultiple = false
+            });
+
+            var file = files.FirstOrDefault();
+            if (file == null) return;
+
+            try
+            {
+                using var stream = await file.OpenReadAsync();
+                using var document = await JsonDocument.ParseAsync(stream);
+                var root = document.RootElement;
+
+                if (root.TryGetProperty("GradientStops", out var stopsElement))
+                {
+                    GradientStops.Clear();
+                    foreach (var stop in stopsElement.EnumerateArray())
+                    {
+                        GradientStops.Add(new GradientStops
+                        {
+                            Offset = stop.GetProperty("Offset").GetDouble(),
+                            Color = stop.GetProperty("Color").GetString() ?? "#FFFFFF"
+                        });
+                    }
+                }
+
+                if (root.TryGetProperty("GradientAngle", out var angleElement))
+                {
+                    GradientAngle = angleElement.GetDouble();
+                }
+
+                ApplyThemeUpdate();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void ApplyThemeUpdate()
+        {
+            App.Settings.Prop.CustomGradientStops = GradientStops.ToList();
+            App.Settings.Prop.GradientAngle = GradientAngle;
+
+            AvaloniaWindow.ApplyTheme();
+        }
+        #endregion
     }
 }
