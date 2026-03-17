@@ -113,7 +113,7 @@ namespace Froststrap
                 }
                 else
                 {
-                    // For Linux/Sober (Plaintext)
+                    // Leave as plain text since idk how it works/looks like on linux and sober
                     unencryptedData = encryptedData;
                 }
 
