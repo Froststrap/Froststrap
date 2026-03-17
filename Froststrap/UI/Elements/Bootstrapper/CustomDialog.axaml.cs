@@ -2,11 +2,10 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
-using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-	public partial class CustomDialog : AvaloniaWindow, IBootstrapperDialog
+	public partial class CustomDialog : Window, IBootstrapperDialog
 	{
 		private readonly BootstrapperDialogViewModel _viewModel;
 

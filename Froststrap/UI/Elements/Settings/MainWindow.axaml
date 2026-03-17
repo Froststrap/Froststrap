@@ -20,7 +20,7 @@
     TransparencyLevelHint="Mica"
     WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
 
         <controls:TitleBar
 			Title="Froststrap"

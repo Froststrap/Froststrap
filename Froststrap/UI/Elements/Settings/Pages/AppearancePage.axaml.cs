@@ -81,7 +81,7 @@ public partial class AppearancePage : UserControl
         if (DataContext is AppearanceViewModel vm)
         {
             App.Settings.Prop.CustomGradientStops = vm.GradientStops.ToList();
-            AvaloniaWindow.RefreshCustomTheme();
+            AvaloniaWindow.ApplyTheme();
         }
     }
 

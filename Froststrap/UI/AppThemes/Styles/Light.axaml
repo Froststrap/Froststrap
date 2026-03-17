@@ -1,22 +1,5 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
-	<Styles.Resources>
-		<SolidColorBrush x:Key="NewTextEditorBackground" Color="#59000000" />
-		<SolidColorBrush x:Key="NewTextEditorForeground" Color="White" />
-		<SolidColorBrush x:Key="NewTextEditorLink" Color="#3A9CEA" />
-		<SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#19000000" />
-		<SolidColorBrush x:Key="NormalDarkAndLightBackground" Color="#0FFFFFFF" />
-		<Color x:Key="ControlFillColorDefault">#19000000</Color>
-
-		<LinearGradientBrush x:Key="ApplicationBackground" StartPoint="100%,100%" EndPoint="0%,0%">
-			<GradientStop Offset="0.0" Color="#6BA9B8" />
-			<GradientStop Offset="0.4" Color="#4A9FB1" />
-			<GradientStop Offset="0.75" Color="#346B7D" />
-			<GradientStop Offset="1.0" Color="#275163" />
-		</LinearGradientBrush>
-	</Styles.Resources>
-
 	<Style Selector="ProgressBar.Square">
 		<Setter Property="Background" Value="{StaticResource PrimaryBackgroundColor}" />
 		<Setter Property="Foreground" Value="{StaticResource NewTextEditorForeground}" />
@@ -44,11 +27,11 @@
 
 	<Style Selector="ProgressBar.Square:indeterminate /template/ Border#PART_Indicator">
 		<Style.Animations>
-			<Animation Duration="0:0:4" IterationCount="Infinite">
+			<Animation Duration="0:0:2" IterationCount="Infinite">
 				<KeyFrame KeyTime="0:0:0">
 					<Setter Property="TranslateTransform.X" Value="-200"/>
 				</KeyFrame>
-				<KeyFrame KeyTime="0:0:4">
+				<KeyFrame KeyTime="0:0:2">
 					<Setter Property="TranslateTransform.X" Value="800"/>
 				</KeyFrame>
 			</Animation>

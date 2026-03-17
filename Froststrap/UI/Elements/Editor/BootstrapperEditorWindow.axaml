@@ -12,7 +12,7 @@
         Title="{Binding Title}"
         Width="1000" Height="500"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource ApplicationBackgroundBrush}"
+        Background="{DynamicResource ApplicationBackgroundColorBrush}"
         mc:Ignorable="d">
 
 	<Design.DataContext>
