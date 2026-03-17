@@ -25,25 +25,25 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
 		protected virtual bool _cancelEnabled { get; set; }
 		protected virtual double _taskbarProgressValue { get; set; }
 
-		public string Message
+		public virtual string Message
 		{
 			get => _message;
 			set => RunOnUI(() => _message = value);
 		}
 
-		public int ProgressMaximum
+		public virtual int ProgressMaximum
 		{
 			get => _progressMaximum;
 			set => RunOnUI(() => _progressMaximum = value);
 		}
 
-		public int ProgressValue
+		public virtual int ProgressValue
 		{
 			get => _progressValue;
 			set => RunOnUI(() => _progressValue = value);
 		}
 
-		public bool CancelEnabled
+		public virtual bool CancelEnabled
 		{
 			get => _cancelEnabled;
 			set => RunOnUI(() => _cancelEnabled = value);

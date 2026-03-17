@@ -371,13 +371,13 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
     <value>Late 2015</value>
   </data>
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
-    <value>Fake Byfron (2023)</value>
+    <value>Fake Byfron (~2023)</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
     <value>Froststrap (Opaque)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.FroststrapDialog" xml:space="preserve">
-    <value>Froststrap</value>
+  <data name="Enums.BootstrapperStyle.TwentyFiveDialog" xml:space="preserve">
+    <value>Roblox (~2025)</value>
   </data>
   <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
     <value>Froststrap (Classic)</value>
@@ -386,22 +386,22 @@ If not, then please report this exception through a [GitHub issue]({1}) along wi
     <value>Froststrap (Glass)</value>
   </data>
   <data name="Enums.BootstrapperStyle.LegacyDialog2008" xml:space="preserve">
-    <value>Legacy (2008 - 2011)</value>
+    <value>Legacy (2008 ~ 2011)</value>
   </data>
   <data name="Enums.BootstrapperStyle.LegacyDialog2011" xml:space="preserve">
-    <value>Legacy (2011 - 2014)</value>
+    <value>Legacy (2011 ~ 2014)</value>
   </data>
   <data name="Enums.BootstrapperStyle.ProgressDialog" xml:space="preserve">
-    <value>Roblox (~2014)</value>
+    <value>Roblox (2014 ~ 2025)</value>
   </data>
   <data name="Enums.BootstrapperStyle.VistaDialog" xml:space="preserve">
-    <value>Vista (2008 - 2011)</value>
+    <value>Vista (2008 ~ 2011)</value>
   </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
-    <value>2006 (Cartoony)</value>
+    <value>~2006 (Cartoony)</value>
   </data>
   <data name="Enums.CursorType.From2013" xml:space="preserve">
-    <value>2013 (Angular)</value>
+    <value>~2013 (Angular)</value>
   </data>
   <data name="Enums.CursorType.PurpleCross" xml:space="preserve">
     <value>Purple Cross</value>
