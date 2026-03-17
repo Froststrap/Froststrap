@@ -1,0 +1,35 @@
+﻿<base:AvaloniaWindow
+     xmlns="https://github.com/avaloniaui"
+     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+     x:Class="Froststrap.UI.Elements.Dialogs.ColorPickerDialog"
+     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+     xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
+     Title="Color Picker"
+     Width="400"
+     CanResize="False"
+     SizeToContent="Height"
+     WindowStartupLocation="CenterOwner">
+
+   <Grid RowDefinitions="*, Auto, Auto" Margin="20" Background="{DynamicResource ApplicationBackgroundColor}">
+        <colorPicker:SquarePicker x:Name="Part_SquarePicker" 
+                                  VerticalAlignment="Stretch" 
+                                  HorizontalAlignment="Stretch"/>
+
+        <StackPanel Grid.Row="1" Margin="0,20,0,0" Spacing="8">
+            <TextBlock Text="Hex Code:" FontWeight="SemiBold" FontSize="12"/>
+            <TextBox x:Name="Part_HexBox" 
+                     Watermark="#AARRGGBB"
+                     VerticalContentAlignment="Center"
+                     TextChanged="Part_HexBox_TextChanged"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Spacing="12" 
+                    Margin="0,24,0,0">
+            <Button Content="Confirm" Width="90" Click="OnConfirm_Click" Classes="accent" />
+            <Button Content="Cancel" Width="90" Click="OnCancel_Click" />
+        </StackPanel>
+    </Grid>
+</base:AvaloniaWindow>
