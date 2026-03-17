@@ -48,6 +48,10 @@
         <PackageReference Include="Xaml.Behaviors" Version="11.3.9.3" />
     </ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\ColorPicker-Avalonia\src\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
+	</ItemGroup>
+
     <ItemGroup>
       <AssemblyAttribute Include="Froststrap.Models.Attributes.BuildMetadataAttribute">
       <_Parameter1>$([System.DateTime]::UtcNow.ToString("s"))Z</_Parameter1>

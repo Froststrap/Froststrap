@@ -5,6 +5,7 @@
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="450"
@@ -31,7 +32,9 @@
 						</ComboBox>
 					</controls:CardExpander.HeaderContent>
 					<StackPanel>
-						
+						<colorPicker:SquarePicker x:Name="MyPicker"
+                              Width="250" 
+                              Height="200"/>
 					</StackPanel>
 				</controls:CardExpander>
                 
