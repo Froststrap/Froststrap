@@ -87,6 +87,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFastFlagsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAppearanceCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRegionSelectorCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRobloxSettingsCommand { get; }
 
         private IRoutableViewModel Wrap(string segment, object settingsViewModel) =>
@@ -188,6 +189,22 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Appearance";
                     CurrentPageDescription = Resources.Strings.Menu_Appearance_Description;
                     return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel(null!)))
+                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToRegionSelectorCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "region selector";
+                    CurrentPageTitle = "Region Selector";
+                    CurrentPageDescription = Resources.Strings.Menu_RegionSelector_Description;
+                    return _router.Navigate.Execute(Wrap("region selector", new RegionSelectorViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
