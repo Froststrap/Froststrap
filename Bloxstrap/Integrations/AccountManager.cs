@@ -17,7 +17,6 @@ using Newtonsoft.Json.Linq;
 using PuppeteerExtraSharp;
 using PuppeteerExtraSharp.Plugins.ExtraStealth;
 using PuppeteerSharp;
-using System.Web;
 using System.Windows;
 using Bloxstrap.UI.Elements.Dialogs;
 
