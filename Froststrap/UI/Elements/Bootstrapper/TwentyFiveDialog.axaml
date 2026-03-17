@@ -1,0 +1,63 @@
+<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Froststrap.UI.ViewModels.Bootstrapper"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        x:Class="Froststrap.UI.Elements.Bootstrapper.TwentyFiveDialog"
+        x:DataType="vm:TwentyFiveDialogViewModel"
+        Width="576" Height="482"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        Background="Black">
+
+	<Grid>
+		<controls:TitleBar VerticalAlignment="Top"
+                          Height="32"
+                          ShowMinimize="False"
+                          ShowMaximize="False"
+                          ShowClose="False" />
+
+		<Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/PlayerLogo.png"
+               Height="254" Width="254"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               Margin="0,60,0,0" />
+
+		<Grid VerticalAlignment="Bottom"
+              Background="#191A1F"
+              Height="91">
+
+			<ProgressBar VerticalAlignment="Top"
+                         Height="6"
+                         Foreground="White"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         IsIndeterminate="{Binding ProgressIndeterminate}"
+                         Maximum="{Binding ProgressMaximum}"
+                         Value="{Binding ProgressValue}" />
+
+			<Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/Roblox.png"
+                   Height="32" Width="103"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Margin="30,0,0,0" />
+
+			<Button Content="Cancel"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0,0,32,0"
+                    Width="64" Height="38"
+                    CornerRadius="0"
+                    Command="{Binding CancelInstallCommand}"
+                    IsEnabled="{Binding CancelEnabled}" />
+		</Grid>
+
+		<TextBlock Text="{Binding Message}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Margin="0,0,0,100"
+                   Foreground="White"
+                   FontSize="12" />
+	</Grid>
+</base:AvaloniaWindow>

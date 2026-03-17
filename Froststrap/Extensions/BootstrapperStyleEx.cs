@@ -9,8 +9,8 @@
             BootstrapperStyle.FluentAeroDialog,
             BootstrapperStyle.FluentDialog,
             BootstrapperStyle.ClassicFluentDialog,
-            BootstrapperStyle.ByfronDialog,
             BootstrapperStyle.TwentyFiveDialog,
+            BootstrapperStyle.ByfronDialog,
             BootstrapperStyle.CustomDialog
         };
     }
