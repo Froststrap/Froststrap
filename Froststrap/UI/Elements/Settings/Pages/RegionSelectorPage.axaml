@@ -1,71 +1,153 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-             xmlns:resources="using:Froststrap.Resources"
-             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-             xmlns:models="clr-namespace:Froststrap.Models.APIs.Roblox"
-             x:Class="Froststrap.UI.Elements.Settings.Pages.RegionSelectorPage"
-             x:DataType="vm:RegionSelectorViewModel"
-             d:DesignHeight="590"
-             d:DesignWidth="900"
-             mc:Ignorable="d">
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.Pages.RegionSelectorPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    x:DataType="vm:RegionSelectorViewModel">
+
+	<UserControl.Styles>
+		<Style Selector="DataGrid">
+			<Setter Property="Background" Value="{DynamicResource NormalDarkAndLightBackground}" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="GridLinesVisibility" Value="Horizontal" />
+			<Setter Property="HorizontalGridLinesBrush" Value="#11000000" />
+			<Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+		</Style>
+
+		<Style Selector="DataGridColumnHeader">
+			<Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+			<Setter Property="Height" Value="30" />
+			<Setter Property="Padding" Value="8,0,12,0" />
+			<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+		</Style>
+
+		<Style Selector="DataGridColumnHeader:pointerover">
+			<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+		</Style>
+
+		<Style Selector="DataGridCell">
+			<Setter Property="Height" Value="30" />
+			<Setter Property="Padding" Value="6,0,6,0" />
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		</Style>
+
+		<Style Selector="DataGridCell:pointerover">
+			<Setter Property="Background" Value="#14000000" />
+		</Style>
+		<Style Selector="DataGridCell:selected">
+			<Setter Property="Background" Value="#59007ACC" />
+			<Setter Property="Foreground" Value="#F0F0F0" />
+		</Style>
+		<Style Selector="DataGridCell:selected:pointerover">
+			<Setter Property="Background" Value="#8C007ACC" />
+		</Style>
+	</UserControl.Styles>
 
     <ScrollViewer>
-        <Grid Margin="0,0,14,14" RowDefinitions="Auto,Auto,*">
-            <StackPanel Grid.Row="0" Margin="0,0,0,16" Spacing="4">
-                <controls:MarkdownTextBlock
-                    FontSize="14"
-                    MarkdownText="{Binding Source={x:Static resources:Strings.Menu_RegionSelector_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://www.rovalra.com'}"
-                    TextWrapping="Wrap" />
-            </StackPanel>
-
+        <Grid Margin="0,0,14,14" RowDefinitions="Auto,*">
             <Border
-                Grid.Row="1"
+                Grid.Row="0"
                 Margin="0,0,0,16"
                 Padding="16"
                 CornerRadius="8">
-                <StackPanel Spacing="8">
+                <StackPanel Spacing="12">
                     <StackPanel Orientation="Horizontal" Spacing="8">
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            Text="{x:Static resources:Strings.Menu_RegionSelector_FindGame}" />
+                        <TextBlock VerticalAlignment="Center" Text="{x:Static resources:Strings.Menu_RegionSelector_FindGame}" />
 
-                        <AutoCompleteBox
-                            x:Name="SearchComboBox"
-                            MinWidth="200"
+                        <TextBox
+                            x:Name="SearchTextBox"
+                            MinWidth="250"
                             MaxWidth="500"
                             VerticalAlignment="Center"
-                            ItemsSource="{Binding SearchResults}"
-                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
-                            Text="{Binding SearchQuery, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            FilterMode="Contains"
-                            ValueMemberBinding="{Binding RootPlaceId}">
-                            <AutoCompleteBox.ItemTemplate>
-                                <DataTemplate DataType="models:OmniSearchContent">
-                                    <Grid Margin="0,4,8,4" Height="48" ColumnDefinitions="Auto,*,Auto">
-                                        <Border Grid.Column="0" Width="48" Height="48" CornerRadius="8">
-                                            <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
-                                        </Border>
+                            Text="{Binding SearchQuery, Mode=TwoWay}"
+                            Watermark="Enter Place ID or Game Name...">
 
-                                        <TextBlock Grid.Column="1" Margin="12,0,0,0" Text="{Binding Name}" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis" />
+                            <TextBox.InnerRightContent>
+                                <Button
+                                    Padding="8,0"
+                                    Command="{Binding SearchGamesCommand}"
+                                    Theme="{StaticResource TransparentButton}">
+                                    <lucideAvalonia:Lucide
+                                        Width="16"
+                                        Height="16"
+                                        Icon="Search"
+                                        StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                                </Button>
+                            </TextBox.InnerRightContent>
 
-                                        <StackPanel Grid.Column="2" 
-                                             VerticalAlignment="Center" 
-                                             Orientation="Horizontal" 
-                                             Margin="16,0,0,0"
-                                             Spacing="4">
-                                            <ui:SymbolIcon Symbol="People" FontSize="16" />
-                                            <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" 
-                                                VerticalAlignment="Center"
-                                                FontWeight="Medium" />
-                                        </StackPanel>
-                                    </Grid>
-                                </DataTemplate>
-                            </AutoCompleteBox.ItemTemplate>
-                        </AutoCompleteBox>
+                            <FlyoutBase.AttachedFlyout>
+                                <Flyout Placement="BottomEdgeAlignedLeft" ShowMode="Transient">
+                                    <Panel>
+                                        <ListBox
+                                            Width="450"
+                                            MaxHeight="400"
+                                            Background="Transparent"
+                                            ItemsSource="{Binding SearchResults}"
+                                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                                        <Border
+                                                            Grid.Column="0"
+                                                            Width="44"
+                                                            Height="44"
+                                                            Background="#10FFFFFF"
+                                                            ClipToBounds="True"
+                                                            CornerRadius="4">
+															<Image
+																RenderOptions.BitmapInterpolationMode="HighQuality"
+																Source="{Binding ThumbnailBitmap}"
+																Stretch="UniformToFill" />
+                                                        </Border>
+                                                        <StackPanel
+                                                            Grid.Column="1"
+                                                            Margin="10,0"
+                                                            VerticalAlignment="Center">
+                                                            <TextBlock
+                                                                FontWeight="SemiBold"
+                                                                Text="{Binding Name}"
+                                                                TextTrimming="CharacterEllipsis" />
+                                                            <TextBlock
+                                                                FontSize="10"
+                                                                Opacity="0.5"
+                                                                Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
+                                                        </StackPanel>
+                                                        <StackPanel
+                                                            Grid.Column="2"
+                                                            VerticalAlignment="Center"
+                                                            Orientation="Horizontal"
+                                                            Spacing="4">
+                                                            <lucideAvalonia:Lucide
+                                                                Width="14"
+                                                                Height="14"
+                                                                Icon="Users"
+                                                                StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                            <TextBlock
+                                                                VerticalAlignment="Center"
+                                                                FontSize="12"
+                                                                Text="{Binding PlayerCount}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+
+                                        <ProgressBar
+                                            VerticalAlignment="Top"
+                                            IsIndeterminate="True"
+                                            IsVisible="{Binding IsGameSearchLoading}" />
+                                    </Panel>
+                                </Flyout>
+                            </FlyoutBase.AttachedFlyout>
+                        </TextBox>
 
                         <TextBlock
                             Margin="8,0,0,0"
@@ -78,7 +160,7 @@
                             Margin="8,0,0,0"
                             VerticalAlignment="Center"
                             ItemsSource="{Binding SortOrderOptions}"
-                            SelectedValue="{Binding SelectedSortOrder}">
+                            SelectedItem="{Binding SelectedSortOrderItem}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Content}" />
@@ -87,114 +169,90 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <Grid ColumnDefinitions="Auto,*,Auto">
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                Text="{x:Static resources:Strings.Menu_RegionSelector_Region}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock VerticalAlignment="Center" Text="{x:Static resources:Strings.Menu_RegionSelector_Region}" />
 
-                            <ComboBox
-                                x:Name="RegionComboBox"
-                                Width="200"
-                                VerticalAlignment="Center"
-                                ItemsSource="{Binding Regions}"
-                                SelectedItem="{Binding SelectedRegion}" />
+                        <ComboBox
+                            x:Name="RegionComboBox"
+                            Width="200"
+                            VerticalAlignment="Center"
+                            ItemsSource="{Binding Regions}"
+                            SelectedItem="{Binding SelectedRegion}" />
 
-                            <Button
-                                Width="100"
-                                VerticalAlignment="Center"
-                                Command="{Binding SearchCommand}"
-                                CommandParameter="{Binding Text, ElementName=SearchComboBox}"
-                                Content="{x:Static resources:Strings.Common_Search}" />
+                        <Button
+                            Width="100"
+                            VerticalAlignment="Center"
+                            Classes="accent"
+                            Command="{Binding SearchCommand}"
+                            Content="{x:Static resources:Strings.Common_Search}" />
 
-                            <Button
-                                Width="100"
-                                VerticalAlignment="Center"
-                                Command="{Binding LoadMoreCommand}"
-                                Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
-                        </StackPanel>
-                    </Grid>
+                        <Button
+                            Width="120"
+                            VerticalAlignment="Center"
+                            Command="{Binding LoadMoreCommand}"
+                            Content="{x:Static resources:Strings.Menu_RegionSelector_LoadMore}" />
+                    </StackPanel>
                 </StackPanel>
             </Border>
 
-            <Grid Grid.Row="2">
-                <DataGrid
+			<Grid Grid.Row="1">
+				<DataGrid
                     AutoGenerateColumns="False"
-                    HeadersVisibility="Column"
                     IsReadOnly="True"
-                    ItemsSource="{Binding Servers}"
-                    SelectionMode="Single">
+                    ItemsSource="{Binding Servers}">
+					<DataGrid.Columns>
+						<DataGridTextColumn Width="40" Binding="{Binding Number}" Header="#" />
+						<DataGridTextColumn Width="*" Binding="{Binding ServerId}" Header="Server ID" />
+						<DataGridTextColumn Width="80" Binding="{Binding Players}" Header="Players" />
+						<DataGridTextColumn Width="120" Binding="{Binding Region}" Header="Region" />
+						<DataGridTemplateColumn Width="100" Header="Join">
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<Button Command="{Binding JoinCommand}" Content="Join" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					</DataGrid.Columns>
+				</DataGrid>
 
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="40"
-                            Binding="{Binding Number}"
-                            Header="#" />
+				<StackPanel IsVisible="{Binding IsServerListEmptyAndNotLoading}"
+							Margin="40"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center">
+					<lucideAvalonia:Lucide Icon="Search"
+										   Width="32" Height="32"
+										   HorizontalAlignment="Center"
+										   Opacity="0.5" StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}"  />
+					<TextBlock HorizontalAlignment="Center"
+							   FontSize="16"
+							   FontWeight="Medium"
+							   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+							   IsHitTestVisible="False"
+							   Text="{Binding ServerListMessage}"
+							   TextAlignment="Center"
+							   TextWrapping="Wrap" />
+				</StackPanel>
 
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding ServerId}"
-                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_ServerID}" />
+				<Grid Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+					  IsVisible="{Binding ShowLoadingIndicator}"
+					  Opacity="0.9">
+					<StackPanel HorizontalAlignment="Center"
+			   VerticalAlignment="Center"
+			   Spacing="16">
 
-                        <DataGridTextColumn
-                            Width="150"
-                            Binding="{Binding Uptime}"
-                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_ServerUptime}" />
+						<ProgressBar IsIndeterminate="True"
+									 Width="32" Height="32"
+									 HorizontalAlignment="Center"
+									 Theme="{StaticResource ProgressBarRingTheme}" />
 
-                        <DataGridTextColumn
-                            Width="80"
-                            Binding="{Binding Players}"
-                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_Players}" />
-
-                        <DataGridTextColumn
-                            Width="120"
-                            Binding="{Binding Region}"
-                            Header="{x:Static resources:Strings.Menu_RegionSelector_Servers_Region}" />
-
-                        <DataGridTemplateColumn Width="100" Header="Join">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Button
-                                        Width="100"
-                                        Height="28"
-                                        HorizontalAlignment="Center"
-                                        Command="{Binding JoinCommand}"
-                                        Content="{x:Static resources:Strings.Menu_RegionSelector_Servers_Join}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-
-                <TextBlock
-                    Margin="20"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="16"
-                    FontWeight="Medium"
-                    IsHitTestVisible="False"
-                    Text="{Binding ServerListMessage}"
-                    TextWrapping="Wrap"
-                    IsVisible="{Binding IsServerListEmptyAndNotLoading}" />
-
-                <Grid IsVisible="{Binding ShowLoadingIndicator}">
-                    <StackPanel
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal"
-                        Spacing="12">
-                        <ui:ProgressRing
-                            Width="32"
-                            Height="32"
-                            IsIndeterminate="True" />
-                        <TextBlock
-                            VerticalAlignment="Center"
-                            FontSize="14"
-                            FontWeight="Medium"
-                            Text="{Binding LoadingMessage}" />
-                    </StackPanel>
-                </Grid>
-            </Grid>
+						<TextBlock HorizontalAlignment="Center"
+								   FontSize="14"
+								   FontWeight="SemiBold"
+								   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+								   Text="{Binding LoadingMessage}" />
+					</StackPanel>
+				</Grid>
+			</Grid>
         </Grid>
     </ScrollViewer>
 </UserControl>

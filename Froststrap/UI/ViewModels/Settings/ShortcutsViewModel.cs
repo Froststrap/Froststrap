@@ -175,23 +175,37 @@ namespace Froststrap.UI.ViewModels.Settings
                 var thumbRequests = results.Select(r => new ThumbnailRequest
                 {
                     Type = ThumbnailType.GameIcon,
-                    TargetId = (ulong)r.UniverseId,
+                    TargetId = r.UniverseId,
                     Size = "128x128"
                 }).ToList();
 
                 var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
 
-                Dispatcher.UIThread.Invoke(() =>
+                for (int i = 0; i < results.Count; i++)
                 {
-                    for (int i = 0; i < results.Count; i++)
+                    if (urls != null && i < urls.Length && !string.IsNullOrEmpty(urls[i]))
                     {
-                        if (urls != null && i < urls.Length)
-                            results[i].ThumbnailUrl = urls[i] ?? string.Empty;
-                        SearchResults.Add(results[i]);
+                        results[i].ThumbnailUrl = urls[i];
+                        try
+                        {
+                            var data = await App.HttpClient.GetByteArrayAsync(urls[i], token);
+                            using var ms = new MemoryStream(data);
+                            results[i].ThumbnailBitmap = new Bitmap(ms);
+                        }
+                        catch { /* Ignore failed images */ }
+                    }
+                }
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    SearchResults.Clear();
+                    foreach (var res in results)
+                    {
+                        SearchResults.Add(res);
                     }
                 });
             }
-            catch (Exception) { }
+            catch (Exception ex) { App.Logger.WriteLine("Shortcuts", ex.Message); }
             finally { IsGameSearchLoading = false; }
         }
 

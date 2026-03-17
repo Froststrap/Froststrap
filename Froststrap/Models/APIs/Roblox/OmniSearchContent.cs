@@ -1,6 +1,9 @@
-﻿namespace Froststrap.Models.APIs.Roblox
+﻿using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace Froststrap.Models.APIs.Roblox
 {
-    public class OmniSearchContent
+    public partial class OmniSearchContent : ObservableObject
     {
         [JsonPropertyName("universeId")]
         public ulong UniverseId { get; set; }
@@ -14,6 +17,7 @@
         [JsonPropertyName("playerCount")]
         public int? PlayerCount { get; set; }
 
-        public string? ThumbnailUrl { get; set; }
+        [ObservableProperty] private string? _thumbnailUrl;
+        [ObservableProperty] private Bitmap? _thumbnailBitmap;
     }
 }

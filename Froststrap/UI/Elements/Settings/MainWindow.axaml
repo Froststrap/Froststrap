@@ -5,6 +5,7 @@
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
     xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:resources="using:Froststrap.Resources"
+	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     Title="{x:Static resources:Strings.Menu_Title}"
     Width="1125"
@@ -114,7 +115,7 @@
                             Classes="icon-button"
                             Command="{Binding NavigateToRegionSelectorCommand}"
                             Tag="region selector"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Description}">
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}">
                             <lucideAvalonia:Lucide
                                 Width="16"
                                 Height="16"
@@ -189,11 +190,11 @@
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                             Text="{Binding CurrentPageTitle}" />
-                        <TextBlock
+                        <controls:MarkdownTextBlock
                             x:Name="PageDescriptionText"
                             FontSize="13"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{Binding CurrentPageDescription}" />
+                            MarkdownText="{Binding CurrentPageDescription}" />
                     </StackPanel>
                 </Border>
 

@@ -103,60 +103,54 @@ namespace Froststrap.UI.Elements.Controls
 
         private Avalonia.Controls.Documents.Inline? GetAvaloniaInlineFromMarkdownInline(Markdig.Syntax.Inlines.Inline? inline)
         {
+            if (inline == null) 
+                return null;
+
             if (inline is LiteralInline literalInline)
             {
                 return new Run(literalInline.ToString());
             }
-            else if (inline is EmphasisInline emphasisInline)
+
+            if (inline is EmphasisInline emphasisInline)
             {
+                var childInline = GetAvaloniaInlineFromMarkdownInline(emphasisInline.FirstChild);
+                if (childInline == null) return null;
+
                 switch (emphasisInline.DelimiterChar)
                 {
                     case '*':
                     case '_':
+                        if (emphasisInline.DelimiterCount == 1)
                         {
-                            var childInline = GetAvaloniaInlineFromMarkdownInline(emphasisInline.FirstChild);
-                            if (childInline == null) return null;
-
-                            if (emphasisInline.DelimiterCount == 1)
-                            {
-                                var italic = new Italic();
-                                italic.Inlines.Add(childInline);
-                                return italic;
-                            }
-                            else
-                            {
-                                var bold = new Bold();
-                                bold.Inlines.Add(childInline);
-                                return bold;
-                            }
+                            var italic = new Italic();
+                            italic.Inlines.Add(childInline);
+                            return italic;
                         }
-
+                        else
+                        {
+                            var bold = new Bold();
+                            bold.Inlines.Add(childInline);
+                            return bold;
+                        }
                     case '=':
-                        {
-                            var childInline = GetAvaloniaInlineFromMarkdownInline(emphasisInline.FirstChild);
-                            if (childInline == null) return null;
-
-                            var span = new Span();
-                            span.Inlines.Add(childInline);
-                            span.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
-                            return span;
-                        }
+                        var span = new Span();
+                        span.Inlines.Add(childInline);
+                        span.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                        return span;
+                    default:
+                        return childInline;
                 }
             }
-            else if (inline is LinkInline linkInline)
+
+            if (inline is LinkInline linkInline)
             {
-                string? url = linkInline.Url;
+                string url = linkInline.Url ?? string.Empty;
                 var textInline = linkInline.FirstChild;
+                string linkText = textInline?.ToString() ?? url;
 
-                if (string.IsNullOrEmpty(url))
-                    return GetAvaloniaInlineFromMarkdownInline(textInline);
+                var hyperlinkControl = new Hyperlink(linkText, url);
 
-                string linkText = textInline?.ToString() ?? "";
-
-                var hyperlinkControl = new Hyperlink(linkText, url)
-                {
-                    LinkForeground = LinkForeground
-                };
+                hyperlinkControl[!Hyperlink.LinkForegroundProperty] = this[!MarkdownTextBlock.LinkForegroundProperty];
 
                 if (hyperlinkControl.Content == null)
                 {
@@ -172,7 +166,8 @@ namespace Froststrap.UI.Elements.Controls
                     BaselineAlignment = BaselineAlignment.Center
                 };
             }
-            else if (inline is LineBreakInline)
+
+            if (inline is LineBreakInline)
             {
                 return new LineBreak();
             }
