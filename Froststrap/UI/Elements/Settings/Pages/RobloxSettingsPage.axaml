@@ -51,7 +51,7 @@
 					</controls:SquareCard>
 
 					<controls:SquareCard Header="Start Quality" Description="Quality level on game join.">
-						<Slider Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" />
+						<Slider Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 
 					<controls:SquareCard Header="Fullscreen" Description="Start Roblox in fullscreen mode.">
@@ -71,13 +71,13 @@
 				<TextBlock FontSize="20" FontWeight="Bold" Text="Audio Settings" Margin="0,0,0,8" />
 				<UniformGrid Columns="4">
 					<controls:SquareCard Header="Master Volume" Description="Global volume level.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolume}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolume}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Studio Volume" Description="Volume for Roblox Studio.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolumeStudio}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolumeStudio}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Party Volume" Description="Volume for party voice mode.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding PartyVoiceVolume}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding PartyVoiceVolume}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 				</UniformGrid>
 
@@ -125,7 +125,7 @@
 						<ToggleSwitch IsChecked="{Binding CameraYInverted}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Haptic Strength" Description="Controller vibration strength.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding HapticStrength}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding HapticStrength}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 				</UniformGrid>
 
@@ -136,11 +136,10 @@
 						<TextBox Text="{Binding UITransparency}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Text Size" Description="Preferred display text size.">
-						<ComboBox ItemsSource="{Binding FontSizes}"
-								  SelectedValue="{Binding SelectedFontSize}">
+						<ComboBox Margin="5,0,0,0" Padding="10,5,10,5" Width="200" ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
-									<TextBlock Text="{Binding Key}" />
+									<TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
 								</DataTemplate>
 							</ComboBox.ItemTemplate>
 						</ComboBox>
