@@ -107,23 +107,14 @@ namespace Froststrap.UI
         {
             switch (style)
             {
-                //case BootstrapperStyle.VistaDialog:
-                //return new VistaDialog();
-
-                //case BootstrapperStyle.LegacyDialog2008:
-                //return new LegacyDialog2008();
-
-                //case BootstrapperStyle.LegacyDialog2011:
-                //return new LegacyDialog2011();
-
-                //case BootstrapperStyle.ProgressDialog:
-                //return new ProgressDialog();
-
                 case BootstrapperStyle.ClassicFluentDialog:
                     return new ClassicFluentDialog();
 
                 case BootstrapperStyle.ByfronDialog:
                     return new ByfronDialog();
+
+                case BootstrapperStyle.TwentyFiveDialog:
+                    return new TwentyFiveDialog();
 
                 case BootstrapperStyle.FluentDialog:
                     return new FluentDialog(false);
