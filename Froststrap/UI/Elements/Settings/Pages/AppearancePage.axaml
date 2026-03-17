@@ -223,7 +223,7 @@
                         Width="200"
                         Padding="10,5,10,5"
                         ItemsSource="{Binding Languages, Mode=OneTime}"
-                        Text="{Binding SelectedLanguage, Mode=TwoWay}" />
+                        SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
                 </controls:OptionControl>
 
                 <Separator Margin="0,8,0,4" />
