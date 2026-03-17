@@ -314,7 +314,7 @@ public const string ProjectRepository = "Froststrap/Froststrap";
                 Settings.Save();
             }
 
-            AvaloniaWindow.ApplyGlobalTheme();
+            AvaloniaWindow.ApplyTheme();
 
             Locale.Set(Settings.Prop.Locale);
 

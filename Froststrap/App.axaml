@@ -9,27 +9,20 @@
 	<Application.Styles>
 		<sty:FluentAvaloniaTheme PreferSystemTheme="True" />
 
-		<StyleInclude Source="avares://Froststrap/UI/Style/Dark.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardExpander.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Style/Default.axaml" />
+		<StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
 	</Application.Styles>
 
 	<Application.Resources>
 		<ResourceDictionary>
-			<FontFamily x:Key="Rubik">
-				avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf
-			</FontFamily>
+			<FontFamily x:Key="Rubik">avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf</FontFamily>
 
-			<SolidColorBrush
-                x:Key="AccentColorSecondaryBrush"
-                Color="{DynamicResource SystemAccentColorSecondary}" />
-			<SolidColorBrush
-                x:Key="AccentColorTertiaryBrush"
-                Color="{DynamicResource SystemAccentColorTertiary}" />
+			<SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
+			<SolidColorBrush x:Key="AccentColorTertiaryBrush" Color="{DynamicResource SystemAccentColorTertiary}" />
 
 			<converters:StringFormatConverter x:Key="StringFormatConverter" />
 			<converters:RangeConverter x:Key="RangeConverter" />

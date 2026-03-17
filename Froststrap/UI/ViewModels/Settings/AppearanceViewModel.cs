@@ -101,7 +101,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     ApplyDefaultGradientStops();
                 }
 
-                AvaloniaWindow.ApplyGlobalTheme();
+                AvaloniaWindow.ApplyTheme();
                 OnPropertyChanged(nameof(CustomGlobalThemeExpanded));
             }
         }
@@ -115,7 +115,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 App.Settings.Prop.GradientAngle = value;
 
-                AvaloniaWindow.ApplyGlobalTheme();
+                AvaloniaWindow.ApplyTheme();
 
                 OnPropertyChanged(nameof(GradientAngle));
             }
@@ -143,7 +143,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                 }
 
-                AvaloniaWindow.ApplyGlobalTheme();
+                AvaloniaWindow.ApplyTheme();
                 OnPropertyChanged(nameof(IsGradientMode));
                 OnPropertyChanged(nameof(IsImageMode));
             }
@@ -160,7 +160,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 App.Settings.Prop.BackgroundStretch = value;
-                AvaloniaWindow.ApplyGlobalTheme();
+                AvaloniaWindow.ApplyTheme();
             }
         }
 
@@ -220,7 +220,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 App.Settings.Prop.BackgroundImagePath = destinationPath;
 
-                AvaloniaWindow.ApplyGlobalTheme();
+                AvaloniaWindow.ApplyTheme();
             }
             catch (Exception ex)
             {
@@ -252,7 +252,7 @@ namespace Froststrap.UI.ViewModels.Settings
             finally
             {
                 App.Settings.Prop.BackgroundImagePath = null;
-                AvaloniaWindow.ApplyGlobalTheme();
+                AvaloniaWindow.ApplyTheme();
             }
         }
 
@@ -262,7 +262,7 @@ namespace Froststrap.UI.ViewModels.Settings
             ApplyDefaultGradientStops();
             App.Settings.Prop.CustomGradientStops = GradientStops.ToList();
 
-            AvaloniaWindow.ApplyGlobalTheme();
+            AvaloniaWindow.ApplyTheme();
         }
 
         private void InitializeGradientStops()

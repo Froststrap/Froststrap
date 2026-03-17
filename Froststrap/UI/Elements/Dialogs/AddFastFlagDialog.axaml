@@ -16,7 +16,7 @@
         <converters:RangeConverter x:Key="ValidationConverter" From="0" />
     </Window.Resources>
 
-    <Grid Background="{DynamicResource ApplicationBackground}">
+    <Grid Background="{DynamicResource ApplicationBackgroundColor}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

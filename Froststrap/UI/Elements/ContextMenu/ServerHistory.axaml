@@ -39,7 +39,7 @@
 		</Style>
 	</Window.Styles>
 
-	<Grid Background="{DynamicResource ApplicationBackground}">
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />

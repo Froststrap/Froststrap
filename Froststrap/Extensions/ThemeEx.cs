@@ -9,12 +9,9 @@ namespace Froststrap.Extensions
             if (dialogTheme != Theme.Default)
                 return dialogTheme;
 
-#if WINDOWS
             using var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
-
             if (key?.GetValue("AppsUseLightTheme") is int value && value == 0)
                 return Theme.Dark;
-#endif
 
             return Theme.Light;
         }
