@@ -125,21 +125,17 @@ namespace Froststrap.UI
                 case BootstrapperStyle.ByfronDialog:
                     return new ByfronDialog();
 
-                //case BootstrapperStyle.FroststrapDialog:
-                //return new FroststrapDialog();
+                case BootstrapperStyle.FluentDialog:
+                    return new FluentDialog(false);
 
-                //case BootstrapperStyle.FluentDialog:
-                // return new FluentDialog(false);
+                case BootstrapperStyle.FluentAeroDialog:
+                    return new FluentDialog(true);
 
-                //case BootstrapperStyle.FluentAeroDialog:
-                //return new FluentDialog(true);
-
-                //case BootstrapperStyle.CustomDialog:
-                default:
+                case BootstrapperStyle.CustomDialog:
                     return await GetCustomBootstrapper();
 
-                    //default:
-                    //return new FluentDialog(false);
+                default:
+                    return new FluentDialog(false);
             }
         }
 
