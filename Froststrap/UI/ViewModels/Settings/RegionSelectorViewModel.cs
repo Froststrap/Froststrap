@@ -8,6 +8,7 @@
 *  SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -42,8 +43,11 @@ namespace Froststrap.UI.ViewModels.Settings
         [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SearchGamesCommand))] private string _searchQuery = "";
         [ObservableProperty] private OmniSearchContent? _selectedSearchResult;
         [ObservableProperty] private int _selectedSortOrder = 2;
+        [ObservableProperty] private SortOrderComboBoxItem? _selectedSortOrderItem;
         [ObservableProperty] private int _lastFetchProcessedCount;
         [ObservableProperty] private string? _thumbnailUrl;
+        [ObservableProperty] private string? _selectedRegionInput;
+        [ObservableProperty] private bool _isSearchFlyoutOpen;
 
         public ObservableCollection<string> Regions { get; } = new();
         public ObservableCollection<ServerEntry> Servers { get; } = new();
@@ -80,11 +84,12 @@ namespace Froststrap.UI.ViewModels.Settings
             LoadMoreCommand = new AsyncRelayCommand(LoadMoreServersAsync, () => !IsLoading && !string.IsNullOrWhiteSpace(NextCursor));
 
             _ = InitializeCookiesAsync();
+            SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == 2);
         }
 
         partial void OnSearchQueryChanged(string value)
         {
-            if (long.TryParse(value, out var id))
+            if (long.TryParse(value, out _))
             {
                 PlaceId = value;
             }
@@ -98,8 +103,19 @@ namespace Froststrap.UI.ViewModels.Settings
         partial void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
             if (value == null) return;
+
             PlaceId = value.RootPlaceId.ToString();
             SearchQuery = value.RootPlaceId.ToString();
+
+            IsSearchFlyoutOpen = false;
+        }
+
+        partial void OnSelectedSortOrderItemChanged(SortOrderComboBoxItem? value)
+        {
+            if (value != null)
+            {
+                SelectedSortOrder = value.Tag;
+            }
         }
 
         public string? SelectedRegion
@@ -107,7 +123,7 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.SelectedRegion;
             set
             {
-                App.Settings.Prop.SelectedRegion = value!;
+                App.Settings.Prop.SelectedRegion = value ?? "";
                 OnPropertyChanged();
                 SearchCommand.NotifyCanExecuteChanged();
                 App.Settings.Save();
@@ -284,50 +300,41 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
+                if (token.IsCancellationRequested || results == null || !results.Any()) return;
 
+                var thumbRequests = results.Select(r => new ThumbnailRequest
+                {
+                    Type = ThumbnailType.GameIcon,
+                    TargetId = r.UniverseId,
+                    Size = "128x128"
+                }).ToList();
+
+                var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
                 if (token.IsCancellationRequested) return;
 
-                if (results.Any())
+                for (int i = 0; i < results.Count; i++)
                 {
-                    var thumbRequests = results.Select(r => new ThumbnailRequest
+                    if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
                     {
-                        Type = ThumbnailType.GameIcon,
-                        TargetId = r.UniverseId,
-                        Size = "128x128"
-                    }).ToList();
-
-                    var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-
-                    if (token.IsCancellationRequested) return;
-
-                    Dispatcher.UIThread.Invoke(() =>
-                    {
-                        SearchResults.Clear();
-                        for (int i = 0; i < results.Count; i++)
+                        try
                         {
-                            if (i < urls.Length)
-                                results[i].ThumbnailUrl = urls[i];
-                            SearchResults.Add(results[i]);
+                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i], token);
+                            using var ms = new MemoryStream(response);
+                            results[i].ThumbnailBitmap = new Bitmap(ms);
                         }
-                    });
+                        catch { /* Handle failed image load silently */ }
+                    }
                 }
 
-                Dispatcher.UIThread.Invoke(() =>
+                Dispatcher.UIThread.Post(() =>
                 {
                     SearchResults.Clear();
-                    foreach (var r in results)
-                        SearchResults.Add(r);
-                });
+                    foreach (var res in results) SearchResults.Add(res);
+                    IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
+                }, DispatcherPriority.Background);
             }
-            catch (OperationCanceledException) { /* This is now handled silently */ }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Game search failed: {ex.Message}");
-            }
-            finally
-            {
-                IsGameSearchLoading = false;
-            }
+            catch (Exception ex) { App.Logger.WriteLine(LOG_IDENT, $"Search error: {ex.Message}"); }
+            finally { IsGameSearchLoading = false; }
         }
 
         private async Task LoadMoreServersAsync()
