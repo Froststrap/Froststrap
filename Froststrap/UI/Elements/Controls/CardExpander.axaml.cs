@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Layout;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -68,19 +69,17 @@ namespace Froststrap.UI.Elements.Controls
 
         private void UpdateVisualState()
         {
-            if (_container != null && _presenter != null)
+            if (_container == null || _presenter == null) return;
+
+            if (IsExpanded)
             {
-                if (IsExpanded)
-                {
-                    _presenter.Measure(new Size(this.Bounds.Width, double.PositiveInfinity));
-                    _container.Height = _presenter.DesiredSize.Height;
-                    _container.Opacity = 1;
-                }
-                else
-                {
-                    _container.Height = 0;
-                    _container.Opacity = 0;
-                }
+                _container.ClearValue(Layoutable.HeightProperty);
+                _container.Opacity = 1;
+            }
+            else
+            {
+                _container.Height = 0;
+                _container.Opacity = 0;
             }
         }
     }
