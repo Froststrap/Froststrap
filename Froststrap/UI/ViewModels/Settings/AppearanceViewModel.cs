@@ -7,6 +7,7 @@ using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -81,6 +82,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 Icons.Add(new BootstrapperIconEntry { IconType = entry });
 
             PopulateCustomThemes();
+            InitializeGradientStops();
         }
 
         public static List<string> Languages => Locale.GetLanguages();
@@ -467,13 +469,12 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
         public bool IsImageMode => BackgroundType == BackgroundMode.Image;
 
-        private double _gradientAngle;
         public double GradientAngle
         {
-            get => _gradientAngle;
+            get => App.Settings.Prop.GradientAngle;
             set
             {
-                _gradientAngle = value;
+                App.Settings.Prop.GradientAngle = value;
                 OnPropertyChanged(nameof(GradientAngle));
                 ApplyThemeUpdate();
             }
@@ -536,43 +537,65 @@ namespace Froststrap.UI.ViewModels.Settings
         });
 
         private ICommand? _openColorPickerCommand;
-        public ICommand OpenColorPickerCommand => _openColorPickerCommand ??= new RelayCommand<GradientStops>(async stop =>
+        public ICommand OpenColorPickerCommand => _openColorPickerCommand ??= new RelayCommand<Control>(async control =>
         {
-            if (stop == null) return;
+            if (control?.DataContext is not GradientStops stop) return;
 
-            var mainWindow = (App.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-
-            if (mainWindow == null) return;
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
 
             var dialog = new ColorPickerDialog(stop.Color);
 
-            var result = await dialog.ShowDialog<string>(mainWindow);
+            var result = await dialog.ShowDialog<string>(parentWindow);
 
             if (!string.IsNullOrWhiteSpace(result))
             {
                 stop.Color = result;
-                ApplyThemeUpdate();
             }
         });
 
+        private void OnGradientStopPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            ApplyThemeUpdate();
+        }
+
         private async Task AddGradientStop()
         {
-            GradientStops.Add(new GradientStops { Offset = 0.5, Color = "#000000" });
+            var newStop = new GradientStops { Offset = 0.5, Color = "#000000" };
+            newStop.PropertyChanged += OnGradientStopPropertyChanged;
+            GradientStops.Add(newStop);
             ApplyThemeUpdate();
         }
 
         private void RemoveGradientStop(GradientStops stop)
         {
             if (stop == null) return;
+            stop.PropertyChanged -= OnGradientStopPropertyChanged;
             GradientStops.Remove(stop);
             ApplyThemeUpdate();
         }
 
         private void ResetGradient()
         {
+            var defaultStops = new List<GradientStops>
+            {
+                new GradientStops { Offset = 0.0, Color = "#4D5560" },
+                new GradientStops { Offset = 0.5, Color = "#383F47" },
+                new GradientStops { Offset = 1.0, Color = "#252A30" }
+            };
+
+            foreach (var stop in GradientStops) stop.PropertyChanged -= OnGradientStopPropertyChanged;
             GradientStops.Clear();
-            _gradientAngle = 0;
+
+            foreach (var stop in defaultStops)
+            {
+                stop.PropertyChanged += OnGradientStopPropertyChanged;
+                GradientStops.Add(stop);
+            }
+
+            GradientAngle = 0;
             OnPropertyChanged(nameof(GradientAngle));
+
             ApplyThemeUpdate();
         }
 
@@ -615,16 +638,20 @@ namespace Froststrap.UI.ViewModels.Settings
                 using var document = await JsonDocument.ParseAsync(stream);
                 var root = document.RootElement;
 
+                foreach (var s in GradientStops) s.PropertyChanged -= OnGradientStopPropertyChanged;
+                GradientStops.Clear();
+
                 if (root.TryGetProperty("GradientStops", out var stopsElement))
                 {
-                    GradientStops.Clear();
                     foreach (var stop in stopsElement.EnumerateArray())
                     {
-                        GradientStops.Add(new GradientStops
+                        var newStop = new GradientStops
                         {
                             Offset = stop.GetProperty("Offset").GetDouble(),
                             Color = stop.GetProperty("Color").GetString() ?? "#FFFFFF"
-                        });
+                        };
+                        newStop.PropertyChanged += OnGradientStopPropertyChanged;
+                        GradientStops.Add(newStop);
                     }
                 }
 
@@ -635,17 +662,45 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 ApplyThemeUpdate();
             }
-            catch (Exception)
-            {
-            }
+            catch (Exception) { }
         }
 
         private void ApplyThemeUpdate()
         {
-            App.Settings.Prop.CustomGradientStops = GradientStops.ToList();
+            App.Settings.Prop.CustomGradientStops = GradientStops.Select(x => new GradientStops
+            {
+                Offset = x.Offset,
+                Color = x.Color
+            }).ToList();
+
             App.Settings.Prop.GradientAngle = GradientAngle;
 
             AvaloniaWindow.ApplyTheme();
+        }
+
+        private void InitializeGradientStops()
+        {
+            foreach (var s in GradientStops) s.PropertyChanged -= OnGradientStopPropertyChanged;
+            GradientStops.Clear();
+
+            if (App.Settings.Prop.CustomGradientStops != null && App.Settings.Prop.CustomGradientStops.Any())
+            {
+                foreach (var stop in App.Settings.Prop.CustomGradientStops)
+                {
+                    var newStop = new GradientStops
+                    {
+                        Offset = stop.Offset,
+                        Color = stop.Color
+                    };
+
+                    newStop.PropertyChanged += OnGradientStopPropertyChanged;
+                    GradientStops.Add(newStop);
+                }
+            }
+            else if (App.Settings.Prop.Theme == Theme.Custom)
+            {
+                ResetGradient();
+            }
         }
         #endregion
     }

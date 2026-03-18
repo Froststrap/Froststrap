@@ -68,6 +68,45 @@ namespace Froststrap.UI.Elements.Base
                     App.Logger.WriteLine("AvaloniaWindow", $"Theme/Style loading error for {themeName}: {ex.Message}");
                 }
             }
+            else 
+            {
+                IBrush? customBackground = null;
+
+                if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
+                {
+                    var avaloniaStops = new Avalonia.Media.GradientStops();
+
+                    foreach (var s in App.Settings.Prop.CustomGradientStops)
+                    {
+                        if (Color.TryParse(s.Color, out var color))
+                        {
+                            avaloniaStops.Add(new GradientStop(color, s.Offset));
+                        }
+                    }
+
+                    double angleRad = (Math.PI / 180.0) * (App.Settings.Prop.GradientAngle - 90);
+                    var startPoint = new RelativePoint(
+                        0.5 - Math.Cos(angleRad) * 0.5,
+                        0.5 - Math.Sin(angleRad) * 0.5,
+                        RelativeUnit.Relative);
+                    var endPoint = new RelativePoint(
+                        0.5 + Math.Cos(angleRad) * 0.5,
+                        0.5 + Math.Sin(angleRad) * 0.5,
+                        RelativeUnit.Relative);
+
+                    customBackground = new LinearGradientBrush
+                    {
+                        GradientStops = avaloniaStops,
+                        StartPoint = startPoint,
+                        EndPoint = endPoint
+                    };
+                }
+
+                if (customBackground != null)
+                {
+                    Application.Current.Resources["ApplicationBackgroundColor"] = customBackground;
+                }
+            }
         }
 
         protected override void OnOpened(EventArgs e)

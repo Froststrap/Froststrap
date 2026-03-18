@@ -1,8 +1,29 @@
-﻿namespace Froststrap.Models
+﻿using Froststrap.UI.ViewModels;
+
+namespace Froststrap.Models
 {
-    public class GradientStops
+    public class GradientStops : NotifyPropertyChangedViewModel 
     {
-        public double Offset { get; set; } = 1.0;
-        public string Color { get; set; } = "#000000";
+        private double _offset;
+        public double Offset
+        {
+            get => _offset;
+            set
+            {
+                _offset = value;
+                OnPropertyChanged(nameof(Offset));
+            }
+        }
+
+        private string _color = "#000000";
+        public string Color
+        {
+            get => _color;
+            set
+            {
+                _color = value;
+                OnPropertyChanged(nameof(Color));
+            }
+        }
     }
 }

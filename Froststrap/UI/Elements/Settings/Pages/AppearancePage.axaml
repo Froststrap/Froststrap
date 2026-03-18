@@ -31,11 +31,68 @@
 							</ComboBox.ItemTemplate>
 						</ComboBox>
 					</controls:CardExpander.HeaderContent>
-					<StackPanel>
-						<colorPicker:SquarePicker x:Name="MyPicker"
-                              Width="250" 
-                              Height="200"/>
-					</StackPanel>
+<StackPanel Spacing="15">
+    <StackPanel Spacing="5">
+        <TextBlock Text="Background Mode:" FontWeight="Bold" Foreground="White"/>
+        <ComboBox ItemsSource="{Binding BackgroundTypes}" 
+                  SelectedItem="{Binding BackgroundType}"
+                  HorizontalAlignment="Stretch"/>
+        <Separator Margin="0,8" />
+    </StackPanel>
+
+    <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+        
+        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,20,0">
+                <Button Content="Export Gradient" Command="{Binding ExportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
+                <Button Content="Import Gradient" Command="{Binding ImportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                <TextBlock Text="Gradient Angle:" VerticalAlignment="Center"/>
+                <NumericUpDown Value="{Binding GradientAngle}" Width="160" Minimum="0" Maximum="360" VerticalAlignment="Center"/>
+                <Button Content="Reset to Default" Command="{Binding ResetGradientCommand}"/>
+                <Button Content="Add Gradient Color" Command="{Binding AddGradientStopCommand}" Classes="accent"/>
+            </StackPanel>
+        </WrapPanel>
+
+        <TextBlock Text="Gradient Stops:" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
+
+        <ItemsControl ItemsSource="{Binding GradientStops}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="Auto,*,45,110,Auto,Auto" Margin="0,4" VerticalAlignment="Center">
+                        <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        
+<Slider Grid.Column="1" 
+        Minimum="0" 
+        Maximum="1" 
+        Value="{Binding Offset, Mode=TwoWay}" 
+        VerticalAlignment="Center"/>
+                        
+<TextBlock Grid.Column="2" 
+           Text="{Binding Offset, StringFormat=\{0:N2\}}" 
+           HorizontalAlignment="Right" 
+           Margin="0,0,10,0" 
+           VerticalAlignment="Center"/>
+                        
+                        <TextBox Grid.Column="3" Text="{Binding Color}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                        
+<Button Grid.Column="4" 
+        Content="Color Picker" 
+        Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).OpenColorPickerCommand}"
+        CommandParameter="{Binding $self}" 
+        Margin="0,0,8,0"/>
+                        
+                        <Button Grid.Column="5" Content="Remove" 
+                                Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).RemoveGradientStopCommand}"
+                                CommandParameter="{Binding}"/>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</StackPanel>
 				</controls:CardExpander>
                 
                 <controls:OptionControl
