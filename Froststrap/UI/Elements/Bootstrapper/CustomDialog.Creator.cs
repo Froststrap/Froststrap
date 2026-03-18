@@ -36,7 +36,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
             ["SkewTransform"] = HandleXmlElement_SkewTransform,
             ["RotateTransform"] = HandleXmlElement_RotateTransform,
             ["TranslateTransform"] = HandleXmlElement_TranslateTransform,
-            ["BlurEffect"] = HandleXmlElement_BlurEffect,
             ["DropShadowEffect"] = HandleXmlElement_DropShadowEffect,
             ["Ellipse"] = HandleXmlElement_Ellipse,
             ["Line"] = HandleXmlElement_Line,
@@ -73,8 +72,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             if (_initialised) return;
 
-            if (xml.Name != "FroststrapCustomBootstrapper")
-                throw new CustomThemeException("CustomTheme.Errors.RootElementInvalid", "FroststrapCustomBootstrapper");
+            if (xml.Name != "BloxstrapCustomBootstrapper")
+                throw new CustomThemeException("CustomTheme.Errors.RootElementInvalid", "BloxstrapCustomBootstrapper");
 
             AssertThemeVersion(xml.Attribute("Version")?.Value);
 
@@ -82,7 +81,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 throw new CustomThemeException("CustomTheme.Errors.ElementLimitReached", MaxElements);
 
             _initialised = true;
-            HandleXmlElement_FroststrapCustomBootstrapper(this, xml);
+            HandleXmlElement_BloxstrapCustomBootstrapper(this, xml);
 
             foreach (var child in xml.Elements())
                 AddXml(this, child);

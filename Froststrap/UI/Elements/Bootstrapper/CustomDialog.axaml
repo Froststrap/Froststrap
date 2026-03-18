@@ -3,6 +3,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -25,16 +26,11 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<Grid Name="RootTitleBar"
+		<controls:TitleBar Name="RootTitleBar"
               Grid.Row="0"
               Height="32"
               Background="Transparent"
-              IsHitTestVisible="True">
-			<TextBlock Text="Froststrap"
-                       VerticalAlignment="Center"
-                       Margin="12,0"
-                       FontSize="12" />
-		</Grid>
+              IsHitTestVisible="True"/>
 
 		<Grid x:Name="ElementGrid" Grid.Row="1" />
 	</Grid>

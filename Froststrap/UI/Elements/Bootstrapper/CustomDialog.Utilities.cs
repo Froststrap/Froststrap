@@ -1,13 +1,13 @@
-﻿using Avalonia;
-using Avalonia.Media;
+﻿using System.Xml.Linq;
+using Avalonia;
 using Avalonia.Controls;
-using System.Xml.Linq;
+using Avalonia.Media;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
     public partial class CustomDialog
     {
-        struct GetImageSourceDataResult
+        private struct GetImageSourceDataResult
         {
             public bool IsIcon = false;
             public Uri? Uri = null;
@@ -20,78 +20,92 @@ namespace Froststrap.UI.Elements.Bootstrapper
             var attribute = element.Attribute(attributeName);
             if (attribute == null)
             {
-                if (defaultValue != null) return defaultValue;
-                throw new CustomThemeException("CustomTheme.Errors.AttributeMissing", element.Name.ToString(), attributeName);
+                if (defaultValue != null)
+                    return defaultValue;
+
+                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissing", element.Name.ToString(), attributeName);
             }
             return attribute.Value;
         }
 
-        private static T ParseXmlAttribute<T>(XElement element, string attributeName, T? defaultValue = null) where T : struct
+        /// <summary>
+        /// General parser for attributes. Handles both structs (Enums, int) and classes.
+        /// </summary>
+        private static T ParseXmlAttribute<T>(XElement element, string attributeName, T? defaultValue = default)
         {
             var attribute = element.Attribute(attributeName);
             if (attribute == null)
             {
-                if (defaultValue != null) return (T)defaultValue;
-                throw new CustomThemeException("CustomTheme.Errors.AttributeMissing", element.Name.ToString(), attributeName);
+                if (!Equals(defaultValue, default(T)))
+                    return defaultValue!;
+
+                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissing", element.Name.ToString(), attributeName);
             }
 
             T? parsed = ConvertValue<T>(attribute.Value);
-            if (parsed == null)
-                throw new CustomThemeException("CustomTheme.Errors.AttributeInvalid", element.Name.ToString(), attributeName, typeof(T).Name);
 
-            return (T)parsed;
+            if (Equals(parsed, default(T)) && !typeof(T).IsEnum)
+                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeInvalidType", element.Name.ToString(), attributeName, typeof(T).Name);
+
+            return parsed!;
         }
 
+        /// <summary>
+        /// Version for Nullable structs (like int?, double?)
+        /// </summary>
         private static T? ParseXmlAttributeNullable<T>(XElement element, string attributeName) where T : struct
         {
             var attribute = element.Attribute(attributeName);
-            if (attribute == null) return null;
+            if (attribute == null)
+                return null;
 
-            T? parsed = ConvertValue<T>(attribute.Value);
-            if (parsed == null)
-                throw new Exception($"Attribute '{attributeName}' on '{element.Name}' is not a valid {typeof(T).Name}");
-
-            return (T)parsed;
+            return ConvertValue<T>(attribute.Value);
         }
 
         private static void ValidateXmlElement(string elementName, string attributeName, double value, double? min = null, double? max = null)
         {
             if (min != null && value < min)
                 throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMustBeLargerThanMin", elementName, attributeName, min);
-
             if (max != null && value > max)
                 throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax", elementName, attributeName, max);
+        }
+
+        private static int ParseXmlAttributeClamped(XElement element, string attributeName, int defaultValue = 0, int? min = null, int? max = null)
+        {
+            // Specifically call the non-nullable version
+            int value = ParseXmlAttribute<int>(element, attributeName, defaultValue);
+            ValidateXmlElement(element.Name.ToString(), attributeName, (double)value, min != null ? (double)min : null, max != null ? (double)max : null);
+            return value;
         }
 
         private static FontWeight GetFontWeightFromXElement(XElement element)
         {
             string value = element.Attribute("FontWeight")?.Value ?? "Normal";
-            return value switch
-            {
-                "Thin" => FontWeight.Thin,
-                "ExtraLight" or "UltraLight" => FontWeight.ExtraLight,
-                "Light" => FontWeight.Light,
-                "Medium" => FontWeight.Medium,
-                "Normal" or "Regular" => FontWeight.Normal,
-                "DemiBold" or "SemiBold" => FontWeight.SemiBold,
-                "Bold" => FontWeight.Bold,
-                "ExtraBold" or "UltraBold" => FontWeight.ExtraBold,
-                "Black" or "Heavy" => FontWeight.Black,
-                "ExtraBlack" or "UltraBlack" => FontWeight.UltraBlack,
-                _ => throw new Exception($"Unknown FontWeight '{value}'")
-            };
+            if (Enum.TryParse<FontWeight>(value, true, out var style))
+                return style;
+
+            throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name.ToString(), "FontWeight", value);
         }
 
         private static FontStyle GetFontStyleFromXElement(XElement element)
         {
             string value = element.Attribute("FontStyle")?.Value ?? "Normal";
-            return value switch
-            {
-                "Normal" => FontStyle.Normal,
-                "Italic" => FontStyle.Italic,
-                "Oblique" => FontStyle.Oblique,
-                _ => throw new Exception($"Unknown FontStyle '{value}'")
-            };
+            if (Enum.TryParse<FontStyle>(value, true, out var style))
+                return style;
+
+            throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name.ToString(), "FontStyle", value);
+        }
+
+        private static TextDecorationCollection? GetTextDecorationsFromXElement(XElement element)
+        {
+            string? value = element.Attribute("TextDecorations")?.Value;
+            if (string.IsNullOrEmpty(value))
+                return null;
+
+            if (value.Equals("Underline", StringComparison.OrdinalIgnoreCase)) return TextDecorations.Underline;
+            if (value.Equals("Strikethrough", StringComparison.OrdinalIgnoreCase)) return TextDecorations.Strikethrough;
+
+            throw new CustomThemeException("CustomTheme.Errors.UnknownEnumValue", element.Name.ToString(), "TextDecorations", value);
         }
 
         private static string? GetTranslatedText(string? text)
@@ -100,25 +114,28 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 return text;
 
             string resourceName = text[1..^1];
-            if (resourceName == "Version") return App.Version;
+            if (resourceName == "Version")
+                return App.Version;
 
-            return Strings.ResourceManager.GetString(resourceName) ?? text;
+            return Strings.ResourceManager.GetStringSafe(resourceName);
         }
 
         private static string? GetFullPath(CustomDialog dialog, string? sourcePath)
         {
             if (sourcePath == null) return null;
-            return sourcePath.Replace("theme://", $"{dialog.ThemeDir}{Path.DirectorySeparatorChar}");
+            return sourcePath.Replace("theme://", $"{dialog.ThemeDir}\\");
         }
 
         private static GetImageSourceDataResult GetImageSourceData(CustomDialog dialog, string name, XElement xmlElement)
         {
             string path = GetXmlAttribute(xmlElement, name);
-            if (path == "{Icon}") return new GetImageSourceDataResult { IsIcon = true };
+            if (path == "{Icon}")
+                return new GetImageSourceDataResult { IsIcon = true };
 
-            string? fullPath = GetFullPath(dialog, path);
-            if (string.IsNullOrEmpty(fullPath) || !Uri.TryCreate(fullPath, UriKind.RelativeOrAbsolute, out Uri? result))
-                throw new CustomThemeException("CustomTheme.Errors.AttributeInvalidUri", xmlElement.Name.ToString(), name);
+            path = GetFullPath(dialog, path)!;
+
+            if (!Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out Uri? result))
+                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeParseError", xmlElement.Name.ToString(), name, "Uri");
 
             return new GetImageSourceDataResult { Uri = result };
         }
@@ -128,33 +145,54 @@ namespace Froststrap.UI.Elements.Bootstrapper
             var contentAttr = xmlElement.Attribute("Content");
             var contentElement = xmlElement.Element($"{xmlElement.Name}.Content");
 
-            if (contentAttr != null) return GetTranslatedText(contentAttr.Value);
-            if (contentElement == null) return null;
+            if (contentAttr != null && contentElement != null)
+                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMultipleDefinitions", xmlElement.Name.ToString(), "Content");
 
-            var first = contentElement.Elements().FirstOrDefault();
-            if (first == null) return null;
+            if (contentAttr != null)
+                return GetTranslatedText(contentAttr.Value);
+
+            if (contentElement == null)
+                return null;
+
+            var children = contentElement.Elements().ToList();
+            if (children.Count > 1)
+                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMultipleChildren", xmlElement.Name.ToString(), "Content");
+
+            var first = children.FirstOrDefault();
+            if (first == null)
+                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissingChild", xmlElement.Name.ToString(), "Content");
 
             return HandleXml<Control>(dialog, first);
         }
 
-        private static void ApplyTransformation_Control(CustomDialog dialog, string name, AvaloniaProperty property, Control control, XElement xmlElement)
+        private static void ApplyEffects_Control(CustomDialog dialog, Control uiElement, XElement xmlElement)
         {
-            var transformElement = xmlElement.Element($"{xmlElement.Name}.{name}");
-            if (transformElement == null) return;
+            var effectElement = xmlElement.Element($"{xmlElement.Name}.Effect");
+            if (effectElement == null) return;
 
-            var transformGroup = new TransformGroup();
-            foreach (var child in transformElement.Elements())
+            var child = effectElement.Elements().FirstOrDefault();
+            if (child == null) return;
+
+            if (child.Name.LocalName == "DropShadowEffect")
             {
-                var transform = HandleXml<Transform>(dialog, child);
-                transformGroup.Children.Add(transform);
+                var shadow = HandleXmlElement_DropShadowEffect(dialog, child);
+                uiElement.SetValue(Avalonia.Visual.BoxShadowProperty, (BoxShadows)shadow);
             }
-
-            control.SetValue(property, transformGroup);
         }
 
-        private static void ApplyTransformations_Control(CustomDialog dialog, Control control, XElement xmlElement)
+        private static void ApplyTransformations_Control(CustomDialog dialog, Control uiElement, XElement xmlElement)
         {
-            ApplyTransformation_Control(dialog, "RenderTransform", Visual.RenderTransformProperty, control, xmlElement);
+            var transformElement = xmlElement.Element($"{xmlElement.Name}.RenderTransform");
+            if (transformElement == null) return;
+
+            var tg = new TransformGroup();
+            foreach (var child in transformElement.Elements())
+            {
+                var element = HandleXml<Transform>(dialog, child);
+                if (element != null)
+                    tg.Children.Add(element);
+            }
+            uiElement.RenderTransform = tg;
         }
     }
 }
