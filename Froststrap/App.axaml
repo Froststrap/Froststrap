@@ -19,6 +19,11 @@
 
 	<Application.Resources>
 		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/HueSlider.axaml" />
+				<ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquareSlider.axaml" />
+				<ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
+			</ResourceDictionary.MergedDictionaries>
 			<FontFamily x:Key="Rubik">avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf</FontFamily>
 
 			<SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />

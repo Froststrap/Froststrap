@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="Froststrap/Froststrap.csproj" />
+  <Project Path="ColorPicker-Avalonia/src/ColorPicker.AvaloniaUI/ColorPicker.AvaloniaUI.csproj" />
   <Properties Name="ExtensibilityGlobals" Scope="PostLoad">
     <Property Name="RESX_NeutralResourcesLanguage" Value="en-GB" />
   </Properties>

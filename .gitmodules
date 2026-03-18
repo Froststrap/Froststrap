@@ -1,0 +1,3 @@
+[submodule "ColorPicker-Avalonia"]
+	path = ColorPicker-Avalonia
+	url = https://github.com/Froststrap/ColorPicker-Avalonia
