@@ -8,7 +8,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 {
     public partial class CustomDialog
     {
-        private static T? ConvertValue<T>(string input) where T : struct
+        private static T? ConvertValue<T>(string input)
         {
             try
             {

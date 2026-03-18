@@ -287,14 +287,6 @@
 				"RadiusY": "double"
 			}
 		},
-		"BlurEffect": {
-			"IsCreatable": true,
-			"Attributes": {
-				"KernelType": "KernelType",
-				"Radius": "double",
-				"RenderingBias": "RenderingBias"
-			}
-		},
 		"DropShadowEffect": {
 			"IsCreatable": true,
 			"Attributes": {
