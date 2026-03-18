@@ -8,12 +8,12 @@
     xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="1000"
+    d:DesignWidth="1200"
     x:DataType="vm:AppearanceViewModel"
     mc:Ignorable="d">
 
-    <ScrollViewer>
+    <ScrollViewer Margin="14,0,14,14">
         <StackPanel Spacing="8">
             <StackPanel Margin="0,0,14,14">
 				<controls:CardExpander Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Description}" IsExpanded="{Binding CustomThemeExpanded, Mode=OneWay}">
@@ -92,6 +92,50 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
     </StackPanel>
+
+    <StackPanel Spacing="15" IsVisible="{Binding IsImageMode}">
+    <TextBlock Text="Image Settings:" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
+    
+    <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
+        <TextBox Text="{Binding BackgroundImagePath}" 
+                 Watermark="No image selected..." 
+                 IsReadOnly="True" 
+                 VerticalContentAlignment="Center"
+                 Margin="0,0,8,0"/>
+        
+        <Button Grid.Column="1" 
+                Content="Browse" 
+                Command="{Binding SelectImageCommand}" 
+                CommandParameter="{Binding $parent[TopLevel]}"
+                Margin="0,0,8,0"/>
+        
+        <Button Grid.Column="2" 
+                Content="Clear" 
+                Command="{Binding ClearImageCommand}" 
+                Classes="accent"/>
+    </Grid>
+
+    <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,10,0,0">
+        <TextBlock Text="Stretch Mode:" VerticalAlignment="Center" Margin="0,0,15,0"/>
+        <ComboBox Grid.Column="1" 
+                  ItemsSource="{Binding BackgroundStretches}" 
+                  SelectedItem="{Binding BackgroundStretch}"
+                  HorizontalAlignment="Stretch"/>
+    </Grid>
+
+    <Grid ColumnDefinitions="Auto, *, 50" Margin="0,10,0,0">
+        <TextBlock Text="Opacity:" VerticalAlignment="Center" Margin="0,0,15,0"/>
+        <Slider Grid.Column="1" 
+                Minimum="0" 
+                Maximum="1" 
+                Value="{Binding BackgroundOpacity}" 
+                VerticalAlignment="Center"/>
+        <TextBlock Grid.Column="2" 
+                   Text="{Binding BackgroundOpacity, StringFormat=\{0:P0\}}" 
+                   HorizontalAlignment="Right" 
+                   VerticalAlignment="Center"/>
+    </Grid>
+</StackPanel>
 </StackPanel>
 				</controls:CardExpander>
                 

@@ -466,6 +466,17 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public string BackgroundImagePath
+        {
+            get => App.Settings.Prop.BackgroundImagePath ?? string.Empty;
+            set
+            {
+                App.Settings.Prop.BackgroundImagePath = value;
+                OnPropertyChanged(nameof(BackgroundImagePath));
+                ApplyThemeUpdate();
+            }
+        }
+
         public bool IsGradientMode => BackgroundType == BackgroundMode.Gradient;
         public bool IsImageMode => BackgroundType == BackgroundMode.Image;
 
@@ -524,16 +535,14 @@ namespace Froststrap.UI.ViewModels.Settings
             var file = files.FirstOrDefault();
             if (file != null)
             {
-                App.Settings.Prop.BackgroundImagePath = file.Path.LocalPath;
-                ApplyThemeUpdate();
+                BackgroundImagePath = file.Path.LocalPath;
             }
         });
 
         private ICommand? _clearImageCommand;
         public ICommand ClearImageCommand => _clearImageCommand ??= new RelayCommand(() =>
         {
-            App.Settings.Prop.BackgroundImagePath = string.Empty;
-            ApplyThemeUpdate();
+            BackgroundImagePath = string.Empty;
         });
 
         private ICommand? _openColorPickerCommand;
@@ -545,7 +554,6 @@ namespace Froststrap.UI.ViewModels.Settings
             if (topLevel is not Window parentWindow) return;
 
             var dialog = new ColorPickerDialog(stop.Color);
-
             var result = await dialog.ShowDialog<string>(parentWindow);
 
             if (!string.IsNullOrWhiteSpace(result))
