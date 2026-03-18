@@ -54,20 +54,4 @@ public partial class AppearancePage : UserControl
             }
         }
     }
-
-    public void CustomThemeSelection(object sender, SelectionChangedEventArgs e)
-    {
-        if (DataContext is AppearanceViewModel viewModel)
-        {
-            var selectedItem = ((ListBox)sender).SelectedItem as string;
-            if (selectedItem != null)
-            {
-                viewModel.SelectedCustomTheme = selectedItem;
-                viewModel.SelectedCustomThemeName = viewModel.SelectedCustomTheme;
-
-                viewModel.OnPropertyChanged(nameof(viewModel.SelectedCustomTheme));
-                viewModel.OnPropertyChanged(nameof(viewModel.SelectedCustomThemeName));
-            }
-        }
-    }
 }

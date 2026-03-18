@@ -271,7 +271,7 @@
     <value>Bootstrapper Issues</value>
   </data>
   <data name="Menu.Help.DiscordRichPresenceNotWorking">
-    <value>[Discord Rich Presence Broken](https://github.com/Froststraplabs/Froststrap/wiki/Discord-Rich-Presence-does-not-work)</value>
+    <value>[Discord Rich Presence Broken](https://github.com/Bloxstraplabs/Bloxstrap/wiki/Discord-Rich-Presence-does-not-work)</value>
   </data>
   <data name="Menu.Help.SetupFailed">
     <value>[Failed Custom Bootstrapper Setup](https://github.com/Meddsam/Froststrap/wiki/Bootstrapper-Common-Issues#custom-bootstrapper-setup-failed)</value>
@@ -283,13 +283,13 @@
     <value>Features</value>
   </data>
   <data name="Menu.Help.ServerInformation">
-    <value>[Server Information](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
+    <value>[Server Information](https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
   </data>
   <data name="Menu.Help.GameHistory">
-    <value>[Game History](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
+    <value>[Game History](https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
   </data>
   <data name="Menu.Help.DiscordRichPresence">
-    <value>[Discord Rich Presence](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
+    <value>[Discord Rich Presence](https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
   </data>
   <data name="Menu.Help.MessageLogsAndPlayerLogs">
     <value>[Message Logs and Player Logs](https://github.com/Meddsam/Froststrap/wiki/Features#message-logs-and-player-logs)</value>

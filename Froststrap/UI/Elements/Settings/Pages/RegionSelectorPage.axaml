@@ -52,7 +52,7 @@
 	</UserControl.Styles>
 
     <ScrollViewer>
-        <Grid Margin="0,0,14,14" RowDefinitions="Auto,*">
+        <Grid Margin="14" RowDefinitions="Auto,*">
             <Border
                 Grid.Row="0"
                 Margin="0,0,0,16"

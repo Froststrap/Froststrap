@@ -271,7 +271,7 @@
     <value>Vấn đề trình khởi động</value>
   </data>
   <data name="Menu.Help.DiscordRichPresenceNotWorking">
-    <value>[Trạng thái hoạt động Discord hư](https://github.com/Froststraplabs/Froststrap/wiki/Discord-Rich-Presence-does-not-work)</value>
+    <value>[Trạng thái hoạt động Discord hư](https://github.com/Bloxstraplabs/Bloxstrap/wiki/Discord-Rich-Presence-does-not-work)</value>
   </data>
   <data name="Menu.Help.SetupFailed">
     <value>[Thiết lập trình khởi động tùy chỉnh không thành công](https://github.com/Meddsam/Froststrap/wiki/Bootstrapper-Common-Issues#custom-bootstrapper-setup-failed)</value>
@@ -283,13 +283,13 @@
     <value>Tính năng</value>
   </data>
   <data name="Menu.Help.ServerInformation">
-    <value>[Thông tin máy chủ](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
+    <value>[Thông tin máy chủ](https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#server-information-viewing)</value>
   </data>
   <data name="Menu.Help.GameHistory">
-    <value>[Lịch sử trò chơi](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
+    <value>[Lịch sử trò chơi](https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#game-history-viewing)</value>
   </data>
   <data name="Menu.Help.DiscordRichPresence">
-    <value>[Trạng thái hoạt động Discord](https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
+    <value>[Trạng thái hoạt động Discord](https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)</value>
   </data>
   <data name="Menu.Help.MessageLogsAndPlayerLogs">
     <value>[Nhật ký trò chuyện và Nhật ký người chơi](https://github.com/Meddsam/Froststrap/wiki/Features#message-logs-and-player-logs)</value>

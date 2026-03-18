@@ -1,17 +1,18 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Dialogs;
+using Froststrap.UI.Elements.Base;
 using ICSharpCode.SharpZipLib.Zip;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
     /// <summary>
-    /// Interaction logic for AddCustomThemeDialog.xaml
+    /// Interaction logic for AddCustomThemeDialog.axaml
     /// </summary>
     public partial class AddCustomThemeDialog : Base.AvaloniaWindow
     {
         private const int CreateNewTabId = 0;
-
         private readonly AddCustomThemeViewModel _viewModel;
 
         public bool Created { get; private set; } = false;
@@ -20,12 +21,12 @@ namespace Froststrap.UI.Elements.Dialogs
 
         public AddCustomThemeDialog()
         {
+            InitializeComponent();
+
             _viewModel = new AddCustomThemeViewModel();
             _viewModel.Name = GenerateRandomName();
 
             DataContext = _viewModel;
-
-            InitializeComponent();
         }
 
         private static string GetThemePath(string name)
@@ -35,7 +36,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private static string GenerateRandomName()
         {
-            int count = Directory.GetDirectories(Paths.CustomThemes).Count();
+            int count = Directory.GetDirectories(Paths.CustomThemes).Length;
 
             int i = count + 1;
             string name = string.Format(Strings.CustomTheme_DefaultName, i);
@@ -65,19 +66,20 @@ namespace Froststrap.UI.Elements.Dialogs
             return $"{name}_{Random.Shared.Next(maxTries + 1, 1_000_000)}";
         }
 
-        private static void CreateCustomTheme(string name, CustomThemeTemplate template)
+        private async Task CreateCustomTheme(string name, CustomThemeTemplate template)
         {
             string dir = Path.Combine(Paths.CustomThemes, name);
 
             if (Directory.Exists(dir))
                 Directory.Delete(dir, true);
+
             Directory.CreateDirectory(dir);
 
             string themeFilePath = Path.Combine(dir, "Theme.xml");
 
-            string templateContent = template.GetFileContents();
+            string templateContent = await template.GetFileContents();
 
-            File.WriteAllText(themeFilePath, templateContent);
+            await File.WriteAllTextAsync(themeFilePath, templateContent);
         }
 
         private bool ValidateCreateNew()
@@ -97,29 +99,16 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (validationResult != PathValidator.ValidationResult.Ok)
             {
-                switch (validationResult)
+                _viewModel.NameError = validationResult switch
                 {
-                    case PathValidator.ValidationResult.IllegalCharacter:
-                        _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameIllegalCharacters;
-                        break;
-                    case PathValidator.ValidationResult.ReservedFileName:
-                        _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameReserved;
-                        break;
-                    default:
-                        App.Logger.WriteLine(LOG_IDENT, $"Got unhandled PathValidator::ValidationResult {validationResult}");
-                        Debug.Assert(false);
-
-                        _viewModel.NameError = Strings.CustomTheme_Add_Errors_Unknown;
-                        break;
-                }
-
-                App.Logger.WriteLine(LOG_IDENT, $"Validation failed: {_viewModel.NameError}");
+                    PathValidator.ValidationResult.IllegalCharacter => Strings.CustomTheme_Add_Errors_NameIllegalCharacters,
+                    PathValidator.ValidationResult.ReservedFileName => Strings.CustomTheme_Add_Errors_NameReserved,
+                    _ => Strings.CustomTheme_Add_Errors_Unknown
+                };
                 return false;
             }
 
-            // better to check for the file instead of the directory so broken themes can be overwritten
-            string path = Path.Combine(Paths.CustomThemes, _viewModel.Name, "Theme.xml");
-            if (File.Exists(path))
+            if (File.Exists(GetThemePath(_viewModel.Name)))
             {
                 _viewModel.NameError = Strings.CustomTheme_Add_Errors_NameTaken;
                 App.Logger.WriteLine(LOG_IDENT, "Theme name already exists");
@@ -132,9 +121,9 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private bool ValidateImport()
         {
-            const string LOG_IDENT = "AddCustomThemeDialog::ValidateImport";
+            _viewModel.FileError = "";
 
-            if (!_viewModel.FilePath.EndsWith(".zip"))
+            if (string.IsNullOrEmpty(_viewModel.FilePath) || !_viewModel.FilePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
             {
                 _viewModel.FileError = Strings.CustomTheme_Add_Errors_FileNotZip;
                 return false;
@@ -154,161 +143,109 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 return true;
             }
-            catch (InvalidDataException ex)
+            catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Got invalid data");
-                App.Logger.WriteException(LOG_IDENT, ex);
-
+                App.Logger.WriteException("AddCustomThemeDialog::ValidateImport", ex);
                 _viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipInvalidData;
                 return false;
             }
         }
 
-
-        private void CreateNew()
+        private async void OnOkButtonClicked(object sender, RoutedEventArgs e)
         {
-            const string LOG_IDENT = "AddCustomThemeDialog::CreateNew";
-            App.Logger.WriteLine(LOG_IDENT, $"Attempting to create new theme: {_viewModel.Name}");
-
-            if (!ValidateCreateNew())
+            if (_viewModel.SelectedTab == CreateNewTabId)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Validation failed, aborting");
-                return;
-            }
+                if (!ValidateCreateNew()) return;
 
-            try
-            {
-                CreateCustomTheme(_viewModel.Name, _viewModel.Template);
-                App.Logger.WriteLine(LOG_IDENT, $"Theme created successfully: {_viewModel.Name}");
+                await CreateCustomTheme(_viewModel.Name, _viewModel.Template);
 
                 Created = true;
                 ThemeName = _viewModel.Name;
                 OpenEditor = true;
+                Close();
+            }
+            else
+            {
+                if (!ValidateImport()) return;
+                await Import();
+            }
+        }
 
+        private async Task Import()
+        {
+            string fileName = Path.GetFileNameWithoutExtension(_viewModel.FilePath);
+            string name = GetUniqueName(fileName);
+            string finalDir = Path.Combine(Paths.CustomThemes, name);
+            string staging = Path.Combine(Path.GetTempPath(), "theme-import-" + Guid.NewGuid().ToString("N"));
+
+            try
+            {
+                Directory.CreateDirectory(staging);
+                Directory.CreateDirectory(finalDir);
+
+                await Task.Run(() =>
+                {
+                    var fastZip = new FastZip();
+                    fastZip.ExtractZip(_viewModel.FilePath, staging, null);
+
+                    var entries = Directory.GetFileSystemEntries(staging);
+
+                    if (entries.Length == 1 && Directory.Exists(entries[0]))
+                    {
+                        Directory.Delete(finalDir, true);
+                        Directory.Move(entries[0], finalDir);
+                    }
+                    else
+                    {
+                        foreach (var entry in entries)
+                        {
+                            string dest = Path.Combine(finalDir, Path.GetFileName(entry));
+                            if (Directory.Exists(entry))
+                                Directory.Move(entry, dest);
+                            else
+                                File.Copy(entry, dest, true);
+                        }
+                    }
+                });
+
+                Created = true;
+                ThemeName = name;
+                OpenEditor = false;
                 Close();
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Exception creating theme: {ex.Message}");
-                App.Logger.WriteException(LOG_IDENT, ex);
-            }
-        }
-
-        private static void MoveDirectoryContents(string sourceDir, string targetDir)
-        {
-            foreach (var file in Directory.GetFiles(sourceDir))
-            {
-                string destFile = Path.Combine(targetDir, Path.GetFileName(file));
-                File.Copy(file, destFile, overwrite: true);
-            }
-
-            foreach (var dir in Directory.GetDirectories(sourceDir))
-            {
-                string destDir = Path.Combine(targetDir, Path.GetFileName(dir));
-
-                if (Directory.Exists(destDir))
-                    MoveDirectoryContents(dir, destDir);
-                else
-                    Directory.Move(dir, destDir);
-            }
-        }
-
-        private void Import()
-        {
-            if (!ValidateImport())
-                return;
-
-            string fileName = Path.GetFileNameWithoutExtension(_viewModel.FilePath);
-            string name = GetUniqueName(fileName);
-
-            string finalDir = Path.Combine(Paths.CustomThemes, name);
-            if (Directory.Exists(finalDir))
-                Directory.Delete(finalDir, true);
-            Directory.CreateDirectory(finalDir);
-
-            string staging = Path.Combine(Path.GetTempPath(), "theme-import-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(staging);
-
-            var fastZip = new FastZip();
-            fastZip.ExtractZip(_viewModel.FilePath, staging, null);
-
-            try
-            {
-                var entries = Directory.GetFileSystemEntries(staging);
-
-                if (entries.Length == 1 && Directory.Exists(entries[0]))
-                {
-                    Directory.Delete(finalDir, true);
-                    Directory.Move(entries[0], finalDir);
-                }
-
-                else
-                {
-                    foreach (var entry in entries)
-                    {
-                        string dest = Path.Combine(finalDir, Path.GetFileName(entry));
-                        if (Directory.Exists(entry))
-                            Directory.Move(entry, dest);
-                        else
-                            File.Copy(entry, dest, overwrite: true);
-                    }
-                }
+                App.Logger.WriteException("AddCustomThemeDialog::Import", ex);
+                _viewModel.FileError = Strings.CustomTheme_Add_Errors_Unknown;
             }
             finally
             {
                 if (Directory.Exists(staging))
                     Directory.Delete(staging, true);
             }
-
-            Created = true;
-            ThemeName = name;
-            OpenEditor = false;
-
-            Close();
         }
 
-        private void OnOkButtonClicked(object sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            const string LOG_IDENT = "AddCustomThemeDialog::OnOkButtonClicked";
-            App.Logger.WriteLine(LOG_IDENT, $"OK button clicked. SelectedTab: {_viewModel.SelectedTab}");
-
-            if (_viewModel.SelectedTab == CreateNewTabId)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Creating new theme");
-                CreateNew();
-            }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Importing theme");
-                Import();
-            }
-        }
-
-        private async void OnImportButtonClicked(object sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private async void OnImportButtonClicked(object sender, RoutedEventArgs e)
         {
             var topLevel = TopLevel.GetTopLevel(this);
-            if (topLevel == null)
-                return;
+            if (topLevel == null) return;
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                Title = "Select Theme Archive",
-                AllowMultiple = false,
-                FileTypeFilter = new[]
-                {
-                    new FilePickerFileType(Strings.FileTypes_ZipArchive)
-                    {
-                        Patterns = new[] { "*.zip" }
-                    }
-                }
+                Title = Strings.Common_ImportFromFile,
+                FileTypeFilter = new[] { new FilePickerFileType(Strings.FileTypes_ZipArchive) { Patterns = new[] { "*.zip" } } },
+                AllowMultiple = false
             });
 
-            if (files.Count == 0)
-                return;
+            if (files.Count > 0)
+            {
+                _viewModel.FilePath = files[0].Path.LocalPath;
+            }
+        }
 
-            _viewModel.FilePath = files[0].Path.LocalPath;
-
-            ValidateImport();
+        private void OnCancelButtonClicked(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

@@ -2004,7 +2004,7 @@ namespace Froststrap
                     {
                         await Frontend.ShowConnectivityDialog(
                             Strings.Dialog_Connectivity_UnableToDownload,
-                            String.Format(Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/Froststraplabs/Froststrap/wiki/Froststrap-is-unable-to-download-Roblox](https://github.com/Froststraplabs/Froststrap/wiki/Froststrap-is-unable-to-download-Roblox)"),
+                            String.Format(Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/Bloxstraplabs/Bloxstrap/wiki/Froststrap-is-unable-to-download-Roblox](https://github.com/Bloxstraplabs/Bloxstrap/wiki/Froststrap-is-unable-to-download-Roblox)"),
                             MessageBoxImage.Error,
                             ex
                         );

@@ -6,7 +6,7 @@
         {
             foreach (var drive in DriveInfo.GetDrives())
             {
-                // https://github.com/Froststraplabs/Froststrap/issues/1648#issuecomment-2192571030
+                // https://github.com/Bloxstraplabs/Bloxstrap/issues/1648#issuecomment-2192571030
                 if (path.ToUpperInvariant().StartsWith(drive.Name))
                     return drive.AvailableFreeSpace;
             }
