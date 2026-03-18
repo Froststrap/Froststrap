@@ -247,31 +247,6 @@ namespace Froststrap.UI.Elements.Editor
             }
         }
 
-        private void OnTextAreaTextInput(object? sender, TextInputEventArgs e)
-        {
-            if (string.IsNullOrEmpty(e.Text)) return;
-
-            switch (e.Text)
-            {
-                case "<":
-                    OpenElementAutoComplete();
-                    break;
-                case " ":
-                    OpenAttributeAutoComplete();
-                    break;
-                case ".":
-                    OpenPropertyElementAutoComplete();
-                    break;
-                case "/":
-                    AddEndTag();
-                    break;
-                case ">":
-                case "!":
-                    CloseCompletionWindow();
-                    break;
-            }
-        }
-
         private (string, int) GetLineAndPosAtCaretPosition()
         {
             int offset = UIXML.CaretOffset - 1;

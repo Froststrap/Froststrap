@@ -51,7 +51,7 @@
 					</controls:SquareCard>
 
 					<controls:SquareCard Header="Start Quality" Description="Quality level on game join.">
-						<Slider Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" ToolTip.Tip="{Binding $self.Value}" />
+						<Slider Minimum="0" Maximum="10" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding GraphicsQuality}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 
 					<controls:SquareCard Header="Fullscreen" Description="Start Roblox in fullscreen mode.">
