@@ -74,7 +74,8 @@
                                 <Button
                                     Padding="8,0"
                                     Command="{Binding SearchGamesCommand}"
-                                    Theme="{StaticResource TransparentButton}">
+                                    Theme="{StaticResource TransparentButton}"
+                                    Click="OnSearchButtonClick">
                                     <lucideAvalonia:Lucide
                                         Width="16"
                                         Height="16"
@@ -87,7 +88,8 @@
                                 <Flyout Placement="BottomEdgeAlignedLeft" ShowMode="Transient">
                                     <Panel>
                                         <ListBox
-                                            Width="450"
+                                            MaxWidth="500"
+                                            MinWidth="200"
                                             MaxHeight="400"
                                             Background="Transparent"
                                             ItemsSource="{Binding SearchResults}"
