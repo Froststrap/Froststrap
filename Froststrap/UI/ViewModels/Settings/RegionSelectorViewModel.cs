@@ -89,6 +89,12 @@ namespace Froststrap.UI.ViewModels.Settings
 
         partial void OnSearchQueryChanged(string value)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                IsSearchFlyoutOpen = false;
+                SearchResults.Clear();
+            }
+
             if (long.TryParse(value, out _))
             {
                 PlaceId = value;

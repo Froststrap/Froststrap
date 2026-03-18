@@ -78,6 +78,11 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
             _windowBindingsAttached = true;
         }
+
+        private void OnSearchButtonClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            FlyoutBase.ShowAttachedFlyout(SearchTextBox);
+        }
     }
 }
 
