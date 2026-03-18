@@ -3,9 +3,9 @@
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+		xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
 		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
-	<!--  TODO: Create card expander replacement for NoUserExpansionCardExpanderStyle and text editor  -->
 	<Style Selector="controls|CardExpander.NoUserExpansion">
 		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
@@ -76,6 +76,30 @@
 	<Style Selector="controls|CardExpander.NoUserExpansion:pointerover">
 		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
 	</Style>
+
+	<Style Selector="AvaloniaEdit|TextEditor">
+        <Setter Property="Foreground" Value="{DynamicResource NewTextEditorForeground}" />
+        <Setter Property="Background" Value="{DynamicResource NewTextEditorBackground}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4">
+                    <ScrollViewer Name="PART_ScrollViewer"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
+                                  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
+                                  AllowAutoHide="True">
+                    </ScrollViewer>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="AvaloniaEdit|TextEditor[WordWrap=True] /template/ ScrollViewer#PART_ScrollViewer">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+    </Style>
 
 	<!-- Icon Button Style -->
 	<Design.PreviewWith>

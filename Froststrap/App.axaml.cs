@@ -175,7 +175,7 @@ public const string ProjectRepository = "Froststrap/Froststrap";
     {
         AvaloniaXamlLoader.Load(this);
 
-        RxApp.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
+        RxSchedulers.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
 
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;

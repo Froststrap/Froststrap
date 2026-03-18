@@ -38,11 +38,11 @@ namespace Froststrap.UI.ViewModels.About
                 {
                     SelectedPage = "about";
                     return _router.Navigate.Execute(Wrap("about", new AboutViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -52,11 +52,11 @@ namespace Froststrap.UI.ViewModels.About
                 {
                     SelectedPage = "translators";
                     return _router.Navigate.Execute(Wrap("translators", new TranslatorsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -66,11 +66,11 @@ namespace Froststrap.UI.ViewModels.About
                 {
                     SelectedPage = "licenses";
                     return _router.Navigate.Execute(Wrap("licenses", new LicensesViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );

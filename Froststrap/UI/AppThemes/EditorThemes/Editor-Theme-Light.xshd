@@ -1,14 +1,14 @@
 <SyntaxDefinition name="XML" extensions=".xml;.xsl;.xslt;.xsd;.manifest;.config;.addin;.xshd;.wxs;.wxi;.wxl;.proj;.csproj;.vbproj;.ilproj;.booproj;.build;.xfrm;.targets;.xaml;.xpt;.xft;.map;.wsdl;.disco;.ps1xml;.nuspec" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-	<Color foreground="Green" name="Comment" exampleText="&lt;!-- comment --&gt;" />
-	<Color foreground="Blue" name="CData" exampleText="&lt;![CDATA[data]]&gt;" />
-	<Color foreground="Blue" name="DocType" exampleText="&lt;!DOCTYPE rootElement&gt;" />
-	<Color foreground="Blue" name="XmlDeclaration" exampleText='&lt;?xml version="1.0"?&gt;' />
-	<Color foreground="DarkMagenta" name="XmlTag" exampleText='&lt;tag attribute="value" /&gt;' />
-	<Color foreground="Red" name="AttributeName" exampleText='&lt;tag attribute="value" /&gt;' />
-	<Color foreground="Blue" name="AttributeValue" exampleText='&lt;tag attribute="value" /&gt;' />
-	<Color foreground="Teal" name="Entity" exampleText="index.aspx?a=1&amp;amp;b=2" />
-	<Color foreground="Olive" name="BrokenEntity" exampleText="index.aspx?a=1&amp;b=2" />
-	
+	<Color name="Comment" foreground="Green" exampleText="&lt;!-- comment --&gt;" />
+	<Color name="CData" foreground="Blue" exampleText="&lt;![CDATA[data]]&gt;" />
+	<Color name="DocType" foreground="Blue" exampleText="&lt;!DOCTYPE rootElement&gt;" />
+	<Color name="XmlDeclaration" foreground="Blue" exampleText='&lt;?xml version="1.0"?&gt;' />
+	<Color name="XmlTag" foreground="DarkMagenta" exampleText='&lt;tag attribute="value" /&gt;' />
+	<Color name="AttributeName" foreground="Red" exampleText='&lt;tag attribute="value" /&gt;' />
+	<Color name="AttributeValue" foreground="Blue" exampleText='&lt;tag attribute="value" /&gt;' />
+	<Color name="Entity" foreground="Teal" exampleText="index.aspx?a=1&amp;amp;b=2" />
+	<Color name="BrokenEntity" foreground="Olive" exampleText="index.aspx?a=1&amp;b=2" />
+
 	<RuleSet>
 		<Span color="Comment" multiline="true">
 			<Begin>&lt;!--</Begin>
@@ -30,8 +30,6 @@
 			<Begin>&lt;</Begin>
 			<End>&gt;</End>
 			<RuleSet>
-				<!-- Treat the position before '<' as end, as that's not a valid character
-				     in attribute names and indicates the user forgot a closing quote. -->
 				<Span color="AttributeValue" multiline="true" ruleSet="EntitySet">
 					<Begin>"</Begin>
 					<End>"|(?=&lt;)</End>
@@ -46,18 +44,13 @@
 		</Span>
 		<Import ruleSet="EntitySet"/>
 	</RuleSet>
-	
+
 	<RuleSet name="EntitySet">
 		<Rule color="Entity">
-			&amp;
-			[\w\d\#]+
-			;
+			&amp;[\w\d\#]+;
 		</Rule>
-
 		<Rule color="BrokenEntity">
-			&amp;
-			[\w\d\#]*
-			#missing ;
+			&amp;[\w\d\#]*
 		</Rule>
 	</RuleSet>
 </SyntaxDefinition>

@@ -45,7 +45,7 @@ namespace Froststrap.UI.Elements.About
 
 			// Set up ReactiveUI routing
 			viewModel.Router.CurrentViewModel
-				.ObserveOn(RxApp.MainThreadScheduler)
+				.ObserveOn(RxSchedulers.MainThreadScheduler)
 				.Subscribe(vm => 
 				{
 					App.Logger.WriteLine("About.MainWindow", $"CurrentViewModel changed: {vm?.GetType().Name ?? "null"}");
@@ -53,7 +53,7 @@ namespace Froststrap.UI.Elements.About
 				});
 
 			viewModel.WhenAnyValue(x => x.SelectedPage)
-				.ObserveOn(RxApp.MainThreadScheduler)
+				.ObserveOn(RxSchedulers.MainThreadScheduler)
 				.Subscribe(page => 
 				{
 					App.Logger.WriteLine("About.MainWindow", $"SelectedPage changed to: {page}");
