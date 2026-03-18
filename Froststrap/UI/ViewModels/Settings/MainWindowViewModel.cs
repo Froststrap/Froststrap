@@ -121,13 +121,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "integrations";
                     CurrentPageTitle = "Integrations";
-                    CurrentPageDescription = Resources.Strings.Menu_Integrations_Description;
+                    CurrentPageDescription = Strings.Menu_Integrations_Description;
                     return _router.Navigate.Execute(Wrap("integrations", new IntegrationsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -137,13 +137,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "behaviour";
                     CurrentPageTitle = "Behaviour";
-                    CurrentPageDescription = Resources.Strings.Menu_Behaviour_Description;
+                    CurrentPageDescription = Strings.Menu_Behaviour_Description;
                     return _router.Navigate.Execute(Wrap("behaviour", new BehaviourViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -153,13 +153,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "mods";
                     CurrentPageTitle = "Mods";
-                    CurrentPageDescription = Resources.Strings.Menu_Mods_Description;
+                    CurrentPageDescription = Strings.Menu_Mods_Description;
                     return _router.Navigate.Execute(Wrap("mods", new ModsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -171,13 +171,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "fastflags";
                     CurrentPageTitle = "Fast Flags";
-                    CurrentPageDescription = Resources.Strings.Menu_FastFlagEditor_Description;
+                    CurrentPageDescription = Strings.Menu_FastFlagEditor_Description;
                     return _router.Navigate.Execute(Wrap("fastflags", new FastFlagsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -187,13 +187,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "appearance";
                     CurrentPageTitle = "Appearance";
-                    CurrentPageDescription = Resources.Strings.Menu_Appearance_Description;
+                    CurrentPageDescription = Strings.Menu_Appearance_Description;
                     return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -203,13 +203,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "region selector";
                     CurrentPageTitle = "Region Selector";
-                    CurrentPageDescription = Resources.Strings.Menu_RegionSelector_Description;
+                    CurrentPageDescription = Strings.Menu_RegionSelector_Description;
                     return _router.Navigate.Execute(Wrap("region selector", new RegionSelectorViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );
@@ -219,13 +219,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedPage = "robloxsettings";
                     CurrentPageTitle = "Roblox Settings";
-                    CurrentPageDescription = Resources.Strings.Menu_GBSEditor_Description;
+                    CurrentPageDescription = Strings.Menu_GBSEditor_Description;
                     return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel()))
-                        .ObserveOn(RxApp.MainThreadScheduler)
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
                             commandExceptionHandler(ex);
-                            return System.Reactive.Linq.Observable.Empty<IRoutableViewModel>();
+                            return Observable.Empty<IRoutableViewModel>();
                         });
                 }
             );

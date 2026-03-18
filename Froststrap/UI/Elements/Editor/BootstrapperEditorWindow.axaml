@@ -1,65 +1,51 @@
-<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Editor.BootstrapperEditorWindow"
-        xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Editor"
-        x:DataType="vm:BootstrapperEditorWindowViewModel"
-        Title="{Binding Title}"
-        Width="1000" Height="500"
-        WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource ApplicationBackgroundColorBrush}"
-        mc:Ignorable="d">
+<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Editor.BootstrapperEditorWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Ae="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Editor"
+    x:DataType="vm:BootstrapperEditorWindowViewModel"
+    SystemDecorations="None"
+    Title="{Binding Title}"
+    Width="1000" Height="500"
+    WindowStartupLocation="CenterScreen">
 
-	<Design.DataContext>
-		<vm:BootstrapperEditorWindowViewModel />
-	</Design.DataContext>
+<Grid RowDefinitions="Auto,*,Auto">
+        <controls:TitleBar Grid.Row="0" Title="{Binding Title}" 
+                           Icon="avares://Froststrap/Froststrap.ico" />
 
-	<Grid RowDefinitions="Auto, *, Auto">
+<Ae:TextEditor Name="UIXML" 
+               Grid.Row="1"
+               Classes="NewTextEditor"
+               ShowLineNumbers="True"
+               Margin="10"
+               Padding="5"
+               HorizontalScrollBarVisibility="Auto"
+               VerticalScrollBarVisibility="Visible" />
 
-		<StackPanel Grid.Row="0" Name="TitleBarContainer">
-		</StackPanel>
+        <Border Grid.Row="2" Background="{DynamicResource PrimaryBackgroundColor}" Padding="10">
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                <Button Grid.Column="0" 
+                        Command="{Binding OpenThemeFolderCommand}"
+                        Content="{x:Static resources:Strings.CustomTheme_Editor_OpenThemeDirectory}" />
 
-		<Grid Grid.Row="1">
-            <!-- TODO: find diffrent text editor cuz this one only for windows -->
-         <TextBox x:Name="UIXML" Grid.Column="0" Margin="10,10,10,10" />
-		</Grid>
+                <Button Grid.Column="1" Margin="10,0,0,0" 
+                        Classes="accent"
+                        Command="{Binding PreviewCommand}"
+                        Content="{x:Static resources:Strings.CustomTheme_Editor_Preview}" />
 
-		<Grid Grid.Row="2" Margin="10,0,10,10" ColumnDefinitions="*, Auto, Auto, Auto">
+                <Button Grid.Column="2" Margin="10,0,0,0" 
+                        Classes="accent"
+                        Command="{Binding SaveCommand}"
+                        Content="{x:Static resources:Strings.CustomTheme_Editor_Save}" />
 
-			<Button Grid.Column="0"
-                    HorizontalAlignment="Left"
-                    Command="{Binding OpenThemeFolderCommand}"
-                    Content="{x:Static resources:Strings.CustomTheme_Editor_OpenThemeDirectory}" />
-
-			<Button Grid.Column="1"
-                    Margin="10,0,0,0"
-                    Classes="accent"
-                    Command="{Binding PreviewCommand}"
-                    Content="{x:Static resources:Strings.CustomTheme_Editor_Preview}" />
-
-			<Button Grid.Column="2"
-                    Margin="10,0,0,0"
-                    MinWidth="60"
-                    Classes="accent"
-                    Command="{Binding SaveCommand}"
-                    Content="{x:Static resources:Strings.CustomTheme_Editor_Save}" />
-
-			<Button Grid.Column="3"
-                    Margin="12,0,0,0"
-                    MinWidth="60"
-                    Content="{x:Static resources:Strings.Common_Close}"
-                    IsCancel="True" />
-		</Grid>
-
-		<ui:InfoBar Name="SnackbarReplacement"
-                    Grid.RowSpan="3"
-                    VerticalAlignment="Bottom"
-                    Margin="200,0,200,20"
-                    IsClosable="True" />
-	</Grid>
+                <Button Grid.Column="3" Margin="12,0,0,0" 
+                        Content="{x:Static resources:Strings.Common_Close}"
+                        Click="OnCancelButtonClicked" />
+            </Grid>
+        </Border>
+    </Grid>
 </base:AvaloniaWindow>

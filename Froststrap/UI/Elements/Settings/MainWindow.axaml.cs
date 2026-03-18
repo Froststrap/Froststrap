@@ -67,11 +67,11 @@ namespace Froststrap.UI.Elements.Settings
 
             App.WindowsBackdrop();
             viewModel.Router.CurrentViewModel
-                .ObserveOn(RxApp.MainThreadScheduler)
+                .ObserveOn(RxSchedulers.MainThreadScheduler)
                 .Subscribe(vm => UpdatePageView(vm));
 
             viewModel.WhenAnyValue(x => x.SelectedPage)
-                .ObserveOn(RxApp.MainThreadScheduler)
+                .ObserveOn(RxSchedulers.MainThreadScheduler)
                 .Subscribe(page => UpdateSelectedButtonStyle(page));
 
             this.Closing += MainWindow_Closing;

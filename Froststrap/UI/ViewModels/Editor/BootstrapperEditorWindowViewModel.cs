@@ -1,12 +1,18 @@
 ﻿using Froststrap.UI.Elements.Bootstrapper;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
+using System.IO;
+using System.Diagnostics;
 
 namespace Froststrap.UI.ViewModels.Editor
 {
-    public class BootstrapperEditorWindowViewModel : NotifyPropertyChangedViewModel
+    public partial class BootstrapperEditorWindowViewModel : NotifyPropertyChangedViewModel
     {
         private CustomDialog? _dialog = null;
+
+        private string _code = "";
+        private bool _codeChanged = false;
+        private string _title = "Editing \"Custom Theme\"";
 
         public ICommand PreviewCommand => new RelayCommand(Preview);
         public ICommand SaveCommand => new RelayCommand(Save);
@@ -15,17 +21,29 @@ namespace Froststrap.UI.ViewModels.Editor
         public Action<bool, string> ThemeSavedCallback { get; set; } = null!;
 
         public string Directory { get; set; } = "";
-
         public string Name { get; set; } = "";
-        public string Title { get; set; } = "Editing \"Custom Theme\"";
-        public string Code { get; set; } = "";
 
-        public bool CodeChanged { get; set; } = false;
+        public string Title
+        {
+            get => _title;
+            set => SetProperty(ref _title, value);
+        }
 
-        private async void Preview()
+        public string Code
+        {
+            get => _code;
+            set => SetProperty(ref _code, value);
+        }
+
+        public bool CodeChanged
+        {
+            get => _codeChanged;
+            set => SetProperty(ref _codeChanged, value);
+        }
+
+        private void Preview()
         {
             const string LOG_IDENT = "BootstrapperEditorWindowViewModel::Preview";
-
             try
             {
                 CustomDialog dialog = new CustomDialog();
@@ -40,10 +58,8 @@ namespace Froststrap.UI.ViewModels.Editor
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to preview custom theme");
                 App.Logger.WriteException(LOG_IDENT, ex);
-
-                await Frontend.ShowMessageBox(
+                _ = Frontend.ShowMessageBox(
                     string.Format(Strings.CustomTheme_Editor_Errors_PreviewFailed, ex.Message),
                     MessageBoxImage.Error,
                     MessageBoxButton.OK
@@ -54,28 +70,29 @@ namespace Froststrap.UI.ViewModels.Editor
         private void Save()
         {
             const string LOG_IDENT = "BootstrapperEditorWindowViewModel::Save";
-
             string path = Path.Combine(Directory, "Theme.xml");
 
             try
             {
                 File.WriteAllText(path, Code);
                 CodeChanged = false;
-                ThemeSavedCallback.Invoke(true, Strings.CustomTheme_Editor_Save_Success_Description);
+                ThemeSavedCallback?.Invoke(true, Strings.CustomTheme_Editor_Save_Success_Description);
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to save custom theme");
                 App.Logger.WriteException(LOG_IDENT, ex);
-
-                //Frontend.ShowMessageBox($"Failed to save theme: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
-                ThemeSavedCallback.Invoke(false, ex.Message);
+                ThemeSavedCallback?.Invoke(false, ex.Message);
             }
         }
 
         private void OpenThemeFolder()
         {
-            Process.Start("explorer.exe", Directory);
+            if (string.IsNullOrEmpty(Directory)) return;
+            Process.Start(new ProcessStartInfo{ 
+                FileName = Directory, 
+                UseShellExecute = true, 
+                Verb = "open" 
+            });
         }
     }
 }

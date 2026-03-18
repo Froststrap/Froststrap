@@ -14,27 +14,32 @@
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardExpander.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
+		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
 		<StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
 	</Application.Styles>
 
-	<Application.Resources>
-		<ResourceDictionary>
-			<ResourceDictionary.MergedDictionaries>
-				<ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/HueSlider.axaml" />
-				<ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquareSlider.axaml" />
-				<ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
-			</ResourceDictionary.MergedDictionaries>
-			<FontFamily x:Key="Rubik">avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf</FontFamily>
+<Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/HueSlider.axaml" />
+            <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquareSlider.axaml" />
+            <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
+        </ResourceDictionary.MergedDictionaries>
+        
+        <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />
+        <StaticResource x:Key="ToolTipForeground" ResourceKey="ToolTipForegroundBrush" />
 
-			<SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
-			<SolidColorBrush x:Key="AccentColorTertiaryBrush" Color="{DynamicResource SystemAccentColorTertiary}" />
+        <FontFamily x:Key="Rubik">avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf</FontFamily>
 
-			<converters:StringFormatConverter x:Key="StringFormatConverter" />
-			<converters:RangeConverter x:Key="RangeConverter" />
-			<converters:EnumNameConverter x:Key="EnumNameConverter" />
-			<converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-			<converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
-			<converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
-		</ResourceDictionary>
-	</Application.Resources>
+        <SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
+        <SolidColorBrush x:Key="AccentColorTertiaryBrush" Color="{DynamicResource SystemAccentColorTertiary}" />
+
+        <converters:StringFormatConverter x:Key="StringFormatConverter" />
+        <converters:RangeConverter x:Key="RangeConverter" />
+        <converters:EnumNameConverter x:Key="EnumNameConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
+    </ResourceDictionary>
+</Application.Resources>
 </Application>
