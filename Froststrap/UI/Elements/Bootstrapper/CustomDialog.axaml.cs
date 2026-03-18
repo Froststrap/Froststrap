@@ -5,68 +5,65 @@ using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-	public partial class CustomDialog : Window, IBootstrapperDialog
-	{
+	public partial class CustomDialog : AvaloniaDialogBase
+    {
 		private readonly BootstrapperDialogViewModel _viewModel;
+        public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
+        private bool _isClosing;
 
-		public ProgressBarStyle ProgressStyle { get; set; }
-		public TaskbarItemProgressState TaskbarProgressState { get; set; }
-		public double TaskbarProgressValue { get; set; }
+        #region UI Elements Overrides
+        public override string Message
+        {
+            get => _viewModel.Message;
+            set => RunOnUI(() =>
+            {
+                _viewModel.Message = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.Message));
+            });
+        }
 
-		public Froststrap.Bootstrapper? Bootstrapper { get; set; }
-		private bool _isClosing;
+        public override int ProgressMaximum
+        {
+            get => _viewModel.ProgressMaximum;
+            set => RunOnUI(() =>
+            {
+                _viewModel.ProgressMaximum = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
+            });
+        }
 
-		#region UI Elements Properties
-		public string Message
-		{
-			get => _viewModel.Message;
-			set => _viewModel.Message = value;
-		}
+        public override int ProgressValue
+        {
+            get => _viewModel.ProgressValue;
+            set => RunOnUI(() =>
+            {
+                _viewModel.ProgressValue = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressValue));
+            });
+        }
 
-		public bool IsIndeterminate
-		{
-			get => _viewModel.ProgressIndeterminate;
-			set => _viewModel.ProgressIndeterminate = value;
-		}
+        public override bool CancelEnabled
+        {
+            get => _viewModel.CancelEnabled;
+            set => RunOnUI(() =>
+            {
+                _viewModel.CancelEnabled = value;
+                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
+            });
+        }
 
-		public int ProgressMaximum
-		{
-			get => _viewModel.ProgressMaximum;
-			set => _viewModel.ProgressMaximum = value;
-		}
+        public override ProgressBarStyle ProgressStyle
+        {
+            get => _viewModel.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            set => RunOnUI(() =>
+            {
+                _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
+            });
+        }
+        #endregion
 
-		public int ProgressValue
-		{
-			get => _viewModel.ProgressValue;
-			set => _viewModel.ProgressValue = value;
-		}
-
-		public void SetTaskbarProgress(double value, bool isPaused = false, bool isError = false)
-		{
-			TaskbarProgressValue = value;
-
-			if (PlatformImpl is not null)
-			{
-				try
-				{
-					dynamic platform = PlatformImpl;
-					platform.SetProgressBarValue(value);
-				}
-				catch
-				{
-					// Fallback for non Windows platforms
-				}
-			}
-		}
-
-		public bool CancelEnabled
-		{
-			get => _viewModel.CancelEnabled;
-			set => _viewModel.CancelEnabled = value;
-		}
-		#endregion
-
-		public CustomDialog()
+        public CustomDialog()
 		{
 			InitializeComponent();
 
@@ -87,15 +84,15 @@ namespace Froststrap.UI.Elements.Bootstrapper
 		}
 
 		#region IBootstrapperDialog Methods
-		public void ShowBootstrapper() => this.Show();
+		public new void ShowBootstrapper() => this.Show();
 
-        public void CloseBootstrapper()
+        public override void CloseBootstrapper()
 		{
 			_isClosing = true;
 			Dispatcher.UIThread.Post(this.Close);
 		}
 
-        public void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
+        public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
         #endregion
     }
 }

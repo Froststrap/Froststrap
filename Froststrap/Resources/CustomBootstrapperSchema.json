@@ -46,7 +46,7 @@
 				"Theme": "Theme",
 				"Title": "string",
 				"IgnoreTitleBarInset": "bool",
-				"WindowCornerPreference": "WindowCornerPreference",
+				"ExtendClientAreaToDecorationsHint": "bool",
 				"WindowsBackdrop": "WindowsBackdrop"
 			}
 		},
@@ -102,7 +102,6 @@
 				"FontStyle": "FontStyle",
 				"FontFamily": "FontFamily",
 				"LineHeight": "double",
-				"LineStackingStrategy": "LineStackingStrategy",
 				"TextAlignment": "TextAlignment",
 				"TextTrimming": "TextTrimming",
 				"TextWrapping": "TextWrapping",
@@ -291,10 +290,9 @@
 			"IsCreatable": true,
 			"Attributes": {
 				"BlurRadius": "double",
-				"Direction": "double",
+				"OffsetX": "double",
+				"OffsetY": "double",
 				"Opacity": "double",
-				"ShadowDepth": "double",
-				"RenderingBias": "RenderingBias",
 				"Color": "Color"
 			}
 		}
@@ -323,7 +321,6 @@
 		"Visibility": {
 			"Values": [
 				"Visible",
-				"Hidden",
 				"Collapsed"
 			]
 		},
@@ -416,8 +413,7 @@
 		},
 		"TextDecorations": {
 			"Values": [
-				"Baseline",
-				"OverLine",
+				"None",
 				"Strikethrough",
 				"Underline"
 			]
@@ -492,12 +488,6 @@
 				"Miter",
 				"Bevel",
 				"Round"
-			]
-		},
-		"KernelType": {
-			"Values": [
-				"Gaussian",
-				"Box"
 			]
 		},
 		"RenderingBias": {

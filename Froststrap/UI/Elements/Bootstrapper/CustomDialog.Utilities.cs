@@ -31,23 +31,34 @@ namespace Froststrap.UI.Elements.Bootstrapper
         /// <summary>
         /// General parser for attributes. Handles both structs (Enums, int) and classes.
         /// </summary>
-        private static T ParseXmlAttribute<T>(XElement element, string attributeName, T? defaultValue = default)
+        private static T ParseXmlAttribute<T>(XElement element, string attributeName, T defaultValue)
         {
             var attribute = element.Attribute(attributeName);
-            if (attribute == null)
-            {
-                if (!Equals(defaultValue, default(T)))
-                    return defaultValue!;
 
-                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissing", element.Name.ToString(), attributeName);
+            if (attribute == null || string.IsNullOrWhiteSpace(attribute.Value))
+            {
+                return defaultValue;
             }
 
-            T? parsed = ConvertValue<T>(attribute.Value);
+            try
+            {
+                if (typeof(T) == typeof(bool))
+                {
+                    return (T)(object)bool.Parse(attribute.Value);
+                }
 
-            if (Equals(parsed, default(T)) && !typeof(T).IsEnum)
-                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeInvalidType", element.Name.ToString(), attributeName, typeof(T).Name);
+                var converter = System.ComponentModel.TypeDescriptor.GetConverter(typeof(T));
+                if (converter != null && converter.CanConvertFrom(typeof(string)))
+                {
+                    return (T)converter.ConvertFromInvariantString(attribute.Value)!;
+                }
 
-            return parsed!;
+                return (T)Convert.ChangeType(attribute.Value, typeof(T));
+            }
+            catch
+            {
+                return defaultValue;
+            }
         }
 
         /// <summary>
@@ -176,7 +187,11 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (child.Name.LocalName == "DropShadowEffect")
             {
                 var shadow = HandleXmlElement_DropShadowEffect(dialog, child);
-                uiElement.SetValue(Avalonia.Visual.BoxShadowProperty, (BoxShadows)shadow);
+
+                if (shadow is BoxShadows bxs)
+                {
+                    uiElement.SetValue(Avalonia.Controls.Border.BoxShadowProperty, bxs);
+                }
             }
         }
 

@@ -98,6 +98,16 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 dialog.ElementGrid.Children.Add(control);
         }
 
+        public void ApplyCustomTheme(string name)
+        {
+            string path = Path.Combine(Paths.CustomThemes, name, "Theme.xml");
+
+            if (!File.Exists(path))
+                throw new CustomThemeException("CustomTheme.Errors.FileNotFound", path);
+
+            ApplyCustomTheme(name, File.ReadAllText(path));
+        }
+
         public void ApplyCustomTheme(string name, string contents)
         {
             ThemeDir = Path.Combine(Paths.CustomThemes, name);
