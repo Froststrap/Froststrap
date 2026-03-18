@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Animation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -244,6 +245,8 @@ namespace Froststrap.UI.Elements.Settings
                     CornerRadius = new CornerRadius(8),
                     Padding = new Thickness(16),
                     Margin = new Thickness(0, 0, 0, 12),
+                    Opacity = 0,
+                    RenderTransform = new TranslateTransform(0, -20),
                     Child = new StackPanel
                     {
                         Children =
@@ -254,11 +257,33 @@ namespace Froststrap.UI.Elements.Settings
                     }
                 };
 
+                // TODO: fix up these animations
+                var transitions = new Transitions();
+                transitions.Add(new DoubleTransition 
+                { 
+                    Property = Border.OpacityProperty, 
+                    Duration = TimeSpan.FromMilliseconds(400)
+                });
+                transitions.Add(new TransformOperationsTransition 
+                { 
+                    Property = Border.RenderTransformProperty, 
+                    Duration = TimeSpan.FromMilliseconds(400)
+                });
+                notification.Transitions = transitions;
+
                 notificationPanel.Children.Add(notification);
 
                 Dispatcher.UIThread.InvokeAsync(async () =>
                 {
+                    notification.Opacity = 1;
+                    notification.RenderTransform = new TranslateTransform(0, 0);
+
                     await Task.Delay(3000);
+
+                    notification.Opacity = 0;
+                    notification.RenderTransform = new TranslateTransform(0, -20);
+
+                    await Task.Delay(400);
                     notificationPanel.Children.Remove(notification);
                 });
             }
