@@ -4,17 +4,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="using:Froststrap.UI.ViewModels.Bootstrapper"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         mc:Ignorable="d"
         x:Class="Froststrap.UI.Elements.Bootstrapper.FluentDialog"
         x:DataType="vm:FluentDialogViewModel"
         Width="500" Height="280"
+        CornerRadius="8"
         CanResize="False"
         SystemDecorations="None"
         WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
         TransparencyLevelHint="{Binding WindowBackdropType}"
         Background="{Binding BackgroundColourBrush}">
 
 	<Grid>
+        	<controls:TitleBar VerticalAlignment="Top"
+                          Height="32"
+                          ShowMinimize="False"
+                          ShowMaximize="False"
+                          ShowClose="False" />
+
 		<TextBlock Margin="12,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"
                    FontSize="11" FontFamily="{StaticResource Rubik}"
                    Text="{Binding VersionText}" Opacity="0.6"/>
