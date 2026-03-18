@@ -48,41 +48,56 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
 
+        #region UI Elements Overrides
         public override string Message
         {
-            get => _viewModel?.Message ?? "";
-            set { if (_viewModel != null) { _viewModel.Message = value; _viewModel.OnPropertyChanged(nameof(_viewModel.Message)); } }
+            get => _viewModel!.Message;
+            set => RunOnUI(() =>
+            {
+                _viewModel!.Message = value;
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.Message));
+            });
         }
 
         public override int ProgressMaximum
         {
-            get => _viewModel?.ProgressMaximum ?? 100;
-            set { if (_viewModel != null) { _viewModel.ProgressMaximum = value; _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressMaximum)); } }
+            get => _viewModel!.ProgressMaximum;
+            set => RunOnUI(() =>
+            {
+                _viewModel!.ProgressMaximum = value;
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
+            });
         }
 
         public override int ProgressValue
         {
-            get => _viewModel?.ProgressValue ?? 0;
-            set { if (_viewModel != null) { _viewModel.ProgressValue = value; _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressValue)); } }
+            get => _viewModel!.ProgressValue;
+            set => RunOnUI(() =>
+            {
+                _viewModel!.ProgressValue = value;
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressValue));
+            });
         }
 
         public override bool CancelEnabled
         {
-            get => _viewModel?.CancelEnabled ?? false;
-            set { if (_viewModel != null) { _viewModel.CancelEnabled = value; _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled)); } }
+            get => _viewModel!.CancelEnabled;
+            set => RunOnUI(() =>
+            {
+                _viewModel!.CancelEnabled = value;
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
+            });
         }
 
         public override ProgressBarStyle ProgressStyle
         {
-            get => _viewModel?.ProgressIndeterminate == true ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
-            set
+            get => _viewModel!.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            set => RunOnUI(() =>
             {
-                if (_viewModel != null)
-                {
-                    _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
-                    _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
-                }
-            }
+                _viewModel!.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
+            });
         }
+        #endregion
     }
 }

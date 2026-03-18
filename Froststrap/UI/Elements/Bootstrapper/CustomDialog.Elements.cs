@@ -254,13 +254,17 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private static void HandleXmlElement_FrameworkElement(CustomDialog dialog, Control uiElement, XElement xmlElement)
         {
             string? name = xmlElement.Attribute("Name")?.Value;
-            if (name != null)
-            {
-                if (dialog.UsedNames.Contains(name))
-                    throw new CustomThemeException("CustomTheme.Errors.ElementDuplicateName", xmlElement.Name.ToString(), name);
 
-                dialog.UsedNames.Add(name);
-                uiElement.Name = name;
+            if (!string.IsNullOrEmpty(name) && uiElement.Name != name)
+            {
+                try
+                {
+                    uiElement.Name = name;
+                }
+                catch (InvalidOperationException)
+                {
+
+                }
             }
 
             uiElement.IsVisible = ParseXmlAttribute<bool>(xmlElement, "IsVisible", true);
@@ -346,10 +350,16 @@ namespace Froststrap.UI.Elements.Bootstrapper
             var finalTheme = theme.GetFinal();
             dialog.RequestedThemeVariant = finalTheme == Enums.Theme.Light ? ThemeVariant.Light : ThemeVariant.Dark;
 
-            dialog.WindowCornerPreference = ParseXmlAttribute<WindowCornerPreference>(xmlElement, "WindowCornerPreference", WindowCornerPreference.Round);
+            dialog.ExtendClientAreaToDecorationsHint = ParseXmlAttribute<bool>(xmlElement, "ExtendClientAreaToDecorationsHint", true);
 
-            if (xmlElement.Attribute("BorderBrush") != null || xmlElement.Attribute("BorderThickness") != null)
-                dialog.DefaultBorderEnabled = false;
+            bool hasTitleBarElement = xmlElement.Elements().Any(x => x.Name.LocalName == "TitleBar");
+
+            bool hasCustomBorders = xmlElement.Attribute("BorderBrush") != null || xmlElement.Attribute("BorderThickness") != null;
+
+            if (hasTitleBarElement || hasCustomBorders)
+                dialog.SystemDecorations = SystemDecorations.None;
+            else
+                dialog.SystemDecorations = SystemDecorations.Full;
 
             dialog.ElementGrid.Margin = dialog.Margin;
 
@@ -524,29 +534,30 @@ namespace Froststrap.UI.Elements.Bootstrapper
             image.Stretch = ParseXmlAttribute<Stretch>(xmlElement, "Stretch", Stretch.Uniform);
             image.StretchDirection = ParseXmlAttribute<StretchDirection>(xmlElement, "StretchDirection", StretchDirection.Both);
 
-            var sourceData = GetImageSourceData(dialog, "Source", xmlElement);
+            var imageData = GetImageSourceData(dialog, "Source", xmlElement);
 
-            if (sourceData.IsIcon)
+            if (imageData.IsIcon)
             {
                 image.Bind(Image.SourceProperty, new Binding("Icon"));
             }
-            else
+            else if (imageData.Uri != null)
             {
                 bool isAnimated = ParseXmlAttribute<bool>(xmlElement, "IsAnimated", false);
-                if (!isAnimated)
+
+                if (isAnimated)
                 {
                     try
                     {
-                        image.Source = new Bitmap(sourceData.Uri!.LocalPath);
+                        image.SetValue(AnimatedImage.Avalonia.ImageBehavior.AnimatedSourceProperty, imageData.Uri);
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        throw new CustomThemeException(ex, "CustomTheme.Errors.ElementTypeCreationFailed", "Image", "Bitmap", ex.Message);
+                        image.Source = new Bitmap(imageData.Uri.LocalPath);
                     }
                 }
                 else
                 {
-                    image.SetValue(AnimatedImage.SourceProperty, sourceData.Uri!.ToString());
+                    image.Source = new Bitmap(imageData.Uri.LocalPath);
                 }
             }
 

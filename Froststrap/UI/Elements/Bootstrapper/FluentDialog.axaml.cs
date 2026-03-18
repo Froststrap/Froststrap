@@ -53,54 +53,51 @@ namespace Froststrap.UI.Elements.Bootstrapper
         public override string Message
         {
             get => _viewModel!.Message;
-            set
+            set => RunOnUI(() =>
             {
                 _viewModel!.Message = value;
-                _viewModel.OnPropertyChanged(nameof(_viewModel.Message));
-            }
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.Message)); // Or just "Message"
+            });
         }
 
         public override int ProgressMaximum
         {
             get => _viewModel!.ProgressMaximum;
-            set
+            set => RunOnUI(() =>
             {
                 _viewModel!.ProgressMaximum = value;
-                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
-            }
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
+            });
         }
 
         public override int ProgressValue
         {
             get => _viewModel!.ProgressValue;
-            set
+            set => RunOnUI(() =>
             {
                 _viewModel!.ProgressValue = value;
-                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressValue));
-            }
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressValue));
+            });
         }
 
         public override bool CancelEnabled
         {
             get => _viewModel!.CancelEnabled;
-            set
+            set => RunOnUI(() =>
             {
                 _viewModel!.CancelEnabled = value;
-                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
-            }
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
+            });
         }
 
         public override ProgressBarStyle ProgressStyle
         {
-            get => _viewModel?.ProgressIndeterminate == true ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
-            set
+            get => _viewModel!.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            set => RunOnUI(() =>
             {
-                if (_viewModel != null)
-                {
-                    _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
-                    _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
-                }
-            }
+                _viewModel!.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
+            });
         }
         #endregion
     }

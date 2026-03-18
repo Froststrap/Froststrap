@@ -5,8 +5,6 @@ using Avalonia.Threading;
 using Avalonia.Controls;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
-using System;
-using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -64,66 +62,55 @@ namespace Froststrap.UI.Elements.Bootstrapper
         public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
         #endregion
 
-        #region UI Elements (Synchronizing with ViewModel)
+        #region UI Elements Overrides
         public override string Message
         {
             get => _viewModel.Message;
-            set
+            set => RunOnUI(() =>
             {
-                string message = value;
-                if (message.EndsWith("..."))
-                    message = message[..^3];
-
-                _viewModel.Message = message;
+                _viewModel.Message = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.Message));
-            }
+            });
         }
 
         public override int ProgressMaximum
         {
             get => _viewModel.ProgressMaximum;
-            set
+            set => RunOnUI(() =>
             {
                 _viewModel.ProgressMaximum = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
-            }
+            });
         }
 
         public override int ProgressValue
         {
             get => _viewModel.ProgressValue;
-            set
+            set => RunOnUI(() =>
             {
                 _viewModel.ProgressValue = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressValue));
-            }
+            });
         }
 
         public override bool CancelEnabled
         {
             get => _viewModel.CancelEnabled;
-            set
+            set => RunOnUI(() =>
             {
                 _viewModel.CancelEnabled = value;
-
                 _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
-                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelButtonVisible));
-                _viewModel.OnPropertyChanged(nameof(_viewModel.VersionTextVisible));
-                _viewModel.OnPropertyChanged(nameof(_viewModel.VersionText));
-            }
+            });
         }
 
         public override ProgressBarStyle ProgressStyle
         {
-            get => _viewModel?.ProgressIndeterminate == true ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
-            set
+            get => _viewModel.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            set => RunOnUI(() =>
             {
-                if (_viewModel != null)
-                {
-                    _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
-                    _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
-                }
-            }
+                _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
+            });
         }
         #endregion
     }
