@@ -2,59 +2,87 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
-	<Style Selector="controls|TitleBar">
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Grid ColumnDefinitions="Auto, *, Auto">
+    <Style Selector="controls|TitleBar">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ColumnDefinitions="Auto, *, Auto" Height="24">
 
-					<Image Grid.Column="0"
-						   Source="{TemplateBinding Icon}"
-						   Width="18" Height="18"
-						   Margin="12,0,0,0"
-						   VerticalAlignment="Center"
-						   IsHitTestVisible="False"
-						   RenderOptions.BitmapInterpolationMode="HighQuality" />
+                    <Image Grid.Column="0"
+                           Source="{TemplateBinding Icon}"
+                           Width="18" Height="18"
+                           Margin="12,0,0,0"
+                           VerticalAlignment="Center"
+                           IsHitTestVisible="False"
+                           RenderOptions.BitmapInterpolationMode="HighQuality" />
 
-					<Panel Name="PART_DragLayer" Grid.Column="1" Background="Transparent">
-						<TextBlock Text="{TemplateBinding Title}"
-								   VerticalAlignment="Center"
-								   Margin="12,0"
-								   FontSize="12"
-								   IsHitTestVisible="False"
-								   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-					</Panel>
+                    <Panel Name="PART_DragLayer" Grid.Column="1" Background="Transparent">
+                        <TextBlock Text="{TemplateBinding Title}"
+                                   VerticalAlignment="Center"
+                                   Margin="12,0"
+                                   FontSize="12"
+                                   IsHitTestVisible="False"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    </Panel>
 
-					<StackPanel Grid.Column="2" Orientation="Horizontal">
-						<Button Name="PART_MinimizeButton" Classes="TitleBarButton"
-								IsVisible="{TemplateBinding ShowMinimize}" Content="&#xE921;" />
-						<Button Name="PART_MaximizeButton" Classes="TitleBarButton"
-								IsVisible="{TemplateBinding ShowMaximize}" Content="&#xE922;" />
-						<Button Name="PART_CloseButton" Classes="TitleBarButton Close"
-								IsVisible="{TemplateBinding ShowClose}" Content="&#xE8BB;" />
-					</StackPanel>
-				</Grid>
-			</ControlTemplate>
-		</Setter>
-	</Style>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <Button Name="PART_MinimizeButton" Classes="TitleBarButton"
+                                IsVisible="{TemplateBinding ShowMinimize}">
+                            <Path Data="M 0,5 H 10" 
+                                  Stroke="{Binding $parent[Button].Foreground}" 
+                                  StrokeThickness="1" 
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"/>
+                        </Button>
 
-	<Style Selector="Button.TitleBarButton">
-		<Setter Property="Width" Value="46" />
-		<Setter Property="Height" Value="32" />
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="CornerRadius" Value="0" />
-		<Setter Property="FontSize" Value="10" />
-		<Setter Property="VerticalAlignment" Value="Stretch" />
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
-	</Style>
+                        <Button Name="PART_MaximizeButton" Classes="TitleBarButton"
+                                IsVisible="{TemplateBinding ShowMaximize}"
+                                IsEnabled="{TemplateBinding CanMaximize}">
+                            <Path Data="M 1,1 H 9 V 9 H 1 Z" 
+                                  Stroke="{Binding $parent[Button].Foreground}" 
+                                  StrokeThickness="1" 
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"/>
+                        </Button>
 
-	<Style Selector="Button.TitleBarButton:pointerover">
-		<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
-	</Style>
+                        <Button Name="PART_CloseButton" Classes="TitleBarButton Close"
+                                IsVisible="{TemplateBinding ShowClose}">
+                            <Path Data="M 0,0 L 10,10 M 10,0 L 0,10" 
+                                  Stroke="{Binding $parent[Button].Foreground}" 
+                                  StrokeThickness="1" 
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 
-	<Style Selector="Button.TitleBarButton.Close:pointerover">
-		<Setter Property="Background" Value="#E81123" />
-		<Setter Property="Foreground" Value="White" />
-	</Style>
+    <Style Selector="Button.TitleBarButton">
+        <Setter Property="Width" Value="46" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Button.TitleBarButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+    </Style>
+
+    <Style Selector="Button.TitleBarButton.Close:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Background" Value="#E81123" />
+    </Style>
+
+    <Style Selector="Button.TitleBarButton.Close:pointerover Path">
+        <Setter Property="Stroke" Value="White" />
+    </Style>
+
+    <Style Selector="Button.TitleBarButton:disabled">
+        <Setter Property="Opacity" Value="0.3" />
+    </Style>
+
 </Styles>

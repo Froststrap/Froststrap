@@ -47,6 +47,7 @@
 						</ToggleButton>
 
 						<Border Name="PART_ContentContainer"
+								BorderBrush="{TemplateBinding BorderBrush}"
                                 ClipToBounds="True">
 							<Border.Transitions>
 								<Transitions>
@@ -68,11 +69,15 @@
 	<Style Selector="controls|CardExpander[IsExpanded=True] Path#ExpanderIcon">
 		<Setter Property="RenderTransform" Value="rotate(180deg)" />
 	</Style>
-	<Style Selector="controls|CardExpander[IsExpanded=False] Border#PART_ContentContainer">
-		<Setter Property="Height" Value="0" />
-		<Setter Property="Opacity" Value="0" />
-	</Style>
+
 	<Style Selector="controls|CardExpander[IsExpanded=True] Border#PART_ContentContainer">
 		<Setter Property="Opacity" Value="1" />
+		<Setter Property="BorderThickness" Value="0,1,0,0" />
+	</Style>
+
+	<Style Selector="controls|CardExpander[IsExpanded=False] Border#PART_ContentContainer">
+		<Setter Property="Opacity" Value="0" />
+		<Setter Property="Height" Value="0" />
+		<Setter Property="BorderThickness" Value="0" />
 	</Style>
 </Styles>
