@@ -48,6 +48,8 @@ namespace Froststrap.UI.Elements.Base
             {
                 try
                 {
+                    Application.Current.Resources.Remove("ApplicationBackgroundColor");
+
                     var themeUri = new Uri($"avares://Froststrap/UI/AppThemes/ResourceDictionarys/{themeName}.axaml");
                     var loadedTheme = AvaloniaXamlLoader.Load(themeUri);
                     if (loadedTheme is ResourceDictionary dict)
