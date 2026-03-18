@@ -133,7 +133,7 @@
                                                             <TextBlock
                                                                 VerticalAlignment="Center"
                                                                 FontSize="12"
-                                                                Text="{Binding PlayerCount}" />
+                                                                Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </DataTemplate>

@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Media.Imaging; // Added for Bitmap
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
 
@@ -68,7 +69,7 @@ namespace Froststrap.UI.Elements.Base
                     App.Logger.WriteLine("AvaloniaWindow", $"Theme/Style loading error for {themeName}: {ex.Message}");
                 }
             }
-            else 
+            else
             {
                 IBrush? customBackground = null;
 
@@ -101,10 +102,34 @@ namespace Froststrap.UI.Elements.Base
                         EndPoint = endPoint
                     };
                 }
+                else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
+                {
+                    string path = App.Settings.Prop.BackgroundImagePath ?? string.Empty;
+                    if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
+                    {
+                        try
+                        {
+                            var bitmap = new Bitmap(path);
+                            customBackground = new ImageBrush(bitmap)
+                            {
+                                Stretch = (Stretch)App.Settings.Prop.BackgroundStretch,
+                                Opacity = App.Settings.Prop.BackgroundOpacity
+                            };
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine("AvaloniaWindow", $"Image load error: {ex.Message}");
+                        }
+                    }
+                }
 
                 if (customBackground != null)
                 {
                     Application.Current.Resources["ApplicationBackgroundColor"] = customBackground;
+                }
+                else
+                {
+                    Application.Current.Resources["ApplicationBackgroundColor"] = Brushes.Transparent;
                 }
             }
         }
@@ -116,7 +141,6 @@ namespace Froststrap.UI.Elements.Base
             {
                 App.Logger.WriteLine("AvaloniaWindow", "Software rendering flag detected.");
             }
-
 #if QA_BUILD
             this.BorderBrush = Brushes.Red;
             this.BorderThickness = new Thickness(4);

@@ -60,7 +60,7 @@ namespace Froststrap.Models.Persistable
         };
         public double GradientAngle { get; set; } = 0;
         public BackgroundMode BackgroundType { get; set; } = BackgroundMode.Gradient;
-        public string? BackgroundImagePath { get; set; }
+        public string? BackgroundImagePath { get; set; } = "";
         public BackgroundStretch BackgroundStretch { get; set; } = BackgroundStretch.UniformToFill;
         public double BackgroundOpacity { get; set; } = 1.0;
         public string BootstrapperTitle { get; set; } = App.ProjectName;
