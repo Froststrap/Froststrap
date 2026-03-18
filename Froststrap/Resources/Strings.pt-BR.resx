@@ -318,7 +318,7 @@
 	<data name="Menu.Help.DiscordRichPresenceNotWorking">
 		<value>
 			[Presença do Discord quebrada]
-			(https://github.com/Froststraplabs/Froststrap/wiki/Discord-Rich-Presence-does-not-work)
+			(https://github.com/Bloxstraplabs/Bloxstrap/wiki/Discord-Rich-Presence-does-not-work)
 		</value>
 	</data>
 	<data name="Menu.Help.SetupFailed">
@@ -339,19 +339,19 @@
 	<data name="Menu.Help.ServerInformation">
 		<value>
 			[Informações do servidor]
-			(https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#server-information-viewing)
+			(https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#server-information-viewing)
 		</value>
 	</data>
 	<data name="Menu.Help.GameHistory">
 		<value>
 			[Histórico do jogo]
-			(https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#game-history-viewing)
+			(https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#game-history-viewing)
 		</value>
 	</data>
 	<data name="Menu.Help.DiscordRichPresence">
 		<value>
 			[Presença do Discord]
-			(https://github.com/Froststraplabs/Froststrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)
+			(https://github.com/Bloxstraplabs/Bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence)
 		</value>
 	</data>
 	<data name="Menu.Help.MessageLogsAndPlayerLogs">

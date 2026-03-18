@@ -11,7 +11,7 @@
              x:DataType="vm:RobloxSettingsViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
 	<ScrollViewer>
-		<StackPanel Margin="0,0,14,14">
+		<StackPanel Margin="14">
 			<Grid Margin="0,0,0,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />

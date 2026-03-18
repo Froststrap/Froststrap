@@ -84,6 +84,12 @@
   </Target>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate.xml" />
+    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
+    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">
     <DesignTimeSharedInput>True</DesignTimeSharedInput>
     <AutoGen>True</AutoGen>

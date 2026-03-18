@@ -188,7 +188,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "appearance";
                     CurrentPageTitle = "Appearance";
                     CurrentPageDescription = Resources.Strings.Menu_Appearance_Description;
-                    return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel(null!)))
+                    return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel()))
                         .ObserveOn(RxApp.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
@@ -250,7 +250,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 "Froststrap.UI.ViewModels.Settings.ModsViewModel" => (Wrap("mods", new ModsViewModel()), "Mods", "Manage and customize game modifications."),
                 "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel" => (Wrap("communitymods", new CommunityModsViewModel()), "Community Mods", "Browse and install mods created by the community."),
                 "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel" => (Wrap("fastflags", new FastFlagsViewModel()), "Fast Flags", "Configure advanced Roblox feature flags."),
-                "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => (Wrap("appearance", new AppearanceViewModel(null!)), "Appearance", "Configure how Froststrap should look."),
+                "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => (Wrap("appearance", new AppearanceViewModel()), "Appearance", "Configure how Froststrap should look."),
                 "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => (Wrap("robloxsettings", new RobloxSettingsViewModel()), "Roblox Settings", "Configure Roblox-specific settings and options."),
                 _ => (Wrap("integrations", new IntegrationsViewModel()), "Integrations", "Connect third-party apps to enhance your Roblox experience.")
             };

@@ -2,31 +2,27 @@
 {
     static class CustomThemeTemplateEx
     {
-        const string EXAMPLES_URL = "https://github.com/Froststraplabs/custom-bootstrapper-examples";
+        const string EXAMPLES_URL = "https://github.com/Bloxstraplabs/custom-bootstrapper-examples";
 
         public static string GetFileName(this CustomThemeTemplate template)
         {
             return $"CustomBootstrapperTemplate_{template}.xml";
         }
 
-        public static string GetFileContents(this CustomThemeTemplate template)
+        public static async Task<string> GetFileContents(this CustomThemeTemplate template)
         {
-            string contents = Encoding.UTF8.GetString(Resource.Get(template.GetFileName()).Result);
+            var resourceData = await Resource.Get(template.GetFileName());
+            string contents = Encoding.UTF8.GetString(resourceData);
 
             switch (template)
             {
                 case CustomThemeTemplate.Blank:
-                    {
-                        string moreText = string.Format(Strings.CustomTheme_Templates_Blank_MoreExamples, EXAMPLES_URL);
-                        return contents.Replace("{0}", Strings.CustomTheme_Templates_Blank_UIElements).Replace("{1}", moreText);
-                    }
+                    string moreTextBlank = string.Format(Strings.CustomTheme_Templates_Blank_MoreExamples, EXAMPLES_URL);
+                    return contents.Replace("{0}", Strings.CustomTheme_Templates_Blank_UIElements).Replace("{1}", moreTextBlank);
                 case CustomThemeTemplate.Simple:
-                    {
-                        string moreText = string.Format(Strings.CustomTheme_Templates_Simple_MoreExamples, EXAMPLES_URL);
-                        return contents.Replace("{0}", moreText);
-                    }
+                    string moreTextSimple = string.Format(Strings.CustomTheme_Templates_Simple_MoreExamples, EXAMPLES_URL);
+                    return contents.Replace("{0}", moreTextSimple);
                 default:
-                    Debug.Assert(false);
                     return contents;
             }
         }

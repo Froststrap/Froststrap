@@ -4,98 +4,79 @@
      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
      xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-     xmlns:local="clr-namespace:Froststrap.UI.Elements.Dialogs"
+     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
      xmlns:resources="clr-namespace:Froststrap.Resources"
-     xmlns:ui="using:FluentAvalonia.UI.Controls"
      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
      x:DataType="vm:AddCustomThemeViewModel"
      Title="Add Custom Theme"
      Width="480"
-     Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
      CanResize="False"
      SizeToContent="Height"
+     SystemDecorations="None"
      WindowStartupLocation="CenterScreen"
      mc:Ignorable="d">
 
-    <Grid RowDefinitions="Auto, *, Auto">
-        <Grid Grid.Row="0" Height="40" ColumnDefinitions="*, Auto">
-            <TextBlock Text="{x:Static resources:Strings.CustomTheme_Add_Title}"
-                       VerticalAlignment="Center"
-                       Margin="12,0"
-                       FontSize="12"/>
-        </Grid>
+<Grid RowDefinitions="Auto,*,Auto">
+    <controls:TitleBar Grid.Row="0" 
+                       Icon="avares://Froststrap/Froststrap.ico" 
+                       Title="Add Custom Theme" />
 
-        <TabControl x:Name="Tabs"
-                    Grid.Row="1"
-                    Margin="16"
-                    SelectedIndex="{Binding SelectedTab, Mode=TwoWay}">
-            
-            <TabItem Header="{x:Static resources:Strings.Common_CreateNew}">
-                <StackPanel Margin="16" Spacing="12">
-                    <Grid ColumnDefinitions="100, *">
-                        <TextBlock Text="{x:Static resources:Strings.Common_Name}" VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1" Text="{Binding Name, Mode=TwoWay}" />
-                    </Grid>
-
-                    <TextBlock Foreground="{DynamicResource SystemFillColorCriticalBrush}"
-                               Text="{Binding NameError}"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap"
-                               IsVisible="{Binding NameErrorVisibility}" />
-
-                    <Grid ColumnDefinitions="100, *">
-                        <TextBlock Text="{x:Static resources:Strings.Common_Template}" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="1" 
-                                  HorizontalAlignment="Stretch"
-                                  ItemsSource="{Binding Templates}"
-                                  SelectedItem="{Binding Template, Mode=TwoWay}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </Grid>
-                </StackPanel>
-            </TabItem>
-
-            <TabItem Header="{x:Static resources:Strings.Common_Import}">
-                <StackPanel Margin="16" Spacing="11">
-                    <TextBlock Text="{Binding FilePath}"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap"
-                               IsVisible="{Binding FilePathVisibility}" />
-                    
-                    <Button HorizontalAlignment="Stretch"
-                            Click="OnImportButtonClicked">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ui:SymbolIcon Symbol="Document" /> <!-- piece of shit SymbolIcon has basically nothing -->
-                            <TextBlock Text="{x:Static resources:Strings.Common_ImportFromFile}" />
-                        </StackPanel>
-                    </Button>
-
-                    <TextBlock Foreground="{DynamicResource SystemFillColorCriticalBrush}"
-                               Text="{Binding FileError}"
-                               TextAlignment="Center"
-                               TextWrapping="Wrap"
-                               IsVisible="{Binding FileErrorVisibility}" />
-                </StackPanel>
-            </TabItem>
-        </TabControl>
-
-        <Border Grid.Row="2"
-                Padding="16"
-                Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}">
-            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Spacing="12">
-                <Button Content="{x:Static resources:Strings.Common_OK}"
-                        MinWidth="100"
-                        Classes="accent"
-                        Click="OnOkButtonClicked" />
-                <Button Content="{x:Static resources:Strings.Common_Cancel}"
-                        MinWidth="100"
-                        IsCancel="True"/> 
+    <TabControl Grid.Row="1" Margin="8" SelectedIndex="{Binding SelectedTab}">
+        <TabItem Header="{x:Static resources:Strings.Common_CreateNew}">
+            <StackPanel Spacing="12" Margin="0,12">
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Text="{x:Static resources:Strings.Common_Name}" VerticalAlignment="Center" Width="100"/>
+                    <TextBox Grid.Column="1" Text="{Binding Name}"/>
+                </Grid>
+                
+                <TextBlock IsVisible="{Binding HasNameError}" 
+                           Text="{Binding NameError}" 
+                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" 
+                           FontSize="12" 
+                           HorizontalAlignment="Right"/>
+                
+                <Grid ColumnDefinitions="Auto,*">
+                    <TextBlock Text="{x:Static resources:Strings.Common_Template}" VerticalAlignment="Center" Width="100"/>
+                    <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
+                              ItemsSource="{Binding Templates}" 
+                              SelectedItem="{Binding Template}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
             </StackPanel>
-        </Border>
-    </Grid>
+        </TabItem>
+
+        <TabItem Header="{x:Static resources:Strings.Common_Import}">
+            <StackPanel Spacing="12" Margin="0,12">
+                <TextBlock Text="{Binding FilePath}" 
+                           IsVisible="{Binding HasFilePath}" 
+                           TextAlignment="Center" 
+                           TextWrapping="Wrap"/>
+                <Button Content="{x:Static resources:Strings.Common_ImportFromFile}" 
+                        HorizontalAlignment="Stretch" 
+                        Click="OnImportButtonClicked"/>
+                <TextBlock IsVisible="{Binding HasFileError}" 
+                           Text="{Binding FileError}" 
+                           Foreground="{DynamicResource SystemFillColorCriticalBrush}" 
+                           TextAlignment="Center"/>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+
+    <Border Grid.Row="2" Background="{DynamicResource PrimaryBackgroundColor}" Padding="16">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+            <Button Content="{x:Static resources:Strings.Common_OK}" 
+                    Click="OnOkButtonClicked" 
+                    Width="100" 
+                    Theme="{StaticResource AccentButtonTheme}"/> <Button Content="{x:Static resources:Strings.Common_Cancel}" 
+                    Click="OnCancelButtonClicked" 
+                    Width="100"/>
+        </StackPanel>
+    </Border>
+</Grid>
 </base:AvaloniaWindow>

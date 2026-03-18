@@ -8,22 +8,21 @@ using Froststrap.UI.Elements.Editor;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
     public partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
-        private readonly UserControl _page;
-
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
         public ICommand BrowseCustomIconLocationCommand => new RelayCommand(BrowseCustomIconLocation);
 
-        public ICommand AddCustomThemeCommand => new RelayCommand(AddCustomTheme);
-        public ICommand DeleteCustomThemeCommand => new RelayCommand(DeleteCustomTheme);
-        public ICommand RenameCustomThemeCommand => new RelayCommand(RenameCustomTheme);
-        public ICommand EditCustomThemeCommand => new RelayCommand(EditCustomTheme);
-        public ICommand ExportCustomThemeCommand => new RelayCommand(ExportCustomTheme);
+        public ICommand AddCustomThemeCommand => new RelayCommand<Control>(async c => await AddCustomTheme(c));
+        public ICommand EditCustomThemeCommand => new RelayCommand<Control>(async c => await EditCustomTheme(c));
+        public ICommand ExportCustomThemeCommand => new RelayCommand<Control>(async c => await ExportCustomTheme(c));
+        public IAsyncRelayCommand DeleteCustomThemeCommand => new AsyncRelayCommand(() => Task.Run(DeleteCustomTheme));
+        public IAsyncRelayCommand RenameCustomThemeCommand => new AsyncRelayCommand(() => Task.Run(RenameCustomTheme));
 
         private async void PreviewBootstrapper()
         {
@@ -74,17 +73,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public AppearanceViewModel(UserControl page)
-        {
-            _page = page;
-
-            foreach (var entry in BootstrapperIconEx.Selections)
-                Icons.Add(new BootstrapperIconEntry { IconType = entry });
-
-            PopulateCustomThemes();
-            InitializeGradientStops();
-        }
-
         public static List<string> Languages => Locale.GetLanguages();
 
         public string SelectedLanguage
@@ -98,20 +86,6 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.DownloadingStringFormat;
             set => App.Settings.Prop.DownloadingStringFormat = value;
         }
-
-        public IEnumerable<BootstrapperStyle> Dialogs { get; } = BootstrapperStyleEx.Selections;
-
-        public BootstrapperStyle Dialog
-        {
-            get => App.Settings.Prop.BootstrapperStyle;
-            set
-            {
-                App.Settings.Prop.BootstrapperStyle = value;
-                OnPropertyChanged(nameof(CustomThemesExpanded)); // TODO: only fire when needed
-            }
-        }
-
-        public bool CustomThemesExpanded => App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.CustomDialog;
 
         public ObservableCollection<BootstrapperIconEntry> Icons { get; set; } = new();
 
@@ -157,10 +131,37 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public AppearanceViewModel()
+        {
+            foreach (var entry in BootstrapperIconEx.Selections)
+                Icons.Add(new BootstrapperIconEntry { IconType = entry });
+
+            PopulateCustomThemes();
+            InitializeGradientStops();
+        }
+
+        public IEnumerable<BootstrapperStyle> Dialogs { get; } = BootstrapperStyleEx.Selections;
+        public BootstrapperStyle Dialog
+        {
+            get => App.Settings.Prop.BootstrapperStyle;
+            set
+            {
+                if (App.Settings.Prop.BootstrapperStyle != value)
+                {
+                    App.Settings.Prop.BootstrapperStyle = value;
+                    OnPropertyChanged(nameof(Dialog));
+                    OnPropertyChanged(nameof(CustomThemesExpanded));
+                }
+            }
+        }
+
+        public bool CustomThemesExpanded => App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.CustomDialog;
+
         private void DeleteCustomThemeStructure(string name)
         {
             string dir = Path.Combine(Paths.CustomThemes, name);
-            Directory.Delete(dir, true);
+            if (Directory.Exists(dir))
+                Directory.Delete(dir, true);
         }
 
         private void RenameCustomThemeStructure(string oldName, string newName)
@@ -170,34 +171,94 @@ namespace Froststrap.UI.ViewModels.Settings
             Directory.Move(oldDir, newDir);
         }
 
-		private async void AddCustomTheme()
-		{
-			App.FrostRPC?.SetDialog("Add Custom Launcher");
+        private async Task AddCustomTheme(Control? control)
+        {
+            var topLevel = TopLevel.GetTopLevel(control) ??
+                           (Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
-			var mainWindow = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-				? desktop.MainWindow
-				: null;
+            if (topLevel is not Window parentWindow)
+            {
+                App.Logger.WriteLine("AppearanceVM", "AddCustomTheme: No parent window found.");
+                return;
+            }
 
-			if (mainWindow == null)
-				return;
+            App.FrostRPC?.SetDialog("Add Custom Launcher");
 
-			var dialog = new AddCustomThemeDialog();
-			await dialog.ShowDialog((Window)mainWindow);
+            var dialog = new AddCustomThemeDialog();
+            await dialog.ShowDialog(parentWindow);
 
-			App.FrostRPC?.ClearDialog();
+            App.FrostRPC?.ClearDialog();
 
-			if (dialog.Created)
-			{
-				CustomThemes.Add(dialog.ThemeName);
-				SelectedCustomThemeIndex = CustomThemes.Count - 1;
+            if (dialog.Created)
+            {
+                CustomThemes.Add(dialog.ThemeName);
 
-				OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-				OnPropertyChanged(nameof(IsCustomThemeSelected));
+                SelectedCustomTheme = dialog.ThemeName;
+                SelectedCustomThemeIndex = CustomThemes.IndexOf(dialog.ThemeName);
 
-				if (dialog.OpenEditor)
-					EditCustomTheme();
-			}
-		}
+                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
+
+                if (dialog.OpenEditor)
+                    await EditCustomTheme(control);
+            }
+        }
+
+        private async Task EditCustomTheme(Control? control)
+        {
+            if (SelectedCustomTheme is null) return;
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
+
+            App.FrostRPC?.SetDialog("Edit Custom Theme");
+            await new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog(parentWindow);
+            App.FrostRPC?.ClearDialog();
+        }
+
+        private async Task ExportCustomTheme(Control? control)
+        {
+            if (SelectedCustomTheme is null) return;
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
+
+            var file = await parentWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            {
+                Title = "Export Theme",
+                SuggestedFileName = $"{SelectedCustomTheme}.zip",
+                FileTypeChoices = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } }
+            });
+
+            if (file is null) return;
+
+            string themeDir = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
+
+            await Task.Run(async () =>
+            {
+                using var outputStream = await file.OpenWriteAsync();
+                using var zipStream = new ZipOutputStream(outputStream);
+                zipStream.SetLevel(5);
+
+                foreach (var filePath in Directory.EnumerateFiles(themeDir, "*.*", SearchOption.AllDirectories))
+                {
+                    string relativePath = Path.GetRelativePath(themeDir, filePath);
+                    var entry = new ZipEntry(relativePath) { DateTime = DateTime.Now };
+
+                    zipStream.PutNextEntry(entry);
+                    using var fileStream = File.OpenRead(filePath);
+                    fileStream.CopyTo(zipStream);
+                    zipStream.CloseEntry();
+                }
+
+                zipStream.Finish();
+                zipStream.Close();
+            });
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start("explorer.exe", $"/select,\"{file.Path.LocalPath}\"");
+            }
+        }
 
         private async void DeleteCustomTheme()
         {
@@ -228,8 +289,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async void RenameCustomTheme()
         {
-            const string LOG_IDENT = "AppearanceViewModel::RenameCustomTheme";
-
             if (SelectedCustomTheme is null || SelectedCustomTheme == SelectedCustomThemeName)
                 return;
 
@@ -240,28 +299,18 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             var validationResult = PathValidator.IsFileNameValid(SelectedCustomThemeName);
-
             if (validationResult != PathValidator.ValidationResult.Ok)
             {
-                switch (validationResult)
+                string errorString = validationResult switch
                 {
-                    case PathValidator.ValidationResult.IllegalCharacter:
-                        await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameIllegalCharacters, MessageBoxImage.Error);
-                        break;
-                    case PathValidator.ValidationResult.ReservedFileName:
-                        await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_NameReserved, MessageBoxImage.Error);
-                        break;
-                    default:
-                        App.Logger.WriteLine(LOG_IDENT, $"Got unhandled PathValidator::ValidationResult {validationResult}");
-                        Debug.Assert(false);
-
-                        await Frontend.ShowMessageBox(Strings.CustomTheme_Add_Errors_Unknown, MessageBoxImage.Error);
-                        break;
-                }
+                    PathValidator.ValidationResult.IllegalCharacter => Strings.CustomTheme_Add_Errors_NameIllegalCharacters,
+                    PathValidator.ValidationResult.ReservedFileName => Strings.CustomTheme_Add_Errors_NameReserved,
+                    _ => Strings.CustomTheme_Add_Errors_Unknown
+                };
+                await Frontend.ShowMessageBox(errorString, MessageBoxImage.Error);
                 return;
             }
 
-            // better to check for the file instead of the directory so broken themes can be overwritten
             string path = Path.Combine(Paths.CustomThemes, SelectedCustomThemeName, "Theme.xml");
             if (File.Exists(path))
             {
@@ -275,123 +324,47 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT, ex);
-                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_RenameFailed, SelectedCustomTheme, ex.Message), MessageBoxImage.Error);
+                App.Logger.WriteException("Rename", ex);
+                await Frontend.ShowMessageBox("Rename failed", MessageBoxImage.Error);
                 return;
             }
 
+            string newName = SelectedCustomThemeName;
             int idx = CustomThemes.IndexOf(SelectedCustomTheme);
-            CustomThemes[idx] = SelectedCustomThemeName;
 
+            CustomThemes[idx] = newName;
+            SelectedCustomTheme = newName;
             SelectedCustomThemeIndex = idx;
+
             OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-        }
-
-		private async void EditCustomTheme()
-		{
-			if (SelectedCustomTheme is null)
-				return;
-
-			App.FrostRPC?.SetDialog("Edit Custom Theme");
-
-			var mainWindow = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-				? desktop.MainWindow
-				: null;
-
-			if (mainWindow == null)
-				return;
-
-			await new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog((Window)mainWindow);
-
-			App.FrostRPC?.ClearDialog();
-		}
-
-        private async void ExportCustomTheme()
-        {
-            if (SelectedCustomTheme is null)
-                return;
-
-            var mainWindow = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null;
-
-            if (mainWindow == null)
-                return;
-
-            var storageProvider = mainWindow.StorageProvider;
-
-            var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-            {
-                Title = "Export Custom Theme",
-                SuggestedFileName = $"{SelectedCustomTheme}.zip",
-                DefaultExtension = "zip",
-                FileTypeChoices = new[]
-                {
-                    new FilePickerFileType("Zip Archive")
-                    {
-                        Patterns = new[] { "*.zip" }
-                    }
-                }
-            });
-
-            if (file == null || string.IsNullOrEmpty(file.Path.LocalPath))
-                return;
-
-            string themeDir = Path.Combine(Paths.CustomThemes, SelectedCustomTheme);
-
-            using var memStream = new MemoryStream();
-            using var zipStream = new ZipOutputStream(memStream);
-
-            foreach (var filePath in Directory.EnumerateFiles(themeDir, "*.*", SearchOption.AllDirectories))
-            {
-                string relativePath = filePath[(themeDir.Length + 1)..];
-
-                var entry = new ZipEntry(relativePath);
-                entry.DateTime = DateTime.Now;
-
-                zipStream.PutNextEntry(entry);
-
-                using var fileStream = File.OpenRead(filePath);
-                fileStream.CopyTo(zipStream);
-            }
-
-            zipStream.CloseEntry();
-            zipStream.Finish();
-            memStream.Position = 0;
-
-            using var outputStream = File.OpenWrite(file.Path.LocalPath);
-            memStream.CopyTo(outputStream);
-
-            Process.Start("explorer.exe", $"/select,\"{file.Path.LocalPath}\"");
+            OnPropertyChanged(nameof(SelectedCustomTheme));
+            OnPropertyChanged(nameof(SelectedCustomThemeName));
         }
 
         private void PopulateCustomThemes()
         {
             string? selected = App.Settings.Prop.SelectedCustomTheme;
+            CustomThemes.Clear();
 
-            Directory.CreateDirectory(Paths.CustomThemes);
+            if (!Directory.Exists(Paths.CustomThemes))
+                Directory.CreateDirectory(Paths.CustomThemes);
 
             foreach (string directory in Directory.GetDirectories(Paths.CustomThemes))
             {
                 if (!File.Exists(Path.Combine(directory, "Theme.xml")))
-                    continue; // missing the main theme file, ignore
+                    continue;
 
-                string name = Path.GetFileName(directory);
-                CustomThemes.Add(name);
+                CustomThemes.Add(Path.GetFileName(directory));
             }
 
-            if (selected != null)
+            if (!string.IsNullOrEmpty(selected))
             {
                 int idx = CustomThemes.IndexOf(selected);
-
                 if (idx != -1)
                 {
                     SelectedCustomThemeIndex = idx;
+                    SelectedCustomTheme = selected;
                     OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-                }
-                else
-                {
-                    SelectedCustomTheme = null;
                 }
             }
         }
@@ -399,17 +372,24 @@ namespace Froststrap.UI.ViewModels.Settings
         public string? SelectedCustomTheme
         {
             get => App.Settings.Prop.SelectedCustomTheme;
-            set => App.Settings.Prop.SelectedCustomTheme = value;
+            set
+            {
+                if (App.Settings.Prop.SelectedCustomTheme != value)
+                {
+                    App.Settings.Prop.SelectedCustomTheme = value;
+                    SelectedCustomThemeName = value ?? string.Empty;
+
+                    OnPropertyChanged(nameof(SelectedCustomTheme));
+                    OnPropertyChanged(nameof(SelectedCustomThemeName));
+                    OnPropertyChanged(nameof(IsCustomThemeSelected));
+                }
+            }
         }
 
         public string SelectedCustomThemeName { get; set; } = "";
-
         public int SelectedCustomThemeIndex { get; set; }
-
         public ObservableCollection<string> CustomThemes { get; set; } = new();
         public bool IsCustomThemeSelected => SelectedCustomTheme is not null;
-
-
 
         #region Custom App Themes
         public IEnumerable<Theme> Themes { get; } = Enum.GetValues(typeof(Theme)).Cast<Theme>();
