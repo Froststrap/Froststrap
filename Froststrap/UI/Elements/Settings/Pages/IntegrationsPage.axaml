@@ -59,7 +59,6 @@
             </controls:OptionControl>
 
             <controls:CardExpander
-                Margin="0,8,0,0" 
                 IsEnabled="{Binding ActivityTrackingEnabled}"
                 IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
                 Classes="NoUserExpansion" Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">

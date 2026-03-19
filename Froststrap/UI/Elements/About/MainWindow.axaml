@@ -28,10 +28,6 @@
                             <ic:PackIconMaterial Kind="Information" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
                         </Button>
 
-                        <Button ToolTip.Tip="{x:Static resources:Strings.About_Translators_Title}" Command="{Binding NavigateToTranslatorsCommand}" Tag="translators" Classes="Icon-Button">
-                            <ic:PackIconMaterial Kind="Translate" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
-                        </Button>
-
                         <Button ToolTip.Tip="{x:Static resources:Strings.About_Licenses_Title}" Command="{Binding NavigateToLicensesCommand}" Tag="licenses" Classes="Icon-Button">
                             <ic:PackIconMaterial Kind="License" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
                         </Button>

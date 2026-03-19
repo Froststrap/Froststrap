@@ -6,13 +6,11 @@
 		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Padding" Value="16,12" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-						Padding="{TemplateBinding Padding}"
                         CornerRadius="4" Margin="0,4" ClipToBounds="True">
 					<StackPanel>
 						<ToggleButton Name="HeaderButton" Padding="16,12" Background="Transparent" BorderThickness="0"
