@@ -2179,7 +2179,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Custom Loading Spinner</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
-    <value>Find by Name or Place ID:</value>
+    <value>Enter Place ID or Game Name...</value>
   </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Server Size:</value>
