@@ -350,7 +350,7 @@ namespace Froststrap.UI.ViewModels.Settings
             CloseWindow();
         }
 
-        internal sealed class SettingsPageViewModelWrapper : ReactiveObject, IRoutableViewModel
+        public sealed class SettingsPageViewModelWrapper : ReactiveObject, IRoutableViewModel
         {
             public SettingsPageViewModelWrapper(IScreen hostScreen, string urlPathSegment, object innerViewModel)
             {
