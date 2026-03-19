@@ -10,16 +10,16 @@ namespace Froststrap.UI.Elements.Controls
             AvaloniaProperty.Register<TitleBar, string?>(nameof(Title));
 
         public static readonly StyledProperty<bool> ShowMinimizeProperty =
-            AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowMinimize), false);
+            AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowMinimize), true);
 
         public static readonly StyledProperty<bool> ShowMaximizeProperty =
-            AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowMaximize), false);
+            AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowMaximize), true);
 
         public static readonly StyledProperty<bool> CanMaximizeProperty =
             AvaloniaProperty.Register<TitleBar, bool>(nameof(CanMaximize), false);
 
         public static readonly StyledProperty<bool> ShowCloseProperty =
-            AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowClose), false);
+            AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowClose), true);
 
         public static readonly StyledProperty<Avalonia.Media.IImage?> IconProperty =
             AvaloniaProperty.Register<TitleBar, Avalonia.Media.IImage?>(nameof(Icon));

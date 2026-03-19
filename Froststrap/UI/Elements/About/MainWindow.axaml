@@ -6,7 +6,7 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.About"
-        xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+        xmlns:ic="using:IconPacks.Avalonia.Material"
         mc:Ignorable="d"
         x:Class="Froststrap.UI.Elements.About.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -24,16 +24,16 @@
             <Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel Spacing="0" VerticalAlignment="Top">
-                        <Button ToolTip.Tip="{x:Static resources:Strings.Menu_About_Title}" Command="{Binding NavigateToAboutCommand}" Tag="about" Classes="icon-button">
-                            <lucideAvalonia:Lucide Icon="Info" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+                        <Button ToolTip.Tip="{x:Static resources:Strings.Menu_About_Title}" Command="{Binding NavigateToAboutCommand}" Tag="about" Classes="Icon-Button">
+                            <ic:PackIconMaterial Kind="Information" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
                         </Button>
 
-                        <Button ToolTip.Tip="{x:Static resources:Strings.About_Translators_Title}" Command="{Binding NavigateToTranslatorsCommand}" Tag="translators" Classes="icon-button">
-                            <lucideAvalonia:Lucide Icon="Languages" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+                        <Button ToolTip.Tip="{x:Static resources:Strings.About_Translators_Title}" Command="{Binding NavigateToTranslatorsCommand}" Tag="translators" Classes="Icon-Button">
+                            <ic:PackIconMaterial Kind="Translate" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
                         </Button>
 
-                        <Button ToolTip.Tip="{x:Static resources:Strings.About_Licenses_Title}" Command="{Binding NavigateToLicensesCommand}" Tag="licenses" Classes="icon-button">
-                            <lucideAvalonia:Lucide Icon="Code" StrokeBrush="#888888" StrokeThickness="1.5" Width="16" Height="16" />
+                        <Button ToolTip.Tip="{x:Static resources:Strings.About_Licenses_Title}" Command="{Binding NavigateToLicensesCommand}" Tag="licenses" Classes="Icon-Button">
+                            <ic:PackIconMaterial Kind="License" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
                         </Button>
                     </StackPanel>
                 </ScrollViewer>

@@ -35,7 +35,7 @@
                 <controls:OptionControl
                     Header="Save And Launch Action"
                     Description="Adds an option so whenever clicking save and launch, it will ask if to studio or player.">
-                    <CheckBox IsChecked="{Binding SaveAndLaunchToPlayer, Mode=TwoWay}" />
+                    <ToggleSwitch IsChecked="{Binding SaveAndLaunchToPlayer, Mode=TwoWay}" />
                 </controls:OptionControl>
 
                 <Separator Margin="0,8,0,4" />
@@ -50,20 +50,21 @@
                     Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
                     Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
                     IsEnabled="{Binding !IsRobloxInstallationMissing}">
-                    <CheckBox IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
+                    <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
                 </controls:OptionControl>
 
                 <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
                     Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
                     IsEnabled="{Binding !IsRobloxInstallationMissing}">
-                    <CheckBox IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
+                    <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
                 </controls:OptionControl>
 
                 <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
-                    Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
-                    <CheckBox IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
+                    Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}"
+                    HelpLink="https://">
+                    <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
                 </controls:OptionControl>
 
                 <controls:CardExpander
@@ -152,11 +153,10 @@
                                 Margin="0,8,0,0"
                                 Orientation="Horizontal"
                                 IsVisible="{Binding ShowChannelWarning, Mode=OneWay}">
-                                <TextBlock
-                                    FontSize="16"
-                                    Foreground="#FFA500"
-                                    VerticalAlignment="Center"
-                                    Text="⚠" />
+                                <Image Source="avares://Froststrap/Resources/MessageBox/Warning.png"
+                                    RenderOptions.BitmapInterpolationMode="HighQuality"
+                                    Width="24"
+                                    Height="24"/>
                                 <TextBlock
                                     Margin="8,0,0,0"
                                     VerticalAlignment="Center"
@@ -178,14 +178,13 @@
                                 IsIndeterminate="True"
                                 IsVisible="{Binding !ShowLoadingError, Mode=OneWay}" />
 
-                            <TextBlock
-                                Grid.Column="0"
-                                Margin="12"
-                                FontSize="32"
-                                Foreground="#FF6B6B"
-                                VerticalAlignment="Center"
-                                IsVisible="{Binding ShowLoadingError, Mode=OneWay}"
-                                Text="✗" />
+                            <Image Source="avares://Froststrap/Resources/MessageBox/FullQuality/Error.png"
+                                   Grid.Column="0"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                                   Margin="6"
+                                   Width="60"
+                                   Height="60"
+                                   IsVisible="{Binding ShowLoadingError, Mode=OneWay}"/>
 
                             <TextBlock
                                 Grid.Column="1"

@@ -13,7 +13,6 @@ public partial class ChannelPage : UserControl
     public ChannelPage()
     {
         InitializeComponent();
-        DataContext = new ChannelViewModel();
         App.FrostRPC?.SetPage("Settings");
     }
 

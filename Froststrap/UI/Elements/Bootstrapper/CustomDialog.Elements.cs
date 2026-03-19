@@ -352,15 +352,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             dialog.ExtendClientAreaToDecorationsHint = ParseXmlAttribute<bool>(xmlElement, "ExtendClientAreaToDecorationsHint", true);
 
-            bool hasTitleBarElement = xmlElement.Elements().Any(x => x.Name.LocalName == "TitleBar");
-
-            bool hasCustomBorders = xmlElement.Attribute("BorderBrush") != null || xmlElement.Attribute("BorderThickness") != null;
-
-            if (hasTitleBarElement || hasCustomBorders)
-                dialog.SystemDecorations = SystemDecorations.None;
-            else
-                dialog.SystemDecorations = SystemDecorations.Full;
-
             dialog.ElementGrid.Margin = dialog.Margin;
 
             dialog.Margin = new Thickness(0);
