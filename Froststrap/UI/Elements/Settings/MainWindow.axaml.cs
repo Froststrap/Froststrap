@@ -1,17 +1,11 @@
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Avalonia.Styling;
-using Froststrap.Resources;
 using Froststrap.UI.ViewModels.Settings;
-using LucideAvalonia;
-using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using ReactiveUI;
 
 namespace Froststrap.UI.Elements.Settings
@@ -239,20 +233,9 @@ namespace Froststrap.UI.Elements.Settings
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel != null)
             {
-                var closeButton = new Button
-                {
-                    Content = (LucideAvalonia.Enum.LucideIconNames)Enum.Parse(typeof(LucideAvalonia.Enum.LucideIconNames), "X"),
-                    Background = new SolidColorBrush(Colors.Transparent),
-                    Foreground = new SolidColorBrush(Color.Parse("#FFFFFF")),
-                    FontSize = 16,
-                    Padding = new Thickness(8),
-                    Margin = new Thickness(20, 0, 0, 0),
-                    Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand)
-                };
-
                 var contentGrid = new Grid
                 {
-                    ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
+                    ColumnDefinitions = new ColumnDefinitions("Auto,*"),
                     Margin = new Thickness(0)
                 };
 
@@ -292,9 +275,6 @@ namespace Froststrap.UI.Elements.Settings
                 Grid.SetColumn(textPanel, 1);
                 contentGrid.Children.Add(textPanel);
 
-                Grid.SetColumn(closeButton, 2);
-                contentGrid.Children.Add(closeButton);
-
                 var notification = new Border
                 {
                     Background = new SolidColorBrush(Color.Parse("#1F1F1F")),
@@ -307,6 +287,7 @@ namespace Froststrap.UI.Elements.Settings
                     Height = 90,
                     CornerRadius = new CornerRadius(12),
                     RenderTransform = new TranslateTransform(0, 100),
+                    Cursor = new Cursor(StandardCursorType.Hand),
                     Child = contentGrid
                 };
 
@@ -318,9 +299,7 @@ namespace Froststrap.UI.Elements.Settings
                 });
                 notification.Transitions = transitions;
 
-                notificationPanel.Children.Add(notification);
-
-                closeButton.Click += (s, e) =>
+                notification.PointerPressed += (s, e) =>
                 {
                     notification.RenderTransform = new TranslateTransform(0, 100);
                     Dispatcher.UIThread.InvokeAsync(async () =>
@@ -330,16 +309,21 @@ namespace Froststrap.UI.Elements.Settings
                     });
                 };
 
+                notificationPanel.Children.Add(notification);
+
                 Dispatcher.UIThread.InvokeAsync(async () =>
                 {
                     notification.RenderTransform = new TranslateTransform(0, 0);
 
                     await Task.Delay(4000);
 
-                    notification.RenderTransform = new TranslateTransform(0, 100);
+                    if (notificationPanel.Children.Contains(notification))
+                    {
+                        notification.RenderTransform = new TranslateTransform(0, 100);
 
-                    await Task.Delay(300);
-                    notificationPanel.Children.Remove(notification);
+                        await Task.Delay(300);
+                        notificationPanel.Children.Remove(notification);
+                    }
                 });
             }
         }
