@@ -135,6 +135,18 @@
                                 Foreground="#888888"/>
                         </Button>
 
+                        <Button
+                            Classes="icon-button"
+                            Command="{Binding NavigateToShortcutsCommand}"
+                            Tag="robloxsettings"
+                            ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}">
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="LinkBoxOutline"
+                                Foreground="#888888"/>
+                        </Button>
+
                         <Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
                         <!--  Footer Menu Items  -->

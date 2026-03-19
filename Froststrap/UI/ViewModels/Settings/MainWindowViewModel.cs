@@ -89,6 +89,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAppearanceCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRegionSelectorCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRobloxSettingsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToShortcutsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToChannelsCommand { get; }
 
 
@@ -232,6 +233,22 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
             );
 
+            NavigateToShortcutsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "shortcuts";
+                    CurrentPageTitle = "Shortcuts";
+                    CurrentPageDescription = Strings.Menu_Shortcuts_Description;
+                    return _router.Navigate.Execute(Wrap("shortcuts", new ShortcutsViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
             NavigateToChannelsCommand = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
@@ -270,6 +287,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel" => (Wrap("fastflags", new FastFlagsViewModel()), "Fast Flags", "Configure advanced Roblox feature flags."),
                 "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => (Wrap("appearance", new AppearanceViewModel()), "Appearance", "Configure how Froststrap should look."),
                 "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => (Wrap("robloxsettings", new RobloxSettingsViewModel()), "Roblox Settings", "Configure Roblox-specific settings and options."),
+                "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel" => (Wrap("shortcut", new ShortcutsViewModel()), "Shortcuts", Strings.Menu_Shortcuts_Description),
                 _ => (Wrap("integrations", new IntegrationsViewModel()), "Integrations", "Connect third-party apps to enhance your Roblox experience.")
             };
             CurrentPageTitle = title;
