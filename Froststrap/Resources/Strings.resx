@@ -2262,4 +2262,10 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>Community Mods</value>
   </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
+    <value>Froststrap Logs</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
+    <value>Froststrap logs will be deleted.</value>
+  </data>
 </root>

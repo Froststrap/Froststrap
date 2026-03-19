@@ -36,8 +36,6 @@ namespace Froststrap.Models.Persistable
         public bool BackgroundUpdatesEnabled { get; set; } = false;
         public bool MultiInstanceLaunching { get; set; } = false;
         public bool Error773Fix { get; set; } = false;
-        public int MultibloxInstanceCount { get; set; } = 2;
-        public int MultibloxDelayMs { get; set; } = 1500;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
         // FastFlag Editor/Settings Related
