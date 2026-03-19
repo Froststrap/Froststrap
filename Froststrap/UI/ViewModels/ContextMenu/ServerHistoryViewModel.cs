@@ -1,6 +1,7 @@
-﻿using System.Windows.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using CommunityToolkit.Mvvm.Input;
+using Avalonia.Media.Imaging;
+using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.ContextMenu
 {
@@ -50,21 +51,48 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                         .Distinct()
                         .ToList();
 
-                    if (universeIds.Any())
-                    {
-                        string universeIdsString = String.Join(',', universeIds);
-                        await UniverseDetails.FetchBulk(universeIdsString);
+                    string universeIdsString = String.Join(',', universeIds);
+                    await UniverseDetails.FetchBulk(universeIdsString);
 
-                        foreach (var entry in entriesNeedingDetails)
+                    foreach (var entry in entriesNeedingDetails)
+                    {
+                        entry.UniverseDetails = UniverseDetails.LoadFromCache(entry.UniverseId);
+                    }
+                }
+
+                var processedHistory = ProcessAndConsolidateHistory(_activityWatcher.History);
+
+                var thumbRequests = processedHistory.Select(r => new ThumbnailRequest
+                {
+                    Type = ThumbnailType.GameIcon,
+                    TargetId = (ulong)r.UniverseId,
+                    Size = "128x128"
+                }).ToList();
+
+                var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+
+                if (fetchedUrls != null)
+                {
+                    for (int i = 0; i < processedHistory.Count; i++)
+                    {
+                        if (i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
                         {
-                            entry.UniverseDetails = UniverseDetails.LoadFromCache(entry.UniverseId);
+                            try
+                            {
+                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i]);
+                                using var ms = new MemoryStream(response);
+                                processedHistory[i].ThumbnailBitmap = new Bitmap(ms);
+                            }
+                            catch (Exception imgEx)
+                            {
+                                App.Logger.WriteLine("ServerHistoryViewModel::LoadData", $"Failed to load image: {imgEx.Message}");
+                            }
                         }
                     }
                 }
 
-                GameHistory = ProcessAndConsolidateHistory(_activityWatcher.History);
+                GameHistory = processedHistory;
 
-                // Hook up delete events
                 if (GameHistory != null)
                 {
                     foreach (var entry in GameHistory)
@@ -74,7 +102,6 @@ namespace Froststrap.UI.ViewModels.ContextMenu
                 }
 
                 OnPropertyChanged(nameof(GameHistory));
-
                 LoadState = GenericTriState.Successful;
                 OnPropertyChanged(nameof(LoadState));
             }
