@@ -97,15 +97,15 @@ public const string ProjectRepository = "Froststrap/Froststrap";
 
     private static bool _showingExceptionDialog = false;
 
-    private void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e)
+    private async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e)
     {
-        if (e.ExceptionObject is Exception ex) FinalizeExceptionHandling(ex);
+        if (e.ExceptionObject is Exception ex) await FinalizeExceptionHandling(ex);
     }
 
-    private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    private async void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
     {
         e.SetObserved();
-        FinalizeExceptionHandling(e.Exception);
+        await FinalizeExceptionHandling(e.Exception);
     }
 
     public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
@@ -131,24 +131,24 @@ public const string ProjectRepository = "Froststrap/Froststrap";
             });
     }
 
-    void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
+    async void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;
 
         Logger.WriteLine("App::GlobalExceptionHandler", "An exception occurred");
 
-        FinalizeExceptionHandling(e.Exception);
+        await FinalizeExceptionHandling(e.Exception);
     }
 
-    public static void FinalizeExceptionHandling(AggregateException ex)
+    public static async Task FinalizeExceptionHandling(AggregateException ex)
     {
         foreach (var innerEx in ex.InnerExceptions)
             Logger.WriteException("App::FinalizeExceptionHandling", innerEx);
 
-        FinalizeExceptionHandling(ex.GetBaseException(), false);
+        await FinalizeExceptionHandling(ex.GetBaseException(), false);
     }
 
-    public static async void FinalizeExceptionHandling(Exception ex, bool log = true)
+    public static async Task FinalizeExceptionHandling(Exception ex, bool log = true)
     {
         if (log)
             Logger.WriteException("App::FinalizeExceptionHandling", ex);

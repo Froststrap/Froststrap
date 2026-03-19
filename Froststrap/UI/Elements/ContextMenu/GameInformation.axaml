@@ -15,7 +15,7 @@
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True">
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
         <!-- TODO: get titlebar library -->
         <TitleBar Grid.Row="0" x:Name="RootTitleBar" Padding="8"/>
 

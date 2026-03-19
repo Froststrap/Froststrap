@@ -16,7 +16,7 @@
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
 
-	<Grid>
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />

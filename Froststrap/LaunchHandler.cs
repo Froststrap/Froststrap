@@ -186,7 +186,7 @@ namespace Froststrap
                 dialog.Bootstrapper = App.Bootstrapper;
             }
 
-            _ = Task.Run(App.Bootstrapper.Run).ContinueWith(t =>
+            _ = Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Bootstrapper task has finished");
 
@@ -195,7 +195,7 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the bootstrapper");
 
                     if (t.Exception is not null)
-                        App.FinalizeExceptionHandling(t.Exception);
+                        await App.FinalizeExceptionHandling(t.Exception);
                 }
 
                 App.Terminate();
@@ -221,7 +221,7 @@ namespace Froststrap
 
             Task watcherTask = Task.Run(watcher.Run);
 
-            watcherTask.ContinueWith(t =>
+            watcherTask.ContinueWith(async t =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Watcher task has finished");
 
@@ -232,7 +232,7 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the watcher");
 
                     if (t.Exception is not null)
-                        App.FinalizeExceptionHandling(t.Exception);
+                        await App.FinalizeExceptionHandling(t.Exception);
                 }
 
                 // Shouldn't this be done after client closes?
@@ -249,7 +249,7 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, "Starting multi-instance watcher");
 
-            Task.Run(MultiInstanceWatcher.Run).ContinueWith(t =>
+            Task.Run(MultiInstanceWatcher.Run).ContinueWith(async t =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Multi instance watcher task has finished");
 
@@ -258,7 +258,7 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the multi-instance watcher");
 
                     if (t.Exception is not null)
-                        App.FinalizeExceptionHandling(t.Exception);
+                        await App.FinalizeExceptionHandling(t.Exception);
                 }
 
                 App.Terminate();
@@ -357,7 +357,7 @@ namespace Froststrap
                 App.Bootstrapper.Cancel();
             }, cts.Token);
 
-            Task.Run(App.Bootstrapper.Run).ContinueWith(t =>
+            Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Bootstrapper task has finished");
                 cts.Cancel(); // stop event waiter
@@ -367,7 +367,7 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the bootstrapper");
 
                     if (t.Exception is not null)
-                        App.FinalizeExceptionHandling(t.Exception);
+                        await App.FinalizeExceptionHandling(t.Exception);
                 }
 
                 App.Terminate();

@@ -18,7 +18,7 @@
 		SystemDecorations="None"
         WindowStartupLocation="CenterScreen">
 
-	<Grid>
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="41*"/>
 			<ColumnDefinition Width="82*"/>
