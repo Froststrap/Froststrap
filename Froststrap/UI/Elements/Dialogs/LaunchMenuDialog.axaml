@@ -27,7 +27,7 @@
             
             <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="24">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
-                    <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.ico" />
+                    <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality"/>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="24" FontWeight="Bold" />
                         <TextBlock Text="{Binding Version}" 
@@ -43,14 +43,14 @@
                     
                     <controls:IconButton Icon="ChatProcessingOutline" 
                                          Content="{x:Static resources:Strings.LaunchMenu_Discord}" 
-                                         Command="{Binding OpenDiscordCommand}" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" />
+                                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" CommandParameter="https://discord.gg/KdR9vpRcUN" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" />
                 </StackPanel>
             </StackPanel>
 
             <StackPanel Grid.Column="1">
                 
                 <controls:CardAction Height="64"
-                    Icon="PlayOutline"
+                    Icon="PlayCircleOutline"
                     Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}"
                     Command="{Binding LaunchRobloxCommand}" />
 
@@ -68,7 +68,7 @@
                         Margin="5,0,0,0" />
                 </UniformGrid>
 
-                <Separator Margin="0,5" Opacity="0.2" />
+                <Separator Margin="0,5" Opacity="0.7" />
 
                 <controls:CardAction 
                     Icon="BookOutline"

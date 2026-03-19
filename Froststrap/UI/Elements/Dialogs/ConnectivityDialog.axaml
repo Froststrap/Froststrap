@@ -10,17 +10,18 @@
         mc:Ignorable="d"
         Width="480"
         SizeToContent="Height"
+		SystemDecorations="None"
         Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
         WindowStartupLocation="CenterScreen">
 
-	<Grid>
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<TitleBar Grid.Row="0" />
+		<md:TitleBar Grid.Row="0" ShowMinimize="False" ShowMaximize="False" Title="{x:Static resources:Strings.Dialog_Connectivity_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
 		<Grid Grid.Row="1" Margin="16">
 			<Grid.ColumnDefinitions>

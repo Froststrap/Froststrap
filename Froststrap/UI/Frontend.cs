@@ -46,13 +46,28 @@ namespace Froststrap.UI
             if (App.LaunchSettings.QuietFlag.Active)
                 return;
 
-            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-
-            if (mainWindow != null)
+            await Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var dialog = new ExceptionDialog(exception);
-                await dialog.ShowDialog(mainWindow);
-            }
+
+                Window? owner = null;
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+                }
+
+                if (owner != null && owner.IsVisible)
+                {
+                    await dialog.ShowDialog(owner);
+                }
+                else
+                {
+                    var tcs = new TaskCompletionSource<bool>();
+                    dialog.Closed += (s, e) => tcs.TrySetResult(true);
+                    dialog.Show();
+                    await tcs.Task;
+                }
+            });
         }
 
         public static async Task ShowConnectivityDialog(string title, string description, MessageBoxImage image, Exception exception)
@@ -60,13 +75,28 @@ namespace Froststrap.UI
             if (App.LaunchSettings.QuietFlag.Active)
                 return;
 
-            var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-
-            if (mainWindow != null)
+            await Dispatcher.UIThread.InvokeAsync(async () =>
             {
                 var dialog = new ConnectivityDialog(title, description, image, exception);
-                await dialog.ShowDialog(mainWindow);
-            }
+
+                Window? owner = null;
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+                }
+
+                if (owner != null && owner.IsVisible)
+                {
+                    await dialog.ShowDialog(owner);
+                }
+                else
+                {
+                    var tcs = new TaskCompletionSource<bool>();
+                    dialog.Closed += (s, e) => tcs.TrySetResult(true);
+                    dialog.Show();
+                    await tcs.Task;
+                }
+            });
         }
 
         private static async Task<IBootstrapperDialog> GetCustomBootstrapper()

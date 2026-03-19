@@ -18,7 +18,7 @@
         mc:Ignorable="d"
         x:DataType="vm:ChannelListsViewModel">
 
-	<Grid  Background="{DynamicResource ApplicationBackgroundColor}">
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>

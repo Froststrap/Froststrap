@@ -15,7 +15,7 @@
         CanResize="False"
         WindowStartupLocation="CenterScreen">
 	
-	<Grid>
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />

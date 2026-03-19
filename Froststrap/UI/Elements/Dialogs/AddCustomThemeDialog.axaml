@@ -17,7 +17,7 @@
      WindowStartupLocation="CenterScreen"
      mc:Ignorable="d">
 
-<Grid RowDefinitions="Auto,*,Auto">
+<Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
     <controls:TitleBar Grid.Row="0" 
                        Icon="avares://Froststrap/Froststrap.ico" 
                        Title="Add Custom Theme" />
