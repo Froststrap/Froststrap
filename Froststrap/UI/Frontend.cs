@@ -2,13 +2,9 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Notifications;
-using Avalonia.Media;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
-using MsBox.Avalonia;
-using MsBox.Avalonia.Dto;
-using MsBox.Avalonia.Enums;
 
 namespace Froststrap.UI
 {
@@ -16,11 +12,7 @@ namespace Froststrap.UI
     {
         private static WindowNotificationManager? _notificationManager;
 
-        public static async Task<MessageBoxResult> ShowMessageBox(
-                string message,
-                MessageBoxImage icon = MessageBoxImage.None,
-                MessageBoxButton buttons = MessageBoxButton.OK,
-                MessageBoxResult defaultResult = MessageBoxResult.None)
+        public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
             App.Logger.WriteLine("Frontend::ShowMessageBox", message);
 
@@ -130,26 +122,34 @@ namespace Froststrap.UI
             }
         }
 
-        private static async Task<MessageBoxResult> ShowFluentMessageBox(
-                string message,
-                MessageBoxImage icon,
-                MessageBoxButton buttons)
+        private static async Task<MessageBoxResult> ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons)
         {
             return await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                var box = MessageBoxManager.GetMessageBoxStandard(new MessageBoxStandardParams
-                {
-                    ContentMessage = message,
-                    ContentTitle = "Notification",
-                    ButtonDefinitions = (ButtonEnum)buttons,
-                    Icon = (Icon)icon,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                });
+                var messagebox = new FluentMessageBox(message, icon, buttons);
 
-                var result = await box.ShowAsync();
-                return (MessageBoxResult)result;
+                Window? owner = null;
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                {
+                    owner = desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+                }
+
+                if (owner != null)
+                {
+                    await messagebox.ShowDialog(owner);
+                }
+                else
+                {
+                    var tcs = new TaskCompletionSource<bool>();
+                    messagebox.Closed += (s, e) => tcs.TrySetResult(true);
+                    messagebox.Show();
+                    await tcs.Task;
+                }
+
+                return messagebox.Result;
             });
         }
+
         public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5)
         {
             if (_notificationManager == null)

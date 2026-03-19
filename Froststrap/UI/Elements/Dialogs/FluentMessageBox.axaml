@@ -15,6 +15,7 @@
         MinHeight="160"
         SizeToContent="Height"
         CanResize="False"
+		SystemDecorations="None"
         WindowStartupLocation="CenterScreen">
 
 	<Grid>
@@ -29,7 +30,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<TitleBar Grid.ColumnSpan="3" x:Name="RootTitleBar" />
+		<md:TitleBar Grid.ColumnSpan="3" x:Name="RootTitleBar" Title="Froststrap" />
 
 		<Grid Grid.Row="1" Margin="15,15,15,15" Grid.ColumnSpan="3">
 			<Grid.ColumnDefinitions>
