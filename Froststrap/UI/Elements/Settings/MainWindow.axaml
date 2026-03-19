@@ -32,9 +32,10 @@
         <Panel
             Name="NotificationPanel"
             Grid.Row="1"
-            Margin="0,12,0,0"
             HorizontalAlignment="Center"
-            VerticalAlignment="Top"
+            VerticalAlignment="Bottom"
+            Margin="0,0,0,25"
+            MaxWidth="450"
             ZIndex="1000" />
 
         <!--  Main Navigation and Content  -->

@@ -239,51 +239,106 @@ namespace Froststrap.UI.Elements.Settings
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel != null)
             {
-                var notification = new Border
+                var closeButton = new Button
                 {
-                    Background = new SolidColorBrush(Color.Parse("#2D2D2D")),
-                    CornerRadius = new CornerRadius(8),
-                    Padding = new Thickness(16),
-                    Margin = new Thickness(0, 0, 0, 12),
-                    Opacity = 0,
-                    RenderTransform = new TranslateTransform(0, -20),
-                    Child = new StackPanel
-                    {
-                        Children =
-                        {
-                            new TextBlock { Text = title, FontWeight = FontWeight.SemiBold },
-                            new TextBlock { Text = subtitle, Foreground = new SolidColorBrush(Color.Parse("#CCCCCC")) }
-                        }
-                    }
+                    Content = (LucideAvalonia.Enum.LucideIconNames)Enum.Parse(typeof(LucideAvalonia.Enum.LucideIconNames), "X"),
+                    Background = new SolidColorBrush(Colors.Transparent),
+                    Foreground = new SolidColorBrush(Color.Parse("#FFFFFF")),
+                    FontSize = 16,
+                    Padding = new Thickness(8),
+                    Margin = new Thickness(20, 0, 0, 0),
+                    Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand)
                 };
 
-                // TODO: fix up these animations
+                var contentGrid = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
+                    Margin = new Thickness(0)
+                };
+
+                var checkmark = new LucideAvalonia.Lucide
+                {
+                    Icon = (LucideAvalonia.Enum.LucideIconNames)Enum.Parse(typeof(LucideAvalonia.Enum.LucideIconNames), "CircleCheckBig"),
+                    Width = 24,
+                    Height = 24,
+                    StrokeBrush = new SolidColorBrush(Color.Parse("#00D084")),
+                    StrokeThickness = 2,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    Margin = new Thickness(16, 0, 12, 0)
+                };
+                Grid.SetColumn(checkmark, 0);
+                contentGrid.Children.Add(checkmark);
+
+                var textPanel = new StackPanel
+                {
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                    Spacing = 2
+                };
+                var titleText = new TextBlock
+                {
+                    Text = title,
+                    FontWeight = FontWeight.SemiBold,
+                    FontSize = 14,
+                    Foreground = new SolidColorBrush(Color.Parse("#FFFFFF"))
+                };
+                var subtitleText = new TextBlock
+                {
+                    Text = subtitle,
+                    FontSize = 12,
+                    Foreground = new SolidColorBrush(Color.Parse("#CCCCCC"))
+                };
+                textPanel.Children.Add(titleText);
+                textPanel.Children.Add(subtitleText);
+                Grid.SetColumn(textPanel, 1);
+                contentGrid.Children.Add(textPanel);
+
+                Grid.SetColumn(closeButton, 2);
+                contentGrid.Children.Add(closeButton);
+
+                var notification = new Border
+                {
+                    Background = new SolidColorBrush(Color.Parse("#1F1F1F")),
+                    BackgroundSizing = BackgroundSizing.InnerBorderEdge,
+                    Opacity = 0.85,
+                    BorderBrush = new SolidColorBrush(Color.Parse("#333333")),
+                    BorderThickness = new Thickness(0, 1, 0, 0),
+                    Padding = new Thickness(0, 12, 28, 12),
+                    Margin = new Thickness(0),
+                    Height = 90,
+                    CornerRadius = new CornerRadius(12),
+                    RenderTransform = new TranslateTransform(0, 100),
+                    Child = contentGrid
+                };
+
                 var transitions = new Transitions();
-                transitions.Add(new DoubleTransition 
-                { 
-                    Property = Border.OpacityProperty, 
-                    Duration = TimeSpan.FromMilliseconds(400)
-                });
                 transitions.Add(new TransformOperationsTransition 
                 { 
                     Property = Border.RenderTransformProperty, 
-                    Duration = TimeSpan.FromMilliseconds(400)
+                    Duration = TimeSpan.FromMilliseconds(300)
                 });
                 notification.Transitions = transitions;
 
                 notificationPanel.Children.Add(notification);
 
+                closeButton.Click += (s, e) =>
+                {
+                    notification.RenderTransform = new TranslateTransform(0, 100);
+                    Dispatcher.UIThread.InvokeAsync(async () =>
+                    {
+                        await Task.Delay(300);
+                        notificationPanel.Children.Remove(notification);
+                    });
+                };
+
                 Dispatcher.UIThread.InvokeAsync(async () =>
                 {
-                    notification.Opacity = 1;
                     notification.RenderTransform = new TranslateTransform(0, 0);
 
-                    await Task.Delay(3000);
+                    await Task.Delay(4000);
 
-                    notification.Opacity = 0;
-                    notification.RenderTransform = new TranslateTransform(0, -20);
+                    notification.RenderTransform = new TranslateTransform(0, 100);
 
-                    await Task.Delay(400);
+                    await Task.Delay(300);
                     notificationPanel.Children.Remove(notification);
                 });
             }
