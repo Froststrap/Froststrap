@@ -20,7 +20,6 @@ namespace Froststrap.UI.ViewModels.About
         }
 
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAboutCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToTranslatorsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToLicensesCommand { get; }
 
         private IRoutableViewModel Wrap(string segment, object viewModel) =>
@@ -38,20 +37,6 @@ namespace Froststrap.UI.ViewModels.About
                 {
                     SelectedPage = "about";
                     return _router.Navigate.Execute(Wrap("about", new AboutViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToTranslatorsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "translators";
-                    return _router.Navigate.Execute(Wrap("translators", new TranslatorsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {

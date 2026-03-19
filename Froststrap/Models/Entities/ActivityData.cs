@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap;
 using Froststrap.Models.APIs;
@@ -59,7 +60,10 @@ namespace Froststrap.Models.Entities
 
 		public string? RootJobId { get; set; }
 
-		public event EventHandler<string>? OnDeleteRequested;
+        public Bitmap? ThumbnailBitmap { get; set; }
+
+
+        public event EventHandler<string>? OnDeleteRequested;
 
 		public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
 		public ICommand CopyDeeplinkCommand => new RelayCommand(CopyDeeplink);
