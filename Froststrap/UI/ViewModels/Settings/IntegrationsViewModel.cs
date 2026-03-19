@@ -1,5 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
@@ -14,7 +13,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ICommand DeleteIntegrationCommand => new RelayCommand(DeleteIntegration);
 
-        public ICommand BrowseIntegrationLocationCommand => new RelayCommand(BrowseIntegrationLocation);
+        public IAsyncRelayCommand<Control> BrowseIntegrationLocationCommand => new AsyncRelayCommand<Control>(BrowseIntegrationLocation);
 
         public ICommand OpenGameHistoryCommand => new RelayCommand(OpenGameHistory);
 
@@ -47,19 +46,15 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(IsCustomIntegrationSelected));
         }
 
-        private async void BrowseIntegrationLocation()
+        private async Task BrowseIntegrationLocation(Control? control)
         {
-            if (SelectedCustomIntegration is null)
-                return;
+            if (SelectedCustomIntegration is null) return;
+            if (control is null) return;
 
-            var mainWindow = Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null;
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
 
-            if (mainWindow == null)
-                return;
-
-            var storageProvider = mainWindow.StorageProvider;
+            var storageProvider = parentWindow.StorageProvider;
 
             var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
@@ -77,8 +72,15 @@ namespace Froststrap.UI.ViewModels.Settings
             if (files != null && files.Count > 0)
             {
                 var file = files[0];
-                SelectedCustomIntegration.Name = System.IO.Path.GetFileName(file.Path.LocalPath);
-                SelectedCustomIntegration.Location = file.Path.LocalPath;
+                string path = file.Path.LocalPath;
+
+                if (string.IsNullOrWhiteSpace(SelectedCustomIntegration.Name) || SelectedCustomIntegration.Name == Strings.Menu_Integrations_Custom_NewIntegration)
+                {
+                    SelectedCustomIntegration.Name = Path.GetFileNameWithoutExtension(path);
+                }
+
+                SelectedCustomIntegration.Location = path;
+
                 OnPropertyChanged(nameof(SelectedCustomIntegration));
             }
         }
@@ -341,8 +343,29 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.CustomIntegrations = value;
         }
 
-        public CustomIntegration? SelectedCustomIntegration { get; set; }
-        public int SelectedCustomIntegrationIndex { get; set; }
+        private CustomIntegration? _selectedCustomIntegration;
+        public CustomIntegration? SelectedCustomIntegration
+        {
+            get => _selectedCustomIntegration;
+            set
+            {
+                _selectedCustomIntegration = value;
+                OnPropertyChanged(nameof(SelectedCustomIntegration));
+                OnPropertyChanged(nameof(IsCustomIntegrationSelected));
+            }
+        }
+
+        private int _selectedCustomIntegrationIndex = -1;
+        public int SelectedCustomIntegrationIndex
+        {
+            get => _selectedCustomIntegrationIndex;
+            set
+            {
+                _selectedCustomIntegrationIndex = value;
+                OnPropertyChanged(nameof(SelectedCustomIntegrationIndex));
+            }
+        }
+
         public bool IsCustomIntegrationSelected => SelectedCustomIntegration is not null;
 
 		private static bool IsBlocked(string path)

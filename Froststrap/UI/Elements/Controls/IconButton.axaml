@@ -64,12 +64,27 @@
         <Setter Property="RenderTransform" Value="scale(0.98)" />
     </Style>
 
-    <Style Selector="controls|IconButton.Dangerous">
+    <Style Selector="controls|IconButton:disabled">
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+
+    <Style Selector="controls|IconButton:disabled /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDisabledBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Dangerous:not(:disabled)">
         <Setter Property="Background" Value="#FF3B30" />
         <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="#E03026" />
     </Style>
-    <Style Selector="controls|IconButton.Dangerous:pointerover /template/ Border#PART_LayoutRoot">
+
+    <Style Selector="controls|IconButton.Dangerous:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="#FF5247" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Dangerous:not(:disabled):pressed">
+        <Setter Property="Opacity" Value="0.8" />
     </Style>
 
 </Styles>
