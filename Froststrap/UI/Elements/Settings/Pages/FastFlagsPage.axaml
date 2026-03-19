@@ -72,7 +72,7 @@
         </controls:OptionControl>
 
 
-        <controls:CardExpander Margin="0,8,0,0" IsExpanded="{Binding Path=LowPolyMeshesEnabled, Mode=OneWay}" Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Title}" Description="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Description}">
+        <controls:CardExpander IsExpanded="{Binding Path=LowPolyMeshesEnabled, Mode=OneWay}" Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Title}" Description="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Description}">
             <controls:CardExpander.HeaderContent>
                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding LowPolyMeshesEnabled, Mode=TwoWay}" />
             </controls:CardExpander.HeaderContent>

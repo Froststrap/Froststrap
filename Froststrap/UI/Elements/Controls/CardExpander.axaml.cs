@@ -18,7 +18,7 @@ namespace Froststrap.UI.Elements.Controls
             AvaloniaProperty.Register<CardExpander, object?>(nameof(HeaderContent));
 
         public static readonly StyledProperty<bool> IsExpandedProperty =
-            AvaloniaProperty.Register<CardExpander, bool>(nameof(IsExpanded), defaultValue: true);
+            AvaloniaProperty.Register<CardExpander, bool>(nameof(IsExpanded), defaultValue: false);
 
         public object? Header
         {

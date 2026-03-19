@@ -99,7 +99,7 @@
                 </ComboBox>
             </controls:OptionControl>
 
-            <controls:CardExpander Margin="0,8,0,0" IsExpanded="False" Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}">
+            <controls:CardExpander Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}">
                 <StackPanel>
                     <controls:OptionControl
                         Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#dont-exit-to-desktop-app'}"

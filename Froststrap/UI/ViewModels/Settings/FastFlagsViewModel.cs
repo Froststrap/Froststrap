@@ -9,6 +9,13 @@ namespace Froststrap.UI.ViewModels.Settings
         private Dictionary<string, object>? _preResetFlags;
 
         public event EventHandler? RequestPageReloadEvent;
+
+        public event EventHandler? OpenFlagEditorEvent;
+
+        private void OpenFastFlagEditor() => OpenFlagEditorEvent?.Invoke(this, EventArgs.Empty);
+
+        public ICommand OpenFastFlagEditorCommand => new RelayCommand(OpenFastFlagEditor);
+
         public bool RemoveGrass
         {
             get => App.FastFlags?.GetPreset("Rendering.RemoveGrass1") == "0";
