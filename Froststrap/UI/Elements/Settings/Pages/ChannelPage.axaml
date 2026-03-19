@@ -62,8 +62,7 @@
 
                 <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
-                    Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}"
-                    HelpLink="https://">
+                    Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
                     <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
                 </controls:OptionControl>
 

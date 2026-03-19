@@ -5,7 +5,7 @@
     <Style Selector="controls|TitleBar">
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="Auto, *, Auto" Height="24">
+                <Grid ColumnDefinitions="Auto, *, Auto" Height="36" Background="Transparent">
 
                     <Image Grid.Column="0"
                            Source="{TemplateBinding Icon}"
@@ -25,45 +25,51 @@
                     </Panel>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal">
-                        <controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
-                                IsVisible="{TemplateBinding ShowMinimize}"/>
+                        <controls:IconButton Name="PART_MinimizeButton" 
+                                           Classes="TitleBarButton" 
+                                           Icon="Minus" 
+                                           IsVisible="{TemplateBinding ShowMinimize}"/>
 
-                        <controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
-                                IsVisible="{TemplateBinding ShowMaximize}" Icon="SquareOutline"
-                                IsEnabled="{TemplateBinding CanMaximize}"/>
+                        <controls:IconButton Name="PART_MaximizeButton" 
+                                           Classes="TitleBarButton" 
+                                           IsVisible="{TemplateBinding ShowMaximize}" 
+                                           Icon="SquareOutline"
+                                           IsEnabled="{TemplateBinding CanMaximize}"/>
 
-                        <controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
-                                IsVisible="{TemplateBinding ShowClose}"/>
+                        <controls:IconButton Name="PART_CloseButton" 
+                                           Classes="TitleBarButton Close" 
+                                           Icon="Close" 
+                                           IsVisible="{TemplateBinding ShowClose}"/>
                     </StackPanel>
                 </Grid>
             </ControlTemplate>
         </Setter>
     </Style>
 
-    <Style Selector="Button.TitleBarButton">
+    <Style Selector="controls|IconButton.TitleBarButton">
         <Setter Property="Width" Value="46" />
         <Setter Property="Height" Value="32" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
 
-    <Style Selector="Button.TitleBarButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="controls|IconButton.TitleBarButton:pointerover /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
     </Style>
 
-    <Style Selector="Button.TitleBarButton.Close:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="#E81123" />
     </Style>
 
-    <Style Selector="Button.TitleBarButton.Close:pointerover Path">
-        <Setter Property="Stroke" Value="White" />
+    <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover">
+        <Setter Property="Foreground" Value="White" />
     </Style>
 
-    <Style Selector="Button.TitleBarButton:disabled">
+    <Style Selector="controls|IconButton.TitleBarButton:disabled">
         <Setter Property="Opacity" Value="0.3" />
     </Style>
 

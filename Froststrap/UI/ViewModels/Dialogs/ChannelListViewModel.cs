@@ -2,7 +2,6 @@
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.RobloxInterfaces;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
@@ -10,9 +9,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
     {
         private const string ChannelsJsonUrl = "https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Channels.json";
         private static readonly string CacheFilePath = Path.Combine(Paths.Cache, "ChannelsCache.json");
+        private CancellationTokenSource? _cts;
 
         public ObservableCollection<DeployInfoDisplay> Channels { get; } = new();
-        public ICommand RefreshCommand { get; }
+        public IAsyncRelayCommand RefreshCommand { get; }
 
         private bool _isLoading;
         public bool IsLoading
@@ -23,7 +23,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         public ChannelListsViewModel()
         {
-            RefreshCommand = new RelayCommand(async () => await RefreshAsync());
+            RefreshCommand = new AsyncRelayCommand(RefreshAsync);
             _ = InitializeAsync();
         }
 
@@ -32,8 +32,8 @@ namespace Froststrap.UI.ViewModels.Dialogs
             var cache = await LoadCacheAsync();
             if (cache != null)
             {
-                SyncUI(cache);
-                if (DateTime.UtcNow - cache.Values.FirstOrDefault()?.CachedAt > TimeSpan.FromHours(24))
+                await SyncUIAsync(cache);
+                if (cache.Values.FirstOrDefault()?.CachedAt.AddHours(24) < DateTime.UtcNow)
                     await RefreshAsync();
             }
             else
@@ -45,53 +45,79 @@ namespace Froststrap.UI.ViewModels.Dialogs
         public async Task RefreshAsync()
         {
             if (IsLoading) return;
+
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+
             IsLoading = true;
+            Channels.Clear();
 
             try
             {
-                using var client = new HttpClient();
-                var json = await client.GetStringAsync(ChannelsJsonUrl);
-                var channelNames = JsonSerializer.Deserialize<string[]>(json);
-
-                if (channelNames == null) return;
-
-                var semaphore = new SemaphoreSlim(10);
-                var results = new Dictionary<string, ChannelEntry>();
-
-                var tasks = channelNames.Select(async name =>
+                await Task.Run(async () =>
                 {
-                    await semaphore.WaitAsync();
-                    try
+                    using var client = new HttpClient();
+                    var json = await client.GetStringAsync(ChannelsJsonUrl, token);
+                    var channelNames = JsonSerializer.Deserialize<string[]>(json);
+
+                    if (channelNames == null || token.IsCancellationRequested) return;
+
+                    var semaphore = new SemaphoreSlim(4);
+                    var results = new Dictionary<string, ChannelEntry>();
+
+                    var tasks = channelNames.Select(async name =>
                     {
-                        var info = await Deployment.GetInfo(name, includeTimestamp: true);
-                        lock (results)
+                        await semaphore.WaitAsync(token);
+                        try
                         {
-                            results[name] = new ChannelEntry
+                            var info = await Deployment.GetInfo(name, includeTimestamp: true);
+
+                            var entry = new ChannelEntry
                             {
                                 Version = info.Version,
                                 VersionGuid = info.VersionGuid,
                                 Timestamp = info.Timestamp,
                                 CachedAt = DateTime.UtcNow
                             };
-                        }
-                    }
-                    catch { /* Skip failed channels */ }
-                    finally { semaphore.Release(); }
-                });
 
-                await Task.WhenAll(tasks);
-                SyncUI(results);
-                await SaveCacheAsync(results);
+                            lock (results) { results[name] = entry; }
+
+                            await Dispatcher.UIThread.InvokeAsync(() =>
+                            {
+                                if (!token.IsCancellationRequested)
+                                {
+                                    Channels.Add(new DeployInfoDisplay
+                                    {
+                                        ChannelName = name,
+                                        Version = entry.Version,
+                                        VersionGuid = entry.VersionGuid,
+                                        Timestamp = entry.Timestamp
+                                    });
+                                }
+                            });
+                        }
+                        catch { /* Skip failed */ }
+                        finally { semaphore.Release(); }
+                    });
+
+                    await Task.WhenAll(tasks);
+
+                    if (!token.IsCancellationRequested)
+                        await SaveCacheAsync(results);
+
+                }, token);
             }
+            catch (OperationCanceledException) { /* Normal exit */ }
             finally
             {
                 IsLoading = false;
             }
         }
 
-        private void SyncUI(Dictionary<string, ChannelEntry> data)
+        private async Task SyncUIAsync(Dictionary<string, ChannelEntry> data)
         {
-            Dispatcher.UIThread.Invoke(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Channels.Clear();
                 foreach (var entry in data.OrderBy(x => x.Key))
@@ -107,12 +133,17 @@ namespace Froststrap.UI.ViewModels.Dialogs
             });
         }
 
-        private async Task SaveCacheAsync(Dictionary<string, ChannelEntry> data) => await File.WriteAllTextAsync(CacheFilePath, JsonSerializer.Serialize(data));
+        private async Task SaveCacheAsync(Dictionary<string, ChannelEntry> data)
+            => await File.WriteAllTextAsync(CacheFilePath, JsonSerializer.Serialize(data));
 
         private async Task<Dictionary<string, ChannelEntry>?> LoadCacheAsync()
         {
             if (!File.Exists(CacheFilePath)) return null;
-            try { return JsonSerializer.Deserialize<Dictionary<string, ChannelEntry>>(await File.ReadAllTextAsync(CacheFilePath)); }
+            try
+            {
+                var json = await File.ReadAllTextAsync(CacheFilePath);
+                return JsonSerializer.Deserialize<Dictionary<string, ChannelEntry>>(json);
+            }
             catch { return null; }
         }
 

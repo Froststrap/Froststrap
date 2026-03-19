@@ -4,20 +4,21 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:converters="clr-namespace:Froststrap.UI.Converters"
+		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
 		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         Title="Available Channels"
         Width="700"
         MinHeight="350"
         Height="550"
         CanResize="True"
+		SystemDecorations="None"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         x:DataType="vm:ChannelListsViewModel">
 
-	<Grid>
+	<Grid  Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
@@ -25,7 +26,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<TitleBar Grid.Row="0"/>
+		<controls:TitleBar Grid.Row="0" Title="Available Channels"/>
 
 		<TextBlock Grid.Row="1"
                    Text="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels_Description}"
@@ -52,37 +53,6 @@
                 IsReadOnly="True"
                 CanUserResizeColumns="True"
                 SelectionMode="Single">
-
-				<DataGrid.Styles>
-					<Style Selector="DataGridColumnHeader">
-						<Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
-						<Setter Property="Height" Value="30" />
-						<Setter Property="Padding" Value="8,0,12,0" />
-						<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
-						<Setter Property="BorderThickness" Value="1" />
-						<Setter Property="FontWeight" Value="SemiBold" />
-					</Style>
-
-					<Style Selector="DataGridCell">
-						<Setter Property="Height" Value="30" />
-						<Setter Property="Padding" Value="6,0,6,0" />
-						<Setter Property="Background" Value="Transparent" />
-						<Setter Property="BorderThickness" Value="0" />
-					</Style>
-
-					<Style Selector="DataGridCell:pointerover">
-						<Setter Property="Background" Value="#14000000" />
-					</Style>
-
-					<Style Selector="DataGridCell:selected">
-						<Setter Property="Background" Value="#59007ACC" />
-						<Setter Property="Foreground" Value="#F0F0F0" />
-					</Style>
-
-					<Style Selector="DataGridCell:selected:pointerover">
-						<Setter Property="Background" Value="#8C007ACC" />
-					</Style>
-				</DataGrid.Styles>
 
 				<DataGrid.Columns>
 					<DataGridTextColumn Header="Channel Name" Binding="{Binding ChannelName}" Width="150" />

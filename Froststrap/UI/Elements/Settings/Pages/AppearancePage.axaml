@@ -44,7 +44,7 @@
         
                                 <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                        <controls:IconButton Content="Add Gradient Color" Command="{Binding AddGradientStopCommand}" Classes="Primary"/>
+                                        <Button Content="Add Gradient Color" Command="{Binding AddGradientStopCommand}" Classes="accent"/>
                                         <Button Content="Reset to Default" Command="{Binding ResetGradientCommand}"/>
                                         <TextBlock Text="Gradient Angle:" VerticalAlignment="Center"/>
                                         <NumericUpDown Value="{Binding GradientAngle}" Width="160" Minimum="0" Maximum="360" VerticalAlignment="Center" Margin="0,0,20,0"/>
