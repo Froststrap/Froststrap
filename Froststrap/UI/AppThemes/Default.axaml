@@ -103,6 +103,40 @@
         <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
     </Style>
 
+	<Style Selector="DataGrid">
+    <Setter Property="Background" Value="{DynamicResource NormalDarkAndLightBackground}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="GridLinesVisibility" Value="Horizontal" />
+    <Setter Property="HorizontalGridLinesBrush" Value="#11000000" />
+    <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+
+    <Style Selector="^ DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="8,0,12,0" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+        </Style>
+    </Style>
+
+    <Style Selector="^ DataGridCell">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Padding" Value="6,0,6,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="#14000000" />
+        </Style>
+    </Style>
+</Style>
+
 	<!-- Icon Button Style -->
 	<Design.PreviewWith>
 		<StackPanel Spacing="10" Margin="20" Background="#2D2D2D">

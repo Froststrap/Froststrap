@@ -10,49 +10,6 @@
     xmlns:ic="using:IconPacks.Avalonia.Material"
     x:DataType="vm:RegionSelectorViewModel">
 
-	<UserControl.Styles>
-		<Style Selector="DataGrid">
-			<Setter Property="Background" Value="{DynamicResource NormalDarkAndLightBackground}" />
-			<Setter Property="BorderThickness" Value="1" />
-			<Setter Property="GridLinesVisibility" Value="Horizontal" />
-			<Setter Property="HorizontalGridLinesBrush" Value="#11000000" />
-			<Setter Property="VerticalGridLinesBrush" Value="Transparent" />
-		</Style>
-
-		<Style Selector="DataGridColumnHeader">
-			<Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
-			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-			<Setter Property="Height" Value="30" />
-			<Setter Property="Padding" Value="8,0,12,0" />
-			<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
-			<Setter Property="BorderThickness" Value="1" />
-			<Setter Property="FontWeight" Value="SemiBold" />
-		</Style>
-
-		<Style Selector="DataGridColumnHeader:pointerover">
-			<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-		</Style>
-
-		<Style Selector="DataGridCell">
-			<Setter Property="Height" Value="30" />
-			<Setter Property="Padding" Value="6,0,6,0" />
-			<Setter Property="Background" Value="Transparent" />
-			<Setter Property="BorderThickness" Value="0" />
-			<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-		</Style>
-
-		<Style Selector="DataGridCell:pointerover">
-			<Setter Property="Background" Value="#14000000" />
-		</Style>
-		<Style Selector="DataGridCell:selected">
-			<Setter Property="Background" Value="#59007ACC" />
-			<Setter Property="Foreground" Value="#F0F0F0" />
-		</Style>
-		<Style Selector="DataGridCell:selected:pointerover">
-			<Setter Property="Background" Value="#8C007ACC" />
-		</Style>
-	</UserControl.Styles>
-
     <ScrollViewer>
         <Grid Margin="14" RowDefinitions="Auto,*">
             <Border
@@ -204,7 +161,7 @@
 					<DataGrid.Columns>
 						<DataGridTextColumn Width="40" Binding="{Binding Number}" Header="#" />
 						<DataGridTextColumn Width="*" Binding="{Binding ServerId}" Header="Server ID" />
-						<DataGridTextColumn Width="80" Binding="{Binding Players}" Header="Players" />
+						<DataGridTextColumn Width="Auto" MinWidth="100" Binding="{Binding Players}" Header="Players" />
 						<DataGridTextColumn Width="120" Binding="{Binding Region}" Header="Region" />
 						<DataGridTemplateColumn Width="100" Header="Join">
 							<DataGridTemplateColumn.CellTemplate>
@@ -243,8 +200,8 @@
 					  IsVisible="{Binding ShowLoadingIndicator}"
 					  Opacity="0.9">
 					<StackPanel HorizontalAlignment="Center"
-			   VerticalAlignment="Center"
-			   Spacing="16">
+			            VerticalAlignment="Center"
+			            Spacing="16">
 
 						<ProgressBar IsIndeterminate="True"
 									 Width="32" Height="32"
