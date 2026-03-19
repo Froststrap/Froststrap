@@ -43,9 +43,17 @@ namespace Froststrap.UI.Elements.Dialogs
             }
 
             if (iconFilename is null)
+            {
                 IconImage.IsVisible = false;
+            }
             else
-                IconImage.Source = new Bitmap($"avares://Froststrap/Resources/MessageBox/{iconFilename}.png");
+            {
+                var uri = new Uri($"avares://Froststrap/Resources/MessageBox/{iconFilename}.png");
+                using (var stream = AssetLoader.Open(uri))
+                {
+                    IconImage.Source = new Bitmap(stream);
+                }
+            }
 
             Title = App.ProjectName;
 

@@ -19,7 +19,6 @@ using Froststrap.RobloxInterfaces;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
-using MsBox.Avalonia.Enums;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Data;
