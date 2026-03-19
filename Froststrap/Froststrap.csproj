@@ -10,6 +10,7 @@
         <AssemblyName>Froststrap</AssemblyName>
         <RootNamespace>Froststrap</RootNamespace>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<ApplicationIcon>Froststrap.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
