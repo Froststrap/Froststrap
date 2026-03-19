@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-    If you want to help support our project, please consider giving this repo a star!
+    If you'd like to support our project, consider giving this repository a star!
 </p>
 
 <div align="center">
@@ -26,8 +26,8 @@
 </div>
 
 > [!CAUTION]
-> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git) and [our website](https://froststrap.github.io), are the **ONLY PLACES** you should
-> download the binary/executable from, as any other is **NOT** affiliated with us, and is a potential threat. 
+> The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), and [our website](https://froststrap.github.io), are the **ONLY PLACES** you should
+> download the binary/executable from, as any other source is **NOT** affiliated with us, and is a potential threat. 
 
 ---
 
@@ -38,10 +38,10 @@
 - Disable Roblox’s built-in screenshot and video recording system
 - Custom Froststrap Discord RPC that shows the current page/dialog
 - Replace "Playing Roblox" with the name of the game you're playing using Custom Status Display
-- PlayTime Counter shows both total and session playtime
+- The playtime counter shows both total and session playtime
 - Roblox Studio RPC integrated within Froststrap
 - Change the Studio RPC thumbnail depending on the script that is open
-- Show Script type, name, and number of lines of code
+- Show script type, name, and number of lines of code
 
 ### Bootstrapper
 - Change the Roblox process priority
@@ -50,24 +50,24 @@
 - Multi-instance launching support
 
 ### Mods
-- Multi-Mod system that allows you to download many mods at once
+- Multi-mod system that allows you to download many mods at once
 - Select when to apply the mod (player/studio)
 - Download community-made mods directly from within the app
-- Generate mods using a hex code, with the option to also color Cursor, Shift Lock or Emote Wheel
-- Change Cursor, Shift Lock, Death Sound and Game Font by selecting a file
-- Use Custom Cursor Sets to change between your cursors faster
+- Generate mods using a hex code, with the option to also color the cursor, Shift Lock, or Emote Wheel
+- Change the cursor, Shift Lock, death sound, and game font by selecting a file
+- Use custom cursor sets to change between your cursors faster
 
 ### FastFlag Enhancements
-- Automatic message when applying fflags that are not in the Roblox FFlag Allowlist
-- Create or use fastflag profiles
-- Change all of Roblox Allowlist FastFlags within the FastFlag settings
-- Click Clean List to remove flags that are not in the Roblox FFlag Allowlist
+- Automatic message when applying FastFlags that are not in the Roblox FastFlag Allowlist
+- Create or use FastFlag profiles
+- Change all Roblox FastFlags in the allowlist via the FastFlag settings
+- Click 'Clean List' to remove flags that are not in the Roblox FastFlag Allowlist
 
 ### UI & Appearance
 - Fully customizable bootstrapper launcher
 - Change the app font to any font you prefer
 - Supports image and gradient background themes
-- Built-in App themes
+- Built-in app themes
 - Change the window background to Aero, Acrylic, or Mica
 
 ### Settings
@@ -82,7 +82,7 @@
 - Create game shortcuts for faster game joining
 - Join servers in your region more easily using the region selector
 - Join servers in your selected region through the system tray while playing
-- Built-In Account Manager
+- Built-in account manager
 
 More features are planned! You can also suggest new features in the Issues section.
 
@@ -99,9 +99,9 @@ Froststrap uses a **multi-license model** depending on the origin of the code:
 | Nix-related code (unmodified) | [Unlicense](https://unlicense.org/) |
 
 **In plain terms:**
-- If Froststrap wrote it or touched it, it's **AGPL-3.0** — any modifications must be open-sourced under the same license
+- If Froststrap wrote it or modified it, it's **AGPL-3.0** — any modifications must be open-sourced under the same license
 - Code inherited from upstream (Fishstrap / Bloxstrap) remains under its original **MIT** license
-- Nix-specific code is **Unlicensed** (public domain) and is strictly limited to Nix-related functionality
+- Nix-specific code is **unlicensed** (public domain) and is strictly limited to Nix-related functionality
 
 When in doubt about which license applies to a specific file, check the file header or refer to the [LICENSE](./LICENSE) file.
 
