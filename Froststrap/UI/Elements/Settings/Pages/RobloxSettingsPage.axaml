@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
@@ -12,30 +11,30 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
 	<ScrollViewer>
 		<StackPanel Margin="14">
-			<Grid Margin="0,0,0,0">
+            <Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
-				<Button Grid.Column="0" Margin="0,0,4,0" Command="{Binding ImportCommand}" HorizontalAlignment="Stretch">
-					<StackPanel Orientation="Horizontal" Spacing="8">
-						<ui:SymbolIcon Symbol="NewFolder" />
-						<TextBlock Text="Import Settings" />
-					</StackPanel>
-				</Button>
-				<Button Grid.Column="1" Margin="4,0,4,0" Command="{Binding OpenRobloxFolderCommand}" HorizontalAlignment="Stretch">
-					<StackPanel Orientation="Horizontal" Spacing="8">
-						<ui:SymbolIcon Symbol="Folder" />
-						<TextBlock Text="Open Folder" />
-					</StackPanel>
-				</Button>
-				<Button Grid.Column="2" Margin="4,0,0,0" Command="{Binding ExportCommand}" HorizontalAlignment="Stretch">
-					<StackPanel Orientation="Horizontal" Spacing="8">
-						<ui:SymbolIcon Symbol="Save" />
-						<TextBlock Text="Export Settings" />
-					</StackPanel>
-				</Button>
+                
+				<controls:CardAction Grid.Column="0" 
+                                    Margin="0,0,4,0"
+                                    Icon="Import" 
+                                    Header="Import Settings"
+                                    Command="{Binding ImportCommand}"/>
+                
+				<controls:CardAction Grid.Column="1" 
+                                    Margin="4,0,4,0"
+                                    Icon="FolderOpenOutline" 
+                                    Header="Open Roblox Folder"
+                                    Command="{Binding OpenRobloxFolderCommand}"/>
+                
+				<controls:CardAction Grid.Column="2" 
+                                    Margin="4,0,0,0"
+                                    Icon="Export" 
+                                    Header="Export Settings"
+                                    Command="{Binding ExportCommand}"/>
 			</Grid>
 
 			<controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
