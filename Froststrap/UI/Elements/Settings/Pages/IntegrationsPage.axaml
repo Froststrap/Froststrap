@@ -1,0 +1,343 @@
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.Pages.IntegrationsPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:ic="using:IconPacks.Avalonia.Material"
+    d:DesignHeight="2500"
+    d:DesignWidth="1200"
+    x:DataType="vm:IntegrationsViewModel"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Margin="14">
+            <TextBlock
+                Margin="0,16,0,0"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Menu_Integrations_ActivityTracking}" />
+
+            <controls:OptionControl
+                x:Name="ActivityTrackingOption"
+                Description="{x:Static resources:Strings.Menu_Integrations_EnableActivityTracking_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_EnableActivityTracking_Title}"
+                HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F">
+                <ToggleSwitch IsChecked="{Binding ActivityTrackingEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_QueryServerLocation_Title}"
+                HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#server-location-querying"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding ShowServerDetailsEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_QueryServerUptime_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://www.rovalra.com'}"
+                Header="{x:Static resources:Strings.Menu_Integrations_QueryServerUptime_Title}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding ShowServerUptimeEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
+                Header="Auto Rejoin"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding AutoRejoinEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Title}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding PlaytimeCounterEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:CardExpander
+                Margin="0,8,0,0" 
+                IsEnabled="{Binding ActivityTrackingEnabled}"
+                IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
+                Classes="NoUserExpansion" Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Margin="0,8,0,0">
+                    <controls:OptionControl
+                        Description="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Description}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Title}"
+                        IsEnabled="{Binding ActivityTrackingEnabled}">
+                        <Button
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding OpenGameHistoryCommand}"
+                            Content="View Game History"/>
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <controls:OptionControl 
+                Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}" 
+                Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ComboBox
+                    Width="200"
+                    Margin="5,0,0,0"
+                    Padding="10,5,10,5"
+                    ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedDoubleClickAction, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </controls:OptionControl>
+
+            <controls:CardExpander Margin="0,8,0,0" IsExpanded="False" Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}">
+                <StackPanel>
+                    <controls:OptionControl
+                        Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#dont-exit-to-desktop-app'}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_DesktopApp_Title}"
+                        HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#dont-exit-to-desktop-app"
+                        IsEnabled="{Binding ActivityTrackingEnabled}">
+                        <ToggleSwitch IsChecked="{Binding DisableAppPatchEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}" Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}">
+                        <ToggleSwitch IsChecked="{Binding DisableRobloxRecording, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}" Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}">
+                        <ToggleSwitch IsChecked="{Binding DisableRobloxScreenshots, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <Separator Margin="0,8,0,8" />
+
+            <TextBlock
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
+            
+            <controls:MarkdownTextBlock
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
+                TextWrapping="Wrap" />
+
+            <controls:OptionControl 
+                Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}" 
+                Header="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Title}">
+                <ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <TextBlock
+                FontSize="18"
+                Margin="0,16,0,0"
+                FontWeight="Bold"
+                Text="Roblox Player" />
+
+            <controls:OptionControl
+                x:Name="DiscordActivityOption"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work'}"
+                Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding DiscordActivityEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
+                IsEnabled="{Binding DiscordActivityEnabled}">
+                <ToggleSwitch IsChecked="{Binding EnableCustomStatusDisplay, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
+                IsEnabled="{Binding DiscordActivityEnabled}">
+                <ToggleSwitch IsChecked="{Binding DiscordActivityJoinEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
+                IsEnabled="{Binding DiscordActivityEnabled}">
+                <ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <TextBlock
+                FontSize="18"
+                Margin="0,16,0,0"
+                FontWeight="Bold"
+                Text="Roblox Studio" />
+
+            <controls:OptionControl
+                x:Name="StudioActivityOption"
+                Header="Display Studio Activity"
+                Description="Shows Roblox Studio as your Discord activity on launch."
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="Dynamic Thumbnail"
+                Description="Changes the thumbnail depending on the script you have open."
+                IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="Editing Info"
+                Description="Shows the script type, script name, and number of lines in the script."
+                IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="Workspace Info"
+                Description="Displays the name of your current workspace."
+                IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="Show Testing"
+                Description="Shows a small play icon in your RPC when testing a game."
+                IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="Join Button"
+                Description="Adds a small button to join the game your working on."
+                IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <Separator Margin="0,8,0,8" />
+
+            <TextBlock
+                FontSize="20"
+                FontWeight="Bold"
+                Text="{x:Static resources:Strings.Menu_Integrations_Custom_Title}" />
+            <TextBlock
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Text="{x:Static resources:Strings.Menu_Integrations_Custom_Description}"
+                TextWrapping="Wrap" />
+
+            <Grid MinHeight="325" Margin="0,8,0,0" RowDefinitions="*, Auto" ColumnDefinitions="250, *">
+                <ListBox
+                    x:Name="CustomIntegrationsListBox"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="0,0,4,0"
+                    ItemsSource="{Binding CustomIntegrations, Mode=OneWay}"
+                    SelectedIndex="{Binding SelectedCustomIntegrationIndex, Mode=TwoWay}"
+                    SelectionChanged="CustomIntegrationSelection">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,8,4,0" ColumnDefinitions="*, *">
+                    <controls:IconButton
+                        Grid.Column="0"
+                        Margin="0,0,4,0"
+                        HorizontalAlignment="Stretch"
+                        Command="{Binding AddIntegrationCommand, Mode=OneTime}"
+                        Content="{x:Static resources:Strings.Common_New}"
+                        Icon="Plus" />
+                    <controls:IconButton
+                        Grid.Column="1"
+                        Margin="4,0,0,0"
+                        HorizontalAlignment="Stretch"
+                        Classes="Dangerous"
+                        Command="{Binding DeleteIntegrationCommand, Mode=OneTime}"
+                        Content="{x:Static resources:Strings.Common_Delete}"
+                        Icon="TrashCanOutline"
+                        IsEnabled="{Binding IsCustomIntegrationSelected, Mode=OneWay}" />
+                </Grid>
+
+                <StackPanel
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    Margin="4,0,0,0"
+                    IsVisible="{Binding IsCustomIntegrationSelected}">
+                    
+                    <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Common_Name}" />
+                    <TextBox Margin="0,4,0,0" Text="{Binding SelectedCustomIntegration.Name, UpdateSourceTrigger=PropertyChanged}" />
+                    
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{x:Static resources:Strings.Menu_Integrations_Custom_AppLocation}" />
+                    
+                    <Grid Margin="0,4,0,0" ColumnDefinitions="*, Auto">
+                        <TextBox
+                            Grid.Column="0"
+                            Watermark="C:\Windows\System32\cmd.exe"
+                            Text="{Binding SelectedCustomIntegration.Location}" />
+                        <controls:IconButton
+                            Grid.Column="1"
+                            Height="34"
+                            Margin="8,0,0,0"
+                            Command="{Binding BrowseIntegrationLocationCommand}"
+                            CommandParameter="{Binding $self}"
+                            Content="{x:Static resources:Strings.Common_Browse}"
+                            Icon="FolderOutline" />
+                    </Grid>
+
+                    <Grid Margin="0,8,0,0" ColumnDefinitions="Auto, 1*, Auto, 2*">
+                        <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="Launch Delay" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        <TextBox Grid.Column="1" Margin="0,0,16,0" Watermark="200" Text="{Binding SelectedCustomIntegration.Delay}" />
+                        
+                        <TextBlock Grid.Column="2" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        <TextBox Grid.Column="3" Watermark="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}" Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
+                    </Grid>
+
+                    <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
+                        <CheckBox Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoClose}" IsChecked="{Binding SelectedCustomIntegration.AutoClose}" />
+                        <CheckBox Margin="8,0,0,0" Content="Pre Roblox Launch" IsChecked="{Binding SelectedCustomIntegration.PreLaunch}" />
+                        <CheckBox Margin="8,0,0,0" Content="{x:Static resources:Strings.Menu_Integrations_Custom_SpecifyGame}" IsChecked="{Binding SelectedCustomIntegration.SpecifyGame, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+
+                    <StackPanel IsVisible="{Binding SelectedCustomIntegration.SpecifyGame}">
+                        <TextBlock
+                            Margin="0,8,0,0"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Menu_Integrations_Custom_GameID}" />
+                        <TextBox
+                            Margin="0,4,0,0"
+                            Watermark="1873"
+                            Text="{Binding SelectedCustomIntegration.GameID}" />
+                        <CheckBox
+                            Margin="0,8,0,0"
+                            Content="{x:Static resources:Strings.Menu_Integrations_Custom_AutoCloseOnGame}"
+                            IsChecked="{Binding SelectedCustomIntegration.AutoCloseOnGame, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Grid.Column="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    FontWeight="Medium"
+                    IsVisible="{Binding !IsCustomIntegrationSelected}"
+                    Text="{x:Static resources:Strings.Menu_Integrations_Custom_NoneSelected}"
+                    TextWrapping="Wrap" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

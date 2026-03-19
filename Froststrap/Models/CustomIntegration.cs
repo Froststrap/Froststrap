@@ -1,11 +1,34 @@
-﻿namespace Froststrap.Models
+﻿using Froststrap.UI.ViewModels;
+
+namespace Froststrap.Models
 {
-    public class CustomIntegration
+    public class CustomIntegration : NotifyPropertyChangedViewModel
     {
-        public string Name { get; set; } = "";
-        public string Location { get; set; } = "";
+        private string _name = "";
+        public string Name
+        {
+            get => _name;
+            set { _name = value; OnPropertyChanged(nameof(Name)); }
+        }
+
+        private string _location = "";
+        public string Location
+        {
+            get => _location;
+            set { _location = value; OnPropertyChanged(nameof(Location)); }
+        }
+
+        private bool _specifyGame = false;
+        public bool SpecifyGame
+        {
+            get => _specifyGame;
+            set
+            {
+                _specifyGame = value;
+                OnPropertyChanged(nameof(SpecifyGame));
+            }
+        }
         public string LaunchArgs { get; set; } = "";
-        public bool SpecifyGame { get; set; } = false;
         public string GameID { get; set; } = "";
         public bool AutoCloseOnGame { get; set; } = true;
         public int Delay { get; set; } = 0;
