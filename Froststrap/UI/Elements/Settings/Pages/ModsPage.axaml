@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:models="using:Froststrap.Models"
+             xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
+             xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Froststrap.UI.Elements.Settings.Pages.ModsPage"
+             x:DataType="vm:ModsViewModel"
+             DragDrop.AllowDrop="True">
+
+    <ScrollViewer>
+        <StackPanel Margin="14">
+            <Grid ColumnDefinitions="*,*,*" Margin="0,16,0,0">
+                <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
+                                     Icon="StorefrontOutline" Description="Explore user-created mods."
+                                     Command="{Binding OpenCommunityModsCommand}" />
+
+                <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="Preset Mods"
+                                     Icon="BookOpenPageVariantOutline" Description="Official built-in mods."
+                                     Command="{Binding OpenPresetModsCommand}" />
+
+                <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
+                                     Icon="Palette" Description="Generate mods easily with a single click."
+                                     Command="{Binding OpenModGeneratorCommand}"/>
+            </Grid>
+
+            <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
+
+            <ui:InfoBar Title="Important"
+                        Message="You can drag and drop your mod to auto add it here"
+                        Severity="Informational"
+                        IsOpen="True"
+                        IsClosable="False" />
+
+            <controls:IconButton Icon="Plus"
+                                 Content="Add new mod"
+                                 HorizontalAlignment="Stretch"
+                                 Command="{Binding AddModCommand}"
+                                 Margin="0,8" />
+
+            <ItemsControl ItemsSource="{Binding Modifications}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:ModConfig}">
+                        <controls:Card Margin="0,0,0,8">
+                            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
+                                
+                                <controls:IconButton Grid.Column="0" 
+                                                     Icon="TrashCanOutline" 
+                                                     Classes="Dangerous"
+                                                     Command="{Binding ((vm:ModsViewModel)DataContext).DeleteModCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                     CommandParameter="{Binding}" />
+
+                                <TextBox Grid.Column="1" Width="300" Margin="8,0"
+                                         Text="{Binding FolderName}"
+                                         Watermark="Mod Name"
+                                         GotFocus="ModName_GotFocus"
+                                         LostFocus="ModName_LostFocus" />
+
+                                <ComboBox Grid.Column="3" Width="150" Margin="0,0,8,0"
+                                          SelectedItem="{Binding Target}">
+                                                <x:String>Both</x:String>
+                                                <x:String>Player</x:String>
+                                                <x:String>Studio</x:String>
+                                                <x:String>Disabled</x:String>
+                                </ComboBox>
+
+                                <controls:IconButton Grid.Column="4" 
+                                                     Icon="FolderOutline"
+                                                     Command="{Binding ((vm:ModsViewModel)DataContext).OpenModFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                     CommandParameter="{Binding}" />
+
+                                <controls:IconButton Grid.Column="5" Margin="4,0,0,0"
+                                                     Icon="ArrowUp"
+                                                     Command="{Binding ((vm:ModsViewModel)DataContext).MoveUpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                     CommandParameter="{Binding}" />
+
+                                <controls:IconButton Grid.Column="6" Margin="4,0,0,0"
+                                                     Icon="ArrowDown"
+                                                     Command="{Binding ((vm:ModsViewModel)DataContext).MoveDownCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                     CommandParameter="{Binding}" />
+                            </Grid>
+                        </controls:Card>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

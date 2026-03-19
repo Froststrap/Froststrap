@@ -9,7 +9,6 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="16,12" />
         <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="OuterBorder"
@@ -33,7 +32,7 @@
                                        FontWeight="Normal"
                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                             
-                            <TextBlock Text="{TemplateBinding Description}"
+                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
                                        FontSize="12"
                                        Margin="0,2,0,0"
                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
