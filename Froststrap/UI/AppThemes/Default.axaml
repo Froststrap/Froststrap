@@ -22,7 +22,7 @@
 						Margin="0,4">
 					<StackPanel>
 						<Border Padding="16,12">
-							<Grid ColumnDefinitions="*, Auto,">
+							<Grid ColumnDefinitions="*, Auto">
 								<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
 									<ContentPresenter Content="{TemplateBinding Header}"
 													  FontSize="14"
@@ -44,7 +44,9 @@
 							</Grid>
 						</Border>
 
-						<Border Name="PART_ContentContainer" ClipToBounds="True">
+						<Border Name="PART_ContentContainer" 
+								BorderBrush="{TemplateBinding BorderBrush}"
+								ClipToBounds="True">
 							<Border.Transitions>
 								<Transitions>
 									<DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut"/>
