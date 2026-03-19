@@ -156,11 +156,15 @@
                                 StrokeThickness="1.5" />
                         </Button>
 
-                        <Button Classes="icon-button" ToolTip.Tip="{x:Static resources:Strings.Common_Settings}">
+                        <Button Classes="icon-button"
+                                Command="{Binding NavigateToChannelsCommand}"
+                                ToolTip.Tip="{x:Static resources:Strings.Common_Settings}"
+                                Tag="channels"
+                                >
                             <lucideAvalonia:Lucide
                                 Width="16"
                                 Height="16"
-                                Icon="Zap"
+                                Icon="Settings"
                                 StrokeBrush="#888888"
                                 StrokeThickness="1.5" />
                         </Button>

@@ -89,6 +89,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAppearanceCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRegionSelectorCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRobloxSettingsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToChannelsCommand { get; }
+
 
         private IRoutableViewModel Wrap(string segment, object settingsViewModel) =>
             new SettingsPageViewModelWrapper(this, segment, settingsViewModel);
@@ -221,6 +223,22 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Roblox Settings";
                     CurrentPageDescription = Strings.Menu_GBSEditor_Description;
                     return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToChannelsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "channels";
+                    CurrentPageTitle = "Channels Page";
+                    CurrentPageDescription = Strings.Menu_Channel_Description;
+                    return _router.Navigate.Execute(Wrap("channels", new ChannelViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
