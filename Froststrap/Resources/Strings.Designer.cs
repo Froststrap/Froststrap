@@ -3647,6 +3647,24 @@ namespace Froststrap.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Froststrap logs will be deleted..
         /// </summary>
+        public static string Menu_Bootstrapper_Cleaner_IncludeBloxstrap_Description {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap Logs.
+        /// </summary>
+        public static string Menu_Bootstrapper_Cleaner_IncludeBloxstrap_Title {
+            get {
+                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Froststrap logs will be deleted..
+        /// </summary>
         public static string Menu_Bootstrapper_Cleaner_IncludeFroststrap_Description {
             get {
                 return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description", resourceCulture);
@@ -5848,7 +5866,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Find by Name or Place ID:.
+        ///   Looks up a localized string similar to Enter Place ID or Game Name....
         /// </summary>
         public static string Menu_RegionSelector_FindGame {
             get {

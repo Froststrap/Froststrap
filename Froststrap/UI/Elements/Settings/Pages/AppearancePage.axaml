@@ -15,7 +15,6 @@
 
     <ScrollViewer>
         <StackPanel Margin="14">
-            <StackPanel Margin="0,0,14,14">
 				<controls:CardExpander Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Description}" IsExpanded="{Binding CustomThemeExpanded, Mode=OneWay}">
 					<controls:CardExpander.HeaderContent>
 						<ComboBox
@@ -377,7 +376,6 @@
                             TextWrapping="Wrap" />
                     </Grid>
                 </controls:CardExpander>
-            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
