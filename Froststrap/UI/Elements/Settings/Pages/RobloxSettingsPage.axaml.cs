@@ -9,6 +9,8 @@ namespace Froststrap.UI.Elements.Settings.Pages
         public RobloxSettingsPage()
         {
             InitializeComponent();
+
+            App.FrostRPC?.SetPage("Roblox Settings");
         }
 
         private void ValidateUInt32(object? sender, TextInputEventArgs e)

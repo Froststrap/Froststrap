@@ -26,7 +26,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<controls:TitleBar Grid.Row="0" Title="Available Channels"/>
+		<controls:TitleBar Grid.Row="0" Icon="avares://Froststrap/Froststrap.ico" Title="Available Channels"/>
 
 		<TextBlock Grid.Row="1"
                    Text="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels_Description}"
@@ -67,14 +67,10 @@
                 Background="{DynamicResource PrimaryBackgroundColor}">
 			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 				<Button MinWidth="100"
+						Padding="12,6"
+						Classes="accent"
                         Content="{x:Static resources:Strings.Common_Refresh}"
-                        Command="{Binding RefreshCommand}">
-					<Button.Styles>
-						<Style Selector="Button">
-							<Setter Property="Padding" Value="12,6" />
-						</Style>
-					</Button.Styles>
-				</Button>
+                        Command="{Binding RefreshCommand}"/>
 				<Button MinWidth="100" Margin="12,0,0,0"
                         Click="Close_Click"
                         Content="{x:Static resources:Strings.Common_Close}"

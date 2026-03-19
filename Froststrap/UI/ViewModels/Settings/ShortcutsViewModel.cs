@@ -1,9 +1,11 @@
-﻿using Avalonia.Media.Imaging;
-using Avalonia.Threading;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
+using System.Drawing;
+using Avalonia.Media.Imaging;
+using System.Security.Cryptography;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Collections.ObjectModel;
-using System.Security.Cryptography;
+using Avalonia.Threading;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -24,8 +26,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         [ObservableProperty] private string _previewName = "No Game Selected";
         [ObservableProperty] private string _previewId = "ID: 0";
-        [ObservableProperty] private string? _previewIconUrl;
+        [ObservableProperty] private Bitmap? _previewIcon;
         [ObservableProperty] private string _shortcutStatus = "Ready";
+        [ObservableProperty] private bool _isSearchFlyoutOpen;
 
         [ObservableProperty] private OmniSearchContent? _selectedSearchResult;
         public ObservableCollection<OmniSearchContent> SearchResults { get; } = new();
@@ -58,26 +61,35 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 string? finalIconPath = null;
 
-                if (!string.IsNullOrEmpty(PreviewIconUrl))
+                if (PreviewIcon != null)
                 {
-                    ShortcutStatus = "Downloading icon...";
-                    var imageBytes = await App.HttpClient.GetByteArrayAsync(PreviewIconUrl);
-                    string hash = ComputeHash(imageBytes);
-                    string icoPath = Path.Combine(shortcutsIconDir, $"{hash}.ico");
-
-                    if (!File.Exists(icoPath))
+                    try
                     {
-                        ShortcutStatus = "Converting icon...";
-                        using var stream = new MemoryStream(imageBytes);
-                        using var bitmap = new Bitmap(stream);
-                        using var icoFile = File.Create(icoPath);
-                        SaveBitmapAsIcon(bitmap, icoFile);
+                        ShortcutStatus = "Saving icon...";
+                        using var ms = new MemoryStream();
+                        PreviewIcon.Save(ms);
+                        byte[] imageBytes = ms.ToArray();
+
+                        string hash = ComputeHash(imageBytes);
+                        string icoPath = Path.Combine(shortcutsIconDir, $"{hash}.ico");
+
+                        if (!File.Exists(icoPath))
+                        {
+                            ShortcutStatus = "Converting icon...";
+                            using var icoFile = File.Create(icoPath);
+                            SaveBitmapAsIcon(PreviewIcon, icoFile);
+                        }
+                        finalIconPath = icoPath;
                     }
-                    finalIconPath = icoPath;
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine("ShortcutsViewModel", $"Icon processing failed: {ex.Message}");
+                    }
                 }
 
                 ShortcutStatus = "Creating...";
                 Shortcut.Create(Paths.Application, $"-gameshortcut \"{argData}\"", lnkPath, finalIconPath);
+
                 ShortcutStatus = "Shortcut created!";
             }
             catch (Exception ex)
@@ -111,10 +123,27 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 else if (!string.IsNullOrWhiteSpace(value))
                 {
-                    await SearchGamesAsync(token);
+                    await SearchGamesAsync();
                 }
             }
             catch (OperationCanceledException) { }
+        }
+
+        private async Task<Bitmap?> LoadBitmapFromUrl(string? url, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            try
+            {
+                var response = await App.HttpClient.GetByteArrayAsync(url, token);
+                using var ms = new MemoryStream(response);
+                return new Bitmap(ms);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ShortcutsViewModel", $"Failed to load preview bitmap: {ex.Message}");
+                return null;
+            }
         }
 
         partial void OnSelectedSearchResultChanged(OmniSearchContent? value)
@@ -128,11 +157,13 @@ namespace Froststrap.UI.ViewModels.Settings
 
             PreviewName = value.Name!;
             PreviewId = $"ID: {value.RootPlaceId}";
-            PreviewIconUrl = value.ThumbnailUrl;
+
+            PreviewIcon = value.ThumbnailBitmap;
 
             ShortcutStatus = "Ready to create";
 
             _isProcessingSelection = false;
+            IsSearchFlyoutOpen = false;
         }
 
         private async Task FetchInfoForId(long id, CancellationToken token)
@@ -148,13 +179,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     PreviewName = details.Data.Name;
                     PreviewId = $"ID: {id}";
-                    PreviewIconUrl = details.Thumbnail.ImageUrl;
+                    PreviewIcon = await LoadBitmapFromUrl(details.Thumbnail.ImageUrl, token);
                 }
                 else
                 {
                     PreviewName = $"Game {id}";
                     PreviewId = $"ID: {id}";
-                    PreviewIconUrl = null;
+                    PreviewIcon = null;
                 }
             }
             catch (Exception)
@@ -164,60 +195,76 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private async Task SearchGamesAsync(CancellationToken token)
+        [RelayCommand]
+        private async Task SearchGamesAsync()
         {
+            if (string.IsNullOrWhiteSpace(SearchQuery) || SearchQuery.Length < 3)
+            {
+                IsSearchFlyoutOpen = false;
+                return;
+            }
+
             IsGameSearchLoading = true;
             try
             {
                 var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
-                if (token.IsCancellationRequested || results == null) return;
 
-                var thumbRequests = results.Select(r => new ThumbnailRequest
+                if (results.Any())
                 {
-                    Type = ThumbnailType.GameIcon,
-                    TargetId = r.UniverseId,
-                    Size = "128x128"
-                }).ToList();
-
-                var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-
-                for (int i = 0; i < results.Count; i++)
-                {
-                    if (urls != null && i < urls.Length && !string.IsNullOrEmpty(urls[i]))
+                    var thumbRequests = results.Select(x => new ThumbnailRequest
                     {
-                        results[i].ThumbnailUrl = urls[i];
-                        try
+                        TargetId = (ulong)x.RootPlaceId,
+                        Type = ThumbnailType.PlaceIcon,
+                        Size = "128x128",
+                        Format = ThumbnailFormat.Png,
+                        IsCircular = false
+                    }).ToList();
+
+                    var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+
+                    for (int i = 0; i < results.Count; i++)
+                    {
+                        if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
                         {
-                            var data = await App.HttpClient.GetByteArrayAsync(urls[i], token);
-                            using var ms = new MemoryStream(data);
-                            results[i].ThumbnailBitmap = new Bitmap(ms);
+                            try
+                            {
+                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i]);
+                                using var ms = new MemoryStream(response);
+                                results[i].ThumbnailBitmap = new Bitmap(ms);
+                            }
+                            catch { }
                         }
-                        catch { /* Ignore failed images */ }
                     }
                 }
 
                 Dispatcher.UIThread.Post(() =>
                 {
                     SearchResults.Clear();
-                    foreach (var res in results)
-                    {
-                        SearchResults.Add(res);
-                    }
-                });
+                    foreach (var res in results) SearchResults.Add(res);
+                    IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
+                }, DispatcherPriority.Background);
             }
-            catch (Exception ex) { App.Logger.WriteLine("Shortcuts", ex.Message); }
-            finally { IsGameSearchLoading = false; }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ShortcutsViewModel", $"Search error: {ex.Message}");
+            }
+            finally
+            {
+                IsGameSearchLoading = false;
+            }
         }
 
         private static void SaveBitmapAsIcon(Bitmap bitmap, Stream output)
         {
-            var pixelSize = new Avalonia.PixelSize(64, 64);
+            using var ms = new MemoryStream();
+            bitmap.Save(ms);
+            ms.Position = 0;
 
-            using var resized = bitmap.CreateScaledBitmap(pixelSize, BitmapInterpolationMode.HighQuality);
+            using var resized = Bitmap.DecodeToWidth(ms, 64);
 
-            using var stream = new MemoryStream();
-            resized.Save(stream);
-            byte[] pngBytes = stream.ToArray();
+            using var pngStream = new MemoryStream();
+            resized.Save(pngStream);
+            byte[] pngBytes = pngStream.ToArray();
 
             using var writer = new BinaryWriter(output);
             writer.Write((short)0);

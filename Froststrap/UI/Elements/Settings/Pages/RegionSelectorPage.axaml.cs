@@ -14,6 +14,8 @@ namespace Froststrap.UI.Elements.Settings.Pages
         {
             InitializeComponent();
 
+            App.FrostRPC?.SetPage("Region Selector");
+
             this.Loaded += RegionSelectorPage_Loaded;
 
             DataContextChanged += (s, e) =>

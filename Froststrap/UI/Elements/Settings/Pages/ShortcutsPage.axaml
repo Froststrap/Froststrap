@@ -1,0 +1,231 @@
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.Pages.ShortcutsPage"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ic="using:IconPacks.Avalonia.Material"
+    x:DataType="vm:ShortcutsViewModel">
+
+    <ScrollViewer>
+        <StackPanel Margin="14">
+            <controls:OptionControl
+            Description="{Binding Source={x:Static resources:Strings.Menu_Shortcuts_ExtractIcons_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/Using-Roblox-icons-for-your-shortcuts'}"
+            Header="{x:Static resources:Strings.Menu_Shortcuts_ExtractIcons_Title}"
+            HelpLink="https://github.com/bloxstraplabs/bloxstrap/wiki/Using-Roblox-icons-for-your-shortcuts">
+            <ToggleSwitch IsChecked="{Binding ExtractIconsTask.NewState, Mode=TwoWay}" />
+        </controls:OptionControl>
+
+        <Separator Margin="0,6,0,4" />
+
+        <TextBlock
+            FontSize="20"
+            FontWeight="Bold"
+            Text="{x:Static resources:Strings.Menu_Shortcuts_General_Title}" />
+        <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <controls:OptionControl
+                Grid.Column="0"
+                Margin="0,0,4,0"
+                Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}">
+                <ToggleSwitch IsChecked="{Binding DesktopIconTask.NewState, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Grid.Column="1"
+                Margin="4,0,0,0"
+                Header="{x:Static resources:Strings.Common_Shortcuts_StartMenu}">
+                <ToggleSwitch IsChecked="{Binding StartMenuIconTask.NewState, Mode=TwoWay}" />
+            </controls:OptionControl>
+        </Grid>
+
+        <Separator Margin="0,8,0,4" />
+
+        <TextBlock
+            FontSize="20"
+            FontWeight="Bold"
+            Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}" />
+        <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <controls:OptionControl
+                Grid.Column="0"
+                Margin="0,0,2,0"
+                Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}">
+                <ToggleSwitch IsChecked="{Binding PlayerIconTask.NewState, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Grid.Column="1"
+                Margin="2,0,2,0"
+                Header="{x:Static resources:Strings.LaunchMenu_LaunchRobloxStudio}">
+                <ToggleSwitch IsChecked="{Binding StudioIconTask.NewState, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Grid.Column="2"
+                Margin="2,0,0,0"
+                Header="{x:Static resources:Strings.Menu_Title}">
+                <ToggleSwitch IsChecked="{Binding SettingsIconTask.NewState, Mode=TwoWay}" />
+            </controls:OptionControl>
+        </Grid>
+
+        <Separator Margin="0,8,0,4" />
+
+        <TextBlock
+            FontSize="20"
+            FontWeight="Bold"
+            Text="{x:Static resources:Strings.Common_Miscellaneous}" />
+
+        <controls:CardExpander Description="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Description}" Header="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Title}" IsExpanded="True">
+            <StackPanel>
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="100" Height="100" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlAltFillColorQuarternaryBrush}">
+                        <Image Source="{Binding PreviewIcon}" Stretch="UniformToFill" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding PreviewName}" FontSize="20" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <ic:PackIconMaterial Kind="TagOutline" FontSize="14" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                            <TextBlock Text="{Binding PreviewId}" FontSize="13" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <StackPanel>
+                    <Label Content="Search for a Game" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <TextBox
+                            x:Name="SearchTextBox"
+                            VerticalAlignment="Center"
+                            Text="{Binding SearchQuery, Mode=TwoWay}"
+                            Watermark="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
+
+                            <TextBox.InnerRightContent>
+                                <controls:IconButton
+                                    Command="{Binding SearchGamesCommand}"
+                                    Icon="Magnify"
+                                    IconSize="16"
+                                    Click="OnSearchButtonClick"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"/>
+                            </TextBox.InnerRightContent>
+
+                            <FlyoutBase.AttachedFlyout>
+                                <Flyout Placement="BottomEdgeAlignedLeft" ShowMode="Transient">
+                                    <Panel>
+                                        <ListBox
+                                            MaxWidth="500"
+                                            MinWidth="200"
+                                            MaxHeight="400"
+                                            Background="Transparent"
+                                            ItemsSource="{Binding SearchResults}"
+                                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                                        <Border
+                                                            Grid.Column="0"
+                                                            Width="44"
+                                                            Height="44"
+                                                            Background="#10FFFFFF"
+                                                            ClipToBounds="True"
+                                                            CornerRadius="4">
+															<Image
+																RenderOptions.BitmapInterpolationMode="HighQuality"
+																Source="{Binding ThumbnailBitmap}"
+																Stretch="UniformToFill" />
+                                                        </Border>
+                                                        <StackPanel
+                                                            Grid.Column="1"
+                                                            Margin="10,0"
+                                                            VerticalAlignment="Center">
+                                                            <TextBlock
+                                                              FontWeight="SemiBold"
+                                                              FontSize="16"
+                                                              Text="{Binding Name}"
+                                                              TextTrimming="CharacterEllipsis" />
+                                                            <TextBlock
+                                                              FontSize="10"
+                                                              Opacity="0.5"
+                                                              Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
+                                                        </StackPanel>
+                                                        <StackPanel
+                                                            Grid.Column="2"
+                                                            VerticalAlignment="Center"
+                                                            Orientation="Horizontal"
+                                                            Spacing="4">
+                                                            <ic:PackIconMaterial 
+                                                              Margin="8,2,0,0"
+                                                              Width="14"
+                                                              Height="14"
+                                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                              Kind="AccountMultiple"/>
+                                                            <TextBlock
+                                                               VerticalAlignment="Center"
+                                                               FontSize="12"
+                                                               Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+
+                                        <ProgressBar
+                                            VerticalAlignment="Top"
+                                            IsIndeterminate="True"
+                                            IsVisible="{Binding IsGameSearchLoading}" />
+                                    </Panel>
+                                </Flyout>
+                            </FlyoutBase.AttachedFlyout>
+                        </TextBox>
+                </StackPanel>
+
+                <Grid Margin="0,16,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="16" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Label Content="Server Instance ID" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        <TextBox Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Watermark="GUID/JobID" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <Label Content="Private Access Code" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                        <TextBox Text="{Binding AccessCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Watermark="Access Code" />
+                    </StackPanel>
+                </Grid>
+
+                <Separator Margin="0,8"/>
+
+                <DockPanel>
+                    <controls:IconButton Command="{Binding CreateGameShortcutCommand}" Content="Create Shortcut" Icon="Plus" />
+                    <TextBlock Text="{Binding ShortcutStatus}" Margin="16,8,0,0" FontSize="12" />
+                </DockPanel>
+            </StackPanel>
+        </controls:CardExpander>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
