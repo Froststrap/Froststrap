@@ -6,6 +6,8 @@
     xmlns:resources="using:Froststrap.Resources"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ic="using:IconPacks.Avalonia.Material"
     x:DataType="vm:RegionSelectorViewModel">
 
 	<UserControl.Styles>
@@ -69,17 +71,14 @@
                             Watermark="{x:Static resources:Strings.Menu_RegionSelector_FindGame}">
 
                             <TextBox.InnerRightContent>
-                                <Button
-                                    Padding="8,0"
+                                <controls:IconButton
                                     Command="{Binding SearchGamesCommand}"
-                                    Theme="{StaticResource TransparentButton}"
-                                    Click="OnSearchButtonClick">
-                                    <lucideAvalonia:Lucide
-                                        Width="16"
-                                        Height="16"
-                                        Icon="Search"
-                                        StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
-                                </Button>
+                                    Icon="Magnify"
+                                    IconSize="16"
+                                    Click="OnSearchButtonClick"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0"/>
                             </TextBox.InnerRightContent>
 
                             <FlyoutBase.AttachedFlyout>
@@ -112,28 +111,30 @@
                                                             Margin="10,0"
                                                             VerticalAlignment="Center">
                                                             <TextBlock
-                                                                FontWeight="SemiBold"
-                                                                Text="{Binding Name}"
-                                                                TextTrimming="CharacterEllipsis" />
+                                                              FontWeight="SemiBold"
+                                                              FontSize="16"
+                                                              Text="{Binding Name}"
+                                                              TextTrimming="CharacterEllipsis" />
                                                             <TextBlock
-                                                                FontSize="10"
-                                                                Opacity="0.5"
-                                                                Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
+                                                              FontSize="10"
+                                                              Opacity="0.5"
+                                                              Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
                                                         </StackPanel>
                                                         <StackPanel
                                                             Grid.Column="2"
                                                             VerticalAlignment="Center"
                                                             Orientation="Horizontal"
                                                             Spacing="4">
-                                                            <lucideAvalonia:Lucide
-                                                                Width="14"
-                                                                Height="14"
-                                                                Icon="Users"
-                                                                StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                            <ic:PackIconMaterial 
+                                                              Margin="0,2,0,0"
+                                                              Width="14"
+                                                              Height="14"
+                                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                              Kind="AccountMultiple"/>
                                                             <TextBlock
-                                                                VerticalAlignment="Center"
-                                                                FontSize="12"
-                                                                Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                                               VerticalAlignment="Center"
+                                                               FontSize="12"
+                                                               Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </DataTemplate>
@@ -219,11 +220,16 @@
 							Margin="40"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-					<lucideAvalonia:Lucide Icon="Search"
-										   Width="32" Height="32"
-										   HorizontalAlignment="Center"
-										   Opacity="0.5" StrokeBrush="{DynamicResource TextFillColorSecondaryBrush}"  />
+                    <ic:PackIconMaterial 
+                               Margin="0,2,0,0"
+                               Width="64"
+                               Height="64"
+                               HorizontalAlignment="Center" 
+                               Opacity="0.5"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Kind="Magnify"/>
 					<TextBlock HorizontalAlignment="Center"
+                               Margin="0,0,0,8"
 							   FontSize="16"
 							   FontWeight="Medium"
 							   Foreground="{DynamicResource TextFillColorSecondaryBrush}"

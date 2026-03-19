@@ -5,6 +5,7 @@
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
     xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:resources="using:Froststrap.Resources"
+    xmlns:ic="using:IconPacks.Avalonia.Material"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     Title="{x:Static resources:Strings.Menu_Title}"
@@ -23,7 +24,7 @@
     <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
 
         <controls:TitleBar
-			Title="Froststrap"
+			Title="{x:Static resources:Strings.Menu_Title}"
 			Icon="avares://Froststrap/Froststrap.ico"
             Grid.Row="0"
             Height="32"
@@ -34,7 +35,7 @@
             Grid.Row="1"
             HorizontalAlignment="Center"
             VerticalAlignment="Bottom"
-            Margin="0,0,0,25"
+            Margin="0,0,0,15"
             MaxWidth="450"
             ZIndex="1000" />
 
@@ -55,12 +56,11 @@
                             Command="{Binding NavigateToIntegrationsCommand}"
                             Tag="integrations"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Plus"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="Plus"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button
@@ -68,12 +68,11 @@
                             Command="{Binding NavigateToBehaviourCommand}"
                             Tag="behaviour"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Settings"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="CogOutline"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button
@@ -81,12 +80,11 @@
                             Command="{Binding NavigateToModsCommand}"
                             Tag="mods"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Wrench"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="Wrench"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button
@@ -94,12 +92,11 @@
                             Command="{Binding NavigateToFastFlagsCommand}"
                             Tag="fastflags"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Flag"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="Flag"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button
@@ -107,12 +104,11 @@
                             Command="{Binding NavigateToAppearanceCommand}"
                             Tag="appearance"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Palette"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="Palette"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button
@@ -120,12 +116,11 @@
                             Command="{Binding NavigateToRegionSelectorCommand}"
                             Tag="region selector"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Globe"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="Earth"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button
@@ -133,12 +128,11 @@
                             Command="{Binding NavigateToRobloxSettingsCommand}"
                             Tag="robloxsettings"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Gauge"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="Gauge"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
@@ -148,37 +142,33 @@
                             Classes="icon-button"
                             Command="{Binding OpenAccountManagerCommand}"
                             ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Users"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="AccountMultipleOutline"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button Classes="icon-button"
                                 Command="{Binding NavigateToChannelsCommand}"
                                 ToolTip.Tip="{x:Static resources:Strings.Common_Settings}"
-                                Tag="channels"
-                                >
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Settings"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                                Tag="channels">
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="CogOutline"
+                                Foreground="#888888"/>
                         </Button>
 
                         <Button
                             Classes="icon-button"
                             Command="{Binding OpenAboutCommand}"
                             ToolTip.Tip="About Me">
-                            <lucideAvalonia:Lucide
-                                Width="16"
-                                Height="16"
-                                Icon="Info"
-                                StrokeBrush="#888888"
-                                StrokeThickness="1.5" />
+                            <ic:PackIconMaterial
+                                Width="20"
+                                Height="20"
+                                Kind="Information"
+                                Foreground="#888888"/>
                         </Button>
                     </StackPanel>
                 </ScrollViewer>

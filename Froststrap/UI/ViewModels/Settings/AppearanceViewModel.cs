@@ -16,7 +16,7 @@ namespace Froststrap.UI.ViewModels.Settings
     public partial class AppearanceViewModel : NotifyPropertyChangedViewModel
     {
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
-        public ICommand BrowseCustomIconLocationCommand => new RelayCommand(BrowseCustomIconLocation);
+        public IAsyncRelayCommand<Control> BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(BrowseCustomIconLocation);
 
         public ICommand AddCustomThemeCommand => new RelayCommand<Control>(async c => await AddCustomTheme(c));
         public ICommand EditCustomThemeCommand => new RelayCommand<Control>(async c => await EditCustomTheme(c));
@@ -41,16 +41,14 @@ namespace Froststrap.UI.ViewModels.Settings
             App.FrostRPC?.ClearDialog();
         }
 
-        private async void BrowseCustomIconLocation()
+        private async Task BrowseCustomIconLocation(Control? control)
         {
-            var mainWindow = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
-                ? desktop.MainWindow
-                : null;
+            if (control is null) return;
 
-            if (mainWindow == null)
-                return;
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
 
-            var storageProvider = mainWindow.StorageProvider;
+            var storageProvider = parentWindow.StorageProvider;
 
             var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
@@ -67,8 +65,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
             if (files != null && files.Count > 0)
             {
-                var file = files[0];
-                CustomIconLocation = file.Path.LocalPath;
+                CustomIconLocation = files[0].Path.LocalPath;
+
                 OnPropertyChanged(nameof(CustomIconLocation));
             }
         }

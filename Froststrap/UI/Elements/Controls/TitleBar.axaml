@@ -25,33 +25,15 @@
                     </Panel>
 
                     <StackPanel Grid.Column="2" Orientation="Horizontal">
-                        <Button Name="PART_MinimizeButton" Classes="TitleBarButton"
-                                IsVisible="{TemplateBinding ShowMinimize}">
-                            <Path Data="M 0,5 H 10" 
-                                  Stroke="{Binding $parent[Button].Foreground}" 
-                                  StrokeThickness="1" 
-                                  HorizontalAlignment="Center" 
-                                  VerticalAlignment="Center"/>
-                        </Button>
+                        <controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
+                                IsVisible="{TemplateBinding ShowMinimize}"/>
 
-                        <Button Name="PART_MaximizeButton" Classes="TitleBarButton"
-                                IsVisible="{TemplateBinding ShowMaximize}"
-                                IsEnabled="{TemplateBinding CanMaximize}">
-                            <Path Data="M 1,1 H 9 V 9 H 1 Z" 
-                                  Stroke="{Binding $parent[Button].Foreground}" 
-                                  StrokeThickness="1" 
-                                  HorizontalAlignment="Center" 
-                                  VerticalAlignment="Center"/>
-                        </Button>
+                        <controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
+                                IsVisible="{TemplateBinding ShowMaximize}" Icon="SquareOutline"
+                                IsEnabled="{TemplateBinding CanMaximize}"/>
 
-                        <Button Name="PART_CloseButton" Classes="TitleBarButton Close"
-                                IsVisible="{TemplateBinding ShowClose}">
-                            <Path Data="M 0,0 L 10,10 M 10,0 L 0,10" 
-                                  Stroke="{Binding $parent[Button].Foreground}" 
-                                  StrokeThickness="1" 
-                                  HorizontalAlignment="Center" 
-                                  VerticalAlignment="Center"/>
-                        </Button>
+                        <controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
+                                IsVisible="{TemplateBinding ShowClose}"/>
                     </StackPanel>
                 </Grid>
             </ControlTemplate>

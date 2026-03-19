@@ -1,12 +1,16 @@
 using Avalonia;
 using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.ViewModels.Settings;
-using System.Reactive.Linq;
+using IconPacks.Avalonia.Material;
 using ReactiveUI;
+using System.Reactive.Linq;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -140,9 +144,9 @@ namespace Froststrap.UI.Elements.Settings
                     }
 
                     // Find and update the Lucide icon if it exists
-                    if (button.Content is LucideAvalonia.Lucide lucideIcon)
+                    if (button.Content is PackIconMaterial Icon)
                     {
-                        lucideIcon.StrokeBrush = isSelected ? selectedBrush : unselectedBrush;
+                        Icon.Foreground = isSelected ? selectedBrush : unselectedBrush;
                     }
                 }
             }
@@ -216,116 +220,104 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
+        private void ShowSaveNotification()
+        {
+            ShowNotification(
+                Strings.Menu_SettingsSaved_Title,
+                Strings.Menu_SettingsSaved_Message,
+                NotificationType.Success,
+                3000);
+        }
+
         private async void ShowAlreadyRunningNotification()
         {
             await Task.Delay(500);
-            ShowNotification(Strings.Menu_AlreadyRunning_Title, Strings.Menu_AlreadyRunning_Caption);
+            ShowNotification(
+                Strings.Menu_AlreadyRunning_Title,
+                Strings.Menu_AlreadyRunning_Caption,
+                NotificationType.Warning,
+                5000);
         }
 
-        private async void ShowSaveNotification()
-        {
-            ShowNotification(Strings.Menu_SettingsSaved_Title, Strings.Menu_SettingsSaved_Message);
-            await Task.Delay(3000);
-        }
-
-        private void ShowNotification(string title, string subtitle)
+        private void ShowNotification(string title, string subtitle, NotificationType type, int timeout)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
-            if (notificationPanel != null)
+            if (notificationPanel == null) return;
+
+            var accentColor = type == NotificationType.Success ? "#00D084" : "#FFB900";
+            var iconKind = type == NotificationType.Success
+                ? PackIconMaterialKind.CheckboxMultipleMarkedCircleOutline
+                : PackIconMaterialKind.AlertOutline;
+
+            var contentGrid = new Grid
             {
-                var contentGrid = new Grid
-                {
-                    ColumnDefinitions = new ColumnDefinitions("Auto,*"),
-                    Margin = new Thickness(0)
-                };
+                ColumnDefinitions = new ColumnDefinitions("Auto,*"),
+                Margin = new Thickness(0)
+            };
 
-                var checkmark = new LucideAvalonia.Lucide
-                {
-                    Icon = (LucideAvalonia.Enum.LucideIconNames)Enum.Parse(typeof(LucideAvalonia.Enum.LucideIconNames), "CircleCheckBig"),
-                    Width = 24,
-                    Height = 24,
-                    StrokeBrush = new SolidColorBrush(Color.Parse("#00D084")),
-                    StrokeThickness = 2,
-                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                    Margin = new Thickness(16, 0, 12, 0)
-                };
-                Grid.SetColumn(checkmark, 0);
-                contentGrid.Children.Add(checkmark);
+            var icon = new PackIconMaterial
+            {
+                Kind = iconKind,
+                Width = 28,
+                Height = 28,
+                Foreground = new SolidColorBrush(Color.Parse(accentColor)),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Margin = new Thickness(16, 0, 12, 0)
+            };
+            Grid.SetColumn(icon, 0);
+            contentGrid.Children.Add(icon);
 
-                var textPanel = new StackPanel
-                {
-                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                    Spacing = 2
-                };
-                var titleText = new TextBlock
-                {
-                    Text = title,
-                    FontWeight = FontWeight.SemiBold,
-                    FontSize = 14,
-                    Foreground = new SolidColorBrush(Color.Parse("#FFFFFF"))
-                };
-                var subtitleText = new TextBlock
-                {
-                    Text = subtitle,
-                    FontSize = 12,
-                    Foreground = new SolidColorBrush(Color.Parse("#CCCCCC"))
-                };
-                textPanel.Children.Add(titleText);
-                textPanel.Children.Add(subtitleText);
-                Grid.SetColumn(textPanel, 1);
-                contentGrid.Children.Add(textPanel);
+            var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
+            textPanel.Children.Add(new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14, Foreground = Brushes.White });
+            textPanel.Children.Add(new TextBlock { Text = subtitle, FontSize = 12, Foreground = new SolidColorBrush(Color.Parse("#CCCCCC")), TextWrapping = TextWrapping.Wrap });
+            Grid.SetColumn(textPanel, 1);
+            contentGrid.Children.Add(textPanel);
 
-                var notification = new Border
-                {
-                    Background = new SolidColorBrush(Color.Parse("#1F1F1F")),
-                    BackgroundSizing = BackgroundSizing.InnerBorderEdge,
-                    Opacity = 0.85,
-                    BorderBrush = new SolidColorBrush(Color.Parse("#333333")),
-                    BorderThickness = new Thickness(0, 1, 0, 0),
-                    Padding = new Thickness(0, 12, 28, 12),
-                    Margin = new Thickness(0),
-                    Height = 90,
-                    CornerRadius = new CornerRadius(12),
-                    RenderTransform = new TranslateTransform(0, 100),
-                    Cursor = new Cursor(StandardCursorType.Hand),
-                    Child = contentGrid
-                };
+            var notification = new Border
+            {
+                Background = new SolidColorBrush(Color.Parse("#1F1F1F")),
+                BorderBrush = new SolidColorBrush(Color.Parse(accentColor)),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(0, 12, 24, 12),
+                Margin = new Thickness(0, 0, 0, 10),
+                MinWidth = 350,
+                MaxWidth = 500,
+                Height = 80,
+                CornerRadius = new CornerRadius(12),
+                Opacity = 0,
+                RenderTransform = new TranslateTransform(0, 40),
+                Cursor = new Cursor(StandardCursorType.Hand),
+                Child = contentGrid,
+                BoxShadow = new BoxShadows(new BoxShadow { Blur = 15, OffsetY = 8, Color = Color.Parse("#60000000") })
+            };
 
-                var transitions = new Transitions();
-                transitions.Add(new TransformOperationsTransition 
-                { 
-                    Property = Border.RenderTransformProperty, 
-                    Duration = TimeSpan.FromMilliseconds(300)
-                });
-                notification.Transitions = transitions;
+            notification.Transitions = new Transitions
+            {
+                new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
+                new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
+            };
 
-                notification.PointerPressed += (s, e) =>
-                {
-                    notification.RenderTransform = new TranslateTransform(0, 100);
-                    Dispatcher.UIThread.InvokeAsync(async () =>
-                    {
-                        await Task.Delay(300);
-                        notificationPanel.Children.Remove(notification);
-                    });
-                };
-
-                notificationPanel.Children.Add(notification);
-
-                Dispatcher.UIThread.InvokeAsync(async () =>
-                {
-                    notification.RenderTransform = new TranslateTransform(0, 0);
-
-                    await Task.Delay(4000);
-
-                    if (notificationPanel.Children.Contains(notification))
-                    {
-                        notification.RenderTransform = new TranslateTransform(0, 100);
-
-                        await Task.Delay(300);
-                        notificationPanel.Children.Remove(notification);
-                    }
-                });
+            async void Dismiss()
+            {
+                if (!notificationPanel.Children.Contains(notification)) return;
+                notification.Opacity = 0;
+                notification.RenderTransform = new TranslateTransform(0, 40);
+                await Task.Delay(350);
+                notificationPanel.Children.Remove(notification);
             }
+
+            notification.PointerPressed += (s, e) => Dismiss();
+            notificationPanel.Children.Add(notification);
+
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await Task.Delay(50);
+                notification.Opacity = 1;
+                notification.RenderTransform = new TranslateTransform(0, 0);
+
+                await Task.Delay(timeout);
+                Dismiss();
+            });
         }
 
         public void ShowLoading(string message = "Loading...")

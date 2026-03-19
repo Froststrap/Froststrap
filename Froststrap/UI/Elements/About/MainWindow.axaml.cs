@@ -242,9 +242,9 @@ namespace Froststrap.UI.Elements.About
 						button.Background = isSelected ? new SolidColorBrush(Color.Parse("#333333")) : new SolidColorBrush(Colors.Transparent);
 						button.Foreground = isSelected ? selectedBrush : unselectedBrush;
 
-						if (button.Content is LucideAvalonia.Lucide lucideIcon)
+						if (button.Content is IconPacks.Avalonia.Material.PackIconMaterial Icon)
 						{
-							lucideIcon.StrokeBrush = isSelected ? selectedBrush : unselectedBrush;
+                            Icon.Foreground = isSelected ? selectedBrush : unselectedBrush;
 						}
 					}
 				}

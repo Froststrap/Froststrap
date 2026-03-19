@@ -4,6 +4,8 @@ namespace Froststrap.UI.ViewModels.Settings
 {
     public class ChannelViewModel : NotifyPropertyChangedViewModel
     {
+        private CancellationTokenSource? _cts;
+
         public ChannelViewModel()
         {
             Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
@@ -25,27 +27,37 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task LoadChannelDeployInfo(string channel)
         {
-            ShowLoadingError = false;
-            OnPropertyChanged(nameof(ShowLoadingError));
-
-            ChannelInfoLoadingText = Strings.Menu_Channel_Switcher_Fetching;
-            OnPropertyChanged(nameof(ChannelInfoLoadingText));
-
-            ChannelDeployInfo = null;
-            OnPropertyChanged(nameof(ChannelDeployInfo));
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
 
             try
             {
+                ShowLoadingError = false;
+                OnPropertyChanged(nameof(ShowLoadingError));
+
+                ChannelInfoLoadingText = Strings.Menu_Channel_Switcher_Fetching;
+                OnPropertyChanged(nameof(ChannelInfoLoadingText));
+
+                ChannelDeployInfo = null;
+                OnPropertyChanged(nameof(ChannelDeployInfo));
+
+                if (token.IsCancellationRequested) return;
+
                 bool isPrivate = await Deployment.IsChannelPrivate(channel);
+
+                if (token.IsCancellationRequested) return;
+
                 if (App.Cookies.Loaded && isPrivate && string.IsNullOrEmpty(Deployment.ChannelToken))
                 {
                     UserChannel? userChannel = await Deployment.GetUserChannel("WindowsPlayer");
-
                     if (userChannel?.Token is not null)
                         Deployment.ChannelToken = userChannel.Token;
                 }
 
                 ClientVersion info = await Deployment.GetInfo(channel, true, true);
+
+                if (token.IsCancellationRequested) return;
 
                 ShowChannelWarning = info.IsBehindDefaultChannel;
                 OnPropertyChanged(nameof(ShowChannelWarning));
@@ -53,16 +65,18 @@ namespace Froststrap.UI.ViewModels.Settings
                 ChannelDeployInfo = new DeployInfo
                 {
                     Version = info.Version,
-                    VersionGuid = isPrivate ? "version-private" : info.VersionGuid, // we dont want to return the hash of private channels for obvious reason
+                    VersionGuid = isPrivate ? "version-private" : info.VersionGuid,
                     Timestamp = info.Timestamp?.ToLocalTime().ToString() ?? "?"
                 };
 
                 App.State.Prop.IgnoreOutdatedChannel = true;
-
                 OnPropertyChanged(nameof(ChannelDeployInfo));
             }
+            catch (OperationCanceledException) { /* Do nothing, task was replaced */ }
             catch (InvalidChannelException ex)
             {
+                if (token.IsCancellationRequested) return;
+
                 ShowLoadingError = true;
                 OnPropertyChanged(nameof(ShowLoadingError));
 
@@ -87,7 +101,8 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 value = value.Trim();
-                Task.Run(() => LoadChannelDeployInfo(value));
+
+                _ = LoadChannelDeployInfo(value);
 
                 if (value.ToLower() == "live" || value.ToLower() == "zlive")
                 {
@@ -97,6 +112,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     App.Settings.Prop.Channel = value;
                 }
+
+                OnPropertyChanged(nameof(ViewChannel));
             }
         }
 

@@ -43,17 +43,18 @@
                             <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode, Converter={StaticResource BooleanToVisibilityConverter}}">
         
                                 <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,20,0">
+                                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                        <controls:IconButton Content="Add Gradient Color" Command="{Binding AddGradientStopCommand}" Classes="Primary"/>
+                                        <Button Content="Reset to Default" Command="{Binding ResetGradientCommand}"/>
+                                        <TextBlock Text="Gradient Angle:" VerticalAlignment="Center"/>
+                                        <NumericUpDown Value="{Binding GradientAngle}" Width="160" Minimum="0" Maximum="360" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
                                         <Button Content="Export Gradient" Command="{Binding ExportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
                                         <Button Content="Import Gradient" Command="{Binding ImportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
                                     </StackPanel>
-            
-                                    <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                                        <TextBlock Text="Gradient Angle:" VerticalAlignment="Center"/>
-                                        <NumericUpDown Value="{Binding GradientAngle}" Width="160" Minimum="0" Maximum="360" VerticalAlignment="Center"/>
-                                        <Button Content="Reset to Default" Command="{Binding ResetGradientCommand}"/>
-                                        <Button Content="Add Gradient Color" Command="{Binding AddGradientStopCommand}" Classes="accent"/>
-                                    </StackPanel>
+           
                                 </WrapPanel>
 
                                 <TextBlock Text="Gradient Stops:" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
@@ -220,14 +221,18 @@
               Grid.Column="0"
               Margin="0,8,8,0"
               ColumnDefinitions="*,*">
-            <Button Grid.Column="0"
+            <controls:IconButton Grid.Column="0"
                     Margin="0,0,4,0"
+                    Icon="Plus"
                     HorizontalAlignment="Stretch"
+                    Classes="Primary"
                     Command="{Binding AddCustomThemeCommand}"
                     CommandParameter="{Binding $parent[Window]}"
                     Content="{x:Static resources:Strings.Common_New}" />
-            <Button Grid.Column="1"
+            <controls:IconButton Grid.Column="1"
                     Margin="4,0,0,0"
+                    Classes="Dangerous"
+                    Icon="TrashCanOutline"
                     HorizontalAlignment="Stretch"
                     Command="{Binding DeleteCustomThemeCommand}"
                     Content="{x:Static resources:Strings.Common_Delete}"
@@ -244,14 +249,14 @@
             <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
             <Grid ColumnDefinitions="*,*,*">
-                <Button Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch"
+                <controls:IconButton Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch" Icon="PencilOutline"
                         Command="{Binding RenameCustomThemeCommand}" 
                         Content="{x:Static resources:Strings.Common_Rename}" />
-                <Button Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch"
+                <controls:IconButton Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch" Icon="FileEditOutline"
                         Command="{Binding EditCustomThemeCommand}" 
                         CommandParameter="{Binding $self}"
                         Content="{x:Static resources:Strings.Common_Edit}" />
-                <Button Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch"
+                <controls:IconButton Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch" Icon="Export"
                         Command="{Binding ExportCustomThemeCommand}" 
                         CommandParameter="{Binding $self}"
                         Content="{x:Static resources:Strings.Common_Export}" />
@@ -352,11 +357,13 @@
                                 Grid.Column="0"
                                 Margin="0,0,4,0"
                                 Text="{Binding CustomIconLocation, Mode=TwoWay}" />
-                            <Button
+                            <controls:IconButton
                                 Grid.Column="1"
                                 Height="35"
                                 Margin="4,0,0,0"
+                                IconData="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z"
                                 Command="{Binding BrowseCustomIconLocationCommand}"
+                                CommandParameter="{Binding $self}"
                                 Content="{x:Static resources:Strings.Common_Browse}" />
                         </Grid>
 

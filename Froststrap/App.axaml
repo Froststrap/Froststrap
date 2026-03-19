@@ -14,7 +14,9 @@
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardExpander.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
 		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+        <StyleInclude Source="avares://IconPacks.Avalonia.Material/Material.axaml" />
 		<StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
 	</Application.Styles>
 
