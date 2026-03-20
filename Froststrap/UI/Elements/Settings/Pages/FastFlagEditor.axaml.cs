@@ -6,6 +6,7 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Platform.Storage;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.Elements.Settings.Pages
@@ -71,9 +72,12 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 _dataGrid.ItemsSource = _fastFlagList;
 
             if (!(_fastFlagList.Any() || App.FastFlags.Prop.Any()))
-                EmptyStatePanel.IsVisible = true;
+                EmptyTextBlock.IsVisible = true;
             else
-                EmptyStatePanel.IsVisible = false;
+                EmptyTextBlock.IsVisible = false;
+
+            if (DeleteSelectedButton != null)
+                DeleteSelectedButton.IsEnabled = false;
 
             UpdateTotalFlagsCount();
         }
@@ -248,12 +252,32 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 var topLevel = TopLevel.GetTopLevel(this);
                 if (topLevel is null) return;
 
-                // TODO: Implement file save dialog for Avalonia
-                await Frontend.ShowMessageBox("File save dialog not yet implemented", MessageBoxImage.Information);
+                var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+                {
+                    Title = "ESave JSON or TXT File",
+                    SuggestedFileName = "FroststrapExport.json",
+                    DefaultExtension = "json",
+                    FileTypeChoices = new[]
+                    {
+                        new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
+                        new FilePickerFileType("TXT Files") { Patterns = new[] { "*.txt" } }
+                    }
+                });
+
+                if (file is not null)
+                {
+                    await using var stream = await file.OpenWriteAsync();
+                    using var writer = new StreamWriter(stream);
+                    await writer.WriteAsync(json);
+
+                    await Frontend.ShowMessageBox(
+                        "FastFlags exported successfully.",
+                        MessageBoxImage.Information);
+                }
             }
             catch (Exception ex)
             {
-                await Frontend.ShowMessageBox($"An error occurred:\n{ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"An error occurred while saving:\n{ex.Message}", MessageBoxImage.Error);
             }
         }
 
@@ -400,6 +424,13 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         EndEditing:
             App.FastFlags.suspendUndoSnapshot = false;
+        }
+
+        private void DataGrid_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (_dataGrid is null || DeleteSelectedButton is null) return;
+
+            DeleteSelectedButton.IsEnabled = _dataGrid.SelectedItems.Count > 0;
         }
 
         private void ClearSearch(bool refresh = true)

@@ -25,7 +25,7 @@
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
             <controls:IconButton Click="AddButton_Click" Icon="PlusCircleOutline" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
-            <controls:IconButton Click="DeleteButton_Click" Icon="TrashCanOutline" Classes="danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" />
+            <controls:IconButton Click="DeleteButton_Click" Icon="TrashCanOutline" Classes="Dangerous" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
             <controls:IconButton Click="DeleteAllButton_Click" Icon="PailRemoveOutline" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
             <controls:IconButton Click="CopyJSONButton_Click" Icon="ClipboardOutline" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
             <controls:IconButton Click="ExportJSONButton_Click" Icon="Export" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
@@ -80,6 +80,7 @@
         <Grid Grid.Row="3">
             <DataGrid Name="DataGrid"
                       AutoGenerateColumns="False"
+                      SelectionChanged="DataGrid_SelectionChanged"
                       CanUserResizeColumns="True"
                       CellEditEnding="DataGrid_CellEditEnding"
                       HorizontalScrollBarVisibility="Disabled"
@@ -115,18 +116,16 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <StackPanel x:Name="EmptyStatePanel"
-                        HorizontalAlignment="Center" 
-                        VerticalAlignment="Center" 
-                        IsHitTestVisible="False"
-                        IsVisible="False">
-                <ic:PackIconMaterial Kind="PlusBoxOutline" Width="48" Height="48" Margin="0,0,0,12" HorizontalAlignment="Center" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
-                <TextBlock Text="{x:Static resources:Strings.Menu_FastFlagEditor_NoFlags}"
-                           FontSize="16"
-                           FontWeight="Medium"
-                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                           TextAlignment="Center"/>
-            </StackPanel>
+            <TextBlock x:Name="EmptyTextBlock"
+                       Text="{x:Static resources:Strings.Menu_FastFlagEditor_NoFlags}"
+                       FontSize="16"
+                       FontWeight="Medium"
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Center" 
+                       IsHitTestVisible="False"
+                       IsVisible="False"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       TextAlignment="Center"/>
         </Grid>
     </Grid>
 </UserControl>
