@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
     d:DesignHeight="900"
     d:DesignWidth="800"
     x:DataType="vm:ChannelViewModel"
@@ -168,10 +169,10 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <ProgressBar
+                            <ui:ProgressRing
                                 Grid.Column="0"
-                                Width="40"
-                                Height="40"
+                                Width="64"
+                                Height="64"
                                 Margin="12"
                                 IsIndeterminate="True"
                                 IsVisible="{Binding !ShowLoadingError, Mode=OneWay}" />

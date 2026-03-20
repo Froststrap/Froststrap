@@ -236,7 +236,9 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                     else if (Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase))
                     {
-                        Directory.CreateDirectory(targetDir);
+                        if (!Directory.Exists(targetDir))
+                            Directory.CreateDirectory(targetDir);
+
                         new FastZip().ExtractZip(path, targetDir, null);
                     }
                     else
@@ -244,22 +246,29 @@ namespace Froststrap.UI.ViewModels.Settings
                         continue;
                     }
 
-                    if (Modifications.Any(x => x.FolderName == modName)) continue;
+                    if (Modifications.Any(x => x.FolderName.Equals(modName, StringComparison.OrdinalIgnoreCase)))
+                        continue;
 
                     var newMod = new ModConfig
                     {
                         FolderName = modName,
+                        Target = "Both",
                         Priority = Modifications.Count > 0 ? Modifications.Max(x => x.Priority) + 1 : 0
                     };
 
-                    Dispatcher.UIThread.Invoke(() => Modifications.Add(newMod));
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        Modifications.Add(newMod);
+                    });
                 }
                 catch (Exception ex)
                 {
                     App.Logger.WriteLine("ModsViewModel::ProcessDroppedFiles", $"Error: {ex.Message}");
                 }
             }
+
             UpdatePriorities();
+            App.State.Save();
         }
     }
 }

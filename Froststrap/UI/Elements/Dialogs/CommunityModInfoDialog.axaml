@@ -10,6 +10,7 @@
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         x:DataType="vm:CommunityModInfoViewModel"
         Title="Mod Information"
+        SystemDecorations="None"
         MaxWidth="750"
         MaxHeight="290"
         CanResize="False"

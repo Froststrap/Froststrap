@@ -10,6 +10,7 @@
         Title="Quick Sign-In Dialog"
         Width="450"
         Height="345"
+        SystemDecorations="None"
         MinWidth="450"
         MinHeight="345"
         CanResize="True"

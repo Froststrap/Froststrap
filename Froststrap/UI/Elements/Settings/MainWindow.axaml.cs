@@ -41,30 +41,16 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
-            App.RemoteData.Subscribe((object? sender, EventArgs e) =>
-            {
-                Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    var data = App.RemoteData.Prop;
-                    var alertText = this.FindControl<TextBlock>("AlertText");
-                    if (alertText != null)
-                    {
-                        // Only show alert if AlertEnabled is true, otherwise show the CurrentPageTitle
-                        if (data.AlertEnabled)
-                        {
-                            alertText.IsVisible = true;
-                            alertText.Text = data.AlertContent;
-                        }
-                        else
-                        {
-                            alertText.IsVisible = true;
-                            // Let the binding handle the text from CurrentPageTitle
-                        }
-                    }
-                });
+            App.RemoteData.Subscribe((object? sender, EventArgs e) => {
+                RemoteDataBase Data = App.RemoteData.Prop;
+
+                AlertBar.IsVisible = Data.AlertEnabled;
+                AlertBar.Message = Data.AlertContent;
+                AlertBar.Severity = Data.AlertSeverity;
             });
 
             App.WindowsBackdrop();
+
             viewModel.Router.CurrentViewModel
                 .ObserveOn(RxSchedulers.MainThreadScheduler)
                 .Subscribe(vm => UpdatePageView(vm));

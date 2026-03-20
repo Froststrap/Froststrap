@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
@@ -38,9 +39,12 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         public ModsPage()
         {
+            AddHandler(DragDrop.DropEvent, Page_Drop);
+
             InitializeComponent();
 
             App.FrostRPC?.SetPage("Mods");
+
             SetupNavigationIfNeeded();
         }
 
@@ -92,6 +96,24 @@ namespace Froststrap.UI.Elements.Settings.Pages
                     {
                         textBox.Text = _originalName;
                     }
+                }
+            }
+        }
+
+        private async void Page_Drop(object? sender, DragEventArgs e)
+        {
+            var files = e.DataTransfer.TryGetFiles();
+
+            if (files != null && DataContext is ModsViewModel vm)
+            {
+                var paths = files
+                    .Select(f => f.TryGetLocalPath())
+                    .Where(p => !string.IsNullOrEmpty(p))
+                    .ToArray();
+
+                if (paths.Length > 0)
+                {
+                    await Task.Run(() => vm.ProcessDroppedFiles(paths!));
                 }
             }
         }

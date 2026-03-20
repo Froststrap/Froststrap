@@ -1,6 +1,6 @@
 ﻿using Froststrap.Integrations;
 
-namespace Froststrap.Models.APIs.Config
+namespace Froststrap.Models
 {
     public class AccountManagerData
     {

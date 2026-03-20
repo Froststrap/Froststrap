@@ -11,7 +11,7 @@
         Title="Game Information"
         MinWidth="450" MinHeight="600"
         Width="500" Height="700"
-        Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
+        SystemDecorations="None"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True">
 

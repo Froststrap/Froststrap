@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         mc:Ignorable="d"
         Title="Froststrap"
         MinWidth="380"
         Width="380"
+        SystemDecorations="None"
         SizeToContent="Height"
         CanResize="False"
         WindowStartupLocation="CenterScreen">
@@ -20,7 +22,7 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<TitleBar Grid.Row="0" />
+		<controls:TitleBar Grid.Row="0" Title="Bloxshade" Icon="avares://Froststrap/Froststrap.ico" />
 
 		<Grid Grid.Row="1">
 			<Grid.RowDefinitions>

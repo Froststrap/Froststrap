@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:resources="clr-namespace:Froststrap.Resources"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.ContextMenu"
     x:DataType="vm:ServerHistoryViewModel"
     Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
@@ -68,9 +69,8 @@
         <Border Grid.Row="2"
                 Classes="loadingView"
                 Tag="{Binding LoadState}">
-            <ProgressBar IsIndeterminate="True" 
-                         Theme="{StaticResource FluentProgressBarRingStyle}"
-                         Width="32" Height="32"
+            <ui:ProgressRing IsIndeterminate="True" 
+                         Width="100" Height="100"
                          VerticalAlignment="Center" 
                          HorizontalAlignment="Center" />
         </Border>
