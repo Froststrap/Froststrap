@@ -112,9 +112,201 @@ namespace Froststrap.UI.Elements.Settings.Pages
             TotalFlagsTextBlock.Text = $"Total Flags: {count}";
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
             App.FrostRPC?.SetDialog("Add FastFlag");
+
+            ShowAddDialog();
+        }
+
+        private async void ShowAddDialog()
+        {
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel is not Window parentWindow) return;
+
+            App.FrostRPC?.SetDialog("Add FastFlag");
+
+            var dialog = new AddFastFlagDialog();
+            await dialog.ShowDialog(parentWindow);
+
+            App.FrostRPC?.ClearDialog();
+
+            if (dialog.Result != MessageBoxResult.OK)
+                return;
+
+            if (dialog.Tabs.SelectedIndex == 0)
+            {
+                await AddSingle(dialog.FlagNameTextBox.Text?.Trim() ?? string.Empty, dialog.FlagValueTextBox.Text ?? string.Empty);
+            }
+            else if (dialog.Tabs.SelectedIndex == 1)
+            {
+                await ImportJSON(dialog.JsonTextBox.Text ?? string.Empty);
+            }
+        }
+
+        private async Task AddSingle(string name, string value)
+        {
+            FastFlag? entry;
+
+            if (App.FastFlags.GetValue(name) is null)
+            {
+                entry = new FastFlag
+                {
+                    Name = name,
+                    Value = value
+                };
+
+                if (!name.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
+                    ClearSearch();
+
+                App.FastFlags.SetValue(entry.Name, entry.Value);
+                _fastFlagList.Add(entry);
+            }
+            else
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_AlreadyExists, MessageBoxImage.Information, MessageBoxButton.OK);
+
+                bool refresh = false;
+
+                if (!_showPresets && FastFlagManager.PresetFlags.Values.Contains(name))
+                {
+                    TogglePresetsButton.IsChecked = true;
+                    _showPresets = true;
+                    refresh = true;
+                }
+
+                if (!name.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
+                {
+                    ClearSearch(false);
+                    refresh = true;
+                }
+
+                if (refresh)
+                    ReloadList();
+
+                entry = _fastFlagList.FirstOrDefault(x => x.Name == name);
+            }
+
+            var remoteManager = new RemoteDataManager();
+            await remoteManager.LoadData();
+            var base64Flags = DecodeBase64Flags(remoteManager.Prop.AllowedFastFlags);
+
+            if (!base64Flags.Contains(name))
+            {
+                var result = await Frontend.ShowMessageBox(
+                    $"'{name}' is not in the Roblox allowlist and won't work.\n\nRemove it now?",
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    App.FastFlags.SetValue(name, null);
+
+                    if (entry != null)
+                        _fastFlagList.Remove(entry);
+                    else
+                        ReloadList();
+
+                    UpdateTotalFlagsCount();
+                    return;
+                }
+            }
+
+            if (entry != null)
+            {
+                DataGrid.SelectedItem = entry;
+                DataGrid.ScrollIntoView(entry, null);
+            }
+
+            UpdateTotalFlagsCount();
+        }
+
+        private async Task ImportJSON(string json)
+        {
+            Dictionary<string, object>? list = null;
+            json = json.Trim();
+
+            if (!json.StartsWith('{')) json = '{' + json;
+            if (!json.EndsWith('}'))
+            {
+                int lastIndex = json.LastIndexOf('}');
+                json = lastIndex == -1 ? json + '}' : json.Substring(0, lastIndex + 1);
+            }
+
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    ReadCommentHandling = JsonCommentHandling.Skip,
+                    AllowTrailingCommas = true
+                };
+
+                list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, options);
+                if (list is null) throw new Exception("JSON returned null");
+            }
+            catch (Exception ex)
+            {
+                _ = Frontend.ShowMessageBox(
+                    string.Format(Strings.Menu_FastFlagEditor_InvalidJSON, ex.Message),
+                    MessageBoxImage.Error,
+                    MessageBoxButton.OK
+                );
+                ShowAddDialog();
+                return;
+            }
+
+            App.FastFlags.suspendUndoSnapshot = true;
+            App.FastFlags.SaveUndoSnapshot();
+
+            var conflictingFlags = App.FastFlags.Prop.Where(x => list.ContainsKey(x.Key)).Select(x => x.Key).ToList();
+            bool overwriteConflicting = false;
+
+            if (conflictingFlags.Any())
+            {
+                string message = string.Format(
+                    Strings.Menu_FastFlagEditor_ConflictingImport,
+                    conflictingFlags.Count,
+                    string.Join(", ", conflictingFlags.Take(25))
+                );
+
+                if (conflictingFlags.Count > 25) message += "...";
+
+                var result = await Frontend.ShowMessageBox(message, MessageBoxImage.Question, MessageBoxButton.YesNo);
+                overwriteConflicting = result == MessageBoxResult.Yes;
+            }
+
+            foreach (var pair in list)
+            {
+                if (App.FastFlags.Prop.ContainsKey(pair.Key) && !overwriteConflicting)
+                    continue;
+
+                string? val = pair.Value?.ToString();
+                if (val != null)
+                    App.FastFlags.SetValue(pair.Key, val);
+            }
+
+            App.FastFlags.suspendUndoSnapshot = false;
+
+            var remoteManager = new RemoteDataManager();
+            await remoteManager.LoadData();
+            var base64Flags = DecodeBase64Flags(remoteManager.Prop.AllowedFastFlags);
+
+            var invalidFlags = list.Keys.Where(flag => !base64Flags.Contains(flag)).ToList();
+            if (invalidFlags.Any())
+            {
+                var result = await Frontend.ShowMessageBox(
+                    $"{invalidFlags.Count} imported flags are not in the allowlist and won't work.\n\nRemove them now?",
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.YesNo);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    foreach (var flagName in invalidFlags)
+                        App.FastFlags.SetValue(flagName, null);
+                }
+            }
+
+            ClearSearch();
         }
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)

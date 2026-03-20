@@ -1,68 +1,73 @@
-﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.AddFastFlagDialog"
-        xmlns="https://github.com/avaloniaui"
+﻿<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
-        xmlns:local="clr-namespace:Froststrap.UI.Elements.Dialogs"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:converters="clr-namespace:Froststrap.UI.Converters"
-        mc:Ignorable="d"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        x:Class="Froststrap.UI.Elements.Dialogs.AddFastFlagDialog"
         Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
+        Width="480"
         SizeToContent="Height"
-        WindowStartupLocation="CenterScreen">
-    <Window.Resources>
-        <converters:RangeConverter x:Key="ValidationConverter" From="0" />
-    </Window.Resources>
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <TitleBar Grid.Row="0" Grid.ColumnSpan="2" Padding="8" />
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+        <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" />
 
         <TabControl x:Name="Tabs" Grid.Row="1" Margin="16">
-            <TabItem Header="{x:Static resources:Strings.Common_AddSingle}" >
-                <Border Margin="16" Padding="16" Background="#0AFFFFFF" CornerRadius="12">
-                    <Grid Grid.Row="1" Grid.RowDefinitions="Auto, Auto" Grid.ColumnDefinitions="Auto, *">
-                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" MinWidth="100" Text="{x:Static resources:Strings.Common_Name}" Margin="0,0,0,12" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Name="FlagNameTextBox" Margin="0,0,0,12" />
+            <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
+                <StackPanel Margin="16" Spacing="12">
+                    <Grid ColumnDefinitions="Auto, *">
+                        <TextBlock Grid.Column="0" 
+                                   VerticalAlignment="Center" 
+                                   MinWidth="100" 
+                                   Text="{x:Static resources:Strings.Common_Name}" />
+                        <TextBox Grid.Column="1" 
+                                 x:Name="FlagNameTextBox" 
+                                 Watermark="FFlagExample" />
+                    </Grid>
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" MinWidth="100" Text="{x:Static resources:Strings.Common_Value}" />
-                    <TextBox Grid.Row="1" Grid.Column="1" Name="FlagValueTextBox" />
-                </Grid>
-                </Border>
+                    <Grid ColumnDefinitions="Auto, *">
+                        <TextBlock Grid.Column="0" 
+                                   VerticalAlignment="Center" 
+                                   MinWidth="100" 
+                                   Text="{x:Static resources:Strings.Common_Value}" />
+                        <TextBox Grid.Column="1" 
+                                 x:Name="FlagValueTextBox" 
+                                 Watermark="True" />
+                    </Grid>
+                </StackPanel>
             </TabItem>
 
-            <TabItem Header="{x:Static resources:Strings.Common_ImportJson}" >
-                <Border Margin="16" Padding="16" Background="#0AFFFFFF" CornerRadius="12">
-                    <Grid Grid.RowDefinitions="*, *">
-                        <TextBox Grid.Row="0" x:Name="JsonTextBox" Margin="5" AcceptsTab="True" AcceptsReturn="True" MinHeight="80" MaxHeight="480" />
-                        <TextBlock Grid.Row="0" 
-                                   IsHitTestVisible="False" 
-                                   Margin="18,14,0,0" 
-                                   Foreground="DarkGray" 
-                                   Text="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}"
-                                   IsVisible="{Binding #JsonTextBox.Text, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
-                     <Button Grid.Row="1" Margin="4" HorizontalAlignment="Stretch" Click="ImportButton_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ui:SymbolIcon Symbol="Document" />
-                            <TextBlock Text="{x:Static resources:Strings.Common_ImportFromFile}" />
-                        </StackPanel>
-                     </Button>
-                  </Grid>
-                </Border>
+            <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
+                <StackPanel Margin="11" Spacing="10">
+                    <TextBox x:Name="JsonTextBox" 
+                             AcceptsReturn="True" 
+                             AcceptsTab="True" 
+                             MinHeight="120" 
+                             MaxHeight="300" 
+                             TextWrapping="Wrap"
+                             Watermark="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
+                    
+                    <Button Content="{x:Static resources:Strings.Common_ImportFromFile}" 
+                            HorizontalAlignment="Stretch" 
+                            Click="ImportButton_Click" />
+                </StackPanel>
             </TabItem>
         </TabControl>
 
-        <Border Grid.Row="2" Margin="0,10,0,0" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
-            <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight" HorizontalAlignment="Right">
-                <Button MinWidth="100" Content="{x:Static resources:Strings.Common_OK}" Click="OKButton_Click" IsEnabled="False"/>
-                <Button MinWidth="100" Margin="12,0,0,0" Content="{x:Static resources:Strings.Common_Cancel}" IsCancel="True"  />
+        <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                <Button x:Name="OkButton"
+                        Content="{x:Static resources:Strings.Common_OK}" 
+                        Click="OKButton_Click" 
+                        Classes="accent"
+                        Width="100"
+                        IsEnabled="False" />
+
+                <Button Content="{x:Static resources:Strings.Common_Cancel}" 
+                        Click="CancelButton_Click"
+                        Width="100" />
             </StackPanel>
         </Border>
     </Grid>
