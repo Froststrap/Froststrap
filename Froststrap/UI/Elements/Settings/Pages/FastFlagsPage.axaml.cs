@@ -69,7 +69,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
                     _viewModelSetUp = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 CreateFallbackViewModel();
                 _viewModelSetUp = true;

@@ -3,22 +3,13 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using ReactiveUI;
+using Avalonia.Media;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using System.Collections.ObjectModel;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-
-    public class FastFlag
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Value { get; set; } = string.Empty;
-        public string? Preset { get; set; }
-    }
-
     public partial class FastFlagEditor : UserControl
     {
         private readonly ObservableCollection<FastFlag> _fastFlagList = new();
@@ -32,9 +23,13 @@ namespace Froststrap.UI.Elements.Settings.Pages
         private DataGrid? _dataGrid;
         private TextBox? _searchTextBox;
 
+        private static readonly Bitmap CheckmarkIcon = new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap/Resources/Checkmark.ico")));
+        private static readonly Bitmap CrossmarkIcon = new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap/Resources/Crossmark.ico")));
+
         public FastFlagEditor()
         {
             InitializeComponent();
+
             App.FrostRPC?.SetPage("FastFlag Editor");
         }
 
@@ -43,6 +38,9 @@ namespace Froststrap.UI.Elements.Settings.Pages
             base.OnLoaded(e);
             _dataGrid = this.FindControl<DataGrid>("DataGrid");
             _searchTextBox = this.FindControl<TextBox>("SearchTextBox");
+
+            this.Focus();
+
             ReloadList();
         }
 
@@ -56,9 +54,6 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
             foreach (var pair in App.FastFlags.Prop.OrderBy(x => x.Key))
             {
-                if (!_showPresets && presetFlags.Contains(pair.Key))
-                    continue;
-
                 if (!pair.Key.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
                     continue;
 
@@ -66,7 +61,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 {
                     Name = pair.Key,
                     Value = pair.Value?.ToString() ?? string.Empty,
-                    Preset = presetFlags.Contains(pair.Key) ? "✓" : ""
+                    Preset = presetFlags.Contains(pair.Key) ? CheckmarkIcon : CrossmarkIcon
                 };
 
                 _fastFlagList.Add(entry);
@@ -75,14 +70,43 @@ namespace Froststrap.UI.Elements.Settings.Pages
             if (_dataGrid.ItemsSource is null)
                 _dataGrid.ItemsSource = _fastFlagList;
 
+            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Any()))
+                EmptyStatePanel.IsVisible = true;
+            else
+                EmptyStatePanel.IsVisible = false;
+
             UpdateTotalFlagsCount();
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.KeyModifiers.HasFlag(KeyModifiers.Control))
+            {
+                switch (e.Key)
+                {
+                    case Key.Z:
+                        App.FastFlags.Undo();
+                        ReloadList();
+                        e.Handled = true;
+                        break;
+
+                    case Key.Y:
+                        App.FastFlags.Redo();
+                        ReloadList();
+                        e.Handled = true;
+                        break;
+                }
+            }
         }
 
         public string FlagCountText => $"Total flags: {_fastFlagList.Count}";
 
         public void UpdateTotalFlagsCount()
         {
-            // No text block in simplified version
+            int count = _fastFlagList.Count;
+            TotalFlagsTextBlock.Text = $"Total Flags: {count}";
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
@@ -109,29 +133,22 @@ namespace Froststrap.UI.Elements.Settings.Pages
             }
 
             App.FastFlags.suspendUndoSnapshot = false;
-            UpdateTotalFlagsCount();
+            ReloadList();
         }
 
-        private void DeleteAllButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowDeleteAllFlagsConfirmation();
-        }
-
-        private async void ShowDeleteAllFlagsConfirmation()
-        {
-            if (await Frontend.ShowMessageBox(
-                "Are you sure you want to delete all flags?",
-                MessageBoxImage.Warning,
-                MessageBoxButton.YesNo) != MessageBoxResult.Yes)
-            {
-                return;
-            }
-
-            if (!HasFlagsToDelete())
+            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Any()))
             {
                 await Frontend.ShowMessageBox(
                     "There are no flags to delete.",
                     MessageBoxImage.Information);
+                return;
+            }
+
+            if (await Frontend.ShowMessageBox("Are you sure you want to delete all flags?",MessageBoxImage.Warning,
+                MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            {
                 return;
             }
 
@@ -151,18 +168,8 @@ namespace Froststrap.UI.Elements.Settings.Pages
             }
             catch (Exception ex)
             {
-                await HandleError(ex);
+                await Frontend.ShowMessageBox($"An error occurred:\n{ex.Message}", MessageBoxImage.Error);
             }
-        }
-
-        private bool HasFlagsToDelete()
-        {
-            return _fastFlagList.Any() || App.FastFlags.Prop.Any();
-        }
-
-        private async Task HandleError(Exception ex)
-        {
-            await Frontend.ShowMessageBox($"An error occurred:\n{ex.Message}", MessageBoxImage.Error);
         }
 
         private async void CopyJSONButton_Click(object sender, RoutedEventArgs e)
@@ -178,7 +185,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
             }
             catch (Exception ex)
             {
-                await HandleError(ex);
+                await Frontend.ShowMessageBox($"An error occurred:\n{ex.Message}", MessageBoxImage.Error);
             }
         }
 
@@ -246,18 +253,13 @@ namespace Froststrap.UI.Elements.Settings.Pages
             }
             catch (Exception ex)
             {
-                await HandleError(ex);
+                await Frontend.ShowMessageBox($"An error occurred:\n{ex.Message}", MessageBoxImage.Error);
             }
         }
 
         private void FlagProfiles_Click(object sender, RoutedEventArgs e)
         {
             App.FrostRPC?.SetDialog("Profiles");
-        }
-
-        private void AdvancedSettings_Click(object sender, RoutedEventArgs e)
-        {
-            App.FrostRPC?.SetDialog("Advanced Settings");
         }
 
         private async void CleanListButton_Click(object sender, RoutedEventArgs e)
@@ -344,54 +346,116 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is not CheckBox checkbox)
+            if (sender is not ToggleButton tb)
                 return;
 
-            _showPresets = checkbox.IsChecked ?? true;
+            _showPresets = tb.IsChecked ?? true;
             ReloadList();
         }
 
         private void DataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
+            if (e.Row.DataContext is not FastFlag entry || e.EditingElement is not TextBox textbox)
+                return;
+
             App.FastFlags.suspendUndoSnapshot = true;
             App.FastFlags.SaveUndoSnapshot();
 
-            if (e.Row.DataContext is not FastFlag entry)
-                return;
+            string newText = textbox.Text?.Trim() ?? string.Empty;
+            string header = e.Column.Header?.ToString() ?? string.Empty;
 
-            // TODO: Handle cell editing for Avalonia DataGrid
+            if (header == Strings.Common_Name)
+            {
+                string? oldName = App.FastFlags.Prop.FirstOrDefault(x => x.Value.ToString() == entry.Value && x.Key != newText).Key;
+                if (string.IsNullOrEmpty(oldName)) oldName = entry.Name;
 
+                if (newText == oldName || string.IsNullOrEmpty(newText))
+                    goto EndEditing;
+
+                if (App.FastFlags.GetValue(newText) is not null)
+                {
+                    _ = Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_AlreadyExists, MessageBoxImage.Information);
+                    e.Cancel = true;
+                    textbox.Text = oldName;
+                    goto EndEditing;
+                }
+
+                App.FastFlags.SetValue(oldName, null);
+                App.FastFlags.SetValue(newText, entry.Value);
+
+                if (!newText.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
+                    ClearSearch();
+
+                entry.Name = newText;
+
+                var presetFlags = FastFlagManager.PresetFlags.Values;
+                entry.Preset = presetFlags.Contains(newText) ? CheckmarkIcon : CrossmarkIcon;
+            }
+            else if (header == Strings.Common_Value)
+            {
+                string newValue = newText;
+                entry.Value = newValue;
+                App.FastFlags.SetValue(entry.Name, newValue);
+            }
+
+        EndEditing:
             App.FastFlags.suspendUndoSnapshot = false;
-            UpdateTotalFlagsCount();
         }
 
-        private async void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void ClearSearch(bool refresh = true)
         {
-            if (sender is not TextBox textbox) return;
+            SearchTextBox.Text = "";
+            _searchFilter = "";
 
-            string newSearch = textbox.Text?.Trim() ?? string.Empty;
+            if (refresh)
+                ReloadList();
+        }
 
-            if (newSearch == _lastSearch && (DateTime.Now - _lastSearchTime).TotalMilliseconds < _debounceDelay)
-                return;
+        private async void SearchTextBox_TextChanged(object? sender, TextChangedEventArgs e)
+        {
+            string newSearch = SearchTextBox.Text?.Trim() ?? "";
 
             _searchCancellationTokenSource?.Cancel();
             _searchCancellationTokenSource = new CancellationTokenSource();
 
-            _searchFilter = newSearch;
-            _lastSearch = newSearch;
-            _lastSearchTime = DateTime.Now;
-
             try
             {
-                await Task.Delay(_debounceDelay, _searchCancellationTokenSource.Token);
+                await Task.Delay(70, _searchCancellationTokenSource.Token);
 
-                if (_searchCancellationTokenSource.Token.IsCancellationRequested)
-                    return;
-
+                _searchFilter = newSearch;
                 ReloadList();
+                ShowSearchSuggestion(newSearch);
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException) { }
+        }
+
+        private void SuggestionTextBlock_PointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            var suggestion = SuggestionKeywordRun.Text;
+            if (!string.IsNullOrEmpty(suggestion))
             {
+                SearchTextBox.Text = suggestion;
+                SearchTextBox.CaretIndex = suggestion.Length;
+            }
+        }
+
+        private void ShowSearchSuggestion(string searchFilter)
+        {
+            if (string.IsNullOrWhiteSpace(searchFilter))
+            {
+                return;
+            }
+
+            var bestMatch = App.FastFlags.Prop.Keys
+                .Where(flag => flag.Contains(searchFilter, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(flag => !flag.StartsWith(searchFilter, StringComparison.OrdinalIgnoreCase))
+                .ThenBy(flag => flag.IndexOf(searchFilter, StringComparison.OrdinalIgnoreCase))
+                .ThenBy(flag => flag.Length)
+                .FirstOrDefault();
+
+            if (string.IsNullOrEmpty(bestMatch))
+            {
+                SuggestionKeywordRun.Text = bestMatch;
             }
         }
     }

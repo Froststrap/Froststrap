@@ -1,79 +1,132 @@
-<UserControl
-    x:Class="Froststrap.UI.Elements.Settings.Pages.FastFlagEditor"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:resources="using:Froststrap.Resources"
-    xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages"
-    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    d:DesignHeight="600"
-    d:DesignWidth="1000"
-    mc:Ignorable="d">
+<UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.FastFlagEditor"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:ic="using:IconPacks.Avalonia.Material"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:model="clr-namespace:Froststrap.Models"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             d:DesignHeight="600"
+             d:DesignWidth="1000"
+             Focusable="True"
+             mc:Ignorable="d">
+    
+    <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="14">
+        
+        <ui:InfoBar Grid.Row="0" 
+                    Title="Important" 
+                    Message="Following the whitelisting of some Roblox FastFlags, these are the only remaining available for use." 
+                    Severity="Informational" 
+                    IsOpen="True" 
+                    IsClosable="False" 
+                    Margin="0,4,0,8" />
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*">
-        <!-- Buttons -->
-        <StackPanel Grid.Row="0" Margin="0,0,0,8" Orientation="Horizontal" Spacing="8">
-            <Button Click="AddButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" />
-            <Button Click="DeleteButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" />
-            <Button Click="DeleteAllButton_Click" Content="{x:Static resources:Strings.Common_DeleteAll}" />
-            <Button Click="CopyJSONButton_Click" Content="{x:Static resources:Strings.Common_CopyAll}" />
-            <Button Click="ExportJSONButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" />
-            <Button Click="FlagProfiles_Click" Content="{x:Static resources:Strings.Common_Profiles}" />
-            <Button Click="AdvancedSettings_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AdvancedSettings}" />
-            <Button Click="CleanListButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" />
-            <CheckBox
-                Name="TogglePresetsButton"
-                Click="ToggleButton_Click"
-                Content="{x:Static resources:Strings.Menu_FastFlagEditor_ShowPresetFlags}"
-                IsChecked="True"
-                VerticalAlignment="Center" />
-        </StackPanel>
+        <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+            <controls:IconButton Click="AddButton_Click" Icon="PlusCircleOutline" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
+            <controls:IconButton Click="DeleteButton_Click" Icon="TrashCanOutline" Classes="danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" />
+            <controls:IconButton Click="DeleteAllButton_Click" Icon="PailRemoveOutline" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
+            <controls:IconButton Click="CopyJSONButton_Click" Icon="ClipboardOutline" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
+            <controls:IconButton Click="ExportJSONButton_Click" Icon="Export" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
+            <controls:IconButton Click="FlagProfiles_Click" Icon="FileDocumentOutline" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
+            <controls:IconButton Click="CleanListButton_Click" Icon="Broom" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
+            
+            <ToggleButton Name="TogglePresetsButton"
+                      Click="ToggleButton_Click"
+                      Content="{x:Static resources:Strings.Menu_FastFlagEditor_ShowPresetFlags}"
+                      IsChecked="True"
+                      VerticalAlignment="Center" 
+                      Margin="0,0,8,8"/>
+        </WrapPanel>
 
-        <!-- Search Bar -->
-        <Grid Grid.Row="1" Margin="0,0,1,8">
-            <TextBox
-                Name="SearchTextBox"
-                Height="40"
-                Padding="12,8"
-                FontSize="14"
-                Watermark="{x:Static resources:Strings.Menu_FastFlagEditor_Search}"
-                TextChanged="SearchTextBox_TextChanged" />
+        <Grid Grid.Row="2" Margin="0,0,1,4" RowDefinitions="Auto, Auto">
+            <TextBlock x:Name="TotalFlagsTextBlock" 
+                       Grid.Row="0" 
+                       HorizontalAlignment="Right" 
+                       Margin="0,0,8,8" 
+                       FontWeight="Medium" 
+                       FontSize="12" 
+                       Text="Total Flags: 0" />
+
+            <Grid Grid.Row="1" Height="40">
+                <TextBox Name="SearchTextBox"
+                         Height="40"
+                         VerticalContentAlignment="Center"
+                         Watermark="{x:Static resources:Strings.Menu_FastFlagEditor_Search}"
+                         TextChanged="SearchTextBox_TextChanged">
+                    <TextBox.InnerLeftContent>
+                        <ic:PackIconMaterial Kind="Magnify" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    </TextBox.InnerLeftContent>
+                </TextBox>
+        
+                <TextBlock x:Name="SuggestionTextBlock" 
+                           Cursor="Hand" 
+                           PointerPressed="SuggestionTextBlock_PointerPressed" 
+                           Margin="12,0,11,0" 
+                           HorizontalAlignment="Right" 
+                           VerticalAlignment="Center" 
+                           FontSize="14" 
+                           Foreground="#FF51A2ED" 
+                           Opacity="0" 
+                           IsVisible="False">
+                    <Run Text="Looking for " />
+                    <Run x:Name="SuggestionKeywordRun" Text="" FontWeight="Bold" />
+                    <Run Text="?" />
+                </TextBlock>
+            </Grid>
         </Grid>
 
-        <!-- DataGrid -->
-        <Grid Grid.Row="2">
-            <DataGrid
-                Name="DataGrid"
-                AutoGenerateColumns="False"
-                CellEditEnding="DataGrid_CellEditEnding"
-                GridLinesVisibility="Horizontal"
-                x:DataType="local:FastFlag">
+        <Grid Grid.Row="3">
+            <DataGrid Name="DataGrid"
+                      AutoGenerateColumns="False"
+                      CanUserResizeColumns="True"
+                      CellEditEnding="DataGrid_CellEditEnding"
+                      HorizontalScrollBarVisibility="Disabled"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="All"
+                      x:DataType="model:FastFlag">
                 <DataGrid.Columns>
-                    <DataGridTextColumn
-                        Width="*"
-                        Binding="{Binding Name}"
-                        Header="{x:Static resources:Strings.Common_Name}"
-                        x:DataType="local:FastFlag" />
-                    <DataGridTextColumn
-                        Width="250"
-                        Binding="{Binding Value}"
-                        Header="{x:Static resources:Strings.Common_Value}"
-                        x:DataType="local:FastFlag" />
+                    <DataGridTemplateColumn MinWidth="67"
+                                            Width="Auto"
+                                            Header="{x:Static resources:Strings.Common_Presets}" 
+                                            CanUserResize="False"
+                                            IsVisible="{Binding #TogglePresetsButton.IsChecked}">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:DataType="model:FastFlag">
+                                <Image Height="28" 
+                                       Width="28" 
+                                       Source="{Binding Preset}" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Width="*"
+                                        Binding="{Binding Name}"
+                                        Header="{x:Static resources:Strings.Common_Name}" 
+                                        x:DataType="model:FastFlag" />
+                                        
+                    <DataGridTextColumn Width="250"
+                                        Binding="{Binding Value}"
+                                        Header="{x:Static resources:Strings.Common_Value}" 
+                                        x:DataType="model:FastFlag" />
                 </DataGrid.Columns>
             </DataGrid>
 
-            <!-- Empty State -->
-            <TextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                FontSize="16"
-                FontWeight="Medium"
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Text="{x:Static resources:Strings.Menu_FastFlagEditor_NoFlags}"
-                TextWrapping="Wrap"
-                IsHitTestVisible="False" />
+            <StackPanel x:Name="EmptyStatePanel"
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center" 
+                        IsHitTestVisible="False"
+                        IsVisible="False">
+                <ic:PackIconMaterial Kind="PlusBoxOutline" Width="48" Height="48" Margin="0,0,0,12" HorizontalAlignment="Center" Foreground="{DynamicResource TextFillColorTertiaryBrush}"/>
+                <TextBlock Text="{x:Static resources:Strings.Menu_FastFlagEditor_NoFlags}"
+                           FontSize="16"
+                           FontWeight="Medium"
+                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                           TextAlignment="Center"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
-

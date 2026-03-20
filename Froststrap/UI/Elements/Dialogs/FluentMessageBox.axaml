@@ -30,7 +30,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<md:TitleBar Grid.ColumnSpan="3" x:Name="RootTitleBar" Title="Froststrap" />
+		<md:TitleBar Grid.ColumnSpan="3" x:Name="RootTitleBar" Icon="avares://Froststrap/Froststrap.ico" Title="Froststrap" />
 
 		<Grid Grid.Row="1" Margin="15,15,15,15" Grid.ColumnSpan="3">
 			<Grid.ColumnDefinitions>
