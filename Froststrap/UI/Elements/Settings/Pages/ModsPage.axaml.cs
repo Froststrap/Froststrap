@@ -1,27 +1,86 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
+    internal class ModsDialogService
+    {
+        private readonly MainWindowViewModel _mainVm;
+
+        public ModsDialogService(MainWindowViewModel mainVm)
+        {
+            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
+        }
+
+        public void OpenCommunityMods()
+        {
+            _mainVm.NavigateToCommunityModsCommand.Execute(System.Reactive.Unit.Default);
+        }
+
+        public void OpenPresetMods()
+        {
+            _mainVm.NavigateToPresetModsCommand.Execute(System.Reactive.Unit.Default);
+        }
+
+        public void OpenModGenerator()
+        {
+            _mainVm.NavigateToModGeneratorCommand.Execute(System.Reactive.Unit.Default);
+        }
+    }
+
     public partial class ModsPage : UserControl
     {
         private string _originalName = "";
+        private bool _navigationSetUp = false;
 
         public ModsPage()
         {
             InitializeComponent();
 
             App.FrostRPC?.SetPage("Mods");
+            SetupNavigationIfNeeded();
         }
 
-        private void ModName_GotFocus(object sender, RoutedEventArgs e)
+        protected override void OnLoaded(RoutedEventArgs e)
+        {
+            base.OnLoaded(e);
+            SetupNavigationIfNeeded();
+        }
+
+        private void SetupNavigationIfNeeded()
+        {
+            if (_navigationSetUp)
+                return;
+
+            try
+            {
+                var topLevel = TopLevel.GetTopLevel(this);
+                if (topLevel?.DataContext is MainWindowViewModel mainVm && DataContext is ModsViewModel modsVm)
+                {
+                    var service = new ModsDialogService(mainVm);
+
+                    modsVm.OpenCommunityModsEvent += (s, e) => service.OpenCommunityMods();
+                    modsVm.OpenPresetModsEvent += (s, e) => service.OpenPresetMods();
+                    modsVm.OpenModGeneratorEvent += (s, e) => service.OpenModGenerator();
+
+                    _navigationSetUp = true;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void ModName_GotFocus(object? sender, GotFocusEventArgs e)
         {
             if (sender is TextBox textBox)
                 _originalName = textBox.Text ?? "";
         }
 
-        private void ModName_LostFocus(object sender, RoutedEventArgs e)
+        private void ModName_LostFocus(object? sender, RoutedEventArgs e)
         {
             if (sender is TextBox textBox && DataContext is ModsViewModel viewModel)
             {
