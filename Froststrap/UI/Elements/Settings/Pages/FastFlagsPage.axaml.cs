@@ -1,11 +1,35 @@
+using Avalonia;
+using Avalonia.Controls;
 using Froststrap.UI.ViewModels.Settings;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
+using System.Reactive;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
+    /// <summary>
+    /// Implementation of IDialogService for FastFlags editing
+    /// </summary>
+    internal class FastFlagsDialogService : IDialogService
+    {
+        private readonly MainWindowViewModel _mainVm;
+
+        public FastFlagsDialogService(MainWindowViewModel mainVm)
+        {
+            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
+        }
+
+        public async Task OpenFastFlagEditorAsync()
+        {
+            _mainVm.NavigateToFastFlagEditorCommand.Execute(Unit.Default);
+            await Task.CompletedTask;
+        }
+    }
+
     public partial class FastFlagsPage : ReactiveUserControl<MainWindowViewModel.SettingsPageViewModelWrapper>
     {
+        private bool _viewModelSetUp = false;
+
         public FastFlagsPage()
         {
             InitializeComponent();
@@ -14,26 +38,60 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
             this.WhenActivated(disposables =>
             {
-                if (ViewModel?.InnerViewModel is FastFlagsViewModel fastFlagsVm)
-                {
-                    fastFlagsVm.OpenFlagEditorEvent += HandleOpenFlagEditor;
-                }
+                SetupViewModelIfNeeded();
             });
         }
 
-        private void HandleOpenFlagEditor(object? sender, EventArgs e)
+        private void SetupViewModelIfNeeded()
         {
-            if (ViewModel?.HostScreen is MainWindowViewModel mainVm)
+            if (_viewModelSetUp)
             {
-                mainVm.SelectedPage = "fastflageditor";
-                mainVm.CurrentPageTitle = "Fast Flag Editor";
-                mainVm.CurrentPageDescription = "Modify advanced Roblox engine settings.";
-
-                var editorVm = new FastFlagEditorViewModel(mainVm);
-                var wrapper = new MainWindowViewModel.SettingsPageViewModelWrapper(mainVm, "fastflageditor", editorVm);
-
-                mainVm.Router.Navigate.Execute(wrapper).Subscribe();
+                return;
             }
+
+            try
+            {
+                var topLevel = TopLevel.GetTopLevel(this);
+
+                if (topLevel?.DataContext is MainWindowViewModel mainVm)
+                {
+                    CreateViewModelWithDialogService(mainVm);
+                    _viewModelSetUp = true;
+                }
+                else if (ViewModel?.HostScreen is MainWindowViewModel mainVm2)
+                {
+                    CreateViewModelWithDialogService(mainVm2);
+                    _viewModelSetUp = true;
+                }
+                else
+                {
+                    CreateFallbackViewModel();
+                    _viewModelSetUp = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                CreateFallbackViewModel();
+                _viewModelSetUp = true;
+            }
+        }
+
+        private void CreateViewModelWithDialogService(MainWindowViewModel mainVm)
+        {
+            var dialogService = new FastFlagsDialogService(mainVm);
+
+            var newVm = new FastFlagsViewModel(
+                new DefaultFastFlagsService(),
+                new DefaultSettingsService(),
+                dialogService);
+
+            DataContext = newVm;
+        }
+
+        private void CreateFallbackViewModel()
+        {
+            var fallbackVm = new FastFlagsViewModel();
+            DataContext = fallbackVm;
         }
     }
 }

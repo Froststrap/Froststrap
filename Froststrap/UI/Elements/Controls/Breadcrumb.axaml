@@ -1,0 +1,43 @@
+<UserControl
+    x:Class="Froststrap.UI.Elements.Controls.Breadcrumb"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Froststrap.UI.Elements.Controls"
+    d:DesignHeight="50"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+        <ItemsControl ItemsSource="{Binding Items}" x:DataType="local:Breadcrumb">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" Spacing="0" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="local:BreadcrumbItem">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <!-- Breadcrumb Item -->
+                        <Button
+                            Command="{Binding NavigateCommand}"
+                            Content="{Binding Label}"
+                            Background="Transparent"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                            Padding="0"
+                            IsEnabled="{Binding IsClickable}" />
+
+                        <!-- Separator -->
+                        <TextBlock
+                            Text=">"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            IsVisible="{Binding !IsLast}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
+</UserControl>
+

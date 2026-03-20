@@ -1,0 +1,79 @@
+<UserControl
+    x:Class="Froststrap.UI.Elements.Settings.Pages.FastFlagEditor"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    d:DesignHeight="600"
+    d:DesignWidth="1000"
+    mc:Ignorable="d">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+        <!-- Buttons -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,8" Orientation="Horizontal" Spacing="8">
+            <Button Click="AddButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" />
+            <Button Click="DeleteButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" />
+            <Button Click="DeleteAllButton_Click" Content="{x:Static resources:Strings.Common_DeleteAll}" />
+            <Button Click="CopyJSONButton_Click" Content="{x:Static resources:Strings.Common_CopyAll}" />
+            <Button Click="ExportJSONButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" />
+            <Button Click="FlagProfiles_Click" Content="{x:Static resources:Strings.Common_Profiles}" />
+            <Button Click="AdvancedSettings_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AdvancedSettings}" />
+            <Button Click="CleanListButton_Click" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" />
+            <CheckBox
+                Name="TogglePresetsButton"
+                Click="ToggleButton_Click"
+                Content="{x:Static resources:Strings.Menu_FastFlagEditor_ShowPresetFlags}"
+                IsChecked="True"
+                VerticalAlignment="Center" />
+        </StackPanel>
+
+        <!-- Search Bar -->
+        <Grid Grid.Row="1" Margin="0,0,1,8">
+            <TextBox
+                Name="SearchTextBox"
+                Height="40"
+                Padding="12,8"
+                FontSize="14"
+                Watermark="{x:Static resources:Strings.Menu_FastFlagEditor_Search}"
+                TextChanged="SearchTextBox_TextChanged" />
+        </Grid>
+
+        <!-- DataGrid -->
+        <Grid Grid.Row="2">
+            <DataGrid
+                Name="DataGrid"
+                AutoGenerateColumns="False"
+                CellEditEnding="DataGrid_CellEditEnding"
+                GridLinesVisibility="Horizontal"
+                x:DataType="local:FastFlag">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding Name}"
+                        Header="{x:Static resources:Strings.Common_Name}"
+                        x:DataType="local:FastFlag" />
+                    <DataGridTextColumn
+                        Width="250"
+                        Binding="{Binding Value}"
+                        Header="{x:Static resources:Strings.Common_Value}"
+                        x:DataType="local:FastFlag" />
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Empty State -->
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="16"
+                FontWeight="Medium"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Text="{x:Static resources:Strings.Menu_FastFlagEditor_NoFlags}"
+                TextWrapping="Wrap"
+                IsHitTestVisible="False" />
+        </Grid>
+    </Grid>
+</UserControl>
+

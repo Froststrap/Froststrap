@@ -1,304 +1,312 @@
 <base:AvaloniaWindow
-    x:Class="Froststrap.UI.Elements.Settings.MainWindow"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:resources="using:Froststrap.Resources"
-    xmlns:ic="using:IconPacks.Avalonia.Material"
+	x:Class="Froststrap.UI.Elements.Settings.MainWindow"
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+	xmlns:resources="using:Froststrap.Resources"
+	xmlns:ic="using:IconPacks.Avalonia.Material"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    Title="{x:Static resources:Strings.Menu_Title}"
-    Width="1125"
-    Height="700"
-    MinWidth="250"
-    MinHeight="250"
-    x:DataType="vm:MainWindowViewModel"
-    Background="Transparent"
+	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+	Title="{x:Static resources:Strings.Menu_Title}"
+	Width="1125"
+	Height="700"
+	MinWidth="250"
+	MinHeight="250"
+	x:DataType="vm:MainWindowViewModel"
+	Background="Transparent"
 	SystemDecorations="None"
-    ExtendClientAreaTitleBarHeightHint="-1"
-    ExtendClientAreaToDecorationsHint="True"
-    TransparencyLevelHint="Mica"
-    WindowStartupLocation="CenterScreen">
+	ExtendClientAreaTitleBarHeightHint="-1"
+	ExtendClientAreaToDecorationsHint="True"
+	TransparencyLevelHint="Mica"
+	WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+	<Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
 
-        <controls:TitleBar
+		<controls:TitleBar
 			Title="{x:Static resources:Strings.Menu_Title}"
 			Icon="avares://Froststrap/Froststrap.ico"
-            Grid.Row="0"
-            Height="32"
-            Background="{DynamicResource LayerFillColorDefaultBrush}" />
+			Grid.Row="0"
+			Height="32"
+			Background="{DynamicResource LayerFillColorDefaultBrush}" />
 
-        <Panel
-            Name="NotificationPanel"
-            Grid.Row="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Bottom"
-            Margin="0,0,0,15"
-            MaxWidth="450"
-            ZIndex="1000" />
+		<Panel
+			Name="NotificationPanel"
+			Grid.Row="1"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Bottom"
+			Margin="0,0,0,15"
+			MaxWidth="450"
+			ZIndex="1000" />
 
-        <!--  Main Navigation and Content  -->
-        <Grid
-            Name="MainGrid"
-            Grid.Row="1"
-            ColumnDefinitions="64,*">
-            <Border
-                Grid.Column="0"
-                Background="{DynamicResource LayerFillColorDefaultBrush}"
-                BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-                BorderThickness="0,0,1,0">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel VerticalAlignment="Top" Spacing="0">
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToIntegrationsCommand}"
-                            Tag="integrations"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="Plus"
-                                Foreground="#888888"/>
-                        </Button>
+		<!--  Main Navigation and Content  -->
+		<Grid
+			Name="MainGrid"
+			Grid.Row="1"
+			ColumnDefinitions="64,*">
+			<Border
+				Grid.Column="0"
+				Background="{DynamicResource LayerFillColorDefaultBrush}"
+				BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+				BorderThickness="0,0,1,0">
+				<ScrollViewer VerticalScrollBarVisibility="Hidden">
+					<StackPanel VerticalAlignment="Top" Spacing="0">
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToIntegrationsCommand}"
+							Tag="integrations"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Plus"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToBehaviourCommand}"
-                            Tag="behaviour"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="CogOutline"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToBehaviourCommand}"
+							Tag="behaviour"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="CogOutline"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToModsCommand}"
-                            Tag="mods"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="Wrench"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToModsCommand}"
+							Tag="mods"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Wrench"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToFastFlagsCommand}"
-                            Tag="fastflags"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="Flag"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToFastFlagsCommand}"
+							Tag="fastflags"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Flag"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToAppearanceCommand}"
-                            Tag="appearance"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="Palette"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToAppearanceCommand}"
+							Tag="appearance"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Palette"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToRegionSelectorCommand}"
-                            Tag="region selector"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="Earth"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToRegionSelectorCommand}"
+							Tag="region selector"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Earth"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToRobloxSettingsCommand}"
-                            Tag="robloxsettings"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="Gauge"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToRobloxSettingsCommand}"
+							Tag="robloxsettings"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Gauge"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding NavigateToShortcutsCommand}"
-                            Tag="robloxsettings"
-                            ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="LinkBoxOutline"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToShortcutsCommand}"
+							Tag="robloxsettings"
+							ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="LinkBoxOutline"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+						<Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
-                        <!--  Footer Menu Items  -->
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding OpenAccountManagerCommand}"
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="AccountMultipleOutline"
-                                Foreground="#888888"/>
-                        </Button>
+						<!--  Footer Menu Items  -->
+						<Button
+							Classes="icon-button"
+							Command="{Binding OpenAccountManagerCommand}"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="AccountMultipleOutline"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button Classes="icon-button"
-                                Command="{Binding NavigateToChannelsCommand}"
-                                ToolTip.Tip="{x:Static resources:Strings.Common_Settings}"
-                                Tag="channels">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="CogOutline"
-                                Foreground="#888888"/>
-                        </Button>
+						<Button Classes="icon-button"
+								Command="{Binding NavigateToChannelsCommand}"
+								ToolTip.Tip="{x:Static resources:Strings.Common_Settings}"
+								Tag="channels">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="CogOutline"
+								Foreground="#888888"/>
+						</Button>
 
-                        <Button
-                            Classes="icon-button"
-                            Command="{Binding OpenAboutCommand}"
-                            ToolTip.Tip="About Me">
-                            <ic:PackIconMaterial
-                                Width="20"
-                                Height="20"
-                                Kind="Information"
-                                Foreground="#888888"/>
-                        </Button>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
+						<Button
+							Classes="icon-button"
+							Command="{Binding OpenAboutCommand}"
+							ToolTip.Tip="About Me">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Information"
+								Foreground="#888888"/>
+						</Button>
+					</StackPanel>
+				</ScrollViewer>
+			</Border>
 
-            <Grid Grid.Column="1" RowDefinitions="Auto,*">
-                <Border
-                    Grid.Row="0"
-                    Padding="20,16"
-                    Background="{DynamicResource LayerFillColorAltBrush}"
-                    BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-                    BorderThickness="0,0,0,1">
-                    <StackPanel Spacing="4">
-                        <TextBlock
-                            x:Name="PageTitleText"
-                            FontSize="24"
-                            FontWeight="SemiBold"
-                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                            Text="{Binding CurrentPageTitle}" />
-                        <controls:MarkdownTextBlock
-                            x:Name="PageDescriptionText"
-                            FontSize="13"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            MarkdownText="{Binding CurrentPageDescription}" />
-                    </StackPanel>
-                </Border>
+			<Grid Grid.Column="1" RowDefinitions="Auto,*">
+				<Border
+					Grid.Row="0"
+					Padding="20,24"
+					Background="{DynamicResource LayerFillColorAltBrush}"
+					BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+					BorderThickness="0,0,0,1">
+					<StackPanel Spacing="12">
+						<TextBlock
+							x:Name="PageTitleText"
+							FontSize="24"
+							FontWeight="SemiBold"
+							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+							Text="{Binding CurrentPageTitle}" />
+						<TextBlock
+							x:Name="BreadcrumbText"
+							FontSize="13"
+							FontWeight="SemiBold"
+							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+							Text="{Binding CurrentBreadcrumb}"
+							IsVisible="{Binding CurrentBreadcrumb, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+						<controls:MarkdownTextBlock
+							x:Name="PageDescriptionText"
+							FontSize="13"
+							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+							MarkdownText="{Binding CurrentPageDescription}"
+							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+					</StackPanel>
+				</Border>
 
-                <TransitioningContentControl
-                    x:Name="PageContentControl"
-                    Grid.Row="1"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    Background="{DynamicResource LayerFillColorDefaultBrush}" />
-            </Grid>
-        </Grid>
+				<TransitioningContentControl
+					x:Name="PageContentControl"
+					Grid.Row="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Background="{DynamicResource LayerFillColorDefaultBrush}" />
+			</Grid>
+		</Grid>
 
-        <Grid
-            x:Name="LoadingOverlay"
-            Grid.Row="1"
-            Grid.RowSpan="2"
-            Background="#A0000000"
-            IsVisible="False"
-            ZIndex="999">
-            <Border
-                Padding="30"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="{DynamicResource LayerFillColorDefaultBrush}"
-                BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-                BorderThickness="1"
-                CornerRadius="8">
-                <StackPanel Spacing="15">
-                    <TextBlock
-                        x:Name="LoadingOverlayText"
-                        HorizontalAlignment="Center"
-                        FontSize="20"
-                        FontWeight="SemiBold"
-                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                        Text="Loading..." />
-                    <ProgressBar
-                        Width="50"
-                        Height="4"
-                        Foreground="{DynamicResource SystemAccentColor}"
-                        IsIndeterminate="True" />
-                </StackPanel>
-            </Border>
-        </Grid>
+		<Grid
+			x:Name="LoadingOverlay"
+			Grid.Row="1"
+			Grid.RowSpan="2"
+			Background="#A0000000"
+			IsVisible="False"
+			ZIndex="999">
+			<Border
+				Padding="30"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Background="{DynamicResource LayerFillColorDefaultBrush}"
+				BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+				BorderThickness="1"
+				CornerRadius="8">
+				<StackPanel Spacing="15">
+					<TextBlock
+						x:Name="LoadingOverlayText"
+						HorizontalAlignment="Center"
+						FontSize="20"
+						FontWeight="SemiBold"
+						Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+						Text="Loading..." />
+					<ProgressBar
+						Width="50"
+						Height="4"
+						Foreground="{DynamicResource SystemAccentColor}"
+						IsIndeterminate="True" />
+				</StackPanel>
+			</Border>
+		</Grid>
 
-        <Border
-            Grid.Row="2"
-            Padding="12"
-            Background="{DynamicResource LayerFillColorDefaultBrush}"
-            BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-            BorderThickness="0,1,0,0">
-            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                    <ToggleSwitch
-                        IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
-                        OffContent=""
-                        OnContent="" />
-                    <TextBlock
-                        Margin="8,0,0,0"
-                        VerticalAlignment="Center"
-                        FontWeight="Medium"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{x:Static resources:Strings.Menu_TestMode}" />
-                </StackPanel>
+		<Border
+			Grid.Row="2"
+			Padding="12"
+			Background="{DynamicResource LayerFillColorDefaultBrush}"
+			BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+			BorderThickness="0,1,0,0">
+			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
+				<StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+					<ToggleSwitch
+						IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
+						OffContent=""
+						OnContent="" />
+					<TextBlock
+						Margin="8,0,0,0"
+						VerticalAlignment="Center"
+						FontWeight="Medium"
+						Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+						Text="{x:Static resources:Strings.Menu_TestMode}" />
+				</StackPanel>
 
-                <StackPanel
-                    Grid.Column="1"
-                    Grid.ColumnSpan="4"
-                    Orientation="Horizontal"
-                    Spacing="8">
-                    <Button
-                        Background="{DynamicResource SystemAccentColor}"
-                        Classes="accent"
-                        Command="{Binding SaveAndLaunchSettingsCommand}"
-                        Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
-                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-                    <Button
-                        Background="{DynamicResource SystemAccentColor}"
-                        Classes="accent"
-                        Command="{Binding RestartAppCommand}"
-                        Content="{x:Static resources:Strings.Menu_Restart}"
-                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-                    <Button
-                        Background="{DynamicResource SystemAccentColor}"
-                        Classes="accent"
-                        Command="{Binding SaveSettingsCommand}"
-                        Content="{x:Static resources:Strings.Menu_Save}"
-                        Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
-                    <Button
-                        Background="{DynamicResource LayerFillColorAltBrush}"
-                        Command="{Binding CloseWindowCommand}"
-                        Content="{x:Static resources:Strings.Common_Close}"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                </StackPanel>
-            </Grid>
-        </Border>
-    </Grid>
+				<StackPanel
+					Grid.Column="1"
+					Grid.ColumnSpan="4"
+					Orientation="Horizontal"
+					Spacing="8">
+					<Button
+						Background="{DynamicResource SystemAccentColor}"
+						Classes="accent"
+						Command="{Binding SaveAndLaunchSettingsCommand}"
+						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
+						Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+					<Button
+						Background="{DynamicResource SystemAccentColor}"
+						Classes="accent"
+						Command="{Binding RestartAppCommand}"
+						Content="{x:Static resources:Strings.Menu_Restart}"
+						Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+					<Button
+						Background="{DynamicResource SystemAccentColor}"
+						Classes="accent"
+						Command="{Binding SaveSettingsCommand}"
+						Content="{x:Static resources:Strings.Menu_Save}"
+						Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+					<Button
+						Background="{DynamicResource LayerFillColorAltBrush}"
+						Command="{Binding CloseWindowCommand}"
+						Content="{x:Static resources:Strings.Common_Close}"
+						Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+				</StackPanel>
+			</Grid>
+		</Border>
+	</Grid>
 </base:AvaloniaWindow>

@@ -82,15 +82,26 @@ namespace Froststrap.UI.ViewModels.Settings
             set => this.RaiseAndSetIfChanged(ref _currentPageDescription, value);
         }
 
+        private string _currentBreadcrumb = "";
+        public string CurrentBreadcrumb
+        {
+            get => _currentBreadcrumb;
+            set => this.RaiseAndSetIfChanged(ref _currentBreadcrumb, value);
+        }
+
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToIntegrationsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToBehaviourCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFastFlagsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFastFlagEditorCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAppearanceCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRegionSelectorCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRobloxSettingsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToShortcutsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToChannelsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCommunityModsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToPresetModsCommand { get; }
+        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModGeneratorCommand { get; }
 
 
         private IRoutableViewModel Wrap(string segment, object settingsViewModel) =>
@@ -125,6 +136,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "integrations";
                     CurrentPageTitle = "Integrations";
                     CurrentPageDescription = Strings.Menu_Integrations_Description;
+                    CurrentBreadcrumb = "";
                     return _router.Navigate.Execute(Wrap("integrations", new IntegrationsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -141,6 +153,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "behaviour";
                     CurrentPageTitle = "Behaviour";
                     CurrentPageDescription = Strings.Menu_Behaviour_Description;
+                    CurrentBreadcrumb = "";
                     return _router.Navigate.Execute(Wrap("behaviour", new BehaviourViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -157,6 +170,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "mods";
                     CurrentPageTitle = "Mods";
                     CurrentPageDescription = Strings.Menu_Mods_Description;
+                    CurrentBreadcrumb = "";
                     return _router.Navigate.Execute(Wrap("mods", new ModsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -175,7 +189,25 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "fastflags";
                     CurrentPageTitle = "Fast Flags";
                     CurrentPageDescription = Strings.Menu_FastFlagEditor_Description;
+                    CurrentBreadcrumb = "";
                     return _router.Navigate.Execute(Wrap("fastflags", new FastFlagsViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToFastFlagEditorCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "fastflageditor";
+                    CurrentPageTitle = "Editor";
+                    CurrentPageDescription = "";
+                    CurrentBreadcrumb = "Settings > Fast Flags > Editor";
+                    return _router.Navigate.Execute(Wrap("fastflageditor", new FastFlagEditorViewModel(this)))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
@@ -255,7 +287,110 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "channels";
                     CurrentPageTitle = "Channels Page";
                     CurrentPageDescription = Strings.Menu_Channel_Description;
+                    CurrentBreadcrumb = "";
                     return _router.Navigate.Execute(Wrap("channels", new ChannelViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToCommunityModsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "communitymods";
+                    CurrentPageTitle = "Community Mods";
+                    CurrentPageDescription = "Explore user-created mods.";
+                    CurrentBreadcrumb = "Settings > Mods > Community Mods";
+                    return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToPresetModsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "presetmods";
+                    CurrentPageTitle = "Preset Mods";
+                    CurrentPageDescription = "Official built-in mods.";
+                    CurrentBreadcrumb = "Settings > Mods > Preset Mods";
+                    return _router.Navigate.Execute(Wrap("presetmods", new ModsPresetsViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToModGeneratorCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "modgenerator";
+                    CurrentPageTitle = "Mod Generator";
+                    CurrentPageDescription = "Generate mods easily with a single click.";
+                    CurrentBreadcrumb = "Settings > Mods > Mod Generator";
+                    return _router.Navigate.Execute(Wrap("modgenerator", new ModGeneratorViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToCommunityModsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "communitymods";
+                    CurrentPageTitle = "Community Mods";
+                    CurrentPageDescription = "Explore user-created mods.";
+                    CurrentBreadcrumb = "Settings > Mods > Community Mods";
+                    return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToPresetModsCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "presetmods";
+                    CurrentPageTitle = "Preset Mods";
+                    CurrentPageDescription = "Official built-in mods.";
+                    CurrentBreadcrumb = "Settings > Mods > Preset Mods";
+                    return _router.Navigate.Execute(Wrap("presetmods", new ModsPresetsViewModel()))
+                        .ObserveOn(RxSchedulers.MainThreadScheduler)
+                        .Catch<IRoutableViewModel, Exception>(ex =>
+                        {
+                            commandExceptionHandler(ex);
+                            return Observable.Empty<IRoutableViewModel>();
+                        });
+                }
+            );
+
+            NavigateToModGeneratorCommand = ReactiveCommand.CreateFromObservable(
+                () =>
+                {
+                    SelectedPage = "modgenerator";
+                    CurrentPageTitle = "Mod Generator";
+                    CurrentPageDescription = "Generate mods easily with a single click.";
+                    CurrentBreadcrumb = "Settings > Mods > Mod Generator";
+                    return _router.Navigate.Execute(Wrap("modgenerator", new ModGeneratorViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {
