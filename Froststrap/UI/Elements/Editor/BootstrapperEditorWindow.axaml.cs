@@ -127,6 +127,8 @@ namespace Froststrap.UI.Elements.Editor
         private BootstrapperEditorWindowViewModel _viewModel = null!;
         private CompletionWindow? _completionWindow = null;
 
+        private bool _isInitialLoad = true;
+
         public BootstrapperEditorWindow()
         { 
             InitializeComponent(); 
@@ -152,7 +154,6 @@ namespace Froststrap.UI.Elements.Editor
             };
 
             UIXML.TextChanged += OnCodeChanged;
-
             UIXML.TextArea.TextEntered += OnTextEntered;
 
             LoadHighlightingTheme();
@@ -217,6 +218,12 @@ namespace Froststrap.UI.Elements.Editor
 
         private void OnCodeChanged(object? sender, EventArgs e)
         {
+            if (_isInitialLoad)
+            {
+                _isInitialLoad = false;
+                return;
+            }
+
             _viewModel.Code = UIXML.Text;
             _viewModel.CodeChanged = true;
         }
