@@ -12,18 +12,13 @@
         CornerRadius="8"
         CanResize="False"
         SystemDecorations="None"
+        Title="Froststrap"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"
         TransparencyLevelHint="{Binding WindowBackdropType}"
         Background="{Binding BackgroundColourBrush}">
 
 	<Grid>
-        	<controls:TitleBar VerticalAlignment="Top"
-                          Height="32"
-                          ShowMinimize="False"
-                          ShowMaximize="False"
-                          ShowClose="False" />
-
 		<TextBlock Margin="12,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"
                    FontSize="11" FontFamily="{StaticResource Rubik}"
                    Text="{Binding VersionText}" Opacity="0.6"/>

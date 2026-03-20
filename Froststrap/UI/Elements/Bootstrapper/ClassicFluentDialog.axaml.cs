@@ -86,6 +86,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             {
                 _viewModel.CancelEnabled = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
+                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelButtonVisible));
             });
         }
 
