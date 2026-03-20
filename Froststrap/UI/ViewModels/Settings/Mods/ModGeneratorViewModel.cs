@@ -3,15 +3,13 @@ using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap;
 using Froststrap.Integrations;
-using Froststrap.UI.ViewModels;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
-namespace Froststrap.UI.ViewModels.Settings
+namespace Froststrap.UI.ViewModels.Settings.Mods
 {
     public class ModGeneratorViewModel : NotifyPropertyChangedViewModel
     {

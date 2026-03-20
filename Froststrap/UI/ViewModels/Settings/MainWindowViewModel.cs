@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using System.Reactive;
 using System.Reactive.Linq;
+using Froststrap.UI.ViewModels.Settings.Mods;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 

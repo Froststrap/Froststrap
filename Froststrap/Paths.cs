@@ -34,7 +34,7 @@ namespace Froststrap
         public static string CustomCursors { get; private set; } = "";
         public static string Application { get; private set; } = "";
 
-        public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
+        public static string CustomFont => Path.Combine(PresetModifications, "content", "fonts", "CustomFont.ttf");
         public static string PresetModifications => Path.Combine(Modifications, "Preset Modifications");
 
         public static string Base => DataRoot;
