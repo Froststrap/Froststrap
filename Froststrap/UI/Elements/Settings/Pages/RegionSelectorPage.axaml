@@ -203,10 +203,9 @@
 			            VerticalAlignment="Center"
 			            Spacing="16">
 
-						<ProgressBar IsIndeterminate="True"
-									 Width="32" Height="32"
-									 HorizontalAlignment="Center"
-									 Theme="{StaticResource ProgressBarRingTheme}" />
+						<ui:ProgressRing IsIndeterminate="True"
+									 Width="100" Height="100"
+									 HorizontalAlignment="Center" />
 
 						<TextBlock HorizontalAlignment="Center"
 								   FontSize="14"

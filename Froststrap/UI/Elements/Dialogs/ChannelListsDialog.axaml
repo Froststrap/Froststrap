@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:resources="clr-namespace:Froststrap.Resources"
+		xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:converters="clr-namespace:Froststrap.UI.Converters"
 		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
 		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
@@ -39,7 +40,7 @@
 			<Grid IsVisible="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
 				<Border Background="{DynamicResource ControlFillColorDefaultBrush}" Opacity="0.7" />
 				<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-					<ProgressBar Width="200" Height="8" IsIndeterminate="True"/>
+					<ui:ProgressRing Width="100" Height="100" IsIndeterminate="True"/>
 					<TextBlock Text="{x:Static resources:Strings.Common_Loading}"
                                FontSize="13" Margin="0,12,0,0"
                                HorizontalAlignment="Center"/>

@@ -7,6 +7,7 @@
 	xmlns:resources="using:Froststrap.Resources"
 	xmlns:ic="using:IconPacks.Avalonia.Material"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+	xmlns:ui="using:FluentAvalonia.UI.Controls"
 	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
 	Title="{x:Static resources:Strings.Menu_Title}"
 	Width="1125"
@@ -189,15 +190,16 @@
 			<Grid Grid.Column="1" RowDefinitions="Auto,*">
 				<Border
 					Grid.Row="0"
-					Padding="20,24"
+					Padding="20,24,20,8"
 					Background="{DynamicResource LayerFillColorAltBrush}"
 					BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
 					BorderThickness="0,0,0,1">
-					<StackPanel Spacing="12">
+					<StackPanel>
 						<TextBlock
 							x:Name="PageTitleText"
 							FontSize="24"
 							FontWeight="SemiBold"
+							Margin="0,0,0,12"
 							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 							Text="{Binding CurrentPageTitle}" />
 						<TextBlock
@@ -206,13 +208,17 @@
 							FontWeight="SemiBold"
 							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 							Text="{Binding CurrentBreadcrumb}"
+							Margin="0,0,0,12"
 							IsVisible="{Binding CurrentBreadcrumb, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 						<controls:MarkdownTextBlock
 							x:Name="PageDescriptionText"
 							FontSize="13"
 							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 							MarkdownText="{Binding CurrentPageDescription}"
+							Margin="0,0,0,4"
 							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+						<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,4" IsOpen="True" Message="FluentAvalonia so w lowkey" Severity="Warning" IsClosable="False" />
 					</StackPanel>
 				</Border>
 
@@ -223,38 +229,6 @@
 					VerticalAlignment="Stretch"
 					Background="{DynamicResource LayerFillColorDefaultBrush}" />
 			</Grid>
-		</Grid>
-
-		<Grid
-			x:Name="LoadingOverlay"
-			Grid.Row="1"
-			Grid.RowSpan="2"
-			Background="#A0000000"
-			IsVisible="False"
-			ZIndex="999">
-			<Border
-				Padding="30"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Center"
-				Background="{DynamicResource LayerFillColorDefaultBrush}"
-				BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-				BorderThickness="1"
-				CornerRadius="8">
-				<StackPanel Spacing="15">
-					<TextBlock
-						x:Name="LoadingOverlayText"
-						HorizontalAlignment="Center"
-						FontSize="20"
-						FontWeight="SemiBold"
-						Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-						Text="Loading..." />
-					<ProgressBar
-						Width="50"
-						Height="4"
-						Foreground="{DynamicResource SystemAccentColor}"
-						IsIndeterminate="True" />
-				</StackPanel>
-			</Border>
 		</Grid>
 
 		<Border
