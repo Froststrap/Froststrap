@@ -147,6 +147,7 @@ namespace Froststrap.UI.Elements.Settings
 
             var viewTypeNames = new[]
             {
+                $"Froststrap.UI.Elements.Settings.Pages.Mods.{viewName}Page",
                 $"Froststrap.UI.Elements.Settings.Pages.{viewName}Page",
                 $"Froststrap.UI.Elements.Settings.Pages.{viewName}",
                 $"Froststrap.UI.Elements.Settings.{viewName}Page",
