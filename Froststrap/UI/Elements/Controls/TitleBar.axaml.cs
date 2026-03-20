@@ -25,7 +25,8 @@ namespace Froststrap.UI.Elements.Controls
             AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowClose), true);
 
         public static readonly StyledProperty<IImage?> IconProperty =
-            AvaloniaProperty.Register<TitleBar, IImage?>(nameof(Icon));
+            AvaloniaProperty.Register<TitleBar, IImage?>(nameof(Icon),
+                new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap/Froststrap.ico"))));
 
         public string? Title { get => GetValue(TitleProperty); set => SetValue(TitleProperty, value); }
         public bool ShowMinimize { get => GetValue(ShowMinimizeProperty); set => SetValue(ShowMinimizeProperty, value); }

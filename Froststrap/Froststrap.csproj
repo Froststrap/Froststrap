@@ -24,6 +24,15 @@
 		<AvaloniaResource Include="Froststrap.png" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="Resources\CustomBootstrapperSchema.json" />
+		<EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
+		<EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
+		<EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
+		<EmbeddedResource Include="Resources\PresetFlags\High Quality" />
+		<EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
+	</ItemGroup>
+
     <!-- NuGet packages -->
     <ItemGroup>
         <PackageReference Include="AnimatedImage.Avalonia" Version="2.1.4" />
@@ -84,12 +93,6 @@
       <ProjectionMetadataWinmd Include="$(UserProfile)\.nuget\packages\microsoft.windows.sdk.win32metadata\55.0.45-preview\Windows.Win32.winmd" />
     </ItemGroup>
   </Target>
-
-  <ItemGroup>
-	<EmbeddedResource Include="Resources\CustomBootstrapperSchema.json" />
-    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Blank.xml" />
-    <EmbeddedResource Include="Resources\CustomBootstrapperTemplate_Simple.xml" />
-  </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Properties\Settings.Designer.cs">

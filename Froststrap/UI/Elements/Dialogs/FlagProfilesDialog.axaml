@@ -1,116 +1,82 @@
-﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.FlagProfilesDialog"
-        xmlns="https://github.com/avaloniaui"
+﻿<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="using:FluentAvalonia.UI.Controls"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        mc:Ignorable="d"
-        Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}"
-        MinHeight="300"
-        MaxHeight="500"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        x:Class="Froststrap.UI.Elements.Dialogs.FlagProfilesDialog"
+        Title="Flag Profiles"
         Width="540"
         SizeToContent="Height"
         CanResize="False"
-        WindowStartupLocation="CenterScreen">
-	
-	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        mc:Ignorable="d">
 
-		<TitleBar Grid.Row="0" />
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+        <controls:TitleBar Grid.Row="0" Icon="avares://Froststrap/Froststrap.ico" Title="{x:Static resources:Strings.Menu_FastFlagEditor_ProfilesDescription}" />
 
-		<TabControl x:Name="Tabs" Grid.Row="1" Margin="16">
-			<TabItem Header="{x:Static resources:Strings.Menu_Save}">
-				<Grid Margin="11,20,11,0">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<TextBox Grid.Row="0" x:Name="SaveProfile"
+        <TabControl x:Name="Tabs" Grid.Row="1" Margin="16">
+            <TabItem Header="{x:Static resources:Strings.Menu_Save}">
+                <StackPanel Margin="11,20,11,0" Spacing="10">
+                    <TextBox x:Name="SaveProfile" 
                              Watermark="Profile Name" />
-				</Grid>
-			</TabItem>
+                </StackPanel>
+            </TabItem>
 
-			<TabItem Header="{x:Static resources:Strings.Menu_Load}">
-				<Grid Margin="11">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<Grid Grid.Row="0" Margin="0,0,0,12" VerticalAlignment="Center"
-                          x:Name="RenamePanel" IsVisible="False">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-
-						<TextBox Grid.Column="0" x:Name="RenameTextBox"
-                                 VerticalAlignment="Center" Padding="8,6"
-                                 Watermark="Rename Profile" Margin="0,0,8,0" />
-
-						<Button Grid.Column="1" Content="Rename"
-                                Click="RenameButton_Click" VerticalAlignment="Center"
-                                Margin="0,0,6,0" MinWidth="100" Padding="10,6" />
-
-						<Button Grid.Column="2" Content="Copy"
-                                Click="CopyButton_Click" VerticalAlignment="Center"
-                                Margin="0,0,6,0" MinWidth="100" Padding="10,6" />
-
-						<Button Grid.Column="3" Content="Update"
-                                Click="UpdateButton_Click" VerticalAlignment="Center"
-                                MinWidth="100" Padding="10,6" />
-					</Grid>
-
-					<ListBox x:Name="LoadProfile" Grid.Row="1"
-                             SelectionChanged="LoadProfile_SelectionChanged"
-                             BorderThickness="1" Padding="4" />
-
-					<TextBlock x:Name="LoadProfileEmptyText" Grid.Row="1"
-                               Text="No Profiles Found"
-                               HorizontalAlignment="Center" Margin="0,24,0,0"
+            <TabItem Header="{x:Static resources:Strings.Menu_Load}">
+                <Grid RowDefinitions="Auto,*,Auto" Margin="11">
+                    <Grid x:Name="RenamePanel" Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,0,0,12">
+                        <TextBox Grid.Column="0" x:Name="RenameTextBox" Watermark="Rename Profile" Margin="0,0,8,0" />
+                        <Button Grid.Column="1" Content="Rename" Click="RenameButton_Click" Margin="0,0,6,0" MinWidth="80" />
+                        <Button Grid.Column="2" Content="Copy" Click="CopyButton_Click" Margin="0,0,6,0" MinWidth="80" />
+                        <Button Grid.Column="3" Content="Update" Click="UpdateButton_Click" MinWidth="80" />
+                    </Grid>
+                    
+                    <ListBox x:Name="LoadProfile" Grid.Row="1" Height="200" 
+                             SelectionChanged="LoadProfile_SelectionChanged" />
+                    
+                    <TextBlock x:Name="LoadProfileEmptyText" Grid.Row="1" 
+                               Text="No Profiles Found" 
+                               Foreground="{DynamicResource SystemFillColorSecondaryBrush}" 
+                               HorizontalAlignment="Center" VerticalAlignment="Center" 
                                IsVisible="False" />
-				</Grid>
-			</TabItem>
+                </Grid>
+            </TabItem>
 
-			<TabItem Header="{x:Static resources:Strings.Common_PresetFlagLists}">
-				<Grid Margin="11">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="*" />
-					</Grid.RowDefinitions>
-					<ListBox x:Name="LoadPresetProfile" Grid.Row="0" />
-				</Grid>
-			</TabItem>
-		</TabControl>
+            <TabItem Header="{x:Static resources:Strings.Common_PresetFlagLists}">
+                <Grid Margin="11">
+                    <ListBox x:Name="LoadPresetProfile" Height="200" SelectionChanged="LoadPresetProfile_SelectionChanged" />
+                </Grid>
+            </TabItem>
+        </TabControl>
 
-		<Border Grid.Row="2" Margin="0,10,0,0" Padding="15"
-                Background="{DynamicResource PrimaryBackgroundColor}">
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<CheckBox Content="{x:Static resources:Strings.Menu_FlagProfiles_ClearFlags}"
-                         Name="ClearFlags" Margin="0,0,40,0" />
+        <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12">
+                
+                <CheckBox x:Name="ClearFlags" 
+                          Content="{x:Static resources:Strings.Menu_FlagProfiles_ClearFlags}" 
+                          IsVisible="False" />
 
-				<Button Margin="0,0,15,0" MinWidth="100"
-                        Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}"
-                        Click="DeleteButton_Click"
-                        Name="DeleteButton" />
+                <controls:IconButton x:Name="DeleteButton"
+                        Icon="TrashCanOutline"
+                        Classes="Dangerous"
+                        Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" 
+                        Click="DeleteButton_Click" 
+                        IsVisible="False" />
 
-				<Button MinWidth="100"
-                        Content="{x:Static resources:Strings.Common_OK}"
+                <Button x:Name="OkButton"
+                        Content="{x:Static resources:Strings.Common_OK}" 
                         Click="OKButton_Click" 
-                        Name="OkButton" />
+                        Classes="accent"
+                        Width="100"
+                        IsEnabled="False" />
 
-				<Button MinWidth="100" Margin="12,0,0,0"
-                        Content="{x:Static resources:Strings.Common_Cancel}"
-                        IsCancel="True" />
-			</StackPanel>
-		</Border>
-	</Grid>
+                <Button Content="{x:Static resources:Strings.Common_Cancel}" 
+                        Click="CancelButton_Click"
+                        Width="100" />
+            </StackPanel>
+        </Border>
+    </Grid>
 </base:AvaloniaWindow>

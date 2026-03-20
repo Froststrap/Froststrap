@@ -7,6 +7,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Platform.Storage;
+using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.Elements.Settings.Pages
@@ -104,8 +105,6 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 }
             }
         }
-
-        public string FlagCountText => $"Total flags: {_fastFlagList.Count}";
 
         public void UpdateTotalFlagsCount()
         {
@@ -281,9 +280,42 @@ namespace Froststrap.UI.Elements.Settings.Pages
             }
         }
 
-        private void FlagProfiles_Click(object sender, RoutedEventArgs e)
+        private async void FlagProfiles_Click(object sender, RoutedEventArgs e)
         {
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel is not Window parentWindow) return;
+
             App.FrostRPC?.SetDialog("Profiles");
+
+            var dialog = new FlagProfilesDialog();
+
+            await dialog.ShowDialog(parentWindow);
+
+            App.FrostRPC?.ClearDialog();
+
+            if (dialog.Result != MessageBoxResult.OK)
+                return;
+
+            if (dialog.Tabs.SelectedIndex == 0)
+            {
+                string profileName = dialog.SaveProfile.Text?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrWhiteSpace(profileName))
+                    return;
+
+                App.FastFlags.SaveProfile(profileName);
+            }
+            else if (dialog.Tabs.SelectedIndex == 1)
+            {
+                var selectedValue = dialog.LoadProfile.SelectedValue?.ToString();
+                if (string.IsNullOrEmpty(selectedValue))
+                    return;
+
+                App.FastFlags.LoadProfile(selectedValue, dialog.ClearFlags.IsChecked ?? false);
+            }
+
+            await Task.Delay(1000);
+            ReloadList();
         }
 
         private async void CleanListButton_Click(object sender, RoutedEventArgs e)
