@@ -209,13 +209,10 @@ namespace Froststrap
 			// clone the dictionary
 			OriginalProp = new(Prop);
 
-			if (App.Settings.Prop.UseAltManually)
-			{
-				if (GetPreset("Rendering.ManualFullscreen") != "False")
-					SetPreset("Rendering.ManualFullscreen", "False");
-			}
+            if (GetPreset("Rendering.ManualFullscreen") != "False")
+                SetPreset("Rendering.ManualFullscreen", "False");
 
-			return result;
+            return result;
 		}
 
 		public async void DeleteProfile(string Profile)
@@ -246,7 +243,7 @@ namespace Froststrap
                 {
                     Name = kvp.Key,
                     Value = kvp.Value?.ToString() ?? "",
-                    Preset = "" // optional
+                    Preset = null! // optional
                 };
             }
         }
