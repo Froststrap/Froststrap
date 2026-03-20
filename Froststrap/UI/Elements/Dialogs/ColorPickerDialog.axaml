@@ -10,10 +10,9 @@
      SizeToContent="Height"
      SystemDecorations="None"
      CanResize="False"
-     Background="{DynamicResource ApplicationBackgroundColor}"
      WindowStartupLocation="CenterOwner">
 
-        <Grid RowDefinitions="Auto, *">
+        <Grid RowDefinitions="Auto, *" Background="{DynamicResource ApplicationBackgroundColor}">
             <controls:TitleBar Grid.Row="0" 
                                Icon="avares://Froststrap/Froststrap.ico" 
                                Title="Select Color" />

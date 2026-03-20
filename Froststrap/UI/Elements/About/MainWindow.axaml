@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:pages="clr-namespace:Froststrap.UI.Elements.About.Pages"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.About"
@@ -14,11 +15,11 @@
         MinWidth="740" Width="740" Height="440"
         WindowStartupLocation="CenterScreen"
         TransparencyLevelHint="Mica"
-        Background="Transparent"
+        SystemDecorations="None"
         ExtendClientAreaToDecorationsHint="True">
 
-  <Grid RowDefinitions="Auto,*,Auto">
-        <TitleBar Grid.Row="0" Height="32" Background="{DynamicResource LayerFillColorDefaultBrush}" />
+  <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+        <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.About_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" ColumnDefinitions="64,*" Margin="12,40,12,12" Name="MainGrid">
             <Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
