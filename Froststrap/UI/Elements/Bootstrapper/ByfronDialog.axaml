@@ -10,6 +10,7 @@
         CanResize="False"
         SystemDecorations="None"
         WindowStartupLocation="CenterScreen"
+        Title="Froststrap"
         Background="Transparent"
         TransparencyLevelHint="Transparent">
 

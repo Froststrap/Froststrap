@@ -7,17 +7,13 @@
         x:DataType="vm:TwentyFiveDialogViewModel"
         Width="576" Height="482"
         CanResize="False"
+        Title="Froststrap"
+        SystemDecorations="None"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"
         Background="#000000">
 
 	<Grid>
-		<controls:TitleBar VerticalAlignment="Top"
-                          Height="32"
-                          ShowMinimize="False"
-                          ShowMaximize="False"
-                          ShowClose="False" />
-
 		<Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/PlayerLogo.png"
                Height="254" Width="254"
                HorizontalAlignment="Center"
