@@ -10,10 +10,6 @@ namespace Froststrap.UI.ViewModels.Editor
     {
         private CustomDialog? _dialog = null;
 
-        private string _code = "";
-        private bool _codeChanged = false;
-        private string _title = "Editing \"Custom Theme\"";
-
         public ICommand PreviewCommand => new RelayCommand(Preview);
         public ICommand SaveCommand => new RelayCommand(Save);
         public ICommand OpenThemeFolderCommand => new RelayCommand(OpenThemeFolder);
@@ -22,24 +18,9 @@ namespace Froststrap.UI.ViewModels.Editor
 
         public string Directory { get; set; } = "";
         public string Name { get; set; } = "";
-
-        public string Title
-        {
-            get => _title;
-            set => SetProperty(ref _title, value);
-        }
-
-        public string Code
-        {
-            get => _code;
-            set => SetProperty(ref _code, value);
-        }
-
-        public bool CodeChanged
-        {
-            get => _codeChanged;
-            set => SetProperty(ref _codeChanged, value);
-        }
+        public string Title { get; set; } = "Editing \"Custom Theme\"";
+        public string Code { get; set; } = "";
+        public bool CodeChanged { get; set; } = false;
 
         private void Preview()
         {
