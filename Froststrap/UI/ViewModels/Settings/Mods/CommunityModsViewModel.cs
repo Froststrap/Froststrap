@@ -91,7 +91,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 foreach (var mod in filtered)
                 {
                     mod.DownloadCommand = DownloadModCommand;
-                    mod.ShowInfoCommand = ShowModInfoCommand;
                     Mods.Add(mod);
                 }
             });
@@ -256,18 +255,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 }
                 catch (Exception ex) { App.Logger.WriteLine("CommunityModsViewModel::ApplySkyboxFix", ex.ToString()); }
             });
-        }
-
-        [RelayCommand]
-        private async Task ShowModInfo(Control? control)
-        {
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel is not Window parentWindow) return;
-
-            if (control?.DataContext is not CommunityMod mod) return;
-
-            var dialog = new CommunityModInfoDialog(mod);
-            await dialog.ShowDialog(parentWindow);
         }
     }
 }
