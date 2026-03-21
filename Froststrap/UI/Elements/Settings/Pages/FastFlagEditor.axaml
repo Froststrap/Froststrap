@@ -95,11 +95,11 @@
                                             IsVisible="{Binding #TogglePresetsButton.IsChecked}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:FastFlag">
-                                <Image Height="28" 
-                                       Width="28" 
-                                       Source="{Binding Preset}" 
-                                       HorizontalAlignment="Center" 
-                                       VerticalAlignment="Center" />
+                                <ic:PackIconMaterial Height="20" 
+                                                     Width="20"
+                                                     Kind="{Binding Preset}"
+                                                     HorizontalAlignment="Center" 
+                                                     VerticalAlignment="Center" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

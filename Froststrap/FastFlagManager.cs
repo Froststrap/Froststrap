@@ -243,7 +243,7 @@ namespace Froststrap
                 {
                     Name = kvp.Key,
                     Value = kvp.Value?.ToString() ?? "",
-                    Preset = null! // optional
+                    Preset = IconPacks.Avalonia.Material.PackIconMaterialKind.Minus // optional/default
                 };
             }
         }

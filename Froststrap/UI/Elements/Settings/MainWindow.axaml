@@ -195,21 +195,57 @@
 					BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
 					BorderThickness="0,0,0,1">
 					<StackPanel>
+						<ItemsControl
+							ItemsSource="{Binding BreadcrumbItems}"
+							Margin="0,0,0,12"
+							IsVisible="{Binding HasBreadcrumbs}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="vm:BreadcrumbItemModel">
+									<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+										<Button
+											Content="{Binding Content}"
+											Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
+											CommandParameter="{Binding}"
+											Background="Transparent"
+											BorderThickness="0"
+											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+											FontSize="24"
+											FontWeight="SemiBold"
+											Padding="0"
+											IsVisible="{Binding !IsLast}" />
+										<TextBlock
+											Text=">"
+											VerticalAlignment="Center"
+											FontSize="24"
+											FontWeight="SemiBold"
+											Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+											IsVisible="{Binding !IsLast}" />
+										<TextBlock
+											Text="{Binding Content}"
+											VerticalAlignment="Center"
+											FontSize="24"
+											FontWeight="SemiBold"
+											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+											IsVisible="{Binding IsLast}" />
+									</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+
 						<TextBlock
 							x:Name="PageTitleText"
 							FontSize="24"
 							FontWeight="SemiBold"
 							Margin="0,0,0,12"
 							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-							Text="{Binding CurrentPageTitle}" />
-						<TextBlock
-							x:Name="BreadcrumbText"
-							FontSize="13"
-							FontWeight="SemiBold"
-							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-							Text="{Binding CurrentBreadcrumb}"
-							Margin="0,0,0,12"
-							IsVisible="{Binding CurrentBreadcrumb, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+							Text="{Binding CurrentPageTitle}"
+							IsVisible="{Binding ShowPageTitle}" />
+
 						<controls:MarkdownTextBlock
 							x:Name="PageDescriptionText"
 							FontSize="13"

@@ -3,10 +3,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Avalonia.Platform.Storage;
+using IconPacks.Avalonia.Material;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 
@@ -24,9 +22,6 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         private DataGrid? _dataGrid;
         private TextBox? _searchTextBox;
-
-        private static readonly Bitmap CheckmarkIcon = new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap/Resources/Checkmark.ico")));
-        private static readonly Bitmap CrossmarkIcon = new Bitmap(AssetLoader.Open(new Uri("avares://Froststrap/Resources/Crossmark.ico")));
 
         public FastFlagEditor()
         {
@@ -63,7 +58,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 {
                     Name = pair.Key,
                     Value = pair.Value?.ToString() ?? string.Empty,
-                    Preset = presetFlags.Contains(pair.Key) ? CheckmarkIcon : CrossmarkIcon
+                    Preset = presetFlags.Contains(pair.Key) ? PackIconMaterialKind.CheckCircleOutline : PackIconMaterialKind.CloseCircleOutline
                 };
 
                 _fastFlagList.Add(entry);
@@ -637,7 +632,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
                 entry.Name = newText;
 
                 var presetFlags = FastFlagManager.PresetFlags.Values;
-                entry.Preset = presetFlags.Contains(newText) ? CheckmarkIcon : CrossmarkIcon;
+                entry.Preset = presetFlags.Contains(newText) ? PackIconMaterialKind.CheckCircleOutline : PackIconMaterialKind.CloseCircleOutline;
             }
             else if (header == Strings.Common_Value)
             {
