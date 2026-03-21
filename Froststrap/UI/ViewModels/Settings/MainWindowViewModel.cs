@@ -2,6 +2,7 @@
 using System.Reactive;
 using System.Reactive.Linq;
 using Froststrap.UI.ViewModels.Settings.Mods;
+using Froststrap.UI.ViewModels.Settings.FastFlags;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
@@ -250,7 +251,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "fastflageditor";
                     CurrentPageTitle = "Editor";
                     CurrentPageDescription = "";
-                    CurrentBreadcrumb = "Settings > Fast Flags > Editor";
                     BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
                     {
                         new BreadcrumbItemModel { Content = "Fast Flags", Tag = "fastflags" },
