@@ -1,0 +1,202 @@
+<UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.ModGeneratorPage"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:colorpicker="using:ColorPicker"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:ic="using:IconPacks.Avalonia.Material"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings.Mods"
+             x:DataType="vm:ModGeneratorViewModel"
+             d:DesignHeight="800"
+             d:DesignWidth="1100"
+             mc:Ignorable="d">
+
+    <ScrollViewer>
+        <Grid Margin="14">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                FontSize="14"
+                Grid.Row="0"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Text="{x:Static resources:Strings.Menu_Mods_Description}"
+                TextWrapping="Wrap" />
+
+            <Grid Grid.Row="1" Margin="0,16,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <controls:CardAction Grid.Column="0" Margin="0,0,4,0" 
+                                     Command="{Binding OpenCommunityModsCommand}"
+                                     Header="Community Mods"
+                                     Icon="StorefrontOutline"
+                                     Description="Explore user-created mods." />
+
+                <controls:CardAction Grid.Column="1" Margin="2,0,2,0" 
+                                     Command="{Binding OpenPresetModsCommand}"
+                                     Header="Preset Mods"
+                                     Icon="BookOpenPageVariantOutline"
+                                     Description="Official built-in mods." />
+
+                <controls:CardAction Grid.Column="2" Margin="4,0,0,0" 
+                                     Command="{Binding OpenModsCommand}"
+                                     Header="My Mods"
+                                     Icon="FormatListBulletedSquare"
+                                     Description="Manage your active mods." />
+            </Grid>
+
+            <Separator Margin="0,8" Grid.Row="2" />
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="340" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" 
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Top"
+                        Background="{DynamicResource LayerFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <TextBlock FontSize="18" 
+                                       FontWeight="SemiBold" 
+                                       Text="Style Preview" 
+                                       VerticalAlignment="Center" 
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBlock VerticalAlignment="Center" 
+                                           Text="Icon Set:" 
+                                           Margin="0,0,8,0" 
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                <ComboBox Width="200" 
+                                          ItemsSource="{Binding FontDisplayNames}" 
+                                          SelectedItem="{Binding SelectedFontDisplayName}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Height="515">
+                            <ItemsControl ItemsSource="{Binding GlyphItems}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel HorizontalAlignment="Left" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Margin="4" 
+                                                Padding="8" 
+                                                Width="56" 
+                                                Height="56"
+                                                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="4">
+                                            <Viewbox Stretch="Uniform">
+                                                <Path Data="{Binding Data}" Fill="{Binding ColorBrush}" Margin="0,0,10,8"/>
+                                            </Viewbox>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <StackPanel Grid.Column="1">
+                    <Border Margin="0,0,0,12"
+                            Background="{DynamicResource LayerFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12">
+                        <StackPanel>
+                            <TextBlock FontSize="14" 
+                                       FontWeight="Bold" 
+                                       Text="Appearance" 
+                                       Margin="0,0,0,12" 
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                            <colorpicker:SquarePicker Height="200" SelectedColor="{Binding SelectedMediaColor, Mode=TwoWay}" />
+                            <TextBox Text="{Binding SolidColorHex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                     HorizontalAlignment="Stretch" 
+                                     Watermark="#FFFFFF" 
+                                     Margin="0,16,0,4" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="{DynamicResource LayerFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12">
+                        <StackPanel>
+                            <TextBlock FontSize="14" 
+                                       FontWeight="Bold" 
+                                       Text="Mod Options" 
+                                       Margin="0,0,0,8" 
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+
+                            <CheckBox Content="Apply to Cursors" IsChecked="{Binding ColorCursors}" Margin="0,4"/>
+                            <CheckBox Content="Apply to Shiftlock" IsChecked="{Binding ColorShiftlock}" Margin="0,4"/>
+                            <CheckBox Content="Apply to Emote Wheel" IsChecked="{Binding ColorEmoteWheel}" Margin="0,4"/>
+                            <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="0,4"/>
+
+                            <Separator Margin="0,12"/>
+
+                            <Button Command="{Binding GenerateModCommand}"
+                                    IsEnabled="{Binding IsNotGeneratingMod}"
+                                    Content="Generate Mod"
+                                    HorizontalAlignment="Stretch"
+                                    Height="40"
+                                    Background="{DynamicResource SystemAccentColor}"
+                                    Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
+                                    Classes="accent">
+                                <Button.ContentTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                            <ic:PackIconMaterial Kind="PlayCircleOutline" />
+                                            <TextBlock Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </Button.ContentTemplate>
+                            </Button>
+
+                            <TextBlock Text="{Binding StatusText}"
+                                       Margin="0,12,0,0"
+                                       FontSize="12"
+                                       HorizontalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

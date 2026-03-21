@@ -8,17 +8,16 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
+    public interface IModsDialogService
+    {
+        Task OpenCommunityModsAsync();
+        Task OpenPresetModsAsync();
+        Task OpenModGeneratorAsync();
+    }
+
     public partial class ModsViewModel : NotifyPropertyChangedViewModel
     {
-        public event EventHandler? OpenModGeneratorEvent;
-        public event EventHandler? OpenCommunityModsEvent;
-        public event EventHandler? OpenPresetModsEvent;
-        private void OpenModGenerator() => OpenModGeneratorEvent?.Invoke(this, EventArgs.Empty);
-        private void OpenCommunityMods() => OpenCommunityModsEvent?.Invoke(this, EventArgs.Empty);
-        private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
-        public ICommand OpenModGeneratorCommand => new RelayCommand(OpenModGenerator);
-        public ICommand OpenCommunityModsCommand => new RelayCommand(OpenCommunityMods);
-        public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
+        private readonly IModsDialogService _dialogService;
 
         public ObservableCollection<ModConfig> Modifications { get; set; } = new();
 
@@ -27,11 +26,38 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand DeleteModCommand => new RelayCommand<ModConfig>(DeleteMod);
         public ICommand OpenModFolderCommand => new RelayCommand<ModConfig>(OpenFolder);
 
-        public ModsViewModel()
+        public ModsViewModel() 
+            : this(new DefaultModsDialogService())
         {
+        }
+
+        public ModsViewModel(IModsDialogService dialogService)
+        {
+            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
             SyncDiskWithState();
             LoadModifications();
         }
+
+        public ICommand OpenModGeneratorCommand => new AsyncRelayCommand(async () =>
+        {
+            App.Logger.WriteLine("ModsViewModel", "OpenModGeneratorCommand executed");
+            await _dialogService.OpenModGeneratorAsync();
+            App.Logger.WriteLine("ModsViewModel", "OpenModGeneratorCommand completed");
+        });
+
+        public ICommand OpenCommunityModsCommand => new AsyncRelayCommand(async () =>
+        {
+            App.Logger.WriteLine("ModsViewModel", "OpenCommunityModsCommand executed");
+            await _dialogService.OpenCommunityModsAsync();
+            App.Logger.WriteLine("ModsViewModel", "OpenCommunityModsCommand completed");
+        });
+
+        public ICommand OpenPresetModsCommand => new AsyncRelayCommand(async () =>
+        {
+            App.Logger.WriteLine("ModsViewModel", "OpenPresetModsCommand executed");
+            await _dialogService.OpenPresetModsAsync();
+            App.Logger.WriteLine("ModsViewModel", "OpenPresetModsCommand completed");
+        });
 
         private void OpenFolder(ModConfig? mod)
         {
@@ -269,6 +295,24 @@ namespace Froststrap.UI.ViewModels.Settings
 
             UpdatePriorities();
             App.State.Save();
+        }
+    }
+
+    public class DefaultModsDialogService : IModsDialogService
+    {
+        public Task OpenCommunityModsAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task OpenPresetModsAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task OpenModGeneratorAsync()
+        {
+            return Task.CompletedTask;
         }
     }
 }
