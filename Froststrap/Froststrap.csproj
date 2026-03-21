@@ -37,6 +37,7 @@
 		<EmbeddedResource Include="Resources\IconEarly2015.ico" />
 		<EmbeddedResource Include="Resources\IconFroststrap.ico" />
 		<EmbeddedResource Include="Resources\IconLate2015.ico" />
+		<EmbeddedResource Include="Resources\mappings.json" />
 		<EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowCursor.png" />
 		<EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\ArrowFarCursor.png" />
 		<EmbeddedResource Include="Resources\Mods\Cursor\BlackAndWhiteDot\IBeamCursor.png" />
