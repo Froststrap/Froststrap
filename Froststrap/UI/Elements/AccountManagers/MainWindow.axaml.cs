@@ -44,7 +44,7 @@ namespace Froststrap.UI.Elements.AccountManagers
 			RootNavigation.SelectionChanged += OnNavigationChanged;
 		}
 
-		private void OnActiveAccountChanged(AltAccount? account)
+		private void OnActiveAccountChanged(AccountManagerAccount? account)
 		{
 			Dispatcher.UIThread.Invoke(UpdateNavigationItemsState);
 		}

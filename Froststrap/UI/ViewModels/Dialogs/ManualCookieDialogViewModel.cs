@@ -1,37 +1,43 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Integrations;
-using Froststrap.UI.Elements.Dialogs;
-using Newtonsoft.Json.Linq;
+using Froststrap.Models.APIs.Roblox;
+using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
     public partial class ManualCookieDialogViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _cookieInput = "";
+        private string _cookieInput = string.Empty;
 
         [ObservableProperty]
-        private bool _isValidating = false;
+        private bool _isValidating;
 
         [ObservableProperty]
         private bool _isAddEnabled = true;
 
-        public AltAccount? ValidatedAccount { get; private set; }
+        public AccountManagerAccount? ValidatedAccount { get; private set; }
 
-        private ManualCookieDialog _dialog;
+        private readonly AvaloniaWindow _window;
 
-        public ManualCookieDialogViewModel(ManualCookieDialog dialog)
+        public ManualCookieDialogViewModel(AvaloniaWindow window)
         {
-            _dialog = dialog;
+            _window = window;
         }
 
         [RelayCommand]
-        private async Task AddAccount()
+        private async Task AddAccountAsync()
         {
             if (string.IsNullOrWhiteSpace(CookieInput))
             {
-                _ = Frontend.ShowMessageBox("Please enter a cookie.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox("Please enter a cookie.", MessageBoxImage.Warning);
                 return;
             }
 
@@ -44,17 +50,18 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
                 if (accountInfo == null)
                 {
-                    _ = Frontend.ShowMessageBox("Invalid cookie. Please check and try again.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Invalid cookie. Please check and try again.", MessageBoxImage.Error);
                     return;
                 }
 
                 ValidatedAccount = accountInfo;
-                _dialog.Close(true);
+
+                _window.Close(ValidatedAccount);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine("ManualCookieDialog", $"Validation error: {ex.Message}");
-                _ = Frontend.ShowMessageBox($"Error validating cookie: {ex.Message}", MessageBoxImage.Error);
+                await Frontend.ShowMessageBox($"Error validating cookie: {ex.Message}", MessageBoxImage.Error);
             }
             finally
             {
@@ -64,38 +71,42 @@ namespace Froststrap.UI.ViewModels.Dialogs
         }
 
         [RelayCommand]
-        private void Cancel() => _dialog.Close(false);
+        private void Cancel()
+        {
+            _window.Close(null);
+        }
 
-        private async Task<AltAccount?> GetAccountInfoFromCookieAsync(string cookie)
+        private async Task<AccountManagerAccount?> GetAccountInfoFromCookieAsync(string cookie)
         {
             try
             {
-                using var handler = new System.Net.Http.HttpClientHandler
+                string cleanCookie = cookie.Trim();
+                if (!cleanCookie.Contains(".ROBLOSECURITY="))
                 {
-                    CookieContainer = new System.Net.CookieContainer()
-                };
-                handler.CookieContainer.Add(new System.Net.Cookie(".ROBLOSECURITY", cookie, "/", ".roblox.com"));
+                    cleanCookie = $".ROBLOSECURITY={cleanCookie}";
+                }
 
-                using var client = new System.Net.Http.HttpClient(handler);
+                var cookieContainer = new CookieContainer();
+                using var handler = new HttpClientHandler { CookieContainer = cookieContainer };
+                using var client = new HttpClient(handler);
+
+                cookieContainer.Add(new Uri("https://roblox.com"), new Cookie(".ROBLOSECURITY", cookie, "/", ".roblox.com"));
+
                 var response = await client.GetAsync("https://users.roblox.com/v1/users/authenticated");
 
                 if (!response.IsSuccessStatusCode)
                     return null;
 
-                string json = await response.Content.ReadAsStringAsync();
-                var jo = JObject.Parse(json);
+                var user = await response.Content.ReadFromJsonAsync<AuthenticatedUser>();
 
-                long userId = jo["id"]?.Value<long>() ?? 0;
-                string username = jo["name"]?.Value<string>() ?? string.Empty;
-                string displayName = jo["displayName"]?.Value<string>() ?? string.Empty;
-
-                if (userId == 0 || string.IsNullOrEmpty(username))
+                if (user == null || user.Id == 0)
                     return null;
 
-                return new AltAccount(cookie, userId, username, displayName);
+                return new AccountManagerAccount(cookie, user.Id, user.Username, user.Displayname);
             }
-            catch
+            catch (Exception ex)
             {
+                App.Logger.WriteLine("ManualCookieDialog", $"HTTP Error: {ex.Message}");
                 return null;
             }
         }

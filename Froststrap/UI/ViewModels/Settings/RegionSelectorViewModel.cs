@@ -18,6 +18,12 @@ using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
+    public class SortOrderComboBoxItem
+    {
+        public string Content { get; set; } = "";
+        public int Tag { get; set; }
+    }
+
     public partial class RegionSelectorViewModel : ObservableObject
     {
         private const string LOG_IDENT = "RegionSelectorViewModel";
