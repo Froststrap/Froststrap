@@ -289,7 +289,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 {
                     var testText = new FormattedText(
                         "A",
-                        System.Globalization.CultureInfo.CurrentCulture,
+                        CultureInfo.CurrentCulture,
                         FlowDirection.LeftToRight,
                         typeface,
                         40,
@@ -319,7 +319,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         {
                             var ft = new FormattedText(
                                 text,
-                                System.Globalization.CultureInfo.CurrentCulture,
+                                CultureInfo.CurrentCulture,
                                 FlowDirection.LeftToRight,
                                 typeface,
                                 40,
