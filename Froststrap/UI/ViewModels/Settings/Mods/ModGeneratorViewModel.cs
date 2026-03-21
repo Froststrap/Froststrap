@@ -276,37 +276,20 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (!File.Exists(fontPath) || !IsFileReady(fontPath)) return;
 
-            var safeUri = fontPath.Replace("\\", "/").Replace(" ", "%20");
-            var fontUri = new Uri($"file:///{safeUri}");
-
-            var fontFamily = new Avalonia.Media.FontFamily(fontUri, $"#{Path.GetFileNameWithoutExtension(fontPath)}");
-
-            var typeface = new Typeface(fontFamily);
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                try
-                {
-                    var testText = new FormattedText(
-                        "A",
-                        CultureInfo.CurrentCulture,
-                        FlowDirection.LeftToRight,
-                        typeface,
-                        40,
-                        PreviewBrush);
-
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteException("ModGenerator::LoadGlyphPreviews", ex);   
-                }
-            });
-
             var glyphItems = new ObservableCollection<GlyphItem>();
             UpdateGlyphColors();
 
             try
             {
+                string variantName = Path.GetFileNameWithoutExtension(fontPath);
+
+                // Damn you Avalonia for not allowing me to render non Avalonia resource font files
+                var fontFamily = variantName.EndsWith("Filled")
+                    ? (Avalonia.Media.FontFamily)Avalonia.Application.Current!.Resources["BuilderIconsFilled"]!
+                    : (Avalonia.Media.FontFamily)Avalonia.Application.Current!.Resources["BuilderIconsRegular"]!;
+
+                var typeface = new Typeface(fontFamily);
+
                 var characterCodes = Enumerable.Range(0xF101, 495).ToList();
 
                 foreach (var characterCode in characterCodes)
@@ -343,7 +326,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         }
                         catch (Exception ex)
                         {
-                            App.Logger.WriteException("ModGenerator::LoadGlyphPreviews", ex);
+                            App.Logger?.WriteException("ModGenerator::LoadGlyphPreview", ex);
                         }
                     });
                 }

@@ -36,6 +36,9 @@
 
         <FontFamily x:Key="Rubik">avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf</FontFamily>
 
+        <FontFamily x:Key="BuilderIconsRegular">avares://Froststrap/Resources/Fonts#BuilderIcons-Regular</FontFamily>
+        <FontFamily x:Key="BuilderIconsFilled">avares://Froststrap/Resources/Fonts#BuilderIcons-Filled</FontFamily>
+
         <SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
         <SolidColorBrush x:Key="AccentColorTertiaryBrush" Color="{DynamicResource SystemAccentColorTertiary}" />
 
