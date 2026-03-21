@@ -797,7 +797,7 @@ namespace Froststrap.Integrations
             {
                 App.Logger.WriteLine(LOG_IDENT_BROWSER, "Launching browser for account login...");
 
-                string? executablePath = GetChromePath();
+                string? executablePath = GetSystemBrowerPath();
 
                 if (executablePath == null)
                 {
@@ -938,20 +938,200 @@ namespace Froststrap.Integrations
             }
         }
 
-        // this sucks
-        private string? GetChromePath()
+        // this sucks less (I'm guessing these paths bro)
+        private string? GetSystemBrowserPath()
         {
-            string[] paths = { @"C:\Program Files\Google\Chrome\Application\chrome.exe" };
-
-            foreach (var path in paths)
-            {
-                if (File.Exists(path))
-                {
-                    return path;
-                }
-            }
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return GetWindowsBrowserPath();
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return GetLinuxBrowserPath();
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                return GetMacOsBrowserPath();
 
             return null;
+        }
+
+        private string? GetWindowsBrowserPath()
+        {
+            string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string programData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+
+            string[] paths =
+            {
+            // Google Chrome
+            Path.Combine(programFiles,    "Google", "Chrome", "Application", "chrome.exe"),
+            Path.Combine(programFilesX86, "Google", "Chrome", "Application", "chrome.exe"),
+            Path.Combine(localAppData,    "Google", "Chrome", "Application", "chrome.exe"),
+
+            // Microslop Edge
+            Path.Combine(programFiles,    "Microsoft", "Edge", "Application", "msedge.exe"),
+            Path.Combine(programFilesX86, "Microsoft", "Edge", "Application", "msedge.exe"),
+
+            // Brave
+            Path.Combine(programFiles,    "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
+            Path.Combine(programFilesX86, "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
+            Path.Combine(localAppData,    "BraveSoftware", "Brave-Browser", "Application", "brave.exe"),
+
+            // Vivaldi
+            Path.Combine(programFiles,    "Vivaldi", "Application", "vivaldi.exe"),
+            Path.Combine(localAppData,    "Vivaldi", "Application", "vivaldi.exe"),
+
+            // Opera
+            Path.Combine(programFiles,    "Opera", "opera.exe"),
+            Path.Combine(localAppData,    "Programs", "Opera", "opera.exe"),
+
+            // Opera GX
+            Path.Combine(localAppData,    "Programs", "Opera GX", "opera.exe"),
+
+            // Ungoogled Chromium
+            Path.Combine(programFiles,    "Chromium", "Application", "chrome.exe"),
+            Path.Combine(programFilesX86, "Chromium", "Application", "chrome.exe"),
+            Path.Combine(localAppData,    "Chromium", "Application", "chrome.exe"),
+
+            // Thorium
+            Path.Combine(programFiles,    "Thorium", "Application", "thorium.exe"),
+            Path.Combine(programFilesX86, "Thorium", "Application", "thorium.exe"),
+            Path.Combine(localAppData,    "Thorium", "Application", "thorium.exe"),
+
+            // Helium
+            Path.Combine(programFiles,    "Helium", "Application", "chrome.exe"),
+            Path.Combine(programFilesX86, "Helium", "Application", "chrome.exe"),
+            Path.Combine(localAppData,    "Helium", "Application", "chrome.exe"),
+
+            // Arc
+            Path.Combine(localAppData,    "Programs", "Arc", "Arc.exe"),
+        };
+
+            return paths.FirstOrDefault(File.Exists);
+        }
+
+        private string? GetLinuxBrowserPath()
+        {
+            string[] candidates =
+            {
+            // Google Chrome
+            "google-chrome",
+            "google-chrome-stable",
+            "google-chrome-beta",
+            "google-chrome-unstable",
+
+            // Chromium
+            "chromium",
+            "chromium-browser",
+
+            // Microslop Edge
+            "microsoft-edge",
+            "microsoft-edge-stable",
+            "microsoft-edge-beta",
+            "microsoft-edge-dev",
+
+            // Brave
+            "brave-browser",
+            "brave",
+
+            // Vivaldi
+            "vivaldi",
+            "vivaldi-stable",
+
+            // Opera
+            "opera",
+
+            // Ungoogled Chromium
+            "ungoogled-chromium",
+
+            // Thorium
+            "thorium-browser",
+            "thorium",
+
+            // Helium?
+            "helium",
+        };
+
+            foreach (var candidate in candidates)
+            {
+                try
+                {
+                    // Use 'which' to find the binary in PATH
+                    var result = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = "which",
+                        Arguments = candidate,
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    });
+
+                    if (result != null)
+                    {
+                        string output = result.StandardOutput.ReadToEnd().Trim();
+                        result.WaitForExit();
+                        if (!string.IsNullOrEmpty(output) && File.Exists(output))
+                            return output;
+                    }
+                }
+                catch { }
+            }
+
+            string[] fixedPaths =
+            {
+            "/usr/bin/google-chrome",
+            "/usr/bin/google-chrome-stable",
+            "/usr/bin/chromium",
+            "/usr/bin/chromium-browser",
+            "/usr/bin/microsoft-edge",
+            "/usr/bin/brave-browser",
+            "/usr/bin/vivaldi",
+            "/usr/bin/opera",
+            "/snap/bin/chromium",
+            "/snap/bin/brave",
+            "/opt/google/chrome/chrome",
+            "/opt/microsoft/msedge/msedge",
+            "/opt/brave.com/brave/brave-browser",
+            "/opt/vivaldi/vivaldi",
+        };
+
+            return fixedPaths.FirstOrDefault(File.Exists);
+        }
+
+        private string? GetMacOsBrowserPath()
+        {
+            string[] paths =
+            {
+            // Google Chrome
+            "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Applications", "Google Chrome.app", "Contents", "MacOS", "Google Chrome"),
+
+            // Microslop Edge
+            "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+
+            // Brave
+            "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Applications", "Brave Browser.app", "Contents", "MacOS", "Brave Browser"),
+
+            // Vivaldi
+            "/Applications/Vivaldi.app/Contents/MacOS/Vivaldi",
+
+            // Opera
+            "/Applications/Opera.app/Contents/MacOS/Opera",
+            "/Applications/Opera GX.app/Contents/MacOS/Opera GX",
+
+            // Arc
+            "/Applications/Arc.app/Contents/MacOS/Arc",
+
+            // Ungoogled Chromium
+            "/Applications/Chromium.app/Contents/MacOS/Chromium",
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Applications", "Chromium.app", "Contents", "MacOS", "Chromium"),
+
+            // Thorium
+            "/Applications/Thorium.app/Contents/MacOS/Thorium",
+
+            // Helium
+            "/Applications/Helium.app/Contents/MacOS/Helium",
+        };
+
+            return paths.FirstOrDefault(File.Exists);
         }
 
         private async Task<AccountManagerAccount?> GetAccountInfoFromCookie(string securityCookie)
