@@ -4,9 +4,18 @@ using System.Reactive.Linq;
 using Froststrap.UI.ViewModels.Settings.Mods;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
+    public class BreadcrumbItemModel
+    {
+        public string Content { get; set; } = string.Empty;
+        public string? Tag { get; set; }
+        public bool IsLast { get; set; }
+    }
+
     public class MainWindowViewModel : ReactiveObject, IRoutableViewModel, IScreen
     {
         private readonly RoutingState _router = new();
@@ -42,7 +51,6 @@ namespace Froststrap.UI.ViewModels.Settings
             if (result == MessageBoxResult.Yes)
             {
                 App.State.Prop.TestModeWarningShown = true;
-
                 TestModeEnabled = true;
             }
             else
@@ -90,6 +98,38 @@ namespace Froststrap.UI.ViewModels.Settings
             set => this.RaiseAndSetIfChanged(ref _currentBreadcrumb, value);
         }
 
+        private ObservableCollection<BreadcrumbItemModel> _breadcrumbItems = new();
+        public ObservableCollection<BreadcrumbItemModel> BreadcrumbItems
+        {
+            get => _breadcrumbItems;
+            set
+            {
+                if (_breadcrumbItems != null)
+                    _breadcrumbItems.CollectionChanged -= OnBreadcrumbsChanged;
+
+                this.RaiseAndSetIfChanged(ref _breadcrumbItems, value);
+
+                if (_breadcrumbItems != null)
+                    _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
+
+                UpdateBreadcrumbVisibility();
+            }
+        }
+
+        private void OnBreadcrumbsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateBreadcrumbVisibility();
+        }
+
+        private void UpdateBreadcrumbVisibility()
+        {
+            this.RaisePropertyChanged(nameof(HasBreadcrumbs));
+            this.RaisePropertyChanged(nameof(ShowPageTitle));
+        }
+
+        public bool HasBreadcrumbs => BreadcrumbItems.Count > 0;
+        public bool ShowPageTitle => !HasBreadcrumbs;
+
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToIntegrationsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToBehaviourCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModsCommand { get; }
@@ -104,7 +144,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToPresetModsCommand { get; }
         public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModGeneratorCommand { get; }
 
-
         private IRoutableViewModel Wrap(string segment, object settingsViewModel) =>
             new SettingsPageViewModelWrapper(this, segment, settingsViewModel);
 
@@ -114,6 +153,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand SaveAndLaunchSettingsCommand => new RelayCommand(SaveAndLaunchSettings);
         public ICommand RestartAppCommand => new RelayCommand(RestartApp);
         public ICommand CloseWindowCommand => new RelayCommand(CloseWindow);
+        public ICommand BreadcrumbItemClickedCommand => new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
 
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
@@ -125,7 +165,8 @@ namespace Froststrap.UI.ViewModels.Settings
             _testModeEnabled = App.LaunchSettings.TestModeFlag.Active;
             _isSidebarExpanded = App.Settings.Prop.IsNavigationSidebarExpanded;
 
-            // Shared exception handler for all commands
+            _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
+
             var commandExceptionHandler = new Action<Exception>(ex =>
             {
                 App.Logger.WriteException("MainWindowViewModel::NavigationCommand", ex);
@@ -138,6 +179,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Integrations";
                     CurrentPageDescription = Strings.Menu_Integrations_Description;
                     CurrentBreadcrumb = "";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("integrations", new IntegrationsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -155,6 +197,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Behaviour";
                     CurrentPageDescription = Strings.Menu_Behaviour_Description;
                     CurrentBreadcrumb = "";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("behaviour", new BehaviourViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -172,6 +215,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Mods";
                     CurrentPageDescription = Strings.Menu_Mods_Description;
                     CurrentBreadcrumb = "";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("mods", new ModsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -182,8 +226,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
             );
 
-
-
             NavigateToFastFlagsCommand = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
@@ -191,6 +233,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Fast Flags";
                     CurrentPageDescription = Strings.Menu_FastFlagEditor_Description;
                     CurrentBreadcrumb = "";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("fastflags", new FastFlagsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -208,6 +251,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Editor";
                     CurrentPageDescription = "";
                     CurrentBreadcrumb = "Settings > Fast Flags > Editor";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
+                    {
+                        new BreadcrumbItemModel { Content = "Fast Flags", Tag = "fastflags" },
+                        new BreadcrumbItemModel { Content = "Editor", Tag = null, IsLast = true }
+                    };
                     return _router.Navigate.Execute(Wrap("fastflageditor", new FastFlagEditorViewModel(this)))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -224,6 +272,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "appearance";
                     CurrentPageTitle = "Appearance";
                     CurrentPageDescription = Strings.Menu_Appearance_Description;
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -240,6 +289,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "region selector";
                     CurrentPageTitle = "Region Selector";
                     CurrentPageDescription = Strings.Menu_RegionSelector_Description;
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("region selector", new RegionSelectorViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -256,6 +306,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "robloxsettings";
                     CurrentPageTitle = "Roblox Settings";
                     CurrentPageDescription = Strings.Menu_GBSEditor_Description;
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -272,6 +323,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     SelectedPage = "shortcuts";
                     CurrentPageTitle = "Shortcuts";
                     CurrentPageDescription = Strings.Menu_Shortcuts_Description;
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("shortcuts", new ShortcutsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -289,6 +341,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Channels Page";
                     CurrentPageDescription = Strings.Menu_Channel_Description;
                     CurrentBreadcrumb = "";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("channels", new ChannelViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -306,6 +359,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Community Mods";
                     CurrentPageDescription = "Explore user-created mods.";
                     CurrentBreadcrumb = "Settings > Mods > Community Mods";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
+                    {
+                        new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
+                        new BreadcrumbItemModel { Content = "Community Mods", Tag = null, IsLast = true }
+                    };
                     return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -323,6 +381,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Preset Mods";
                     CurrentPageDescription = "Official built-in mods.";
                     CurrentBreadcrumb = "Settings > Mods > Preset Mods";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
+                    {
+                        new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
+                        new BreadcrumbItemModel { Content = "Preset Mods", Tag = null, IsLast = true }
+                    };
                     return _router.Navigate.Execute(Wrap("presetmods", new ModsPresetsViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -340,57 +403,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     CurrentPageTitle = "Mod Generator";
                     CurrentPageDescription = "Generate mods easily with a single click.";
                     CurrentBreadcrumb = "Settings > Mods > Mod Generator";
-                    return _router.Navigate.Execute(Wrap("modgenerator", new ModGeneratorViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToCommunityModsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "communitymods";
-                    CurrentPageTitle = "Community Mods";
-                    CurrentPageDescription = "Explore user-created mods.";
-                    CurrentBreadcrumb = "Settings > Mods > Community Mods";
-                    return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToPresetModsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "presetmods";
-                    CurrentPageTitle = "Preset Mods";
-                    CurrentPageDescription = "Official built-in mods.";
-                    CurrentBreadcrumb = "Settings > Mods > Preset Mods";
-                    return _router.Navigate.Execute(Wrap("presetmods", new ModsPresetsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToModGeneratorCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "modgenerator";
-                    CurrentPageTitle = "Mod Generator";
-                    CurrentPageDescription = "Generate mods easily with a single click.";
-                    CurrentBreadcrumb = "Settings > Mods > Mod Generator";
+                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
+                    {
+                        new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
+                        new BreadcrumbItemModel { Content = "Mod Generator", Tag = null, IsLast = true }
+                    };
                     return _router.Navigate.Execute(Wrap("modgenerator", new ModGeneratorViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
@@ -403,13 +420,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
             var lastPageName = App.State.Prop.LastPage;
             if (lastPageName != null)
-            {
                 NavigateToLastPage(lastPageName);
-            }
             else
-            {
                 _router.NavigateAndReset.Execute(Wrap("integrations", new IntegrationsViewModel())).Subscribe();
-            }
         }
 
         private void NavigateToLastPage(string pageTypeName)
@@ -434,18 +447,14 @@ namespace Froststrap.UI.ViewModels.Settings
         private void OpenAbout()
         {
             App.FrostRPC?.SetDialog("About");
-
             new Elements.About.MainWindow().Show();
-
             App.FrostRPC?.ClearDialog();
         }
 
         private void OpenAccountManager()
         {
             App.FrostRPC?.SetDialog("Account Manager");
-
             new Elements.AccountManagers.MainWindow().Show();
-
             App.FrostRPC?.ClearDialog();
         }
 
@@ -472,7 +481,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             App.PendingSettingTasks.Clear();
-
             RequestSaveNoticeEvent?.Invoke(this, EventArgs.Empty);
         }
 
@@ -488,7 +496,6 @@ namespace Froststrap.UI.ViewModels.Settings
         private async void RestartApp()
         {
             SaveSettings();
-
             SettingsSaved?.Invoke(this, EventArgs.Empty);
 
             await Task.Delay(750);
@@ -499,9 +506,23 @@ namespace Froststrap.UI.ViewModels.Settings
             };
 
             Process.Start(startInfo);
-
             App.FrostRPC?.Dispose();
             CloseWindow();
+        }
+
+        private void HandleBreadcrumbItemClicked(BreadcrumbItemModel? item)
+        {
+            if (item?.Tag == null || item.IsLast) return;
+
+            switch (item.Tag)
+            {
+                case "mods":
+                    NavigateToModsCommand.Execute(Unit.Default);
+                    break;
+                case "fastflags":
+                    NavigateToFastFlagsCommand.Execute(Unit.Default);
+                    break;
+            }
         }
 
         public sealed class SettingsPageViewModelWrapper : ReactiveObject, IRoutableViewModel
