@@ -125,7 +125,7 @@
                                         </TextBlock.Inlines>
                                     </TextBlock>
 
-                                    <Grid Grid.Row="3" Margin="8" VerticalAlignment="Bottom" ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                                    <Grid Grid.Row="3" Margin="8" VerticalAlignment="Bottom" RowDefinitions="Auto, Auto">
                                         <ProgressBar Grid.Row="0" Grid.ColumnSpan="2"
                                                      Margin="0,0,0,8"
                                                      Value="{Binding DownloadProgress}" 
@@ -140,13 +140,6 @@
                                                              Icon="Download"
                                                              Command="{Binding DownloadCommand}" 
                                                              CommandParameter="{Binding}"/>
-                                        
-                                        <controls:IconButton Grid.Row="1" Grid.Column="1" 
-                                                             Height="34"
-                                                             Margin="4,0,0,0" 
-                                                             Icon="Information"
-                                                             Command="{Binding $parent[UserControl].((vm:CommunityModsViewModel)DataContext).ShowModInfoCommand}"
-                                                             CommandParameter="{Binding $self}"/>
                                     </Grid>
                                 </Grid>
                             </controls:Card>
