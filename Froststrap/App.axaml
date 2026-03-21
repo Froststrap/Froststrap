@@ -41,8 +41,7 @@
 
         <converters:StringFormatConverter x:Key="StringFormatConverter" />
         <converters:EnumNameConverter x:Key="EnumNameConverter" />
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+        <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
     </ResourceDictionary>
 </Application.Resources>

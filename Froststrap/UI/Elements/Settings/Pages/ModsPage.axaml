@@ -23,7 +23,7 @@
                                      Command="{Binding OpenPresetModsCommand}" />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
-                                     Icon="Palette" Description="Generate mods easily with a single click."
+                                     Icon="PaletteOutline" Description="Generate mods easily with a single click."
                                      Command="{Binding OpenModGeneratorCommand}"/>
             </Grid>
 
@@ -45,43 +45,45 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:ModConfig}">
                         <controls:Card Margin="0,0,0,8">
-                            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
+                            <Border Padding="16,20" Background="Transparent">
+								<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
                                 
-                                <controls:IconButton Grid.Column="0" 
+                                    <controls:IconButton Grid.Column="0" 
                                                      Icon="TrashCanOutline" 
                                                      Classes="Dangerous"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).DeleteModCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 
-                                <TextBox Grid.Column="1" Width="300" Margin="8,0"
+                                    <TextBox Grid.Column="1" Width="300" Margin="8,0"
                                          Text="{Binding FolderName}"
                                          Watermark="Mod Name"
                                          GotFocus="ModName_GotFocus"
                                          LostFocus="ModName_LostFocus" />
 
-                                <ComboBox Grid.Column="3" Width="150" Margin="0,0,8,0"
+                                    <ComboBox Grid.Column="3" Width="150" Margin="0,0,8,0"
                                           SelectedItem="{Binding Target}">
                                                 <x:String>Both</x:String>
                                                 <x:String>Player</x:String>
                                                 <x:String>Studio</x:String>
                                                 <x:String>Disabled</x:String>
-                                </ComboBox>
+                                    </ComboBox>
 
-                                <controls:IconButton Grid.Column="4" 
+                                    <controls:IconButton Grid.Column="4" 
                                                      Icon="FolderOutline"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).OpenModFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 
-                                <controls:IconButton Grid.Column="5" Margin="4,0,0,0"
+                                    <controls:IconButton Grid.Column="5" Margin="4,0,0,0"
                                                      Icon="ArrowUp"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).MoveUpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 
-                                <controls:IconButton Grid.Column="6" Margin="4,0,0,0"
+                                    <controls:IconButton Grid.Column="6" Margin="4,0,0,0"
                                                      Icon="ArrowDown"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).MoveDownCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
-                            </Grid>
+                                </Grid>
+                            </Border>
                         </controls:Card>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

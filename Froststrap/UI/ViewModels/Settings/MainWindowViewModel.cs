@@ -108,7 +108,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (_breadcrumbItems != null)
                     _breadcrumbItems.CollectionChanged -= OnBreadcrumbsChanged;
 
-                this.RaiseAndSetIfChanged(ref _breadcrumbItems, value);
+                this.RaiseAndSetIfChanged(ref _breadcrumbItems!, value);
 
                 if (_breadcrumbItems != null)
                     _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
