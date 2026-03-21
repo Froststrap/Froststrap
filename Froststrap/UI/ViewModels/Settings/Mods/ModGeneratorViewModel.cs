@@ -85,6 +85,20 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
+        private double _progress = 0;
+        public double Progress
+        {
+            get => _progress;
+            set => this.RaiseAndSetIfChanged(ref _progress, value);
+        }
+
+        private bool _isProgressVisible = false;
+        public bool IsProgressVisible
+        {
+            get => _isProgressVisible;
+            set => this.RaiseAndSetIfChanged(ref _isProgressVisible, value);
+        }
+
         public Color SelectedMediaColor
         {
             get => Color.FromRgb(_solidColor.R, _solidColor.G, _solidColor.B);
@@ -346,6 +360,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (!IsValidHexColor(SolidColorHex)) return;
 
             IsNotGeneratingMod = false;
+            IsProgressVisible = true;
+            Progress = 0;
             StatusText = "Starting mod generation...";
 
             try
@@ -353,9 +369,11 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 await Task.Run(async () =>
                 {
                     StatusText = "Downloading required assets...";
+                    Progress = 5;
                     var (luaZip, extraZip, contentZip, vHash, vName) = await ModGenerator.DownloadForModGenerator();
 
                     StatusText = "Extracting files...";
+                    Progress = 25;
                     string luaDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages");
                     string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
                     string contentDir = Path.Combine(TempRoot, "content", "textures");
@@ -368,12 +386,16 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     );
 
                     StatusText = "Recoloring assets...";
+                    Progress = 50;
                     var mappings = await ModGenerator.LoadMappingsAsync();
 
                     ModGenerator.RecolorAllPngs(TempRoot, _solidColor, mappings, ColorCursors, ColorShiftlock, ColorEmoteWheel);
+                    Progress = 70;
                     await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, folderName);
 
                     StatusText = "Cleaning up...";
+                    Progress = 80;
+
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                     foreach (var entry in mappings.Values)
                         preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, Path.Combine(entry))));
@@ -437,6 +459,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true }));
 
                     StatusText = "Packaging...";
+                    Progress = 90;
 
                     if (IncludeModifications)
                     {
@@ -445,11 +468,11 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                         int copiedFiles = 0;
                         var itemsToCopy = new List<string>
-                        {
-                            Path.Combine(TempRoot, "ExtraContent"),
-                            Path.Combine(TempRoot, "content"),
-                            infoPath
-                        };
+                {
+                    Path.Combine(TempRoot, "ExtraContent"),
+                    Path.Combine(TempRoot, "content"),
+                    infoPath
+                };
 
                         foreach (var item in itemsToCopy)
                         {
@@ -470,6 +493,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             }
                         }
 
+                        Progress = 100;
                         StatusText = $"Successfully applied modifications ({copiedFiles} files).";
                     }
                     else
@@ -496,6 +520,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             {
                                 string localPath = file.Path.LocalPath;
                                 ModGenerator.ZipResult(TempRoot, localPath);
+                                Progress = 100;
                                 StatusText = $"Mod saved to {Path.GetFileName(localPath)}";
                             }
                             else
@@ -514,6 +539,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             finally
             {
                 IsNotGeneratingMod = true;
+                IsProgressVisible = false;
+                Progress = 0;
             }
         }
 

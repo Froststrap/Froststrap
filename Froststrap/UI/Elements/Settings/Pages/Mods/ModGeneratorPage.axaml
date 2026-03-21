@@ -193,6 +193,14 @@
                                        HorizontalAlignment="Center"
                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                        TextWrapping="Wrap" />
+
+                            <ProgressBar Value="{Binding Progress}"
+                                         Minimum="0"
+                                         Maximum="100"
+                                         Height="4"
+                                         Margin="0,12,0,4"
+                                         IsVisible="{Binding IsProgressVisible}"
+                                         Classes="accent" />
                         </StackPanel>
                     </Border>
                 </StackPanel>
