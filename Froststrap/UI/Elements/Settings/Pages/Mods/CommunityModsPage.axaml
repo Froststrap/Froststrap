@@ -1,0 +1,159 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
+             xmlns:enums="using:Froststrap.Enums"
+             xmlns:models="using:Froststrap.Models.APIs.Config"
+             xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
+             xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.CommunityModsPage"
+             x:DataType="vm:CommunityModsViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="WrapPanel.FilterBar > ToggleButton">
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Command" Value="{Binding $parent[UserControl].((vm:CommunityModsViewModel)DataContext).SetFilterCommand}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Margin="14">
+            <Grid ColumnDefinitions="*,*,*">
+                <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
+                                     Icon="StorefrontOutline" Description="Explore user-created mods."
+                                     Command="{Binding OpenPresetModsCommand}" />
+
+                <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="Preset Mods"
+                                     Icon="BookOpenPageVariantOutline" Description="Official built-in mods."
+                                     Command="{Binding OpenModsCommand}" />
+
+                <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
+                                     Icon="PaletteOutline" Description="Generate mods easily with a single click."
+                                     Command="{Binding OpenModGeneratorCommand}"/>
+            </Grid>
+
+            <Separator Margin="0,16,0,8" />
+
+            <Grid IsVisible="{Binding !IsLoading}" RowDefinitions="Auto, Auto, *">
+                
+                <StackPanel Grid.Row="0" Margin="0,0,0,8">
+                    <TextBox Watermark="Search mods..." 
+                             Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                             Margin="4,0,12,0" />
+                </StackPanel>
+
+                <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8" Classes="FilterBar">
+                    <ToggleButton Content="All" 
+                                  CommandParameter="{x:Null}"
+                                  IsChecked="{Binding ActiveFilter, Converter={x:Static ObjectConverters.IsNull}}"/>
+
+                    <ToggleButton Content="Color Mods" 
+                                  CommandParameter="{x:Static enums:ModType.ColorMod}"
+                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.ColorMod}}"/>
+
+                    <ToggleButton Content="Custom Themes" 
+                                  CommandParameter="{x:Static enums:ModType.CustomTheme}"
+                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.CustomTheme}}"/>
+
+                    <ToggleButton Content="Misc Mods" 
+                                  CommandParameter="{x:Static enums:ModType.MiscMod}"
+                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.MiscMod}}"/>
+
+                    <ToggleButton Content="SkyBox" 
+                                  CommandParameter="{x:Static enums:ModType.SkyBox}"
+                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.SkyBox}}"/>
+
+                    <ToggleButton Content="Cursor" 
+                                  CommandParameter="{x:Static enums:ModType.Cursor}"
+                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.Cursor}}"/>
+
+                    <ToggleButton Content="Avatar Editor" 
+                                  CommandParameter="{x:Static enums:ModType.AvatarEditor}"
+                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.AvatarEditor}}"/>
+                </WrapPanel>
+
+                <ItemsControl Grid.Row="2" ItemsSource="{Binding Mods}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:CommunityMod">
+                            <controls:Card VerticalAlignment="Top"
+                                    Height="270"
+                                    Margin="4"
+                                    Background="{DynamicResource NormalDarkAndLightBackground}"
+                                    CornerRadius="8"
+                                    ClipToBounds="True">
+                                <Grid RowDefinitions="140, Auto, Auto, *">
+                                    
+                                    <Panel Grid.Row="0">
+                                        <Image Source="{Binding ThumbnailImage}" 
+                                               Stretch="UniformToFill"
+                                               RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                                        
+                                        <ui:ProgressRing IsVisible="{Binding IsLoadingThumbnail}"
+                                                         IsIndeterminate="True"
+                                                         Width="24" Height="24"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Center"/>
+                                    </Panel>
+
+                                    <TextBlock Grid.Row="1"
+                                               Text="{Binding Name}"
+                                               FontWeight="Bold"
+                                               FontSize="16"
+                                               Margin="12,8,12,0"
+                                               TextTrimming="CharacterEllipsis"/>
+
+                                    <TextBlock Grid.Row="2" 
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                                               FontSize="12"
+                                               Margin="12,2,12,4" 
+                                               TextTrimming="CharacterEllipsis">
+                                        <TextBlock.Inlines>
+                                            <Run Text="By: "/>
+                                            <Run Text="{Binding Author}" FontWeight="SemiBold"/>
+                                            <Run Text=" | "/>
+                                            <Run Text="{Binding ModTypeDisplay, Mode=OneWay}" />
+                                        </TextBlock.Inlines>
+                                    </TextBlock>
+
+                                    <Grid Grid.Row="3" Margin="8" VerticalAlignment="Bottom" ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                                        <ProgressBar Grid.Row="0" Grid.ColumnSpan="2"
+                                                     Margin="0,0,0,8"
+                                                     Value="{Binding DownloadProgress}" 
+                                                     Maximum="100"
+                                                     Height="4"
+                                                     IsVisible="{Binding IsDownloading}"/>
+
+                                        <controls:IconButton Grid.Column="0" Grid.Row="1"
+                                                             Height="34"
+                                                             HorizontalAlignment="Stretch" 
+                                                             Content="Download" 
+                                                             Icon="Download"
+                                                             Command="{Binding DownloadCommand}" 
+                                                             CommandParameter="{Binding}"/>
+                                        
+                                        <controls:IconButton Grid.Row="1" Grid.Column="1" 
+                                                             Height="34"
+                                                             Margin="4,0,0,0" 
+                                                             Icon="Information"
+                                                             Command="{Binding $parent[UserControl].((vm:CommunityModsViewModel)DataContext).ShowModInfoCommand}"
+                                                             CommandParameter="{Binding $self}"/>
+                                    </Grid>
+                                </Grid>
+                            </controls:Card>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

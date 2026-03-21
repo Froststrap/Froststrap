@@ -7,7 +7,6 @@
         <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Padding" Value="16,20" />
         <Setter Property="MinHeight" Value="66" />
         
         <Setter Property="Template">
@@ -16,9 +15,9 @@
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         MinHeight="{TemplateBinding MinHeight}"
+                        ClipToBounds="True"
                         Margin="0">
                     
                     <Border.Transitions>

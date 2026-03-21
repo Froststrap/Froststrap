@@ -56,6 +56,12 @@
 		<EmbeddedResource Include="Resources\PresetFlags\Balanced Quality" />
 		<EmbeddedResource Include="Resources\PresetFlags\High Quality" />
 		<EmbeddedResource Include="Resources\PresetFlags\Low Quality" />
+		<EmbeddedResource Include="Resources\SkyboxFix\6c94b9385e52d221f0538aadaceead2d" />
+		<EmbeddedResource Include="Resources\SkyboxFix\7328622d2d509b95dd4dd2c721d1ca8b" />
+		<EmbeddedResource Include="Resources\SkyboxFix\78cb2e93aee0cdbd79b15a866bc93a54" />
+		<EmbeddedResource Include="Resources\SkyboxFix\9244e00ff9fd6cee0bb40a262bb35d31" />
+		<EmbeddedResource Include="Resources\SkyboxFix\a50f6563c50ca4d5dcb255ee5cfab097" />
+		<EmbeddedResource Include="Resources\SkyboxFix\a564ec8aeef3614e788d02f0090089d8" />
 	</ItemGroup>
 
     <!-- NuGet packages -->
@@ -131,6 +137,9 @@
     <DesignTime>True</DesignTime>
     <AutoGen>True</AutoGen>
     <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Elements\Settings\Pages\Mods\CommunityModsPage.axaml.cs">
+      <DependentUpon>CommunityModsPage.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 

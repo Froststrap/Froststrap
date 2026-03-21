@@ -8,18 +8,10 @@
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
 
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+
 using System.IO.Compression;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Reflection;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Avalonia.Media;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
@@ -131,10 +123,9 @@ namespace Froststrap.Integrations
 
             if (File.Exists(exePath)) return exePath;
 
-            using var client = new HttpClient();
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.0");
+            App.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.0");
 
-            var release = await client.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
+            var release = await App.HttpClient.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
 
             string? url = release?.Assets?
                 .FirstOrDefault(a => a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))?
@@ -142,7 +133,7 @@ namespace Froststrap.Integrations
 
             url ??= "https://github.com/Froststrap/mod-generator/releases/latest/download/mod_generator.exe";
 
-            var data = await client.GetByteArrayAsync(url);
+            var data = await App.HttpClient.GetByteArrayAsync(url);
             await File.WriteAllBytesAsync(exePath, data);
 
             return exePath;
@@ -165,8 +156,7 @@ namespace Froststrap.Integrations
 
                 if (!overwrite && File.Exists(path) && new FileInfo(path).Length > 0) return path;
 
-                using var client = new HttpClient { Timeout = TimeSpan.FromMinutes(5) };
-                var data = await client.GetByteArrayAsync(url);
+                var data = await App.HttpClient.GetByteArrayAsync(url);
                 await File.WriteAllBytesAsync(path, data);
                 return path;
             }
