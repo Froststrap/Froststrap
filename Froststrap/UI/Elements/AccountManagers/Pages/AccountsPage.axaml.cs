@@ -9,9 +9,9 @@ namespace Froststrap.UI.Elements.AccountManagers.Pages
 
 		public AccountsPage()
 		{
-			DataContext = new AccountsViewModel();
+            _viewModel = DataContext as AccountsViewModel;
+            DataContext = new AccountsViewModel();
 			InitializeComponent();
-			_viewModel = DataContext as AccountsViewModel;
 		}
 	}
 }

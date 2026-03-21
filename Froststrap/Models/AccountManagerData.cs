@@ -5,7 +5,7 @@ namespace Froststrap.Models
     public class AccountManagerData
     {
         [JsonPropertyName("accounts")]
-        public List<AltAccount> Accounts { get; set; } = new();
+        public List<AccountManagerAccount> Accounts { get; set; } = new();
 
         [JsonPropertyName("activeAccountId")]
         public long? ActiveAccountId { get; set; }
@@ -14,7 +14,7 @@ namespace Froststrap.Models
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
 
         [JsonPropertyName("currentPlaceId")]
-        public string CurrentPlaceId { get; set; } = "";
+        public long? CurrentPlaceId { get; set; }
 
         [JsonPropertyName("currentServerInstanceId")]
         public string CurrentServerInstanceId { get; set; } = "";

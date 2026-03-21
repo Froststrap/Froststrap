@@ -90,6 +90,7 @@
         <PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />
         <PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
         <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+        <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.5" />
     </ItemGroup>
 
 	<ItemGroup>

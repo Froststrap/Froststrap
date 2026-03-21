@@ -43,17 +43,22 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Opening settings");
                 LaunchSettings();
             }
+            else if (App.LaunchSettings.AccountManagerFlag.Active)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Opening account manager");
+                LaunchAccountManager();
+            }
             else if (App.LaunchSettings.WatcherFlag.Active)
             {
-				App.Logger.WriteLine(LOG_IDENT, "Opening watcher");
-				LaunchWatcher();
-				if (App.LaunchSettings.PostLaunchFlag.Active)
-				{
-					App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
-					LaunchPostLaunch();
-				}
-			}
-			else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
+                App.Logger.WriteLine(LOG_IDENT, "Opening watcher");
+                LaunchWatcher();
+                if (App.LaunchSettings.PostLaunchFlag.Active)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
+                    LaunchPostLaunch();
+                }
+            }
+            else if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening background updater");
                 LaunchBackgroundUpdater();
@@ -139,6 +144,20 @@ namespace Froststrap
             }
 
             var dialog = new LaunchMenuDialog();
+
+            App.FrostRPC?.SetPage("Launch Menu");
+
+            dialog.Show();
+        }
+
+        public static void LaunchAccountManager()
+        {
+            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
+            {
+                App.FrostRPC = new FroststrapRichPresence();
+            }
+
+            var dialog = new UI.Elements.AccountManagers.MainWindow();
 
             App.FrostRPC?.SetPage("Launch Menu");
 
