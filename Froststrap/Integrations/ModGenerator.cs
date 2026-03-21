@@ -1,19 +1,19 @@
 ﻿/*
-* Froststrap
-* Copyright (c) Froststrap Team
-*
-* This file is part of Froststrap and is distributed under the terms of the
-* GNU Affero General Public License, version 3 or later.
-*
-* SPDX-License-Identifier: AGPL-3.0-or-later
-*/
+ * Froststrap
+ * Copyright (c) Froststrap Team
+ *
+ * This file is part of Froststrap and is distributed under the terms of the
+ * GNU Affero General Public License, version 3 or later.
+ *
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ */
 
-using Avalonia;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using System.IO.Compression;
 using System.Net.Http.Json;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Froststrap.Integrations;
 
@@ -21,9 +21,6 @@ public static class ModGenerator
 {
     private const string LOG_IDENT = "ModGenerator";
 
-    /// <summary>
-    /// Processes and recolors only the PNGs defined in the remote mappings.
-    /// </summary>
     public static void RecolorAllPngs(string rootDir, Avalonia.Media.Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false)
     {
         if (string.IsNullOrWhiteSpace(rootDir) || !Directory.Exists(rootDir))
@@ -38,16 +35,14 @@ public static class ModGenerator
         {
             string fullPath = Path.Combine(rootDir, Path.Combine(kv.Value));
             if (File.Exists(fullPath))
-            {
                 SafeRecolorImage(fullPath, solidColor);
-            }
         });
 
         var optionalGroups = new List<(bool Enabled, string[] Files, string RelativeDir)>
         {
-            (recolorCursors, new[] { "IBeamCursor.png", "ArrowCursor.png", "ArrowFarCursor.png" }, Path.Combine("content", "textures", "Cursors", "KeyboardMouse")),
-            (recolorShiftlock, new[] { "MouseLockedCursor.png" }, Path.Combine("content", "textures")),
-            (recolorEmoteWheel, new[] { "SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png" }, Path.Combine("content", "textures", "ui", "Emotes", "Large"))
+            (recolorCursors,    new[] { "IBeamCursor.png", "ArrowCursor.png", "ArrowFarCursor.png" },                                                                                                      Path.Combine("content", "textures", "Cursors", "KeyboardMouse")),
+            (recolorShiftlock,  new[] { "MouseLockedCursor.png" },                                                                                                                                         Path.Combine("content", "textures")),
+            (recolorEmoteWheel, new[] { "SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png" },                 Path.Combine("content", "textures", "ui", "Emotes", "Large"))
         };
 
         foreach (var group in optionalGroups.Where(g => g.Enabled))
@@ -55,11 +50,8 @@ public static class ModGenerator
             foreach (var fileName in group.Files)
             {
                 string targetPath = Path.Combine(rootDir, group.RelativeDir, fileName);
-
                 if (File.Exists(targetPath))
-                {
                     SafeRecolorImage(targetPath, solidColor);
-                }
             }
         }
 
@@ -70,52 +62,35 @@ public static class ModGenerator
     {
         try
         {
-            using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read))
+            byte r = color.R;
+            byte g = color.G;
+            byte b = color.B;
+
+            byte[] processedBytes;
+
+            using (var image = SixLabors.ImageSharp.Image.Load<Rgba32>(path))
             {
-                var original = new Bitmap(stream);
-                using (var recolored = ApplyMask(original, color))
+                image.ProcessPixelRows(accessor =>
                 {
-                    recolored.Save(path);
-                }
+                    for (int y = 0; y < accessor.Height; y++)
+                    {
+                        Span<Rgba32> row = accessor.GetRowSpan(y);
+                        for (int x = 0; x < row.Length; x++)
+                            row[x] = new Rgba32(r, g, b, row[x].A);
+                    }
+                });
+
+                using var ms = new MemoryStream();
+                image.SaveAsPng(ms);
+                processedBytes = ms.ToArray();
             }
+
+            File.WriteAllBytes(path, processedBytes);
         }
         catch (Exception ex)
         {
             App.Logger?.WriteLine(LOG_IDENT, $"Error processing {Path.GetFileName(path)}: {ex.Message}");
         }
-    }
-
-    private static WriteableBitmap ApplyMask(Bitmap source, Avalonia.Media.Color color)
-    {
-        var size = new PixelSize((int)source.Size.Width, (int)source.Size.Height);
-        var result = new WriteableBitmap(size, new Vector(96, 96), PixelFormat.Bgra8888, AlphaFormat.Premul);
-
-        using (var lockedBitmap = result.Lock())
-        {
-            int totalPixels = size.Width * size.Height;
-            int[] pixels = new int[totalPixels];
-
-            unsafe
-            {
-                fixed (int* pBuffer = pixels)
-                {
-                    source.CopyPixels(new PixelRect(size), (IntPtr)pBuffer, pixels.Length * 4, size.Width * 4);
-                }
-
-                uint* ptr = (uint*)lockedBitmap.Address;
-
-                for (int i = 0; i < totalPixels; i++)
-                {
-                    uint originalPixel = (uint)pixels[i];
-                    uint alpha = (originalPixel >> 24) & 0xFF;
-
-                    uint newPixel = (alpha << 24) | (uint)(color.R << 16) | (uint)(color.G << 8) | (uint)color.B;
-                    ptr[i] = newPixel;
-                }
-            }
-        }
-
-        return result;
     }
 
     public static async Task RecolorFontsAsync(string froststrapTemp, Avalonia.Media.Color solidColor, string modName)
@@ -124,8 +99,13 @@ public static class ModGenerator
         if (!Directory.Exists(fontDir)) return;
 
         string exePath = await DownloadModGeneratorExeAsync();
-        string hexColor = $"{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}";
+        if (string.IsNullOrEmpty(exePath))
+        {
+            App.Logger?.WriteLine(LOG_IDENT, "Could not obtain mod-generator tool for this platform, skipping font recolor.");
+            return;
+        }
 
+        string hexColor = $"{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}";
         string args = $"--path \"{fontDir}\" --color {hexColor} --bootstrapper Froststrap --mod-name \"{modName}\"";
 
         var result = await ExecuteExeAsync(exePath, args, Path.GetDirectoryName(exePath)!);
@@ -138,23 +118,69 @@ public static class ModGenerator
     {
         string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
         Directory.CreateDirectory(cacheDir);
-        string exePath = Path.Combine(cacheDir, "mod-generator.exe");
 
+        string binaryName;
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            binaryName = "mod-generator.exe";
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            binaryName = "mod-generator-linux";
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            binaryName = "mod-generator-macos";
+        else
+        {
+            App.Logger?.WriteLine(LOG_IDENT, "Unsupported platform for mod-generator tool.");
+            return string.Empty;
+        }
+
+        string exePath = Path.Combine(cacheDir, binaryName);
         if (File.Exists(exePath)) return exePath;
 
         using var client = new HttpClient();
         client.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.4.2");
 
-        var release = await client.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
+        GithubRelease? release = null;
+        try
+        {
+            release = await client.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
+        }
+        catch (Exception ex)
+        {
+            App.Logger?.WriteLine(LOG_IDENT, $"Failed to fetch mod-generator release info: {ex.Message}");
+        }
 
         string? url = release?.Assets?
-            .FirstOrDefault(a => a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))?
+            .FirstOrDefault(a => a.Name.Equals(binaryName, StringComparison.OrdinalIgnoreCase))?
             .BrowserDownloadUrl;
 
-        url ??= "https://github.com/Froststrap/mod-generator/releases/latest/download/mod_generator.exe";
+        if (string.IsNullOrEmpty(url))
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                url = "https://github.com/Froststrap/mod-generator/releases/latest/download/mod-generator.exe";
+            else
+            {
+                App.Logger?.WriteLine(LOG_IDENT, $"No mod-generator binary found for platform ({binaryName}).");
+                return string.Empty;
+            }
+        }
 
-        var data = await client.GetByteArrayAsync(url);
-        await File.WriteAllBytesAsync(exePath, data);
+        try
+        {
+            var data = await client.GetByteArrayAsync(url);
+            await File.WriteAllBytesAsync(exePath, data);
+
+            // Mark executable on Unix
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var chmod = await ExecuteExeAsync("chmod", $"+x \"{exePath}\"", cacheDir);
+                if (chmod.ExitCode != 0)
+                    App.Logger?.WriteLine(LOG_IDENT, $"chmod failed: {chmod.Errors}");
+            }
+        }
+        catch (Exception ex)
+        {
+            App.Logger?.WriteLine(LOG_IDENT, $"Failed to download mod-generator: {ex.Message}");
+            return string.Empty;
+        }
 
         return exePath;
     }

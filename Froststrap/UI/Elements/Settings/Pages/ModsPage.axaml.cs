@@ -4,10 +4,15 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Settings;
+using ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal class ModsDialogService
+    /// <summary>
+    /// Implementation of IModsDialogService for Mods navigation
+    /// </summary>
+    internal class ModsDialogService : IModsDialogService
     {
         private readonly MainWindowViewModel _mainVm;
 
@@ -16,26 +21,29 @@ namespace Froststrap.UI.Elements.Settings.Pages
             _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
         }
 
-        public void OpenCommunityMods()
+        public async Task OpenCommunityModsAsync()
         {
             _mainVm.NavigateToCommunityModsCommand.Execute(System.Reactive.Unit.Default);
+            await Task.CompletedTask;
         }
 
-        public void OpenPresetMods()
+        public async Task OpenPresetModsAsync()
         {
             _mainVm.NavigateToPresetModsCommand.Execute(System.Reactive.Unit.Default);
+            await Task.CompletedTask;
         }
 
-        public void OpenModGenerator()
+        public async Task OpenModGeneratorAsync()
         {
             _mainVm.NavigateToModGeneratorCommand.Execute(System.Reactive.Unit.Default);
+            await Task.CompletedTask;
         }
     }
 
     public partial class ModsPage : UserControl
     {
         private string _originalName = "";
-        private bool _navigationSetUp = false;
+        private bool _viewModelSetUp = false;
 
         public ModsPage()
         {
@@ -45,37 +53,49 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
             App.FrostRPC?.SetPage("Mods");
 
-            SetupNavigationIfNeeded();
+            this.Loaded += (s, e) => SetupViewModelIfNeeded();
         }
 
-        protected override void OnLoaded(RoutedEventArgs e)
+        private void SetupViewModelIfNeeded()
         {
-            base.OnLoaded(e);
-            SetupNavigationIfNeeded();
-        }
-
-        private void SetupNavigationIfNeeded()
-        {
-            if (_navigationSetUp)
+            if (_viewModelSetUp)
+            {
                 return;
+            }
 
             try
             {
                 var topLevel = TopLevel.GetTopLevel(this);
-                if (topLevel?.DataContext is MainWindowViewModel mainVm && DataContext is ModsViewModel modsVm)
+
+                if (topLevel?.DataContext is MainWindowViewModel mainVm)
                 {
-                    var service = new ModsDialogService(mainVm);
-
-                    modsVm.OpenCommunityModsEvent += (s, e) => service.OpenCommunityMods();
-                    modsVm.OpenPresetModsEvent += (s, e) => service.OpenPresetMods();
-                    modsVm.OpenModGeneratorEvent += (s, e) => service.OpenModGenerator();
-
-                    _navigationSetUp = true;
+                    CreateViewModelWithDialogService(mainVm);
+                    _viewModelSetUp = true;
+                }
+                else
+                {
+                    CreateFallbackViewModel();
+                    _viewModelSetUp = true;
                 }
             }
-            catch
+            catch (Exception)
             {
+                CreateFallbackViewModel();
+                _viewModelSetUp = true;
             }
+        }
+
+        private void CreateViewModelWithDialogService(MainWindowViewModel mainVm)
+        {
+            var dialogService = new ModsDialogService(mainVm);
+            var newVm = new ModsViewModel(dialogService);
+            DataContext = newVm;
+        }
+
+        private void CreateFallbackViewModel()
+        {
+            var fallbackVm = new ModsViewModel();
+            DataContext = fallbackVm;
         }
 
         private void ModName_GotFocus(object? sender, GotFocusEventArgs e)

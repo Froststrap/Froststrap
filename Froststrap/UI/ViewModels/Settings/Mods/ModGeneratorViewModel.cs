@@ -1,49 +1,81 @@
-﻿using Avalonia.Controls;
+﻿using System.Reactive;
+using System.Reactive.Linq;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.UI.ViewModels.Settings;
 using ICSharpCode.SharpZipLib.Zip;
+using ReactiveUI;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    public class ModGeneratorViewModel : NotifyPropertyChangedViewModel
+    public class ModGeneratorViewModel : ReactiveObject
     {
-        public event EventHandler? OpenModsEvent;
-        public event EventHandler? OpenCommunityModsEvent;
-        public event EventHandler? OpenPresetModsEvent;
-        private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
-        private void OpenCommunityMods() => OpenCommunityModsEvent?.Invoke(this, EventArgs.Empty);
-        private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
-        public ICommand OpenModsCommand => new RelayCommand(OpenMods);
-        public ICommand OpenCommunityModsCommand => new RelayCommand(OpenCommunityMods);
-        public ICommand OpenPresetModsCommand => new RelayCommand(OpenPresetMods);
+        private readonly IModsDialogService _dialogService;
 
-        public ModGeneratorViewModel()
+        public ReactiveCommand<Unit, Unit> GenerateModCommand { get; }
+
+        public ModGeneratorViewModel() 
+            : this(new DefaultModsDialogService())
         {
+        }
+
+        public ModGeneratorViewModel(IModsDialogService dialogService)
+        {
+            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+
+            var canGenerate = this.WhenAnyValue(
+                x => x.SolidColorHex,
+                x => x.IsNotGeneratingMod,
+                (hex, notGenerating) => IsValidHexColor(hex) && notGenerating
+            );
+
+            GenerateModCommand = ReactiveCommand.CreateFromTask(GenerateModAsync, canGenerate);
+
             _ = LoadFontFilesAsync();
         }
 
+        public ICommand OpenModsCommand => new AsyncRelayCommand(async () =>
+        {
+            App.Logger.WriteLine("ModGeneratorViewModel", "OpenModsCommand executed");
+            await _dialogService.OpenModGeneratorAsync();
+            App.Logger.WriteLine("ModGeneratorViewModel", "OpenModsCommand completed");
+        });
+
+        public ICommand OpenCommunityModsCommand => new AsyncRelayCommand(async () =>
+        {
+            App.Logger.WriteLine("ModGeneratorViewModel", "OpenCommunityModsCommand executed");
+            await _dialogService.OpenCommunityModsAsync();
+            App.Logger.WriteLine("ModGeneratorViewModel", "OpenCommunityModsCommand completed");
+        });
+
+        public ICommand OpenPresetModsCommand => new AsyncRelayCommand(async () =>
+        {
+            App.Logger.WriteLine("ModGeneratorViewModel", "OpenPresetModsCommand executed");
+            await _dialogService.OpenPresetModsAsync();
+            App.Logger.WriteLine("ModGeneratorViewModel", "OpenPresetModsCommand completed");
+        });
+
         private Color _solidColor = Colors.White;
+
         private string _solidColorHex = "#FFFFFF";
         public string SolidColorHex
         {
             get => _solidColorHex;
             set
             {
-                _solidColorHex = value;
-                OnPropertyChanged(nameof(SolidColorHex));
-                OnPropertyChanged(nameof(CanGenerateMod));
+                this.RaiseAndSetIfChanged(ref _solidColorHex, value);
 
                 if (IsValidHexColor(value))
                 {
                     UpdateSolidColorFromHex(value);
                     UpdateGlyphColors();
-                    OnPropertyChanged(nameof(SelectedMediaColor));
+                    this.RaisePropertyChanged(nameof(SelectedMediaColor));
                     StatusText = "Ready to generate mod.";
                 }
                 else
@@ -61,9 +93,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 _solidColor = Color.FromArgb(value.A, value.R, value.G, value.B);
                 _solidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
 
-                OnPropertyChanged(nameof(SolidColorHex));
-                OnPropertyChanged(nameof(SelectedMediaColor));
-                OnPropertyChanged(nameof(CanGenerateMod));
+                this.RaisePropertyChanged(nameof(SolidColorHex));
+                this.RaisePropertyChanged(nameof(SelectedMediaColor));
 
                 UpdateGlyphColors();
                 StatusText = "Ready to generate mod.";
@@ -74,63 +105,78 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public SolidColorBrush PreviewBrush
         {
             get => _previewBrush;
-            set
-            {
-                _previewBrush = value;
-                OnPropertyChanged(nameof(PreviewBrush));
-            }
+            set => this.RaiseAndSetIfChanged(ref _previewBrush, value);
         }
 
         private bool _isNotGeneratingMod = true;
         public bool IsNotGeneratingMod
         {
             get => _isNotGeneratingMod;
-            set
-            {
-                _isNotGeneratingMod = value;
-                OnPropertyChanged(nameof(IsNotGeneratingMod));
-                OnPropertyChanged(nameof(CanGenerateMod));
-            }
+            set => this.RaiseAndSetIfChanged(ref _isNotGeneratingMod, value);
         }
-
-        public bool CanGenerateMod => IsValidHexColor(SolidColorHex) && IsNotGeneratingMod;
 
         private string _statusText = "";
         public string StatusText
         {
             get => _statusText;
-            set
-            {
-                _statusText = value;
-                OnPropertyChanged(nameof(StatusText));
-            }
+            set => this.RaiseAndSetIfChanged(ref _statusText, value);
         }
 
         private bool _colorCursors = false;
-        public bool ColorCursors { get => _colorCursors; set { _colorCursors = value; OnPropertyChanged(nameof(ColorCursors)); } }
+        public bool ColorCursors
+        {
+            get => _colorCursors;
+            set => this.RaiseAndSetIfChanged(ref _colorCursors, value);
+        }
 
         private bool _colorShiftlock = false;
-        public bool ColorShiftlock { get => _colorShiftlock; set { _colorShiftlock = value; OnPropertyChanged(nameof(ColorShiftlock)); } }
+        public bool ColorShiftlock
+        {
+            get => _colorShiftlock;
+            set => this.RaiseAndSetIfChanged(ref _colorShiftlock, value);
+        }
 
         private bool _colorEmoteWheel = false;
-        public bool ColorEmoteWheel { get => _colorEmoteWheel; set { _colorEmoteWheel = value; OnPropertyChanged(nameof(ColorEmoteWheel)); } }
+        public bool ColorEmoteWheel
+        {
+            get => _colorEmoteWheel;
+            set => this.RaiseAndSetIfChanged(ref _colorEmoteWheel, value);
+        }
 
         private bool _includeModifications = true;
-        public bool IncludeModifications { get => _includeModifications; set { _includeModifications = value; OnPropertyChanged(nameof(IncludeModifications)); } }
+        public bool IncludeModifications
+        {
+            get => _includeModifications;
+            set => this.RaiseAndSetIfChanged(ref _includeModifications, value);
+        }
 
         private ObservableCollection<string> _fontDisplayNames = new();
-        public ObservableCollection<string> FontDisplayNames { get => _fontDisplayNames; set { _fontDisplayNames = value; OnPropertyChanged(nameof(FontDisplayNames)); } }
+        public ObservableCollection<string> FontDisplayNames
+        {
+            get => _fontDisplayNames;
+            set => this.RaiseAndSetIfChanged(ref _fontDisplayNames, value);
+        }
 
         private string? _selectedFontDisplayName;
-        public string? SelectedFontDisplayName { get => _selectedFontDisplayName; set { _selectedFontDisplayName = value; OnPropertyChanged(nameof(SelectedFontDisplayName)); OnSelectedFontChanged(); } }
+        public string? SelectedFontDisplayName
+        {
+            get => _selectedFontDisplayName;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _selectedFontDisplayName, value);
+                OnSelectedFontChanged();
+            }
+        }
 
         private ObservableCollection<GlyphItem> _glyphItems = new();
-        public ObservableCollection<GlyphItem> GlyphItems { get => _glyphItems; set { _glyphItems = value; OnPropertyChanged(nameof(GlyphItems)); } }
-
-        public ICommand GenerateModCommand => new AsyncRelayCommand(GenerateModAsync, () => CanGenerateMod);
+        public ObservableCollection<GlyphItem> GlyphItems
+        {
+            get => _glyphItems;
+            set => this.RaiseAndSetIfChanged(ref _glyphItems, value);
+        }
 
         private string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
-        private string FontDir => Path.Combine(Paths.Cache, "Font Preview");
+        private string FontDir => Path.Combine(Paths.Cache, "FontPreview");
 
         private async Task LoadFontFilesAsync()
         {
@@ -173,7 +219,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private async Task DownloadFontFilesAsync(string fontDir)
         {
-            string[] fontUrls = {
+            string[] fontUrls =
+            {
                 "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
                 "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
             };
@@ -202,9 +249,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             string selectedFontPath = FindFontFile(SelectedFontDisplayName, fontFiles);
 
             if (!string.IsNullOrEmpty(selectedFontPath) && File.Exists(selectedFontPath))
-            {
                 await LoadGlyphPreviewsAsync(selectedFontPath);
-            }
         }
 
         private string FindFontFile(string displayName, string[] fontFiles)
@@ -218,10 +263,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             try
             {
-                using (FileStream fs = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
-                {
-                    return fs.Length > 0;
-                }
+                using var fs = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None);
+                return fs.Length > 0;
             }
             catch (IOException)
             {
@@ -233,16 +276,38 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (!File.Exists(fontPath) || !IsFileReady(fontPath)) return;
 
+            var safeUri = fontPath.Replace("\\", "/").Replace(" ", "%20");
+            var fontUri = new Uri($"file:///{safeUri}");
+
+            var fontFamily = new Avalonia.Media.FontFamily(fontUri, $"#{Path.GetFileNameWithoutExtension(fontPath)}");
+
+            var typeface = new Typeface(fontFamily);
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                try
+                {
+                    var testText = new FormattedText(
+                        "A",
+                        System.Globalization.CultureInfo.CurrentCulture,
+                        FlowDirection.LeftToRight,
+                        typeface,
+                        40,
+                        PreviewBrush);
+
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("ModGenerator::LoadGlyphPreviews", ex);   
+                }
+            });
+
             var glyphItems = new ObservableCollection<GlyphItem>();
             UpdateGlyphColors();
 
             try
             {
-                var fontFamily = new Avalonia.Media.FontFamily($"name:file://{fontPath.Replace("\\", "/")}");
-                var typeface = new Typeface(fontFamily);
-
-                // Standard printable range for preview
-                var characterCodes = Enumerable.Range(33, 126).OrderByDescending(c => c).ToList();
+                var characterCodes = Enumerable.Range(0xF101, 495).ToList();
 
                 foreach (var characterCode in characterCodes)
                 {
@@ -261,8 +326,9 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                                 PreviewBrush);
 
                             var geometry = ft.BuildGeometry(new Avalonia.Point(0, 0));
+                            if (geometry == null || geometry.Bounds.Width < 1) return;
 
-                            var bounds = geometry!.Bounds;
+                            var bounds = geometry.Bounds;
                             var translate = new TranslateTransform(
                                 (50 - bounds.Width) / 2 - bounds.X,
                                 (50 - bounds.Height) / 2 - bounds.Y
@@ -275,7 +341,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                                 ColorBrush = PreviewBrush
                             });
                         }
-                        catch { }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteException("ModGenerator::LoadGlyphPreviews", ex);
+                        }
                     });
                 }
 
@@ -284,6 +353,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger?.WriteException("ModGenerator::LoadGlyphPreviews", ex);
+                StatusText = "Failed to load font glyphs.";
             }
         }
 
@@ -306,7 +376,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     string luaDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages");
                     string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
                     string contentDir = Path.Combine(TempRoot, "content", "textures");
-
                     string folderName = SolidColorHex;
 
                     Parallel.Invoke(
@@ -323,38 +392,50 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     StatusText = "Cleaning up...";
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                    foreach (var entry in mappings.Values) preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, Path.Combine(entry))));
+                    foreach (var entry in mappings.Values)
+                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, Path.Combine(entry))));
 
-                    string builderIconsFontDir = Path.Combine(TempRoot, @"ExtraContent\LuaPackages\Packages\_Index\BuilderIcons\BuilderIcons\Font");
+                    string builderIconsFontDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
                     if (Directory.Exists(builderIconsFontDir))
                     {
                         preservePaths.Add(Path.GetFullPath(builderIconsFontDir));
-                        foreach (var fontFile in Directory.GetFiles(builderIconsFontDir, "*.*")) preservePaths.Add(Path.GetFullPath(fontFile));
+                        foreach (var fontFile in Directory.GetFiles(builderIconsFontDir, "*.*"))
+                            preservePaths.Add(Path.GetFullPath(fontFile));
                     }
 
                     if (ColorCursors)
                     {
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\Cursors\KeyboardMouse\IBeamCursor.png")));
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\Cursors\KeyboardMouse\ArrowCursor.png")));
-                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\Cursors\KeyboardMouse\ArrowFarCursor.png")));
+                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "Cursors", "KeyboardMouse", "IBeamCursor.png")));
+                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "Cursors", "KeyboardMouse", "ArrowCursor.png")));
+                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "Cursors", "KeyboardMouse", "ArrowFarCursor.png")));
                     }
-                    if (ColorShiftlock) preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, @"content\textures\MouseLockedCursor.png")));
+
+                    if (ColorShiftlock)
+                        preservePaths.Add(Path.GetFullPath(Path.Combine(TempRoot, "content", "textures", "MouseLockedCursor.png")));
+
                     if (ColorEmoteWheel)
                     {
-                        string emotesDir = Path.Combine(TempRoot, @"content\textures\ui\Emotes\Large");
+                        string emotesDir = Path.Combine(TempRoot, "content", "textures", "ui", "Emotes", "Large");
                         string[] emoteFiles = { "SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png" };
-                        foreach (var e in emoteFiles) preservePaths.Add(Path.GetFullPath(Path.Combine(emotesDir, e)));
+                        foreach (var e in emoteFiles)
+                            preservePaths.Add(Path.GetFullPath(Path.Combine(emotesDir, e)));
                     }
 
                     void DeleteExcept(string dir)
                     {
                         foreach (var file in Directory.GetFiles(dir))
-                            if (!preservePaths.Contains(Path.GetFullPath(file))) try { File.Delete(file); } catch { }
+                            if (!preservePaths.Contains(Path.GetFullPath(file)))
+                                try { File.Delete(file); } catch { }
 
                         foreach (var subDir in Directory.GetDirectories(dir))
                         {
                             DeleteExcept(subDir);
-                            try { if (!Directory.EnumerateFileSystemEntries(subDir).Any() && !preservePaths.Contains(Path.GetFullPath(subDir))) Directory.Delete(subDir); } catch { }
+                            try
+                            {
+                                if (!Directory.EnumerateFileSystemEntries(subDir).Any() && !preservePaths.Contains(Path.GetFullPath(subDir)))
+                                    Directory.Delete(subDir);
+                            }
+                            catch { }
                         }
                     }
 
@@ -363,7 +444,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (Directory.Exists(contentDir)) DeleteExcept(contentDir);
 
                     string infoPath = Path.Combine(TempRoot, "info.json");
-                    var infoData = new { FroststrapVersion = App.Version, RobloxVersion = vName, RobloxVersionHash = vHash, ColorsUsed = new { SolidColor = SolidColorHex } };
+                    var infoData = new
+                    {
+                        FroststrapVersion = App.Version,
+                        RobloxVersion = vName,
+                        RobloxVersionHash = vHash,
+                        ColorsUsed = new { SolidColor = SolidColorHex }
+                    };
                     await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true }));
 
                     StatusText = "Packaging...";
@@ -374,11 +461,20 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
 
                         int copiedFiles = 0;
-                        var itemsToCopy = new List<string> { Path.Combine(TempRoot, "ExtraContent"), Path.Combine(TempRoot, "content"), infoPath };
+                        var itemsToCopy = new List<string>
+                        {
+                            Path.Combine(TempRoot, "ExtraContent"),
+                            Path.Combine(TempRoot, "content"),
+                            infoPath
+                        };
 
                         foreach (var item in itemsToCopy)
                         {
-                            if (File.Exists(item)) { File.Copy(item, Path.Combine(targetFolder, Path.GetFileName(item)), true); copiedFiles++; }
+                            if (File.Exists(item))
+                            {
+                                File.Copy(item, Path.Combine(targetFolder, Path.GetFileName(item)), true);
+                                copiedFiles++;
+                            }
                             else if (Directory.Exists(item))
                             {
                                 foreach (var file in Directory.GetFiles(item, "*", SearchOption.AllDirectories))
@@ -390,20 +486,18 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                                 }
                             }
                         }
+
                         StatusText = $"Successfully applied modifications ({copiedFiles} files).";
                     }
-                    // ... inside GenerateModAsync, after the Packaging section ...
-
                     else
                     {
                         StatusText = "Zipping results...";
 
                         await Dispatcher.UIThread.InvokeAsync(async () =>
                         {
-                            // Accessing the window in Avalonia:
-                            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
-                                             ? desktop.MainWindow
-                                             : null;
+                            var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop
+                                ? desktop.MainWindow
+                                : null;
 
                             if (visualRoot == null) return;
 
@@ -448,18 +542,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             new FastZip().ExtractZip(zipPath, targetDir, null);
         }
 
-        private bool IsValidHexColor(string hex) => !string.IsNullOrWhiteSpace(hex) && Regex.IsMatch(hex, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
+        private bool IsValidHexColor(string hex) =>
+            !string.IsNullOrWhiteSpace(hex) && Regex.IsMatch(hex, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
 
         private void UpdateSolidColorFromHex(string hex)
         {
-            try
-            {
-                _solidColor = Color.Parse(hex);
-            }
-            catch
-            {
-                _solidColor = Colors.White;
-            }
+            try { _solidColor = Color.Parse(hex); }
+            catch { _solidColor = Colors.White; }
         }
 
         private void UpdateGlyphColors()
