@@ -797,7 +797,7 @@ namespace Froststrap.Integrations
             {
                 App.Logger.WriteLine(LOG_IDENT_BROWSER, "Launching browser for account login...");
 
-                string? executablePath = GetSystemBrowerPath();
+                string? executablePath = GetSystemBrowserPath();
 
                 if (executablePath == null)
                 {

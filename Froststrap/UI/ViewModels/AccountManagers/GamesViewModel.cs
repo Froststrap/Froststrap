@@ -11,15 +11,7 @@
 *               of the Nix ecosystem. 
 */
 
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Froststrap.Integrations;
-using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Windows;
 
 namespace Froststrap.UI.ViewModels.AccountManagers
 {

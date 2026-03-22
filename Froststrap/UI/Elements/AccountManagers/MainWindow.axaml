@@ -1,22 +1,28 @@
 
 <base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:pages="clr-namespace:Froststrap.UI.Elements.AccountManagers.Pages"
-             xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:pages="clr-namespace:Froststrap.UI.Elements.AccountManagers.Pages"
+			 xmlns:ui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
 			 xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-             xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+			 xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
 			 xmlns:page="clr-namespace:Froststrap.UI.Elements.AccountManagers.Pages"
-             xmlns:resources="clr-namespace:Froststrap.Resources"
-             x:Class="Froststrap.UI.Elements.AccountManagers.MainWindow"
-             mc:Ignorable="d"
-             Title="Account Manager"
+			 xmlns:ic="using:IconPacks.Avalonia.Material"
+			 xmlns:resources="clr-namespace:Froststrap.Resources"
+			 xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.AccountManagers"
+			 x:Class="Froststrap.UI.Elements.AccountManagers.MainWindow"
+			 x:DataType="vm:AccountManagerViewModel"
+			 mc:Ignorable="d"
+			 Title="Account Manager"
 			 SystemDecorations="None"
-             Width="1000"
-             Height="675"
-             Background="{DynamicResource ApplicationPageBackgroundThemeBrush}"
-             WindowStartupLocation="CenterScreen">
+			 Width="1000"
+			 Height="675"
+			 Background="Transparent"
+			 ExtendClientAreaTitleBarHeightHint="-1"
+			 ExtendClientAreaToDecorationsHint="True"
+			 TransparencyLevelHint="Mica"
+			 WindowStartupLocation="CenterScreen">
 
 	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid.RowDefinitions>
@@ -26,30 +32,78 @@
 
 		<controls:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" Title="Account Manager" Icon="avares://Froststrap/Froststrap.ico" />
 
-		<Grid x:Name="RootGrid" Grid.Row="1" Margin="12,12,0,0" IsVisible="True">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
+		<Grid Grid.Row="1" ColumnDefinitions="64,*">
+			<Border
+				Grid.Column="0"
+				Background="{DynamicResource LayerFillColorDefaultBrush}"
+				BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+				BorderThickness="0,0,1,0">
+				<ScrollViewer VerticalScrollBarVisibility="Hidden">
+					<StackPanel VerticalAlignment="Top" Spacing="0">
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToAccountsCommand}"
+							Tag="accounts"
+							ToolTip.Tip="Accounts">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Account"
+								Foreground="#888888"/>
+						</Button>
 
-			<ui:NavigationView x:Name="RootNavigation"
-                               Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2"
-                               PaneDisplayMode="Left"
-                               IsSettingsVisible="False">
-				<ui:NavigationView.MenuItems>
-					<ui:NavigationViewItem Content="Accounts" IconSource="ContactInfo" Tag="{x:Type page:AccountsPage}" />
-					<ui:NavigationViewItem Content="Friends" IconSource="People" Tag="friends" x:Name="friends"/>
-					<ui:NavigationViewItem Content="Games" IconSource="Games" Tag="games" x:Name="games"/>
-				</ui:NavigationView.MenuItems>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToFriendsCommand}"
+							Tag="friends"
+							ToolTip.Tip="Friends">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="AccountMultiple"
+								Foreground="#888888"/>
+						</Button>
 
-				<ui:NavigationView.Content>
-					<ui:Frame x:Name="RootFrame" />
-				</ui:NavigationView.Content>
-			</ui:NavigationView>
+						<Button
+							Classes="icon-button"
+							Command="{Binding NavigateToGamesCommand}"
+							Tag="games"
+							ToolTip.Tip="Games">
+							<ic:PackIconMaterial
+								Width="20"
+								Height="20"
+								Kind="Play"
+								Foreground="#888888"/>
+						</Button>
+					</StackPanel>
+				</ScrollViewer>
+			</Border>
+
+			<Grid Grid.Column="1" RowDefinitions="Auto,*">
+				<Border
+					Grid.Row="0"
+					Padding="20,24,20,8"
+					Background="{DynamicResource LayerFillColorAltBrush}"
+					BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+					BorderThickness="0,0,0,1">
+					<StackPanel>
+						<TextBlock
+							x:Name="PageTitleText"
+							FontSize="24"
+							FontWeight="SemiBold"
+							Margin="0,0,0,12"
+							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+							Text="{Binding CurrentPageTitle}" />
+					</StackPanel>
+				</Border>
+
+				<TransitioningContentControl
+					x:Name="PageContentControl"
+					Grid.Row="1"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					Background="{DynamicResource LayerFillColorDefaultBrush}" />
+			</Grid>
 		</Grid>
 
 		<Grid x:Name="LoadingOverlay" Grid.Row="0" Grid.RowSpan="2" IsVisible="False" Background="#A0000000" ZIndex="9999">
@@ -57,16 +111,16 @@
 				<Border Background="{DynamicResource NormalDarkAndLightBackground}" CornerRadius="16" Padding="32">
 					<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
 						<TextBlock x:Name="LoadingOverlayText"
-                                   Text="Loading..."
-                                   FontSize="22"
-                                   FontWeight="SemiBold"
-                                   HorizontalAlignment="Center"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+								   Text="Loading..."
+								   FontSize="22"
+								   FontWeight="SemiBold"
+								   HorizontalAlignment="Center"
+								   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
 						<ui:ProgressRing IsIndeterminate="True"
-                                         Width="60"
-                                         Height="60"
-                                         HorizontalAlignment="Center" />
+										 Width="60"
+										 Height="60"
+										 HorizontalAlignment="Center" />
 					</StackPanel>
 				</Border>
 			</Grid>
