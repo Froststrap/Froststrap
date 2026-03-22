@@ -362,7 +362,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     SelectedCustomThemeIndex = idx;
                     SelectedCustomTheme = selected;
+                    SelectedCustomThemeName = selected;
+
                     OnPropertyChanged(nameof(SelectedCustomThemeIndex));
+                    OnPropertyChanged(nameof(SelectedCustomThemeName));
                 }
             }
         }
