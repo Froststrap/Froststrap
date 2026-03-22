@@ -59,8 +59,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="Plus"
-								Foreground="#888888"/>
+								Kind="Plus"/>
 						</Button>
 
 						<Button
@@ -71,8 +70,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="CogOutline"
-								Foreground="#888888"/>
+								Kind="CogOutline"/>
 						</Button>
 
 						<Button
@@ -83,8 +81,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="Wrench"
-								Foreground="#888888"/>
+								Kind="Wrench"/>
 						</Button>
 
 						<Button
@@ -95,8 +92,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="Flag"
-								Foreground="#888888"/>
+								Kind="Flag"/>
 						</Button>
 
 						<Button
@@ -107,8 +103,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="Palette"
-								Foreground="#888888"/>
+								Kind="Palette"/>
 						</Button>
 
 						<Button
@@ -119,8 +114,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="Earth"
-								Foreground="#888888"/>
+								Kind="Earth"/>
 						</Button>
 
 						<Button
@@ -131,8 +125,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="Gauge"
-								Foreground="#888888"/>
+								Kind="Gauge"/>
 						</Button>
 
 						<Button
@@ -143,8 +136,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="LinkBoxOutline"
-								Foreground="#888888"/>
+								Kind="LinkBoxOutline"/>
 						</Button>
 
 						<Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
@@ -157,8 +149,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="AccountMultipleOutline"
-								Foreground="#888888"/>
+								Kind="AccountMultipleOutline"/>
 						</Button>
 
 						<Button Classes="icon-button"
@@ -168,8 +159,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="CogOutline"
-								Foreground="#888888"/>
+								Kind="CogOutline"/>
 						</Button>
 
 						<Button
@@ -179,8 +169,7 @@
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"
-								Kind="Information"
-								Foreground="#888888"/>
+								Kind="Information"/>
 						</Button>
 					</StackPanel>
 				</ScrollViewer>

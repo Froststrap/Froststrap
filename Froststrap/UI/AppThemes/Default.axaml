@@ -180,9 +180,4 @@
 		<Setter Property="Background" Value="#333333" />
 		<Setter Property="Foreground" Value="#888888" />
 	</Style>
-
-	<Style Selector="Button.icon-button:pressed">
-		<Setter Property="Background" Value="#333333" />
-		<Setter Property="Foreground" Value="#888888" />
-	</Style>
 </Styles>

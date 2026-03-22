@@ -67,9 +67,10 @@
 		<Border Grid.Row="3" Margin="0,10,0,0" Padding="15"
                 Background="{DynamicResource PrimaryBackgroundColor}">
 			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-				<Button MinWidth="100"
+				<controls:IconButton MinWidth="100"
+						Icon="Sync"
 						Padding="12,6"
-						Classes="accent"
+						Classes="Primary"
                         Content="{x:Static resources:Strings.Common_Refresh}"
                         Command="{Binding RefreshCommand}"/>
 				<Button MinWidth="100" Margin="12,0,0,0"

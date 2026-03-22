@@ -5,19 +5,28 @@
 
     <Style Selector="controls|Hyperlink">
         <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter
                     Name="PART_ContentPresenter"
-                    Padding="{TemplateBinding Padding}"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Bottom"
                     Background="Transparent"
                     Content="{TemplateBinding Content}"
                     ContentTemplate="{TemplateBinding ContentTemplate}"
                     Cursor="Hand"
-                    Foreground="{TemplateBinding LinkForeground}" />
+                    Foreground="{TemplateBinding Foreground}" />
             </ControlTemplate>
         </Setter>
     </Style>
+
+    <Style Selector="controls|Hyperlink:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
+    </Style>
+
+    <Style Selector="controls|Hyperlink:pressed /template/ ContentPresenter#PART_ContentPresenter">
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackgroundPressed}" />
+    </Style>
+
 </Styles>

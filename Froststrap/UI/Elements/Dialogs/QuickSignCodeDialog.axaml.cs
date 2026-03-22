@@ -1,13 +1,11 @@
-using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using System.Threading.Tasks;
+using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    public partial class QuickSignCodeDialog : Window
+    public partial class QuickSignCodeDialog : AvaloniaWindow
     {
         public bool SignInSuccessful { get; private set; }
         private DispatcherTimer? _autoCloseTimer;

@@ -111,8 +111,9 @@ namespace Froststrap.UI.Elements.Settings
 
         private void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
         {
+            var accentBrushKey = "AccentButtonBackground";
+
             var unselectedBrush = new SolidColorBrush(Color.Parse("#888888"));
-            var selectedBrush = new SolidColorBrush(Color.Parse("#00d4ff"));
             var highlightBgColor = new SolidColorBrush(Color.Parse("#333333"));
 
             foreach (var child in stackPanel.Children)
@@ -124,18 +125,25 @@ namespace Froststrap.UI.Elements.Settings
                     if (isSelected)
                     {
                         button.Background = highlightBgColor;
-                        button.Foreground = selectedBrush;
+
+                        button[!Button.ForegroundProperty] = button.GetResourceObservable(accentBrushKey).ToBinding();
                     }
                     else
                     {
-                        button.Background = new SolidColorBrush(Colors.Transparent);
+                        button.Background = Brushes.Transparent;
                         button.Foreground = unselectedBrush;
                     }
 
-                    // Find and update the Lucide icon if it exists
-                    if (button.Content is PackIconMaterial Icon)
+                    if (button.Content is PackIconMaterial icon)
                     {
-                        Icon.Foreground = isSelected ? selectedBrush : unselectedBrush;
+                        if (isSelected)
+                        {
+                            icon[!PackIconMaterial.ForegroundProperty] = icon.GetResourceObservable(accentBrushKey).ToBinding();
+                        }
+                        else
+                        {
+                            icon.Foreground = unselectedBrush;
+                        }
                     }
                 }
             }
