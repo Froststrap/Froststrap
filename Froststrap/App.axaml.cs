@@ -302,7 +302,7 @@ public const string ProjectRepository = "Froststrap/Froststrap";
                 Terminate();
             }
 
-            await Task.Run(RemoteData.LoadData);
+            _ = Task.Run(RemoteData.LoadData);
             await Settings.Load();
             await State.Load();
             await FastFlags.Load();

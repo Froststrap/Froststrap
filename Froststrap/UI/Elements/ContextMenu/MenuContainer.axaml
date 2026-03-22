@@ -89,19 +89,6 @@
                 </MenuItem>
             </MenuItem>
 
-            <MenuItem x:Name="GameInformationMenuItem" IsVisible="False" Click="GameInformaionMenuItem_Click">
-                <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Game Information" />
-                    </Grid>
-                </MenuItem.Header>
-            </MenuItem>
-
             <MenuItem x:Name="ServerDetailsMenuItem" IsVisible="False" Click="ServerDetailsMenuItem_Click">
                 <MenuItem.Header>
                     <Grid>
