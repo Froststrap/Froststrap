@@ -5,7 +5,7 @@
     <Style Selector="controls|TitleBar">
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="Auto, *, Auto" Height="36" Background="{DynamicResource LayerFillColorDefaultBrush}">
+                <Grid ColumnDefinitions="Auto, *, Auto" Height="36">
 
                     <Image Grid.Column="0"
                            Source="{TemplateBinding Icon}"
