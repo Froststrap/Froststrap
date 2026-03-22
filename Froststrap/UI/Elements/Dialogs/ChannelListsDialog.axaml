@@ -37,7 +37,7 @@
                    TextWrapping="Wrap" />
 
 		<Grid Grid.Row="2" Margin="8">
-			<Grid IsVisible="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+			<Grid IsVisible="{Binding IsLoading}">
 				<Border Background="{DynamicResource ControlFillColorDefaultBrush}" Opacity="0.7" />
 				<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 					<ui:ProgressRing Width="100" Height="100" IsIndeterminate="True"/>
@@ -49,7 +49,7 @@
 
 			<DataGrid
                 ItemsSource="{Binding Channels}"
-                IsVisible="{Binding IsLoading, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                IsVisible="{Binding IsLoading}"
                 AutoGenerateColumns="False"
                 IsReadOnly="True"
                 CanUserResizeColumns="True"

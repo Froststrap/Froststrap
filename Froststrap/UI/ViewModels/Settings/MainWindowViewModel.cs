@@ -270,7 +270,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 () =>
                 {
                     SelectedPage = "appearance";
-                    CurrentPageTitle = "Appearance";
+                    CurrentPageTitle = Strings.Menu_Appearance_Title;
                     CurrentPageDescription = Strings.Menu_Appearance_Description;
                     BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
                     return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel()))
@@ -286,11 +286,11 @@ namespace Froststrap.UI.ViewModels.Settings
             NavigateToRegionSelectorCommand = ReactiveCommand.CreateFromObservable(
                 () =>
                 {
-                    SelectedPage = "region selector";
+                    SelectedPage = "regionselector";
                     CurrentPageTitle = "Region Selector";
                     CurrentPageDescription = Strings.Menu_RegionSelector_Description;
                     BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("region selector", new RegionSelectorViewModel()))
+                    return _router.Navigate.Execute(Wrap("regionselector", new RegionSelectorViewModel()))
                         .ObserveOn(RxSchedulers.MainThreadScheduler)
                         .Catch<IRoutableViewModel, Exception>(ex =>
                         {

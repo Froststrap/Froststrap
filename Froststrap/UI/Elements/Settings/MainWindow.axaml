@@ -15,7 +15,6 @@
 	MinWidth="250"
 	MinHeight="250"
 	x:DataType="vm:MainWindowViewModel"
-	Background="Transparent"
 	SystemDecorations="None"
 	ExtendClientAreaTitleBarHeightHint="-1"
 	ExtendClientAreaToDecorationsHint="True"
@@ -115,7 +114,7 @@
 						<Button
 							Classes="icon-button"
 							Command="{Binding NavigateToRegionSelectorCommand}"
-							Tag="region selector"
+							Tag="regionselector"
 							ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}">
 							<ic:PackIconMaterial
 								Width="20"
@@ -139,7 +138,7 @@
 						<Button
 							Classes="icon-button"
 							Command="{Binding NavigateToShortcutsCommand}"
-							Tag="robloxsettings"
+							Tag="shortcuts"
 							ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}">
 							<ic:PackIconMaterial
 								Width="20"

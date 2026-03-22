@@ -39,7 +39,7 @@
                                 <Separator Margin="0,8" />
                             </StackPanel>
 
-                            <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel Spacing="15" IsVisible="{Binding IsGradientMode}">
         
                                 <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
                                     <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Left">
