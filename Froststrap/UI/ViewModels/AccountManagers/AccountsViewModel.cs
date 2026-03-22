@@ -12,8 +12,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 
@@ -425,17 +425,23 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
             var dialog = new ManualCookieDialog();
 
-            var mainWindow = (Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow;
+            var desktop = Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
+            var parent = desktop?.MainWindow ?? (desktop?.Windows.Count > 0 ? desktop.Windows[0] : null);
 
-            if (mainWindow != null)
+            if (parent != null)
             {
-                await dialog.ShowDialog(mainWindow);
+                var result = await dialog.ShowDialog<AccountManagerAccount?>(parent);
 
-                if (dialog.ViewModel.ValidatedAccount != null)
+                if (result != null)
                 {
-                    var validatedAccount = dialog.ViewModel.ValidatedAccount;
-                    await ProcessNewAccount(validatedAccount);
+                    App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", $"Dialog returned account: {result.Username}");
+
+                    await ProcessNewAccount(result);
                 }
+            }
+            else
+            {
+                App.Logger.WriteLine($"{LOG_IDENT}::AddAccount", "Error: Could not find a parent window.");
             }
         }
 

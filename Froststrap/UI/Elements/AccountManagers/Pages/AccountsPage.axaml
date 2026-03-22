@@ -10,10 +10,6 @@
              x:DataType="vm:AccountsViewModel"
              mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="850">
 
-    <UserControl.Resources>
-        <converters:UrlToBitmapConverter x:Key="UrlToBitmapConverter" />
-    </UserControl.Resources>
-
     <ScrollViewer>
         <Grid Margin="0,8,8,8" RowDefinitions="Auto, *">
             
@@ -30,9 +26,9 @@
                                 <Border CornerRadius="35" ClipToBounds="True"
                                         Background="{DynamicResource ControlFillColorSecondaryBrush}">
                                     <Panel>
-                                        <ic:PackIconMaterial Kind="AccountQuestionOutline"
-                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                           IsVisible="{Binding CurrentUserAvatarUrl, Converter={x:Static ObjectConverters.IsNull}}"/>
+                                        <ic:PackIconMaterial Kind="FileQuestionOutline" Width="32" Height="32"
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           IsVisible="{Binding !CurrentUserAvatarUrl, Converter={x:Static ObjectConverters.IsNull}}"/>
                                         <Image Source="{Binding CurrentUserAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}" 
                                                Stretch="UniformToFill"
                                                IsVisible="{Binding CurrentUserAvatarUrl, Converter={x:Static ObjectConverters.IsNotNull}}"/>
@@ -90,7 +86,7 @@
                             <DataTemplate>
                                 <Grid ColumnDefinitions="*, Auto">
                                     <StackPanel Orientation="Horizontal" Spacing="12">
-                                        <Border Width="40" Height="40" CornerRadius="20" ClipToBounds="True" Padding="8"
+                                        <Border Width="40" Height="40" CornerRadius="20" ClipToBounds="True"
                                                 Background="{DynamicResource ControlFillColorSecondaryBrush}">
                                             <Image Source="{Binding AvatarUrl, Converter={StaticResource UrlToBitmapConverter}}" Stretch="UniformToFill" />
                                         </Border>

@@ -18,7 +18,6 @@
 			 SystemDecorations="None"
 			 Width="1000"
 			 Height="675"
-			 Background="Transparent"
 			 ExtendClientAreaTitleBarHeightHint="-1"
 			 ExtendClientAreaToDecorationsHint="True"
 			 TransparencyLevelHint="Mica"

@@ -46,6 +46,7 @@
         <converters:EnumNameConverter x:Key="EnumNameConverter" />
         <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" />
         <converters:NumberAbbreviationConverter x:Key="NumberAbbreviationConverter" />
+        <converters:UrlToBitmapConverter x:Key="UrlToBitmapConverter" />
     </ResourceDictionary>
 </Application.Resources>
 </Application>
