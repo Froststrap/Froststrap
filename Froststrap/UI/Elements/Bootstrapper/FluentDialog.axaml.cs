@@ -56,7 +56,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             set => RunOnUI(() =>
             {
                 _viewModel!.Message = value;
-                _viewModel!.OnPropertyChanged(nameof(_viewModel.Message)); // Or just "Message"
+                _viewModel.OnPropertyChanged(nameof(_viewModel.Message));
             });
         }
 
@@ -66,7 +66,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             set => RunOnUI(() =>
             {
                 _viewModel!.ProgressMaximum = value;
-                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressMaximum));
             });
         }
 
@@ -76,7 +76,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             set => RunOnUI(() =>
             {
                 _viewModel!.ProgressValue = value;
-                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressValue));
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressValue));
             });
         }
 
@@ -86,7 +86,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
             set => RunOnUI(() =>
             {
                 _viewModel!.CancelEnabled = value;
-                _viewModel!.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
+                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
+                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelButtonVisible));
                 _viewModel.OnPropertyChanged(nameof(_viewModel.CancelButtonVisible));
             });
         }
@@ -97,7 +98,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             set => RunOnUI(() =>
             {
                 _viewModel!.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
-                _viewModel!.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
+                _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
             });
         }
         #endregion
