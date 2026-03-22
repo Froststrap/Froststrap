@@ -19,10 +19,8 @@ using Froststrap.RobloxInterfaces;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
-using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Data;
-using System.Reflection;
 
 namespace Froststrap
 {
@@ -53,18 +51,18 @@ namespace Froststrap
         private string _latestVersionGuid = null!;
         private string _latestVersionDirectory = null!;
         private PackageManifest _versionPackageManifest = null!;
-		public static bool _staticDirectory => App.Settings.Prop.StaticDirectory;
+        public static bool _staticDirectory => App.Settings.Prop.StaticDirectory;
 
-		private bool _isInstalling = false;
+        private bool _isInstalling = false;
         private double _progressIncrement;
         private double _taskbarProgressIncrement;
         private double _taskbarProgressMaximum;
         private long _totalDownloadedBytes = 0;
         private bool _packageExtractionSuccess = true;
 
-		private bool _mustUpgrade => App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid) || !File.Exists(AppData.ExecutablePath);
+        private bool _mustUpgrade => App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid) || !File.Exists(AppData.ExecutablePath);
 
-		private bool _noConnection = false;
+        private bool _noConnection = false;
 
         private AsyncMutex? _mutex;
 
@@ -77,7 +75,7 @@ namespace Froststrap
 
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
 
-        public string MutexName { get; set; } = "Froststrap-Bootstrapper";
+        public string MutexName { get; set; } = "Bloxstrap-Bootstrapper";
         public bool QuitIfMutexExists { get; set; } = false;
         #endregion
 
@@ -213,10 +211,10 @@ namespace Froststrap
             }
 #endif
 
-			// ensure only one instance of the bootstrapper is running at the time
-			// so that we don't have stuff like two updates happening simultaneously
+            // ensure only one instance of the bootstrapper is running at the time
+            // so that we don't have stuff like two updates happening simultaneously
 
-			bool mutexExists = Utilities.DoesMutexExist(MutexName);
+            bool mutexExists = Utilities.DoesMutexExist(MutexName);
 
             if (mutexExists)
             {
@@ -241,10 +239,10 @@ namespace Froststrap
             // reload our configs since they've likely changed by now
             if (mutexExists)
             {
-                _ = App.Settings.Load();
-                _ = App.State.Load();
-				_ = AppData.DistributionStateManager.Load();
-			}
+                await App.Settings.Load();
+                await App.State.Load();
+                await AppData.DistributionStateManager.Load();
+            }
 
             if (!_noConnection)
             {
@@ -269,9 +267,9 @@ namespace Froststrap
 
                 await SetupPackageDictionaries(); // mods also require it
 
-				if (AppData.DistributionState.VersionGuid != _latestVersionGuid || _mustUpgrade)
-				{
-                    bool backgroundUpdaterMutexOpen = Utilities.DoesMutexExist("Froststrap-BackgroundUpdater");
+                if (AppData.DistributionState.VersionGuid != _latestVersionGuid || _mustUpgrade)
+                {
+                    bool backgroundUpdaterMutexOpen = Utilities.DoesMutexExist("Bloxstrap-BackgroundUpdater");
                     if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
                         backgroundUpdaterMutexOpen = false; // we want to actually update lol
 
@@ -301,16 +299,16 @@ namespace Froststrap
                 allModificationsApplied = await ApplyModifications();
             }
 
-			// check registry entries for every launch, just in case the stock bootstrapper changes it back
+            // check registry entries for every launch, just in case the stock bootstrapper changes it back
 
-			if (IsStudioLaunch)
-			{
-				WindowsRegistry.RegisterStudio();
+            if (IsStudioLaunch)
+            {
+                WindowsRegistry.RegisterStudio();
 
-				App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
-				StudioPluginManager.Sync();
-			}
-			else
+                App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                StudioPluginManager.Sync();
+            }
+            else
                 WindowsRegistry.RegisterPlayer();
 
             WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
@@ -510,9 +508,9 @@ namespace Froststrap
                     }
                 }
 
-				key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
+                key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
 
-				_latestVersionGuid = clientVersion.VersionGuid;
+                _latestVersionGuid = clientVersion.VersionGuid;
                 _latestVersion = Utilities.ParseVersionSafe(clientVersion.Version);
             }
             else
@@ -522,12 +520,12 @@ namespace Froststrap
                 // we can't determine the version
             }
 
-			if (_staticDirectory)
-				_latestVersionDirectory = AppData.StaticDirectory;
-			else
-				_latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
+            if (_staticDirectory)
+                _latestVersionDirectory = AppData.StaticDirectory;
+            else
+                _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
-			string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
+            string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
             var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
 
             _versionPackageManifest = new(pkgManifestData);
@@ -679,7 +677,7 @@ namespace Froststrap
                 }
             }
 
-            using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-MultiInstanceWatcherInitialisationFinished");
+            using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-MultiInstanceWatcherInitialisationFinished");
             Process.Start(Paths.Process, "-multiinstancewatcher");
 
             await Task.Run(() => initEventHandle.WaitOne(TimeSpan.FromSeconds(2)));
@@ -768,12 +766,12 @@ namespace Froststrap
 
             SetStatus(Strings.Bootstrapper_Status_Starting);
 
-			if (_launchMode == LaunchMode.Player)
-				if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
-					_launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
+            if (_launchMode == LaunchMode.Player)
+                if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
+                    _launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
 
-			string[] Names = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
-			string ResolvedName = null!;
+            string[] Names = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
+            string ResolvedName = null!;
 
             foreach (string Name in Names)
             {
@@ -809,16 +807,16 @@ namespace Froststrap
 
             string? logFileName = null;
 
-			string rbxDir = Paths.Roblox;
-			if (!Directory.Exists(rbxDir))
-				Directory.CreateDirectory(rbxDir);
+            string rbxDir = Paths.Roblox;
+            if (!Directory.Exists(rbxDir))
+                Directory.CreateDirectory(rbxDir);
 
-			string rbxLogDir = Path.Combine(rbxDir, "logs");
-			if (!Directory.Exists(rbxLogDir))
-				Directory.CreateDirectory(rbxLogDir);
+            string rbxLogDir = Path.Combine(rbxDir, "logs");
+            if (!Directory.Exists(rbxLogDir))
+                Directory.CreateDirectory(rbxLogDir);
 
-			using var logWatcher = new FileSystemWatcher()
-			{
+            using var logWatcher = new FileSystemWatcher()
+            {
                 Path = rbxLogDir,
                 Filter = "*.log",
                 EnableRaisingEvents = true
@@ -833,46 +831,45 @@ namespace Froststrap
                 logCreatedEvent.Set();
             };
 
-			var autoclosePids = new List<int>();
+            var autoclosePids = new List<int>();
 
-			// the code you're gonna read ahead is horrible. sorry for the hack, but it works ¯\_(ツ)_/¯
-			// check if prelaunch is checked
-			foreach (var integration in App.Settings.Prop.CustomIntegrations)
-			{
-				if (integration?.PreLaunch == true)
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"Pre-Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
-					int pid = 0;
-					try
-					{
-						var process = Process.Start(new ProcessStartInfo
-						{
-							FileName = integration.Location,
-							Arguments = integration.LaunchArgs.Replace("\r\n", " "),
-							WorkingDirectory = Path.GetDirectoryName(integration.Location),
-							UseShellExecute = true
-						})!;
-						pid = process.Id;
-					}
-					catch (Exception ex)
-					{
-						App.Logger.WriteLine(LOG_IDENT, $"Failed to pre-launch integration '{integration.Name}'!");
-						App.Logger.WriteLine(LOG_IDENT, ex.Message);
-					}
+            // the code you're gonna read ahead is horrible. sorry for the hack, but it works ¯\_(ツ)_/¯
+            // check if prelaunch is checked
+            foreach (var integration in App.Settings.Prop.CustomIntegrations)
+            {
+                if (integration?.PreLaunch == true)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Pre-Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+                    int pid = 0;
+                    try
+                    {
+                        var process = Process.Start(new ProcessStartInfo
+                        {
+                            FileName = integration.Location,
+                            Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                            WorkingDirectory = Path.GetDirectoryName(integration.Location),
+                            UseShellExecute = true
+                        })!;
+                        pid = process.Id;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to pre-launch integration '{integration.Name}'!");
+                        App.Logger.WriteLine(LOG_IDENT, ex.Message);
+                    }
 
-					if (integration?.AutoClose == true && pid != 0)
-						autoclosePids.Add(pid);
+                    if (integration?.AutoClose == true && pid != 0)
+                        autoclosePids.Add(pid);
 
-					if (integration?.Delay != null)
-						Thread.Sleep(integration.Delay);
-				}
-			}
+                    if (integration?.Delay != null)
+                        Thread.Sleep(integration.Delay);
+                }
+            }
 
-			// v2.2.0 - byfron will trip if we keep a process handle open for over a minute, so we're doing this now
-			try
-			{
+            // v2.2.0 - byfron will trip if we keep a process handle open for over a minute, so we're doing this now
+            try
+            {
                 using var process = Process.Start(startInfo)!;
-
                 _appPid = process.Id;
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
@@ -889,10 +886,10 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}), waiting for log file");
 
-			// should i increase timeout ? since i think watcher dosent launh sometimes cause it cannot find the log file in time.
-			logCreatedEvent.WaitOne(TimeSpan.FromSeconds(30));
+            // should i increase timeout ? since i think watcher dosent launh sometimes cause it cannot find the log file in time.
+            logCreatedEvent.WaitOne(TimeSpan.FromSeconds(30));
 
-			if (String.IsNullOrEmpty(logFileName))
+            if (String.IsNullOrEmpty(logFileName))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Unable to identify log file");
                 // Frontend.ShowPlayerErrorDialog();
@@ -905,58 +902,57 @@ namespace Froststrap
 
             _mutex?.ReleaseAsync();
 
+            if (!IsStudioLaunch)
+            {
+                // launch custom integrations now if normal roblox
+                foreach (var integration in App.Settings.Prop.CustomIntegrations)
+                {
+                    if (integration == null)
+                        continue;
 
-			if (!IsStudioLaunch)
-			{
-				// launch custom integrations now if normal roblox
-				foreach (var integration in App.Settings.Prop.CustomIntegrations)
-				{
-					if (integration == null)
-						continue;
+                    if (integration?.PreLaunch == true)
+                        continue; // skip pre-launch integrations
 
-					if (integration?.PreLaunch == true)
-						continue; // skip pre-launch integrations
+                    if (!integration!.SpecifyGame)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
 
-					if (!integration!.SpecifyGame)
-					{
-						App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
+                        int pid = 0;
 
-						int pid = 0;
+                        try
+                        {
+                            var process = Process.Start(new ProcessStartInfo
+                            {
+                                FileName = integration.Location,
+                                Arguments = integration.LaunchArgs.Replace("\r\n", " "),
+                                WorkingDirectory = Path.GetDirectoryName(integration.Location),
+                                UseShellExecute = true
+                            })!;
 
-						try
-						{
-							var process = Process.Start(new ProcessStartInfo
-							{
-								FileName = integration.Location,
-								Arguments = integration.LaunchArgs.Replace("\r\n", " "),
-								WorkingDirectory = Path.GetDirectoryName(integration.Location),
-								UseShellExecute = true
-							})!;
+                            pid = process.Id;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}'!");
+                            App.Logger.WriteLine(LOG_IDENT, ex.Message);
+                        }
 
-							pid = process.Id;
-						}
-						catch (Exception ex)
-						{
-							App.Logger.WriteLine(LOG_IDENT, $"Failed to launch integration '{integration.Name}'!");
-							App.Logger.WriteLine(LOG_IDENT, ex.Message);
-						}
+                        if (integration.AutoClose && pid != 0)
+                            autoclosePids.Add(pid);
+                    }
+                }
 
-						if (integration.AutoClose && pid != 0)
-							autoclosePids.Add(pid);
-					}
-				}
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = Paths.Process,
+                    Arguments = $"-postlaunch {_appPid}",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                });
+            }
 
-				Process.Start(new ProcessStartInfo
-				{
-					FileName = Paths.Process,
-					Arguments = $"-postlaunch {_appPid}",
-					UseShellExecute = false,
-					CreateNoWindow = true,
-					WindowStyle = ProcessWindowStyle.Hidden
-				});
-			}
-
-			if (App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Any())
+            if (App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Any())
             {
                 using var ipl = new InterProcessLock("Watcher", TimeSpan.FromSeconds(5));
 
@@ -964,9 +960,9 @@ namespace Froststrap
                 {
                     ProcessId = _appPid,
                     LogFile = logFileName,
-					AutoclosePids = autoclosePids,
-					LaunchMode = _launchMode
-				};
+                    AutoclosePids = autoclosePids,
+                    LaunchMode = _launchMode
+                };
 
                 string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
 
@@ -1053,13 +1049,13 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::CheckForUpdates";
 
-			if (App.Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
-			{
-				App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings.");
-				return false;
-			}
+            if (App.Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings.");
+                return false;
+            }
 
-			if (Process.GetProcessesByName(App.ProjectName).Length > 1)
+            if (Process.GetProcessesByName(App.ProjectName).Length > 1)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"More than one {App.ProjectName} instance running, aborting update check.");
                 return false;
@@ -1067,37 +1063,37 @@ namespace Froststrap
 
             SetStatus("Checking for Updates...");
 
-			GithubRelease? releaseInfo = null;
-			string version;
+            GithubRelease? releaseInfo = null;
+            string version;
 
 #if !DEBUG_UPDATER
-			UpdateCheck preference = App.Settings.Prop.UpdateChecks;
+            UpdateCheck preference = App.Settings.Prop.UpdateChecks;
 
-			bool includePreRelease = (preference == UpdateCheck.Both || preference == UpdateCheck.Test);
+            bool includePreRelease = (preference == UpdateCheck.Both || preference == UpdateCheck.Test);
 
-			releaseInfo = await App.GetLatestRelease(includePreRelease);
-			if (releaseInfo is null)
+            releaseInfo = await App.GetLatestRelease(includePreRelease);
+
+            if (releaseInfo is null)
                 return false;
 
             string currentVer = App.Version;
             string releaseVer = releaseInfo.TagName;
-			version = releaseVer;
+            version = releaseVer;
 
-			var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
+            var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
 
             if (versionComparison == VersionComparison.LessThan)
             {
-				string releaseType = releaseInfo.Prerelease ? "Pre-release" : "Stable";
-				App.Logger.WriteLine(LOG_IDENT, $"{releaseType} update available: {currentVer} -> {releaseVer}");
+                string releaseType = releaseInfo.Prerelease ? "Pre-release" : "Stable";
+                App.Logger.WriteLine(LOG_IDENT, $"{releaseType} update available: {currentVer} -> {releaseVer}");
 
                 var result = await Frontend.ShowMessageBox(
                     $"A new {releaseType.ToLower()} version {releaseVer} is available. Would you like to update now?",
                     MessageBoxImage.Question,
                     MessageBoxButton.YesNo
-                    );
+                );
 
-
-				if (result != MessageBoxResult.Yes)
+                if (result != MessageBoxResult.Yes)
                 {
                     App.Logger.WriteLine(LOG_IDENT, "User declined the update.");
                     return false;
@@ -1105,31 +1101,30 @@ namespace Froststrap
             }
             else
             {
-				App.Logger.WriteLine(LOG_IDENT, $"No update required. Current: {currentVer}, Latest: {releaseVer}");
-				return false;
+                App.Logger.WriteLine(LOG_IDENT, $"No update required. Current: {currentVer}, Latest: {releaseVer}");
+                return false;
             }
-
 #else
     version = App.Version;
 #endif
 
-			SetStatus(Strings.Bootstrapper_Status_UpgradingFroststrap);
+            SetStatus(Strings.Bootstrapper_Status_UpgradingFroststrap);
 
             try
             {
 #if DEBUG_UPDATER
-        string downloadLocation = Path.Combine(Paths.TempUpdates, "Froststrap.exe");
+        string downloadLocation = Path.Combine(Paths.TempUpdates, "Bloxstrap.exe");
         Directory.CreateDirectory(Paths.TempUpdates);
         File.Copy(Paths.Process, downloadLocation, overwrite: true);
 #else
-				if (releaseInfo!.Assets is null || releaseInfo.Assets.Count == 0)
-				{
-					App.Logger.WriteLine(LOG_IDENT, "Release found but no assets were available for download.");
-					return false;
-				}
+                if (releaseInfo!.Assets is null || releaseInfo.Assets.Count == 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Release found but no assets were available for download.");
+                    return false;
+                }
 
-				var asset = releaseInfo.Assets[0];
-				string downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
+                var asset = releaseInfo.Assets[0];
+                string downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
                 Directory.CreateDirectory(Paths.TempUpdates);
 
                 App.Logger.WriteLine(LOG_IDENT, $"Downloading {version}...");
@@ -1170,12 +1165,13 @@ namespace Froststrap
                 {
                     var result = await Frontend.ShowMessageBox(
                         string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
-                    MessageBoxImage.Information,
-                    MessageBoxButton.YesNo);
+                        MessageBoxImage.Information,
+                        MessageBoxButton.YesNo);
 
                     if (result == MessageBoxResult.Yes)
-						Utilities.ShellExecute(App.ProjectDownloadLink);
-					return false;
+                        Utilities.ShellExecute(App.ProjectDownloadLink);
+
+                    return false;
                 }
 
                 return true;
@@ -1191,39 +1187,39 @@ namespace Froststrap
                     MessageBoxButton.YesNo);
 
                 if (result == MessageBoxResult.Yes)
-					Utilities.ShellExecute(App.ProjectDownloadLink);
-			}
+                    Utilities.ShellExecute(App.ProjectDownloadLink);
+            }
 
             return false;
         }
-		#endregion
+        #endregion
 
-		#region Roblox Install
-		private static bool TryDeleteRobloxInDirectory(string dir)
-		{
-			string[] executables = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
+        #region Roblox Install
+        private static bool TryDeleteRobloxInDirectory(string dir)
+        {
+            string[] executables = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
 
-			foreach (string exe in executables)
-			{
-				string path = Path.Combine(dir, exe);
-				if (!File.Exists(path))
-					return true;
+            foreach (string exe in executables)
+            {
+                string path = Path.Combine(dir, exe);
+                if (!File.Exists(path))
+                    return true;
 
-				try
-				{
-					File.SetAttributes(path, FileAttributes.Normal);
-					File.Delete(path);
-				}
-				catch (Exception)
-				{
-					return false;
-				}
-			}
+                try
+                {
+                    File.SetAttributes(path, FileAttributes.Normal);
+                    File.Delete(path);
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		public static void CleanupVersionsFolder()
+        public static void CleanupVersionsFolder()
         {
             const string LOG_IDENT = "Bootstrapper::CleanupVersionsFolder";
 
@@ -1248,8 +1244,6 @@ namespace Froststrap
                     _staticDirectory && (dirName != "WindowsPlayer" && dirName != "WindowsStudio64")
                     )
                 {
-                    // TODO: this is too expensive
-                    //Filesystem.AssertReadOnlyDirectory(dir);
 
                     // check if it's still being used first
                     // we dont want to accidentally delete the files of a running roblox instance
@@ -1259,20 +1253,20 @@ namespace Froststrap
                     {
                         Directory.Delete(dir, true);
                     }
-					catch (UnauthorizedAccessException)
-					{
-						try
-						{
-							Filesystem.AssertReadOnlyDirectory(dir);
-							Directory.Delete(dir, true);
-						}
-						catch (Exception ex)
-						{
-							App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir} after fixing attributes.");
-							App.Logger.WriteException(LOG_IDENT, ex);
-						}
-					}
-					catch (IOException ex)
+                    catch (UnauthorizedAccessException)
+                    {
+                        try
+                        {
+                            Filesystem.AssertReadOnlyDirectory(dir);
+                            Directory.Delete(dir, true);
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir} after fixing attributes.");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                        }
+                    }
+                    catch (IOException ex)
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {dir}");
                         App.Logger.WriteException(LOG_IDENT, ex);
@@ -1299,52 +1293,53 @@ namespace Froststrap
                 appFlagsKey.DeleteValueSafe(oldClientLocation);
             }
         }
-		private void KillRobloxPlayers()
-		{
-			const string LOG_IDENT = "Bootstrapper::KillRobloxPlayers";
 
-			var processesToKill = new List<Process>();
-			processesToKill.AddRange(Process.GetProcessesByName("RobloxPlayerBeta"));
-			processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
+        private void KillRobloxPlayers()
+        {
+            const string LOG_IDENT = "Bootstrapper::KillRobloxPlayers";
 
-			foreach (Process process in processesToKill)
-			{
-				try
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"Terminating process {process.ProcessName} ({process.Id})");
-					process.Kill();
-				}
-				catch (Exception ex)
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"Failed to close process {process.Id}");
-					App.Logger.WriteException(LOG_IDENT, ex);
-				}
-			}
+            var processesToKill = new List<Process>();
+            processesToKill.AddRange(Process.GetProcessesByName("RobloxPlayerBeta"));
+            processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
 
-			var studioProcesses = Process.GetProcessesByName("RobloxStudioBeta");
+            foreach (Process process in processesToKill)
+            {
+                try
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Terminating process {process.ProcessName} ({process.Id})");
+                    process.Kill();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to close process {process.Id}");
+                    App.Logger.WriteException(LOG_IDENT, ex);
+                }
+            }
 
-			if (studioProcesses.Any())
-			{
-				App.Logger.WriteLine(LOG_IDENT, "Waiting for Roblox Studio processes to exit...");
+            var studioProcesses = Process.GetProcessesByName("RobloxStudioBeta");
 
-				SetStatus("Waitting for Roblox Studio...");
+            if (studioProcesses.Any())
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Waiting for Roblox Studio processes to exit...");
 
-				while (Process.GetProcessesByName("RobloxStudioBeta").Any())
-				{
-					Thread.Sleep(1000);
+                SetStatus("Waitting for Roblox Studio...");
 
-					if (_cancelTokenSource.IsCancellationRequested)
-					{
-						App.Logger.WriteLine(LOG_IDENT, "Studio wait cancelled by user.");
-						return;
-					}
-				}
+                while (Process.GetProcessesByName("RobloxStudioBeta").Any())
+                {
+                    Thread.Sleep(1000);
 
-				App.Logger.WriteLine(LOG_IDENT, "All Roblox Studio processes closed.");
-			}
-		}
+                    if (_cancelTokenSource.IsCancellationRequested)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Studio wait cancelled by user.");
+                        return;
+                    }
+                }
 
-		private async Task UpgradeRoblox()
+                App.Logger.WriteLine(LOG_IDENT, "All Roblox Studio processes closed.");
+            }
+        }
+
+        private async Task UpgradeRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::UpgradeRoblox";
 
@@ -1377,9 +1372,9 @@ namespace Froststrap
 
             _isInstalling = true;
 
-			// make sure nothing is running before continuing upgrade
-			if (!App.LaunchSettings.BackgroundUpdaterFlag.Active)
-				KillRobloxPlayers();
+            // make sure nothing is running before continuing upgrade
+            if (!App.LaunchSettings.BackgroundUpdaterFlag.Active)
+                KillRobloxPlayers();
 
             // get a fully clean install
             if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(_latestVersionDirectory))
@@ -1442,7 +1437,7 @@ namespace Froststrap
                 // download all the packages synchronously
                 await DownloadPackage(package);
 
-                // Extract this later if need be
+                // we'll extract the runtime installer later if we need to
                 if (package.Name == "WebView2RuntimeInstaller.zip")
                     continue;
 
@@ -1461,9 +1456,6 @@ namespace Froststrap
             }
 
             await Task.WhenAll(extractionTasks);
-
-            App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
-            await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings);
 
             if (_cancelTokenSource.IsCancellationRequested)
                 return;
@@ -1588,7 +1580,7 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::StartBackgroundUpdater";
 
-            if (Utilities.DoesMutexExist("Froststrap-BackgroundUpdater"))
+            if (Utilities.DoesMutexExist("Bloxstrap-BackgroundUpdater"))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Background updater already running");
                 return;
@@ -1599,297 +1591,297 @@ namespace Froststrap
             Process.Start(Paths.Process, "-backgroundupdater");
         }
 
-		private async Task<bool> ApplyModifications()
-		{
-			const string LOG_IDENT = "Bootstrapper::ApplyModifications";
-			bool success = true;
+        private async Task<bool> ApplyModifications()
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyModifications";
+            bool success = true;
 
-			SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
-			App.Logger.WriteLine(LOG_IDENT, "Checking file mods...");
+            SetStatus(Strings.Bootstrapper_Status_ApplyingModifications);
+            App.Logger.WriteLine(LOG_IDENT, "Checking file mods...");
 
-			File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
+            File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
 
-			var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
-			Directory.CreateDirectory(Paths.Modifications);
+            var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
+            Directory.CreateDirectory(Paths.Modifications);
 
-			var activeMods = App.State.Prop.Mods
-								.Where(x => x.Target != "Disabled" && (
-											x.Target == "Both" ||
-											(IsStudioLaunch && x.Target == "Studio") ||
-											(!IsStudioLaunch && x.Target == "Player")))
-								.OrderBy(x => x.Priority)
-								.ToList();
+            var activeMods = App.State.Prop.Mods
+                                .Where(x => x.Target != "Disabled" && (
+                                            x.Target == "Both" ||
+                                            (IsStudioLaunch && x.Target == "Studio") ||
+                                            (!IsStudioLaunch && x.Target == "Player")))
+                                .OrderBy(x => x.Priority)
+                                .ToList();
 
-			string? activeFontFilename = null;
-			string? customFontModName = activeMods.LastOrDefault(mod =>
-			{
-				if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
-				{
-					activeFontFilename = "CustomFont.ttf";
-					return true;
-				}
-				if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf")))
-				{
-					activeFontFilename = "CustomFont.otf";
-					return true;
-				}
-				return false;
-			})?.FolderName;
+            string? activeFontFilename = null;
+            string? customFontModName = activeMods.LastOrDefault(mod =>
+            {
+                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
+                {
+                    activeFontFilename = "CustomFont.ttf";
+                    return true;
+                }
+                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf")))
+                {
+                    activeFontFilename = "CustomFont.otf";
+                    return true;
+                }
+                return false;
+            })?.FolderName;
 
-			if (customFontModName != null && activeFontFilename != null)
-			{
-				App.Logger.WriteLine(LOG_IDENT, $"Executing font patcher for {activeFontFilename}...");
-				string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
-				string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
+            if (customFontModName != null && activeFontFilename != null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Executing font patcher for {activeFontFilename}...");
+                string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
+                string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
 
-				Directory.CreateDirectory(familiesFolder);
-				Directory.CreateDirectory(modFontFamiliesFolder);
+                Directory.CreateDirectory(familiesFolder);
+                Directory.CreateDirectory(modFontFamiliesFolder);
 
-				string rbxAssetPath = $"rbxasset://fonts/{activeFontFilename}";
-				var jsonFiles = Directory.GetFiles(familiesFolder, "*.json");
+                string rbxAssetPath = $"rbxasset://fonts/{activeFontFilename}";
+                var jsonFiles = Directory.GetFiles(familiesFolder, "*.json");
 
-				await Task.Run(() =>
-				{
-					Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
-					{
-						string jsonFilename = Path.GetFileName(jsonFilePath);
-						string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
+                await Task.Run(() =>
+                {
+                    Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
+                    {
+                        string jsonFilename = Path.GetFileName(jsonFilePath);
+                        string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
 
-						if (File.Exists(modFilepath)) return;
+                        if (File.Exists(modFilepath)) return;
 
-						var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
-						if (fontFamilyData is null) return;
+                        var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
+                        if (fontFamilyData is null) return;
 
-						bool shouldWrite = false;
-						foreach (var fontFace in fontFamilyData.Faces)
-						{
-							if (fontFace.AssetId != rbxAssetPath)
-							{
-								fontFace.AssetId = rbxAssetPath;
-								shouldWrite = true;
-							}
-						}
+                        bool shouldWrite = false;
+                        foreach (var fontFace in fontFamilyData.Faces)
+                        {
+                            if (fontFace.AssetId != rbxAssetPath)
+                            {
+                                fontFace.AssetId = rbxAssetPath;
+                                shouldWrite = true;
+                            }
+                        }
 
-						if (shouldWrite)
-							File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
-					});
-				});
-				App.Logger.WriteLine(LOG_IDENT, "End font check");
-			}
+                        if (shouldWrite)
+                            File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
+                    });
+                });
+                App.Logger.WriteLine(LOG_IDENT, "End font check");
+            }
 
-			var finalFilesToCopy = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-			var filesToDelete = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var finalFilesToCopy = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var filesToDelete = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-			foreach (var mod in activeMods)
-			{
-				string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
-				if (!Directory.Exists(modSource)) continue;
+            foreach (var mod in activeMods)
+            {
+                string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+                if (!Directory.Exists(modSource)) continue;
 
-				foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
-				{
-					string relativeFile = file.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
+                foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
+                {
+                    string relativeFile = file.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
 
-					if (relativeFile == "README.txt")
-					{
-						File.Delete(file);
-						continue;
-					}
+                    if (relativeFile == "README.txt")
+                    {
+                        File.Delete(file);
+                        continue;
+                    }
 
-					if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock") || relativeFile.EndsWith(".mesh"))
-						continue;
+                    if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock") || relativeFile.EndsWith(".mesh"))
+                        continue;
 
-					string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+                    string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
 
-					if (fileNameWithoutExt.EndsWith("_Delete"))
-					{
-						string originalRelName = Path.Combine(Path.GetDirectoryName(relativeFile) ?? "", fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(relativeFile));
-						filesToDelete.Add(originalRelName);
-						finalFilesToCopy.Remove(originalRelName);
-					}
-					else
-					{
-						finalFilesToCopy[relativeFile] = file;
-						filesToDelete.Remove(relativeFile);
-					}
-				}
-			}
+                    if (fileNameWithoutExt.EndsWith("_Delete"))
+                    {
+                        string originalRelName = Path.Combine(Path.GetDirectoryName(relativeFile) ?? "", fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(relativeFile));
+                        filesToDelete.Add(originalRelName);
+                        finalFilesToCopy.Remove(originalRelName);
+                    }
+                    else
+                    {
+                        finalFilesToCopy[relativeFile] = file;
+                        filesToDelete.Remove(relativeFile);
+                    }
+                }
+            }
 
-			foreach (var relPath in filesToDelete)
-			{
-				string targetFile = Path.Combine(_latestVersionDirectory, relPath);
-				if (File.Exists(targetFile))
-				{
-					Filesystem.AssertReadOnly(targetFile);
-					File.Delete(targetFile);
-					App.Logger.WriteLine(LOG_IDENT, $"{relPath} has been deleted via _Delete flag");
+            foreach (var relPath in filesToDelete)
+            {
+                string targetFile = Path.Combine(_latestVersionDirectory, relPath);
+                if (File.Exists(targetFile))
+                {
+                    Filesystem.AssertReadOnly(targetFile);
+                    File.Delete(targetFile);
+                    App.Logger.WriteLine(LOG_IDENT, $"{relPath} has been deleted via _Delete flag");
 
-					string? parentDir = Path.GetDirectoryName(targetFile);
-					while (!string.IsNullOrEmpty(parentDir) &&
-							parentDir.TrimEnd(Path.DirectorySeparatorChar) != _latestVersionDirectory.TrimEnd(Path.DirectorySeparatorChar))
-					{
-						if (Directory.Exists(parentDir) && !Directory.EnumerateFileSystemEntries(parentDir).Any())
-						{
-							Directory.Delete(parentDir);
-							parentDir = Path.GetDirectoryName(parentDir);
-						}
-						else break;
-					}
-				}
-				lock (currentModManifest)
-					currentModManifest[relPath + "_Delete"] = new ModFileEntry { Size = 0, LastModified = DateTime.Now };
-			}
+                    string? parentDir = Path.GetDirectoryName(targetFile);
+                    while (!string.IsNullOrEmpty(parentDir) &&
+                            parentDir.TrimEnd(Path.DirectorySeparatorChar) != _latestVersionDirectory.TrimEnd(Path.DirectorySeparatorChar))
+                    {
+                        if (Directory.Exists(parentDir) && !Directory.EnumerateFileSystemEntries(parentDir).Any())
+                        {
+                            Directory.Delete(parentDir);
+                            parentDir = Path.GetDirectoryName(parentDir);
+                        }
+                        else break;
+                    }
+                }
+                lock (currentModManifest)
+                    currentModManifest[relPath + "_Delete"] = new ModFileEntry { Size = 0, LastModified = DateTime.Now };
+            }
 
-			var fileTasks = new List<Task<bool>>();
-			using var semaphore = new SemaphoreSlim(8);
+            var fileTasks = new List<Task<bool>>();
+            using var semaphore = new SemaphoreSlim(8);
 
-			foreach (var entry in finalFilesToCopy)
-			{
-				if (_cancelTokenSource.IsCancellationRequested) return true;
+            foreach (var entry in finalFilesToCopy)
+            {
+                if (_cancelTokenSource.IsCancellationRequested) return true;
 
-				string relativeFile = entry.Key;
-				string sourceFile = entry.Value;
-				string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
+                string relativeFile = entry.Key;
+                string sourceFile = entry.Value;
+                string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
 
-				fileTasks.Add(Task.Run(async () =>
-				{
-					await semaphore.WaitAsync();
-					try
-					{
-						var sourceInfo = new FileInfo(sourceFile);
-						lock (currentModManifest)
-							currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
+                fileTasks.Add(Task.Run(async () =>
+                {
+                    await semaphore.WaitAsync();
+                    try
+                    {
+                        var sourceInfo = new FileInfo(sourceFile);
+                        lock (currentModManifest)
+                            currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
 
-						bool needsCopy = true;
-						if (File.Exists(fileVersionFolder))
-						{
-							var targetInfo = new FileInfo(fileVersionFolder);
-							if (targetInfo.Length == sourceInfo.Length && targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
-							{
-								needsCopy = false;
-							}
-							else
-							{
-								string sourceHash = await Task.Run(() => MD5Hash.FromFile(sourceFile));
-								string targetHash = await Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+                        bool needsCopy = true;
+                        if (File.Exists(fileVersionFolder))
+                        {
+                            var targetInfo = new FileInfo(fileVersionFolder);
+                            if (targetInfo.Length == sourceInfo.Length && targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
+                            {
+                                needsCopy = false;
+                            }
+                            else
+                            {
+                                string sourceHash = await Task.Run(() => MD5Hash.FromFile(sourceFile));
+                                string targetHash = await Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
 
-								if (sourceHash == targetHash)
-								{
-									needsCopy = false;
-									File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
-								}
-							}
-						}
+                                if (sourceHash == targetHash)
+                                {
+                                    needsCopy = false;
+                                    File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                                }
+                            }
+                        }
 
-						if (needsCopy)
-						{
-							Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-							Filesystem.AssertReadOnly(fileVersionFolder);
-							File.Copy(sourceFile, fileVersionFolder, true);
-							File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
-							Filesystem.AssertReadOnly(fileVersionFolder);
-							App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied from mod source");
-						}
+                        if (needsCopy)
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            File.Copy(sourceFile, fileVersionFolder, true);
+                            File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied from mod source");
+                        }
 
-						return true;
-					}
-					catch (Exception ex)
-					{
-						App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}): {ex.Message}");
-						return false;
-					}
-					finally { semaphore.Release(); }
-				}));
-			}
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}): {ex.Message}");
+                        return false;
+                    }
+                    finally { semaphore.Release(); }
+                }));
+            }
 
-			if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
-				await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
+            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
+                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
 
-			var fileResults = await Task.WhenAll(fileTasks);
-			success = success && fileResults.All(r => r);
+            var fileResults = await Task.WhenAll(fileTasks);
+            success = success && fileResults.All(r => r);
 
-			if (App.Settings.Prop.UseFastFlagManager)
-			{
-				string source = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
-				if (File.Exists(source))
-				{
-					string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-					string dest = Path.Combine(_latestVersionDirectory, rel);
-					var info = new FileInfo(source);
+            if (App.Settings.Prop.UseFastFlagManager)
+            {
+                string source = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
+                if (File.Exists(source))
+                {
+                    string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                    string dest = Path.Combine(_latestVersionDirectory, rel);
+                    var info = new FileInfo(source);
 
-					lock (currentModManifest)
-						currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
+                    lock (currentModManifest)
+                        currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
 
-					try
-					{
-						bool match = File.Exists(dest) && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
-						if (!match)
-						{
-							Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-							File.Copy(source, dest, true);
-							File.SetLastWriteTime(dest, info.LastWriteTime);
-							App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
-						}
-					}
-					catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
-				}
-			}
+                    try
+                    {
+                        bool match = File.Exists(dest) && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+                        if (!match)
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                            File.Copy(source, dest, true);
+                            File.SetLastWriteTime(dest, info.LastWriteTime);
+                            App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
+                        }
+                    }
+                    catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
+                }
+            }
 
-			var fileRestoreMap = new Dictionary<string, List<string>>();
+            var fileRestoreMap = new Dictionary<string, List<string>>();
 
             foreach (var fileLocation in AppData.DistributionState.ModManifest)
             {
-				if (currentModManifest.ContainsKey(fileLocation))
-					continue;
+                if (currentModManifest.ContainsKey(fileLocation))
+                    continue;
 
-				string targetFile = fileLocation;
-				string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+                string targetFile = fileLocation;
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-				if (fileNameWithoutExt.EndsWith("_Delete"))
-				{
-					string directory = Path.GetDirectoryName(fileLocation) ?? "";
-					string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
-					targetFile = Path.Combine(directory, originalFileNameWithoutDelete + Path.GetExtension(fileLocation));
-				}
+                if (fileNameWithoutExt.EndsWith("_Delete"))
+                {
+                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
+                    string originalFileNameWithoutDelete = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
+                    targetFile = Path.Combine(directory, originalFileNameWithoutDelete + Path.GetExtension(fileLocation));
+                }
 
-				var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase));
-				string packageName = packageMapEntry.Key;
+                var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase));
+                string packageName = packageMapEntry.Key;
 
-				if (String.IsNullOrEmpty(packageName))
-				{
-					string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
-					if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
-					continue;
-				}
+                if (String.IsNullOrEmpty(packageName))
+                {
+                    string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
+                    if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
+                    continue;
+                }
 
-				if (!fileRestoreMap.ContainsKey(packageName))
-					fileRestoreMap[packageName] = new();
+                if (!fileRestoreMap.ContainsKey(packageName))
+                    fileRestoreMap[packageName] = new();
 
-				string internalZipPath = targetFile.Substring(packageMapEntry.Value.Length).TrimStart(Path.DirectorySeparatorChar);
-				fileRestoreMap[packageName].Add(internalZipPath);
-			}
+                string internalZipPath = targetFile.Substring(packageMapEntry.Value.Length).TrimStart(Path.DirectorySeparatorChar);
+                fileRestoreMap[packageName].Add(internalZipPath);
+            }
 
-			foreach (var entry in fileRestoreMap)
-			{
-				var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
-				if (package is not null)
-				{
-					await DownloadPackage(package);
-					ExtractPackage(package, entry.Value);
-				}
-			}
+            foreach (var entry in fileRestoreMap)
+            {
+                var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
+                if (package is not null)
+                {
+                    await DownloadPackage(package);
+                    ExtractPackage(package, entry.Value);
+                }
+            }
 
-			if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
-			{
-                AppData.DistributionState.ModManifest = currentModManifest.Keys.ToList(); 
+            if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
+            {
+                AppData.DistributionState.ModManifest = currentModManifest.Keys.ToList(); ;
                 AppData.DistributionStateManager.Save();
-			}
+            }
 
-			App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
+            App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
 
-			return success;
-		}
+            return success;
+        }
 
-		private async Task DownloadPackage(Package package)
+        private async Task DownloadPackage(Package package)
         {
             string LOG_IDENT = $"Bootstrapper::DownloadPackage.{package.Name}";
 
@@ -2003,7 +1995,7 @@ namespace Froststrap
                     {
                         await Frontend.ShowConnectivityDialog(
                             Strings.Dialog_Connectivity_UnableToDownload,
-                            String.Format(Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/Bloxstraplabs/Bloxstrap/wiki/Froststrap-is-unable-to-download-Roblox](https://github.com/Bloxstraplabs/Bloxstrap/wiki/Froststrap-is-unable-to-download-Roblox)"),
+                            String.Format(Strings.Dialog_Connectivity_UnableToDownloadReason, "[https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox](https://github.com/bloxstraplabs/bloxstrap/wiki/Bloxstrap-is-unable-to-download-Roblox)"),
                             MessageBoxImage.Error,
                             ex
                         );
@@ -2059,11 +2051,11 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name}...");
 
-			var fastZip = new FastZip(_fastZipEvents);
-			fastZip.RestoreDateTimeOnExtract = false;
-			fastZip.RestoreAttributesOnExtract = false;
+            var fastZip = new FastZip(_fastZipEvents);
+            fastZip.RestoreDateTimeOnExtract = false;
+            fastZip.RestoreAttributesOnExtract = false;
 
-			fastZip.ExtractZip(package.DownloadPath, packageFolder, fileFilter);
+            fastZip.ExtractZip(package.DownloadPath, packageFolder, fileFilter);
 
             App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
         }
