@@ -30,7 +30,8 @@
             <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquareSlider.axaml" />
             <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
         </ResourceDictionary.MergedDictionaries>
-        
+
+        <!-- it just says static resource not found if this is not here in completion window -->
         <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />
         <StaticResource x:Key="ToolTipForeground" ResourceKey="ToolTipForegroundBrush" />
 

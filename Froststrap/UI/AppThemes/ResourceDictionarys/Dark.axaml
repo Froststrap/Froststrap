@@ -4,6 +4,7 @@
 	<SolidColorBrush x:Key="NewTextEditorBackground" Color="#2D2D2D" />
 	<SolidColorBrush x:Key="NewTextEditorForeground" Color="White" />
 	<SolidColorBrush x:Key="NewTextEditorLink" Color="#3A9CEA" />
+	<SolidColorBrush x:Key="CompletionListBackgroundBrush" Color="#1F1F1F" />
 	<SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#19000000" />
 	<SolidColorBrush x:Key="NormalDarkAndLightBackground" Color="#0FFFFFFF" />
 	<SolidColorBrush x:Key="ApplicationBackgroundColor" Color="#01000000" />
