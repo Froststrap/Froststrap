@@ -113,7 +113,21 @@ namespace Froststrap.UI.Elements.Bootstrapper
             ThemeDir = Path.Combine(Paths.CustomThemes, name);
             try
             {
-                XElement xml = XElement.Parse(contents);
+                // Convert WPF theme XAML to Avalonia-compatible XAML
+                string convertedContents = Froststrap.UI.Utility.ThemeXamlConverter.ConvertThemeXaml(contents, ThemeDir);
+
+                // Log any compatibility issues
+                var issues = Froststrap.UI.Utility.ThemeXamlConverter.AnalyzeThemeCompatibility(convertedContents);
+                if (issues.Count > 0)
+                {
+                    App.Logger?.WriteLine("CustomDialog", $"Theme compatibility issues for '{name}':");
+                    foreach (var issue in issues)
+                    {
+                        App.Logger?.WriteLine("CustomDialog", $"  - {issue}");
+                    }
+                }
+
+                XElement xml = XElement.Parse(convertedContents);
                 HandleXmlBase(xml);
             }
             catch (Exception ex) when (ex is not CustomThemeException)

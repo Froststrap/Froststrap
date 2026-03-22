@@ -1,155 +1,172 @@
-using System.Collections.ObjectModel;
+using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Threading;
-using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
-using Froststrap.UI.Elements.AccountManagers.Pages;
 using Froststrap.UI.Elements.Base;
-using Froststrap.UI.Elements.Settings.Pages;
+using Froststrap.UI.ViewModels.AccountManagers;
+using ReactiveUI;
+using System.Reactive.Linq;
 
 namespace Froststrap.UI.Elements.AccountManagers
 {
+    public partial class MainWindow : AvaloniaWindow
+    {
+        private AccountManagerViewModel? _viewModel;
 
-	public partial class MainWindow : AvaloniaWindow
-	{
-		public static ObservableCollection<NavigationViewItem> MainNavigationItems { get; } = new();
-		public static ObservableCollection<NavigationViewItem> FooterNavigationItems { get; } = new();
-		public ObservableCollection<NavigationViewItem> NavigationItemsView { get; } = new();
+        public MainWindow()
+        {
+            InitializeComponent();
+            App.FrostRPC?.SetDialog("Account Manager");
+            App.Logger?.WriteLine("MainWindow", "Initializing account manager window");
 
-		public MainWindow()
-		{
-			InitializeComponent();
+            _viewModel = new AccountManagerViewModel();
+            DataContext = _viewModel;
 
-			App.FrostRPC?.SetDialog("Account Manager");
-			App.Logger.WriteLine("MainWindow", "Initializing account manager window");
+            AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
 
-			AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
+            this.Loaded += (s, e) => SetupNavigation();
+            this.Unloaded += (s, e) => Cleanup();
+        }
 
-			string? lastPageName = App.State.Prop.LastPage;
-			Type? lastPage = lastPageName is null ? null : Type.GetType(lastPageName);
+        private void SetupNavigation()
+        {
+            if (_viewModel is null) return;
 
-			var allItems = RootNavigation.MenuItems.Cast<NavigationViewItem>().ToList();
-			var allFooters = RootNavigation.FooterMenuItems.Cast<NavigationViewItem>().ToList();
+            string? lastPageName = App.State.Prop.LastPage;
+            if (lastPageName == "accounts")
+                _viewModel.NavigateToAccountsCommand.Execute(System.Reactive.Unit.Default);
+            else if (lastPageName == "friends")
+                _viewModel.NavigateToFriendsCommand.Execute(System.Reactive.Unit.Default);
+            else if (lastPageName == "games")
+                _viewModel.NavigateToGamesCommand.Execute(System.Reactive.Unit.Default);
+            else
+                _viewModel.NavigateToAccountsCommand.Execute(System.Reactive.Unit.Default);
 
-			MainNavigationItems.Clear();
-			foreach (var item in allItems) MainNavigationItems.Add(item);
+            _viewModel.Router.CurrentViewModel
+                .ObserveOn(RxSchedulers.MainThreadScheduler)
+                .Subscribe(vm => UpdatePageView(vm));
 
-			FooterNavigationItems.Clear();
-			foreach (var item in allFooters) FooterNavigationItems.Add(item);
+            _viewModel.WhenAnyValue(x => x.SelectedPage)
+                .ObserveOn(RxSchedulers.MainThreadScheduler)
+                .Subscribe(page => UpdateSelectedButtonStyle(page));
+        }
 
-			if (lastPage != null)
-				SafeNavigate(lastPage);
-			else
-				RootNavigation.SelectedItem = RootNavigation.MenuItems.Cast<NavigationViewItem>().FirstOrDefault();
+        private void OnActiveAccountChanged(AccountManagerAccount? account)
+        {
+            Dispatcher.UIThread.Invoke(() =>
+            {
+                if (_viewModel is not null)
+                {
+                    _viewModel.NavigateToAccountsCommand.Execute(System.Reactive.Unit.Default);
+                }
+            });
+        }
 
-			RootNavigation.SelectionChanged += OnNavigationChanged;
-		}
+        private void UpdatePageView(IRoutableViewModel? viewModel)
+        {
+            var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
+            if (pageControl is null || viewModel is null) return;
 
-		private void OnActiveAccountChanged(AccountManagerAccount? account)
-		{
-			Dispatcher.UIThread.Invoke(UpdateNavigationItemsState);
-		}
+            // Handle wrapper ViewModels
+            object? actualViewModel = viewModel;
+            if (viewModel is AccountsPageViewModel apvm)
+                actualViewModel = apvm.ViewModel;
+            else if (viewModel is FriendsPageViewModel fpvm)
+                actualViewModel = fpvm.ViewModel;
+            else if (viewModel is GamesPageViewModel gpvm)
+                actualViewModel = gpvm.ViewModel;
 
-		private void UpdateNavigationItemsState()
-		{
-			bool hasActiveAccount = AccountManager.Shared.ActiveAccount != null;
+            var view = ResolveViewForViewModel(actualViewModel ?? viewModel);
+            if (view is not null)
+            {
+                view.DataContext = actualViewModel ?? viewModel;
+                pageControl.Content = view;
+            }
+        }
 
-			if (friends != null)
-			{
-				friends.Opacity = hasActiveAccount ? 1 : 0.5;
-				friends.IsEnabled = hasActiveAccount;
-			}
+        private void UpdateSelectedButtonStyle(string? selectedPage)
+        {
+            var mainGrid = this.FindControl<Grid>("MainGrid");
+            if (mainGrid is null) return;
 
-			if (games != null)
-			{
-				games.Opacity = hasActiveAccount ? 1 : 0.5;
-				games.IsEnabled = hasActiveAccount;
-			}
+            var border = mainGrid.Children.OfType<Border>().FirstOrDefault();
+            if (border?.Child is ScrollViewer scrollViewer && scrollViewer.Content is StackPanel stackPanel)
+            {
+                var unselectedBrush = new SolidColorBrush(Color.Parse("#888888"));
+                var selectedBrush = new SolidColorBrush(Color.Parse("#00d4ff"));
+                var highlightBgColor = new SolidColorBrush(Color.Parse("#333333"));
 
-			if (!hasActiveAccount)
-			{
-				if (RootNavigation.SelectedItem is NavigationViewItem currentItem)
-				{
-					string? tag = currentItem.Tag?.ToString();
-					if (tag == "friends" || tag == "games")
-					{
-						Navigate(typeof(AccountsPage));
-					}
-				}
-			}
-		}
+                foreach (var button in stackPanel.Children.OfType<Button>())
+                {
+                    if (button.Tag is string tag)
+                    {
+                        var isSelected = tag == selectedPage;
 
-		public void ShowLoading(string message = "Loading...")
-		{
-			Dispatcher.UIThread.Invoke(() =>
-			{
-				LoadingOverlayText.Text = message;
-				LoadingOverlay.IsVisible = true;
-			});
-		}
+                        if (isSelected)
+                        {
+                            button.Background = highlightBgColor;
+                        }
+                        else
+                        {
+                            button.Background = new SolidColorBrush(Colors.Transparent);
+                        }
 
-		public void HideLoading()
-		{
-			Dispatcher.UIThread.Invoke(() =>
-			{
-				LoadingOverlay.IsVisible = false;
-			});
-		}
+                        // Update the icon color (shit doesn't work)
+                        if (button.Content is Panel panel && panel.Children.FirstOrDefault() is IconPacks.Avalonia.Material.PackIconMaterial icon)
+                        {
+                            icon.Foreground = isSelected ? selectedBrush : unselectedBrush;
+                        }
+                    }
+                }
+            }
+        }
 
-		// Avalonia uses OnClosing or overriding Close, but for cleanup 
-		// we usually override the DetachedFromVisualTree or use the closed event
-		protected override void OnClosed(EventArgs e)
-		{
-			AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
-			base.OnClosed(e);
-		}
+        private Control? ResolveViewForViewModel(object viewModel)
+        {
+            var actualViewModelType = viewModel.GetType();
+            var viewModelName = actualViewModelType.Name;
+            var viewName = viewModelName.Replace("ViewModel", "");
 
-		#region Navigation Methods
+            var viewTypeNames = new[]
+            {
+                $"Froststrap.UI.Elements.AccountManagers.Pages.{viewName}",
+                $"Froststrap.UI.Elements.AccountManagers.Pages.{viewName}Page",
+                $"Froststrap.UI.Elements.AccountManagers.{viewName}",
+                $"Froststrap.UI.Elements.AccountManagers.{viewName}Page"
+            };
 
-		private void OnNavigationChanged(object? sender, NavigationViewSelectionChangedEventArgs e)
-		{
-			if (e.SelectedItem is NavigationViewItem navItem && navItem.Tag is Type pageType)
-			{
-				Navigate(pageType);
-			}
-		}
+            foreach (var viewTypeName in viewTypeNames)
+            {
+                var viewType = Type.GetType(viewTypeName);
+                if (viewType is null)
+                {
+                    try
+                    {
+                        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                        viewType = assembly.GetType(viewTypeName, false);
+                    }
+                    catch { }
+                }
 
-		private async void SafeNavigate(Type page)
-		{
-			await Task.Delay(500);
+                if (viewType is not null && typeof(Control).IsAssignableFrom(viewType))
+                {
+                    try
+                    {
+                        return Activator.CreateInstance(viewType) as Control;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger?.WriteLine("AccountManager MainWindow", $"Failed to create view {viewTypeName}: {ex.Message}");
+                    }
+                }
+            }
 
-			if (page == typeof(RobloxSettingsPage) && !App.GlobalSettings.Loaded)
-				return;
+            return null;
+        }
 
-			Navigate(page);
-		}
-
-		public bool Navigate(Type pageType)
-		{
-			var targetItem = RootNavigation.MenuItems
-				.OfType<NavigationViewItem>()
-				.FirstOrDefault(nvi => nvi.Tag is Type t && t == pageType);
-
-			if (RootFrame.Content?.GetType() != pageType)
-			{
-				RootFrame.Navigate(pageType);
-
-				App.State.Prop.LastPage = pageType.FullName!;
-
-				if (targetItem != null && RootNavigation.SelectedItem != targetItem)
-				{
-					RootNavigation.SelectedItem = targetItem;
-				}
-
-				return true;
-			}
-
-			return false;
-		}
-
-		public void ShowWindow() => Show();
-
-		public void CloseWindow() => Close();
-
-		#endregion
-	}
+        private void Cleanup()
+        {
+            AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
+        }
+    }
 }
