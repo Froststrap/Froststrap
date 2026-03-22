@@ -54,6 +54,7 @@ namespace Froststrap
         public static bool _staticDirectory => App.Settings.Prop.StaticDirectory;
 
         private bool _isInstalling = false;
+        private bool _launchCompleted = false;
         private double _progressIncrement;
         private double _taskbarProgressIncrement;
         private double _taskbarProgressMaximum;
@@ -870,6 +871,7 @@ namespace Froststrap
             try
             {
                 using var process = Process.Start(startInfo)!;
+                _launchCompleted = true;
                 _appPid = process.Id;
             }
             catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
@@ -1028,7 +1030,7 @@ namespace Froststrap
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
-            else if (_appPid != 0)
+            else if (_appPid != 0 && !_launchCompleted)
             {
                 try
                 {
