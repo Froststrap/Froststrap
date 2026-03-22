@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
 
@@ -14,37 +16,78 @@ namespace Froststrap.UI
 		private readonly Watcher _watcher;
 		private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
 
-		public NotifyIconWrapper(Watcher watcher)
-		{
-			App.Logger.WriteLine("NotifyIconWrapper::NotifyIconWrapper", "Initializing Avalonia TrayIcon");
+        private DateTime _lastClickTime = DateTime.MinValue;
+        private const int DoubleClickThresholdMs = 300;
 
-			_watcher = watcher;
+        public NotifyIconWrapper(Watcher watcher)
+        {
+            App.Logger.WriteLine("NotifyIconWrapper::NotifyIconWrapper", "Initializing Avalonia TrayIcon");
 
-			_menuContainer = new MenuContainer(_watcher);
+            _watcher = watcher;
+            _menuContainer = new MenuContainer(_watcher);
 
-			_trayIcon = new TrayIcon
-			{
-				Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/Froststrap.ico"))),
-				ToolTipText = "Froststrap"
-			};
+            _trayIcon = new TrayIcon
+            {
+                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/Froststrap.ico"))),
+                ToolTipText = "Froststrap"
+            };
 
-			_trayIcon.Clicked += OnTrayIconClicked;
+            _trayIcon.Clicked += OnTrayIconClicked;
 
-			if (_activityWatcher is not null && (App.Settings.Prop.ShowServerDetails || App.Settings.Prop.ShowServerUptime))
-			{
-				_activityWatcher.OnGameJoin += OnGameJoin;
-			}
+            if (_activityWatcher is not null && (App.Settings.Prop.ShowServerDetails || App.Settings.Prop.ShowServerUptime))
+            {
+                _activityWatcher.OnGameJoin += OnGameJoin;
+            }
 
-			var trayIcons = TrayIcon.GetIcons(Application.Current!);
-			trayIcons?.Add(_trayIcon);
-		}
+            var trayIcons = TrayIcon.GetIcons(Application.Current!);
+            trayIcons?.Add(_trayIcon);
+        }
 
-		private void OnTrayIconClicked(object? sender, EventArgs e)
-		{
-			HandleDoubleClickAction();
-		}
+        private void OnTrayIconClicked(object? sender, EventArgs e)
+        {
+            if (e is PointerPressedEventArgs pointerArgs)
+            {
+                var pointerProperties = pointerArgs.GetCurrentPoint(null).Properties;
 
-		private void HandleDoubleClickAction()
+                if (pointerProperties.IsRightButtonPressed)
+                {
+                    HandleRightClickAction();
+                    return;
+                }
+
+                HandleLeftClickLogic();
+            }
+            else
+            {
+                HandleLeftClickLogic();
+            }
+        }
+
+        // TODO fix closing messagebox closes the watcher
+        private void HandleLeftClickLogic()
+        {
+            DateTime now = DateTime.Now;
+            double elapsed = (now - _lastClickTime).TotalMilliseconds;
+
+            if (elapsed <= DoubleClickThresholdMs)
+            {
+                _lastClickTime = DateTime.MinValue;
+                HandleDoubleClickAction();
+            }
+            else
+            {
+                _lastClickTime = now;
+            }
+        }
+
+        private void HandleRightClickAction()
+        {
+            App.Logger.WriteLine("NotifyIconWrapper", "Right click detected - Opening Context Menu");
+
+            // TODO make right clicking open context menu
+        }
+
+        private void HandleDoubleClickAction()
 		{
 			switch (App.Settings.Prop.DoubleClickAction)
 			{
@@ -132,20 +175,23 @@ namespace Froststrap.UI
 			Frontend.ShowBalloonTip(title, message, Avalonia.Controls.Notifications.NotificationType.Information);
 		}
 
-		public void Dispose()
-		{
-			if (_isDisposed) return;
-			_isDisposed = true;
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
 
-			App.Logger.WriteLine("NotifyIconWrapper::Dispose", "Cleaning up TrayIcon and MenuContainer");
+            App.Logger.WriteLine("NotifyIconWrapper::Dispose", "Cleaning up TrayIcon and MenuContainer");
 
-			var trayIcons = TrayIcon.GetIcons(Application.Current!);
-			trayIcons?.Remove(_trayIcon);
+            Dispatcher.UIThread.Post(() =>
+            {
+                var trayIcons = TrayIcon.GetIcons(Application.Current!);
+                trayIcons?.Remove(_trayIcon);
 
-			_menuContainer.Close();
-			_trayIcon.Dispose();
+                _menuContainer.Close();
+                _trayIcon.Dispose();
+            });
 
-			GC.SuppressFinalize(this);
-		}
-	}
+            GC.SuppressFinalize(this);
+        }
+    }
 }
