@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System.Reactive.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Data;
@@ -23,21 +24,10 @@ namespace Froststrap.UI.Elements.Controls
                 defaultBindingMode: BindingMode.OneWay,
                 coerce: OnCoerceMarkdownText);
 
-        public static readonly StyledProperty<IBrush> LinkForegroundProperty =
-            AvaloniaProperty.Register<MarkdownTextBlock, IBrush>(
-                nameof(LinkForeground),
-                defaultValue: Brushes.LightBlue);
-
         public string MarkdownText
         {
             get => GetValue(MarkdownTextProperty);
             set => SetValue(MarkdownTextProperty, value);
-        }
-
-        public IBrush LinkForeground
-        {
-            get => GetValue(LinkForegroundProperty);
-            set => SetValue(LinkForegroundProperty, value);
         }
 
         static MarkdownTextBlock()
@@ -47,11 +37,11 @@ namespace Froststrap.UI.Elements.Controls
 
         private static string OnCoerceMarkdownText(AvaloniaObject sender, string value)
         {
-            if (sender is MarkdownTextBlock markdownTextBlock)
+            if (sender is MarkdownTextBlock markdownTextBlock && value != null)
             {
                 markdownTextBlock.UpdateMarkdown(value);
             }
-            return value;
+            return value ?? string.Empty;
         }
 
         private void OnMarkdownTextChanged(AvaloniaPropertyChangedEventArgs e)
@@ -71,7 +61,13 @@ namespace Froststrap.UI.Elements.Controls
             }
 
             var document = Markdig.Markdown.Parse(markdown, _markdownPipeline);
-            Inlines = ConvertMarkdownToInlines(document);
+            var result = ConvertMarkdownToInlines(document);
+
+            if (Inlines != null)
+            {
+                Inlines.Clear();
+                Inlines.AddRange(result);
+            }
         }
 
         private InlineCollection ConvertMarkdownToInlines(MarkdownDocument document)
@@ -103,8 +99,7 @@ namespace Froststrap.UI.Elements.Controls
 
         private Avalonia.Controls.Documents.Inline? GetAvaloniaInlineFromMarkdownInline(Markdig.Syntax.Inlines.Inline? inline)
         {
-            if (inline == null) 
-                return null;
+            if (inline == null) return null;
 
             if (inline is LiteralInline literalInline)
             {
@@ -126,12 +121,9 @@ namespace Froststrap.UI.Elements.Controls
                             italic.Inlines.Add(childInline);
                             return italic;
                         }
-                        else
-                        {
-                            var bold = new Bold();
-                            bold.Inlines.Add(childInline);
-                            return bold;
-                        }
+                        var bold = new Bold();
+                        bold.Inlines.Add(childInline);
+                        return bold;
                     case '=':
                         var span = new Span();
                         span.Inlines.Add(childInline);
@@ -148,29 +140,32 @@ namespace Froststrap.UI.Elements.Controls
                 var textInline = linkInline.FirstChild;
                 string linkText = textInline?.ToString() ?? url;
 
-                var hyperlinkControl = new Hyperlink(linkText, url);
-
-                hyperlinkControl[!Hyperlink.LinkForegroundProperty] = this[!MarkdownTextBlock.LinkForegroundProperty];
-
-                if (hyperlinkControl.Content == null)
+                var textBlock = new TextBlock
                 {
-                    hyperlinkControl.Content = new TextBlock
-                    {
-                        Text = linkText,
-                        TextDecorations = TextDecorationCollection.Parse("Underline")
-                    };
-                }
+                    Text = linkText
+                };
+
+                var hyperlinkControl = new Hyperlink(linkText, url)
+                {
+                    Content = textBlock
+                };
+
+                textBlock[!TextBlock.ForegroundProperty] = hyperlinkControl[!Hyperlink.ForegroundProperty];
+
+                hyperlinkControl.GetObservable(Hyperlink.IsPointerOverProperty).Subscribe(isHovered =>
+                {
+                    textBlock.TextDecorations = isHovered
+                        ? Avalonia.Media.TextDecorations.Underline
+                        : null;
+                });
 
                 return new InlineUIContainer(hyperlinkControl)
                 {
-                    BaselineAlignment = BaselineAlignment.Center
+                    BaselineAlignment = BaselineAlignment.TextBottom
                 };
             }
 
-            if (inline is LineBreakInline)
-            {
-                return new LineBreak();
-            }
+            if (inline is LineBreakInline) return new LineBreak();
 
             return null;
         }

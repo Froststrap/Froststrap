@@ -64,13 +64,9 @@
         <Setter Property="RenderTransform" Value="scale(0.98)" />
     </Style>
 
-    <Style Selector="controls|IconButton:disabled">
-        <Setter Property="Opacity" Value="0.5" />
-    </Style>
-
     <Style Selector="controls|IconButton:disabled /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorDisabledBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
+        <Setter Property="Opacity" Value="0.5" />
     </Style>
 
     <Style Selector="controls|IconButton.Dangerous:not(:disabled)">
@@ -83,8 +79,25 @@
         <Setter Property="Background" Value="#FF5247" />
     </Style>
 
-    <Style Selector="controls|IconButton.Dangerous:not(:disabled):pressed">
-        <Setter Property="Opacity" Value="0.8" />
+    <Style Selector="controls|IconButton.Dangerous:disabled /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#80FF3B30" />
+        <Setter Property="BorderBrush" Value="#80E03026" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Primary">
+        <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Primary:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushPointerOver}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Primary:disabled /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundDisabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushDisabled}" />
     </Style>
 
 </Styles>

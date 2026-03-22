@@ -12,9 +12,6 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<string?> TextProperty =
             AvaloniaProperty.Register<Hyperlink, string?>(nameof(Text));
 
-        public static readonly StyledProperty<IBrush> LinkForegroundProperty =
-            AvaloniaProperty.Register<Hyperlink, IBrush>(nameof(LinkForeground), Brushes.LightBlue);
-
         public string? Url
         {
             get => GetValue(UrlProperty);
@@ -25,12 +22,6 @@ namespace Froststrap.UI.Elements.Controls
         {
             get => GetValue(TextProperty);
             set => SetValue(TextProperty, value);
-        }
-
-        public IBrush LinkForeground
-        {
-            get => GetValue(LinkForegroundProperty);
-            set => SetValue(LinkForegroundProperty, value);
         }
 
         public Hyperlink() { }

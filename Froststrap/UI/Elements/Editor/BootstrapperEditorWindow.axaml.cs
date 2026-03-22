@@ -12,10 +12,11 @@ using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
 using Froststrap.UI.ViewModels.Editor;
 using System.Xml;
+using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Editor
 {
-    public partial class BootstrapperEditorWindow : Window
+    public partial class BootstrapperEditorWindow : AvaloniaWindow
     {
         private static class CustomBootstrapperSchema
         {

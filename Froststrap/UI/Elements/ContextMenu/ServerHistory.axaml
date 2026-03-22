@@ -103,7 +103,7 @@
                                         Icon="Play"
                                         Content="{x:Static resources:Strings.ContextMenu_GameHistory_Rejoin}"
                                         Command="{Binding RejoinServerCommand}" 
-                                        Classes="accent" />
+                                        Classes="Primary" />
 
                                     <controls:IconButton 
                                         Icon="Link"
@@ -118,7 +118,8 @@
                                     <controls:IconButton 
                                         Icon="TrashCanOutline"
                                         Content="{x:Static resources:Strings.Common_Delete}"
-                                        Command="{Binding DeleteHistoryCommand}"/>
+                                        Command="{Binding DeleteHistoryCommand}"
+                                        Classes="Danger"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>

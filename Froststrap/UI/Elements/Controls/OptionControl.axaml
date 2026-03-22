@@ -34,7 +34,6 @@
 													ToolTip.Tip="{x:Static resources:Strings.Menu_MoreInfo}">
 									<ic:PackIconMaterial Name="HelpIcon"
 										  Width="18" Height="18"
-										  Foreground="{DynamicResource SystemAccentColor}"
 										  Kind="HelpCircleOutline"
 										  Opacity="0.8">
 										<ic:PackIconMaterial.Transitions>
@@ -64,14 +63,5 @@
 				</Border>
 			</ControlTemplate>
 		</Setter>
-	</Style>
-
-	<Style Selector="controls|OptionControl controls|Hyperlink:pointerover Path#HelpIcon">
-		<Setter Property="Opacity" Value="1.2" />
-		<Setter Property="RenderTransform" Value="scale(1.1)" />
-	</Style>
-
-	<Style Selector="controls|OptionControl:pointerover">
-		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
 	</Style>
 </Styles>

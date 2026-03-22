@@ -258,7 +258,7 @@
                         Grid.Column="1"
                         Margin="4,0,0,0"
                         HorizontalAlignment="Stretch"
-                        Classes="Dangerous"
+                        Classes="Danger"
                         Command="{Binding DeleteIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_Delete}"
                         Icon="TrashCanOutline"
