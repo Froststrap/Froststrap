@@ -8,7 +8,7 @@ namespace Froststrap.UI.ViewModels.Settings.FastFlags
 {
     public class FastFlagEditorViewModel : ReactiveObject, IRoutableViewModel
     {
-        private readonly MainWindowViewModel _mainWindowViewModel;
+        private readonly MainWindowViewModel? _mainWindowViewModel;
 
         public string? UrlPathSegment => "fastflageditor";
         public IScreen HostScreen { get; }
