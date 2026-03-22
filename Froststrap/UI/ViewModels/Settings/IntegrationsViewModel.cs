@@ -146,7 +146,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool ShowGameHistoryEnabled
         {
             get => App.Settings.Prop.ShowGameHistoryMenu;
-            set 
+            set
             {
                 App.Settings.Prop.ShowGameHistoryMenu = value;
                 OnPropertyChanged(nameof(ShowGameHistoryEnabled));
@@ -192,6 +192,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 App.Settings.Prop.UseDiscordRichPresence = value;
+                OnPropertyChanged(nameof(DiscordActivityEnabled));
 
                 if (!value)
                 {
@@ -252,92 +253,94 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.UseDisableAppPatch = value;
         }
 
-		public bool StudioRPCEnabled
-		{
-			get => App.Settings.Prop.StudioRPC;
-			set => HandleStudioRPCChangeAsync(value);
-		}
+        public bool StudioRPCEnabled
+        {
+            get => App.Settings.Prop.StudioRPC;
+            set => HandleStudioRPCChangeAsync(value);
+        }
 
-		private async void HandleStudioRPCChangeAsync(bool value)
-		{
-			if (value && !App.Settings.Prop.StudioRPC)
-			{
-				var result = await Frontend.ShowMessageBox(
-					"This works by adding a custom made froststrap plugin that will log what your doing.\n" +
-					"Do you want to install the plugin?",
-					MessageBoxImage.Information,
-					MessageBoxButton.YesNo
-				);
+        private async void HandleStudioRPCChangeAsync(bool value)
+        {
+            if (value && !App.Settings.Prop.StudioRPC)
+            {
+                var result = await Frontend.ShowMessageBox(
+                    "This works by adding a custom made froststrap plugin that will log what your doing.\n" +
+                    "Do you want to install the plugin?",
+                    MessageBoxImage.Information,
+                    MessageBoxButton.YesNo
+                );
 
-				if (result != MessageBoxResult.Yes)
-				{
-					OnPropertyChanged(nameof(StudioRPCEnabled));
-					return;
-				}
-			}
+                if (result != MessageBoxResult.Yes)
+                {
+                    OnPropertyChanged(nameof(StudioRPCEnabled));
+                    return;
+                }
+            }
 
-			App.Settings.Prop.StudioRPC = value;
+            App.Settings.Prop.StudioRPC = value;
 
-			if (!value)
-			{
-				ThumbnailChanging = value;
-				EditingInfo = value;
-				WorkspaceInfo = value;
-				ShowTesting = value;
-				StudioGameButton = value;
-				OnPropertyChanged(nameof(ThumbnailChanging));
-				OnPropertyChanged(nameof(EditingInfo));
-				OnPropertyChanged(nameof(WorkspaceInfo));
-				OnPropertyChanged(nameof(ShowTesting));
-				OnPropertyChanged(nameof(StudioGameButton));
-			}
+            OnPropertyChanged(nameof(StudioRPCEnabled));
 
-			StudioPluginManager.Sync();
-		}
+            if (!value)
+            {
+                ThumbnailChanging = value;
+                EditingInfo = value;
+                WorkspaceInfo = value;
+                ShowTesting = value;
+                StudioGameButton = value;
+                OnPropertyChanged(nameof(ThumbnailChanging));
+                OnPropertyChanged(nameof(EditingInfo));
+                OnPropertyChanged(nameof(WorkspaceInfo));
+                OnPropertyChanged(nameof(ShowTesting));
+                OnPropertyChanged(nameof(StudioGameButton));
+            }
+
+            StudioPluginManager.Sync();
+        }
 
         public bool ThumbnailChanging
-		{
-			get => App.Settings.Prop.StudioThumbnailChanging;
-			set => App.Settings.Prop.StudioThumbnailChanging = value;
-		}
+        {
+            get => App.Settings.Prop.StudioThumbnailChanging;
+            set => App.Settings.Prop.StudioThumbnailChanging = value;
+        }
 
-		public bool EditingInfo
-		{
-			get => App.Settings.Prop.StudioEditingInfo;
-			set => App.Settings.Prop.StudioEditingInfo = value;
-		}
+        public bool EditingInfo
+        {
+            get => App.Settings.Prop.StudioEditingInfo;
+            set => App.Settings.Prop.StudioEditingInfo = value;
+        }
 
-		public bool WorkspaceInfo
-		{
-			get => App.Settings.Prop.StudioWorkspaceInfo;
-			set => App.Settings.Prop.StudioWorkspaceInfo = value;
-		}
+        public bool WorkspaceInfo
+        {
+            get => App.Settings.Prop.StudioWorkspaceInfo;
+            set => App.Settings.Prop.StudioWorkspaceInfo = value;
+        }
 
-		public bool ShowTesting
-		{
-			get => App.Settings.Prop.StudioShowTesting;
-			set => App.Settings.Prop.StudioShowTesting = value;
-		}
+        public bool ShowTesting
+        {
+            get => App.Settings.Prop.StudioShowTesting;
+            set => App.Settings.Prop.StudioShowTesting = value;
+        }
 
-		public bool StudioGameButton
-		{
-			get => App.Settings.Prop.StudioGameButton;
-			set => App.Settings.Prop.StudioGameButton = value;
-		}
+        public bool StudioGameButton
+        {
+            get => App.Settings.Prop.StudioGameButton;
+            set => App.Settings.Prop.StudioGameButton = value;
+        }
 
-		public bool DisableRobloxRecording
-		{
-			get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"));
-			set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
-		}
+        public bool DisableRobloxRecording
+        {
+            get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"));
+            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
+        }
 
-		public bool DisableRobloxScreenshots
-		{
-			get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"));
-			set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"), value);
-		}
+        public bool DisableRobloxScreenshots
+        {
+            get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"));
+            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"), value);
+        }
 
-		public ObservableCollection<CustomIntegration> CustomIntegrations
+        public ObservableCollection<CustomIntegration> CustomIntegrations
         {
             get => App.Settings.Prop.CustomIntegrations;
             set => App.Settings.Prop.CustomIntegrations = value;
@@ -368,59 +371,59 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool IsCustomIntegrationSelected => SelectedCustomIntegration is not null;
 
-		private static bool IsBlocked(string path)
-		{
-			if (File.Exists(path) && !Directory.Exists(path))
-			{
-				var attr = File.GetAttributes(path);
-				return attr.HasFlag(FileAttributes.ReadOnly);
-			}
-			return false;
-		}
+        private static bool IsBlocked(string path)
+        {
+            if (File.Exists(path) && !Directory.Exists(path))
+            {
+                var attr = File.GetAttributes(path);
+                return attr.HasFlag(FileAttributes.ReadOnly);
+            }
+            return false;
+        }
 
-		private static void SetBlockState(string targetPath, bool block)
-		{
-			const string LOG_IDENT = "Watcher::SetBlockState";
-			string backupPath = targetPath + " (Before Blocking)";
+        private static void SetBlockState(string targetPath, bool block)
+        {
+            const string LOG_IDENT = "Watcher::SetBlockState";
+            string backupPath = targetPath + " (Before Blocking)";
 
-			try
-			{
-				if (block)
-				{
-					if (Directory.Exists(targetPath))
-					{
-						if (Directory.EnumerateFileSystemEntries(targetPath).Any())
-						{
-							if (!Directory.Exists(backupPath)) Directory.Move(targetPath, backupPath);
-						}
-						else Directory.Delete(targetPath);
-					}
+            try
+            {
+                if (block)
+                {
+                    if (Directory.Exists(targetPath))
+                    {
+                        if (Directory.EnumerateFileSystemEntries(targetPath).Any())
+                        {
+                            if (!Directory.Exists(backupPath)) Directory.Move(targetPath, backupPath);
+                        }
+                        else Directory.Delete(targetPath);
+                    }
 
-					if (!File.Exists(targetPath))
-					{
-						File.WriteAllBytes(targetPath, Array.Empty<byte>());
-						File.SetAttributes(targetPath, FileAttributes.ReadOnly);
-					}
-				}
-				else
-				{
-					if (File.Exists(targetPath) && !Directory.Exists(targetPath))
-					{
-						var attr = File.GetAttributes(targetPath);
-						File.SetAttributes(targetPath, attr & ~FileAttributes.ReadOnly);
-						File.Delete(targetPath);
-					}
+                    if (!File.Exists(targetPath))
+                    {
+                        File.WriteAllBytes(targetPath, Array.Empty<byte>());
+                        File.SetAttributes(targetPath, FileAttributes.ReadOnly);
+                    }
+                }
+                else
+                {
+                    if (File.Exists(targetPath) && !Directory.Exists(targetPath))
+                    {
+                        var attr = File.GetAttributes(targetPath);
+                        File.SetAttributes(targetPath, attr & ~FileAttributes.ReadOnly);
+                        File.Delete(targetPath);
+                    }
 
-					if (!Directory.Exists(targetPath) && Directory.Exists(backupPath))
-					{
-						Directory.Move(backupPath, targetPath);
-					}
-				}
-			}
-			catch (Exception ex)
-			{
-				App.Logger.WriteException(LOG_IDENT, ex);
-			}
-		}
-	}
+                    if (!Directory.Exists(targetPath) && Directory.Exists(backupPath))
+                    {
+                        Directory.Move(backupPath, targetPath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+    }
 }
