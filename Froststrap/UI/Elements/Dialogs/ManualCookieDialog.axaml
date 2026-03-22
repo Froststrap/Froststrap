@@ -134,7 +134,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <controls:IconButton
+                <Button
                     x:Name="AddButton"
                     Grid.Column="1"
                     MinWidth="100"
@@ -144,7 +144,7 @@
                     Content="Add Account"
                     IsEnabled="{Binding IsAddEnabled}"/>
                 
-                <controls:IconButton
+                <Button
                     Grid.Column="2"
                     MinWidth="100"
                     HorizontalAlignment="Right"

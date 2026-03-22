@@ -133,7 +133,7 @@
 
                 <Rectangle Grid.Column="0" Fill="Transparent" />
 
-                <controls:IconButton
+                <Button
                     Grid.Column="1"
                     MinWidth="100"
                     Margin="0,0,8,0"
@@ -141,7 +141,7 @@
                     Click="Copy_Click"
                     Content="Copy Code"/>
 
-                <controls:IconButton
+                <Button
                     Grid.Column="2"
                     MinWidth="100"
                     HorizontalAlignment="Right"
