@@ -15,17 +15,28 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         public ICommand LaunchAboutCommand => new RelayCommand(LaunchAbout);
 
-        public event EventHandler<NextAction>? CloseWindowRequest;
+        public event EventHandler? CloseWindowRequest;
 
-        private void LaunchSettings() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings);
-
-        private void LaunchRoblox() 
+        private void LaunchSettings()
         {
-            CloseWindowRequest?.Invoke(this, NextAction.LaunchRoblox);
+            Process.Start(Paths.Application, "-menu");
+            CloseWindowRequest?.Invoke(this, EventArgs.Empty);
             App.FrostRPC?.Dispose();
         }
 
-        private void LaunchRobloxStudio() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRobloxStudio);
+        private void LaunchRoblox() 
+        {
+            Process.Start(Paths.Application, "-player");
+            CloseWindowRequest?.Invoke(this, EventArgs.Empty);
+            App.FrostRPC?.Dispose();
+        }
+
+        private void LaunchRobloxStudio()
+        {
+            Process.Start(Paths.Application, "-studio");
+            CloseWindowRequest?.Invoke(this, EventArgs.Empty);
+            App.FrostRPC?.Dispose();
+        }
 
         private void LaunchAbout() => new Elements.About.MainWindow().Show();
     }

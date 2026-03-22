@@ -21,7 +21,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <controls:TitleBar Grid.Row="0" Title="Froststrap" Padding="8" />
+        <controls:TitleBar Grid.Row="0" Title="Froststrap" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" Margin="20" ColumnDefinitions="240, *">
             

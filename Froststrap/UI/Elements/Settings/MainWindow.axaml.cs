@@ -42,14 +42,17 @@ namespace Froststrap.UI.Elements.Settings
             LoadState();
 
             App.RemoteData.Subscribe((object? sender, EventArgs e) => {
-                RemoteDataBase Data = App.RemoteData.Prop;
+                Dispatcher.UIThread.Post(() => {
+                    RemoteDataBase Data = App.RemoteData.Prop;
 
-                AlertBar.IsVisible = Data.AlertEnabled;
-                AlertBar.Message = Data.AlertContent;
-                AlertBar.Severity = Data.AlertSeverity;
+                    if (AlertBar != null)
+                    {
+                        AlertBar.IsVisible = Data.AlertEnabled;
+                        AlertBar.Message = Data.AlertContent;
+                        AlertBar.Severity = Data.AlertSeverity;
+                    }
+                });
             });
-
-            App.WindowsBackdrop();
 
             viewModel.Router.CurrentViewModel
                 .ObserveOn(RxSchedulers.MainThreadScheduler)
