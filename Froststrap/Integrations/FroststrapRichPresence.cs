@@ -79,15 +79,6 @@ namespace Froststrap.Integrations
             UpdatePresence();
         }
 
-        public void ResetPresence()
-        {
-            if (_disposed) return;
-
-            _currentPage = "Idle";
-            _currentDialog = null;
-            UpdatePresence();
-        }
-
         private void SetPresence()
         {
             UpdatePresence();
