@@ -93,7 +93,7 @@
                 IsExpanded="True" 
                 Header="{x:Static resources:Strings.Menu_Bootstrapper_CleanUp_Title}" 
                 Description="{x:Static resources:Strings.Menu_Bootstrapper_CleanUp_Description}">
-                <StackPanel Spacing="4">
+                <StackPanel>
                     <controls:OptionControl 
                         Header="{x:Static resources:Strings.Menu_Bootstrapper_Cleaner_Age_Title}" 
                         Description="{x:Static resources:Strings.Menu_Bootstrapper_Cleaner_Age_Description}">

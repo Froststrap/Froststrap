@@ -1,4 +1,5 @@
-﻿using Froststrap.Integrations;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using Froststrap.Integrations;
 using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap
@@ -122,8 +123,6 @@ namespace Froststrap
                 App.FrostRPC?.SetPage("Settings");
 
                 window.Show();
-
-                App.FrostRPC?.ResetPresence();
             }
             else
             {
@@ -144,8 +143,12 @@ namespace Froststrap
             }
 
             var dialog = new LaunchMenuDialog();
-
             App.FrostRPC?.SetPage("Launch Menu");
+
+            dialog.Closed += (sender, e) =>
+            {
+                ProcessNextAction(dialog.CloseAction);
+            };
 
             dialog.Show();
         }

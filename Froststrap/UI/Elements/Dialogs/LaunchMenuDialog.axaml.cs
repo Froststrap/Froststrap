@@ -15,15 +15,16 @@ namespace Froststrap.UI.Elements.Dialogs
 
             var viewModel = new LaunchMenuViewModel();
 
-            viewModel.CloseWindowRequest += (s, e) =>
+            viewModel.CloseWindowRequest += (_, closeAction) =>
             {
+                CloseAction = closeAction;
                 Close();
             };
 
             DataContext = viewModel;
 
-            Random chance = new();
-            if (chance.Next(0, 10000) == 1)
+            Random Chance = new();
+            if (Chance.Next(0, 10000) == 1)
             {
                 LaunchTitle.Text = "Cartistrap";
             }
