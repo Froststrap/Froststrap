@@ -237,8 +237,13 @@ namespace Froststrap
 
             _mutex = mutex;
 
-            await App.Settings.Load();
-            await App.State.Load();
+
+            if (mutexExists)
+            {
+                await App.Settings.Load();
+                await App.State.Load();
+            }
+
             await AppData.DistributionStateManager.Load();
 
             if (!_noConnection)

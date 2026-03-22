@@ -11,7 +11,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 		private ActivityWatcher? _activityWatcher => _watcher?.ActivityWatcher;
 
 		private ServerInformation? _serverInformationWindow;
-		private GameInformation? _gameInformationWindow;
 		private ServerHistory? _gameHistoryWindow;
 
 		private Stopwatch _totalPlaytimeStopwatch = new Stopwatch();
@@ -43,7 +42,6 @@ namespace Froststrap.UI.Elements.ContextMenu
                     {
                         InviteDeeplinkMenuItem.IsVisible = false;
                         ServerDetailsMenuItem.IsVisible = false;
-                        GameInformationMenuItem.IsVisible = false;
                         GameHistoryMenuItem.IsVisible = false;
                         RegionMenuRoot.IsVisible = false;
 
@@ -106,29 +104,14 @@ namespace Froststrap.UI.Elements.ContextMenu
 				_serverInformationWindow.Closed += (_, _) => _serverInformationWindow = null;
 			}
 
-			if (!_serverInformationWindow.IsVisible) await _serverInformationWindow.ShowDialog(this);
+			if (!_serverInformationWindow.IsVisible) _serverInformationWindow.Show();
 			else _serverInformationWindow.Activate();
-		}
-
-		public void ShowGameInformationWindow(long placeId, long universeId)
-		{
-			if (_gameInformationWindow is null)
-			{
-				_gameInformationWindow = new GameInformation(placeId, universeId);
-				_gameInformationWindow.Closed += (_, _) => _gameInformationWindow = null;
-			}
-
-			if (!_gameInformationWindow.IsVisible)
-				_gameInformationWindow.Show();
-			else
-				_gameInformationWindow.Activate();
 		}
 
 		private void ActivityWatcher_OnGameJoin(object? sender, EventArgs e) =>
 			Dispatcher.UIThread.Invoke(() => {
 				if (_activityWatcher?.Data.ServerType == ServerType.Public) InviteDeeplinkMenuItem.IsVisible = true;
 				ServerDetailsMenuItem.IsVisible = true;
-				GameInformationMenuItem.IsVisible = true;
                 RegionMenuRoot.IsVisible = true;
 			});
 
@@ -136,10 +119,8 @@ namespace Froststrap.UI.Elements.ContextMenu
 			Dispatcher.UIThread.Invoke(() => {
 				InviteDeeplinkMenuItem.IsVisible = false;
 				ServerDetailsMenuItem.IsVisible = false;
-				GameInformationMenuItem.IsVisible = false;
 					RegionMenuRoot.IsVisible = false;
 					_serverInformationWindow?.Close();
-					_gameInformationWindow?.Close();
 				});
 
         private void ActivityWatcher_OnStudioPlaceOpened(object? sender, EventArgs e)
@@ -181,23 +162,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 		}
 
 		private void ServerDetailsMenuItem_Click(object sender, RoutedEventArgs e) => ShowServerInformationWindow();
-		private async void GameInformaionMenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			long placeId = _activityWatcher?.Data?.PlaceId ?? 0;
-			long universeId = _activityWatcher?.Data?.UniverseId ?? 0;
-
-			if (placeId == 0)
-			{
-				await Frontend.ShowMessageBox(
-					"Not currently in a game. Please join a game first to view game information.",
-					MessageBoxImage.Error
-				);
-				return;
-			}
-
-			ShowGameInformationWindow(placeId, universeId);
-		}
-
+		
 		private void CloseRobloxMenuItem_Click(object sender, RoutedEventArgs e)
 		{
 			_watcher?.KillRobloxProcess();
