@@ -4,6 +4,7 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:ic="using:IconPacks.Avalonia.Material"
 		xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+		xmlns:cc="using:AvaloniaEdit.CodeCompletion"
 		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
 	<Style Selector="controls|CardExpander.NoUserExpansion">
@@ -179,5 +180,66 @@
 	<Style Selector="Button.icon-button:pointerover">
 		<Setter Property="Background" Value="#333333" />
 		<Setter Property="Foreground" Value="#888888" />
+	</Style>
+
+	<Style Selector="ListBox">
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Margin" Value="0,4" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_RootBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <ScrollViewer Name="PART_ScrollViewer"
+                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+ 	                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+	                              AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}">
+	                    <ItemsPresenter Name="PART_ItemsPresenter"
+	                                    ItemsPanel="{TemplateBinding ItemsPanel}"
+	                                    Margin="{TemplateBinding Padding}" />
+	                </ScrollViewer>
+	            </Border>
+	       </ControlTemplate>
+	   </Setter>
+	</Style>
+
+	<Style Selector="cc|CompletionListBox">
+ 	   <Setter Property="Background" Value="{DynamicResource CompletionListBackgroundBrush}" />
+ 	   <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+ 	   <Setter Property="BorderThickness" Value="1" />
+ 	   <Setter Property="CornerRadius" Value="4" />
+ 	   <Setter Property="Padding" Value="0" />
+ 	   <Setter Property="ClipToBounds" Value="True" />
+	</Style>
+
+	<Style Selector="cc|CompletionListBox ListBoxItem">
+  	  <Setter Property="Padding" Value="4,2" />
+	</Style>
+
+	<Style Selector="cc|CompletionList">
+  	  <Setter Property="Template">
+   	     <ControlTemplate>
+    	        <cc:CompletionListBox Name="PART_ListBox">
+     	           <cc:CompletionListBox.ItemTemplate>
+          	          <DataTemplate x:DataType="cc:ICompletionData">
+            	            <StackPanel Orientation="Horizontal" Margin="0">
+                 	           <Image Source="{Binding Image}"
+                         	          Width="16"
+                          	          Height="16"
+                          	          Margin="0,0,2,0" />
+                            	<ContentControl Content="{Binding Content}" />
+                        	</StackPanel>
+                	</DataTemplate>
+                </cc:CompletionListBox.ItemTemplate>
+          	  </cc:CompletionListBox>
+      	  </ControlTemplate>
+  	  </Setter>
 	</Style>
 </Styles>
