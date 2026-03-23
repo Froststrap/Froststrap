@@ -3,7 +3,7 @@
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
 	<Style Selector="controls|CardExpander">
-		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Template">

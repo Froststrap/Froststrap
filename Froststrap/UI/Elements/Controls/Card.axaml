@@ -19,14 +19,6 @@
                         MinHeight="{TemplateBinding MinHeight}"
                         ClipToBounds="True"
                         Margin="0">
-                    
-                    <Border.Transitions>
-                        <Transitions>
-                            <BrushTransition Property="Background" Duration="0:0:0.2" />
-                            <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
-                        </Transitions>
-                    </Border.Transitions>
-
                     <ContentPresenter Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate}"
                                       HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
