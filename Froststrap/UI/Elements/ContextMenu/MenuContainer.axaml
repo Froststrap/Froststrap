@@ -18,11 +18,7 @@
         <ContextMenu>
             <MenuItem IsEnabled="False">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="20,*">
                         <Image Grid.Column="0" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality" />
                         <TextBlock x:Name="VersionTextBlock" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Grid.Column="1" VerticalAlignment="Center" Margin="6,0,0,0" Text="Bloxstrap v2.4.1" />
                     </Grid>
@@ -31,11 +27,7 @@
             <Separator/>
             <MenuItem IsEnabled="False" x:Name="PlaytimeMenuItem">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="24,*">
                         <ui:SymbolIcon Grid.Column="0" Symbol="Clock" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                         <TextBlock x:Name="PlaytimeTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Total: 00:00" />
                     </Grid>
@@ -47,11 +39,7 @@
             
             <MenuItem x:Name="InviteDeeplinkMenuItem" IsVisible="False" Click="InviteDeeplinkMenuItem_Click">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="24,*">
                         <ui:SymbolIcon Grid.Column="0" Symbol="Link"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" />
                     </Grid>                
@@ -60,11 +48,7 @@
             
             <MenuItem x:Name="RegionMenuRoot" IsVisible="False">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="24,*">
                         <ui:SymbolIcon Grid.Column="0" Symbol="Earth"/>
                         <TextBlock x:Name="RegionJoinTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Region Actions" />
                     </Grid>
@@ -77,11 +61,7 @@
                 <Separator/>
                 <MenuItem>
                     <MenuItem.Header>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+                        <Grid ColumnDefinitions="Auto,*">
                             <TextBlock Text="Preferred:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                             <ComboBox x:Name="RegionSelectionComboBox" Grid.Column="1" Width="150" MaxDropDownHeight="200"/>
                         </Grid>
@@ -91,11 +71,7 @@
 
             <MenuItem x:Name="ServerDetailsMenuItem" IsVisible="False" Click="ServerDetailsMenuItem_Click">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="24,*">
                         <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" />
                     </Grid>
@@ -104,11 +80,7 @@
 
             <MenuItem x:Name="GameHistoryMenuItem" Click="JoinLastServerMenuItem_Click">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="24,*">
                         <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" />
                     </Grid>
@@ -117,11 +89,7 @@
 
             <MenuItem Click="CloseRobloxMenuItem_Click">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="24,*">
                         <ui:SymbolIcon Grid.Column="0" Symbol="Target"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_CloseRoblox}" />
                     </Grid>
@@ -130,11 +98,7 @@
 
             <MenuItem Click="CloseWatcheMenuItem_Click">
                 <MenuItem.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="24" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                    <Grid ColumnDefinitions="24,*">
                         <ui:SymbolIcon Grid.Column="0" Symbol="Dismiss"/>
                         <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Close Watcher" />
                     </Grid>

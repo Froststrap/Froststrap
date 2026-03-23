@@ -15,14 +15,7 @@
              mc:Ignorable="d">
 
     <ScrollViewer>
-        <Grid Margin="14">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
+        <Grid Margin="14" RowDefinitions="Auto,Auto,Auto,*">
             <TextBlock
                 FontSize="14"
                 Grid.Row="0"
@@ -30,13 +23,7 @@
                 Text="{x:Static resources:Strings.Menu_Mods_Description}"
                 TextWrapping="Wrap" />
 
-            <Grid Grid.Row="1" Margin="0,16,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
+            <Grid Grid.Row="1" Margin="0,16,0,0" ColumnDefinitions="*,*,*">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" 
                                      Command="{Binding OpenCommunityModsCommand}"
                                      Header="Community Mods"
@@ -58,12 +45,7 @@
 
             <Separator Margin="0,8" Grid.Row="2" />
 
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="340" />
-                </Grid.ColumnDefinitions>
-
+            <Grid Grid.Row="3" ColumnDefinitions="*,340">
                 <Border Grid.Column="0" 
                         Margin="0,0,12,0"
                         VerticalAlignment="Top"
@@ -72,18 +54,8 @@
                         BorderThickness="1"
                         CornerRadius="8"
                         Padding="12">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-
-                        <Grid Grid.Row="0" Margin="0,0,0,12">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid Grid.Row="0" Margin="0,0,0,12" RowDefinitions="*,Auto">
                             <TextBlock FontSize="18" 
                                        FontWeight="SemiBold" 
                                        Text="Style Preview" 

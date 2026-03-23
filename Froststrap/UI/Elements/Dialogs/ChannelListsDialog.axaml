@@ -19,14 +19,7 @@
         mc:Ignorable="d"
         x:DataType="vm:ChannelListsViewModel">
 
-	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
-
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,Auto,*,Auto">
 		<controls:TitleBar Grid.Row="0" Icon="avares://Froststrap/Froststrap.ico" Title="Available Channels"/>
 
 		<TextBlock Grid.Row="1"

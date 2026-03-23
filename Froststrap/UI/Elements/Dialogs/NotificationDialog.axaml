@@ -1,0 +1,12 @@
+﻿<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        x:Class="Froststrap.UI.Elements.Dialogs.NotificationDialog"
+        Title="Notification"
+        Width="350" Height="85"
+        SystemDecorations="None"
+        Background="Transparent"
+        CanResize="False"
+        Topmost="True"
+        WindowStartupLocation="Manual">
+</base:AvaloniaWindow>

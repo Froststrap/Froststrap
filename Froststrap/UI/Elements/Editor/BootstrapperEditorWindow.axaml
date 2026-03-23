@@ -16,6 +16,14 @@
 <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
         <controls:TitleBar Grid.Row="0" Title="{Binding Title}" 
                            Icon="avares://Froststrap/Froststrap.ico" />
+    <Panel
+        Name="NotificationPanel"
+        Grid.Row="1"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Bottom"
+        Margin="0,0,0,15"
+        MaxWidth="450"
+        ZIndex="1000" />
 
 <Ae:TextEditor Name="UIXML" 
                Grid.Row="1"

@@ -81,19 +81,7 @@
                     </controls:CardExpander.HeaderContent>
 
                     <StackPanel Spacing="8">
-                        <Grid IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
                             <!-- Version Row -->
                             <TextBlock
                                 Grid.Row="0"
@@ -163,12 +151,7 @@
                             </StackPanel>
                         </Grid>
 
-                        <Grid IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
+                        <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
                             <ui:ProgressRing
                                 Grid.Column="0"
                                 Width="64"

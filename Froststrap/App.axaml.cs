@@ -19,6 +19,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -34,8 +35,8 @@ public partial class App : Application
 #else
     public const string ProjectName = "Froststrap";
 #endif
-public const string ProjectOwner = "Froststrap";
-public const string ProjectRepository = "Froststrap/Froststrap";
+    public const string ProjectOwner = "Froststrap";
+    public const string ProjectRepository = "Froststrap/Froststrap";
     public const string ProjectDownloadLink = "https://github.com/Froststrap/Froststrap/releases";
     public const string ProjectHelpLink = "https://github.com/bloxstraplabs/bloxstrap/wiki";
     public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
@@ -187,28 +188,28 @@ public const string ProjectRepository = "Froststrap/Froststrap";
     {
         Dispatcher.UIThread.Post(() =>
         {
-            var backdropType = Settings.Prop.SelectedBackdrop;
-            ApplyBackdropToAllWindows(backdropType);
+            ApplyBackdropToAllWindows();
         });
     }
 
-    private static void ApplyBackdropToAllWindows(WindowsBackdrops backdropType)
+    private static void ApplyBackdropToAllWindows()
     {
-        var avaloniaBackdrop = backdropType switch
-        {
-            WindowsBackdrops.None => WindowTransparencyLevel.None,
-            WindowsBackdrops.Mica => WindowTransparencyLevel.Mica,
-            WindowsBackdrops.Acrylic => WindowTransparencyLevel.AcrylicBlur,
-            WindowsBackdrops.Aero => WindowTransparencyLevel.Blur,
-            _ => WindowTransparencyLevel.None
-        };
-
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             foreach (var window in desktop.Windows)
             {
-                window.TransparencyLevelHint = new[] { avaloniaBackdrop };
-                window.Background = avaloniaBackdrop != WindowTransparencyLevel.None ? Brushes.Transparent : null;
+                if (Settings.Prop.SelectedBackdrop != WindowsBackdrops.None)
+                {
+                    window.TransparencyLevelHint = Settings.Prop.SelectedBackdrop switch
+                    {
+                        WindowsBackdrops.Mica => new[] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.None },
+                        WindowsBackdrops.Acrylic => new[] { WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None },
+                        WindowsBackdrops.Aero => new[] { WindowTransparencyLevel.Blur, WindowTransparencyLevel.None },
+                        _ => new[] { WindowTransparencyLevel.None }
+                    };
+
+                    window.Background = Brushes.Transparent;
+                }
             }
         }
     }

@@ -10,8 +10,6 @@ namespace Froststrap.UI
 {
     public static class Frontend
     {
-        private static WindowNotificationManager? _notificationManager;
-
         public static async Task<MessageBoxResult> ShowMessageBox(string message, MessageBoxImage icon = MessageBoxImage.Information, MessageBoxButton buttons = MessageBoxButton.OK, MessageBoxResult defaultResult = MessageBoxResult.None)
         {
             App.Logger.WriteLine("Frontend::ShowMessageBox", message);
@@ -180,26 +178,20 @@ namespace Froststrap.UI
             });
         }
 
-        public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5)
+        public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5, Action? onClick = null)
         {
-            if (_notificationManager == null)
+            string imagePath = type switch
             {
-                var mainWindow = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
-                if (mainWindow != null)
-                {
-                    _notificationManager = new WindowNotificationManager(mainWindow)
-                    {
-                        Position = NotificationPosition.BottomRight,
-                        MaxItems = 3
-                    };
-                }
-            }
+                NotificationType.Warning => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Warning.png",
+                NotificationType.Error => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Error.png",
+                _ => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png"
+            };
 
-            _notificationManager?.Show(new Notification(
-                title,
-                message,
-                type,
-                TimeSpan.FromSeconds(timeoutSeconds)));
+            Dispatcher.UIThread.Post(() =>
+            {
+                var notification = new NotificationDialog(title, message, imagePath, onClick, timeoutSeconds * 1000);
+                notification.Show();
+            });
         }
     }
 }

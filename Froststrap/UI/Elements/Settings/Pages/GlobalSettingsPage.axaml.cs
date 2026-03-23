@@ -4,13 +4,13 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    public partial class RobloxSettingsPage : UserControl
+    public partial class GlobalSettingsPage : UserControl
     {
-        public RobloxSettingsPage()
+        public GlobalSettingsPage()
         {
             InitializeComponent();
 
-            App.FrostRPC?.SetPage("Roblox Settings");
+            App.FrostRPC?.SetPage("Global Settings");
         }
 
         private void ValidateUInt32(object? sender, TextInputEventArgs e)

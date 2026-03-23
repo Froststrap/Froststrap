@@ -125,7 +125,7 @@ namespace Froststrap.Models.Entities
 				_ = App.HttpClient.PostAsync("https://apis.rovalra.com/process_servers", postContent);
 
 
-				RoValraServer? server = null;
+				RoValrasServer? server = null;
 
 				if (serverTimeRaw?.Servers != null && serverTimeRaw.Servers.Count > 0)
 					server = serverTimeRaw.Servers[0];

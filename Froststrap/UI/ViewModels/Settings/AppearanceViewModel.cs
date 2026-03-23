@@ -208,7 +208,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var topLevel = TopLevel.GetTopLevel(control);
             if (topLevel is not Window parentWindow) return;
 
-            App.FrostRPC?.SetDialog("Edit Custom Theme");
+            App.FrostRPC?.SetDialog("Editing Custom Theme");
             await new BootstrapperEditorWindow(SelectedCustomTheme).ShowDialog(parentWindow);
             App.FrostRPC?.ClearDialog();
         }

@@ -48,32 +48,39 @@
 
                 <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8" Classes="FilterBar">
                     <ToggleButton Content="All" 
+                                  Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Null}"
-                                  IsChecked="{Binding ActiveFilter, Converter={x:Static ObjectConverters.IsNull}}"/>
+                                  IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={x:Static ObjectConverters.IsNull}}"/>
 
                     <ToggleButton Content="Color Mods" 
+                                  Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.ColorMod}"
-                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.ColorMod}}"/>
+                                  IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.ColorMod}}"/>
 
                     <ToggleButton Content="Custom Themes" 
+                                  Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.CustomTheme}"
-                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.CustomTheme}}"/>
+                                  IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.CustomTheme}}"/>
 
                     <ToggleButton Content="Misc Mods" 
+                                  Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.MiscMod}"
-                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.MiscMod}}"/>
+                                  IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.MiscMod}}"/>
 
                     <ToggleButton Content="SkyBox" 
+                                  Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.SkyBox}"
-                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.SkyBox}}"/>
+                                  IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.SkyBox}}"/>
 
                     <ToggleButton Content="Cursor" 
+                                  Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.Cursor}"
-                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.Cursor}}"/>
+                                  IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.Cursor}}"/>
 
                     <ToggleButton Content="Avatar Editor" 
+                                  Command="{Binding SetFilterCommand}"
                                   CommandParameter="{x:Static enums:ModType.AvatarEditor}"
-                                  IsChecked="{Binding ActiveFilter, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.AvatarEditor}}"/>
+                                  IsChecked="{Binding ActiveFilter, Mode=OneWay, Converter={StaticResource EnumToBoolConverter}, ConverterParameter={x:Static enums:ModType.AvatarEditor}}"/>
                 </WrapPanel>
 
                 <ItemsControl Grid.Row="2" ItemsSource="{Binding Mods}">
@@ -125,7 +132,7 @@
                                         </TextBlock.Inlines>
                                     </TextBlock>
 
-                                    <Grid Grid.Row="3" Margin="8" VerticalAlignment="Bottom" RowDefinitions="Auto, Auto">
+                                    <Grid Grid.Row="3" Margin="8" VerticalAlignment="Bottom" RowDefinitions="Auto, Auto" ColumnDefinitions="*, Auto">
                                         <ProgressBar Grid.Row="0" Grid.ColumnSpan="2"
                                                      Margin="0,0,0,8"
                                                      Value="{Binding DownloadProgress}" 
@@ -138,8 +145,16 @@
                                                              HorizontalAlignment="Stretch" 
                                                              Content="Download" 
                                                              Icon="Download"
+                                                             Classes="Primary"
                                                              Command="{Binding DownloadCommand}" 
                                                              CommandParameter="{Binding}"/>
+
+                                        <controls:IconButton Grid.Column="1" Grid.Row="1"
+                                                             Height="34"
+                                                             Margin="2,0,0,0"
+                                                             Icon="InformationOutline"
+                                                             Command="{Binding $parent[UserControl].((vm:CommunityModsViewModel)DataContext).OpenModInfoDialogCommand}"
+                                                             CommandParameter="{Binding $self}"/>
                                     </Grid>
                                 </Grid>
                             </controls:Card>

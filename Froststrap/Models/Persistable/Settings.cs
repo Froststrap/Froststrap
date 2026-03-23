@@ -36,6 +36,8 @@ namespace Froststrap.Models.Persistable
         public bool BackgroundUpdatesEnabled { get; set; } = false;
         public bool MultiInstanceLaunching { get; set; } = false;
         public bool Error773Fix { get; set; } = false;
+        public bool EnableBetterMatchmaking { get; set; } = false;
+        public bool EnableBetterMatchmakingRandomization { get; set; } = false;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
         // FastFlag Editor/Settings Related
@@ -44,7 +46,7 @@ namespace Froststrap.Models.Persistable
         // Appearance Page
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconFroststrap;
-        public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.Mica;
+        public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.None;
         public string Locale { get; set; } = "nil";
         public string? SelectedCustomTheme { get; set; } = null;
         public List<GradientStops> CustomGradientStops { get; set; } = new()

@@ -27,12 +27,7 @@
             Text="{x:Static resources:Strings.Menu_Shortcuts_General_Title}" />
         <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
+        <Grid ColumnDefinitions="*,*">
             <controls:OptionControl
                 Grid.Column="0"
                 Margin="0,0,4,0"
@@ -56,13 +51,7 @@
             Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}" />
         <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
 
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
+        <Grid ColumnDefinitions="*,*,*,*">
             <controls:OptionControl
                 Grid.Column="0"
                 Margin="0,0,2,0"
@@ -79,9 +68,16 @@
 
             <controls:OptionControl
                 Grid.Column="2"
-                Margin="2,0,0,0"
+                Margin="2,0,2,0"
                 Header="{x:Static resources:Strings.Menu_Title}">
                 <ToggleSwitch IsChecked="{Binding SettingsIconTask.NewState, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Grid.Column="3"
+                Margin="2,0,0,0"
+                Header="Account Manager">
+                <ToggleSwitch IsChecked="{Binding AccountManagerIconTask.NewState, Mode=TwoWay}" />
             </controls:OptionControl>
         </Grid>
 
@@ -94,11 +90,7 @@
 
         <controls:CardExpander Description="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Description}" Header="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Title}" IsExpanded="True">
             <StackPanel>
-                <Grid Margin="0,0,0,16">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <Grid Margin="0,0,0,16" ColumnDefinitions="Auto,*">
 
                     <Border Width="100" Height="100" CornerRadius="12" ClipToBounds="True" Background="{DynamicResource ControlAltFillColorQuarternaryBrush}">
                         <Image Source="{Binding PreviewIcon}" Stretch="UniformToFill" RenderOptions.BitmapInterpolationMode="HighQuality"/>
@@ -202,12 +194,7 @@
                         </TextBox>
                 </StackPanel>
 
-                <Grid Margin="0,16,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="16" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <Grid Margin="0,16,0,0" ColumnDefinitions="*,16,*">
                     <StackPanel Grid.Column="0">
                         <Label Content="Server Instance ID" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                         <TextBox Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Watermark="GUID/JobID" />

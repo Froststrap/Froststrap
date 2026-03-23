@@ -1,18 +1,25 @@
+using IconPacks.Avalonia.Material;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using AvaloniaEdit;
 using AvaloniaEdit.CodeCompletion;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
 using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
+using Froststrap.UI.Elements.Base;
 using Froststrap.UI.ViewModels.Editor;
 using System.Xml;
-using Froststrap.UI.Elements.Base;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
+using Avalonia.VisualTree;
+using Froststrap.UI.Elements.Settings;
+using Froststrap.UI.ViewModels.Settings;
+using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Editor
 {
@@ -154,6 +161,20 @@ namespace Froststrap.UI.Elements.Editor
                 UIXML.Text = _viewModel.Code;
             };
 
+            _viewModel.ThemeSavedCallback = (success, message) =>
+            {
+                if (success)
+                {
+                    Dispatcher.UIThread.Post(() => ShowSaveNotice());
+                }
+                else
+                {
+                    Dispatcher.UIThread.Post(() => ShowNotification("Error", message, NotificationType.Error, 5000));
+                }
+            };
+
+            DataContext = _viewModel;
+
             UIXML.TextChanged += OnCodeChanged;
             UIXML.TextArea.TextEntered += OnTextEntered;
 
@@ -207,9 +228,87 @@ namespace Froststrap.UI.Elements.Editor
             }
         }
 
-        private void ThemeSavedCallback(bool success, string message)
+        private void ShowSaveNotice()
         {
-            // Add Saved Snackbar or smth similar to what we did in mainwinow
+            ShowNotification(
+                Strings.Menu_SettingsSaved_Title,
+                Strings.Menu_SettingsSaved_Message,
+                NotificationType.Success,
+                3000);
+        }
+
+        private void ShowNotification(string title, string subtitle, NotificationType type, int timeout)
+        {
+            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
+            if (notificationPanel == null) return;
+
+            var accentColor = type == NotificationType.Success ? "#00D084" : "#FFB900";
+            var iconKind = type == NotificationType.Success
+                ? PackIconMaterialKind.CheckboxMultipleMarkedCircleOutline
+                : PackIconMaterialKind.AlertOutline;
+
+            var contentGrid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*") };
+
+            var icon = new PackIconMaterial
+            {
+                Kind = iconKind,
+                Width = 28,
+                Height = 28,
+                Foreground = new SolidColorBrush(Color.Parse(accentColor)),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                Margin = new Thickness(16, 0, 12, 0)
+            };
+            Grid.SetColumn(icon, 0);
+            contentGrid.Children.Add(icon);
+
+            var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
+            textPanel.Children.Add(new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14, Foreground = Brushes.White });
+            textPanel.Children.Add(new TextBlock { Text = subtitle, FontSize = 12, Foreground = new SolidColorBrush(Color.Parse("#CCCCCC")), TextWrapping = TextWrapping.Wrap });
+            Grid.SetColumn(textPanel, 1);
+            contentGrid.Children.Add(textPanel);
+
+            var notification = new Border
+            {
+                Background = new SolidColorBrush(Color.Parse("#1F1F1F")),
+                BorderBrush = new SolidColorBrush(Color.Parse(accentColor)),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(0, 12, 24, 12),
+                Margin = new Thickness(0, 0, 0, 10),
+                MinWidth = 350,
+                MaxWidth = 500,
+                Height = 80,
+                CornerRadius = new CornerRadius(12),
+                Opacity = 0,
+                RenderTransform = new TranslateTransform(0, 40),
+                Cursor = new Cursor(StandardCursorType.Hand),
+                Child = contentGrid,
+                BoxShadow = new BoxShadows(new BoxShadow { Blur = 15, OffsetY = 8, Color = Color.Parse("#60000000") })
+            };
+
+            notification.Transitions = new Transitions {
+                new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
+                new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
+            };
+
+            async void Dismiss()
+            {
+                if (!notificationPanel.Children.Contains(notification)) return;
+                notification.Opacity = 0;
+                notification.RenderTransform = new TranslateTransform(0, 40);
+                await Task.Delay(350);
+                notificationPanel.Children.Remove(notification);
+            }
+
+            notification.PointerPressed += (s, e) => Dismiss();
+            notificationPanel.Children.Add(notification);
+
+            Dispatcher.UIThread.InvokeAsync(async () => {
+                await Task.Delay(50);
+                notification.Opacity = 1;
+                notification.RenderTransform = new TranslateTransform(0, 0);
+                await Task.Delay(timeout);
+                Dismiss();
+            });
         }
 
         private static string ToCRLF(string text)

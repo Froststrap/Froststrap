@@ -39,14 +39,7 @@
         </Style>
     </base:AvaloniaWindow.Styles>
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
+    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,Auto,*,Auto">
         <controls:TitleBar x:Name="RootTitleBar"
                      Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
                      Grid.Row="0"

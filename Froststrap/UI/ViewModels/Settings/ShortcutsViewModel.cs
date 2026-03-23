@@ -16,6 +16,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRoblox}.lnk", "-player");
         public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", "-studio");
         public ShortcutTask SettingsIconTask { get; } = new("Settings", Paths.Desktop, $"{Strings.Menu_Title}.lnk", "-settings");
+        public ShortcutTask AccountManagerIconTask { get; } = new("AccountManager", Paths.Desktop, "Account Manager.lnk", "-accountmanager");
         public ExtractIconsTask ExtractIconsTask { get; } = new();
 
         [ObservableProperty] private string _searchQuery = "";

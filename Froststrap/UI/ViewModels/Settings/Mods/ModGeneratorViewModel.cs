@@ -26,8 +26,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
             GenerateModCommand = new AsyncRelayCommand(GenerateModAsync, CanGenerateMod);
-
-            _ = LoadFontFilesAsync();
         }
 
         #region Commands
@@ -144,62 +142,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
         private string FontDir => Path.Combine(Paths.Cache, "FontPreview");
-
-        private async Task LoadFontFilesAsync()
-        {
-            try
-            {
-                if (!Directory.Exists(FontDir))
-                    Directory.CreateDirectory(FontDir);
-
-                var fontFiles = Directory.GetFiles(FontDir)
-                    .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
-                    .ToArray();
-
-                if (fontFiles.Length < 2)
-                {
-                    StatusText = "Downloading preview assets...";
-                    await DownloadFontFilesAsync(FontDir);
-                    fontFiles = Directory.GetFiles(FontDir)
-                        .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
-                        .ToArray();
-                }
-
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    FontDisplayNames.Clear();
-                    foreach (var file in fontFiles)
-                        FontDisplayNames.Add(Path.GetFileNameWithoutExtension(file).Replace("BuilderIcons-", ""));
-
-                    if (FontDisplayNames.Count > 0)
-                        SelectedFontDisplayName = FontDisplayNames[0];
-                });
-
-                StatusText = "Ready to generate mod.";
-            }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException("ModGenerator::LoadFontFiles", ex);
-                StatusText = "Failed to load preview fonts.";
-            }
-        }
-
-        private async Task DownloadFontFilesAsync(string fontDir)
-        {
-            string[] fontUrls =
-            {
-                "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf",
-                "https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Filled.ttf"
-            };
-
-            using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-            foreach (var url in fontUrls)
-            {
-                var destination = Path.Combine(fontDir, Path.GetFileName(url));
-                var data = await httpClient.GetByteArrayAsync(url);
-                await File.WriteAllBytesAsync(destination, data);
-            }
-        }
 
         private async void OnSelectedFontChanged()
         {

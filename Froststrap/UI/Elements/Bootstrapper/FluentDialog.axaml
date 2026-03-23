@@ -19,22 +19,16 @@
         Background="{Binding BackgroundColourBrush}">
 
 	<Grid>
-		<TextBlock Margin="12,10,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"
+        <controls:TitleBar VerticalAlignment="Top" Title="" Icon="{x:Null}" ShowClose="False" ShowMaximize="False" ShowMinimize="False" />
+		<TextBlock Margin="10,4,0,0" VerticalAlignment="Top" HorizontalAlignment="Left"
                    FontSize="11" FontFamily="{StaticResource Rubik}"
                    Text="{Binding VersionText}" Opacity="0.6"/>
 
-		<TextBlock Margin="0,10,12,0" VerticalAlignment="Top" HorizontalAlignment="Right"
+		<TextBlock Margin="0,4,10,0" VerticalAlignment="Top" HorizontalAlignment="Right"
                    FontSize="11" FontFamily="{StaticResource Rubik}"
                    Text="{Binding ChannelText}" Opacity="0.6"/>
 
-		<Grid Margin="32,16">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="*" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-
+		<Grid Margin="32,16" RowDefinitions="*,Auto,Auto,Auto">
 			<Image Grid.Row="0" Width="80" Height="80" Margin="0,20,0,0"
                    HorizontalAlignment="Center" VerticalAlignment="Top"
                    Source="{Binding Icon}"

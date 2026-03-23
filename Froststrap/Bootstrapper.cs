@@ -15,6 +15,7 @@
 #endif
 
 using Froststrap.AppData;
+using Froststrap.Models.APIs;
 using Froststrap.RobloxInterfaces;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using ICSharpCode.SharpZipLib.Zip;
@@ -51,6 +52,7 @@ namespace Froststrap
         private string _latestVersionGuid = null!;
         private string _latestVersionDirectory = null!;
         private PackageManifest _versionPackageManifest = null!;
+        private GameJoinData _joinData = null!;
         public static bool _staticDirectory => App.Settings.Prop.StaticDirectory;
 
         private bool _isInstalling = false;
@@ -329,12 +331,12 @@ namespace Froststrap
                 {
                     // show some balloon tips
                     if (!_packageExtractionSuccess)
-                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message);
+                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ExtractionFailed_Title, Strings.Bootstrapper_ExtractionFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
                     else if (!allModificationsApplied)
-                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message);
+                        Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
                 }
 
-                StartRoblox();
+                await StartRoblox();
             }
 
             await mutex.ReleaseAsync();
@@ -760,15 +762,125 @@ namespace Froststrap
             }
         }
 
-        private async void StartRoblox()
+        private double Deg2Rad(double deg)
+        {
+            return deg * (MathF.PI / 180);
+        }
+
+        // thank you valra, aGVsbG8gYnJhdGlj
+        private double GetDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            const double R = 6371;
+
+            double dLat = Deg2Rad(lat2 - lat1);
+            double dLon = Deg2Rad(lon2 - lon1);
+            double a =
+                Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                Math.Cos(Deg2Rad(lat1)) * Math.Cos(Deg2Rad(lat2)) *
+                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return R * c;
+        }
+
+        private async Task<string> GetBetterMatchmakingServerID()
+        {
+            const string LOG_IDENT = "Bootstrapper::GetBetterMatchmakingServerID";
+
+            var ipinfo = await Http.GetJson<IPInfoResponse>("https://ipinfo.io/json");
+
+            if (string.IsNullOrEmpty(ipinfo.Country))
+                throw new HttpRequestException("Country is blank.");
+
+            var datacenters = await Http.GetJson<List<RoValraDatacenter>>($"https://apis.rovalra.com/v1/datacenters/list");
+
+            if (datacenters == null || !datacenters.Any())
+                throw new HttpRequestException("No datacenters in response.");
+
+            string[] location = ipinfo.Loc.Split(",");
+            double lat1 = double.Parse(location[0], CultureInfo.InvariantCulture);
+            double lon1 = double.Parse(location[1], CultureInfo.InvariantCulture);
+
+            var regions = datacenters
+                .OrderBy(dc => GetDistance(lat1, lon1, dc.Location.Latitude, dc.Location.Longitude))
+                .Select(dc => dc.Location.Country)
+                .Distinct()
+                .ToList();
+
+            if (regions.Contains(ipinfo.Country, StringComparer.OrdinalIgnoreCase))
+            {
+                regions.Remove(ipinfo.Country);
+                regions.Insert(0, ipinfo.Country);
+            }
+
+            foreach (var region in regions)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Checking for servers in user region");
+
+                var valraResponse = await Http.GetJson<RoValraServers>($"https://apis.rovalra.com/v1/servers/region?place_id={_joinData.PlaceId}&region={region}");
+
+                if (valraResponse?.Servers != null && valraResponse.Servers.Count > 0 && valraResponse.Servers[0].ServerId != null)
+                {
+
+                    if (App.Settings.Prop.EnableBetterMatchmakingRandomization)
+                    {
+                        int index = Random.Shared.Next(0, valraResponse.Servers.Count);
+                        return valraResponse.Servers[index].ServerId;
+                    }
+
+                    return valraResponse.Servers[0].ServerId;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"No servers available in user region. Falling back to the next closest...");
+            }
+
+            return "";
+        }
+
+        private async Task StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
 
             SetStatus(Strings.Bootstrapper_Status_Starting);
 
             if (_launchMode == LaunchMode.Player)
+            {
+                GameJoin gameJoin = new();
+
+                _joinData = gameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
+                if (_joinData.JoinType == GameJoinType.Unknown)
+                    App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
+
+                bool isFollowUser = false;
+
+                // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
+                // idk why they dont use it when the user is following a friend, but ok
+                App.Logger.WriteLine(LOG_IDENT, $"join origin: {_joinData.JoinOrigin}");
+                if (App.Settings.Prop.EnableBetterMatchmaking && (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, show dialog box");
+                    var Result = await Frontend.ShowMessageBox(
+                        String.Format(Strings.Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (Result == MessageBoxResult.Yes)
+                        isFollowUser = true;
+                }
+
+
+                if (App.Settings.Prop.EnableBetterMatchmaking && _joinData.JoinType != GameJoinType.RequestPrivateGame && _joinData.PlaceId != null && !isFollowUser)
+                {
+                    string serverid = await GetBetterMatchmakingServerID();
+
+                    if (!string.IsNullOrEmpty(serverid))
+                        _launchCommandLine = $"roblox://experiences/start?placeId={_joinData.PlaceId}&gameInstanceId={serverid}";
+                }
+
                 if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
                     _launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
+            }
 
             string[] Names = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
             string ResolvedName = null!;

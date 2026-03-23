@@ -19,13 +19,7 @@
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
 
-	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
         <controls:TitleBar
             Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
             Grid.Row="0"
@@ -35,15 +29,7 @@
             KeyboardNavigation.TabNavigation="None"
             ShowMinimize="False" />
 
-        <Grid Grid.Row="1" Margin="20,8,20,16">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
+        <Grid Grid.Row="1" Margin="20,8,20,16" RowDefinitions="Auto,Auto,Auto,Auto,*">
             <StackPanel
                 Grid.Row="0"
                 Margin="0,0,0,16"
@@ -124,13 +110,7 @@
             Background="{DynamicResource ControlFillColorDefaultBrush}"
             BorderBrush="{DynamicResource ControlElevationBorderBrush}"
             BorderThickness="1,1,0,0">
-            <Grid Margin="20,16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
+            <Grid Margin="20,16" ColumnDefinitions="*,Auto,Auto">
                 <Rectangle Grid.Column="0" Fill="Transparent" />
 
                 <Button

@@ -18,13 +18,7 @@
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
+    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
         <controls:TitleBar
             Title="Add Account with Cookie"
             Grid.Row="0"
@@ -35,14 +29,7 @@
             KeyboardNavigation.TabNavigation="None"
             ShowMinimize="False" />
 
-        <Grid Grid.Row="1" Margin="20,8,20,16">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
+        <Grid Grid.Row="1" Margin="20,8,20,16" RowDefinitions="Auto,Auto,Auto,Auto">
             <StackPanel
                 Grid.Row="0"
                 Margin="0,0,0,16"
@@ -65,12 +52,7 @@
                 BorderBrush="{DynamicResource ControlElevationBorderBrush}"
                 BorderThickness="1"
                 CornerRadius="6">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
+                <Grid RowDefinitions="Auto,*">
                     <TextBlock
                         Grid.Row="0"
                         Margin="0,0,0,8"
@@ -127,13 +109,7 @@
             Background="{DynamicResource PrimaryBackgroundColor}"
             BorderBrush="{DynamicResource ControlElevationBorderBrush}"
             BorderThickness="1,1,0,0">
-            <Grid Margin="20,16">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
+            <Grid Margin="20,16" ColumnDefinitions="*,Auto,Auto">
                 <Button
                     x:Name="AddButton"
                     Grid.Column="1"

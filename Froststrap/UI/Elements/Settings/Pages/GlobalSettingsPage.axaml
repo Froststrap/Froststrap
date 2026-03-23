@@ -5,19 +5,13 @@
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
-             x:Class="Froststrap.UI.Elements.Settings.Pages.RobloxSettingsPage"
+             x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettingsPage"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-             x:DataType="vm:RobloxSettingsViewModel"
+             x:DataType="vm:GlobalSettingsViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
 	<ScrollViewer>
 		<StackPanel Margin="14">
-            <Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-                
+            <Grid ColumnDefinitions="*,*,*">
 				<controls:CardAction Grid.Column="0" 
                                     Margin="0,0,4,0"
                                     Icon="Import" 
@@ -91,13 +85,7 @@
 					</controls:SquareCard>
 
 					<controls:SquareCard Header="1st Person Sensitivity" Description="X and Y sensitivity for first person.">
-						<Grid Margin="0,0,0,4">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+						<Grid Margin="0,0,0,4" ColumnDefinitions="Auto,*,Auto,*">
 							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 							<TextBox Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityFirstPersonX, Mode=TwoWay}" />
 							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
@@ -106,13 +94,7 @@
 					</controls:SquareCard>
 
 					<controls:SquareCard Header="3rd Person Sensitivity" Description="X and Y sensitivity for third person.">
-						<Grid Margin="0,0,0,4">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+						<Grid Margin="0,0,0,4" ColumnDefinitions="Auto,*,Auto,*">
 							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 							<TextBox Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityThirdPersonX, Mode=TwoWay}" />
 							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />

@@ -18,7 +18,6 @@
 	SystemDecorations="None"
 	ExtendClientAreaTitleBarHeightHint="-1"
 	ExtendClientAreaToDecorationsHint="True"
-	TransparencyLevelHint="Mica"
 	WindowStartupLocation="CenterScreen">
 
 	<Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
@@ -119,9 +118,9 @@
 
 						<Button
 							Classes="icon-button"
-							Command="{Binding NavigateToRobloxSettingsCommand}"
-							Tag="robloxsettings"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_RobloxSettings_Title}">
+							Command="{Binding NavigateToGlobalSettingsCommand}"
+							Tag="globalsettings"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_GlobalSettings_Title}">
 							<ic:PackIconMaterial
 								Width="20"
 								Height="20"

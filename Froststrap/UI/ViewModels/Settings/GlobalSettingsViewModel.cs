@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public class RobloxSettingsViewModel : NotifyPropertyChangedViewModel
+    public class GlobalSettingsViewModel : NotifyPropertyChangedViewModel
     {
         public ICommand OpenRobloxFolderCommand => new RelayCommand(() => Process.Start("explorer.exe", Paths.Roblox));
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
@@ -29,7 +29,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = "Export GBS Settings",
-                SuggestedFileName = "FroststrapRobloxSettings.xml",
+                SuggestedFileName = "FroststrapGlobalSettings.xml",
                 DefaultExtension = ".xml",
                 FileTypeChoices = new[]
                 { new FilePickerFileType("GBS Settings File") { Patterns = new[] { "*.xml" } }}
@@ -88,7 +88,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             var confirm = await Frontend.ShowMessageBox(
-                "This will replace all your current Roblox settings with the imported ones. Are you sure you want to continue?",
+                "This will replace all your current Global settings with the imported ones. Are you sure you want to continue?",
                 MessageBoxImage.Warning,
                 MessageBoxButton.YesNo);
 
