@@ -12,7 +12,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
     {
         private readonly FluentDialogViewModel? _viewModel;
         public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
-        private bool _isClosing;
 
         public FluentDialog()
         {
@@ -26,17 +25,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
             DataContext = _viewModel;
 
             Title = App.Settings.Prop.BootstrapperTitle;
-            this.Closing += Window_Closing;
 
             var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
             if (iconImage is Bitmap bitmap)
                 Icon = new WindowIcon(bitmap);
-        }
-
-        private void Window_Closing(object? sender, WindowClosingEventArgs e)
-        {
-            if (!_isClosing)
-                Bootstrapper?.Cancel();
         }
 
         public new void ShowBootstrapper() => this.Show();

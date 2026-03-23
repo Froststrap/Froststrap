@@ -12,7 +12,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
     {
         private readonly ClassicFluentDialogViewModel _viewModel;
         public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
-        private bool _isClosing;
 
         public ClassicFluentDialog()
         {
@@ -23,17 +22,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             Title = App.Settings.Prop.BootstrapperTitle;
 
-            this.Closing += Window_Closing;
-
             var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
             if (iconImage is Bitmap bitmap)
                 Icon = new WindowIcon(bitmap);
-        }
-
-        private void Window_Closing(object? sender, WindowClosingEventArgs e)
-        {
-            if (!_isClosing)
-                Bootstrapper?.Cancel();
         }
 
         #region IBootstrapperDialog Methods
