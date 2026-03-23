@@ -12,7 +12,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
     {
         private TwentyFiveDialogViewModel? _viewModel;
         public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
-        private bool _isClosing;
 
         public TwentyFiveDialog()
         {
@@ -21,21 +20,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             InitializeComponent();
 
-            this.Closing += Window_Closing;
-
             // Load Global Settings Icon
             var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
             if (iconImage is Bitmap bitmap)
                 Icon = new WindowIcon(bitmap);
 
             this.Closing += (s, e) => { if (!_isClosing) Bootstrapper?.Cancel(); };
-        }
-
-
-        private void Window_Closing(object? sender, WindowClosingEventArgs e)
-        {
-            if (!_isClosing)
-                Bootstrapper?.Cancel();
         }
 
         public new void ShowBootstrapper() => this.Show();

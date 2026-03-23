@@ -16,7 +16,7 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
 
         public Froststrap.Bootstrapper? Bootstrapper { get; set; }
 
-        private bool _isClosing;
+        protected bool _isClosing;
 
         #region UI Elements Backing Fields
         protected virtual string _message { get; set; } = "Please wait...";

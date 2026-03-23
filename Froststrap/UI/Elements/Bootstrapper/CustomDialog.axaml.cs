@@ -9,7 +9,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
     {
 		private readonly BootstrapperDialogViewModel _viewModel;
         public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
-        private bool _isClosing;
 
         #region UI Elements Overrides
         public override string Message
@@ -72,16 +71,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
 			DataContext = _viewModel;
 			Title = App.Settings.Prop.BootstrapperTitle;
 			Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
-
-			this.Closing += CustomDialog_Closing;
-		}
-
-		private void CustomDialog_Closing(object? sender, WindowClosingEventArgs e)
-		{
-			if (!_isClosing)
-			{
-				Bootstrapper?.Cancel();
-			}
 		}
 
 		#region IBootstrapperDialog Methods

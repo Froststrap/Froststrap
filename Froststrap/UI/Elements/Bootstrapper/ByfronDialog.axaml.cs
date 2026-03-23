@@ -13,9 +13,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private readonly ByfronDialogViewModel _viewModel;
 
         public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
-
-        private bool _isClosing;
-
         public ByfronDialog()
         {
             InitializeComponent();
@@ -25,7 +22,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
             DataContext = _viewModel;
 
             Title = App.Settings.Prop.BootstrapperTitle;
-            this.Closing += Window_Closing;
 
             var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
             if (iconImage is Bitmap bitmap)
@@ -51,12 +47,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             _isClosing = true;
             Dispatcher.UIThread.Post(this.Close);
-        }
-
-        private void Window_Closing(object? sender, WindowClosingEventArgs e)
-        {
-            if (!_isClosing)
-                Bootstrapper?.Cancel();
         }
 
         public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
