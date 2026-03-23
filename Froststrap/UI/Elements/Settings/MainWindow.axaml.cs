@@ -6,11 +6,11 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Threading;
-using Froststrap.UI.Elements.Controls;
+using Avalonia.VisualTree;
+using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels.Settings;
 using IconPacks.Avalonia.Material;
-using ReactiveUI;
-using System.Reactive.Linq;
+using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -26,13 +26,11 @@ namespace Froststrap.UI.Elements.Settings
 
         public MainWindow(bool showAlreadyRunningWarning) : this()
         {
-            var viewModel = new MainWindowViewModel();
-            _viewModel = viewModel;
+            _viewModel = new MainWindowViewModel();
+            DataContext = _viewModel;
 
-            viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
-            viewModel.RequestCloseWindowEvent += (_, _) => Close();
-
-            DataContext = viewModel;
+            _viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
+            _viewModel.RequestCloseWindowEvent += (_, _) => Close();
 
             App.Logger.WriteLine("MainWindow", "Initializing settings window");
 
@@ -54,38 +52,39 @@ namespace Froststrap.UI.Elements.Settings
                 });
             });
 
-            viewModel.Router.CurrentViewModel
-                .ObserveOn(RxSchedulers.MainThreadScheduler)
-                .Subscribe(vm => UpdatePageView(vm));
-
-            viewModel.WhenAnyValue(x => x.SelectedPage)
-                .ObserveOn(RxSchedulers.MainThreadScheduler)
-                .Subscribe(page => UpdateSelectedButtonStyle(page));
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             this.Closing += MainWindow_Closing;
             this.Closed += MainWindow_Closed;
+
+            UpdatePageView(_viewModel.CurrentPage);
+            UpdateSelectedButtonStyle(_viewModel.SelectedPage);
         }
 
-        private void UpdatePageView(IRoutableViewModel? viewModel)
+        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (_viewModel == null) return;
+
+            if (e.PropertyName == nameof(MainWindowViewModel.CurrentPage))
+            {
+                UpdatePageView(_viewModel.CurrentPage);
+            }
+            else if (e.PropertyName == nameof(MainWindowViewModel.SelectedPage))
+            {
+                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+            }
+        }
+
+        private void UpdatePageView(object? viewModel)
         {
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
             if (pageControl == null || viewModel == null) return;
 
-            object dataContext = viewModel;
-
-            var innerVmProp = viewModel.GetType().GetProperty("InnerViewModel");
-            if (innerVmProp != null)
-            {
-                var inner = innerVmProp.GetValue(viewModel);
-                if (inner != null)
-                    dataContext = inner;
-            }
-
-            var view = ResolveViewForViewModel(dataContext);
+            var view = ResolveViewForViewModel(viewModel);
 
             if (view != null)
             {
-                view.DataContext = dataContext;
+                view.DataContext = viewModel;
                 pageControl.Content = view;
             }
         }
@@ -93,26 +92,34 @@ namespace Froststrap.UI.Elements.Settings
         private void UpdateSelectedButtonStyle(string selectedPage)
         {
             var mainGrid = this.FindControl<Grid>("MainGrid");
-            if (mainGrid == null)
+            StackPanel? sidebarStack = null;
+
+            if (mainGrid != null)
             {
-                var border = this.VisualChildren.FirstOrDefault(c => c is Border b) as Border;
+                if (mainGrid.Children.FirstOrDefault() is Border sidebarBorder &&
+                    sidebarBorder.Child is ScrollViewer sv && sv.Content is StackPanel sp)
+                {
+                    sidebarStack = sp;
+                }
+            }
+            else
+            {
+                var border = this.GetVisualDescendants().OfType<Border>().FirstOrDefault();
                 if (border?.Child is ScrollViewer scrollViewer && scrollViewer.Content is StackPanel stackPanel)
                 {
-                    UpdateButtonStyles(stackPanel, selectedPage);
+                    sidebarStack = stackPanel;
                 }
-                return;
             }
 
-            if (mainGrid.Children.FirstOrDefault() is Border sidebarBorder && sidebarBorder.Child is ScrollViewer sv && sv.Content is StackPanel sp)
+            if (sidebarStack != null)
             {
-                UpdateButtonStyles(sp, selectedPage);
+                UpdateButtonStyles(sidebarStack, selectedPage);
             }
         }
 
         private void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
         {
             var accentBrushKey = "AccentButtonBackground";
-
             var unselectedBrush = new SolidColorBrush(Color.Parse("#888888"));
             var highlightBgColor = new SolidColorBrush(Color.Parse("#333333"));
 
@@ -125,7 +132,6 @@ namespace Froststrap.UI.Elements.Settings
                     if (isSelected)
                     {
                         button.Background = highlightBgColor;
-
                         button[!Button.ForegroundProperty] = button.GetResourceObservable(accentBrushKey).ToBinding();
                     }
                     else
@@ -151,9 +157,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private Control? ResolveViewForViewModel(object viewModel)
         {
-            var actualViewModelType = viewModel.GetType();
-
-            var viewModelName = actualViewModelType.Name;
+            var viewModelName = viewModel.GetType().Name;
             var viewName = viewModelName.Replace("ViewModel", "");
 
             var viewTypeNames = new[]
@@ -166,22 +170,10 @@ namespace Froststrap.UI.Elements.Settings
                 $"Froststrap.UI.Elements.Settings.{viewName}"
             };
 
-            // Try to find the type in all loaded assemblies
             foreach (var viewTypeName in viewTypeNames)
             {
-                // First try Type.GetType
-                var viewType = Type.GetType(viewTypeName);
-
-                // If not found, search in loaded assemblies
-                if (viewType == null)
-                {
-                    try
-                    {
-                        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                        viewType = assembly.GetType(viewTypeName, false);
-                    }
-                    catch { }
-                }
+                var viewType = Type.GetType(viewTypeName) ??
+                               System.Reflection.Assembly.GetExecutingAssembly().GetType(viewTypeName);
 
                 if (viewType != null && typeof(Control).IsAssignableFrom(viewType))
                 {
@@ -196,7 +188,6 @@ namespace Froststrap.UI.Elements.Settings
                 }
             }
 
-            App.Logger.WriteLine("MainWindow", $"Could not find any view for {viewModelName}");
             return null;
         }
 
@@ -350,10 +341,7 @@ namespace Froststrap.UI.Elements.Settings
             _state.Top = this.Position.Y;
         }
 
-        private void MainWindow_Closed(object? sender, EventArgs e)
-        {
-            App.Logger.WriteLine("MainWindow", "Settings window closed");
-        }
+        private void MainWindow_Closed(object? sender, EventArgs e) => App.Logger.WriteLine("MainWindow", "Settings window closed");
 
         #endregion
     }

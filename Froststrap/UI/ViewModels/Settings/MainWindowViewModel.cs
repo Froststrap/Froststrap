@@ -1,12 +1,13 @@
-﻿using ReactiveUI;
-using System.Reactive;
-using System.Reactive.Linq;
-using Froststrap.UI.ViewModels.Settings.Mods;
-using Froststrap.UI.ViewModels.Settings.FastFlags;
-using CommunityToolkit.Mvvm.Input;
-using System.Windows.Input;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Froststrap.UI.ViewModels.Settings.Mods;
+using Froststrap.UI.ViewModels.Settings.FastFlags;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -17,13 +18,15 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool IsLast { get; set; }
     }
 
-    public class MainWindowViewModel : ReactiveObject, IRoutableViewModel, IScreen
+    public class MainWindowViewModel : ObservableObject
     {
-        private readonly RoutingState _router = new();
-        public RoutingState Router => _router;
-
-        public string? UrlPathSegment => "main";
-        public IScreen HostScreen => this;
+        // --- Navigation Property (Replaces RoutingState) ---
+        private object? _currentPage;
+        public object? CurrentPage
+        {
+            get => _currentPage;
+            set => SetProperty(ref _currentPage, value);
+        }
 
         private bool _testModeEnabled;
         public bool TestModeEnabled
@@ -37,7 +40,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     return;
                 }
 
-                this.RaiseAndSetIfChanged(ref _testModeEnabled, value);
+                SetProperty(ref _testModeEnabled, value);
                 App.LaunchSettings.TestModeFlag.Active = value;
             }
         }
@@ -56,47 +59,24 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             else
             {
-                this.RaisePropertyChanged(nameof(TestModeEnabled));
-            }
-        }
-
-        private bool _isSidebarExpanded;
-        public bool IsSidebarExpanded
-        {
-            get => _isSidebarExpanded;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _isSidebarExpanded, value);
-                App.Settings.Prop.IsNavigationSidebarExpanded = value;
+                OnPropertyChanged(nameof(TestModeEnabled));
             }
         }
 
         private string _selectedPage = "integrations";
-        public string SelectedPage
-        {
-            get => _selectedPage;
-            set => this.RaiseAndSetIfChanged(ref _selectedPage, value);
-        }
+        public string SelectedPage { get => _selectedPage; set => SetProperty(ref _selectedPage, value); }
 
         private string _currentPageTitle = "Integrations";
-        public string CurrentPageTitle
-        {
-            get => _currentPageTitle;
-            set => this.RaiseAndSetIfChanged(ref _currentPageTitle, value);
-        }
+        public string CurrentPageTitle { get => _currentPageTitle; set => SetProperty(ref _currentPageTitle, value); }
 
         private string _currentPageDescription = "";
-        public string CurrentPageDescription
-        {
-            get => _currentPageDescription;
-            set => this.RaiseAndSetIfChanged(ref _currentPageDescription, value);
-        }
+        public string CurrentPageDescription { get => _currentPageDescription; set => SetProperty(ref _currentPageDescription, value); }
 
         private string _currentBreadcrumb = "";
         public string CurrentBreadcrumb
         {
             get => _currentBreadcrumb;
-            set => this.RaiseAndSetIfChanged(ref _currentBreadcrumb, value);
+            set => SetProperty(ref _currentBreadcrumb, value);
         }
 
         private ObservableCollection<BreadcrumbItemModel> _breadcrumbItems = new();
@@ -108,7 +88,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (_breadcrumbItems != null)
                     _breadcrumbItems.CollectionChanged -= OnBreadcrumbsChanged;
 
-                this.RaiseAndSetIfChanged(ref _breadcrumbItems!, value);
+                SetProperty(ref _breadcrumbItems, value);
 
                 if (_breadcrumbItems != null)
                     _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
@@ -117,331 +97,147 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void OnBreadcrumbsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            UpdateBreadcrumbVisibility();
-        }
+        private void OnBreadcrumbsChanged(object? sender, NotifyCollectionChangedEventArgs e) => UpdateBreadcrumbVisibility();
 
         private void UpdateBreadcrumbVisibility()
         {
-            this.RaisePropertyChanged(nameof(HasBreadcrumbs));
-            this.RaisePropertyChanged(nameof(ShowPageTitle));
+            OnPropertyChanged(nameof(HasBreadcrumbs));
+            OnPropertyChanged(nameof(ShowPageTitle));
         }
 
         public bool HasBreadcrumbs => BreadcrumbItems.Count > 0;
         public bool ShowPageTitle => !HasBreadcrumbs;
 
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToIntegrationsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToBehaviourCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFastFlagsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToFastFlagEditorCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAppearanceCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRegionSelectorCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToRobloxSettingsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToShortcutsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToChannelsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToCommunityModsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToPresetModsCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToModGeneratorCommand { get; }
+        // --- Navigation Commands ---
+        public IRelayCommand NavigateToIntegrationsCommand { get; }
+        public IRelayCommand NavigateToBehaviourCommand { get; }
+        public IRelayCommand NavigateToModsCommand { get; }
+        public IRelayCommand NavigateToFastFlagsCommand { get; }
+        public IRelayCommand NavigateToFastFlagEditorCommand { get; }
+        public IRelayCommand NavigateToAppearanceCommand { get; }
+        public IRelayCommand NavigateToRegionSelectorCommand { get; }
+        public IRelayCommand NavigateToRobloxSettingsCommand { get; }
+        public IRelayCommand NavigateToShortcutsCommand { get; }
+        public IRelayCommand NavigateToChannelsCommand { get; }
+        public IRelayCommand NavigateToCommunityModsCommand { get; }
+        public IRelayCommand NavigateToPresetModsCommand { get; }
+        public IRelayCommand NavigateToModGeneratorCommand { get; }
 
-        private IRoutableViewModel Wrap(string segment, object settingsViewModel) =>
-            new SettingsPageViewModelWrapper(this, segment, settingsViewModel);
+        // --- Standard Commands ---
+        public ICommand OpenAboutCommand { get; }
+        public ICommand OpenAccountManagerCommand { get; }
+        public ICommand SaveSettingsCommand { get; }
+        public ICommand SaveAndLaunchSettingsCommand { get; }
+        public ICommand RestartAppCommand { get; }
+        public ICommand CloseWindowCommand { get; }
+        public ICommand BreadcrumbItemClickedCommand { get; }
 
-        public ICommand OpenAboutCommand => new RelayCommand(OpenAbout);
-        public ICommand OpenAccountManagerCommand => new RelayCommand(OpenAccountManager);
-        public ICommand SaveSettingsCommand => new RelayCommand(SaveSettings);
-        public ICommand SaveAndLaunchSettingsCommand => new RelayCommand(SaveAndLaunchSettings);
-        public ICommand RestartAppCommand => new RelayCommand(RestartApp);
-        public ICommand CloseWindowCommand => new RelayCommand(CloseWindow);
-        public ICommand BreadcrumbItemClickedCommand => new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
-
+        // --- Events & Flags ---
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
-        public bool GBSEnabled = App.GlobalSettings.Loaded;
         public event EventHandler? SettingsSaved;
+        public bool GBSEnabled = App.GlobalSettings.Loaded;
 
         public MainWindowViewModel()
         {
             _testModeEnabled = App.LaunchSettings.TestModeFlag.Active;
-            _isSidebarExpanded = App.Settings.Prop.IsNavigationSidebarExpanded;
-
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
 
-            var commandExceptionHandler = new Action<Exception>(ex =>
+            // Initialize Standard Commands
+            OpenAboutCommand = new RelayCommand(OpenAbout);
+            OpenAccountManagerCommand = new RelayCommand(OpenAccountManager);
+            SaveSettingsCommand = new RelayCommand(SaveSettings);
+            SaveAndLaunchSettingsCommand = new RelayCommand(SaveAndLaunchSettings);
+            RestartAppCommand = new RelayCommand(RestartApp);
+            CloseWindowCommand = new RelayCommand(CloseWindow);
+            BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
+
+            // Initialize Navigation Commands using standard CommunityToolkit RelayCommands
+            NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", "Integrations", Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
+            NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", "Behaviour", Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
+            NavigateToModsCommand = new RelayCommand(() => Navigate("mods", "Mods", Strings.Menu_Mods_Description, new ModsViewModel()));
+            NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", "Fast Flags", Strings.Menu_FastFlagEditor_Description, new FastFlagsViewModel()));
+            NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
+            NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", "Region Selector", Strings.Menu_RegionSelector_Description, new RegionSelectorViewModel()));
+            NavigateToRobloxSettingsCommand = new RelayCommand(() => Navigate("robloxsettings", "Roblox Settings", Strings.Menu_GBSEditor_Description, new RobloxSettingsViewModel()));
+            NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", "Shortcuts", Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
+            NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", "Channels Page", Strings.Menu_Channel_Description, new ChannelViewModel()));
+
+            NavigateToFastFlagEditorCommand = new RelayCommand(() => Navigate("fastflageditor", "Editor", "", new FastFlagEditorViewModel(this), new ObservableCollection<BreadcrumbItemModel>
             {
-                App.Logger.WriteException("MainWindowViewModel::NavigationCommand", ex);
+                new BreadcrumbItemModel { Content = "Fast Flags", Tag = "fastflags" },
+                new BreadcrumbItemModel { Content = "Editor", Tag = null, IsLast = true }
+            }));
+
+            NavigateToCommunityModsCommand = new RelayCommand(() =>
+            {
+                CurrentBreadcrumb = "Settings > Mods > Community Mods";
+                Navigate("communitymods", "Community Mods", "Explore user-created mods.", new CommunityModsViewModel(), new ObservableCollection<BreadcrumbItemModel>
+                {
+                    new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
+                    new BreadcrumbItemModel { Content = "Community Mods", Tag = null, IsLast = true }
+                });
             });
 
-            NavigateToIntegrationsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
+            NavigateToPresetModsCommand = new RelayCommand(() =>
+            {
+                CurrentBreadcrumb = "Settings > Mods > Preset Mods";
+                Navigate("presetmods", "Preset Mods", "Official built-in mods.", new ModsPresetsViewModel(), new ObservableCollection<BreadcrumbItemModel>
                 {
-                    SelectedPage = "integrations";
-                    CurrentPageTitle = "Integrations";
-                    CurrentPageDescription = Strings.Menu_Integrations_Description;
-                    CurrentBreadcrumb = "";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("integrations", new IntegrationsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
+                    new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
+                    new BreadcrumbItemModel { Content = "Preset Mods", Tag = null, IsLast = true }
+                });
+            });
 
-            NavigateToBehaviourCommand = ReactiveCommand.CreateFromObservable(
-                () =>
+            NavigateToModGeneratorCommand = new RelayCommand(() =>
+            {
+                CurrentBreadcrumb = "Settings > Mods > Mod Generator";
+                Navigate("modgenerator", "Mod Generator", "Generate mods easily with a single click.", new ModGeneratorViewModel(), new ObservableCollection<BreadcrumbItemModel>
                 {
-                    SelectedPage = "behaviour";
-                    CurrentPageTitle = "Behaviour";
-                    CurrentPageDescription = Strings.Menu_Behaviour_Description;
-                    CurrentBreadcrumb = "";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("behaviour", new BehaviourViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
+                    new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
+                    new BreadcrumbItemModel { Content = "Mod Generator", Tag = null, IsLast = true }
+                });
+            });
 
-            NavigateToModsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "mods";
-                    CurrentPageTitle = "Mods";
-                    CurrentPageDescription = Strings.Menu_Mods_Description;
-                    CurrentBreadcrumb = "";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("mods", new ModsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToFastFlagsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "fastflags";
-                    CurrentPageTitle = "Fast Flags";
-                    CurrentPageDescription = Strings.Menu_FastFlagEditor_Description;
-                    CurrentBreadcrumb = "";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("fastflags", new FastFlagsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToFastFlagEditorCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "fastflageditor";
-                    CurrentPageTitle = "Editor";
-                    CurrentPageDescription = "";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
-                    {
-                        new BreadcrumbItemModel { Content = "Fast Flags", Tag = "fastflags" },
-                        new BreadcrumbItemModel { Content = "Editor", Tag = null, IsLast = true }
-                    };
-                    return _router.Navigate.Execute(Wrap("fastflageditor", new FastFlagEditorViewModel(this)))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToAppearanceCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "appearance";
-                    CurrentPageTitle = Strings.Menu_Appearance_Title;
-                    CurrentPageDescription = Strings.Menu_Appearance_Description;
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("appearance", new AppearanceViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToRegionSelectorCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "regionselector";
-                    CurrentPageTitle = "Region Selector";
-                    CurrentPageDescription = Strings.Menu_RegionSelector_Description;
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("regionselector", new RegionSelectorViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToRobloxSettingsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "robloxsettings";
-                    CurrentPageTitle = "Roblox Settings";
-                    CurrentPageDescription = Strings.Menu_GBSEditor_Description;
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("robloxsettings", new RobloxSettingsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToShortcutsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "shortcuts";
-                    CurrentPageTitle = "Shortcuts";
-                    CurrentPageDescription = Strings.Menu_Shortcuts_Description;
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("shortcuts", new ShortcutsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToChannelsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "channels";
-                    CurrentPageTitle = "Channels Page";
-                    CurrentPageDescription = Strings.Menu_Channel_Description;
-                    CurrentBreadcrumb = "";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>();
-                    return _router.Navigate.Execute(Wrap("channels", new ChannelViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToCommunityModsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "communitymods";
-                    CurrentPageTitle = "Community Mods";
-                    CurrentPageDescription = "Explore user-created mods.";
-                    CurrentBreadcrumb = "Settings > Mods > Community Mods";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
-                    {
-                        new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
-                        new BreadcrumbItemModel { Content = "Community Mods", Tag = null, IsLast = true }
-                    };
-                    return _router.Navigate.Execute(Wrap("communitymods", new CommunityModsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToPresetModsCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "presetmods";
-                    CurrentPageTitle = "Preset Mods";
-                    CurrentPageDescription = "Official built-in mods.";
-                    CurrentBreadcrumb = "Settings > Mods > Preset Mods";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
-                    {
-                        new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
-                        new BreadcrumbItemModel { Content = "Preset Mods", Tag = null, IsLast = true }
-                    };
-                    return _router.Navigate.Execute(Wrap("presetmods", new ModsPresetsViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
-            NavigateToModGeneratorCommand = ReactiveCommand.CreateFromObservable(
-                () =>
-                {
-                    SelectedPage = "modgenerator";
-                    CurrentPageTitle = "Mod Generator";
-                    CurrentPageDescription = "Generate mods easily with a single click.";
-                    CurrentBreadcrumb = "Settings > Mods > Mod Generator";
-                    BreadcrumbItems = new ObservableCollection<BreadcrumbItemModel>
-                    {
-                        new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
-                        new BreadcrumbItemModel { Content = "Mod Generator", Tag = null, IsLast = true }
-                    };
-                    return _router.Navigate.Execute(Wrap("modgenerator", new ModGeneratorViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
-                }
-            );
-
+            // Initial Startup Routing
             var lastPageName = App.State.Prop.LastPage;
             if (lastPageName != null)
                 NavigateToLastPage(lastPageName);
             else
-                _router.NavigateAndReset.Execute(Wrap("integrations", new IntegrationsViewModel())).Subscribe();
+                NavigateToIntegrationsCommand.Execute(null);
+        }
+
+        // Centralized Navigation Helper
+        private void Navigate(string pageId, string title, string description, object viewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)
+        {
+            try
+            {
+                SelectedPage = pageId;
+                CurrentPageTitle = title;
+                CurrentPageDescription = description;
+                BreadcrumbItems = customBreadcrumbs ?? new ObservableCollection<BreadcrumbItemModel>();
+                CurrentPage = viewModel; // Instantiates the new view
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("MainWindowViewModel::NavigationCommand", ex);
+            }
         }
 
         private void NavigateToLastPage(string pageTypeName)
         {
-            var (viewModel, title, description) = pageTypeName switch
+            switch (pageTypeName)
             {
-                "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel" => ((IRoutableViewModel)Wrap("integrations", new IntegrationsViewModel()), "Integrations", "Connect third-party apps to enhance your Roblox experience."),
-                "Froststrap.UI.ViewModels.Settings.BehaviourViewModel" => (Wrap("behaviour", new BehaviourViewModel()), "Behaviour", "Customize how Froststrap behaves and operates."),
-                "Froststrap.UI.ViewModels.Settings.ModsViewModel" => (Wrap("mods", new ModsViewModel()), "Mods", "Manage and customize game modifications."),
-                "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel" => (Wrap("communitymods", new CommunityModsViewModel()), "Community Mods", "Browse and install mods created by the community."),
-                "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel" => (Wrap("fastflags", new FastFlagsViewModel()), "Fast Flags", "Configure advanced Roblox feature flags."),
-                "Froststrap.UI.ViewModels.Settings.AppearanceViewModel" => (Wrap("appearance", new AppearanceViewModel()), "Appearance", "Configure how Froststrap should look."),
-                "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel" => (Wrap("robloxsettings", new RobloxSettingsViewModel()), "Roblox Settings", "Configure Roblox-specific settings and options."),
-                "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel" => (Wrap("shortcut", new ShortcutsViewModel()), "Shortcuts", Strings.Menu_Shortcuts_Description),
-                _ => (Wrap("integrations", new IntegrationsViewModel()), "Integrations", "Connect third-party apps to enhance your Roblox experience.")
-            };
-            CurrentPageTitle = title;
-            CurrentPageDescription = description;
-            _router.Navigate.Execute(viewModel).Subscribe();
+                case "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel": NavigateToIntegrationsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.BehaviourViewModel": NavigateToBehaviourCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.ModsViewModel": NavigateToModsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel": NavigateToCommunityModsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel": NavigateToFastFlagsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.AppearanceViewModel": NavigateToAppearanceCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel": NavigateToRobloxSettingsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel": NavigateToShortcutsCommand.Execute(null); break;
+                default: NavigateToIntegrationsCommand.Execute(null); break;
+            }
         }
 
         private void OpenAbout()
@@ -517,26 +313,12 @@ namespace Froststrap.UI.ViewModels.Settings
             switch (item.Tag)
             {
                 case "mods":
-                    NavigateToModsCommand.Execute(Unit.Default);
+                    NavigateToModsCommand.Execute(null); // Replaced Unit.Default with null
                     break;
                 case "fastflags":
-                    NavigateToFastFlagsCommand.Execute(Unit.Default);
+                    NavigateToFastFlagsCommand.Execute(null);
                     break;
             }
-        }
-
-        public sealed class SettingsPageViewModelWrapper : ReactiveObject, IRoutableViewModel
-        {
-            public SettingsPageViewModelWrapper(IScreen hostScreen, string urlPathSegment, object innerViewModel)
-            {
-                HostScreen = hostScreen;
-                UrlPathSegment = urlPathSegment;
-                InnerViewModel = innerViewModel;
-            }
-
-            public string? UrlPathSegment { get; }
-            public IScreen HostScreen { get; }
-            public object InnerViewModel { get; }
         }
     }
 }

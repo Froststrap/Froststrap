@@ -1,9 +1,9 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
-using Froststrap.UI.ViewModels.Settings.Mods;
 using Froststrap.UI.ViewModels.Settings;
+using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
@@ -18,17 +18,17 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
         public void OpenCommunityMods()
         {
-            _mainVm.NavigateToCommunityModsCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToCommunityModsCommand.Execute(null);
         }
 
         public void OpenMods()
         {
-            _mainVm.NavigateToModsCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToModsCommand.Execute(null);
         }
 
         public void OpenModGenerator()
         {
-            _mainVm.NavigateToModGeneratorCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToModGeneratorCommand.Execute(null);
         }
     }
 
@@ -39,10 +39,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
         public ModsPresetsPage()
         {
             InitializeComponent();
-
             App.FrostRPC?.SetPage("Preset Mods");
-
-            SetupNavigationIfNeeded();
         }
 
         protected override void OnLoaded(RoutedEventArgs e)
@@ -53,8 +50,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
         private void SetupNavigationIfNeeded()
         {
-            if (_navigationSetUp)
-                return;
+            if (_navigationSetUp) return;
 
             try
             {
@@ -70,8 +66,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
                     _navigationSetUp = true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                App.Logger?.WriteException("ModsPresetsPage::SetupNavigation", ex);
             }
         }
     }

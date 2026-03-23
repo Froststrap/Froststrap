@@ -1,15 +1,13 @@
+using System.ComponentModel;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Froststrap.Integrations;
-using Froststrap.UI.Elements.Base;
 using Froststrap.UI.ViewModels.AccountManagers;
-using ReactiveUI;
-using System.Reactive.Linq;
 
 namespace Froststrap.UI.Elements.AccountManagers
 {
-    public partial class MainWindow : AvaloniaWindow
+    public partial class MainWindow : Base.AvaloniaWindow
     {
         private AccountManagerViewModel? _viewModel;
 
@@ -24,8 +22,24 @@ namespace Froststrap.UI.Elements.AccountManagers
 
             AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
 
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+
             this.Loaded += (s, e) => SetupNavigation();
             this.Unloaded += (s, e) => Cleanup();
+        }
+
+        private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (_viewModel == null) return;
+
+            if (e.PropertyName == nameof(AccountManagerViewModel.CurrentPage))
+            {
+                UpdatePageView(_viewModel.CurrentPage);
+            }
+            else if (e.PropertyName == nameof(AccountManagerViewModel.SelectedPage))
+            {
+                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+            }
         }
 
         private void SetupNavigation()
@@ -33,53 +47,34 @@ namespace Froststrap.UI.Elements.AccountManagers
             if (_viewModel is null) return;
 
             string? lastPageName = App.State.Prop.LastPage;
-            if (lastPageName == "accounts")
-                _viewModel.NavigateToAccountsCommand.Execute(System.Reactive.Unit.Default);
-            else if (lastPageName == "friends")
-                _viewModel.NavigateToFriendsCommand.Execute(System.Reactive.Unit.Default);
+            if (lastPageName == "friends")
+                _viewModel.NavigateToFriendsCommand.Execute(null);
             else if (lastPageName == "games")
-                _viewModel.NavigateToGamesCommand.Execute(System.Reactive.Unit.Default);
+                _viewModel.NavigateToGamesCommand.Execute(null);
             else
-                _viewModel.NavigateToAccountsCommand.Execute(System.Reactive.Unit.Default);
+                _viewModel.NavigateToAccountsCommand.Execute(null);
 
-            _viewModel.Router.CurrentViewModel
-                .ObserveOn(RxSchedulers.MainThreadScheduler)
-                .Subscribe(vm => UpdatePageView(vm));
-
-            _viewModel.WhenAnyValue(x => x.SelectedPage)
-                .ObserveOn(RxSchedulers.MainThreadScheduler)
-                .Subscribe(page => UpdateSelectedButtonStyle(page));
+            UpdatePageView(_viewModel.CurrentPage);
+            UpdateSelectedButtonStyle(_viewModel.SelectedPage);
         }
 
         private void OnActiveAccountChanged(AccountManagerAccount? account)
         {
             Dispatcher.UIThread.Invoke(() =>
             {
-                if (_viewModel is not null)
-                {
-                    _viewModel.NavigateToAccountsCommand.Execute(System.Reactive.Unit.Default);
-                }
+                _viewModel?.NavigateToAccountsCommand.Execute(null);
             });
         }
 
-        private void UpdatePageView(IRoutableViewModel? viewModel)
+        private void UpdatePageView(object? viewModel)
         {
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
             if (pageControl is null || viewModel is null) return;
 
-            // Handle wrapper ViewModels
-            object? actualViewModel = viewModel;
-            if (viewModel is AccountsPageViewModel apvm)
-                actualViewModel = apvm.ViewModel;
-            else if (viewModel is FriendsPageViewModel fpvm)
-                actualViewModel = fpvm.ViewModel;
-            else if (viewModel is GamesPageViewModel gpvm)
-                actualViewModel = gpvm.ViewModel;
-
-            var view = ResolveViewForViewModel(actualViewModel ?? viewModel);
+            var view = ResolveViewForViewModel(viewModel);
             if (view is not null)
             {
-                view.DataContext = actualViewModel ?? viewModel;
+                view.DataContext = viewModel;
                 pageControl.Content = view;
             }
         }
@@ -101,18 +96,10 @@ namespace Froststrap.UI.Elements.AccountManagers
                     if (button.Tag is string tag)
                     {
                         var isSelected = tag == selectedPage;
+                        button.Background = isSelected ? highlightBgColor : Brushes.Transparent;
 
-                        if (isSelected)
-                        {
-                            button.Background = highlightBgColor;
-                        }
-                        else
-                        {
-                            button.Background = new SolidColorBrush(Colors.Transparent);
-                        }
-
-                        // Update the icon color (shit doesn't work)
-                        if (button.Content is Panel panel && panel.Children.FirstOrDefault() is IconPacks.Avalonia.Material.PackIconMaterial icon)
+                        var icon = FindIconInButton(button);
+                        if (icon != null)
                         {
                             icon.Foreground = isSelected ? selectedBrush : unselectedBrush;
                         }
@@ -121,11 +108,20 @@ namespace Froststrap.UI.Elements.AccountManagers
             }
         }
 
+        private IconPacks.Avalonia.Material.PackIconMaterial? FindIconInButton(Button button)
+        {
+            if (button.Content is Panel panel)
+                return panel.Children.OfType<IconPacks.Avalonia.Material.PackIconMaterial>().FirstOrDefault();
+
+            if (button.Content is IconPacks.Avalonia.Material.PackIconMaterial icon)
+                return icon;
+
+            return null;
+        }
+
         private Control? ResolveViewForViewModel(object viewModel)
         {
-            var actualViewModelType = viewModel.GetType();
-            var viewModelName = actualViewModelType.Name;
-            var viewName = viewModelName.Replace("ViewModel", "");
+            var viewName = viewModel.GetType().Name.Replace("ViewModel", "");
 
             var viewTypeNames = new[]
             {
@@ -135,38 +131,22 @@ namespace Froststrap.UI.Elements.AccountManagers
                 $"Froststrap.UI.Elements.AccountManagers.{viewName}Page"
             };
 
-            foreach (var viewTypeName in viewTypeNames)
+            foreach (var name in viewTypeNames)
             {
-                var viewType = Type.GetType(viewTypeName);
-                if (viewType is null)
+                var type = Type.GetType(name) ?? System.Reflection.Assembly.GetExecutingAssembly().GetType(name);
+                if (type != null && typeof(Control).IsAssignableFrom(type))
                 {
-                    try
-                    {
-                        var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                        viewType = assembly.GetType(viewTypeName, false);
-                    }
-                    catch { }
-                }
-
-                if (viewType is not null && typeof(Control).IsAssignableFrom(viewType))
-                {
-                    try
-                    {
-                        return Activator.CreateInstance(viewType) as Control;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger?.WriteLine("AccountManager MainWindow", $"Failed to create view {viewTypeName}: {ex.Message}");
-                    }
+                    return Activator.CreateInstance(type) as Control;
                 }
             }
-
             return null;
         }
 
         private void Cleanup()
         {
             AccountManager.Shared.ActiveAccountChanged -= OnActiveAccountChanged;
+            if (_viewModel != null)
+                _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
         }
     }
 }
