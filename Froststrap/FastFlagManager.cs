@@ -202,9 +202,9 @@ namespace Froststrap
             OriginalProp = new(Prop);
         }
 
-		public override async Task<bool> Load(bool alertFailure = true)
+		public override bool Load(bool alertFailure = true)
 		{
-			bool result = await base.Load(alertFailure);
+			bool result = base.Load(alertFailure);
 
 			// clone the dictionary
 			OriginalProp = new(Prop);

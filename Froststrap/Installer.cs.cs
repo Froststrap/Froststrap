@@ -137,12 +137,12 @@ namespace Froststrap
 
                 if (File.Exists(statePath))
                 {
-                    await App.State.Load(false);
+                    App.State.Load(false);
                 }
             }
-            await App.Settings.Load(false);
-            await App.State.Load(false);
-            await App.FastFlags.Load(false);
+            App.Settings.Load(false);
+            App.State.Load(false);
+            App.FastFlags.Load(false);
             App.Settings.Save();
 
             App.Logger.WriteLine(LOG_IDENT, "Installation finished");
@@ -518,7 +518,7 @@ namespace Froststrap
 
                     if (legacyRobloxState.IsSaved)
                     {
-                        if (await legacyRobloxState.Load(false))
+                        if (legacyRobloxState.Load(false))
                         {
                             App.PlayerState.Prop.VersionGuid = legacyRobloxState.Prop.Player.VersionGuid;
                             App.PlayerState.Prop.PackageHashes = legacyRobloxState.Prop.Player.PackageHashes;
@@ -658,7 +658,7 @@ namespace Froststrap
                 string settingsPath = Path.Combine(InstallLocation, "Settings.json");
                 if (File.Exists(settingsPath))
                 {
-                    await App.Settings.Load(false);
+                    App.Settings.Load(false);
                 }
                 return;
             }
