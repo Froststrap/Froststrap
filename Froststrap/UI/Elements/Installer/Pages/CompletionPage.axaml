@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:models="using:Froststrap.Models"
+             xmlns:vm="using:Froststrap.UI.ViewModels.Installer"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:controls="using:Froststrap.UI.Elements.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="Froststrap.UI.Elements.Installer.Pages.CompletionPage"
+             x:DataType="vm:CompletionViewModel">
+
+    <StackPanel Margin="0,0,14,14">
+        <TextBlock FontSize="14" Text="{x:Static resources:Strings.Installer_Completion_Text}" TextWrapping="Wrap" Margin="0,8,0,0" />
+
+        <controls:CardAction Header="{x:Static resources:Strings.Installer_Completion_Settings_Title}" Description="{x:Static resources:Strings.Installer_Completion_Settings_Description}" Margin="0,16,0,0" Icon="CogOutline" Command="{Binding LaunchSettingsCommand, Mode=OneTime}"/>
+        <controls:CardAction Header="{x:Static resources:Strings.Installer_Completion_Launch_Title}" Description="{x:Static resources:Strings.Installer_Completion_Launch_Description}" Icon="ArrowRight" Command="{Binding LaunchRobloxCommand, Mode=OneTime}"/>
+    </StackPanel>
+</UserControl>

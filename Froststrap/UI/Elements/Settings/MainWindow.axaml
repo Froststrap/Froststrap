@@ -242,7 +242,7 @@
 							Margin="0,0,0,4"
 							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
-						<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,4" IsOpen="True" Message="FluentAvalonia so w lowkey" Severity="Warning" IsClosable="False" />
+						<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,4" IsOpen="True" Message="FluentAvalonia so w lowkey" Severity="Warning" IsVisible="False" IsClosable="False" />
 					</StackPanel>
 				</Border>
 

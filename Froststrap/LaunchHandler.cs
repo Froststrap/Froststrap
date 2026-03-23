@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Dialogs;
 
@@ -39,7 +40,12 @@ namespace Froststrap
             const string LOG_IDENT = "LaunchHandler::ProcessLaunchArgs";
 
             // this order is specific
-            if (App.LaunchSettings.MenuFlag.Active)
+            if (App.LaunchSettings.UninstallFlag.Active)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Opening uninstaller");
+                _ = LaunchUninstaller();
+            }
+            else if (App.LaunchSettings.MenuFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening settings");
                 LaunchSettings();
@@ -94,6 +100,102 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Closing - quiet flag active");
                 App.Terminate();
             }
+        }
+
+        public static async Task LaunchInstaller()
+        {
+            using var interlock = new InterProcessLock("Installer");
+
+            if (!interlock.IsAcquired)
+            {
+                await Frontend.ShowMessageBox(Strings.Dialog_AlreadyRunning_Installer, MessageBoxImage.Error);
+                App.Terminate();
+                return;
+            }
+
+            if (App.LaunchSettings.UninstallFlag.Active)
+            {
+                await Frontend.ShowMessageBox(Strings.Bootstrapper_FirstRunUninstall, MessageBoxImage.Error);
+                App.Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
+                return;
+            }
+
+            if (App.LaunchSettings.QuietFlag.Active)
+            {
+                var installer = new Installer();
+
+                if (!await installer.CheckInstallLocation())
+                    App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+
+                await installer.DoInstall();
+                interlock.Dispose();
+                ProcessLaunchArgs();
+            }
+            else
+            {
+#if QA_BUILD
+        await Frontend.ShowMessageBox("...", MessageBoxImage.Information);
+#endif
+
+                var langSelector = new LanguageSelectorDialog();
+                var langTcs = new TaskCompletionSource();
+                langSelector.Closed += (s, e) => langTcs.SetResult();
+                langSelector.Show();
+                await langTcs.Task;
+
+                var installerWindow = new UI.Elements.Installer.MainWindow();
+                var installerTcs = new TaskCompletionSource();
+                installerWindow.Closed += (s, e) => installerTcs.SetResult();
+                installerWindow.Show();
+                await installerTcs.Task;
+
+                interlock.Dispose();
+
+                ProcessNextAction(installerWindow.CloseAction, !installerWindow.Finished);
+            }
+        }
+
+        public static async Task LaunchUninstaller()
+        {
+            using var interlock = new InterProcessLock("Uninstaller");
+
+            if (!interlock.IsAcquired)
+            {
+                await Frontend.ShowMessageBox(Strings.Dialog_AlreadyRunning_Uninstaller, MessageBoxImage.Error);
+                App.Terminate();
+                return;
+            }
+
+            bool confirmed = false;
+            bool keepData = true;
+
+            if (App.LaunchSettings.QuietFlag.Active)
+            {
+                confirmed = true;
+            }
+            else
+            {
+                var dialog = new UninstallerDialog();
+
+                var tcs = new TaskCompletionSource();
+                dialog.Closed += (s, e) => tcs.SetResult();
+
+                dialog.Show();
+                await tcs.Task;
+
+                confirmed = dialog.Confirmed;
+                keepData = dialog.KeepData;
+            }
+
+            if (!confirmed)
+            {
+                App.Terminate();
+                return;
+            }
+
+            await Installer.DoUninstall(keepData);
+            await Frontend.ShowMessageBox(Strings.Bootstrapper_SuccessfullyUninstalled, MessageBoxImage.Information);
+            App.Terminate();
         }
 
         public static void LaunchSettings()

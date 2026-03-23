@@ -62,5 +62,6 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         private void CopyInstanceId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(InstanceId);
         public ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
+
     }
 }

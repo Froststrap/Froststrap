@@ -1,0 +1,79 @@
+﻿<base:AvaloniaWindow
+    x:Class="Froststrap.UI.Elements.Installer.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+    xmlns:resources="using:Froststrap.Resources"
+    xmlns:ic="using:IconPacks.Avalonia.Material"
+    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Installer"
+    xmlns:pages="clr-namespace:Froststrap.UI.Elements.Installer.Pages"
+    Title="{x:Static resources:Strings.Menu_Title}"
+    Height="540" Width="840" MinWidth="840"
+    x:DataType="vm:MainWindowViewModel"
+    SystemDecorations="None"
+    ExtendClientAreaTitleBarHeightHint="-1"
+    ExtendClientAreaToDecorationsHint="True"
+    TransparencyLevelHint="Mica"
+    WindowStartupLocation="CenterScreen">
+
+    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto, *,Auto">
+        <controls:TitleBar x:Name="RootTitleBar" 
+                           Grid.Row="0" 
+                           Title="{x:Static resources:Strings.Installer_Title}" 
+                           Icon="avares://Froststrap/Froststrap.ico" />
+
+        <ui:NavigationView x:Name="RootNavigation" 
+                           Grid.Row="1"
+                           PaneDisplayMode="Left"
+                           IsBackButtonVisible="False"
+                           IsSettingsVisible="False"
+                           IsPaneToggleButtonVisible="False"
+                           OpenPaneLength="50">
+            
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem IsHitTestVisible="False"
+                                       FontWeight="Medium" />
+                <ui:NavigationViewItem IsHitTestVisible="False"
+                                       FontWeight="Medium" />
+                <ui:NavigationViewItem IsHitTestVisible="False"
+                                       FontWeight="Medium" />
+            </ui:NavigationView.MenuItems>
+
+            <Grid RowDefinitions="Auto, *">
+                <ui:BreadcrumbBar Grid.Row="0" 
+                                  Margin="24,12,24,0" 
+                                  IsHitTestVisible="False" />
+                
+                <TransitioningContentControl x:Name="RootFrame" 
+                                             Grid.Row="1" 
+                                             Margin="24,12,24,24" />
+            </Grid>
+        </ui:NavigationView>
+
+        <Border Grid.Row="2" 
+                Background="{DynamicResource LayerFillColorAltBrush}" 
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                BorderThickness="0,1,0,0" 
+                Padding="16,12">
+            <Grid ColumnDefinitions="*, Auto">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <Button Content="{x:Static resources:Strings.Common_Navigation_Back}" 
+                            Width="100"
+                            Command="{Binding BackPageCommand}" 
+                            IsEnabled="{Binding BackButtonEnabled}" />
+
+                    <Button Content="{Binding NextButtonText}" 
+                            Width="120"
+                            Command="{Binding NextPageCommand}" />
+
+                    <Button Content="{x:Static resources:Strings.Common_Close}" 
+                            Width="100"
+                            Command="{Binding CloseWindowCommand}" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>
