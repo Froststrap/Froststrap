@@ -23,7 +23,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <controls:TitleBar Grid.Row="0" Title="Froststrap" Icon="avares://Froststrap/Froststrap" />
+        <controls:TitleBar Grid.Row="0" Title="Froststrap" Icon="avares://Froststrap/Froststrap.ico" />
 
         <StackPanel Grid.Row="1" Margin="12">
             <TextBlock Text="{x:Static resources:Strings.Dialog_LanguageSelector_Header}" 
@@ -32,7 +32,7 @@
             <TextBlock Text="{x:Static resources:Strings.Dialog_LanguageSelector_Subtext}" 
                        TextWrapping="Wrap" Margin="0,0,0,12" />
             
-            <ComboBox ItemsSource="{Binding Languages, Mode=OneTime}" 
+            <ComboBox ItemsSource="{Binding Languages, Mode=OneTime}" HorizontalAlignment="Stretch"
                       SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
         </StackPanel>
 
