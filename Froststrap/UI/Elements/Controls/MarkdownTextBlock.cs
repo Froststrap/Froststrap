@@ -1,5 +1,4 @@
-﻿using System.Reactive.Linq;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Data;
@@ -152,12 +151,8 @@ namespace Froststrap.UI.Elements.Controls
 
                 textBlock[!TextBlock.ForegroundProperty] = hyperlinkControl[!Hyperlink.ForegroundProperty];
 
-                hyperlinkControl.GetObservable(Hyperlink.IsPointerOverProperty).Subscribe(isHovered =>
-                {
-                    textBlock.TextDecorations = isHovered
-                        ? Avalonia.Media.TextDecorations.Underline
-                        : null;
-                });
+                hyperlinkControl.PointerEntered += (s, e) => textBlock.TextDecorations = Avalonia.Media.TextDecorations.Underline;
+                hyperlinkControl.PointerExited += (s, e) => textBlock.TextDecorations = null;
 
                 return new InlineUIContainer(hyperlinkControl)
                 {

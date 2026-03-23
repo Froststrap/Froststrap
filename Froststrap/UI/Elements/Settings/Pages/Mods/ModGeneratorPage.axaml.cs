@@ -1,11 +1,12 @@
-using Avalonia;
 using Avalonia.Controls;
 using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.Mods;
-using System;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
+    /// <summary>
+    /// Implementation of IModsDialogService for Mod Generator navigation
+    /// </summary>
     internal class ModGeneratorDialogService : IModsDialogService
     {
         private readonly MainWindowViewModel _mainVm;
@@ -17,19 +18,19 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
         public async Task OpenCommunityModsAsync()
         {
-            _mainVm.NavigateToCommunityModsCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToCommunityModsCommand.Execute(null);
             await Task.CompletedTask;
         }
 
         public async Task OpenPresetModsAsync()
         {
-            _mainVm.NavigateToPresetModsCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToPresetModsCommand.Execute(null);
             await Task.CompletedTask;
         }
 
         public async Task OpenModGeneratorAsync()
         {
-            _mainVm.NavigateToModGeneratorCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToModGeneratorCommand.Execute(null);
             await Task.CompletedTask;
         }
     }
@@ -47,10 +48,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
         private void SetupViewModelIfNeeded()
         {
-            if (_viewModelSetUp)
-            {
-                return;
-            }
+            if (_viewModelSetUp) return;
 
             try
             {
@@ -67,8 +65,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
                     _viewModelSetUp = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                App.Logger?.WriteException("ModGeneratorPage::SetupViewModel", ex);
                 CreateFallbackViewModel();
                 _viewModelSetUp = true;
             }

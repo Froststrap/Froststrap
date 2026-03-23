@@ -1,26 +1,22 @@
-﻿using System.Reactive;
-using System.Reactive.Linq;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 using Avalonia.Media;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using Froststrap.UI.ViewModels.Settings;
 using ICSharpCode.SharpZipLib.Zip;
-using ReactiveUI;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    public class ModGeneratorViewModel : ReactiveObject
+    public partial class ModGeneratorViewModel : ObservableObject
     {
         private readonly IModsDialogService _dialogService;
+        private Color _solidColor = Colors.White;
 
-        public ReactiveCommand<Unit, Unit> GenerateModCommand { get; }
-
-        public ModGeneratorViewModel() 
+        public ModGeneratorViewModel()
             : this(new DefaultModsDialogService())
         {
         }
@@ -29,147 +25,74 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
 
-            var canGenerate = this.WhenAnyValue(
-                x => x.SolidColorHex,
-                x => x.IsNotGeneratingMod,
-                (hex, notGenerating) => IsValidHexColor(hex) && notGenerating
-            );
-
-            GenerateModCommand = ReactiveCommand.CreateFromTask(GenerateModAsync, canGenerate);
+            GenerateModCommand = new AsyncRelayCommand(GenerateModAsync, CanGenerateMod);
 
             _ = LoadFontFilesAsync();
         }
+
+        #region Commands
+
+        public IAsyncRelayCommand GenerateModCommand { get; }
 
         public ICommand OpenModsCommand => new AsyncRelayCommand(async () =>
         {
             App.Logger.WriteLine("ModGeneratorViewModel", "OpenModsCommand executed");
             await _dialogService.OpenModGeneratorAsync();
-            App.Logger.WriteLine("ModGeneratorViewModel", "OpenModsCommand completed");
         });
 
         public ICommand OpenCommunityModsCommand => new AsyncRelayCommand(async () =>
         {
             App.Logger.WriteLine("ModGeneratorViewModel", "OpenCommunityModsCommand executed");
             await _dialogService.OpenCommunityModsAsync();
-            App.Logger.WriteLine("ModGeneratorViewModel", "OpenCommunityModsCommand completed");
         });
 
         public ICommand OpenPresetModsCommand => new AsyncRelayCommand(async () =>
         {
             App.Logger.WriteLine("ModGeneratorViewModel", "OpenPresetModsCommand executed");
             await _dialogService.OpenPresetModsAsync();
-            App.Logger.WriteLine("ModGeneratorViewModel", "OpenPresetModsCommand completed");
         });
 
-        private Color _solidColor = Colors.White;
+        #endregion
 
+        #region Observable Properties
+
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(GenerateModCommand))]
         private string _solidColorHex = "#FFFFFF";
-        public string SolidColorHex
-        {
-            get => _solidColorHex;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _solidColorHex, value);
 
-                if (IsValidHexColor(value))
-                {
-                    UpdateSolidColorFromHex(value);
-                    UpdateGlyphColors();
-                    this.RaisePropertyChanged(nameof(SelectedMediaColor));
-                    StatusText = "Ready to generate mod.";
-                }
-                else
-                {
-                    StatusText = "Enter a valid hex color (e.g., #FF0000)";
-                }
-            }
-        }
-
+        [ObservableProperty]
         private double _progress = 0;
-        public double Progress
-        {
-            get => _progress;
-            set => this.RaiseAndSetIfChanged(ref _progress, value);
-        }
 
+        [ObservableProperty]
         private bool _isProgressVisible = false;
-        public bool IsProgressVisible
-        {
-            get => _isProgressVisible;
-            set => this.RaiseAndSetIfChanged(ref _isProgressVisible, value);
-        }
 
-        public Color SelectedMediaColor
-        {
-            get => Color.FromRgb(_solidColor.R, _solidColor.G, _solidColor.B);
-            set
-            {
-                _solidColor = Color.FromArgb(value.A, value.R, value.G, value.B);
-                _solidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
-
-                this.RaisePropertyChanged(nameof(SolidColorHex));
-                this.RaisePropertyChanged(nameof(SelectedMediaColor));
-
-                UpdateGlyphColors();
-                StatusText = "Ready to generate mod.";
-            }
-        }
-
-        private SolidColorBrush _previewBrush = new(Colors.White);
-        public SolidColorBrush PreviewBrush
-        {
-            get => _previewBrush;
-            set => this.RaiseAndSetIfChanged(ref _previewBrush, value);
-        }
-
+        [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(GenerateModCommand))]
         private bool _isNotGeneratingMod = true;
-        public bool IsNotGeneratingMod
-        {
-            get => _isNotGeneratingMod;
-            set => this.RaiseAndSetIfChanged(ref _isNotGeneratingMod, value);
-        }
 
+        [ObservableProperty]
         private string _statusText = "";
-        public string StatusText
-        {
-            get => _statusText;
-            set => this.RaiseAndSetIfChanged(ref _statusText, value);
-        }
 
+        [ObservableProperty]
         private bool _colorCursors = false;
-        public bool ColorCursors
-        {
-            get => _colorCursors;
-            set => this.RaiseAndSetIfChanged(ref _colorCursors, value);
-        }
 
+        [ObservableProperty]
         private bool _colorShiftlock = false;
-        public bool ColorShiftlock
-        {
-            get => _colorShiftlock;
-            set => this.RaiseAndSetIfChanged(ref _colorShiftlock, value);
-        }
 
+        [ObservableProperty]
         private bool _colorEmoteWheel = false;
-        public bool ColorEmoteWheel
-        {
-            get => _colorEmoteWheel;
-            set => this.RaiseAndSetIfChanged(ref _colorEmoteWheel, value);
-        }
 
+        [ObservableProperty]
         private bool _includeModifications = true;
-        public bool IncludeModifications
-        {
-            get => _includeModifications;
-            set => this.RaiseAndSetIfChanged(ref _includeModifications, value);
-        }
 
+        [ObservableProperty]
+        private SolidColorBrush _previewBrush = new(Colors.White);
+
+        [ObservableProperty]
         private ObservableCollection<string> _fontDisplayNames = new();
-        public ObservableCollection<string> FontDisplayNames
-        {
-            get => _fontDisplayNames;
-            set => this.RaiseAndSetIfChanged(ref _fontDisplayNames, value);
-        }
+
+        [ObservableProperty]
+        private ObservableCollection<GlyphItem> _glyphItems = new();
 
         private string? _selectedFontDisplayName;
         public string? SelectedFontDisplayName
@@ -177,17 +100,47 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             get => _selectedFontDisplayName;
             set
             {
-                this.RaiseAndSetIfChanged(ref _selectedFontDisplayName, value);
-                OnSelectedFontChanged();
+                if (SetProperty(ref _selectedFontDisplayName, value))
+                {
+                    OnSelectedFontChanged();
+                }
             }
         }
 
-        private ObservableCollection<GlyphItem> _glyphItems = new();
-        public ObservableCollection<GlyphItem> GlyphItems
+        #endregion
+
+        public Color SelectedMediaColor
         {
-            get => _glyphItems;
-            set => this.RaiseAndSetIfChanged(ref _glyphItems, value);
+            get => Color.FromRgb(_solidColor.R, _solidColor.G, _solidColor.B);
+            set
+            {
+                _solidColor = Color.FromArgb(value.A, value.R, value.G, value.B);
+                SolidColorHex = $"#{_solidColor.R:X2}{_solidColor.G:X2}{_solidColor.B:X2}";
+
+                OnPropertyChanged(nameof(SolidColorHex));
+                OnPropertyChanged(nameof(SelectedMediaColor));
+
+                UpdateGlyphColors();
+                StatusText = "Ready to generate mod.";
+            }
         }
+
+        partial void OnSolidColorHexChanged(string value)
+        {
+            if (IsValidHexColor(value))
+            {
+                UpdateSolidColorFromHex(value);
+                UpdateGlyphColors();
+                OnPropertyChanged(nameof(SelectedMediaColor));
+                StatusText = "Ready to generate mod.";
+            }
+            else
+            {
+                StatusText = "Enter a valid hex color (e.g., #FF0000)";
+            }
+        }
+
+        private bool CanGenerateMod() => IsValidHexColor(SolidColorHex) && IsNotGeneratingMod;
 
         private string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
         private string FontDir => Path.Combine(Paths.Cache, "FontPreview");

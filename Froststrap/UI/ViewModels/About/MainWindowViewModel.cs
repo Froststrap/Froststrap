@@ -1,80 +1,49 @@
-using ReactiveUI;
-using System.Reactive;
-using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using System;
 
 namespace Froststrap.UI.ViewModels.About
 {
-    public class MainWindowViewModel : ReactiveObject, IRoutableViewModel, IScreen
+    public partial class MainWindowViewModel : ObservableObject
     {
-        private readonly RoutingState _router = new();
-        public RoutingState Router => _router;
+        [ObservableProperty]
+        private object? _currentPage;
 
-        public string? UrlPathSegment => "main";
-        public IScreen HostScreen => this;
-
+        [ObservableProperty]
         private string _selectedPage = "about";
-        public string SelectedPage
-        {
-            get => _selectedPage;
-            set => this.RaiseAndSetIfChanged(ref _selectedPage, value);
-        }
 
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToAboutCommand { get; }
-        public ReactiveCommand<Unit, IRoutableViewModel> NavigateToLicensesCommand { get; }
-
-        private IRoutableViewModel Wrap(string segment, object viewModel) =>
-            new AboutPageViewModelWrapper(this, segment, viewModel);
+        public IRelayCommand NavigateToAboutCommand { get; }
+        public IRelayCommand NavigateToLicensesCommand { get; }
 
         public MainWindowViewModel()
         {
-            var commandExceptionHandler = new Action<Exception>(ex =>
+            NavigateToAboutCommand = new RelayCommand(() =>
             {
-                App.Logger.WriteException("AboutMainWindowViewModel::NavigationCommand", ex);
-            });
-
-            NavigateToAboutCommand = ReactiveCommand.CreateFromObservable(
-                () =>
+                try
                 {
                     SelectedPage = "about";
-                    return _router.Navigate.Execute(Wrap("about", new AboutViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
+                    CurrentPage = new AboutViewModel();
                 }
-            );
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("AboutMainWindowViewModel::NavigateToAbout", ex);
+                }
+            });
 
-            NavigateToLicensesCommand = ReactiveCommand.CreateFromObservable(
-                () =>
+            NavigateToLicensesCommand = new RelayCommand(() =>
+            {
+                try
                 {
                     SelectedPage = "licenses";
-                    return _router.Navigate.Execute(Wrap("licenses", new LicensesViewModel()))
-                        .ObserveOn(RxSchedulers.MainThreadScheduler)
-                        .Catch<IRoutableViewModel, Exception>(ex =>
-                        {
-                            commandExceptionHandler(ex);
-                            return Observable.Empty<IRoutableViewModel>();
-                        });
+                    CurrentPage = new LicensesViewModel();
                 }
-            );
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException("AboutMainWindowViewModel::NavigateToLicenses", ex);
+                }
+            });
 
-            _router.NavigateAndReset.Execute(Wrap("about", new AboutViewModel())).Subscribe();
-        }
-
-        private sealed class AboutPageViewModelWrapper : ReactiveObject, IRoutableViewModel
-        {
-            public AboutPageViewModelWrapper(IScreen hostScreen, string urlPathSegment, object innerViewModel)
-            {
-                HostScreen = hostScreen;
-                UrlPathSegment = urlPathSegment;
-                InnerViewModel = innerViewModel;
-            }
-
-            public string? UrlPathSegment { get; }
-            public IScreen HostScreen { get; }
-            public object InnerViewModel { get; }
+            NavigateToAboutCommand.Execute(null);
         }
     }
 }

@@ -1,33 +1,25 @@
-﻿using ReactiveUI;
-using Froststrap.UI.Elements.Settings.Pages;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
-using System.Reactive;
 
 namespace Froststrap.UI.ViewModels.Settings.FastFlags
 {
-    public class FastFlagEditorViewModel : ReactiveObject, IRoutableViewModel
+    public class FastFlagEditorViewModel : ObservableObject
     {
-        private readonly MainWindowViewModel? _mainWindowViewModel;
-
-        public string? UrlPathSegment => "fastflageditor";
-        public IScreen HostScreen { get; }
-
-        public string Breadcrumb => "Settings > Fast Flags > Editor";
-
+        private readonly MainWindowViewModel _mainWindowViewModel;
         public ICommand BackCommand { get; }
 
-        public FastFlagEditorViewModel(IScreen hostScreen)
+        public FastFlagEditorViewModel(MainWindowViewModel mainWindowViewModel)
         {
-            HostScreen = hostScreen;
-            _mainWindowViewModel = hostScreen as MainWindowViewModel;
-            App.Logger.WriteLine("FastFlagEditorViewModel", $"FastFlagEditorViewModel created with HostScreen: {hostScreen?.GetType().Name}");
+            _mainWindowViewModel = mainWindowViewModel;
+
+            App.Logger.WriteLine("FastFlagEditorViewModel", "FastFlagEditorViewModel created.");
 
             BackCommand = new RelayCommand(() =>
             {
                 if (_mainWindowViewModel != null)
                 {
-                    _mainWindowViewModel.NavigateToFastFlagsCommand.Execute(Unit.Default);
+                    _mainWindowViewModel.NavigateToFastFlagsCommand.Execute(null);
                 }
             });
         }

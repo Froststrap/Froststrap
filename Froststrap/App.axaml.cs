@@ -12,9 +12,7 @@ using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels;
 using Froststrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
-using ReactiveUI;
 using System;
-using System.Reactive.Concurrency;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -174,8 +172,6 @@ public const string ProjectRepository = "Froststrap/Froststrap";
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-
-        RxSchedulers.MainThreadScheduler = new SynchronizationContextScheduler(SynchronizationContext.Current!);
 
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;

@@ -1,11 +1,13 @@
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Settings;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
+using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
@@ -23,19 +25,19 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         public async Task OpenCommunityModsAsync()
         {
-            _mainVm.NavigateToCommunityModsCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToCommunityModsCommand.Execute(null);
             await Task.CompletedTask;
         }
 
         public async Task OpenPresetModsAsync()
         {
-            _mainVm.NavigateToPresetModsCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToPresetModsCommand.Execute(null);
             await Task.CompletedTask;
         }
 
         public async Task OpenModGeneratorAsync()
         {
-            _mainVm.NavigateToModGeneratorCommand.Execute(System.Reactive.Unit.Default);
+            _mainVm.NavigateToModGeneratorCommand.Execute(null);
             await Task.CompletedTask;
         }
     }
@@ -58,10 +60,7 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         private void SetupViewModelIfNeeded()
         {
-            if (_viewModelSetUp)
-            {
-                return;
-            }
+            if (_viewModelSetUp) return;
 
             try
             {
@@ -78,8 +77,9 @@ namespace Froststrap.UI.Elements.Settings.Pages
                     _viewModelSetUp = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                App.Logger?.WriteException("ModsPage::SetupViewModel", ex);
                 CreateFallbackViewModel();
                 _viewModelSetUp = true;
             }

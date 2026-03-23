@@ -62,7 +62,13 @@ namespace Froststrap.UI.Elements.Controls
             _container = e.NameScope.Find<Border>("PART_ContentContainer");
             _presenter = e.NameScope.Find<ContentPresenter>("PART_ContentPresenter");
 
-            this.GetObservable(BoundsProperty).Subscribe(_ => UpdateVisualState());
+            this.PropertyChanged += (sender, args) =>
+            {
+                if (args.Property == BoundsProperty)
+                {
+                    UpdateVisualState();
+                }
+            };
 
             UpdateVisualState();
         }

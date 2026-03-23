@@ -1,9 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Froststrap.UI.ViewModels.Settings;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
-using System.Reactive;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
@@ -21,33 +18,30 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         public async Task OpenFastFlagEditorAsync()
         {
-            _mainVm.NavigateToFastFlagEditorCommand.Execute(Unit.Default);
+            _mainVm.NavigateToFastFlagEditorCommand.Execute(null);
             await Task.CompletedTask;
         }
     }
 
-    public partial class FastFlagsPage : ReactiveUserControl<MainWindowViewModel.SettingsPageViewModelWrapper>
+    public partial class FastFlagsPage : UserControl
     {
         private bool _viewModelSetUp = false;
 
         public FastFlagsPage()
         {
             InitializeComponent();
-
             App.FrostRPC?.SetPage("FastFlags Settings");
+        }
 
-            this.WhenActivated(disposables =>
-            {
-                SetupViewModelIfNeeded();
-            });
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            SetupViewModelIfNeeded();
         }
 
         private void SetupViewModelIfNeeded()
         {
-            if (_viewModelSetUp)
-            {
-                return;
-            }
+            if (_viewModelSetUp) return;
 
             try
             {
@@ -58,19 +52,15 @@ namespace Froststrap.UI.Elements.Settings.Pages
                     CreateViewModelWithDialogService(mainVm);
                     _viewModelSetUp = true;
                 }
-                else if (ViewModel?.HostScreen is MainWindowViewModel mainVm2)
-                {
-                    CreateViewModelWithDialogService(mainVm2);
-                    _viewModelSetUp = true;
-                }
                 else
                 {
                     CreateFallbackViewModel();
                     _viewModelSetUp = true;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                App.Logger.WriteException("FastFlagsPage", ex);
                 CreateFallbackViewModel();
                 _viewModelSetUp = true;
             }
