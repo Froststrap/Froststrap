@@ -20,7 +20,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
     public class MainWindowViewModel : ObservableObject
     {
-        // --- Navigation Property (Replaces RoutingState) ---
         private object? _currentPage;
         public object? CurrentPage
         {
@@ -72,13 +71,6 @@ namespace Froststrap.UI.ViewModels.Settings
         private string _currentPageDescription = "";
         public string CurrentPageDescription { get => _currentPageDescription; set => SetProperty(ref _currentPageDescription, value); }
 
-        private string _currentBreadcrumb = "";
-        public string CurrentBreadcrumb
-        {
-            get => _currentBreadcrumb;
-            set => SetProperty(ref _currentBreadcrumb, value);
-        }
-
         private ObservableCollection<BreadcrumbItemModel> _breadcrumbItems = new();
         public ObservableCollection<BreadcrumbItemModel> BreadcrumbItems
         {
@@ -108,7 +100,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool HasBreadcrumbs => BreadcrumbItems.Count > 0;
         public bool ShowPageTitle => !HasBreadcrumbs;
 
-        // --- Navigation Commands ---
         public IRelayCommand NavigateToIntegrationsCommand { get; }
         public IRelayCommand NavigateToBehaviourCommand { get; }
         public IRelayCommand NavigateToModsCommand { get; }
@@ -116,14 +107,13 @@ namespace Froststrap.UI.ViewModels.Settings
         public IRelayCommand NavigateToFastFlagEditorCommand { get; }
         public IRelayCommand NavigateToAppearanceCommand { get; }
         public IRelayCommand NavigateToRegionSelectorCommand { get; }
-        public IRelayCommand NavigateToRobloxSettingsCommand { get; }
+        public IRelayCommand NavigateToGlobalSettingsCommand { get; }
         public IRelayCommand NavigateToShortcutsCommand { get; }
         public IRelayCommand NavigateToChannelsCommand { get; }
         public IRelayCommand NavigateToCommunityModsCommand { get; }
         public IRelayCommand NavigateToPresetModsCommand { get; }
         public IRelayCommand NavigateToModGeneratorCommand { get; }
 
-        // --- Standard Commands ---
         public ICommand OpenAboutCommand { get; }
         public ICommand OpenAccountManagerCommand { get; }
         public ICommand SaveSettingsCommand { get; }
@@ -132,7 +122,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand CloseWindowCommand { get; }
         public ICommand BreadcrumbItemClickedCommand { get; }
 
-        // --- Events & Flags ---
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
         public event EventHandler? SettingsSaved;
@@ -143,7 +132,6 @@ namespace Froststrap.UI.ViewModels.Settings
             _testModeEnabled = App.LaunchSettings.TestModeFlag.Active;
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
 
-            // Initialize Standard Commands
             OpenAboutCommand = new RelayCommand(OpenAbout);
             OpenAccountManagerCommand = new RelayCommand(OpenAccountManager);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
@@ -152,18 +140,17 @@ namespace Froststrap.UI.ViewModels.Settings
             CloseWindowCommand = new RelayCommand(CloseWindow);
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
 
-            // Initialize Navigation Commands using standard CommunityToolkit RelayCommands
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", "Integrations", Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", "Behaviour", Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
             NavigateToModsCommand = new RelayCommand(() => Navigate("mods", "Mods", Strings.Menu_Mods_Description, new ModsViewModel()));
-            NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", "Fast Flags", Strings.Menu_FastFlagEditor_Description, new FastFlagsViewModel()));
+            NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", "Fast Flags", Strings.Menu_FastFlags_Description, new FastFlagsViewModel()));
             NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
             NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", "Region Selector", Strings.Menu_RegionSelector_Description, new RegionSelectorViewModel()));
-            NavigateToRobloxSettingsCommand = new RelayCommand(() => Navigate("robloxsettings", "Roblox Settings", Strings.Menu_GBSEditor_Description, new RobloxSettingsViewModel()));
+            NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", "Global Settings", Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
             NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", "Shortcuts", Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
             NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", "Channels Page", Strings.Menu_Channel_Description, new ChannelViewModel()));
 
-            NavigateToFastFlagEditorCommand = new RelayCommand(() => Navigate("fastflageditor", "Editor", "", new FastFlagEditorViewModel(this), new ObservableCollection<BreadcrumbItemModel>
+            NavigateToFastFlagEditorCommand = new RelayCommand(() => Navigate("fastflageditor", "Editor", Strings.Menu_FastFlagEditor_Description, new FastFlagEditorViewModel(this), new ObservableCollection<BreadcrumbItemModel>
             {
                 new BreadcrumbItemModel { Content = "Fast Flags", Tag = "fastflags" },
                 new BreadcrumbItemModel { Content = "Editor", Tag = null, IsLast = true }
@@ -171,7 +158,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
             NavigateToCommunityModsCommand = new RelayCommand(() =>
             {
-                CurrentBreadcrumb = "Settings > Mods > Community Mods";
                 Navigate("communitymods", "Community Mods", "Explore user-created mods.", new CommunityModsViewModel(), new ObservableCollection<BreadcrumbItemModel>
                 {
                     new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
@@ -181,7 +167,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
             NavigateToPresetModsCommand = new RelayCommand(() =>
             {
-                CurrentBreadcrumb = "Settings > Mods > Preset Mods";
                 Navigate("presetmods", "Preset Mods", "Official built-in mods.", new ModsPresetsViewModel(), new ObservableCollection<BreadcrumbItemModel>
                 {
                     new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
@@ -191,7 +176,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
             NavigateToModGeneratorCommand = new RelayCommand(() =>
             {
-                CurrentBreadcrumb = "Settings > Mods > Mod Generator";
                 Navigate("modgenerator", "Mod Generator", "Generate mods easily with a single click.", new ModGeneratorViewModel(), new ObservableCollection<BreadcrumbItemModel>
                 {
                     new BreadcrumbItemModel { Content = "Mods", Tag = "mods" },
@@ -199,7 +183,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 });
             });
 
-            // Initial Startup Routing
             var lastPageName = App.State.Prop.LastPage;
             if (lastPageName != null)
                 NavigateToLastPage(lastPageName);
@@ -207,7 +190,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 NavigateToIntegrationsCommand.Execute(null);
         }
 
-        // Centralized Navigation Helper
         private void Navigate(string pageId, string title, string description, object viewModel, ObservableCollection<BreadcrumbItemModel>? customBreadcrumbs = null)
         {
             try
@@ -216,7 +198,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CurrentPageTitle = title;
                 CurrentPageDescription = description;
                 BreadcrumbItems = customBreadcrumbs ?? new ObservableCollection<BreadcrumbItemModel>();
-                CurrentPage = viewModel; // Instantiates the new view
+                CurrentPage = viewModel;
             }
             catch (Exception ex)
             {
@@ -234,7 +216,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 case "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel": NavigateToCommunityModsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel": NavigateToFastFlagsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.AppearanceViewModel": NavigateToAppearanceCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.RobloxSettingsViewModel": NavigateToRobloxSettingsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.GlobalSettingsViewModel": NavigateToGlobalSettingsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel": NavigateToShortcutsCommand.Execute(null); break;
                 default: NavigateToIntegrationsCommand.Execute(null); break;
             }
@@ -260,7 +242,12 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             const string LOG_IDENT = "MainWindowViewModel::SaveSettings";
 
-            App.Settings.Save();
+			if (CurrentPage != null)
+			{
+				App.State.Prop.LastPage = CurrentPage.GetType().FullName;
+			}
+
+			App.Settings.Save();
             App.State.Save();
             App.FastFlags.Save();
             App.GlobalSettings.Save();
@@ -313,7 +300,7 @@ namespace Froststrap.UI.ViewModels.Settings
             switch (item.Tag)
             {
                 case "mods":
-                    NavigateToModsCommand.Execute(null); // Replaced Unit.Default with null
+                    NavigateToModsCommand.Execute(null);
                     break;
                 case "fastflags":
                     NavigateToFastFlagsCommand.Execute(null);

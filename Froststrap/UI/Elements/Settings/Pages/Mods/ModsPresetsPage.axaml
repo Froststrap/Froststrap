@@ -138,16 +138,7 @@
                         <controls:CardExpander IsExpanded="True" 
                                                Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Title}"
                                                Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Description}">
-                        <Grid MinHeight="300" MaxHeight="500" Margin="-8,4,-8,0">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="340" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="250" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-
+                        <Grid MinHeight="300" MaxHeight="500" Margin="-8,4,-8,0" RowDefinitions="340,Auto" ColumnDefinitions="250,*">
                             <ListBox x:Name="CustomThemesListBox"
                                 Grid.Row="0"
                                 Grid.Column="0"
@@ -161,12 +152,7 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Grid Grid.Row="1" Grid.Column="0" Margin="0,4,4,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
+                            <Grid Grid.Row="1" Grid.Column="0" Margin="0,4,4,0" ColumnDefinitions="*,*">
                                 <controls:IconButton Grid.Column="0" Height="32" HorizontalAlignment="Stretch" Margin="0,0,4,0"
                        Command="{Binding AddCustomCursorSetCommand}"
                        Content="{x:Static resources:Strings.Common_New}"
@@ -181,34 +167,13 @@
                             </Grid>
 
                             <StackPanel Grid.RowSpan="2" Grid.Column="1" Margin="4,0,0,0" IsVisible="{Binding IsCustomCursorSetSelected}">
-                                <Grid Margin="0,0,0,48">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="16" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-
-                                    <Grid Grid.Row="0" Grid.ColumnSpan="4">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                <Grid Margin="0,0,0,48" RowDefinitions="Auto,16,Auto" ColumnDefinitions="*,*,*,*">
+                                    <Grid Grid.Row="0" Grid.ColumnSpan="4" ColumnDefinitions="*,Auto">
                                         <TextBox Grid.Column="0" Watermark="Custom Cursor Set 1" Text="{Binding SelectedCustomCursorSetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
                                         <controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="PencilOutline" Content="Rename" Command="{Binding RenameCustomCursorSetCommand}" FontWeight="Medium" />
                                     </Grid>
 
-                                    <Grid Grid.Row="2" Grid.Column="0" Margin="4,16,8,16">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                    <Grid Grid.Row="2" Grid.Column="0" Margin="4,16,8,16" RowDefinitions="Auto,*,Auto">
                                         <TextBlock Grid.Row="0" Margin="0,0,0,8" Text="ShiftLock" FontSize="14" TextAlignment="Center" />
                                         <Border Grid.Row="1" Background="#33000000" CornerRadius="16" Margin="0,0,0,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxWidth="200" MaxHeight="200" MinHeight="100" MinWidth="100">
                                             <Viewbox Stretch="Uniform">
@@ -223,12 +188,7 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <Grid Grid.Row="2" Grid.Column="1" Margin="8,16,8,16">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                    <Grid Grid.Row="2" Grid.Column="1" Margin="8,16,8,16" RowDefinitions="Auto,*,Auto">
                                         <TextBlock Grid.Row="0" Margin="0,0,0,8" Text="Arrow Cursor" FontSize="14" TextAlignment="Center" />
                                         <Border Grid.Row="1" Background="#33000000" CornerRadius="16" Margin="0,0,0,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxWidth="200" MaxHeight="200" MinHeight="100" MinWidth="100">
                                             <Viewbox Stretch="Uniform">
@@ -243,12 +203,7 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <Grid Grid.Row="2" Grid.Column="2" Margin="8,16,8,16">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                    <Grid Grid.Row="2" Grid.Column="2" Margin="8,16,8,16" RowDefinitions="Auto,*,Auto">
                                         <TextBlock Grid.Row="0" Margin="0,0,0,8" Text="ArrowFar Cursor" FontSize="14" TextAlignment="Center" />
                                         <Border Grid.Row="1" Background="#33000000" CornerRadius="16" Margin="0,0,0,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxWidth="200" MaxHeight="200" MinHeight="100" MinWidth="100">
                                             <Viewbox Stretch="Uniform">
@@ -263,12 +218,7 @@
                                         </StackPanel>
                                     </Grid>
 
-                                    <Grid Grid.Row="2" Grid.Column="3" Margin="8,16,4,16">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                            <RowDefinition Height="Auto" />
-                                        </Grid.RowDefinitions>
+                                    <Grid Grid.Row="2" Grid.Column="3" Margin="8,16,4,16" RowDefinitions="Auto,*,Auto">
                                         <TextBlock Grid.Row="0" Margin="0,0,0,8" Text="IBeam Cursor" FontSize="14" TextAlignment="Center" />
                                         <Border Grid.Row="1" Background="#33000000" CornerRadius="16" Margin="0,0,0,8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MaxWidth="200" MaxHeight="200" MinHeight="100" MinWidth="100">
                                             <Viewbox Stretch="Uniform">
@@ -285,13 +235,7 @@
                                 </Grid>
                             </StackPanel>
 
-                            <Grid Grid.Row="1" Grid.Column="1" Margin="0,0,0,0" Height="36" IsVisible="{Binding IsCustomCursorSetSelected}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
+                            <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*,*,*" Margin="0,0,0,0" Height="36" IsVisible="{Binding IsCustomCursorSetSelected}">
                                 <controls:IconButton Grid.Column="0" Height="32" Content="Apply Set" Icon="Check" Command="{Binding ApplyCursorSetCommand}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="This will apply your cursors into your Mods Folder." />
                                 <controls:IconButton Grid.Column="1" Height="32" Content="Fetch Set" Icon="ImageMultiple" Command="{Binding GetCurrentCursorSetCommand}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="This will copy the cursors from your Mods folder." />
                                 <controls:IconButton Grid.Column="2" Height="32" Content="Import Set" Icon="FolderZipOutline" Command="{Binding ImportCursorSetCommand}" CommandParameter="{Binding $self}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="Allows you to Import Cursor from others easily." />

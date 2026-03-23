@@ -609,8 +609,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
             if (header == Strings.Common_Name)
             {
-                string? oldName = App.FastFlags.Prop.FirstOrDefault(x => x.Value.ToString() == entry.Value && x.Key != newText).Key;
-                if (string.IsNullOrEmpty(oldName)) oldName = entry.Name;
+                string oldName = entry.Name;
 
                 if (newText == oldName || string.IsNullOrEmpty(newText))
                     goto EndEditing;
@@ -626,10 +625,10 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 App.FastFlags.SetValue(oldName, null);
                 App.FastFlags.SetValue(newText, entry.Value);
 
+                entry.Name = newText;
+
                 if (!newText.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
                     ClearSearch();
-
-                entry.Name = newText;
 
                 var presetFlags = FastFlagManager.PresetFlags.Values;
                 entry.Preset = presetFlags.Contains(newText) ? PackIconMaterialKind.CheckCircleOutline : PackIconMaterialKind.CloseCircleOutline;

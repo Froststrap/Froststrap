@@ -66,9 +66,6 @@ namespace Froststrap.Models.APIs.Config
         [ObservableProperty]
         private IAsyncRelayCommand? _downloadCommand;
 
-        [ObservableProperty]
-        private IRelayCommand? _showInfoCommand;
-
         [JsonIgnore]
         public bool IsCustomTheme => ModType == ModType.CustomTheme;
 

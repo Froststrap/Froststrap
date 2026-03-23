@@ -16,20 +16,11 @@
         CanResize="False"
         WindowStartupLocation="CenterScreen">
 
-	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*">
 
 		<controls:TitleBar Grid.Row="0" Title="Bloxshade" Icon="avares://Froststrap/Froststrap.ico" />
 
-		<Grid Grid.Row="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="*" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
+		<Grid Grid.Row="1" RowDefinitions="Auto,*,Auto">
 
 			<TextBlock Grid.Row="0"
                        Text="{x:Static resources:Strings.Dialog_Bloxshade_ThankYou}"

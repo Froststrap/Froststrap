@@ -80,7 +80,6 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.1" />
 	    <PackageReference Include="DiscordRichPresence" Version="1.6.1.70" />
 	    <PackageReference Include="Markdig" Version="1.1.1" />
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
         <PackageReference Include="SharpZipLib" Version="1.4.2" />
         <PackageReference Include="PuppeteerSharp" Version="24.39.1" />
         <PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />

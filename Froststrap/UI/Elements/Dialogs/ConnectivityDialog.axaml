@@ -14,21 +14,10 @@
         Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
         WindowStartupLocation="CenterScreen">
 
-	<Grid Background="{DynamicResource ApplicationBackgroundColor}">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
 		<md:TitleBar Grid.Row="0" ShowMinimize="False" ShowMaximize="False" Title="{x:Static resources:Strings.Dialog_Connectivity_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
-		<Grid Grid.Row="1" Margin="16">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition Width="*" />
-			</Grid.ColumnDefinitions>
-
+		<Grid Grid.Row="1" Margin="16" ColumnDefinitions="Auto,*">
 			<Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
                    Margin="0,0,15,0" VerticalAlignment="Top" RenderOptions.BitmapInterpolationMode="HighQuality" />
 

@@ -25,6 +25,14 @@
             </controls:OptionControl>
 
             <controls:OptionControl 
+                Header="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Description}">
+                <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:CardExpander Header="Experimental" Description="A collection of experimental settings. Be careful while using them, as they may or may not work as intended.">
+				<StackPanel>
+            <controls:OptionControl 
                 Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
                 Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -45,10 +53,46 @@
             </controls:OptionControl>
 
             <controls:OptionControl 
-                Header="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Description}">
-                <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
+                Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Title}"
+                Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Description}">
+                <StackPanel Orientation="Horizontal">
+                    <ic:PackIconMaterial Kind="AlertOutline" VerticalAlignment="Center" Foreground="Orange">
+                        <ic:PackIconMaterial.Styles>
+                            <Style Selector="ic|PackIconMaterial">
+                                <Setter Property="IsVisible" Value="False"/>
+                            </Style>
+                            <Style Selector="ic|PackIconMaterial">
+                                <Style.Resources>
+                                    </Style.Resources>
+                                <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
+                            </Style>
+                        </ic:PackIconMaterial.Styles>
+                    </ic:PackIconMaterial>
+                <ToggleSwitch IsChecked="{Binding EnableBetterMatchmaking, Mode=TwoWay}" />
+            </StackPanel>
+        </controls:OptionControl>
+
+            <controls:OptionControl 
+                Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Title}"
+                Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Description}">
+                    <StackPanel Orientation="Horizontal">
+                        <ic:PackIconMaterial Kind="AlertOutline" VerticalAlignment="Center" Foreground="Orange">
+                            <ic:PackIconMaterial.Styles>
+                                <Style Selector="ic|PackIconMaterial">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </Style>
+                                <Style Selector="ic|PackIconMaterial">
+                                    <Style.Resources>
+                                        </Style.Resources>
+                                    <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
+                                </Style>
+                            </ic:PackIconMaterial.Styles>
+                        </ic:PackIconMaterial>
+                    <ToggleSwitch IsChecked="{Binding EnableBetterMatchmakingRandomization, Mode=TwoWay}" />
+                </StackPanel>
             </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Title}"

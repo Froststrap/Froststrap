@@ -16,7 +16,7 @@
     SystemDecorations="None"
     ExtendClientAreaTitleBarHeightHint="-1"
     ExtendClientAreaToDecorationsHint="True"
-    TransparencyLevelHint="Mica"
+    TransparencyLevelHint="None"
     WindowStartupLocation="CenterScreen">
 
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto, *,Auto">

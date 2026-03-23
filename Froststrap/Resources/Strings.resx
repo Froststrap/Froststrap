@@ -2229,8 +2229,8 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Region Selector</value>
   </data>
-  <data name="Menu.RobloxSettings.Title" xml:space="preserve">
-    <value>Roblox Settings</value>
+  <data name="Menu.GlobalSettings.Title" xml:space="preserve">
+    <value>Global Settings</value>
   </data>
   <data name="Menu.Restart" xml:space="preserve">
     <value>Restart</value>
@@ -2267,5 +2267,23 @@ You can no longer use Bloxshade with Froststrap.</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
     <value>Froststrap logs will be deleted.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>Looks like a friend is currently playing this game. Do you want to join them?</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>Enable BetterMatchmaking</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>Let Fishstrap decide which servers you join. Prioritizes the server with the shortest distance to you.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
+    <value>Randomize BetterMatchmaking server</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
+    <value>Randomizes the chosen server from the list of optimal servers.</value>
+  </data>
+  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
+    <value>Multi-Instancing is prone to breaking. We will not provide support for issues with Multi-Instancing, since Roblox is actively adding measures to make sure it doesn't work. We cannot and won't attempt to bypass these measures.</value>
   </data>
 </root>

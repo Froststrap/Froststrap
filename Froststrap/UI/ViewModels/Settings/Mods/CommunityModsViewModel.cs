@@ -43,9 +43,23 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         [RelayCommand] private void OpenModGenerator() => OpenModGeneratorEvent?.Invoke(this, EventArgs.Empty);
 
         [RelayCommand]
-        private void SetFilter(object? filterType)
+        private void SetFilter(object? parameter)
         {
-            ActiveFilter = filterType as ModType?;
+            if (parameter == null)
+            {
+                ActiveFilter = null;
+                ApplyFilters();
+                return;
+            }
+
+            if (parameter is ModType newFilter)
+            {
+                if (ActiveFilter == newFilter)
+                    ActiveFilter = null;
+                else
+                    ActiveFilter = newFilter;
+            }
+
             ApplyFilters();
         }
 
@@ -159,6 +173,31 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 mod.IsDownloading = false;
                 if (File.Exists(tempFile)) File.Delete(tempFile);
+            }
+        }
+
+        [RelayCommand]
+        private async Task OpenModInfoDialog(Control? control)
+        {
+            if (control?.DataContext is not CommunityMod mod) return;
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel is not Window parentWindow) return;
+
+            App.FrostRPC?.SetDialog($"Viewing {mod.Name}");
+
+            try
+            {
+                var dialog = new CommunityModInfoDialog(mod);
+                await dialog.ShowDialog(parentWindow);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("CommunityModsViewModel::OpenModInfoDialog", ex.ToString());
+            }
+            finally
+            {
+                App.FrostRPC?.ClearDialog();
             }
         }
 

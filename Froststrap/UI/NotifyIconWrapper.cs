@@ -5,6 +5,7 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
+using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI
 {
@@ -122,10 +123,20 @@ namespace Froststrap.UI
 
 		public async void OnGameJoin(object? sender, EventArgs e)
 		{
-			if (_activityWatcher is null)
-				return;
+            if (_activityWatcher?.Data == null) return;
 
-			string title = _activityWatcher.Data.ServerType switch
+            string? thumbnailUrl = await Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
+            {
+                TargetId = (ulong)_activityWatcher.Data.UniverseId,
+                Type = ThumbnailType.GameIcon,
+                Size = "150x150",
+                Format = ThumbnailFormat.Png,
+                IsCircular = false
+            }, CancellationToken.None);
+
+            thumbnailUrl ??= "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png";
+
+            string title = _activityWatcher.Data.ServerType switch
 			{
 				ServerType.Public => Strings.ContextMenu_ServerInformation_Notification_Title_Public,
 				ServerType.Private => Strings.ContextMenu_ServerInformation_Notification_Title_Private,
@@ -167,13 +178,17 @@ namespace Froststrap.UI
 			else if (locationActive && uptimeActive)
 				notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
 
-			ShowAlert(title, notifContent);
-		}
+            ShowAlertWithImage(title, notifContent, thumbnailUrl);
+        }
 
-		public void ShowAlert(string title, string message)
-		{
-			Frontend.ShowBalloonTip(title, message, Avalonia.Controls.Notifications.NotificationType.Information);
-		}
+        public void ShowAlertWithImage(string title, string message, string imagePath)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                var notification = new NotificationDialog(title, message, imagePath, timeoutMs: 7000);
+                notification.Show();
+            });
+        }
 
         public void Dispose()
         {

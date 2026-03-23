@@ -3,7 +3,7 @@
     public class RoValraTimeResponse
     {
         [JsonPropertyName("servers")]
-        public List<RoValraServer>? Servers { get; set; } = null!;
+        public List<RoValrasServer>? Servers { get; set; } = null!;
 
         [JsonPropertyName("status")]
         public string Status = null!;

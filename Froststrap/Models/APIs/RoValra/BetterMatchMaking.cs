@@ -1,10 +1,17 @@
-﻿namespace Froststrap.Models.APIs.RoValra
-{
-    public class DatacenterLocation
-    {
-        [JsonPropertyName("city")]
-        public string City { get; set; } = "";
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
+namespace Froststrap.Models.APIs.RoValra
+{
+    public class RoValraDatacenter
+    {
+        [JsonPropertyName("location")]
+        public RoValraDatacenterLocation Location { get; set; } = null!;
+    }
+
+    public class RoValraDatacenterLocation
+    {
         [JsonPropertyName("country")]
         public string Country { get; set; } = string.Empty;
 
@@ -36,5 +43,17 @@
                 return 0;
             }
         }
+    }
+
+    public class RoValraServers
+    {
+        [JsonPropertyName("servers")]
+        public List<RoValraServer> Servers { get; set; } = null!;
+    }
+
+    public class RoValraServer
+    {
+        [JsonPropertyName("server_id")]
+        public string ServerId { get; set; } = string.Empty;
     }
 }

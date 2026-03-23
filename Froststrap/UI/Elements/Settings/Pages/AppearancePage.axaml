@@ -161,11 +161,7 @@
 
                 <Separator Margin="0,8,0,4" />
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="128" />
-                    </Grid.ColumnDefinitions>
+                <Grid ColumnDefinitions="*,128">
                     <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
                         <TextBlock
                             VerticalAlignment="Bottom"
@@ -286,11 +282,7 @@
                         SelectedValueBinding="{Binding IconType}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="16" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
+                                <Grid ColumnDefinitions="16,*">
                                     <Image
                                         Height="16"
                                         RenderOptions.BitmapInterpolationMode="HighQuality"
@@ -309,18 +301,7 @@
                     Description="{x:Static resources:Strings.Menu_Appearance_Customisation_Description}"
                     Header="{x:Static resources:Strings.Menu_Appearance_Customisation_Title}"
                     IsExpanded="False">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="180" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
+                    <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="180,*">
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="0"
@@ -347,11 +328,8 @@
                         <Grid
                             Grid.Row="2"
                             Grid.Column="1"
-                            Margin="0,12,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                            Margin="0,12,0,0"
+                             ColumnDefinitions="*,Auto">
                             <TextBox
                                 Grid.Column="0"
                                 Margin="0,0,4,0"

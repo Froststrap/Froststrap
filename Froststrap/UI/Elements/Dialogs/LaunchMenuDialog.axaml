@@ -12,15 +12,11 @@
     Title="Froststrap"
     Width="580" SizeToContent="Height"
     CanResize="False" SystemDecorations="None"
+    ExtendClientAreaToDecorationsHint="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
+    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*">
         <controls:TitleBar Grid.Row="0" Title="Froststrap" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" Margin="20" ColumnDefinitions="240, *">

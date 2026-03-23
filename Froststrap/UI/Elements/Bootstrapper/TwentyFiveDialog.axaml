@@ -14,6 +14,7 @@
         Background="#000000">
 
 	<Grid>
+        <controls:TitleBar VerticalAlignment="Top" Title="" Icon="{x:Null}" ShowClose="False" ShowMaximize="False" ShowMinimize="False" />
 		<Image Source="avares://Froststrap/Resources/BootstrapperStyles/TwentyFiveDialog/PlayerLogo.png"
                Height="254" Width="254"
                HorizontalAlignment="Center"
