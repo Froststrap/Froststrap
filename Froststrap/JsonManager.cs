@@ -34,7 +34,7 @@ namespace Froststrap
             ClassName = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
         }
 
-		public virtual async Task<bool> Load(bool alertFailure = true)
+		public virtual bool Load(bool alertFailure = true)
 		{
 			string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
 
@@ -44,9 +44,9 @@ namespace Froststrap
 			{
 				if (File.Exists(FileLocation))
 				{
-					string contents = await File.ReadAllTextAsync(FileLocation);
+					string contents = File.ReadAllText(FileLocation);
 
-					T? settings = JsonSerializer.Deserialize<T>(contents);
+                    T? settings = JsonSerializer.Deserialize<T>(contents);
 
 					if (settings is null)
 						throw new ArgumentNullException("Deserialization returned null");
@@ -82,7 +82,7 @@ namespace Froststrap
 						message = Strings.JsonManager_FastFlagsLoadFailed;
 
 					if (!String.IsNullOrEmpty(message))
-						await Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
+						_ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
 
 					try
 					{
@@ -361,7 +361,7 @@ namespace Froststrap
             get
             {
                 if (!Loaded)
-                    _ = Load();
+                    Load();
 
                 return _prop;
             }

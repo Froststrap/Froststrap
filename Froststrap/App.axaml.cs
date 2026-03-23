@@ -365,10 +365,9 @@ public const string ProjectRepository = "Froststrap/Froststrap";
                 }
 
                 _ = Task.Run(RemoteData.LoadData);
-
-                await Settings.Load();
-                await State.Load();
-                await FastFlags.Load();
+                Settings.Load();
+                State.Load();
+                FastFlags.Load();
                 GlobalSettings.Load();
 
                 if (Settings.Prop.Theme > Theme.Custom)

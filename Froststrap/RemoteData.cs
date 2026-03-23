@@ -52,7 +52,7 @@ namespace Froststrap
             if (App.Settings.Prop.ForceLocalData || (App.LaunchSettings.WatcherFlag.Active || App.LaunchSettings.MultiInstanceWatcherFlag.Active))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Force loading local data");
-                await this.Load(false);
+                this.Load(false);
 
                 LoadedState = GenericTriState.Successful; // we treat it as successful to simulate the production data
             }
@@ -70,7 +70,7 @@ namespace Froststrap
                     App.Logger.WriteException(LOG_IDENT, ex);
 
                     App.Logger.WriteLine(LOG_IDENT, "Loading local data");
-                    await this.Load(false);
+                    this.Load(false);
 
                     LoadedState = GenericTriState.Failed;
                 }
