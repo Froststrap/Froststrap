@@ -1,67 +1,71 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:ic="using:IconPacks.Avalonia.Material"
+        xmlns:ic="using:IconPacks.Avalonia.Material"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
-	<!-- Make the background and borderbrush a resource in Styles-->
-	<Style Selector="controls|OptionControl">
-		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Padding" Value="16,12" />
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Border Background="{TemplateBinding Background}"
+    <Style Selector="controls|OptionControl">
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="4"
                         Margin="0,4">
-					<Grid ColumnDefinitions="*,Auto">
-						<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
-							<StackPanel Orientation="Horizontal">
-								<TextBlock Text="{TemplateBinding Header}"
-										   FontSize="14"
-										   VerticalAlignment="Center"
-										   Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{TemplateBinding Header}"
+                                           FontSize="14"
+                                           VerticalAlignment="Center"
+                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
 
-								<controls:Hyperlink Url="{TemplateBinding HelpLink}"
-													Margin="6,2,0,0"
-													VerticalAlignment="Center"
-													ClipToBounds="False"
-													IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-													ToolTip.Tip="{x:Static resources:Strings.Menu_MoreInfo}">
-									<ic:PackIconMaterial Name="HelpIcon"
-										  Width="18" Height="18"
-										  Kind="HelpCircleOutline"
-										  Opacity="0.8">
-										<ic:PackIconMaterial.Transitions>
-											<Transitions>
-												<DoubleTransition Property="Opacity" Duration="0:0:0.2" />
-												<BrushTransition Property="Foreground" Duration="0:0:0.2" />
-												<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
-											</Transitions>
-										</ic:PackIconMaterial.Transitions>
-								</ic:PackIconMaterial>
-								</controls:Hyperlink>
-							</StackPanel>
+                                <controls:Hyperlink Url="{TemplateBinding HelpLink}"
+                                                    Margin="6,2,0,0"
+                                                    VerticalAlignment="Center"
+                                                    ClipToBounds="False"
+                                                    IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                    ToolTip.Tip="{x:Static resources:Strings.Menu_MoreInfo}">
+                                    <ic:PackIconMaterial Name="HelpIcon"
+                                          Width="18" Height="18"
+                                          Kind="HelpCircleOutline"
+                                          Opacity="0.8">
+                                        <ic:PackIconMaterial.Transitions>
+                                            <Transitions>
+                                                <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
+                                                <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+                                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
+                                            </Transitions>
+                                        </ic:PackIconMaterial.Transitions>
+                                    </ic:PackIconMaterial>
+                                </controls:Hyperlink>
+                            </StackPanel>
 
-							<controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
+                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
                                        FontSize="12"
                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                        TextWrapping="Wrap"
                                        IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-						</StackPanel>
+                        </StackPanel>
 
-						<ContentPresenter Grid.Column="1"
+                        <ContentPresenter Grid.Column="1"
                                           Content="{TemplateBinding InnerContent}"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Right"
                                           Margin="16,0,0,0"/>
-					</Grid>
-				</Border>
-			</ControlTemplate>
-		</Setter>
-	</Style>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="controls|OptionControl:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+    </Style>
+    
 </Styles>
