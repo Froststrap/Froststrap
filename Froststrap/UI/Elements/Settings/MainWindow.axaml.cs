@@ -38,6 +38,9 @@ namespace Froststrap.UI.Elements.Settings
             if (showAlreadyRunningWarning)
                 ShowAlreadyRunningNotification();
 
+            gbs.Opacity = _viewModel.GBSEnabled ? 1 : 0.5;
+            gbs.IsEnabled = _viewModel.GBSEnabled; // binding doesnt work as expected so we are setting it in here instead
+
             LoadState();
 
             App.RemoteData.Subscribe((object? sender, EventArgs e) => {
