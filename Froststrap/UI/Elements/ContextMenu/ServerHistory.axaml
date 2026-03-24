@@ -110,7 +110,6 @@
 
                                     <controls:IconButton 
                                         Icon="TrashCanOutline"
-                                        Content="{x:Static resources:Strings.Common_Delete}"
                                         Command="{Binding DeleteHistoryCommand}"
                                         Classes="Danger"/>
                                 </StackPanel>
