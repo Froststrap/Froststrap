@@ -14,6 +14,7 @@
         MaxWidth="1000"
         MaxHeight="1000"
         CanResize="False"
+        SystemDecorations="None"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"
         ExtendClientAreaTitleBarHeightHint="-1"
