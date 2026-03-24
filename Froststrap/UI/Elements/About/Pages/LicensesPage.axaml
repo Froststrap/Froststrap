@@ -32,6 +32,109 @@
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/Fishstrap/Fishstrap/blob/main/LICENSE" />
 
+                <ui:SettingsExpander Margin="4"
+                                     Header="Avalonia"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="Animated Image Avalonia"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_Apache}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/whistyun/AnimatedImage/blob/master/LICENSE.txt" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="Avalonia Edit"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/AvaloniaUI/AvaloniaEdit/blob/master/LICENSE" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="Fluent Avalonia"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/amwx/FluentAvalonia/blob/master/LICENSE" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="IconPacks Avalonia"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/MahApps/IconPacks.Avalonia/blob/main/LICENSE" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="CommunityToolKit MVVM"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/CommunityToolkit/dotnet/blob/main/License.md" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="Discord Rich Presence"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/Lachee/discord-rpc-csharp/blob/master/LICENSE" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="MarkDig"
+                                     Description="BSD 2-Clause License"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/xoofx/markdig/blob/main/license.txt" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="SharpZipLib"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/icsharpcode/SharpZipLib/blob/master/LICENSE.txt" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="Puppeteer Sharp"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/hardkoded/puppeteer-sharp/blob/master/LICENSE" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="Puppeteer Sharp Extra"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/Overmiind/Puppeteer-sharp-extra/blob/master/LICENSE" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="Shell Link"
+                                     Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/securifybv/ShellLink/blob/master/LICENSE.txt" />
+
+                <ui:SettingsExpander Margin="4"
+                                     Header="SixLabors ImageSharp"
+                                     Description="Custom License"
+                                     ActionIconSource="Open"
+                                     IsClickEnabled="True"
+                                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                                     CommandParameter="https://github.com/SixLabors/ImageSharp/blob/main/LICENSE" />
 			</UniformGrid>
 		</StackPanel>
 	</ScrollViewer>
