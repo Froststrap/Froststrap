@@ -4,10 +4,7 @@ using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
-    /// <summary>
-    /// Implementation of IModsDialogService for Mod Generator navigation
-    /// </summary>
-    internal class ModGeneratorDialogService : IModsDialogService
+    internal class ModGeneratorDialogService
     {
         private readonly MainWindowViewModel _mainVm;
 
@@ -16,74 +13,56 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
         }
 
-        public async Task OpenCommunityModsAsync()
+        public void OpenCommunityMods()
         {
             _mainVm.NavigateToCommunityModsCommand.Execute(null);
-            await Task.CompletedTask;
         }
 
-        public async Task OpenPresetModsAsync()
+        public void OpenPresetMods()
         {
             _mainVm.NavigateToPresetModsCommand.Execute(null);
-            await Task.CompletedTask;
         }
 
-        public async Task OpenModGeneratorAsync()
+        public void OpenMyMods()
         {
-            _mainVm.NavigateToModGeneratorCommand.Execute(null);
-            await Task.CompletedTask;
+            _mainVm.NavigateToModsCommand.Execute(null);
         }
     }
 
     public partial class ModGeneratorPage : UserControl
     {
-        private bool _viewModelSetUp = false;
+        private bool _navigationSetUp = false;
 
         public ModGeneratorPage()
         {
             InitializeComponent();
             App.FrostRPC?.SetPage("Mod Generator");
-            this.Loaded += (s, e) => SetupViewModelIfNeeded();
+            this.Loaded += (s, e) => SetupNavigationIfNeeded();
         }
 
-        private void SetupViewModelIfNeeded()
+        private void SetupNavigationIfNeeded()
         {
-            if (_viewModelSetUp) return;
+            if (_navigationSetUp) return;
 
             try
             {
                 var topLevel = TopLevel.GetTopLevel(this);
 
-                if (topLevel?.DataContext is MainWindowViewModel mainVm)
+                if (topLevel?.DataContext is MainWindowViewModel mainVm && DataContext is ModGeneratorViewModel genVm)
                 {
-                    CreateViewModelWithDialogService(mainVm);
-                    _viewModelSetUp = true;
-                }
-                else
-                {
-                    CreateFallbackViewModel();
-                    _viewModelSetUp = true;
+                    var service = new ModGeneratorDialogService(mainVm);
+
+                    genVm.OpenCommunityModsEvent += (s, e) => service.OpenCommunityMods();
+                    genVm.OpenPresetModsEvent += (s, e) => service.OpenPresetMods();
+                    genVm.OpenModsEvent += (s, e) => service.OpenMyMods();
+
+                    _navigationSetUp = true;
                 }
             }
             catch (Exception ex)
             {
-                App.Logger?.WriteException("ModGeneratorPage::SetupViewModel", ex);
-                CreateFallbackViewModel();
-                _viewModelSetUp = true;
+                App.Logger?.WriteException("ModGeneratorPage::SetupNavigation", ex);
             }
-        }
-
-        private void CreateViewModelWithDialogService(MainWindowViewModel mainVm)
-        {
-            var dialogService = new ModGeneratorDialogService(mainVm);
-            var newVm = new ModGeneratorViewModel(dialogService);
-            DataContext = newVm;
-        }
-
-        private void CreateFallbackViewModel()
-        {
-            var fallbackVm = new ModGeneratorViewModel();
-            DataContext = fallbackVm;
         }
     }
 }
