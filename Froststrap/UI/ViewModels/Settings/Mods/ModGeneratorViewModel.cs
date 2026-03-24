@@ -13,42 +13,26 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 {
     public partial class ModGeneratorViewModel : ObservableObject
     {
-        private readonly IModsDialogService _dialogService;
         private Color _solidColor = Colors.White;
 
         public ModGeneratorViewModel()
-            : this(new DefaultModsDialogService())
         {
-        }
-
-        public ModGeneratorViewModel(IModsDialogService dialogService)
-        {
-            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-
             GenerateModCommand = new AsyncRelayCommand(GenerateModAsync, CanGenerateMod);
+
+            _ = LoadFontFilesAsync();
         }
+
+        public event EventHandler? OpenModsEvent;
+        public event EventHandler? OpenCommunityModsEvent;
+        public event EventHandler? OpenPresetModsEvent;
 
         #region Commands
 
         public IAsyncRelayCommand GenerateModCommand { get; }
 
-        public ICommand OpenModsCommand => new AsyncRelayCommand(async () =>
-        {
-            App.Logger.WriteLine("ModGeneratorViewModel", "OpenModsCommand executed");
-            await _dialogService.OpenModGeneratorAsync();
-        });
-
-        public ICommand OpenCommunityModsCommand => new AsyncRelayCommand(async () =>
-        {
-            App.Logger.WriteLine("ModGeneratorViewModel", "OpenCommunityModsCommand executed");
-            await _dialogService.OpenCommunityModsAsync();
-        });
-
-        public ICommand OpenPresetModsCommand => new AsyncRelayCommand(async () =>
-        {
-            App.Logger.WriteLine("ModGeneratorViewModel", "OpenPresetModsCommand executed");
-            await _dialogService.OpenPresetModsAsync();
-        });
+        [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
+        [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
+        [RelayCommand] private void OpenCommunityMods() => OpenCommunityModsEvent?.Invoke(this, EventArgs.Empty);
 
         #endregion
 
@@ -142,6 +126,37 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
         private string FontDir => Path.Combine(Paths.Cache, "FontPreview");
+
+        private async Task LoadFontFilesAsync()
+        {
+            try
+            {
+                if (!Directory.Exists(FontDir))
+                    Directory.CreateDirectory(FontDir);
+
+                var fontFiles = Directory.GetFiles(FontDir)
+                    .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
+                    .ToArray();
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    FontDisplayNames.Clear();
+                    foreach (var file in fontFiles)
+                        FontDisplayNames.Add(Path.GetFileNameWithoutExtension(file).Replace("BuilderIcons-", ""));
+
+                    if (FontDisplayNames.Count > 0)
+                        SelectedFontDisplayName = FontDisplayNames[0];
+                });
+
+                StatusText = "Ready to generate mod.";
+            }
+            catch (Exception ex)
+            {
+                App.Logger?.WriteException("ModGenerator::LoadFontFiles", ex);
+                StatusText = "Failed to load preview fonts.";
+            }
+        }
+
 
         private async void OnSelectedFontChanged()
         {

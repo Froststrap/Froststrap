@@ -13,7 +13,7 @@
 
     <ScrollViewer>
         <StackPanel Margin="14">
-            <Grid ColumnDefinitions="*,*,*" Margin="0,16,0,0">
+            <Grid ColumnDefinitions="*,*,*">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
                                      Icon="StorefrontOutline" Description="Explore user-created mods."
                                      Command="{Binding OpenCommunityModsCommand}" />

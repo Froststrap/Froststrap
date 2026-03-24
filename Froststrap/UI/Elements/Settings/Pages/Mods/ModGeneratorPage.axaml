@@ -15,15 +15,8 @@
              mc:Ignorable="d">
 
     <ScrollViewer>
-        <Grid Margin="14" RowDefinitions="Auto,Auto,Auto,*">
-            <TextBlock
-                FontSize="14"
-                Grid.Row="0"
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Text="{x:Static resources:Strings.Menu_Mods_Description}"
-                TextWrapping="Wrap" />
-
-            <Grid Grid.Row="1" Margin="0,16,0,0" ColumnDefinitions="*,*,*">
+        <Grid Margin="14" RowDefinitions="Auto,Auto,*">
+            <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" 
                                      Command="{Binding OpenCommunityModsCommand}"
                                      Header="Community Mods"
@@ -43,9 +36,9 @@
                                      Description="Manage your active mods." />
             </Grid>
 
-            <Separator Margin="0,8" Grid.Row="2" />
+            <Separator Margin="0,8" Grid.Row="1" />
 
-            <Grid Grid.Row="3" ColumnDefinitions="*,340">
+            <Grid Grid.Row="2" ColumnDefinitions="*,340">
                 <Border Grid.Column="0" 
                         Margin="0,0,12,0"
                         VerticalAlignment="Top"
