@@ -8,5 +8,8 @@
         Background="Transparent"
         CanResize="False"
         Topmost="True"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        Focusable="False"
         WindowStartupLocation="Manual">
 </base:AvaloniaWindow>

@@ -44,6 +44,13 @@
             </controls:OptionControl>
 
             <controls:OptionControl
+                Description="When joinning a game, it will display a notification of server region and uptime if enabled, This will kick you out of exclusive full screen, Requires Server Uptime or Server Location to be on."
+                Header="Show Join Notification"
+                IsEnabled="{Binding CanShowJoinNotification}">
+                <ToggleSwitch IsChecked="{Binding ShowJoinNotification, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
                 Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
                 Header="Auto Rejoin"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
