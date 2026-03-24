@@ -24,7 +24,7 @@
 			 WindowStartupLocation="CenterScreen">
 
 	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto, *">
-		<controls:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" Title="Account Manager" Icon="avares://Froststrap/Froststrap.ico" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+		<controls:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" Title="Account Manager" Icon="avares://Froststrap/Froststrap.ico" Background="{DynamicResource LayerFillColorDefaultBrush}"  />
 
 		<Grid Grid.Row="1" ColumnDefinitions="64,*">
 			<Border Grid.Column="0"

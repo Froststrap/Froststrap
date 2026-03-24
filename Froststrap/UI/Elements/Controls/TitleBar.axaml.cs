@@ -18,9 +18,6 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<bool> ShowMaximizeProperty =
             AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowMaximize), true);
 
-        public static readonly StyledProperty<bool> CanMaximizeProperty =
-            AvaloniaProperty.Register<TitleBar, bool>(nameof(CanMaximize), true);
-
         public static readonly StyledProperty<bool> ShowCloseProperty =
             AvaloniaProperty.Register<TitleBar, bool>(nameof(ShowClose), true);
 
@@ -31,7 +28,6 @@ namespace Froststrap.UI.Elements.Controls
         public string? Title { get => GetValue(TitleProperty); set => SetValue(TitleProperty, value); }
         public bool ShowMinimize { get => GetValue(ShowMinimizeProperty); set => SetValue(ShowMinimizeProperty, value); }
         public bool ShowMaximize { get => GetValue(ShowMaximizeProperty); set => SetValue(ShowMaximizeProperty, value); }
-        public bool CanMaximize { get => GetValue(CanMaximizeProperty); set => SetValue(CanMaximizeProperty, value); }
         public bool ShowClose { get => GetValue(ShowCloseProperty); set => SetValue(ShowCloseProperty, value); }
         public IImage? Icon { get => GetValue(IconProperty); set => SetValue(IconProperty, value); }
 

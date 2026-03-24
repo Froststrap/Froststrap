@@ -21,7 +21,7 @@
     WindowStartupLocation="CenterScreen">
 
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
-        <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Title="Froststrap" ShowMinimize="False" ShowMaximize="False" CanMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
+        <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" Title="Froststrap" ShowMinimize="False" ShowMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
 
         <StackPanel Grid.Row="1" Margin="12">
             <TextBlock FontSize="20" FontWeight="SemiBold" Text="{x:Static resources:Strings.Uninstaller_Title}" />

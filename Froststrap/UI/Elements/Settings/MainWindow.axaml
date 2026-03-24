@@ -27,7 +27,7 @@
 			Icon="avares://Froststrap/Froststrap.ico"
 			Grid.Row="0"
 			Height="32"
-			Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+			Background="{DynamicResource LayerFillColorDefaultBrush}" />
 
 		<Panel
 			Name="NotificationPanel"

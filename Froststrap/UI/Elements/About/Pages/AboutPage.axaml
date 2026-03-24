@@ -27,7 +27,7 @@
     </UserControl.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="0,0,14,14">
+        <StackPanel Margin="14">
 
             <Grid Margin="0,0,0,24" HorizontalAlignment="Center" ColumnDefinitions="Auto,*">
                 <Panel Grid.Column="0">
