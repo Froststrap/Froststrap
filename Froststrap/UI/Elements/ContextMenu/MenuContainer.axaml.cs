@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 
@@ -30,6 +31,11 @@ namespace Froststrap.UI.Elements.ContextMenu
         {
             InitializeComponent();
             MapNativeMenuItems();
+
+            if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            }
 
             this.Closing += (s, e) =>
             {
