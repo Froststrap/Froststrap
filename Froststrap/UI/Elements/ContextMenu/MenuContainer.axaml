@@ -1,109 +1,28 @@
-<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer"
-        xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="using:FluentAvalonia.UI.Controls"
-        xmlns:local="clr-namespace:Froststrap.UI.Elements.ContextMenu"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-        xmlns:resources="clr-namespace:Froststrap.Resources"
-        mc:Ignorable="d"
-        Title="ContextMenuContainer"
-        Width="0" Height="0"
-        ShowInTaskbar="False"
-        SystemDecorations="None"
-        WindowStartupLocation="Manual"
-        Opacity="0">
-    <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem IsEnabled="False">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="20,*">
-                        <Image Grid.Column="0" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality" />
-                        <TextBlock x:Name="VersionTextBlock" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Grid.Column="1" VerticalAlignment="Center" Margin="6,0,0,0" Text="Bloxstrap v2.4.1" />
-                    </Grid>
-                </MenuItem.Header>
-            </MenuItem>
-            <Separator/>
-            <MenuItem IsEnabled="False" x:Name="PlaytimeMenuItem">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="24,*">
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Clock" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                        <TextBlock x:Name="PlaytimeTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Total: 00:00" />
-                    </Grid>
-                </MenuItem.Header>
-            </MenuItem>
-            <Separator/>
-            
-            <MenuItem x:Name="RichPresenceMenuItem" Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" />
-            
-            <MenuItem x:Name="InviteDeeplinkMenuItem" IsVisible="False" Click="InviteDeeplinkMenuItem_Click">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="24,*">
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Link"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" />
-                    </Grid>                
-                </MenuItem.Header>
-            </MenuItem>
-            
-            <MenuItem x:Name="RegionMenuRoot" IsVisible="False">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="24,*">
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Earth"/>
-                        <TextBlock x:Name="RegionJoinTextBlock" Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Region Actions" />
-                    </Grid>
-                </MenuItem.Header>
-                <MenuItem x:Name="AutoJoinRegionMenuItem" Click="AutoJoinRegionMenuItem_Click">
-                    <MenuItem.Header>
-                        <TextBlock FontWeight="Bold" Text="Join Server" />
-                    </MenuItem.Header>
-                </MenuItem>
-                <Separator/>
-                <MenuItem>
-                    <MenuItem.Header>
-                        <Grid ColumnDefinitions="Auto,*">
-                            <TextBlock Text="Preferred:" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
-                            <ComboBox x:Name="RegionSelectionComboBox" Grid.Column="1" Width="150" MaxDropDownHeight="200"/>
-                        </Grid>
-                    </MenuItem.Header>
-                </MenuItem>
-            </MenuItem>
+<base:AvaloniaWindow 
+x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer" 
+xmlns="https://github.com/avaloniaui" 
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+xmlns:base="clr-namespace:Froststrap.UI.Elements.Base" 
+xmlns:resources="clr-namespace:Froststrap.Resources" 
+Title="ContextMenuContainer" 
+Width="0" Height="0" 
+ShowInTaskbar="False" 
+SystemDecorations="None" 
+Opacity="0">
 
-            <MenuItem x:Name="ServerDetailsMenuItem" IsVisible="False" Click="ServerDetailsMenuItem_Click">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="24,*">
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" />
-                    </Grid>
-                </MenuItem.Header>
-            </MenuItem>
-
-            <MenuItem x:Name="GameHistoryMenuItem" Click="JoinLastServerMenuItem_Click">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="24,*">
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Games"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" />
-                    </Grid>
-                </MenuItem.Header>
-            </MenuItem>
-
-            <MenuItem Click="CloseRobloxMenuItem_Click">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="24,*">
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Target"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="{x:Static resources:Strings.ContextMenu_CloseRoblox}" />
-                    </Grid>
-                </MenuItem.Header>
-            </MenuItem>
-
-            <MenuItem Click="CloseWatcheMenuItem_Click">
-                <MenuItem.Header>
-                    <Grid ColumnDefinitions="24,*">
-                        <ui:SymbolIcon Grid.Column="0" Symbol="Dismiss"/>
-                        <TextBlock Grid.Column="1" VerticalAlignment="Center" Margin="4,0,0,0" Text="Close Watcher" />
-                    </Grid>
-                </MenuItem.Header>
-            </MenuItem>
-        </ContextMenu>
-    </Window.ContextMenu>
+    <NativeMenu.Menu>
+        <NativeMenu>
+            <NativeMenuItem Header="Froststrap v2.0.1" IsEnabled="False" />
+            <NativeMenuItem Header="Total: 00:00" IsEnabled="False" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
+            <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" IsVisible="False" Click="InviteDeeplinkMenuItem_Click" />
+            <NativeMenuItem Header="Join Server" IsVisible="False" Click="AutoJoinRegionMenuItem_Click"/>
+            <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" IsVisible="False" Click="ServerDetailsMenuItem_Click" />
+            <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Click="JoinLastServerMenuItem_Click" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_CloseRoblox}" Click="CloseRobloxMenuItem_Click" />
+            <NativeMenuItem Header="Close Watcher" Click="CloseWatcheMenuItem_Click" />
+        </NativeMenu>
+    </NativeMenu.Menu>
 </base:AvaloniaWindow>

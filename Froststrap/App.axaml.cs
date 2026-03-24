@@ -253,6 +253,8 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
             Logger.WriteLine(LOG_IDENT, $"Starting {ProjectName} v{Version}");
             var userAgent = new StringBuilder($"{ProjectName}/{Version}");
 

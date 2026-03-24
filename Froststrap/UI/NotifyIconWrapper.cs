@@ -27,10 +27,13 @@ namespace Froststrap.UI
             _watcher = watcher;
             _menuContainer = new MenuContainer(_watcher);
 
+            var nativeMenu = NativeMenu.GetMenu(_menuContainer);
+
             _trayIcon = new TrayIcon
             {
                 Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Froststrap/Froststrap.ico"))),
-                ToolTipText = "Froststrap"
+                ToolTipText = "Froststrap",
+                Menu = nativeMenu
             };
 
             _trayIcon.Clicked += OnTrayIconClicked;
@@ -40,31 +43,14 @@ namespace Froststrap.UI
                 _activityWatcher.OnGameJoin += OnGameJoin;
             }
 
-            var trayIcons = TrayIcon.GetIcons(Application.Current!);
-            trayIcons?.Add(_trayIcon);
+            TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
         }
 
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
-            if (e is PointerPressedEventArgs pointerArgs)
-            {
-                var pointerProperties = pointerArgs.GetCurrentPoint(null).Properties;
-
-                if (pointerProperties.IsRightButtonPressed)
-                {
-                    HandleRightClickAction();
-                    return;
-                }
-
-                HandleLeftClickLogic();
-            }
-            else
-            {
-                HandleLeftClickLogic();
-            }
+            HandleLeftClickLogic();
         }
 
-        // TODO fix closing messagebox closes the watcher
         private void HandleLeftClickLogic()
         {
             DateTime now = DateTime.Now;
@@ -81,47 +67,40 @@ namespace Froststrap.UI
             }
         }
 
-        private void HandleRightClickAction()
+        private void HandleDoubleClickAction()
         {
-            App.Logger.WriteLine("NotifyIconWrapper", "Right click detected - Opening Context Menu");
+            switch (App.Settings.Prop.DoubleClickAction)
+            {
+                case TrayDoubleClickAction.None:
+                    _ = Frontend.ShowMessageBox("You don’t have the double-click action set to anything.", MessageBoxImage.Information);
+                    break;
 
-            // TODO make right clicking open context menu
+                case TrayDoubleClickAction.GameHistory:
+                    if (!App.Settings.Prop.ShowGameHistoryMenu)
+                    {
+                        _ = Frontend.ShowMessageBox("Enable 'Game History' in settings to use this feature.", MessageBoxImage.Information);
+                        return;
+                    }
+                    var history = new ServerHistory(_activityWatcher!);
+                    history.Show();
+                    break;
+
+                case TrayDoubleClickAction.ServerInfo:
+                    if (!App.Settings.Prop.ShowServerDetails)
+                    {
+                        _ = Frontend.ShowMessageBox("Enable 'Query Server Location' in settings to use this feature.", MessageBoxImage.Information);
+                        return;
+                    }
+
+                    if (_activityWatcher?.InGame == true)
+                        _menuContainer.ShowServerInformationWindow();
+                    else
+                        _ = Frontend.ShowMessageBox("Join a game first to view server information.", MessageBoxImage.Information);
+                    break;
+            }
         }
 
-        private void HandleDoubleClickAction()
-		{
-			switch (App.Settings.Prop.DoubleClickAction)
-			{
-				case TrayDoubleClickAction.None:
-					_ = Frontend.ShowMessageBox("You don’t have the double-click action set to anything.", MessageBoxImage.Information);
-					break;
-
-				case TrayDoubleClickAction.GameHistory:
-					if (!App.Settings.Prop.ShowGameHistoryMenu)
-					{
-						_ = Frontend.ShowMessageBox("Enable 'Game History' in settings to use this feature.", MessageBoxImage.Information);
-						return;
-					}
-					var history = new ServerHistory(_activityWatcher!);
-					history.Show();
-					break;
-
-				case TrayDoubleClickAction.ServerInfo:
-					if (!App.Settings.Prop.ShowServerDetails)
-					{
-						_ = Frontend.ShowMessageBox("Enable 'Query Server Location' in settings to use this feature.", MessageBoxImage.Information);
-						return;
-					}
-
-					if (_activityWatcher?.InGame == true)
-						_menuContainer.ShowServerInformationWindow();
-					else
-						_ = Frontend.ShowMessageBox("Join a game first to view server information.", MessageBoxImage.Information);
-					break;
-			}
-		}
-
-		public async void OnGameJoin(object? sender, EventArgs e)
+        public async void OnGameJoin(object? sender, EventArgs e)
 		{
             if (_activityWatcher?.Data == null) return;
 
@@ -199,11 +178,21 @@ namespace Froststrap.UI
 
             Dispatcher.UIThread.Post(() =>
             {
-                var trayIcons = TrayIcon.GetIcons(Application.Current!);
-                trayIcons?.Remove(_trayIcon);
+                try
+                {
+                    _trayIcon.IsVisible = false;
 
-                _menuContainer.Close();
-                _trayIcon.Dispose();
+                    var trayIcons = TrayIcon.GetIcons(Application.Current!);
+                    trayIcons?.Remove(_trayIcon);
+
+                    _menuContainer.Close();
+
+                    _trayIcon.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("NotifyIconWrapper::Dispose", $"Error during cleanup: {ex.Message}");
+                }
             });
 
             GC.SuppressFinalize(this);
