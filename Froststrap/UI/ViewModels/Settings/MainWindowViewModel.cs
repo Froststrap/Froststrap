@@ -210,15 +210,31 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             switch (pageTypeName)
             {
-                case "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel": NavigateToIntegrationsCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.BehaviourViewModel": NavigateToBehaviourCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.ModsViewModel": NavigateToModsCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.CommunityModsViewModel": NavigateToCommunityModsCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel": NavigateToFastFlagsCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.AppearanceViewModel": NavigateToAppearanceCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.GlobalSettingsViewModel": NavigateToGlobalSettingsCommand.Execute(null); break;
-                case "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel": NavigateToShortcutsCommand.Execute(null); break;
-                default: NavigateToIntegrationsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel":
+                    NavigateToIntegrationsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.BehaviourViewModel":
+                    NavigateToBehaviourCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.ModsViewModel":
+                    NavigateToModsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel":
+                    NavigateToFastFlagsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.AppearanceViewModel":
+                    NavigateToAppearanceCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.GlobalSettingsViewModel":
+                    NavigateToGlobalSettingsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel":
+                    NavigateToShortcutsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.Mods.CommunityModsViewModel":
+                    NavigateToCommunityModsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.Mods.ModsPresetsViewModel":
+                    NavigateToPresetModsCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.Mods.ModGeneratorViewModel":
+                    NavigateToModGeneratorCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.FastFlags.FastFlagEditorViewModel":
+                    NavigateToFastFlagEditorCommand.Execute(null); break;
+
+                default:
+                    NavigateToIntegrationsCommand.Execute(null); break;
             }
         }
 
