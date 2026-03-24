@@ -186,10 +186,6 @@
         </Setter>
     </Style>
 
-    <Style Selector="controls|IconButton.nav-button:pointerover">
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-    </Style>
-
     <Style Selector="controls|IconButton.nav-button:pointerover /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
     </Style>

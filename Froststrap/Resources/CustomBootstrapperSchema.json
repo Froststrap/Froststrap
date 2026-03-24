@@ -56,7 +56,6 @@
 			"Attributes": {
 				"ShowMinimize": "bool",
 				"ShowMaximize": "bool",
-				"CanMaximize": "bool",
 				"ShowClose": "bool",
 				"Icon": "ImageSource",
 				"Title": "string"

@@ -15,7 +15,7 @@
 	MinWidth="250"
 	MinHeight="250"
 	x:DataType="vm:MainWindowViewModel"
-	SystemDecorations="None"
+	SystemDecorations="None" CanResize="True"
 	ExtendClientAreaTitleBarHeightHint="-1"
 	ExtendClientAreaToDecorationsHint="True"
 	WindowStartupLocation="CenterScreen">

@@ -30,6 +30,45 @@
                 <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
             </controls:OptionControl>
 
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Description}"
+                IsExpanded="{Binding MultiInstances, Mode=OneWay}"
+                Classes="NoUserExpansion">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding MultiInstances, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Margin="0,8,0,0">
+                    <controls:OptionControl
+                        Description="Automatically fixes error code 773 when teleporting between games with multiple accounts."
+                        Header="Teleport Fix">
+                        <ToggleSwitch IsChecked="{Binding Error773Fix, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <controls:OptionControl 
+                Header="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}">
+                <ToggleSwitch IsChecked="{Binding BackgroundUpdates, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Description}">
+                <ComboBox
+                    Width="200"
+                    ItemsSource="{Binding ProcessPriorityOptions}"
+                    SelectedItem="{Binding SelectedPriority, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </controls:OptionControl>
+            
             <controls:CardExpander Header="Experimental" Description="A collection of experimental settings. Be careful while using them, as they may or may not work as intended.">
 				<StackPanel>
             <controls:OptionControl 
@@ -93,45 +132,6 @@
             </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
-
-            <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Description}"
-                IsExpanded="{Binding MultiInstances, Mode=OneWay}"
-                Classes="NoUserExpansion">
-                <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch IsChecked="{Binding MultiInstances, Mode=TwoWay}" />
-                </controls:CardExpander.HeaderContent>
-
-                <StackPanel Margin="0,8,0,0">
-                    <controls:OptionControl
-                        Description="Automatically fixes error code 773 when teleporting between games with multiple accounts."
-                        Header="Teleport Fix">
-                        <ToggleSwitch IsChecked="{Binding Error773Fix, Mode=TwoWay}" />
-                    </controls:OptionControl>
-                </StackPanel>
-            </controls:CardExpander>
-
-            <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Description}">
-                <ComboBox
-                    Width="200"
-                    ItemsSource="{Binding ProcessPriorityOptions}"
-                    SelectedItem="{Binding SelectedPriority, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </controls:OptionControl>
-
-            <controls:OptionControl 
-                Header="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}">
-                <ToggleSwitch IsChecked="{Binding BackgroundUpdates, Mode=TwoWay}" />
-            </controls:OptionControl>
 
             <controls:CardExpander 
                 IsExpanded="True" 

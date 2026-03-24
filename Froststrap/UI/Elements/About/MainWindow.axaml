@@ -14,8 +14,7 @@
         Title="{x:Static resources:Strings.About_Title}"
         MinWidth="740" Width="740" Height="440"
         WindowStartupLocation="CenterScreen"
-        TransparencyLevelHint="Mica"
-        SystemDecorations="None"
+        SystemDecorations="None" CanResize="True"
         ExtendClientAreaToDecorationsHint="True">
 
   <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">

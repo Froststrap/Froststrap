@@ -78,7 +78,7 @@
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Choose}"
                                             Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
                                             IsVisible="{Binding !IsCustomFontSet}" />
-                        <controls:IconButton Classes="Dangerous"
+                        <controls:IconButton Classes="Danger"
                                             Command="{Binding ManageCustomFontCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Remove}"
                                             Icon="TrashCanOutline"
@@ -93,7 +93,7 @@
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Choose}"
                                             Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
                                             IsVisible="{Binding !HasCustomDeathSound}" />
-                        <controls:IconButton Classes="Dangerous"
+                        <controls:IconButton Classes="Danger"
                                             Command="{Binding RemoveCustomDeathSoundCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Remove}"
                                             Icon="TrashCanOutline"
@@ -111,7 +111,7 @@
                                 <controls:IconButton Command="{Binding AddCustomCursorModCommand}" Icon="FileDocumentPlusOutline"
                                                    Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Choose}" CommandParameter="{Binding $self}"
                                                    IsVisible="{Binding !HasCustomCursors}" />
-                                <controls:IconButton Classes="Dangerous" Command="{Binding RemoveCustomCursorModCommand}" Icon="TrashCanOutline"
+                                <controls:IconButton Classes="Danger" Command="{Binding RemoveCustomCursorModCommand}" Icon="TrashCanOutline"
                                                    Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Remove}"
                                                    IsVisible="{Binding HasCustomCursors}" />
                             </Panel>
@@ -127,7 +127,7 @@
                                         Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
                                         IsVisible="{Binding !HasCustomShiftlock}" />
 
-                            <controls:IconButton Classes="Dangerous"
+                            <controls:IconButton Classes="Danger"
                                         Command="{Binding RemoveCustomShiftlockModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Remove}"
                                         Icon="TrashCanOutline"
@@ -159,7 +159,7 @@
                        Icon="Plus" />
 
                                 <controls:IconButton Grid.Column="1" Height="32" HorizontalAlignment="Stretch" Margin="4,0,0,0"
-                       Classes="Dangerous"
+                       Classes="Danger"
                        Command="{Binding DeleteCustomCursorSetCommand}"
                        Content="{x:Static resources:Strings.Common_Delete}"
                        Icon="TrashCanOutline"
@@ -184,7 +184,7 @@
                                             <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddMouseLockedCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasShiftlockCursor}" HorizontalAlignment="Stretch" Height="32" />
                                             <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="MouseLockedCursor.png"
-                                   IsVisible="{Binding HasShiftlockCursor}" Classes="Dangerous" HorizontalAlignment="Stretch" Height="32" />
+                                   IsVisible="{Binding HasShiftlockCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
 
@@ -199,7 +199,7 @@
                                             <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddArrowCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasArrowCursor}" HorizontalAlignment="Stretch" Height="32" />
                                             <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowCursor.png"
-                                   IsVisible="{Binding HasArrowCursor}" Classes="Dangerous" HorizontalAlignment="Stretch" Height="32" />
+                                   IsVisible="{Binding HasArrowCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
 
@@ -214,7 +214,7 @@
                                             <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddArrowFarCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasArrowFarCursor}" HorizontalAlignment="Stretch" Height="32" />
                                             <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowFarCursor.png"
-                                   IsVisible="{Binding HasArrowFarCursor}" Classes="Dangerous" HorizontalAlignment="Stretch" Height="32" />
+                                   IsVisible="{Binding HasArrowFarCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
 
@@ -229,7 +229,7 @@
                                             <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddIBeamCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasIBeamCursor}" HorizontalAlignment="Stretch" Height="32" />
                                             <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="IBeamCursor.png"
-                                   IsVisible="{Binding HasIBeamCursor}" Classes="Dangerous" HorizontalAlignment="Stretch" Height="32" />
+                                   IsVisible="{Binding HasIBeamCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
                                 </Grid>
