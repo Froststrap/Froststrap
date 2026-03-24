@@ -8,6 +8,7 @@ using Avalonia.Interactivity;
 using Avalonia.Input;
 using Froststrap.UI.ViewModels.About;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Froststrap.UI.Elements.Controls;
 
 namespace Froststrap.UI.Elements.About
 {
@@ -35,6 +36,8 @@ namespace Froststrap.UI.Elements.About
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             _viewModel.NavigateToAboutCommand.Execute(null);
+
+            UpdateSelectedButtonStyle(_viewModel.SelectedPage);
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -140,27 +143,33 @@ namespace Froststrap.UI.Elements.About
 
         private void UpdateSelectedButtonStyle(string selectedTag)
         {
-            var mainGrid = this.FindControl<Grid>("MainGrid");
-            if (mainGrid == null) return;
+            var sidebarStackPanel = this.FindControl<StackPanel>("SidebarStackPanel");
+            if (sidebarStackPanel == null) return;
 
-            if (mainGrid.Children.Count > 0 && mainGrid.Children[0] is Border sidebarBorder &&
-                sidebarBorder.Child is ScrollViewer sv && sv.Content is StackPanel sp)
+            var accentFgKey = "AccentButtonBackground";
+            var unselectedFgResource = "TextFillColorTertiaryBrush";
+            var highlightBgResource = "ControlFillColorSecondaryBrush";
+
+            foreach (var child in sidebarStackPanel.Children)
             {
-                var selectedBrush = new SolidColorBrush(Color.Parse("#00d4ff"));
-                var unselectedBrush = new SolidColorBrush(Color.Parse("#888888"));
-
-                foreach (var child in sp.Children)
+                if (child is IconButton button && button.Tag is string tag)
                 {
-                    if (child is Button button && button.Tag is string tag)
-                    {
-                        var isSelected = tag == selectedTag;
-                        button.Background = isSelected ? new SolidColorBrush(Color.Parse("#333333")) : Brushes.Transparent;
-                        button.Foreground = isSelected ? selectedBrush : unselectedBrush;
+                    var isSelected = tag == selectedTag;
 
-                        if (button.Content is IconPacks.Avalonia.Material.PackIconMaterial icon)
-                        {
-                            icon.Foreground = isSelected ? selectedBrush : unselectedBrush;
-                        }
+                    if (isSelected)
+                    {
+                        if (!button.Classes.Contains("Selected"))
+                            button.Classes.Add("Selected");
+
+                        button[!IconButton.BackgroundProperty] = button.GetResourceObservable(highlightBgResource).ToBinding();
+                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(accentFgKey).ToBinding();
+                    }
+                    else
+                    {
+                        button.Classes.Remove("Selected");
+
+                        button.Background = Brushes.Transparent;
+                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(unselectedFgResource).ToBinding();
                     }
                 }
             }

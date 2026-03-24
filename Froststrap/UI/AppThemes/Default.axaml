@@ -138,49 +138,79 @@
     </Style>
 </Style>
 
-	<!-- Icon Button Style -->
-	<Design.PreviewWith>
-		<StackPanel Spacing="10" Margin="20" Background="#2D2D2D">
-			<Button Classes="icon-button">
-				<Panel IsHitTestVisible="False">
-					<ic:PackIconMaterial Kind="Information" BorderThickness="1.5" Width="16" Height="16" />
-				</Panel>
-			</Button>
-		</StackPanel>
-	</Design.PreviewWith>
+    <Style Selector="controls|IconButton.nav-button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinWidth" Value="54" />
+        <Setter Property="Height" Value="54" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Cursor" Value="Hand" />
+        
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_LayoutRoot"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        Margin="2"> 
+                    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
+                                            Foreground="{TemplateBinding Foreground}"
+                                            Width="{TemplateBinding IconSize}"
+                                            Height="{TemplateBinding IconSize}"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
-	<Style Selector="Button.icon-button">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="Foreground" Value="#888888" />
-		<Setter Property="Padding" Value="0" />
-		<Setter Property="MinWidth" Value="64" />
-		<Setter Property="Height" Value="64" />
-		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="Cursor" Value="Hand" />
-		<Setter Property="CornerRadius" Value="4" />
-		<Setter Property="Template">
-			<ControlTemplate TargetType="Button">
-				<Border
-					Name="PART_BorderBackground"
-					Background="{TemplateBinding Background}"
-					CornerRadius="8"
-					Padding="{TemplateBinding Padding}"
-					Margin="8">
-					<ContentPresenter
-						Name="PART_ContentPresenter"
-						Content="{TemplateBinding Content}"
-						ContentTemplate="{TemplateBinding ContentTemplate}"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center" />
-				</Border>
-			</ControlTemplate>
-		</Setter>
-	</Style>
+                        <Path Data="{TemplateBinding IconData}"
+                              Fill="{TemplateBinding Foreground}"
+                              Width="{TemplateBinding IconSize}"
+                              Height="{TemplateBinding IconSize}"
+                              Stretch="Uniform"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center">
+                            <Path.IsVisible>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
+                                </MultiBinding>
+                            </Path.IsVisible>
+                        </Path>
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 
-	<Style Selector="Button.icon-button:pointerover">
-		<Setter Property="Background" Value="#333333" />
-		<Setter Property="Foreground" Value="#888888" />
-	</Style>
+    <Style Selector="controls|IconButton.nav-button:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.nav-button:pointerover /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+    </Style>
+    
+    <Style Selector="controls|IconButton.nav-button:pressed /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.nav-button:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.95)" />
+    </Style>
+
+    <Style Selector="controls|IconButton.nav-button.Selected">
+        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
+    </Style>
+
+    <Style Selector="controls|IconButton.nav-button.Selected /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
 
 	<Style Selector="ListBox">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />

@@ -1,8 +1,10 @@
-using System.ComponentModel;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
+using System.ComponentModel;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.ViewModels.AccountManagers;
 
 namespace Froststrap.UI.Elements.AccountManagers
@@ -81,28 +83,33 @@ namespace Froststrap.UI.Elements.AccountManagers
 
         private void UpdateSelectedButtonStyle(string? selectedPage)
         {
-            var mainGrid = this.FindControl<Grid>("MainGrid");
-            if (mainGrid is null) return;
+            var sidebarStackPanel = this.FindControl<StackPanel>("SidebarStackPanel");
+            if (sidebarStackPanel == null) return;
 
-            var border = mainGrid.Children.OfType<Border>().FirstOrDefault();
-            if (border?.Child is ScrollViewer scrollViewer && scrollViewer.Content is StackPanel stackPanel)
+            var accentFgKey = "AccentButtonBackground";
+            var unselectedFgResource = "TextFillColorTertiaryBrush";
+            var highlightBgResource = "ControlFillColorSecondaryBrush";
+
+            foreach (var child in sidebarStackPanel.Children)
             {
-                var unselectedBrush = new SolidColorBrush(Color.Parse("#888888"));
-                var selectedBrush = new SolidColorBrush(Color.Parse("#00d4ff"));
-                var highlightBgColor = new SolidColorBrush(Color.Parse("#333333"));
-
-                foreach (var button in stackPanel.Children.OfType<Button>())
+                if (child is IconButton button && button.Tag is string tag)
                 {
-                    if (button.Tag is string tag)
-                    {
-                        var isSelected = tag == selectedPage;
-                        button.Background = isSelected ? highlightBgColor : Brushes.Transparent;
+                    var isSelected = tag == selectedPage;
 
-                        var icon = FindIconInButton(button);
-                        if (icon != null)
-                        {
-                            icon.Foreground = isSelected ? selectedBrush : unselectedBrush;
-                        }
+                    if (isSelected)
+                    {
+                        if (!button.Classes.Contains("Selected"))
+                            button.Classes.Add("Selected");
+
+                        button[!IconButton.BackgroundProperty] = button.GetResourceObservable(highlightBgResource).ToBinding();
+                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(accentFgKey).ToBinding();
+                    }
+                    else
+                    {
+                        button.Classes.Remove("Selected");
+
+                        button.Background = Brushes.Transparent;
+                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(unselectedFgResource).ToBinding();
                     }
                 }
             }

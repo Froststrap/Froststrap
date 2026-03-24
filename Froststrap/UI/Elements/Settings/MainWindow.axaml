@@ -50,126 +50,93 @@
 				BorderThickness="0,0,1,0">
 				<ScrollViewer VerticalScrollBarVisibility="Hidden">
 					<StackPanel VerticalAlignment="Top" Spacing="0">
-						<Button
-							Classes="icon-button"
+<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToIntegrationsCommand}"
 							Tag="integrations"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Plus"/>
-						</Button>
+							Icon="Plus"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToBehaviourCommand}"
 							Tag="behaviour"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="CogOutline"/>
-						</Button>
+							Icon="CogOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToModsCommand}"
 							Tag="mods"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Wrench"/>
-						</Button>
+							Icon="PuzzleOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToFastFlagsCommand}"
 							Tag="fastflags"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Flag"/>
-						</Button>
+							Icon="FlagOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToAppearanceCommand}"
 							Tag="appearance"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Palette"/>
-						</Button>
+							Icon="PaletteOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToRegionSelectorCommand}"
 							Tag="regionselector"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Earth"/>
-						</Button>
+							Icon="Earth"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToGlobalSettingsCommand}"
 							Tag="globalsettings"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_GlobalSettings_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Gauge"/>
-						</Button>
+							Icon="SquareEditOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding NavigateToShortcutsCommand}"
 							Tag="shortcuts"
-							ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="LinkBoxOutline"/>
-						</Button>
+							Icon="LinkBoxOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}" />
 
 						<Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
-						<!--  Footer Menu Items  -->
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding OpenAccountManagerCommand}"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="AccountMultipleOutline"/>
-						</Button>
+							Icon="AccountMultipleOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}" />
 
-						<Button Classes="icon-button"
-								Command="{Binding NavigateToChannelsCommand}"
-								ToolTip.Tip="{x:Static resources:Strings.Common_Settings}"
-								Tag="channels">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="CogOutline"/>
-						</Button>
+						<controls:IconButton 
+							Classes="nav-button"
+							Command="{Binding NavigateToChannelsCommand}"
+							Tag="channels"
+							Icon="CogOutline"
+							IconSize="24"
+							ToolTip.Tip="{x:Static resources:Strings.Common_Settings}" />
 
-						<Button
-							Classes="icon-button"
+						<controls:IconButton
+							Classes="nav-button"
 							Command="{Binding OpenAboutCommand}"
-							ToolTip.Tip="About Me">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Information"/>
-						</Button>
+							Icon="InformationOutline"
+							IconSize="24"
+							ToolTip.Tip="About Me" />
 					</StackPanel>
 				</ScrollViewer>
 			</Border>

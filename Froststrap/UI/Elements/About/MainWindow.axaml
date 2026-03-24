@@ -21,17 +21,25 @@
   <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
         <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.About_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
-        <Grid Grid.Row="1" ColumnDefinitions="64,*" Margin="12,40,12,12" Name="MainGrid">
+        <Grid Grid.Row="1" ColumnDefinitions="64,*" Name="MainGrid">
             <Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel Spacing="0" VerticalAlignment="Top">
-                        <Button ToolTip.Tip="{x:Static resources:Strings.Menu_About_Title}" Command="{Binding NavigateToAboutCommand}" Tag="about" Classes="Icon-Button">
-                            <ic:PackIconMaterial Kind="Information" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
-                        </Button>
+                    <StackPanel Spacing="0" VerticalAlignment="Top" Name="SidebarStackPanel">
+                        <controls:IconButton 
+                            Classes="nav-button" 
+                            ToolTip.Tip="{x:Static resources:Strings.Menu_About_Title}" 
+                            Command="{Binding NavigateToAboutCommand}" 
+                            Tag="about"
+                            Icon="Information"
+                            IconSize="20" />
 
-                        <Button ToolTip.Tip="{x:Static resources:Strings.About_Licenses_Title}" Command="{Binding NavigateToLicensesCommand}" Tag="licenses" Classes="Icon-Button">
-                            <ic:PackIconMaterial Kind="License" Foreground="#888888" BorderThickness="1.5" Width="16" Height="16" />
-                        </Button>
+                        <controls:IconButton 
+                            Classes="nav-button" 
+                            ToolTip.Tip="{x:Static resources:Strings.About_Licenses_Title}" 
+                            Command="{Binding NavigateToLicensesCommand}" 
+                            Tag="licenses"
+                            Icon="License"
+                            IconSize="20" />
                     </StackPanel>
                 </ScrollViewer>
             </Border>

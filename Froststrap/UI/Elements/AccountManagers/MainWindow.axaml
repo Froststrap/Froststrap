@@ -27,50 +27,37 @@
 		<controls:TitleBar Padding="8" x:Name="RootTitleBar" Grid.Row="0" Title="Account Manager" Icon="avares://Froststrap/Froststrap.ico" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
 		<Grid Grid.Row="1" ColumnDefinitions="64,*">
-			<Border
-				Grid.Column="0"
-				Background="{DynamicResource LayerFillColorDefaultBrush}"
-				BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-				BorderThickness="0,0,1,0">
-				<ScrollViewer VerticalScrollBarVisibility="Hidden">
-					<StackPanel VerticalAlignment="Top" Spacing="0">
-						<Button
-							Classes="icon-button"
-							Command="{Binding NavigateToAccountsCommand}"
-							Tag="accounts"
-							ToolTip.Tip="Accounts">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Account"
-								Foreground="#888888"/>
-						</Button>
+			<Border Grid.Column="0"
+    			    Background="{DynamicResource LayerFillColorDefaultBrush}"
+   			     BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+   			     BorderThickness="0,0,1,0">
+  			  <ScrollViewer VerticalScrollBarVisibility="Hidden">
+   			     <StackPanel x:Name="SidebarStackPanel" VerticalAlignment="Top" Spacing="0">
+   			         <controls:IconButton
+   			             Classes="nav-button"
+   			             Command="{Binding NavigateToAccountsCommand}"
+   			             Tag="accounts"
+   			             Icon="Account"
+    			            IconSize="20"
+    			            ToolTip.Tip="Accounts" />
 
-						<Button
-							Classes="icon-button"
-							Command="{Binding NavigateToFriendsCommand}"
-							Tag="friends"
-							ToolTip.Tip="Friends">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="AccountMultiple"
-								Foreground="#888888"/>
-						</Button>
+      			      <controls:IconButton
+      			          Classes="nav-button"
+      			          Command="{Binding NavigateToFriendsCommand}"
+      			          Tag="friends"
+      			          Icon="AccountMultiple"
+      			          IconSize="20"
+       			         ToolTip.Tip="Friends" />
 
-						<Button
-							Classes="icon-button"
-							Command="{Binding NavigateToGamesCommand}"
-							Tag="games"
-							ToolTip.Tip="Games">
-							<ic:PackIconMaterial
-								Width="20"
-								Height="20"
-								Kind="Play"
-								Foreground="#888888"/>
-						</Button>
-					</StackPanel>
-				</ScrollViewer>
+        			    <controls:IconButton
+       			         Classes="nav-button"
+       			         Command="{Binding NavigateToGamesCommand}"
+       			         Tag="games"
+       			         Icon="Play"
+       			         IconSize="20"
+      			          ToolTip.Tip="Games" />
+     			   </StackPanel>
+  			  </ScrollViewer>
 			</Border>
 
 			<Grid Grid.Column="1" RowDefinitions="Auto,*">
