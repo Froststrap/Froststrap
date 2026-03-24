@@ -99,6 +99,7 @@
 							ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
 
 						<controls:IconButton
+						    Name="gbs"
 							Classes="nav-button"
 							Command="{Binding NavigateToGlobalSettingsCommand}"
 							Tag="globalsettings"
