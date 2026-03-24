@@ -50,7 +50,7 @@
                                 
                                     <controls:IconButton Grid.Column="0" 
                                                      Icon="TrashCanOutline" 
-                                                     Classes="Dangerous"
+                                                     Classes="Danger"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).DeleteModCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 

@@ -69,17 +69,17 @@
         <Setter Property="Opacity" Value="0.5" />
     </Style>
 
-    <Style Selector="controls|IconButton.Dangerous:not(:disabled)">
+    <Style Selector="controls|IconButton.Danger:not(:disabled)">
         <Setter Property="Background" Value="#FF3B30" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderBrush" Value="#E03026" />
     </Style>
 
-    <Style Selector="controls|IconButton.Dangerous:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+    <Style Selector="controls|IconButton.Danger:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="#FF5247" />
     </Style>
 
-    <Style Selector="controls|IconButton.Dangerous:disabled /template/ Border#PART_LayoutRoot">
+    <Style Selector="controls|IconButton.Danger:disabled /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="#80FF3B30" />
         <Setter Property="BorderBrush" Value="#80E03026" />
     </Style>

@@ -100,7 +100,7 @@
                                             Icon="TrashCanOutline"
                                             Command="{Binding $parent[ListBox].DataContext.DeleteAccountCommand}"
                                             CommandParameter="{Binding}"
-                                            Classes="Dangerous"
+                                            Classes="Danger"
                                             ToolTip.Tip="Delete this account"/>
                                 </Grid>
                             </DataTemplate>
