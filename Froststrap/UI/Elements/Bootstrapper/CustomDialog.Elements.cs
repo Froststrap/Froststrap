@@ -10,6 +10,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
+using Froststrap.UI.Utility;
 using System.Xml.Linq;
 
 namespace Froststrap.UI.Elements.Bootstrapper
@@ -326,9 +327,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 templated.FontWeight = GetFontWeightFromXElement(xmlElement);
                 templated.FontStyle = GetFontStyleFromXElement(xmlElement);
 
-                string? fontFamily = GetFullPath(dialog, xmlElement.Attribute("FontFamily")?.Value);
-                if (fontFamily != null)
-                    templated.FontFamily = new Avalonia.Media.FontFamily(fontFamily);
+                string? fontFamilyAttr = xmlElement.Attribute("FontFamily")?.Value;
+                if (!string.IsNullOrEmpty(fontFamilyAttr))
+                {
+                    string resolvedUri = ThemeFontManager.ResolveFontUri(fontFamilyAttr, dialog.ThemeDir);
+                    templated.FontFamily = new Avalonia.Media.FontFamily(resolvedUri);
+                }
             }
         }
 
@@ -380,6 +384,21 @@ namespace Froststrap.UI.Elements.Bootstrapper
             xmlElement.SetAttributeValue("Name", "TitleBar");
             xmlElement.SetAttributeValue("IsEnabled", "True");
             HandleXmlElement_Control(dialog, dialog.RootTitleBar, xmlElement);
+
+            dialog.RootTitleBar.IsVisible = ParseXmlAttribute<bool>(xmlElement, "IsVisible", true);
+
+            bool isHidden = ParseXmlAttribute(xmlElement, "IsHidden", false);
+
+            if (isHidden)
+            {
+                dialog.RootTitleBar.IsVisible = false;
+                dialog.RootTitleBar.Height = 0;
+            }
+            else
+            {
+                dialog.RootTitleBar.IsVisible = true;
+                dialog.RootTitleBar.Height = ParseXmlAttribute<double>(xmlElement, "Height", 32);
+            }
 
             dialog.RootTitleBar.RenderTransform = null;
             dialog.RootTitleBar.ZIndex = 1001;
@@ -481,9 +500,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
             textBlock.TextWrapping = ParseXmlAttribute<TextWrapping>(xmlElement, "TextWrapping", TextWrapping.NoWrap);
             textBlock.TextDecorations = GetTextDecorationsFromXElement(xmlElement);
 
-            string? fontFamily = GetFullPath(dialog, xmlElement.Attribute("FontFamily")?.Value);
-            if (fontFamily != null)
-                textBlock.FontFamily = new Avalonia.Media.FontFamily(fontFamily);
+            string? fontFamilyAttr = xmlElement.Attribute("FontFamily")?.Value;
+            if (!string.IsNullOrEmpty(fontFamilyAttr))
+            {
+                string resolvedUri = ThemeFontManager.ResolveFontUri(fontFamilyAttr, dialog.ThemeDir);
+                textBlock.FontFamily = new Avalonia.Media.FontFamily(resolvedUri);
+            }
 
             var padding = GetThicknessFromXElement(xmlElement, "Padding");
             if (padding is Thickness p)

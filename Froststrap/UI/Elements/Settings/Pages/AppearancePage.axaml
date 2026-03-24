@@ -220,7 +220,6 @@
                     Margin="0,0,4,0"
                     Icon="Plus"
                     HorizontalAlignment="Stretch"
-                    Classes="Primary"
                     Command="{Binding AddCustomThemeCommand}"
                     CommandParameter="{Binding $parent[Window]}"
                     Content="{x:Static resources:Strings.Common_New}" />

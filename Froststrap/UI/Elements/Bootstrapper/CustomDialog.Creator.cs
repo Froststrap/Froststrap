@@ -1,6 +1,6 @@
 ﻿using Avalonia.Controls;
 using System.Xml.Linq;
-using Froststrap.Exceptions;
+using Froststrap.UI.Utility;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -10,7 +10,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private class DummyControl : Control { }
         private const int MaxElements = 100;
         private bool _initialised = false;
-        private List<string> UsedNames { get; } = new List<string>();
         private string ThemeDir { get; set; } = "";
 
         delegate object HandleXmlElementDelegate(CustomDialog dialog, XElement xmlElement);
@@ -111,22 +110,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
         public void ApplyCustomTheme(string name, string contents)
         {
             ThemeDir = Path.Combine(Paths.CustomThemes, name);
+
+            string convertedContents = ThemeXamlConverter.ConvertThemeXaml(contents, ThemeDir);
+            ThemeFontManager.RegisterThemeFonts(ThemeDir);
+
             try
             {
-                // Convert WPF theme XAML to Avalonia-compatible XAML
-                string convertedContents = Froststrap.UI.Utility.ThemeXamlConverter.ConvertThemeXaml(contents, ThemeDir);
-
-                // Log any compatibility issues
-                var issues = Froststrap.UI.Utility.ThemeXamlConverter.AnalyzeThemeCompatibility(convertedContents);
-                if (issues.Count > 0)
-                {
-                    App.Logger?.WriteLine("CustomDialog", $"Theme compatibility issues for '{name}':");
-                    foreach (var issue in issues)
-                    {
-                        App.Logger?.WriteLine("CustomDialog", $"  - {issue}");
-                    }
-                }
-
                 XElement xml = XElement.Parse(convertedContents);
                 HandleXmlBase(xml);
             }

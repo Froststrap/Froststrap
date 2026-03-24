@@ -6,7 +6,7 @@ namespace Froststrap.UI.Elements.Dialogs
 {
     public partial class CommunityModInfoDialog : AvaloniaWindow
     {
-        public CommunityModInfoViewModel ViewModel { get; }
+        public CommunityModInfoViewModel? ViewModel { get; }
 
         public CommunityModInfoDialog()
         {
