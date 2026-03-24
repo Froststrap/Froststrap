@@ -23,7 +23,6 @@
         <controls:TitleBar
             Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
             Grid.Row="0"
-            CanMaximize="False"
             ShowMaximize="False"
             Icon="avares://Froststrap/Froststrap.ico"
             KeyboardNavigation.TabNavigation="None"

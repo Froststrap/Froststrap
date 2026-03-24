@@ -11,7 +11,7 @@
              mc:Ignorable="d" d:DesignHeight="600" d:DesignWidth="850">
 
     <ScrollViewer>
-        <Grid Margin="0,8,8,8" RowDefinitions="Auto, *">
+        <Grid Margin="8" RowDefinitions="Auto, *">
             
             <Border Grid.Row="0" Margin="0,0,0,16" Padding="16"
                     Background="{DynamicResource LayerFillColorDefaultBrush}"

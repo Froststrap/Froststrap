@@ -3,9 +3,14 @@
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|TitleBar">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Height" Value="36" />
+        
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="Auto, *, Auto" Height="36">
+                <Grid ColumnDefinitions="Auto, *, Auto" 
+                      Height="{TemplateBinding Height}" 
+                      Background="{TemplateBinding Background}">
 
                     <Image Grid.Column="0"
                            Source="{TemplateBinding Icon}"
@@ -18,7 +23,7 @@
                     <Panel Name="PART_DragLayer" Grid.Column="1" Background="Transparent">
                         <TextBlock Text="{TemplateBinding Title}"
                                    VerticalAlignment="Center"
-                                   Margin="8,0"
+                                   Margin="12,0"
                                    FontSize="12"
                                    IsHitTestVisible="False"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
@@ -33,8 +38,7 @@
                         <controls:IconButton Name="PART_MaximizeButton" 
                                            Classes="TitleBarButton" 
                                            IsVisible="{TemplateBinding ShowMaximize}" 
-                                           Icon="SquareOutline"
-                                           IsEnabled="{TemplateBinding CanMaximize}"/>
+                                           Icon="SquareOutline"/>
 
                         <controls:IconButton Name="PART_CloseButton" 
                                            Classes="TitleBarButton Close" 
@@ -55,8 +59,6 @@
         <Setter Property="CornerRadius" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        <Setter Property="Transitions" Value="{x:Null}" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton:pointerover /template/ Border#PART_LayoutRoot">

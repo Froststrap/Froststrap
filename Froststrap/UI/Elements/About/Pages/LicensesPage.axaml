@@ -9,14 +9,14 @@
              x:Class="Froststrap.UI.Elements.About.Pages.LicensesPage">
 
 	<ScrollViewer VerticalScrollBarVisibility="Auto">
-		<StackPanel Margin="0,0,14,14">
+		<StackPanel Margin="14">
 			<TextBlock Margin="0,0,0,16"
                        FontSize="24"
                        FontWeight="Bold"
                        Text="{x:Static resources:Strings.Menu_About_Licenses}" />
 
 			<UniformGrid Columns="3">
-				<ui:SettingsExpander Margin="0,4,4,4"
+				<ui:SettingsExpander Margin="4"
                                      Header="Bloxstrap"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      ActionIconSource="Open"
@@ -24,7 +24,7 @@
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/bloxstraplabs/bloxstrap/blob/main/LICENSE" />
 
-				<ui:SettingsExpander Margin="4,4,4,4"
+				<ui:SettingsExpander Margin="4"
                                      Header="Fishstrap"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      ActionIconSource="Open"

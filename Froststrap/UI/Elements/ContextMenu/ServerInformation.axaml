@@ -16,7 +16,7 @@
         WindowStartupLocation="CenterScreen">
     
     <Grid RowDefinitions="Auto, *, Auto" Background="{DynamicResource ApplicationBackgroundColor}">
-        <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" x:Name="RootTitleBar" Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" ShowMinimize="False" ShowMaximize="False" CanMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
+        <controls:TitleBar Grid.Row="0" Grid.ColumnSpan="2" x:Name="RootTitleBar" Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" ShowMinimize="False" ShowMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid RowDefinitions="*, *, *, *" ColumnDefinitions="Auto, *" Grid.Row="1" Margin="16,8,16,16">
 

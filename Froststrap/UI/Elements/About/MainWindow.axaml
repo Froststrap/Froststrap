@@ -19,7 +19,7 @@
         ExtendClientAreaToDecorationsHint="True">
 
   <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
-        <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.About_Title}" Icon="avares://Froststrap/Froststrap.ico" />
+        <controls:TitleBar Grid.Row="0" Background="{DynamicResource LayerFillColorDefaultBrush}" Title="{x:Static resources:Strings.About_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" ColumnDefinitions="64,*" Name="MainGrid">
             <Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">

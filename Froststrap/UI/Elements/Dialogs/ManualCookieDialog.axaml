@@ -23,7 +23,6 @@
             Title="Add Account with Cookie"
             Grid.Row="0"
             Padding="8"
-            CanMaximize="False"
             ShowMaximize="False"
             Icon="avares://Froststrap/Froststrap.ico"
             KeyboardNavigation.TabNavigation="None"
