@@ -17,10 +17,33 @@ namespace Froststrap.UI.Elements.Dialogs
         private readonly Action? _onClickAction;
         private readonly CancellationTokenSource _cts = new();
         private readonly Image? _iconPresenter;
+
         public NotificationDialog()
         {
             InitializeComponent();
+
+            Width = 320;
+            Height = 80;
+            SystemDecorations = SystemDecorations.None;
+            Topmost = true;
+            ShowInTaskbar = false;
+            ShowActivated = false;
+            Focusable = false;
         }
+
+        protected override void OnOpened(EventArgs e)
+        {
+            base.OnOpened(e);
+
+            var screen = Screens.Primary?.WorkingArea ?? new PixelRect(0, 0, 1920, 1080);
+            double scaling = Screens.Primary?.Scaling ?? 1.0;
+
+            Position = new PixelPoint(
+                screen.Right - (int)(Width * scaling) - 20,
+                screen.Bottom - (int)(Height * scaling) - 20
+            );
+        }
+
         public NotificationDialog(string title, string message, string imagePath, Action? onClick = null, int timeoutMs = 5000) : this()
         {
             _onClickAction = onClick;
@@ -30,12 +53,7 @@ namespace Froststrap.UI.Elements.Dialogs
             if (Application.Current?.TryFindResource("SystemControlBackgroundAltHighBrush", out var res1) == true) bg = (IBrush)res1!;
             if (Application.Current?.TryFindResource("SystemControlForegroundBaseLowBrush", out var res2) == true) border = (IBrush)res2!;
 
-            _iconPresenter = new Image
-            {
-                Width = 40,
-                Height = 40,
-                VerticalAlignment = VerticalAlignment.Center
-            };
+            _iconPresenter = new Image { Width = 40, Height = 40, VerticalAlignment = VerticalAlignment.Center };
 
             var mainBorder = new Border
             {
@@ -87,14 +105,16 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 var screen = Screens.Primary?.WorkingArea ?? new PixelRect(0, 0, 1920, 1080);
                 double scaling = Screens.Primary?.Scaling ?? 1.0;
+
                 Position = new PixelPoint(
                     screen.Right - (int)(Width * scaling) - 20,
                     screen.Bottom - (int)(Height * scaling) - 20
                 );
+
+                if (timeoutMs > 0) StartExpiryTimer(timeoutMs);
             };
 
             LoadImageAsync(imagePath);
-            if (timeoutMs > 0) StartExpiryTimer(timeoutMs);
         }
 
         private async void LoadImageAsync(string path)
@@ -102,7 +122,6 @@ namespace Froststrap.UI.Elements.Dialogs
             try
             {
                 Bitmap? bitmap = null;
-
                 if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
                 {
                     var data = await App.HttpClient.GetByteArrayAsync(path, _cts.Token);
@@ -114,12 +133,9 @@ namespace Froststrap.UI.Elements.Dialogs
                     bitmap = new Bitmap(AssetLoader.Open(new Uri(path)));
                 }
 
-                if (bitmap != null)
-                {
-                    Dispatcher.UIThread.Post(() => _iconPresenter!.Source = bitmap);
-                }
+                if (bitmap != null) Dispatcher.UIThread.Post(() => _iconPresenter!.Source = bitmap);
             }
-            catch { /* Keep image empty on failure */ }
+            catch { /* Fail silently */ }
         }
 
         private async void StartExpiryTimer(int delay)
@@ -127,7 +143,7 @@ namespace Froststrap.UI.Elements.Dialogs
             try
             {
                 await Task.Delay(delay, _cts.Token);
-                Dispatcher.UIThread.Post(() => { if (IsVisible) Close(); });
+                await Dispatcher.UIThread.InvokeAsync(() => { if (IsVisible) Close(); }, DispatcherPriority.MaxValue);
             }
             catch (TaskCanceledException) { }
         }

@@ -139,10 +139,6 @@ namespace Froststrap.UI.Elements.Base
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-            if (App.Settings.Prop.WPFSoftwareRender || App.LaunchSettings.NoGPUFlag.Active)
-            {
-                App.Logger.WriteLine("AvaloniaWindow", "Software rendering flag detected.");
-            }
 #if QA_BUILD
             this.BorderBrush = Brushes.Red;
             this.BorderThickness = new Thickness(4);

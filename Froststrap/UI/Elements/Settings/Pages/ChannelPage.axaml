@@ -33,12 +33,6 @@
                         SelectedItem="{Binding SelectedUpdateCheck, Mode=TwoWay}" />
                 </controls:OptionControl>
 
-                <controls:OptionControl
-                    Header="Save And Launch Action"
-                    Description="Adds an option so whenever clicking save and launch, it will ask if to studio or player.">
-                    <ToggleSwitch IsChecked="{Binding SaveAndLaunchToPlayer, Mode=TwoWay}" />
-                </controls:OptionControl>
-
                 <Separator Margin="0,8,0,4" />
 
                 <TextBlock

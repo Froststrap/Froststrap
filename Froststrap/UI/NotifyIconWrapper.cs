@@ -104,14 +104,19 @@ namespace Froststrap.UI
 		{
             if (_activityWatcher?.Data == null) return;
 
-            string? thumbnailUrl = await Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
+            string? thumbnailUrl = String.Empty;
+
+            if (App.Settings.Prop.ShowJoinNotification)
             {
-                TargetId = (ulong)_activityWatcher.Data.UniverseId,
-                Type = ThumbnailType.GameIcon,
-                Size = "150x150",
-                Format = ThumbnailFormat.Png,
-                IsCircular = false
-            }, CancellationToken.None);
+                thumbnailUrl = await Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
+                {
+                    TargetId = (ulong)_activityWatcher.Data.UniverseId,
+                    Type = ThumbnailType.GameIcon,
+                    Size = "150x150",
+                    Format = ThumbnailFormat.Png,
+                    IsCircular = false
+                }, CancellationToken.None);
+            }
 
             thumbnailUrl ??= "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png";
 
@@ -157,16 +162,23 @@ namespace Froststrap.UI
 			else if (locationActive && uptimeActive)
 				notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
 
-            ShowAlertWithImage(title, notifContent, thumbnailUrl);
+            if (App.Settings.Prop.ShowJoinNotification)
+                ShowAlertWithImage(title, notifContent, thumbnailUrl);
         }
 
         public void ShowAlertWithImage(string title, string message, string imagePath)
         {
-            Dispatcher.UIThread.Post(() =>
+            if (_isDisposed) return;
+
+            Dispatcher.UIThread.InvokeAsync(() =>
             {
+                if (_isDisposed) return;
+
                 var notification = new NotificationDialog(title, message, imagePath, timeoutMs: 7000);
+
                 notification.Show();
-            });
+
+            }, DispatcherPriority.Background);
         }
 
         public void Dispose()

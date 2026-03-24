@@ -97,6 +97,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     ShowServerDetailsEnabled = false;
                     ShowGameHistoryEnabled = false;
                     ShowServerUptimeEnabled = false;
+                    ShowJoinNotification = false;
                     AutoRejoinEnabled = false;
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
@@ -107,6 +108,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(ShowServerDetailsEnabled));
                     OnPropertyChanged(nameof(ShowGameHistoryEnabled));
                     OnPropertyChanged(nameof(ShowServerUptimeEnabled));
+                    OnPropertyChanged(nameof(ShowJoinNotification));
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
@@ -122,13 +124,47 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool ShowServerDetailsEnabled
         {
             get => App.Settings.Prop.ShowServerDetails;
-            set => App.Settings.Prop.ShowServerDetails = value;
+            set
+            {
+                App.Settings.Prop.ShowServerDetails = value;
+                OnPropertyChanged(nameof(ShowServerDetailsEnabled));
+
+                UpdateJoinNotificationState();
+            }
         }
 
         public bool ShowServerUptimeEnabled
         {
             get => App.Settings.Prop.ShowServerUptime;
-            set => App.Settings.Prop.ShowServerUptime = value;
+            set
+            {
+                App.Settings.Prop.ShowServerUptime = value;
+                OnPropertyChanged(nameof(ShowServerUptimeEnabled));
+
+                UpdateJoinNotificationState();
+            }
+        }
+
+        public bool ShowJoinNotification
+        {
+            get => App.Settings.Prop.ShowJoinNotification;
+            set
+            {
+                App.Settings.Prop.ShowJoinNotification = value;
+                OnPropertyChanged(nameof(ShowJoinNotification));
+            }
+        }
+
+        public bool CanShowJoinNotification => ActivityTrackingEnabled && (ShowServerDetailsEnabled || ShowServerUptimeEnabled);
+
+        private void UpdateJoinNotificationState()
+        {
+            OnPropertyChanged(nameof(CanShowJoinNotification));
+
+            if (!ShowServerDetailsEnabled && !ShowServerUptimeEnabled)
+            {
+                ShowJoinNotification = false;
+            }
         }
 
         public bool PlaytimeCounterEnabled

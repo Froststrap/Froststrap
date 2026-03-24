@@ -9,6 +9,7 @@ namespace Froststrap.Models.Persistable
         public bool EnableActivityTracking { get; set; } = true;
         public bool ShowServerDetails { get; set; } = true;
         public bool ShowServerUptime { get; set; } = false;
+        public bool ShowJoinNotification { get; set; } = false;
         public bool AutoRejoin { get; set; } = false;
         public bool ShowGameHistoryMenu { get; set; } = true;
         public bool PlaytimeCounter { get; set; } = true;
@@ -64,12 +65,9 @@ namespace Froststrap.Models.Persistable
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public string DownloadingStringFormat { get; set; } = Strings.Bootstrapper_Status_Downloading + " {0} - {1}MB / {2}MB";
         public Theme Theme { get; set; } = Theme.Default;
-        public string? CustomFontPath { get; set; } = null;
 
         // Settings Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
-        public bool SaveAndLaunchToPlayer { get; set; } = true;
-        public bool WPFSoftwareRender { get; set; } = false;
         public bool UpdateRoblox { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; } = false;
@@ -77,7 +75,6 @@ namespace Froststrap.Models.Persistable
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
 
         // Misc Stuff
-        public bool IsNavigationSidebarExpanded { get; set; } = true;
         public string SelectedRegion { get; set; } = string.Empty;
         public bool ForceLocalData { get; set; } = false;
         public bool DebugDisableVersionPackageCleanup { get; set; } = false;
