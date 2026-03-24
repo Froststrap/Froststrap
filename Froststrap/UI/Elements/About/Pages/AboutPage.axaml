@@ -110,7 +110,7 @@
             <Grid Margin="0,8,0,0" ColumnDefinitions="*,*,*">
                 <Expander Grid.Column="0" Margin="0,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Code}" IsExpanded="True">
                     <StackPanel>
-                        <controls:MarkdownTextBlock MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
+                        <controls:MarkdownTextBlock Margin="0,-12,0,0" MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
                         <controls:MarkdownTextBlock MarkdownText="[SquireDot](https://github.com/UltimatePlayer97)" />
                         <controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net) ([GitLab](https://gitlab.com/invra), [GitHub](https://github.com/invra))" />
                     </StackPanel>
@@ -118,14 +118,27 @@
 
                 <Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Contributors}" IsExpanded="True">
                     <StackPanel>
-                        <controls:MarkdownTextBlock MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
+                        <controls:MarkdownTextBlock Margin="0,-12,0,0" MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
                         <controls:MarkdownTextBlock MarkdownText="[Scroom](https://discord.com/users/1254472513199673347)" />
+                        <controls:MarkdownTextBlock MarkdownText="[MattDinio](https://discord.com/users/1353528667245903892)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Stoof](https://discord.com/users/1020107535589593138)" />
+                        <controls:MarkdownTextBlock MarkdownText="[5070](https://discord.com/users/1272494435690610800)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Onion](https://discord.com/users/1104189426374033519)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Reslav](https://discord.com/users/1136966783027380256)" />
+                        <controls:MarkdownTextBlock MarkdownText="[polover](https://discord.com/users/999142457667227679)" />
+                        <controls:MarkdownTextBlock MarkdownText="[iniforce](https://discord.com/users/1029770533476257792)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Cak](https://discord.com/users/1136265435818508408)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Flemish](https://discord.com/users/1286961047990702124)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Noby](https://discord.com/users/1304922060882972732)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Obsurd](https://discord.com/users/818680236963135498)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Valra](https://github.com/NotValra)" />
+                        <controls:MarkdownTextBlock MarkdownText="[SunGod (Polaris)](https://www.roblox.com/users/1484207733/profile)" />
                     </StackPanel>
                 </Expander>
 
                 <Expander Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Insipirations}" IsExpanded="True">
                     <StackPanel>
-                        <controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
+                        <controls:MarkdownTextBlock Margin="0,-12,0,0" MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[Bloxstrap](https://github.com/bloxstraplabs/bloxstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[MaximumADHD](https://github.com/MaximumADHD)" />
                     </StackPanel>
