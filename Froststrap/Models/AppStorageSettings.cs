@@ -93,7 +93,7 @@
         public string DeviceLevelThemeSnapshotTimestamp { get; set; } = "";
 
         [JsonPropertyName("DeviceLevelTheme")]
-        public string DeviceLevelTheme { get; set; } = "{\"0\":\"light\"}";
+        public string DeviceLevelTheme { get; set; } = "{\"0\":\"dark\"}";
 
         [JsonPropertyName("GameLocaleId")]
         public string GameLocaleId { get; set; } = "en_us";
