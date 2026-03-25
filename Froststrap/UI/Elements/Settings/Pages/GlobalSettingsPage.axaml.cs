@@ -58,49 +58,35 @@ namespace Froststrap.UI.Elements.Settings.Pages
         protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
         {
             base.OnAttachedToVisualTree(e);
-            SetupViewModelIfNeeded();
+
+            InitializeFreshViewModel();
         }
 
-        private void SetupViewModelIfNeeded()
+        private void InitializeFreshViewModel()
         {
-            if (_viewModelSetUp) return;
-
             try
             {
+                App.GlobalSettings.Load();
+
                 var topLevel = TopLevel.GetTopLevel(this);
 
                 if (topLevel?.DataContext is MainWindowViewModel mainVm)
                 {
-                    CreateViewModelWithDialogService(mainVm);
-                    _viewModelSetUp = true;
+                    var dialogService = new GlobalSettingsDialogService(mainVm);
+                    DataContext = new GlobalSettingsViewModel(dialogService);
                 }
                 else
                 {
-                    CreateFallbackViewModel();
-                    _viewModelSetUp = true;
+                    DataContext = new GlobalSettingsViewModel();
                 }
+
+                App.Logger.WriteLine("GlobalSettingsPage", "ViewModel reinitialized and data reloaded.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException("FastFlagsPage", ex);
-                CreateFallbackViewModel();
-                _viewModelSetUp = true;
+                App.Logger.WriteException("GlobalSettingsPage", ex);
+                DataContext = new GlobalSettingsViewModel();
             }
-        }
-
-        private void CreateViewModelWithDialogService(MainWindowViewModel mainVm)
-        {
-            var dialogService = new GlobalSettingsDialogService(mainVm);
-
-            var newVm = new GlobalSettingsViewModel(dialogService);
-
-            DataContext = newVm;
-        }
-
-        private void CreateFallbackViewModel()
-        {
-            var fallbackVm = new GlobalSettingsViewModel();
-            DataContext = fallbackVm;
         }
     }
 }
