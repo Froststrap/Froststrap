@@ -42,7 +42,6 @@
 
 			<DataGrid
                 ItemsSource="{Binding Channels}"
-                IsVisible="{Binding IsLoading}"
                 AutoGenerateColumns="False"
                 IsReadOnly="True"
                 CanUserResizeColumns="True"
