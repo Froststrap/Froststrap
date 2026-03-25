@@ -202,9 +202,7 @@ public partial class App : Application
                 {
                     window.TransparencyLevelHint = Settings.Prop.SelectedBackdrop switch
                     {
-                        WindowsBackdrops.Mica => new[] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.None },
                         WindowsBackdrops.Acrylic => new[] { WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None },
-                        WindowsBackdrops.Aero => new[] { WindowTransparencyLevel.Blur, WindowTransparencyLevel.None },
                         _ => new[] { WindowTransparencyLevel.None }
                     };
 
