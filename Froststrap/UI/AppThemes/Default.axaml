@@ -140,7 +140,7 @@
 
     <Style Selector="controls|IconButton.nav-button">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorTertiaryBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="MinWidth" Value="54" />
@@ -156,7 +156,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}"
-                        Margin="2"> 
+                        Margin="4,2"> 
                     <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
                         <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
                                             Foreground="{TemplateBinding Foreground}"
@@ -203,9 +203,9 @@
     </Style>
 
     <Style Selector="controls|IconButton.nav-button.Selected /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}" />
+        <Setter Property="BorderThickness" Value="3,0,0,0" />
     </Style>
 
 	<Style Selector="ListBox">

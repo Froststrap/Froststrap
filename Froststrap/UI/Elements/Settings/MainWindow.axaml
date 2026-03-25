@@ -54,7 +54,7 @@
 							Classes="nav-button"
 							Command="{Binding NavigateToIntegrationsCommand}"
 							Tag="integrations"
-							Icon="Plus"
+							Icon="Connection"
 							IconSize="24"
 							ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}" />
 
@@ -115,7 +115,7 @@
 							IconSize="24"
 							ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}" />
 
-						<Separator Margin="0,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+						<Separator Margin="8,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
 						<controls:IconButton
 							Classes="nav-button"
@@ -128,7 +128,7 @@
 							Classes="nav-button"
 							Command="{Binding NavigateToChannelsCommand}"
 							Tag="channels"
-							Icon="CogOutline"
+							Icon="TuneVertical"
 							IconSize="24"
 							ToolTip.Tip="{x:Static resources:Strings.Common_Settings}" />
 
@@ -137,7 +137,7 @@
 							Command="{Binding OpenAboutCommand}"
 							Icon="InformationOutline"
 							IconSize="24"
-							ToolTip.Tip="About Me" />
+							ToolTip.Tip="{x:Static resources:Strings.Menu_About_Title}" />
 					</StackPanel>
 				</ScrollViewer>
 			</Border>
