@@ -1787,35 +1787,14 @@ namespace Froststrap
             foreach (var mod in activeMods)
             {
                 string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
-                if (!Directory.Exists(modSource)) continue;
+                if (Directory.Exists(modSource))
+                    ProcessModDirectory(modSource, finalFilesToCopy, filesToDelete);
+            }
 
-                foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
-                {
-                    string relativeFile = file.Substring(modSource.Length).TrimStart(Path.DirectorySeparatorChar);
-
-                    if (relativeFile == "README.txt")
-                    {
-                        File.Delete(file);
-                        continue;
-                    }
-
-                    if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock") || relativeFile.EndsWith(".mesh"))
-                        continue;
-
-                    string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
-
-                    if (fileNameWithoutExt.EndsWith("_Delete"))
-                    {
-                        string originalRelName = Path.Combine(Path.GetDirectoryName(relativeFile) ?? "", fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(relativeFile));
-                        filesToDelete.Add(originalRelName);
-                        finalFilesToCopy.Remove(originalRelName);
-                    }
-                    else
-                    {
-                        finalFilesToCopy[relativeFile] = file;
-                        filesToDelete.Remove(relativeFile);
-                    }
-                }
+            if (Directory.Exists(Paths.PresetModifications))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Applying PresetModifications (Flat folder)...");
+                ProcessModDirectory(Paths.PresetModifications, finalFilesToCopy, filesToDelete);
             }
 
             foreach (var relPath in filesToDelete)
@@ -1891,7 +1870,7 @@ namespace Froststrap
                             File.Copy(sourceFile, fileVersionFolder, true);
                             File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
                             Filesystem.AssertReadOnly(fileVersionFolder);
-                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied from mod source");
+                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied");
                         }
 
                         return true;
@@ -1913,7 +1892,7 @@ namespace Froststrap
 
             if (App.Settings.Prop.UseFastFlagManager)
             {
-                string source = Path.Combine(Paths.Base, "ClientSettings", "ClientAppSettings.json");
+                string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
                 if (File.Exists(source))
                 {
                     string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
@@ -1991,6 +1970,37 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, $"Finished checking file mods");
 
             return success;
+        }
+
+        private void ProcessModDirectory(string sourcePath, Dictionary<string, string> copyMap, HashSet<string> deleteSet)
+        {
+            foreach (string file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
+            {
+                string relativeFile = file.Substring(sourcePath.Length).TrimStart(Path.DirectorySeparatorChar);
+
+                if (relativeFile == "README.txt")
+                {
+                    File.Delete(file);
+                    continue;
+                }
+
+                if (relativeFile.EndsWith("ClientSettings") || relativeFile.EndsWith(".lock"))
+                    continue;
+
+                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+
+                if (fileNameWithoutExt.EndsWith("_Delete"))
+                {
+                    string originalRelName = Path.Combine(Path.GetDirectoryName(relativeFile) ?? "", fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(relativeFile));
+                    deleteSet.Add(originalRelName);
+                    copyMap.Remove(originalRelName);
+                }
+                else
+                {
+                    copyMap[relativeFile] = file;
+                    deleteSet.Remove(relativeFile);
+                }
+            }
         }
 
         private async Task DownloadPackage(Package package)

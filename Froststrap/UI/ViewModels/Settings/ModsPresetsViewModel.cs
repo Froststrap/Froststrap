@@ -13,7 +13,7 @@ using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 
-namespace Froststrap.UI.ViewModels.Settings.Mods
+namespace Froststrap.UI.ViewModels.Settings
 {
     internal static class NativeMethods
     {
@@ -126,6 +126,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public bool IsCustomFontSet => !string.IsNullOrEmpty(TextFontTask?.NewState);
 
         public ICommand OpenCompatSettingsCommand => new RelayCommand(OpenCompatSettings);
+        public ICommand OpenModsFolderCommand => new RelayCommand(OpenModsFolder);
         public ModPresetTask OldAvatarBackgroundTask { get; } = new("OldAvatarBackground", @"ExtraContent\places\Mobile.rbxl", "OldAvatarBackground.rbxl");
 
         public ModPresetTask OldCharacterSoundsTask { get; } = new("OldCharacterSounds", new()
@@ -190,6 +191,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 _ = Frontend.ShowMessageBox(Strings.Common_RobloxNotInstalled, MessageBoxImage.Error);
             }
         }
+
+        private void OpenModsFolder() => Process.Start("explorer.exe", Paths.PresetModifications);
 
         private static string CursorPath => Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse");
         private static string ShiftlockPath => Path.Combine(Paths.PresetModifications, "Content", "textures");

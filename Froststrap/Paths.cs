@@ -27,6 +27,7 @@ namespace Froststrap
         public static string Integrations { get; private set; } = "";
         public static string Versions { get; private set; } = "";
         public static string Modifications { get; private set; } = "";
+        public static string PresetModifications { get; private set; } = "";
         public static string Roblox { get; private set; } = "";
         public static string CustomThemes { get; private set; } = "";
         public static string RobloxLogs { get; private set; } = "";
@@ -35,7 +36,6 @@ namespace Froststrap
         public static string Application { get; private set; } = "";
 
         public static string CustomFont => Path.Combine(PresetModifications, "content", "fonts", "CustomFont.ttf");
-        public static string PresetModifications => Path.Combine(Modifications, "Preset Modifications");
 
         public static string Base => DataRoot;
         public static bool Initialized => !String.IsNullOrEmpty(DataRoot);
@@ -67,6 +67,7 @@ namespace Froststrap
             Integrations = Path.Combine(DataRoot, "Integrations");
             Versions = Path.Combine(DataRoot, "Versions");
             Modifications = Path.Combine(DataRoot, "Modifications");
+            PresetModifications = Path.Combine(DataRoot, "PresetModifications");
             Cache = Path.Combine(DataRoot, "Cache");
 
             RobloxLogs = Path.Combine(Roblox, "logs");

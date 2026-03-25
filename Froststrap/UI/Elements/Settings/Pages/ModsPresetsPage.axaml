@@ -5,15 +5,15 @@
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:models="using:Froststrap.Models"
-             xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
+             xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
-             x:Class="Froststrap.UI.Elements.Settings.Pages.Mods.ModsPresetsPage"
+             x:Class="Froststrap.UI.Elements.Settings.Pages.ModsPresetsPage"
              x:DataType="vm:ModsPresetsViewModel">
 
     <ScrollViewer>
         <StackPanel Margin="14">
-            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto, Auto">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
                                      Icon="StorefrontOutline" Description="Explore user-created mods."
                                      Command="{Binding OpenCommunityModsCommand}" />
@@ -25,8 +25,13 @@
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
                                      Icon="PaletteOutline" Description="Generate mods easily with a single click."
                                      Command="{Binding OpenModGeneratorCommand}"/>
-                
                 <controls:CardAction Grid.Row="1" Grid.ColumnSpan="3"
+                                     Header="Open Preset Mods Folder"
+                                     Icon="FolderOpenOutline" 
+                                     Description="Opens your Preset Modification folder, Used like Bloxstrap."
+                                     Command="{Binding OpenModsFolderCommand}"/>
+                
+                <controls:CardAction Grid.Row="2" Grid.ColumnSpan="3"
                                      Header="{x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Title}"
                                      Icon="ShieldCheckOutline" 
                                      Description="{Binding Source={x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"
