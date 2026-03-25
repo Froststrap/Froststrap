@@ -6,8 +6,39 @@ using System.Xml.Linq;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
+    public interface IDialogServiceGlobal
+    {
+        Task OpenGlobalSettingsEditorAsync();
+    }
+
+    internal class DefaultGlobalDialogService : IDialogServiceGlobal
+    {
+        public Task OpenGlobalSettingsEditorAsync()
+        {
+            return Task.CompletedTask;
+        }
+    }
+
     public class GlobalSettingsViewModel : NotifyPropertyChangedViewModel
     {
+        private readonly IDialogServiceGlobal _dialogService;
+
+        public GlobalSettingsViewModel()
+            : this(new DefaultGlobalDialogService())
+        {
+        }
+
+        public GlobalSettingsViewModel(IDialogServiceGlobal dialogService)
+        {
+            _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+        }
+
+        public ICommand OpenGlobalSettingsEditorCommand => new AsyncRelayCommand(async () =>
+        {
+            App.Logger.WriteLine("GlobalSettingsViewModel", "Opening Global Settings Editor...");
+            await _dialogService.OpenGlobalSettingsEditorAsync();
+        });
+
         public ICommand OpenRobloxFolderCommand => new RelayCommand(() => Process.Start("explorer.exe", Paths.Roblox));
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
         public ICommand ImportCommand => new RelayCommand(ImportSettings);

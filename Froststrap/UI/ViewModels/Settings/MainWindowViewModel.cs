@@ -1,13 +1,14 @@
-﻿using System;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Froststrap.UI.ViewModels.Settings.FastFlags;
+using Froststrap.UI.ViewModels.Settings.GlobalSettings;
+using Froststrap.UI.ViewModels.Settings.Mods;
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using Froststrap.UI.ViewModels.Settings.Mods;
-using Froststrap.UI.ViewModels.Settings.FastFlags;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -105,6 +106,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public IRelayCommand NavigateToAppearanceCommand { get; }
         public IRelayCommand NavigateToRegionSelectorCommand { get; }
         public IRelayCommand NavigateToGlobalSettingsCommand { get; }
+        public IRelayCommand NavigateToGlobalSettingsEditorCommand { get; }
         public IRelayCommand NavigateToShortcutsCommand { get; }
         public IRelayCommand NavigateToChannelsCommand { get; }
         public IRelayCommand NavigateToCommunityModsCommand { get; }
@@ -145,6 +147,12 @@ namespace Froststrap.UI.ViewModels.Settings
             NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", "Global Settings", Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
             NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", "Shortcuts", Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
             NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", "Channels Page", Strings.Menu_Channel_Description, new ChannelViewModel()));
+
+            NavigateToGlobalSettingsEditorCommand = new RelayCommand(() => Navigate("globalsettingseditor", "Editor", null!, new GlobalSettingsEditorViewModel(this), new ObservableCollection<BreadcrumbItemModel>
+            {
+                new BreadcrumbItemModel { Content = "Global Settings", Tag = "globalsettings" },
+                new BreadcrumbItemModel { Content = "Editor", Tag = null, IsLast = true }
+            }));
 
             NavigateToFastFlagEditorCommand = new RelayCommand(() => Navigate("fastflageditor", "Editor", Strings.Menu_FastFlagEditor_Description, new FastFlagEditorViewModel(this), new ObservableCollection<BreadcrumbItemModel>
             {
@@ -228,6 +236,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     NavigateToModGeneratorCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlags.FastFlagEditorViewModel":
                     NavigateToFastFlagEditorCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.GlobalSettings.GlobalSettingsEditorViewModel":
+                    NavigateToGlobalSettingsEditorCommand.Execute(null); break;
 
                 default:
                     NavigateToIntegrationsCommand.Execute(null); break;
@@ -316,6 +326,9 @@ namespace Froststrap.UI.ViewModels.Settings
                     break;
                 case "fastflags":
                     NavigateToFastFlagsCommand.Execute(null);
+                    break;
+                case "globalsettings":
+                    NavigateToGlobalSettingsCommand.Execute(null);
                     break;
             }
         }
