@@ -133,6 +133,48 @@
                 </StackPanel>
             </controls:CardExpander>
 
+            <controls:CardExpander
+                Header="App Storage Settings"
+                Description="Configure internal Roblox application settings stored."
+                IsExpanded="True">
+    
+                <StackPanel Margin="0,8,0,0">
+        
+                    <controls:OptionControl
+                        Header="Roblox App Theme"
+                        Description="Changes the visual theme for Roblox.">
+                        <ComboBox
+                            Width="200"
+                            ItemsSource="{Binding AppThemeOptions}"
+                            SelectedItem="{Binding SelectedTheme, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="Launch at Startup"
+                        Description="Automatically launch the Roblox app when you start your PC.">
+                        <ToggleSwitch IsChecked="{Binding LaunchAtStartup, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="Minimize to Tray"
+                        Description="Sends the app to the system tray instead of closing it fully.">
+                        <ToggleSwitch IsChecked="{Binding MinimizeToTray, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="System Tray Modal"
+                        Description="Controls whether the tray informational modal is suppressed.">
+                        <ToggleSwitch IsChecked="{Binding SystemTrayModalShown, Mode=TwoWay}" />
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
+
             <controls:CardExpander 
                 IsExpanded="True" 
                 Header="{x:Static resources:Strings.Menu_Bootstrapper_CleanUp_Title}" 
