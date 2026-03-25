@@ -620,6 +620,12 @@ namespace Froststrap
                     if (File.Exists(Path.Combine(Paths.Cache, "datacenters_cache.json"))) File.Delete(Path.Combine(Path.Combine(Paths.Cache, "datacenters_cache.json")));
                 }
 
+                if (Utilities.CompareVersions(existingVer, "1.5.1.0") == VersionComparison.LessThan)
+                {
+                    App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.FluentAeroDialog;
+                    App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
+                }
+
                 App.Settings.Save();
                 App.FastFlags.Save();
                 App.State.Save();
