@@ -1,0 +1,68 @@
+<UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettings.GlobalSettingsEditor"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ic="using:IconPacks.Avalonia.Material"
+             xmlns:model="clr-namespace:Froststrap.Models"
+             xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
+             x:DataType="local:GlobalSettingsEditor">
+
+    <Grid RowDefinitions="Auto,*" Margin="14">
+        <Grid Grid.Row="0" Height="40" Margin="0,0,0,10">
+            <TextBox Name="SearchTextBox" 
+                     VerticalContentAlignment="Center" 
+                     Watermark="Search settings..." 
+                     TextChanged="SearchTextBox_TextChanged">
+                <TextBox.InnerLeftContent>
+                    <ic:PackIconMaterial Kind="Magnify" Margin="10,0,0,0" VerticalAlignment="Center" />
+                </TextBox.InnerLeftContent>
+            </TextBox>
+        </Grid>
+
+        <DataGrid Grid.Row="1" Name="DataGrid"
+                  AutoGenerateColumns="False"
+                  CanUserResizeColumns="True"
+                  CellEditEnding="DataGrid_CellEditEnding"
+                  GridLinesVisibility="Horizontal"
+                  x:DataType="model:GlobalSetting">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:DataType="model:GlobalSetting" Header="Name" Binding="{Binding Name}" IsReadOnly="True" Width="*" />
+
+                <DataGridTemplateColumn Header="Value" Width="150">
+                    <DataTemplate>
+                        <TextBlock x:DataType="model:GlobalSetting" Text="{Binding Value}" VerticalAlignment="Center" Margin="10,0"
+                                   Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfTrue}}" />
+                    </DataTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox x:DataType="model:GlobalSetting" Text="{Binding Value}" IsEnabled="{Binding !IsVector}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Vector X" Width="100">
+                    <DataTemplate>
+                        <TextBlock x:DataType="model:GlobalSetting" Text="{Binding VectorX}" VerticalAlignment="Center" Margin="10,0"
+                                   Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfFalse}}" />
+                    </DataTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox x:DataType="model:GlobalSetting" Text="{Binding VectorX}" IsEnabled="{Binding IsVector}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Vector Y" Width="100">
+                    <DataTemplate>
+                        <TextBlock x:DataType="model:GlobalSetting" Text="{Binding VectorY}" VerticalAlignment="Center" Margin="10,0"
+                                   Opacity="{Binding IsVector, Converter={x:Static local:GlobalSettingsEditor.DimIfFalse}}" />
+                    </DataTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <TextBox x:DataType="model:GlobalSetting" Text="{Binding VectorY}" IsEnabled="{Binding IsVector}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
