@@ -25,7 +25,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
         public void OpenMyMods()
         {
-            _mainVm.NavigateToModsCommand.Execute(null);
+            _mainVm.NavigateToMyModsCommand.Execute(null);
         }
     }
 
