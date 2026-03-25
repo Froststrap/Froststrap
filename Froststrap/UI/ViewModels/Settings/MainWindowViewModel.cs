@@ -27,39 +27,36 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _currentPage, value);
         }
 
-        private bool _testModeEnabled;
+
+        // TODO: Fix test mode
         public bool TestModeEnabled
         {
-            get => _testModeEnabled;
+            get => App.LaunchSettings.TestModeFlag.Active;
             set
             {
                 if (value && !App.State.Prop.TestModeWarningShown)
                 {
-                    _ = ShowTestModeWarningAsync();
-                    return;
+                    _ = HandleTestModeConfirmation();
                 }
-
-                SetProperty(ref _testModeEnabled, value);
-                App.LaunchSettings.TestModeFlag.Active = value;
+                else
+                {
+                    App.LaunchSettings.TestModeFlag.Active = value;
+                    OnPropertyChanged(nameof(TestModeEnabled));
+                }
             }
         }
 
-        private async Task ShowTestModeWarningAsync()
+        private async Task HandleTestModeConfirmation()
         {
-            var result = await Frontend.ShowMessageBox(
-                Strings.Menu_TestMode_Prompt,
-                MessageBoxImage.Warning,
-                MessageBoxButton.YesNo);
+            var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
 
             if (result == MessageBoxResult.Yes)
             {
                 App.State.Prop.TestModeWarningShown = true;
-                TestModeEnabled = true;
+                App.LaunchSettings.TestModeFlag.Active = true;
             }
-            else
-            {
-                OnPropertyChanged(nameof(TestModeEnabled));
-            }
+
+            OnPropertyChanged(nameof(TestModeEnabled));
         }
 
         private string _selectedPage = "integrations";
@@ -129,7 +126,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public MainWindowViewModel()
         {
-            _testModeEnabled = App.LaunchSettings.TestModeFlag.Active;
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
 
             OpenAboutCommand = new RelayCommand(OpenAbout);
