@@ -1,13 +1,15 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Avalonia.Data.Converters;
+using Avalonia.Interactivity;
 using System.Collections.ObjectModel;
+using System.Xml.XPath;
 
 namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
 {
     public partial class GlobalSettingsEditor : UserControl
     {
+        // This all could of been done better but meh
+
         public static readonly IValueConverter DimIfTrue = new FuncValueConverter<bool, double>(x => x ? 0.3 : 1.0);
         public static readonly IValueConverter DimIfFalse = new FuncValueConverter<bool, double>(x => x ? 1.0 : 0.3);
 
@@ -38,26 +40,35 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
                 App.GlobalSettings.Load();
             }
 
-            var filtered = App.GlobalSettings.PresetPaths
-                .OrderBy(x => x.Key)
-                .Where(p => string.IsNullOrEmpty(_searchFilter) || p.Key.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase));
+            string rootPath = App.GlobalSettings.RootPaths["UserSettings"];
+            var propertiesContainer = App.GlobalSettings.Document?.XPathSelectElement(rootPath);
 
-            foreach (var preset in filtered)
+            if (propertiesContainer == null) return;
+
+            var allSettings = propertiesContainer.Elements().OrderBy(x => x.Attribute("name")?.Value);
+
+            foreach (var element in allSettings)
             {
-                var entry = new GlobalSetting { Name = preset.Key };
+                string? rawName = element.Attribute("name")?.Value;
+                if (string.IsNullOrEmpty(rawName)) continue;
 
-                if (preset.Value.Contains("Vector2"))
+                if (!string.IsNullOrEmpty(_searchFilter) &&
+                    !rawName.Contains(_searchFilter, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var entry = new GlobalSetting { Name = rawName };
+
+                if (element.Name.LocalName == "Vector2")
                 {
                     entry.IsVector = true;
-                    entry.VectorX = App.GlobalSettings.GetVectorValue(preset.Key, "X");
-                    entry.VectorY = App.GlobalSettings.GetVectorValue(preset.Key, "Y");
+                    entry.VectorX = element.Element("X")?.Value ?? "0";
+                    entry.VectorY = element.Element("Y")?.Value ?? "0";
                     entry.Value = string.Empty;
                 }
                 else
                 {
                     entry.IsVector = false;
-                    string? val = App.GlobalSettings.GetValue(preset.Value);
-                    entry.Value = val ?? string.Empty;
+                    entry.Value = element.Value ?? string.Empty;
                     entry.VectorX = string.Empty;
                     entry.VectorY = string.Empty;
                 }
@@ -88,23 +99,25 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
             string newText = textbox.Text?.Trim() ?? string.Empty;
             string header = e.Column.Header?.ToString() ?? string.Empty;
 
+            string dynamicPath = $"{App.GlobalSettings.RootPaths["UserSettings"]}/*[@name='{entry.Name}']";
+
             if (entry.IsVector)
             {
                 if (header == "Vector X")
                 {
                     entry.VectorX = newText;
-                    App.GlobalSettings.SetVectorValue(entry.Name, "X", newText);
+                    App.GlobalSettings.Document?.XPathSelectElement($"{dynamicPath}/X")?.SetValue(newText);
                 }
                 else if (header == "Vector Y")
                 {
                     entry.VectorY = newText;
-                    App.GlobalSettings.SetVectorValue(entry.Name, "Y", newText);
+                    App.GlobalSettings.Document?.XPathSelectElement($"{dynamicPath}/Y")?.SetValue(newText);
                 }
             }
             else if (header == "Value")
             {
                 entry.Value = newText;
-                App.GlobalSettings.SetValue(App.GlobalSettings.PresetPaths[entry.Name], newText);
+                App.GlobalSettings.Document?.XPathSelectElement(dynamicPath)?.SetValue(newText);
             }
         }
     }
