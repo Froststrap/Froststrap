@@ -1,5 +1,4 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Dialogs;
 
@@ -83,14 +82,14 @@ namespace Froststrap
             else if (App.LaunchSettings.BloxshadeFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening Bloxshade");
-				LaunchBloxshadeConfig();
-			}
-			else if (App.LaunchSettings.PostLaunchFlag.Active)
-			{
-				App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
-				LaunchPostLaunch();
-			}
-			else if (!App.LaunchSettings.QuietFlag.Active)
+                LaunchBloxshadeConfig();
+            }
+            else if (App.LaunchSettings.PostLaunchFlag.Active)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Opening post-launch");
+                LaunchPostLaunch();
+            }
+            else if (!App.LaunchSettings.QuietFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening menu");
                 LaunchMenu();
@@ -224,6 +223,11 @@ namespace Froststrap
 
                 App.FrostRPC?.SetPage("Settings");
 
+                window.Closed += (s, e) =>
+                {
+                    App.FrostRPC?.Dispose();
+                };
+
                 window.Show();
             }
             else
@@ -249,6 +253,7 @@ namespace Froststrap
 
             dialog.Closed += (sender, e) =>
             {
+                App.FrostRPC?.Dispose();
                 ProcessNextAction(dialog.CloseAction);
             };
 
@@ -263,8 +268,12 @@ namespace Froststrap
             }
 
             var dialog = new UI.Elements.AccountManagers.MainWindow();
+            App.FrostRPC?.SetDialog("Account Manager");
 
-            App.FrostRPC?.SetPage("Launch Menu");
+            dialog.Closed += (s, e) =>
+            {
+                App.FrostRPC?.Dispose();
+            };
 
             dialog.Show();
         }
@@ -399,62 +408,62 @@ namespace Froststrap
             App.SoftTerminate();
         }
 
-		public static void LaunchPostLaunch()
-		{
-			const string LOG_IDENT = "LaunchHandler::LaunchPostLaunch";
+        public static void LaunchPostLaunch()
+        {
+            const string LOG_IDENT = "LaunchHandler::LaunchPostLaunch";
 
-			if (!int.TryParse(App.LaunchSettings.PostLaunchFlag.Data, out int robloxPid))
-			{
-				App.Logger.WriteLine(LOG_IDENT, "Failed to parse Roblox PID");
-				App.Terminate();
-				return;
-			}
+            if (!int.TryParse(App.LaunchSettings.PostLaunchFlag.Data, out int robloxPid))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to parse Roblox PID");
+                App.Terminate();
+                return;
+            }
 
-			Task.Run(async () =>
-			{
-				await Task.Delay(20000);
+            Task.Run(async () =>
+            {
+                await Task.Delay(20000);
 
-				try
-				{
-					var proc = Process.GetProcessById(robloxPid);
-					if (!proc.HasExited)
-					{
-						if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
-						{
-							ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
-							{
-								ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
-								ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
-								ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
-								ProcessPriorityOption.High => ProcessPriorityClass.High,
-								ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
-								_ => ProcessPriorityClass.Normal
-							};
-							proc.PriorityClass = priorityClass;
-							App.Logger.WriteLine(LOG_IDENT, $"Set priority to {priorityClass}");
-						}
+                try
+                {
+                    var proc = Process.GetProcessById(robloxPid);
+                    if (!proc.HasExited)
+                    {
+                        if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
+                        {
+                            ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
+                            {
+                                ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
+                                ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
+                                ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
+                                ProcessPriorityOption.High => ProcessPriorityClass.High,
+                                ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
+                                _ => ProcessPriorityClass.Normal
+                            };
+                            proc.PriorityClass = priorityClass;
+                            App.Logger.WriteLine(LOG_IDENT, $"Set priority to {priorityClass}");
+                        }
 
-						if (App.Settings.Prop.AutoCloseCrashHandler)
-						{
-							foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
-							{
-								try { crashProc.Kill(); } catch { }
-							}
-						}
-					}
-				}
-				catch (Exception ex)
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"Worker error: {ex.Message}");
-				}
+                        if (App.Settings.Prop.AutoCloseCrashHandler)
+                        {
+                            foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
+                            {
+                                try { crashProc.Kill(); } catch { }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Worker error: {ex.Message}");
+                }
 
-				// do this so that if the watcher is open, it dosent close
-				if (!App.LaunchSettings.WatcherFlag.Active)
-					App.Terminate();
-			});
-		}
+                // do this so that if the watcher is open, it dosent close
+                if (!App.LaunchSettings.WatcherFlag.Active)
+                    App.Terminate();
+            });
+        }
 
-		public static void LaunchBackgroundUpdater()
+        public static void LaunchBackgroundUpdater()
         {
             const string LOG_IDENT = "LaunchHandler::LaunchBackgroundUpdater";
 
