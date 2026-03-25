@@ -50,7 +50,7 @@
 				BorderThickness="0,0,1,0">
 				<ScrollViewer VerticalScrollBarVisibility="Hidden">
 					<StackPanel VerticalAlignment="Top" Spacing="0">
-<controls:IconButton
+					<controls:IconButton
 							Classes="nav-button"
 							Command="{Binding NavigateToIntegrationsCommand}"
 							Tag="integrations"

@@ -1,11 +1,29 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
+    internal class GlobalSettingsDialogService : IDialogServiceGlobal
+    {
+        private readonly MainWindowViewModel _mainVm;
+
+        public GlobalSettingsDialogService(MainWindowViewModel mainVm)
+        {
+            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
+        }
+
+        public async Task OpenGlobalSettingsEditorAsync()
+        {
+            _mainVm.NavigateToGlobalSettingsEditorCommand.Execute(null);
+            await Task.CompletedTask;
+        }
+    }
     public partial class GlobalSettingsPage : UserControl
     {
+        private bool _viewModelSetUp = false;
+
         public GlobalSettingsPage()
         {
             InitializeComponent();
@@ -35,6 +53,54 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
                 e.Handled = !Regex.IsMatch(newText, @"^-?\d*\.?\d*$");
             }
+        }
+
+        protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+        {
+            base.OnAttachedToVisualTree(e);
+            SetupViewModelIfNeeded();
+        }
+
+        private void SetupViewModelIfNeeded()
+        {
+            if (_viewModelSetUp) return;
+
+            try
+            {
+                var topLevel = TopLevel.GetTopLevel(this);
+
+                if (topLevel?.DataContext is MainWindowViewModel mainVm)
+                {
+                    CreateViewModelWithDialogService(mainVm);
+                    _viewModelSetUp = true;
+                }
+                else
+                {
+                    CreateFallbackViewModel();
+                    _viewModelSetUp = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("FastFlagsPage", ex);
+                CreateFallbackViewModel();
+                _viewModelSetUp = true;
+            }
+        }
+
+        private void CreateViewModelWithDialogService(MainWindowViewModel mainVm)
+        {
+            var dialogService = new GlobalSettingsDialogService(mainVm);
+
+            var newVm = new GlobalSettingsViewModel(dialogService);
+
+            DataContext = newVm;
+        }
+
+        private void CreateFallbackViewModel()
+        {
+            var fallbackVm = new GlobalSettingsViewModel();
+            DataContext = fallbackVm;
         }
     }
 }
