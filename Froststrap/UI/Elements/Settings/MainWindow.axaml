@@ -68,11 +68,11 @@
 
 						<controls:IconButton
 							Classes="nav-button"
-							Command="{Binding NavigateToModsCommand}"
+							Command="{Binding NavigateToPresetModsCommand}"
 							Tag="mods"
 							Icon="PuzzleOutline"
 							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Mods_Title}" />
+							ToolTip.Tip="Preset Mods" />
 
 						<controls:IconButton
 							Classes="nav-button"
