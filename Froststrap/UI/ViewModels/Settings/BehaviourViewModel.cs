@@ -51,6 +51,51 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(MultiInstances));
         }
 
+
+        // Ill move to global settings in the future, too lazy to do it now
+        public bool LaunchAtStartup
+        {
+            get => App.StorageSettings.Prop.LaunchAtStartup?.ToLower() == "true";
+            set => App.StorageSettings.Prop.LaunchAtStartup = value.ToString().ToLower();
+        }
+
+        public bool SystemTrayModalShown
+        {
+            get => App.StorageSettings.Prop.SystemTrayModalShown?.ToLower() == "true";
+            set => App.StorageSettings.Prop.SystemTrayModalShown = value.ToString().ToLower();
+        }
+
+        public bool MinimizeToTray
+        {
+            get => App.StorageSettings.Prop.MinimizeToTray?.ToLower() == "true";
+            set => App.StorageSettings.Prop.MinimizeToTray = value.ToString().ToLower();
+        }
+
+        public IEnumerable<AppStorageSettingTheme> AppThemeOptions => Enum.GetValues(typeof(AppStorageSettingTheme)).Cast<AppStorageSettingTheme>();
+
+        public AppStorageSettingTheme SelectedTheme
+        {
+            get
+            {
+                var json = App.StorageSettings.Prop.DeviceLevelTheme;
+                return (!string.IsNullOrEmpty(json) && json.Contains("dark")) ? AppStorageSettingTheme.Dark : AppStorageSettingTheme.Light;
+            }
+            set
+            {
+                string themeStr = value == AppStorageSettingTheme.Dark ? "dark" : "light";
+                string userId = App.StorageSettings.Prop.UserId ?? "0";
+
+                App.StorageSettings.Prop.DeviceLevelTheme = $"{{\"{userId}\":\"{themeStr}\"}}";
+            }
+        }
+
+        // too lazy to make new folder and place it there
+        public enum AppStorageSettingTheme
+        {
+            Light,
+            Dark
+        }
+
         public bool Error773Fix
         {
             get => App.Settings.Prop.Error773Fix;
