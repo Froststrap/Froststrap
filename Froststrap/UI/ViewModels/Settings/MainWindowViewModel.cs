@@ -283,6 +283,7 @@ namespace Froststrap.UI.ViewModels.Settings
             App.State.Save();
             App.FastFlags.Save();
             App.GlobalSettings.Save();
+            App.StorageSettings.Save();
 
             foreach (var pair in App.PendingSettingTasks)
             {

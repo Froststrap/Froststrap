@@ -79,6 +79,8 @@ public partial class App : Application
 
     public static readonly JsonManager<State> State = new();
 
+    public static readonly AppStorageManager StorageSettings = new();
+
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 
     public static readonly LazyJsonManager<DistributionState> StudioState = new(nameof(StudioState));
@@ -92,7 +94,6 @@ public partial class App : Application
     public static readonly CookiesManager Cookies = new();
 
     public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
-
 
     private static bool _showingExceptionDialog = false;
 
@@ -363,6 +364,7 @@ public partial class App : Application
                 Settings.Load();
                 State.Load();
                 FastFlags.Load();
+                StorageSettings.Load();
                 GlobalSettings.Load();
 
                 if (Settings.Prop.Theme > Theme.Custom)
