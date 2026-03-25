@@ -3,9 +3,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Froststrap.UI.ViewModels.Settings;
-using Froststrap.UI.ViewModels.Settings.Mods;
 
-namespace Froststrap.UI.Elements.Settings.Pages.Mods
+namespace Froststrap.UI.Elements.Settings.Pages
 {
     internal class PresetModsDialogService
     {

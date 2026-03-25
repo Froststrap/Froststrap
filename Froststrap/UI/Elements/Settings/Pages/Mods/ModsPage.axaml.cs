@@ -9,7 +9,7 @@ using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.Mods;
 
-namespace Froststrap.UI.Elements.Settings.Pages
+namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
     /// <summary>
     /// Implementation of IModsDialogService for Mods navigation

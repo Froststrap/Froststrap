@@ -6,7 +6,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
 
-namespace Froststrap.UI.ViewModels.Settings
+namespace Froststrap.UI.ViewModels.Settings.Mods
 {
     public interface IModsDialogService
     {
