@@ -51,8 +51,13 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(MultiInstances));
         }
 
-
         // Ill move to global settings in the future, too lazy to do it now
+        public bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme);
+        public bool ShowLaunchAtStartup => App.StorageSettings.Prop.LaunchAtStartup != null;
+        public bool ShowMinimizeToTray => App.StorageSettings.Prop.MinimizeToTray != null;
+        public bool ShowSystemTrayModal => App.StorageSettings.Prop.SystemTrayModalShown != null;
+        public bool ShowTheme => App.StorageSettings.Prop.DeviceLevelTheme != null;
+
         public bool LaunchAtStartup
         {
             get => App.StorageSettings.Prop.LaunchAtStartup?.ToLower() == "true";

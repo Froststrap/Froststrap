@@ -136,13 +136,15 @@
             <controls:CardExpander
                 Header="App Storage Settings"
                 Description="Configure internal Roblox application settings stored."
+                IsVisible="{Binding IsAppStorageVisible}"
                 IsExpanded="True">
     
                 <StackPanel Margin="0,8,0,0">
         
                     <controls:OptionControl
                         Header="Roblox App Theme"
-                        Description="Changes the visual theme for Roblox.">
+                        Description="Changes the visual theme for Roblox."
+                        IsVisible="{Binding ShowTheme}">
                         <ComboBox
                             Width="200"
                             ItemsSource="{Binding AppThemeOptions}"
@@ -157,19 +159,22 @@
 
                     <controls:OptionControl
                         Header="Launch at Startup"
-                        Description="Automatically launch the Roblox app when you start your PC.">
+                        Description="Automatically launch the Roblox app when you start your PC."
+                        IsVisible="{Binding ShowLaunchAtStartup}">
                         <ToggleSwitch IsChecked="{Binding LaunchAtStartup, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Header="Minimize to Tray"
-                        Description="Sends the app to the system tray instead of closing it fully.">
+                        Description="Sends the app to the system tray instead of closing it fully."
+                        IsVisible="{Binding ShowMinimizeToTray}">
                         <ToggleSwitch IsChecked="{Binding MinimizeToTray, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Header="System Tray Modal"
-                        Description="Controls whether the tray informational modal is suppressed.">
+                        Description="Controls whether the tray informational modal is suppressed."
+                        IsVisible="{Binding ShowSystemTrayModal}">
                         <ToggleSwitch IsChecked="{Binding SystemTrayModalShown, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>
