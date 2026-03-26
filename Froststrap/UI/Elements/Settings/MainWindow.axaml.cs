@@ -64,7 +64,11 @@ namespace Froststrap.UI.Elements.Settings
             App.WindowsBackdrop();
 
             UpdatePageView(_viewModel.CurrentPage);
-            UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+
+            Dispatcher.UIThread.Post(() =>
+            {
+                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+            }, DispatcherPriority.Loaded);
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -97,36 +101,32 @@ namespace Froststrap.UI.Elements.Settings
 
         private void UpdateSelectedButtonStyle(string selectedPage)
         {
-            var mainGrid = this.FindControl<Grid>("MainGrid");
-            StackPanel? sidebarStack = null;
+            var sidebarBorder = this.GetVisualDescendants()
+                                    .OfType<Border>()
+                                    .FirstOrDefault(b => b.BorderThickness.Right > 0);
 
-            if (mainGrid != null)
+            if (sidebarBorder?.Child is Grid sidebarGrid)
             {
-                if (mainGrid.Children.FirstOrDefault() is Border sidebarBorder &&
-                    sidebarBorder.Child is ScrollViewer sv && sv.Content is StackPanel sp)
-                {
-                    sidebarStack = sp;
-                }
-            }
-            else
-            {
-                var border = this.GetVisualDescendants().OfType<Border>().FirstOrDefault();
-                if (border?.Child is ScrollViewer scrollViewer && scrollViewer.Content is StackPanel stackPanel)
-                {
-                    sidebarStack = stackPanel;
-                }
-            }
+                var topSection = sidebarGrid.Children
+                                           .OfType<ScrollViewer>()
+                                           .FirstOrDefault()?.Content as StackPanel;
 
-            if (sidebarStack != null)
-            {
-                UpdateButtonStyles(sidebarStack, selectedPage);
+                if (topSection != null)
+                    UpdateButtonStyles(topSection, selectedPage);
+
+                var bottomSection = sidebarGrid.Children
+                                              .OfType<StackPanel>()
+                                              .FirstOrDefault();
+
+                if (bottomSection != null)
+                    UpdateButtonStyles(bottomSection, selectedPage);
             }
         }
 
         private void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
         {
             var accentFgKey = "AccentButtonBackground";
-            var unselectedFgResource = "TextFillColorTertiaryBrush";
+            var unselectedFgResource = "c";
             var highlightBgResource = "ControlFillColorSecondaryBrush";
 
             foreach (var child in stackPanel.Children)

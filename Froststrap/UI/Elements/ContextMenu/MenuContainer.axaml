@@ -1,4 +1,4 @@
-<base:AvaloniaWindow 
+<Window 
 x:Class="Froststrap.UI.Elements.ContextMenu.MenuContainer" 
 xmlns="https://github.com/avaloniaui" 
 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
@@ -25,4 +25,4 @@ Opacity="0">
             <NativeMenuItem Header="Close Watcher" Click="CloseWatcheMenuItem_Click" />
         </NativeMenu>
     </NativeMenu.Menu>
-</base:AvaloniaWindow>
+</Window>

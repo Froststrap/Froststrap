@@ -11,8 +11,7 @@
     x:DataType="vm:LaunchMenuViewModel"
     Title="Froststrap"
     Width="580" SizeToContent="Height"
-    CanResize="False" SystemDecorations="None"
-    ExtendClientAreaToDecorationsHint="True"
+    CanResize="False"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 

@@ -12,7 +12,7 @@
     x:DataType="vm:ServerHistoryViewModel"
     Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
     Width="580" Height="420"
-    MinWidth="420" MinHeight="420" SystemDecorations="None"
+    MinWidth="420" MinHeight="420"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 

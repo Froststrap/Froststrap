@@ -140,13 +140,13 @@
 
     <Style Selector="controls|IconButton.nav-button">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="MinWidth" Value="54" />
-        <Setter Property="Height" Value="54" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="MinWidth" Value="64" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="CornerRadius" Value="6" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         
         <Setter Property="Template">
             <ControlTemplate>
@@ -156,31 +156,43 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}"
-                        Margin="4,2"> 
-                    <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
-                                            Foreground="{TemplateBinding Foreground}"
-                                            Width="{TemplateBinding IconSize}"
-                                            Height="{TemplateBinding IconSize}"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Center"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        Margin="4,2"
+                        ClipToBounds="True"> 
+                    
+                    <StackPanel Orientation="Horizontal" 
+                                VerticalAlignment="Center" 
+                                Spacing="12">
+                        
+                        <Grid Width="{TemplateBinding IconSize}" 
+                              Height="{TemplateBinding IconSize}" 
+                              VerticalAlignment="Center">
+                            <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
+                                                Foreground="{TemplateBinding Foreground}"
+                                                Width="{TemplateBinding IconSize}"
+                                                Height="{TemplateBinding IconSize}"
+                                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
-                        <Path Data="{TemplateBinding IconData}"
-                              Fill="{TemplateBinding Foreground}"
-                              Width="{TemplateBinding IconSize}"
-                              Height="{TemplateBinding IconSize}"
-                              Stretch="Uniform"
-                              VerticalAlignment="Center"
-                              HorizontalAlignment="Center">
-                            <Path.IsVisible>
-                                <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
-                                </MultiBinding>
-                            </Path.IsVisible>
-                        </Path>
-                    </Grid>
+                            <Path Data="{TemplateBinding IconData}"
+                                  Fill="{TemplateBinding Foreground}"
+                                  Width="{TemplateBinding IconSize}"
+                                  Height="{TemplateBinding IconSize}"
+                                  Stretch="Uniform">
+                                <Path.IsVisible>
+                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
+                                    </MultiBinding>
+                                </Path.IsVisible>
+                            </Path>
+                        </Grid>
+
+                        <TextBlock Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+                                   FontSize="14"
+                                   FontWeight="Medium"
+                                   VerticalAlignment="Center"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   IsVisible="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    </StackPanel>
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -189,22 +201,9 @@
     <Style Selector="controls|IconButton.nav-button:pointerover /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
     </Style>
-    
-    <Style Selector="controls|IconButton.nav-button:pressed /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource SubtleFillColorTertiaryBrush}" />
-    </Style>
-
-    <Style Selector="controls|IconButton.nav-button:pressed">
-        <Setter Property="RenderTransform" Value="scale(0.95)" />
-    </Style>
-
-    <Style Selector="controls|IconButton.nav-button.Selected">
-        <Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
-    </Style>
 
     <Style Selector="controls|IconButton.nav-button.Selected /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBackground}" />
         <Setter Property="BorderThickness" Value="3,0,0,0" />
     </Style>
 

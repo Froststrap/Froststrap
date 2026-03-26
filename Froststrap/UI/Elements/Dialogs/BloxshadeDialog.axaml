@@ -11,7 +11,6 @@
         Title="Froststrap"
         MinWidth="380"
         Width="380"
-        SystemDecorations="None"
         SizeToContent="Height"
         CanResize="False"
         WindowStartupLocation="CenterScreen">

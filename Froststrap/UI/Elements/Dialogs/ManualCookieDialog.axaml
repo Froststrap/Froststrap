@@ -14,7 +14,6 @@
         Width="500"
         Height="450"
         CanResize="True"
-		SystemDecorations="None"
         WindowStartupLocation="CenterOwner"
         mc:Ignorable="d">
 

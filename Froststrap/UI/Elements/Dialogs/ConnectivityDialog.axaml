@@ -10,7 +10,6 @@
         mc:Ignorable="d"
         Width="480"
         SizeToContent="Height"
-		SystemDecorations="None"
         Title="{x:Static resources:Strings.Dialog_Connectivity_Title}"
         WindowStartupLocation="CenterScreen">
 

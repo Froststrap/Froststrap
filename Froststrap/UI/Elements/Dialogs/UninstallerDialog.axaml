@@ -14,10 +14,6 @@
     MinWidth="0" MinHeight="0" Width="480"
     SizeToContent="Height"
     x:DataType="vm:UninstallerViewModel"
-    SystemDecorations="None"
-    ExtendClientAreaTitleBarHeightHint="-1"
-    ExtendClientAreaToDecorationsHint="True"
-    TransparencyLevelHint="Mica"
     WindowStartupLocation="CenterScreen">
 
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">

@@ -5,7 +5,6 @@
         xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         Title="Froststrap"
         MinWidth="320" MaxWidth="480" SizeToContent="WidthAndHeight" CanResize="False"
-        SystemDecorations="None"
         WindowStartupLocation="CenterScreen">
 
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">

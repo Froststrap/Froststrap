@@ -1,4 +1,4 @@
-﻿<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         x:Class="Froststrap.UI.Elements.Dialogs.NotificationDialog"
@@ -12,4 +12,4 @@
         ShowActivated="False"
         Focusable="False"
         WindowStartupLocation="Manual">
-</base:AvaloniaWindow>
+</Window>
