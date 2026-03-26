@@ -448,6 +448,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             HandleXmlElement_Control(dialog, rangeBase, xmlElement);
 
+            ApplyBrush_Control(dialog, rangeBase, "Foreground", TemplatedControl.ForegroundProperty, xmlElement);
+
             rangeBase.Value = ParseXmlAttribute<double>(xmlElement, "Value", 0);
             rangeBase.Maximum = ParseXmlAttribute<double>(xmlElement, "Maximum", 100);
         }
@@ -457,17 +459,23 @@ namespace Froststrap.UI.Elements.Bootstrapper
             var progressBar = new ProgressBar();
             HandleXmlElement_RangeBase(dialog, progressBar, xmlElement);
 
-            progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
+            var fgColorAttr = xmlElement.Attribute("Foreground")?.Value;
+            if (!string.IsNullOrEmpty(fgColorAttr) && Color.TryParse(fgColorAttr, out var parsedColor))
+            {
+                var brush = new SolidColorBrush(parsedColor);
+                var progressStyle = new Style(x => x.OfType<ProgressBar>().Template().Name("PART_Indicator"));
+                progressStyle.Setters.Add(new Setter(TemplatedControl.BackgroundProperty, brush));
+                progressBar.Styles.Add(progressStyle);
+                progressBar.Foreground = brush;
+            }
 
-            var cornerRadius = GetCornerRadiusFromXElement(xmlElement, "CornerRadius");
-            if (cornerRadius is CornerRadius cr)
-                progressBar.CornerRadius = cr;
+            progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressBar")
             {
                 progressBar.Bind(ProgressBar.IsIndeterminateProperty, new Binding("ProgressIndeterminate"));
-                progressBar.Bind(ProgressBar.MaximumProperty, new Binding("ProgressMaximum"));
-                progressBar.Bind(ProgressBar.ValueProperty, new Binding("ProgressValue"));
+                progressBar.Bind(RangeBase.ValueProperty, new Binding("ProgressValue"));
+                progressBar.Bind(RangeBase.MaximumProperty, new Binding("ProgressMaximum"));
             }
 
             return progressBar;
@@ -478,7 +486,17 @@ namespace Froststrap.UI.Elements.Bootstrapper
             var progressRing = new ProgressRing();
             HandleXmlElement_RangeBase(dialog, progressRing, xmlElement);
 
-            progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
+            var fgColorAttr = xmlElement.Attribute("Foreground")?.Value;
+            if (!string.IsNullOrEmpty(fgColorAttr) && Color.TryParse(fgColorAttr, out var parsedColor))
+            {
+                var brush = new SolidColorBrush(parsedColor);
+                progressRing.Foreground = brush;
+                var ringStyle = new Style(x => x.OfType<ProgressRing>().Template().OfType<Control>());
+                ringStyle.Setters.Add(new Setter(TemplatedControl.ForegroundProperty, brush));
+                progressRing.Styles.Add(ringStyle);
+            }
+
+            progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", true);
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
             {
