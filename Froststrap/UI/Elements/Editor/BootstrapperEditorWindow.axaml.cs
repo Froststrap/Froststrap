@@ -1,25 +1,26 @@
-using IconPacks.Avalonia.Material;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Notifications;
 using Avalonia.Input;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using AvaloniaEdit.CodeCompletion;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
 using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
 using Froststrap.UI.Elements.Base;
-using Froststrap.UI.ViewModels.Editor;
-using System.Xml;
-using Avalonia.Animation;
-using Avalonia.Animation.Easings;
-using Avalonia.VisualTree;
 using Froststrap.UI.Elements.Settings;
+using Froststrap.UI.ViewModels.Editor;
 using Froststrap.UI.ViewModels.Settings;
+using IconPacks.Avalonia.Material;
 using System.ComponentModel;
+using System.Xml;
 
 namespace Froststrap.UI.Elements.Editor
 {
@@ -262,14 +263,20 @@ namespace Froststrap.UI.Elements.Editor
             contentGrid.Children.Add(icon);
 
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
-            textPanel.Children.Add(new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14, Foreground = Brushes.White });
-            textPanel.Children.Add(new TextBlock { Text = subtitle, FontSize = 12, Foreground = new SolidColorBrush(Color.Parse("#CCCCCC")), TextWrapping = TextWrapping.Wrap });
+
+            var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14 };
+            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
+
+            var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap };
+            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
+
+            textPanel.Children.Add(titleText);
+            textPanel.Children.Add(subtitleText);
             Grid.SetColumn(textPanel, 1);
             contentGrid.Children.Add(textPanel);
 
             var notification = new Border
             {
-                Background = new SolidColorBrush(Color.Parse("#1F1F1F")),
                 BorderBrush = new SolidColorBrush(Color.Parse(accentColor)),
                 BorderThickness = new Thickness(1),
                 Padding = new Thickness(0, 12, 24, 12),
@@ -282,8 +289,10 @@ namespace Froststrap.UI.Elements.Editor
                 RenderTransform = new TranslateTransform(0, 40),
                 Cursor = new Cursor(StandardCursorType.Hand),
                 Child = contentGrid,
-                BoxShadow = new BoxShadows(new BoxShadow { Blur = 15, OffsetY = 8, Color = Color.Parse("#60000000") })
+                BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") })
             };
+
+            notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("SolidBackgroundFillColorBase"));
 
             notification.Transitions = new Transitions {
                 new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },

@@ -189,7 +189,7 @@ namespace Froststrap.UI
 
             Dispatcher.UIThread.Post(() =>
             {
-                var notification = new NotificationDialog(title, message, imagePath, onClick, timeoutSeconds * 1000);
+                var notification = new NotificationDialog(title, message, imagePath, timeoutSeconds * 1000);
                 notification.Show();
             });
         }

@@ -101,14 +101,13 @@ namespace Froststrap.UI
         }
 
         public async void OnGameJoin(object? sender, EventArgs e)
-		{
+        {
             if (_activityWatcher?.Data == null) return;
 
-            string? thumbnailUrl = String.Empty;
-
+            Task<string?>? thumbnailTask = null;
             if (App.Settings.Prop.ShowJoinNotification)
             {
-                thumbnailUrl = await Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
+                thumbnailTask = Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
                 {
                     TargetId = (ulong)_activityWatcher.Data.UniverseId,
                     Type = ThumbnailType.GameIcon,
@@ -118,49 +117,53 @@ namespace Froststrap.UI
                 }, CancellationToken.None);
             }
 
-            thumbnailUrl ??= "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png";
-
             string title = _activityWatcher.Data.ServerType switch
-			{
-				ServerType.Public => Strings.ContextMenu_ServerInformation_Notification_Title_Public,
-				ServerType.Private => Strings.ContextMenu_ServerInformation_Notification_Title_Private,
-				ServerType.Reserved => Strings.ContextMenu_ServerInformation_Notification_Title_Reserved,
-				_ => ""
-			};
+            {
+                ServerType.Public => Strings.ContextMenu_ServerInformation_Notification_Title_Public,
+                ServerType.Private => Strings.ContextMenu_ServerInformation_Notification_Title_Private,
+                ServerType.Reserved => Strings.ContextMenu_ServerInformation_Notification_Title_Reserved,
+                _ => ""
+            };
 
-			bool locationActive = App.Settings.Prop.ShowServerDetails;
-			bool uptimeActive = App.Settings.Prop.ShowServerUptime;
+            bool locationActive = App.Settings.Prop.ShowServerDetails;
+            bool uptimeActive = App.Settings.Prop.ShowServerUptime;
 
-			string? serverLocation = "";
-			if (locationActive)
-				serverLocation = await _activityWatcher.Data.QueryServerLocation();
+            string? serverLocation = "";
+            if (locationActive)
+                serverLocation = await _activityWatcher.Data.QueryServerLocation();
 
-			string? serverUptime = "";
-			if (uptimeActive)
-			{
-				DateTime? serverTime = await _activityWatcher.Data.QueryServerTime();
-				TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
+            string? serverUptime = "";
+            if (uptimeActive)
+            {
+                DateTime? serverTime = await _activityWatcher.Data.QueryServerTime();
+                if (serverTime.HasValue)
+                {
+                    TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
+                    serverUptime = _serverUptime.TotalSeconds > 60
+                        ? Time.FormatTimeSpan(_serverUptime)
+                        : Strings.ContextMenu_ServerInformation_Notification_ServerNotTracked;
+                }
+            }
 
-				if (_serverUptime.TotalSeconds > 60)
-					serverUptime = Time.FormatTimeSpan(_serverUptime);
-				else
-					serverUptime = Strings.ContextMenu_ServerInformation_Notification_ServerNotTracked;
-			}
+            if ((string.IsNullOrEmpty(serverLocation) && locationActive) ||
+                (string.IsNullOrEmpty(serverUptime) && uptimeActive))
+                return;
 
-			if (
-				string.IsNullOrEmpty(serverLocation) && locationActive ||
-				string.IsNullOrEmpty(serverUptime) && uptimeActive
-				)
-				return;
+            string notifContent = Strings.Common_UnknownStatus;
+            if (locationActive && !uptimeActive)
+                notifContent = String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation);
+            else if (!locationActive && uptimeActive)
+                notifContent = String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime);
+            else if (locationActive && uptimeActive)
+                notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
 
-			string notifContent = Strings.Common_UnknownStatus;
+            string? thumbnailUrl = null;
+            if (thumbnailTask != null)
+            {
+                try { thumbnailUrl = await thumbnailTask; } catch { /* Fallback handled below */ }
+            }
 
-			if (locationActive && !uptimeActive)
-				notifContent = String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation);
-			else if (!locationActive && uptimeActive)
-				notifContent = String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime);
-			else if (locationActive && uptimeActive)
-				notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
+            thumbnailUrl ??= "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png";
 
             if (App.Settings.Prop.ShowJoinNotification)
                 ShowAlertWithImage(title, notifContent, thumbnailUrl);
