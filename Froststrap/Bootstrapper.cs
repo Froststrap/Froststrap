@@ -887,17 +887,13 @@ namespace Froststrap
 
             foreach (string Name in Names)
             {
-                string Directory = Path.Combine((string)AppData.Directory, Name);
-                if (File.Exists(Directory))
-                {
+                string DirectoryPath = Path.Combine((string)AppData.Directory, Name);
+                if (File.Exists(DirectoryPath))
                     ResolvedName = Name;
-                }
             }
 
             if (String.IsNullOrEmpty(ResolvedName))
-            {
                 await UpgradeRoblox();
-            }
 
             var startInfo = new ProcessStartInfo()
             {
@@ -916,32 +912,6 @@ namespace Froststrap
                 Process.Start(startInfo);
                 return;
             }
-
-            string? logFileName = null;
-
-            string rbxDir = Paths.Roblox;
-            if (!Directory.Exists(rbxDir))
-                Directory.CreateDirectory(rbxDir);
-
-            string rbxLogDir = Path.Combine(rbxDir, "logs");
-            if (!Directory.Exists(rbxLogDir))
-                Directory.CreateDirectory(rbxLogDir);
-
-            using var logWatcher = new FileSystemWatcher()
-            {
-                Path = rbxLogDir,
-                Filter = "*.log",
-                EnableRaisingEvents = true
-            };
-
-            var logCreatedEvent = new AutoResetEvent(false);
-
-            logWatcher.Created += (_, e) =>
-            {
-                logWatcher.EnableRaisingEvents = false;
-                logFileName = e.FullPath;
-                logCreatedEvent.Set();
-            };
 
             var autoclosePids = new List<int>();
 
@@ -996,22 +966,7 @@ namespace Froststrap
                 throw;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}), waiting for log file");
-
-            // should i increase timeout ? since i think watcher dosent launh sometimes cause it cannot find the log file in time.
-            logCreatedEvent.WaitOne(TimeSpan.FromSeconds(30));
-
-            if (String.IsNullOrEmpty(logFileName))
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Unable to identify log file");
-                // Frontend.ShowPlayerErrorDialog();
-                return;
-            }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Got log file as {logFileName}");
-            }
-
+            App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}). Launching Watcher...");
             _mutex?.ReleaseAsync();
 
             if (!IsStudioLaunch)
@@ -1019,13 +974,8 @@ namespace Froststrap
                 // launch custom integrations now if normal roblox
                 foreach (var integration in App.Settings.Prop.CustomIntegrations)
                 {
-                    if (integration == null)
-                        continue;
-
-                    if (integration?.PreLaunch == true)
-                        continue; // skip pre-launch integrations
-
-                    if (!integration!.SpecifyGame)
+                    if (integration == null || integration.PreLaunch || integration.SpecifyGame) continue;
+                    try
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
 
@@ -1052,6 +1002,7 @@ namespace Froststrap
                         if (integration.AutoClose && pid != 0)
                             autoclosePids.Add(pid);
                     }
+                    catch (Exception ex) { App.Logger.WriteLine(LOG_IDENT, ex.Message); }
                 }
 
                 Process.Start(new ProcessStartInfo
@@ -1066,29 +1017,25 @@ namespace Froststrap
 
             if (App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Any())
             {
-                using var ipl = new InterProcessLock("Watcher", TimeSpan.FromSeconds(5));
-
-                var watcherData = new WatcherData
+                using var ipl = new InterProcessLock("WatcherLaunch", TimeSpan.FromSeconds(5));
+                if (ipl.IsAcquired)
                 {
-                    ProcessId = _appPid,
-                    LogFile = logFileName,
-                    AutoclosePids = autoclosePids,
-                    LaunchMode = _launchMode
-                };
+                    var watcherData = new WatcherData
+                    {
+                        ProcessId = _appPid,
+                        AutoclosePids = autoclosePids,
+                        LaunchMode = _launchMode
+                    };
 
-                string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
+                    string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
+                    string args = $"-watcher \"{watcherDataArg}\"";
+                    if (App.LaunchSettings.TestModeFlag.Active) args += " -testmode";
 
-                string args = $"-watcher \"{watcherDataArg}\"";
-
-                if (App.LaunchSettings.TestModeFlag.Active)
-                    args += " -testmode";
-
-                if (ipl.IsAcquired || true)
                     Process.Start(Paths.Process, args);
+                }
             }
 
-            // allow for window to show, since the log is created pretty far beforehand
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
         }
 
         private bool ShouldRunAsAdmin()
