@@ -87,7 +87,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             set
             {
-		string themeStr = (value == AppStorageSettingTheme.Dark) ? "dark" : "light";
+		    string themeStr = (value == AppStorageSettingTheme.Dark) ? "dark" : "light";
         	string userId = App.StorageSettings.Prop.UserId ?? "0";
         	App.StorageSettings.Prop.DeviceLevelTheme = $"{{\"{userId}\":\"{themeStr}\"}}";
             }
