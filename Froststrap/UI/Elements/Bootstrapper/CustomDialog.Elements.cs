@@ -264,11 +264,28 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 }
                 catch (InvalidOperationException)
                 {
-
                 }
             }
 
-            uiElement.IsVisible = ParseXmlAttribute<bool>(xmlElement, "IsVisible", true);
+            string? visibility = xmlElement.Attribute("Visibility")?.Value;
+
+            if (!string.IsNullOrEmpty(visibility))
+            {
+                if (visibility.Equals("Collapsed", StringComparison.OrdinalIgnoreCase) ||
+                    visibility.Equals("Hidden", StringComparison.OrdinalIgnoreCase))
+                {
+                    uiElement.IsVisible = false;
+                }
+                else
+                {
+                    uiElement.IsVisible = true;
+                }
+            }
+            else
+            {
+                uiElement.IsVisible = ParseXmlAttribute<bool>(xmlElement, "IsVisible", true);
+            }
+
             uiElement.IsEnabled = ParseXmlAttribute<bool>(xmlElement, "IsEnabled", true);
 
             var margin = GetThicknessFromXElement(xmlElement, "Margin");
@@ -379,42 +396,36 @@ namespace Froststrap.UI.Elements.Bootstrapper
             throw new CustomThemeException("CustomTheme.Errors.ElementInvalidChild", xmlElement.Parent!.Name.ToString(), xmlElement.Name.ToString());
         }
 
-        private static DummyControl HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
+        private static Control HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
         {
-            xmlElement.SetAttributeValue("Name", "TitleBar");
-            xmlElement.SetAttributeValue("IsEnabled", "True");
-            HandleXmlElement_Control(dialog, dialog.RootTitleBar, xmlElement);
+            var titleBar = new TitleBar();
 
-            dialog.RootTitleBar.IsVisible = ParseXmlAttribute<bool>(xmlElement, "IsVisible", true);
+            HandleXmlElement_Control(dialog, titleBar, xmlElement);
+
+            titleBar.HorizontalAlignment = HorizontalAlignment.Stretch;
+            titleBar.Width = double.NaN;
 
             bool isHidden = ParseXmlAttribute(xmlElement, "IsHidden", false);
 
             if (isHidden)
             {
-                dialog.RootTitleBar.IsVisible = false;
-                dialog.RootTitleBar.Height = 0;
+                titleBar.IsVisible = false;
+                titleBar.Height = 0;
             }
             else
             {
-                dialog.RootTitleBar.IsVisible = true;
-                dialog.RootTitleBar.Height = ParseXmlAttribute<double>(xmlElement, "Height", 32);
+                if (double.IsNaN(titleBar.Height))
+                    titleBar.Height = 32;
             }
 
-            dialog.RootTitleBar.RenderTransform = null;
-            dialog.RootTitleBar.ZIndex = 1001;
-
-            dialog.RootTitleBar.Height = double.NaN;
-            dialog.RootTitleBar.Width = double.NaN;
-            dialog.RootTitleBar.HorizontalAlignment = HorizontalAlignment.Stretch;
-            dialog.RootTitleBar.Margin = new Thickness(0);
-
-            dialog.RootTitleBar.ShowMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
-            dialog.RootTitleBar.ShowClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
+            titleBar.ZIndex = ParseXmlAttribute<int>(xmlElement, "Panel.ZIndex", 1001);
+            titleBar.ShowMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
+            titleBar.ShowClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
 
             string title = xmlElement.Attribute("Title")?.Value ?? "Froststrap";
-            dialog.RootTitleBar.Title = title;
+            titleBar.Title = title;
 
-            return new DummyControl();
+            return titleBar;
         }
 
         private static Control HandleXmlElement_Button(CustomDialog dialog, XElement xmlElement)

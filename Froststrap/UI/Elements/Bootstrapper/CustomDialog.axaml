@@ -21,8 +21,6 @@
         Background="{DynamicResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid RowDefinitions="Auto,*">
-        <controls:TitleBar Name="RootTitleBar" Title="Froststrap" Grid.Row="0" Height="32" IsHitTestVisible="True" ShowClose="False" ShowMaximize="False" ShowMinimize="False" />
-
         <Grid x:Name="ElementGrid" Grid.Row="1" />
     </Grid>
 </base:AvaloniaWindow>
