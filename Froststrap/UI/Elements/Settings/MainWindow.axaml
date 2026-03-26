@@ -15,9 +15,7 @@
 	MinWidth="250"
 	MinHeight="250"
 	x:DataType="vm:MainWindowViewModel"
-	SystemDecorations="None" CanResize="True"
-	ExtendClientAreaTitleBarHeightHint="-1"
-	ExtendClientAreaToDecorationsHint="True"
+	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
 	<Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
@@ -42,105 +40,110 @@
 		<Grid
 			Name="MainGrid"
 			Grid.Row="1"
-			ColumnDefinitions="64,*">
-			<Border
-				Grid.Column="0"
-				Background="{DynamicResource LayerFillColorDefaultBrush}"
-				BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-				BorderThickness="0,0,1,0">
-				<ScrollViewer VerticalScrollBarVisibility="Hidden">
-					<StackPanel VerticalAlignment="Top" Spacing="0">
-					<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToIntegrationsCommand}"
-							Tag="integrations"
-							Icon="Connection"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Integrations_Title}" />
+			ColumnDefinitions="200,*">
+<Border Grid.Column="0"
+        Background="{DynamicResource LayerFillColorDefaultBrush}"
+        BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+        BorderThickness="0,0,1,0">
+    
+    <Grid RowDefinitions="*, Auto">
+        
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="0">
+                <controls:IconButton
+                    Classes="nav-button"
+                    Command="{Binding NavigateToIntegrationsCommand}"
+                    Tag="integrations"
+                    Icon="Connection"
+                    IconSize="24"
+                    Content="{x:Static resources:Strings.Menu_Integrations_Title}" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToBehaviourCommand}"
-							Tag="behaviour"
-							Icon="CogOutline"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Behaviour_Title}" />
+                <controls:IconButton
+                    Classes="nav-button"
+                    Command="{Binding NavigateToBehaviourCommand}"
+                    Tag="behaviour"
+                    Icon="CogOutline"
+                    IconSize="24"
+                    Content="{x:Static resources:Strings.Menu_Behaviour_Title}" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToPresetModsCommand}"
-							Tag="mods"
-							Icon="PuzzleOutline"
-							IconSize="24"
-							ToolTip.Tip="Preset Mods" />
+                <controls:IconButton
+                    Classes="nav-button"
+                    Command="{Binding NavigateToPresetModsCommand}"
+                    Tag="mods"
+                    Icon="PuzzleOutline"
+                    IconSize="24"
+                    Content="Preset Mods" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToFastFlagsCommand}"
-							Tag="fastflags"
-							Icon="FlagOutline"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_FastFlags_Title}" />
+                <controls:IconButton
+                    Classes="nav-button"
+                    Command="{Binding NavigateToFastFlagsCommand}"
+                    Tag="fastflags"
+                    Icon="FlagOutline"
+                    IconSize="24"
+                    Content="{x:Static resources:Strings.Menu_FastFlags_Title}" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToAppearanceCommand}"
-							Tag="appearance"
-							Icon="PaletteOutline"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_Appearance_Title}" />
+                <controls:IconButton
+                    Classes="nav-button"
+                    Command="{Binding NavigateToAppearanceCommand}"
+                    Tag="appearance"
+                    Icon="PaletteOutline"
+                    IconSize="24"
+                    Content="{x:Static resources:Strings.Menu_Appearance_Title}" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToRegionSelectorCommand}"
-							Tag="regionselector"
-							Icon="Earth"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
+                <controls:IconButton
+                    Classes="nav-button"
+                    Command="{Binding NavigateToRegionSelectorCommand}"
+                    Tag="regionselector"
+                    Icon="Earth"
+                    IconSize="24"
+                    Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
 
-						<controls:IconButton
-						    Name="gbs"
-							Classes="nav-button"
-							Command="{Binding NavigateToGlobalSettingsCommand}"
-							Tag="globalsettings"
-							Icon="SquareEditOutline"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
+                <controls:IconButton
+                    Name="gbs"
+                    Classes="nav-button"
+                    Command="{Binding NavigateToGlobalSettingsCommand}"
+                    Tag="globalsettings"
+                    Icon="SquareEditOutline"
+                    IconSize="24"
+                    Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToShortcutsCommand}"
-							Tag="shortcuts"
-							Icon="LinkBoxOutline"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Common_Shortcuts}" />
+                <controls:IconButton
+                    Classes="nav-button"
+                    Command="{Binding NavigateToShortcutsCommand}"
+                    Tag="shortcuts"
+                    Icon="LinkBoxOutline"
+                    IconSize="24"
+                    Content="{x:Static resources:Strings.Common_Shortcuts}" />
+            </StackPanel>
+        </ScrollViewer>
 
-						<Separator Margin="8,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+        <StackPanel Grid.Row="1" Spacing="0" VerticalAlignment="Bottom" Margin="0,0,0,8">
+            <Separator Margin="8,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding OpenAccountManagerCommand}"
-							Icon="AccountMultipleOutline"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_AccountManager_Title}" />
+            <controls:IconButton
+                Classes="nav-button"
+                Command="{Binding OpenAccountManagerCommand}"
+                Icon="AccountMultipleOutline"
+                IconSize="24"
+                Content="{x:Static resources:Strings.Menu_AccountManager_Title}" />
 
-						<controls:IconButton 
-							Classes="nav-button"
-							Command="{Binding NavigateToChannelsCommand}"
-							Tag="channels"
-							Icon="TuneVertical"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Common_Settings}" />
+            <controls:IconButton 
+                Classes="nav-button"
+                Command="{Binding NavigateToChannelsCommand}"
+                Tag="channels"
+                Icon="TuneVertical"
+                IconSize="24"
+                Content="{x:Static resources:Strings.Common_Settings}" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding OpenAboutCommand}"
-							Icon="InformationOutline"
-							IconSize="24"
-							ToolTip.Tip="{x:Static resources:Strings.Menu_About_Title}" />
-					</StackPanel>
-				</ScrollViewer>
-			</Border>
+            <controls:IconButton
+                Classes="nav-button"
+                Command="{Binding OpenAboutCommand}"
+                Icon="InformationOutline"
+                IconSize="24"
+                Content="{x:Static resources:Strings.Menu_About_Title}" />
+        </StackPanel>
+    </Grid>
+</Border>
 
 			<Grid Grid.Column="1" RowDefinitions="Auto,*">
 				<Border
@@ -248,23 +251,17 @@
 					Orientation="Horizontal"
 					Spacing="8">
 					<Button
-						Background="{DynamicResource SystemAccentColor}"
 						Classes="accent"
 						Command="{Binding SaveAndLaunchSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"
-						Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"/>
 					<Button
-						Background="{DynamicResource SystemAccentColor}"
 						Classes="accent"
 						Command="{Binding RestartAppCommand}"
-						Content="{x:Static resources:Strings.Menu_Restart}"
-						Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+						Content="{x:Static resources:Strings.Menu_Restart}"/>
 					<Button
-						Background="{DynamicResource SystemAccentColor}"
 						Classes="accent"
 						Command="{Binding SaveSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_Save}"
-						Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+						Content="{x:Static resources:Strings.Menu_Save}"/>
 					<Button
 						Background="{DynamicResource LayerFillColorAltBrush}"
 						Command="{Binding CloseWindowCommand}"

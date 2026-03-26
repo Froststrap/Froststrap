@@ -13,7 +13,6 @@
      Width="480"
      CanResize="False"
      SizeToContent="Height"
-     SystemDecorations="None"
      WindowStartupLocation="CenterScreen"
      mc:Ignorable="d">
 

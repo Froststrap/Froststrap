@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using WindowState = Avalonia.Controls.WindowState;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
@@ -39,18 +40,37 @@ namespace Froststrap.UI.Elements.Controls
 
             var dragLayer = e.NameScope.Find<Control>("PART_DragLayer");
             if (dragLayer != null)
-                dragLayer.PointerPressed += (s, ev) => window.BeginMoveDrag(ev);
+            {
+                dragLayer.PointerPressed += (s, ev) =>
+                {
+                    if (ev.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                    {
+                        if (ev.ClickCount == 2 && ShowMaximize)
+                        {
+                            window.WindowState = window.WindowState == WindowState.Maximized
+                                ? WindowState.Normal
+                                : WindowState.Maximized;
+                        }
+                        else
+                        {
+                            window.BeginMoveDrag(ev);
+                        }
+                    }
+                };
+            }
 
             var minBtn = e.NameScope.Find<IconButton>("PART_MinimizeButton");
             if (minBtn != null)
-                minBtn.Click += (s, ev) => window.WindowState = Avalonia.Controls.WindowState.Minimized;
+                minBtn.Click += (s, ev) => window.WindowState = WindowState.Minimized;
 
             var maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
             if (maxBtn != null)
+            {
                 maxBtn.Click += (s, ev) =>
-                    window.WindowState = window.WindowState == Avalonia.Controls.WindowState.Maximized
-                        ? Avalonia.Controls.WindowState.Normal
-                        : Avalonia.Controls.WindowState.Maximized;
+                    window.WindowState = window.WindowState == WindowState.Maximized
+                        ? WindowState.Normal
+                        : WindowState.Maximized;
+            }
 
             var closeBtn = e.NameScope.Find<IconButton>("PART_CloseButton");
             if (closeBtn != null)

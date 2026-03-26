@@ -15,12 +15,8 @@
 			 x:DataType="vm:AccountManagerViewModel"
 			 mc:Ignorable="d"
 			 Title="Account Manager"
-			 SystemDecorations="None"
 			 Width="1000"
 			 Height="675"
-			 ExtendClientAreaTitleBarHeightHint="-1"
-			 ExtendClientAreaToDecorationsHint="True"
-			 TransparencyLevelHint="Mica"
 			 WindowStartupLocation="CenterScreen">
 
 	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto, *">

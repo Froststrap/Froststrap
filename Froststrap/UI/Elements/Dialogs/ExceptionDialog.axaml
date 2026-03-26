@@ -11,7 +11,6 @@
         Title="{x:Static resources:Strings.Dialog_Exception_Title}"
         Width="555"
         SizeToContent="Height"
-		SystemDecorations="None"
         WindowStartupLocation="CenterScreen">
 
 	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">

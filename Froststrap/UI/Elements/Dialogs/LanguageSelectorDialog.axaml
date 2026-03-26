@@ -12,7 +12,6 @@
         mc:Ignorable="d"
         Width="380"
         SizeToContent="Height"
-        SystemDecorations="None"
         CanResize="False"
         WindowStartupLocation="CenterScreen">
         

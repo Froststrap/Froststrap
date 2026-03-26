@@ -12,7 +12,6 @@
         mc:Ignorable="d"
         Width="650"
         SizeToContent="Height"
-        SystemDecorations="None"
         WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto,*">

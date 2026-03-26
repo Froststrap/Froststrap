@@ -12,7 +12,6 @@
         Title="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}"
         Width="420" SizeToContent="Height"
         CanResize="False"
-        SystemDecorations="None"
         WindowStartupLocation="CenterScreen">
     
     <Grid RowDefinitions="Auto, *, Auto" Background="{DynamicResource ApplicationBackgroundColor}">

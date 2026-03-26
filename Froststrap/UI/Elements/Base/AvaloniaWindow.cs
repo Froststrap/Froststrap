@@ -2,9 +2,10 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Avalonia.Media.Imaging; // Added for Bitmap
+using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using FluentAvalonia.Styling;
+using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Base
 {
@@ -15,6 +16,11 @@ namespace Froststrap.UI.Elements.Base
 
         public AvaloniaWindow()
         {
+            this.ExtendClientAreaToDecorationsHint = true;
+            this.ExtendClientAreaTitleBarHeightHint = -1;
+            this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
+            this.SystemDecorations = SystemDecorations.Full;
+
             ApplyTheme();
         }
 
@@ -139,7 +145,7 @@ namespace Froststrap.UI.Elements.Base
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-#if QA_BUILD
+#if QA_BUILD            
             this.BorderBrush = Brushes.Red;
             this.BorderThickness = new Thickness(4);
 #endif

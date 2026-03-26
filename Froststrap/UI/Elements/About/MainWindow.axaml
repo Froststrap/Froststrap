@@ -13,20 +13,18 @@
         x:DataType="vm:MainWindowViewModel"
         Title="{x:Static resources:Strings.About_Title}"
         MinWidth="740" Width="740" Height="440"
-        WindowStartupLocation="CenterScreen"
-        SystemDecorations="None" CanResize="True"
-        ExtendClientAreaToDecorationsHint="True">
+        WindowStartupLocation="CenterScreen" CanResize="True">
 
   <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
         <controls:TitleBar Grid.Row="0" Background="{DynamicResource LayerFillColorDefaultBrush}" Title="{x:Static resources:Strings.About_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
-        <Grid Grid.Row="1" ColumnDefinitions="64,*" Name="MainGrid">
+        <Grid Grid.Row="1" ColumnDefinitions="125,*" Name="MainGrid">
             <Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
                 <ScrollViewer VerticalScrollBarVisibility="Hidden">
                     <StackPanel Spacing="0" VerticalAlignment="Top" Name="SidebarStackPanel">
                         <controls:IconButton 
                             Classes="nav-button" 
-                            ToolTip.Tip="{x:Static resources:Strings.Menu_About_Title}" 
+                            Content="{x:Static resources:Strings.Menu_About_Title}" 
                             Command="{Binding NavigateToAboutCommand}" 
                             Tag="about"
                             Icon="Information"
@@ -34,7 +32,7 @@
 
                         <controls:IconButton 
                             Classes="nav-button" 
-                            ToolTip.Tip="{x:Static resources:Strings.About_Licenses_Title}" 
+                            Content="{x:Static resources:Strings.About_Licenses_Title}" 
                             Command="{Binding NavigateToLicensesCommand}" 
                             Tag="licenses"
                             Icon="License"

@@ -8,8 +8,7 @@
         Width="480"
         SizeToContent="Height"
         CanResize="False"
-        WindowStartupLocation="CenterScreen"
-        SystemDecorations="None">
+        WindowStartupLocation="CenterScreen">
 
     <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
         <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" />

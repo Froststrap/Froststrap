@@ -18,6 +18,7 @@
 
 	<Grid RowDefinitions="Auto, *, Auto">
 		<controls:TitleBar Grid.Row="0"
+                          Icon="avares://Froststrap/Froststrap.ico"
                           Title="Froststrap"
                           ShowMinimize="False"
                           ShowMaximize="False"

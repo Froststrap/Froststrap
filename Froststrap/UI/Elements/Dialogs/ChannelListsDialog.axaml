@@ -14,7 +14,6 @@
         MinHeight="350"
         Height="550"
         CanResize="True"
-		SystemDecorations="None"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         x:DataType="vm:ChannelListsViewModel">

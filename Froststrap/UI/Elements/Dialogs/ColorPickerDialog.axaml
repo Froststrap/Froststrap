@@ -8,7 +8,6 @@
      Title="Color Picker"
      Width="400"
      SizeToContent="Height"
-     SystemDecorations="None"
      CanResize="False"
      WindowStartupLocation="CenterOwner">
 
