@@ -32,20 +32,13 @@
 						Margin="0,1"
 						ClipToBounds="False">
 
-					<Border.Styles>
-						<Style Selector="Border#PART_LayoutRoot > Border#AccentBar">
-							<Setter Property="IsVisible" Value="False" />
-						</Style>
-					</Border.Styles>
-
 					<Grid ColumnDefinitions="Auto,*">
 						<Border Name="AccentBar"
 								Grid.Column="0"
 								Width="3"
 								Margin="-10,6,8,6"
 								CornerRadius="0,2,2,0"
-								Background="{DynamicResource FrostAccentBrush}"
-								IsVisible="False" />
+								Background="{DynamicResource FrostAccentBrush}" />
 
 						<StackPanel
 							Grid.Column="0"
@@ -113,8 +106,11 @@
 	<Style Selector="controls|IconButton.nav-button.Selected /template/ ic|PackIconMaterial">
 		<Setter Property="Opacity" Value="1" />
 	</Style>
+	<Style Selector="controls|IconButton.nav-button /template/ Border#AccentBar">
+	   <Setter Property="Width" Value="0" />
+	</Style>
 	<Style Selector="controls|IconButton.nav-button.Selected /template/ Border#AccentBar">
-		<Setter Property="IsVisible" Value="True" />
+		<Setter Property="Width" Value="3" />
 	</Style>
 
 	<Style Selector="Button.FrostTinted">
@@ -147,9 +143,10 @@
 	</Style>
 
 	<Style Selector="controls|CardExpander.NoUserExpansion">
-		<Setter Property="Background"      Value="{DynamicResource ControlFillColorDefaultBrush}" />
+		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
 		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
 		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding"         Value="16,12" />
 		<Setter Property="CornerRadius"    Value="6" />
 		<Setter Property="Template">
 			<ControlTemplate>
@@ -274,7 +271,7 @@
 
 	<Style Selector="ListBox">
 		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderSubtle}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius"    Value="6" />
 		<Setter Property="Margin"          Value="0,4" />
@@ -328,9 +325,7 @@
 		</Setter>
 	</Style>
 
-<Style Selector="ComboBox">
-		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
-		<Setter Property="BorderThickness" Value="1" />
+	<Style Selector="ComboBox">
 		<Setter Property="CornerRadius"    Value="6" />
 		<Setter Property="MinHeight"       Value="32" />
 		<Setter Property="Padding"         Value="10,5" />
@@ -338,12 +333,51 @@
 		<Setter Property="Foreground"      Value="{DynamicResource TextFillColorPrimaryBrush}" />
 	</Style>
 
-	<Style Selector="ComboBox:pointerover">
-		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBorderBrush}" />
+	<Style Selector="controls|OptionControl">
+		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding"         Value="16,12" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						Padding="{TemplateBinding Padding}"
+						CornerRadius="6"
+						MinHeight="64"
+						Margin="0,2">
+					<Grid ColumnDefinitions="*,Auto">
+						<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
+							<StackPanel Orientation="Horizontal" Spacing="6">
+								<TextBlock
+									Text="{TemplateBinding Header}"
+									FontSize="14"
+									FontWeight="SemiBold"
+									VerticalAlignment="Center"
+									Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+							</StackPanel>
+							<controls:MarkdownTextBlock
+								MarkdownText="{TemplateBinding Description}"
+								FontSize="12"
+								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								TextWrapping="Wrap"
+								IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+						</StackPanel>
+						<ContentPresenter
+							Grid.Column="1"
+							Content="{TemplateBinding InnerContent}"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Right"
+							Margin="16,0,0,0" />
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
 	</Style>
 
-	<Style Selector="ComboBox:focus, ComboBox[IsDropDownOpen=True]">
-		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBrush}" />
+	<Style Selector="controls|OptionControl:pointerover">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
 	</Style>
 
 </Styles>
