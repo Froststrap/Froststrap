@@ -1,4 +1,4 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,11 +7,147 @@
 		xmlns:cc="using:AvaloniaEdit.CodeCompletion"
 		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
-	<Style Selector="controls|CardExpander.NoUserExpansion">
-		<Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+	<Style Selector="controls|IconButton.nav-button">
+		<Setter Property="Background"        Value="Transparent" />
+		<Setter Property="Foreground"        Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		<Setter Property="BorderThickness"   Value="0" />
+		<Setter Property="Padding"           Value="10,0" />
+		<Setter Property="Height"            Value="40" />
+		<Setter Property="CornerRadius"      Value="6" />
+		<Setter Property="Cursor"            Value="Hand" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="Transitions">
+			<Transitions>
+				<BrushTransition Property="Background" Duration="0:0:0.1" />
+			</Transitions>
+		</Setter>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PART_LayoutRoot"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						Padding="{TemplateBinding Padding}"
+						Margin="0,1"
+						ClipToBounds="False">
+
+					<Grid ColumnDefinitions="Auto,*">
+						<Border Name="AccentBar"
+								Grid.Column="0"
+								Width="3"
+								Margin="-10,6,8,6"
+								CornerRadius="0,2,2,0"
+								Background="{DynamicResource FrostAccentBrush}" />
+
+						<StackPanel
+							Grid.Column="0"
+							Grid.ColumnSpan="2"
+							Orientation="Horizontal"
+							VerticalAlignment="Center"
+							Spacing="12">
+
+							<ic:PackIconMaterial
+								Kind="{TemplateBinding Icon}"
+								Foreground="{TemplateBinding Foreground}"
+								Width="{TemplateBinding IconSize}"
+								Height="{TemplateBinding IconSize}"
+								VerticalAlignment="Center"
+								Opacity="0.6"
+								IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+							<Path
+								Data="{TemplateBinding IconData}"
+								Fill="{TemplateBinding Foreground}"
+								Width="{TemplateBinding IconSize}"
+								Height="{TemplateBinding IconSize}"
+								Stretch="Uniform"
+								VerticalAlignment="Center">
+								<Path.IsVisible>
+									<MultiBinding Converter="{x:Static BoolConverters.And}">
+										<Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}" />
+										<Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon"     Converter="{x:Static ObjectConverters.IsNull}" />
+									</MultiBinding>
+								</Path.IsVisible>
+							</Path>
+
+							<TextBlock
+								Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
+								FontSize="14"
+								FontWeight="Normal"
+								VerticalAlignment="Center"
+								Foreground="{TemplateBinding Foreground}"
+								IsVisible="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}" />
+						</StackPanel>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="controls|IconButton.nav-button:pointerover /template/ Border#PART_LayoutRoot">
+		<Setter Property="Background" Value="{DynamicResource FrostAccentSubtleBrush}" />
+	</Style>
+	<Style Selector="controls|IconButton.nav-button:pointerover">
+		<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+	</Style>
+	<Style Selector="controls|IconButton.nav-button:pointerover /template/ ic|PackIconMaterial">
+		<Setter Property="Opacity" Value="0.85" />
+	</Style>
+
+	<Style Selector="controls|IconButton.nav-button.Selected /template/ Border#PART_LayoutRoot">
+		<Setter Property="Background"    Value="{DynamicResource FrostAccentSubtleBrush}" />
+		<Setter Property="BorderBrush"   Value="{DynamicResource FrostAccentBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="CornerRadius" Value="4" />
+	</Style>
+	<Style Selector="controls|IconButton.nav-button.Selected">
+		<Setter Property="Foreground" Value="{DynamicResource FrostAccentTextBrush}" />
+	</Style>
+	<Style Selector="controls|IconButton.nav-button.Selected /template/ ic|PackIconMaterial">
+		<Setter Property="Opacity" Value="1" />
+	</Style>
+	<Style Selector="controls|IconButton.nav-button /template/ Border#AccentBar">
+	   <Setter Property="Width" Value="0" />
+	</Style>
+	<Style Selector="controls|IconButton.nav-button.Selected /template/ Border#AccentBar">
+		<Setter Property="Width" Value="3" />
+	</Style>
+
+	<Style Selector="Button.FrostTinted">
+		<Setter Property="Background"   Value="{DynamicResource FrostAccentSubtleBrush}" />
+		<Setter Property="BorderBrush"  Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Foreground"   Value="{DynamicResource FrostAccentTextBrush}" />
+		<Setter Property="CornerRadius" Value="6" />
+		<Setter Property="FontSize"     Value="14" />
+		<Setter Property="FontWeight"   Value="Medium" />
+	</Style>
+	<Style Selector="Button.FrostTinted:pointerover /template/ ContentPresenter">
+		<Setter Property="Background"  Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBrush}" />
+	</Style>
+	<Style Selector="Button.FrostTinted:pressed /template/ ContentPresenter">
+		<Setter Property="Opacity" Value="0.85" />
+	</Style>
+
+	<Style Selector="Button.FrostSubtle">
+		<Setter Property="Background"      Value="Transparent" />
+		<Setter Property="BorderBrush"     Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Foreground"      Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="FontSize"        Value="14" />
+	</Style>
+	<Style Selector="Button.FrostSubtle:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+	</Style>
+
+	<Style Selector="controls|CardExpander.NoUserExpansion">
+		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding"         Value="16,12" />
+		<Setter Property="CornerRadius"    Value="6" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Border Name="ContentBorder"
@@ -20,44 +156,45 @@
 						BorderThickness="{TemplateBinding BorderThickness}"
 						CornerRadius="{TemplateBinding CornerRadius}"
 						ClipToBounds="True"
-						Margin="0,4">
+						Margin="0,2">
 					<StackPanel>
 						<Border Padding="16,12">
 							<Grid ColumnDefinitions="*, Auto">
-								<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
-									<ContentPresenter Content="{TemplateBinding Header}"
-													  FontSize="14"
-													  FontWeight="Normal"
-													  Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-													  TextWrapping="Wrap"/>
-									<controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
-											   FontSize="12"
-											   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-											   IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-											   TextWrapping="Wrap"/>
+								<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
+									<ContentPresenter
+										Content="{TemplateBinding Header}"
+										FontSize="14"
+										FontWeight="SemiBold"
+										Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+										TextWrapping="Wrap" />
+									<controls:MarkdownTextBlock
+										MarkdownText="{TemplateBinding Description}"
+										FontSize="12"
+										Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+										IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+										TextWrapping="Wrap" />
 								</StackPanel>
-
-								<ContentPresenter Grid.Column="1"
-												  Content="{TemplateBinding HeaderContent}"
-												  VerticalAlignment="Center"
-											      HorizontalAlignment="Right"
-												  Margin="16,0,0,0"/>
+								<ContentPresenter
+									Grid.Column="1"
+									Content="{TemplateBinding HeaderContent}"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Right"
+									Margin="16,0,0,0" />
 							</Grid>
 						</Border>
 
-						<Border Name="PART_ContentContainer" 
+						<Border Name="PART_ContentContainer"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								ClipToBounds="True">
 							<Border.Transitions>
 								<Transitions>
-									<DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut"/>
-									<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="LinearEasing"/>
+									<DoubleTransition Property="Height"  Duration="0:0:0.25" Easing="CubicEaseOut" />
+									<DoubleTransition Property="Opacity" Duration="0:0:0.2"  Easing="LinearEasing" />
 								</Transitions>
 							</Border.Transitions>
-
 							<ContentPresenter Name="PART_ContentPresenter"
 											  Content="{TemplateBinding Content}"
-											  Padding="16"/>
+											  Padding="16" />
 						</Border>
 					</StackPanel>
 				</Border>
@@ -66,205 +203,181 @@
 	</Style>
 
 	<Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=True] Border#PART_ContentContainer">
-		<Setter Property="Opacity" Value="1" />
-		<Setter Property="BorderThickness" Value="0,1,0,0" />
+		<Setter Property="Opacity"          Value="1" />
+		<Setter Property="BorderThickness"  Value="0,1,0,0" />
 	</Style>
-
 	<Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=False] Border#PART_ContentContainer">
-		<Setter Property="Opacity" Value="0" />
-		<Setter Property="Height" Value="0" />
-		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="Opacity"          Value="0" />
+		<Setter Property="Height"           Value="0" />
+		<Setter Property="BorderThickness"  Value="0" />
 	</Style>
-
 	<Style Selector="controls|CardExpander.NoUserExpansion:pointerover">
 		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
 	</Style>
 
 	<Style Selector="AvaloniaEdit|TextEditor">
-        <Setter Property="Foreground" Value="{DynamicResource NewTextEditorForeground}" />
-        <Setter Property="Background" Value="{DynamicResource NewTextEditorBackground}" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="4">
-                    <ScrollViewer Name="PART_ScrollViewer"
-                                  Padding="{TemplateBinding Padding}"
-                                  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
-                                  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
-                                  AllowAutoHide="True">
-                    </ScrollViewer>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-
-    <Style Selector="AvaloniaEdit|TextEditor[WordWrap=True] /template/ ScrollViewer#PART_ScrollViewer">
-        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
-    </Style>
+		<Setter Property="Foreground" Value="{DynamicResource NewTextEditorForeground}" />
+		<Setter Property="Background" Value="{DynamicResource NewTextEditorBackground}" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="6">
+					<ScrollViewer Name="PART_ScrollViewer"
+								  Padding="{TemplateBinding Padding}"
+								  HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
+								  VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
+								  AllowAutoHide="True" />
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="AvaloniaEdit|TextEditor[WordWrap=True] /template/ ScrollViewer#PART_ScrollViewer">
+		<Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+	</Style>
 
 	<Style Selector="DataGrid">
-    <Setter Property="Background" Value="{DynamicResource NormalDarkAndLightBackground}" />
-    <Setter Property="BorderThickness" Value="1" />
-    <Setter Property="GridLinesVisibility" Value="Horizontal" />
-    <Setter Property="HorizontalGridLinesBrush" Value="#11000000" />
-    <Setter Property="VerticalGridLinesBrush" Value="Transparent" />
+		<Setter Property="Background"           Value="Transparent" />
+		<Setter Property="BorderThickness"      Value="1" />
+		<Setter Property="GridLinesVisibility"  Value="Horizontal" />
+		<Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource FrostBorderSubtle}" />
+		<Setter Property="VerticalGridLinesBrush"   Value="Transparent" />
 
-    <Style Selector="^ DataGridColumnHeader">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        <Setter Property="Height" Value="30" />
-        <Setter Property="Padding" Value="8,0,12,0" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="FontWeight" Value="SemiBold" />
-        
-        <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-        </Style>
-    </Style>
+		<Style Selector="^ DataGridColumnHeader">
+			<Setter Property="Background"    Value="{DynamicResource ControlFillColorTertiaryBrush}" />
+			<Setter Property="Foreground"    Value="{DynamicResource TextFillColorPrimaryBrush}" />
+			<Setter Property="Height"        Value="32" />
+			<Setter Property="Padding"       Value="8,0,12,0" />
+			<Setter Property="BorderBrush"   Value="{DynamicResource FrostBorderDefault}" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="FontWeight"    Value="SemiBold" />
+			<Style Selector="^:pointerover">
+				<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+			</Style>
+		</Style>
 
-    <Style Selector="^ DataGridCell">
-        <Setter Property="Height" Value="30" />
-        <Setter Property="Padding" Value="6,0,6,0" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-
-        <Style Selector="^:pointerover">
-            <Setter Property="Background" Value="#14000000" />
-        </Style>
-    </Style>
-</Style>
-
-    <Style Selector="controls|IconButton.nav-button">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="12,0" />
-        <Setter Property="MinWidth" Value="64" />
-        <Setter Property="Height" Value="48" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="PART_LayoutRoot"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        Margin="4,2"
-                        ClipToBounds="True"> 
-                    
-                    <StackPanel Orientation="Horizontal" 
-                                VerticalAlignment="Center" 
-                                Spacing="12">
-                        
-                        <Grid Width="{TemplateBinding IconSize}" 
-                              Height="{TemplateBinding IconSize}" 
-                              VerticalAlignment="Center">
-                            <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Width="{TemplateBinding IconSize}"
-                                                Height="{TemplateBinding IconSize}"
-                                                IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-
-                            <Path Data="{TemplateBinding IconData}"
-                                  Fill="{TemplateBinding Foreground}"
-                                  Width="{TemplateBinding IconSize}"
-                                  Height="{TemplateBinding IconSize}"
-                                  Stretch="Uniform">
-                                <Path.IsVisible>
-                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
-                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
-                                    </MultiBinding>
-                                </Path.IsVisible>
-                            </Path>
-                        </Grid>
-
-                        <TextBlock Text="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"
-                                   FontSize="14"
-                                   FontWeight="Medium"
-                                   VerticalAlignment="Center"
-                                   Foreground="{TemplateBinding Foreground}"
-                                   IsVisible="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                    </StackPanel>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-
-    <Style Selector="controls|IconButton.nav-button:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
-    </Style>
-
-    <Style Selector="controls|IconButton.nav-button.Selected /template/ Border#PART_LayoutRoot">
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBackground}" />
-        <Setter Property="BorderThickness" Value="3,0,0,0" />
-    </Style>
+		<Style Selector="^ DataGridCell">
+			<Setter Property="Height"           Value="32" />
+			<Setter Property="Padding"          Value="8,0" />
+			<Setter Property="Background"       Value="Transparent" />
+			<Setter Property="BorderThickness"  Value="0" />
+			<Setter Property="Foreground"       Value="{DynamicResource TextFillColorPrimaryBrush}" />
+			<Style Selector="^:pointerover">
+				<Setter Property="Background" Value="{DynamicResource FrostAccentSubtleBrush}" />
+			</Style>
+		</Style>
+	</Style>
 
 	<Style Selector="ListBox">
-        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Margin" Value="0,4" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="PART_RootBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True">
-                    <ScrollViewer Name="PART_ScrollViewer"
-                                  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
- 	                              HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-	                              AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}">
-	                    <ItemsPresenter Name="PART_ItemsPresenter"
-	                                    ItemsPanel="{TemplateBinding ItemsPanel}"
-	                                    Margin="{TemplateBinding Padding}" />
-	                </ScrollViewer>
-	            </Border>
-	       </ControlTemplate>
-	   </Setter>
+		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderSubtle}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="Margin"          Value="0,4" />
+		<Setter Property="Padding"         Value="0" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PART_RootBorder"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						ClipToBounds="True">
+					<ScrollViewer Name="PART_ScrollViewer"
+								  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+								  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+								  AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}">
+						<ItemsPresenter Name="PART_ItemsPresenter"
+										ItemsPanel="{TemplateBinding ItemsPanel}"
+										Margin="{TemplateBinding Padding}" />
+					</ScrollViewer>
+				</Border>
+			</ControlTemplate>
+		</Setter>
 	</Style>
 
 	<Style Selector="cc|CompletionListBox">
- 	   <Setter Property="Background" Value="{DynamicResource CompletionListBackgroundBrush}" />
- 	   <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
- 	   <Setter Property="BorderThickness" Value="1" />
- 	   <Setter Property="CornerRadius" Value="4" />
- 	   <Setter Property="Padding" Value="0" />
- 	   <Setter Property="ClipToBounds" Value="True" />
+		<Setter Property="Background"      Value="{DynamicResource CompletionListBackgroundBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="Padding"         Value="0" />
+		<Setter Property="ClipToBounds"    Value="True" />
 	</Style>
-
 	<Style Selector="cc|CompletionListBox ListBoxItem">
-  	  <Setter Property="Padding" Value="4,2" />
+		<Setter Property="Padding" Value="4,2" />
+	</Style>
+	<Style Selector="cc|CompletionList">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<cc:CompletionListBox Name="PART_ListBox">
+					<cc:CompletionListBox.ItemTemplate>
+						<DataTemplate x:DataType="cc:ICompletionData">
+							<StackPanel Orientation="Horizontal" Margin="0">
+								<Image Source="{Binding Image}" Width="16" Height="16" Margin="0,0,4,0" />
+								<ContentControl Content="{Binding Content}" />
+							</StackPanel>
+						</DataTemplate>
+					</cc:CompletionListBox.ItemTemplate>
+				</cc:CompletionListBox>
+			</ControlTemplate>
+		</Setter>
 	</Style>
 
-	<Style Selector="cc|CompletionList">
-  	  <Setter Property="Template">
-   	     <ControlTemplate>
-    	        <cc:CompletionListBox Name="PART_ListBox">
-     	           <cc:CompletionListBox.ItemTemplate>
-          	          <DataTemplate x:DataType="cc:ICompletionData">
-            	            <StackPanel Orientation="Horizontal" Margin="0">
-                 	           <Image Source="{Binding Image}"
-                         	          Width="16"
-                          	          Height="16"
-                          	          Margin="0,0,2,0" />
-                            	<ContentControl Content="{Binding Content}" />
-                        	</StackPanel>
-                	</DataTemplate>
-                </cc:CompletionListBox.ItemTemplate>
-          	  </cc:CompletionListBox>
-      	  </ControlTemplate>
-  	  </Setter>
+	<Style Selector="ComboBox">
+		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="MinHeight"       Value="32" />
+		<Setter Property="Padding"         Value="10,5" />
+		<Setter Property="FontSize"        Value="14" />
+		<Setter Property="Foreground"      Value="{DynamicResource TextFillColorPrimaryBrush}" />
 	</Style>
+
+	<Style Selector="controls|OptionControl">
+		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding"         Value="16,12" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						Padding="{TemplateBinding Padding}"
+						CornerRadius="6"
+						MinHeight="64"
+						Margin="0,2">
+					<Grid ColumnDefinitions="*,Auto">
+						<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
+							<StackPanel Orientation="Horizontal" Spacing="6">
+								<TextBlock
+									Text="{TemplateBinding Header}"
+									FontSize="14"
+									FontWeight="SemiBold"
+									VerticalAlignment="Center"
+									Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+							</StackPanel>
+							<controls:MarkdownTextBlock
+								MarkdownText="{TemplateBinding Description}"
+								FontSize="12"
+								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								TextWrapping="Wrap"
+								IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+						</StackPanel>
+						<ContentPresenter
+							Grid.Column="1"
+							Content="{TemplateBinding InnerContent}"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Right"
+							Margin="16,0,0,0" />
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="controls|OptionControl:pointerover">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+	</Style>
+
 </Styles>

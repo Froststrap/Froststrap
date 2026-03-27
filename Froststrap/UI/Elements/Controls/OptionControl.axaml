@@ -1,71 +1,55 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
-        xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ic="using:IconPacks.Avalonia.Material"
-        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
+<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:resources="clr-namespace:Froststrap.Resources"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:ic="using:IconPacks.Avalonia.Material"
+		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
 
-    <Style Selector="controls|OptionControl">
-        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="16,12" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}"
-                        CornerRadius="4"
-                        Margin="0,4">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{TemplateBinding Header}"
-                                           FontSize="14"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
+	<Design.PreviewWith>
+		<Border Background="{DynamicResource ApplicationBackgroundColor}" Padding="40" MinWidth="600" MinHeight="500">
+			<StackPanel Spacing="16">
+				<TextBlock Text="OptionControl Previews" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
-                                <controls:Hyperlink Url="{TemplateBinding HelpLink}"
-                                                    Margin="6,2,0,0"
-                                                    VerticalAlignment="Center"
-                                                    ClipToBounds="False"
-                                                    IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                    ToolTip.Tip="{x:Static resources:Strings.Menu_MoreInfo}">
-                                    <ic:PackIconMaterial Name="HelpIcon"
-                                          Width="18" Height="18"
-                                          Kind="HelpCircleOutline"
-                                          Opacity="0.8">
-                                        <ic:PackIconMaterial.Transitions>
-                                            <Transitions>
-                                                <DoubleTransition Property="Opacity" Duration="0:0:0.2" />
-                                                <BrushTransition Property="Foreground" Duration="0:0:0.2" />
-                                                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
-                                            </Transitions>
-                                        </ic:PackIconMaterial.Transitions>
-                                    </ic:PackIconMaterial>
-                                </controls:Hyperlink>
-                            </StackPanel>
+				<!-- With ToggleSwitch and description -->
+				<controls:OptionControl 
+					Header="Enable Feature" 
+					Description="This setting controls an important feature. Enable it carefully.">
+					<ToggleSwitch IsChecked="True" />
+				</controls:OptionControl>
 
-                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
-                                       FontSize="12"
-                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                       TextWrapping="Wrap"
-                                       IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                        </StackPanel>
+				<!-- With description only -->
+				<controls:OptionControl 
+					Header="Another Setting" 
+					Description="This is a setting with a description to explain what it does.">
+					<TextBlock Text="Value" />
+				</controls:OptionControl>
 
-                        <ContentPresenter Grid.Column="1"
-                                          Content="{TemplateBinding InnerContent}"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Right"
-                                          Margin="16,0,0,0"/>
-                    </Grid>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
+				<!-- Without description -->
+				<controls:OptionControl 
+					Header="Simple Setting">
+					<ComboBox Width="150" SelectedIndex="0">
+						<ComboBoxItem>Option A</ComboBoxItem>
+						<ComboBoxItem>Option B</ComboBoxItem>
+						<ComboBoxItem>Option C</ComboBoxItem>
+					</ComboBox>
+				</controls:OptionControl>
 
-    <Style Selector="controls|OptionControl:pointerover">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-    </Style>
-    
+				<!-- With help link -->
+				<controls:OptionControl 
+					Header="Setting with Help" 
+					Description="Hover over the help icon for more information."
+					HelpLink="https://example.com">
+					<ToggleSwitch />
+				</controls:OptionControl>
+
+				<!-- Disabled state -->
+				<controls:OptionControl 
+					Header="Disabled Setting" 
+					Description="This setting is currently disabled."
+					IsEnabled="False">
+					<ToggleSwitch />
+				</controls:OptionControl>
+			</StackPanel>
+		</Border>
+	</Design.PreviewWith>
 </Styles>
