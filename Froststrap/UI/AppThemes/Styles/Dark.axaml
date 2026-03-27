@@ -1,5 +1,7 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!-- Square progress bar (unchanged functional style) -->
 	<Style Selector="ProgressBar.Square">
 		<Setter Property="Background" Value="{StaticResource PrimaryBackgroundColor}" />
 		<Setter Property="Foreground" Value="{StaticResource NewTextEditorForeground}" />
@@ -10,10 +12,9 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="0" />
-
 					<Border Name="PART_Indicator"
-                           HorizontalAlignment="Left"
-                           Background="{TemplateBinding Foreground}">
+                            HorizontalAlignment="Left"
+                            Background="{TemplateBinding Foreground}">
 						<Border.Transitions>
 							<Transitions>
 								<DoubleTransition Property="Width" Duration="0:0:0.1" />

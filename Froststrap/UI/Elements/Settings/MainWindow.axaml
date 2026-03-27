@@ -25,7 +25,7 @@
 			Icon="avares://Froststrap/Froststrap.ico"
 			Grid.Row="0"
 			Height="32"
-			Background="{DynamicResource LayerFillColorDefaultBrush}" />
+			Background="{DynamicResource FrostSidebarBackground}" />
 
 		<Panel
 			Name="NotificationPanel"
@@ -36,126 +36,140 @@
 			MaxWidth="450"
 			ZIndex="1000" />
 
-		<!--  Main Navigation and Content  -->
-		<Grid
-			Name="MainGrid"
-			Grid.Row="1"
-			ColumnDefinitions="200,*">
-<Border Grid.Column="0"
-        Background="{DynamicResource LayerFillColorDefaultBrush}"
-        BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
-        BorderThickness="0,0,1,0">
-    
-    <Grid RowDefinitions="*, Auto">
-        
-        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-            <StackPanel Spacing="0">
-                <controls:IconButton
-                    Classes="nav-button"
-                    Command="{Binding NavigateToIntegrationsCommand}"
-                    Tag="integrations"
-                    Icon="Connection"
-                    IconSize="24"
-                    Content="{x:Static resources:Strings.Menu_Integrations_Title}" />
+		<Grid Name="MainGrid" Grid.Row="1" ColumnDefinitions="220,*">
 
-                <controls:IconButton
-                    Classes="nav-button"
-                    Command="{Binding NavigateToBehaviourCommand}"
-                    Tag="behaviour"
-                    Icon="CogOutline"
-                    IconSize="24"
-                    Content="{x:Static resources:Strings.Menu_Behaviour_Title}" />
+			<Border
+				Grid.Column="0"
+				Background="{DynamicResource FrostSidebarBackground}"
+				BorderBrush="{DynamicResource FrostBorderDefault}"
+				BorderThickness="0,0,1,0">
 
-                <controls:IconButton
-                    Classes="nav-button"
-                    Command="{Binding NavigateToPresetModsCommand}"
-                    Tag="mods"
-                    Icon="PuzzleOutline"
-                    IconSize="24"
-                    Content="Preset Mods" />
+				<Grid RowDefinitions="*,Auto">
 
-                <controls:IconButton
-                    Classes="nav-button"
-                    Command="{Binding NavigateToFastFlagsCommand}"
-                    Tag="fastflags"
-                    Icon="FlagOutline"
-                    IconSize="24"
-                    Content="{x:Static resources:Strings.Menu_FastFlags_Title}" />
+					<ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+						<StackPanel Spacing="0" Margin="8,6,8,0">
 
-                <controls:IconButton
-                    Classes="nav-button"
-                    Command="{Binding NavigateToAppearanceCommand}"
-                    Tag="appearance"
-                    Icon="PaletteOutline"
-                    IconSize="24"
-                    Content="{x:Static resources:Strings.Menu_Appearance_Title}" />
+							<!-- Section label: Main -->
+							<TextBlock
+								Text="MAIN"
+								FontSize="11"
+								FontWeight="SemiBold"
+								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+								Margin="10,8,10,4"
+								Opacity="0.7" />
 
-                <controls:IconButton
-                    Classes="nav-button"
-                    Command="{Binding NavigateToRegionSelectorCommand}"
-                    Tag="regionselector"
-                    Icon="Earth"
-                    IconSize="24"
-                    Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToIntegrationsCommand}"
+								Tag="integrations"
+								Icon="Connection"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_Integrations_Title}" />
 
-                <controls:IconButton
-                    Name="gbs"
-                    Classes="nav-button"
-                    Command="{Binding NavigateToGlobalSettingsCommand}"
-                    Tag="globalsettings"
-                    Icon="SquareEditOutline"
-                    IconSize="24"
-                    Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToBehaviourCommand}"
+								Tag="behaviour"
+								Icon="CogOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_Behaviour_Title}" />
 
-                <controls:IconButton
-                    Classes="nav-button"
-                    Command="{Binding NavigateToShortcutsCommand}"
-                    Tag="shortcuts"
-                    Icon="LinkBoxOutline"
-                    IconSize="24"
-                    Content="{x:Static resources:Strings.Common_Shortcuts}" />
-            </StackPanel>
-        </ScrollViewer>
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToPresetModsCommand}"
+								Tag="mods"
+								Icon="PuzzleOutline"
+								IconSize="16"
+								Content="Preset Mods" />
 
-        <StackPanel Grid.Row="1" Spacing="0" VerticalAlignment="Bottom" Margin="0,0,0,8">
-            <Separator Margin="8,8" Background="{DynamicResource DividerStrokeColorDefaultBrush}" />
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToFastFlagsCommand}"
+								Tag="fastflags"
+								Icon="FlagOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_FastFlags_Title}" />
 
-            <controls:IconButton
-                Classes="nav-button"
-                Command="{Binding OpenAccountManagerCommand}"
-                Icon="AccountMultipleOutline"
-                IconSize="24"
-                Content="{x:Static resources:Strings.Menu_AccountManager_Title}" />
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToAppearanceCommand}"
+								Tag="appearance"
+								Icon="PaletteOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_Appearance_Title}" />
 
-            <controls:IconButton 
-                Classes="nav-button"
-                Command="{Binding NavigateToChannelsCommand}"
-                Tag="channels"
-                Icon="TuneVertical"
-                IconSize="24"
-                Content="{x:Static resources:Strings.Common_Settings}" />
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToRegionSelectorCommand}"
+								Tag="regionselector"
+								Icon="Earth"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
 
-            <controls:IconButton
-                Classes="nav-button"
-                Command="{Binding OpenAboutCommand}"
-                Icon="InformationOutline"
-                IconSize="24"
-                Content="{x:Static resources:Strings.Menu_About_Title}" />
-        </StackPanel>
-    </Grid>
-</Border>
+							<controls:IconButton
+								Name="gbs"
+								Classes="nav-button"
+								Command="{Binding NavigateToGlobalSettingsCommand}"
+								Tag="globalsettings"
+								Icon="SquareEditOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
+
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToShortcutsCommand}"
+								Tag="shortcuts"
+								Icon="LinkBoxOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Common_Shortcuts}" />
+
+						</StackPanel>
+					</ScrollViewer>
+
+					<StackPanel Grid.Row="1" Spacing="0" Margin="8,0,8,8">
+						<Separator
+							Margin="2,6"
+							Background="{DynamicResource FrostBorderDefault}"
+							Height="1" />
+
+						<controls:IconButton
+							Classes="nav-button"
+							Command="{Binding OpenAccountManagerCommand}"
+							Icon="AccountMultipleOutline"
+							IconSize="16"
+							Content="{x:Static resources:Strings.Menu_AccountManager_Title}" />
+
+						<controls:IconButton
+							Classes="nav-button"
+							Command="{Binding NavigateToChannelsCommand}"
+							Tag="channels"
+							Icon="TuneVertical"
+							IconSize="16"
+							Content="{x:Static resources:Strings.Common_Settings}" />
+
+						<controls:IconButton
+							Classes="nav-button"
+							Command="{Binding OpenAboutCommand}"
+							Icon="InformationOutline"
+							IconSize="16"
+							Content="{x:Static resources:Strings.Menu_About_Title}" />
+					</StackPanel>
+
+				</Grid>
+			</Border>
 
 			<Grid Grid.Column="1" RowDefinitions="Auto,*">
+
 				<Border
 					Grid.Row="0"
-					Padding="20,24,20,8"
+					Padding="24,24,24,16"
 					Background="{DynamicResource LayerFillColorAltBrush}"
-					BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+					BorderBrush="{DynamicResource FrostBorderDefault}"
 					BorderThickness="0,0,0,1">
 					<StackPanel>
 						<ItemsControl
 							ItemsSource="{Binding BreadcrumbItems}"
-							Margin="0,0,0,12"
+							Margin="0,0,0,10"
 							IsVisible="{Binding HasBreadcrumbs}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
@@ -172,21 +186,20 @@
 											Background="Transparent"
 											BorderThickness="0"
 											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-											FontSize="24"
+											FontSize="20"
 											FontWeight="SemiBold"
 											Padding="0"
 											IsVisible="{Binding !IsLast}" />
 										<TextBlock
-											Text=">"
+											Text="›"
 											VerticalAlignment="Center"
-											FontSize="24"
-											FontWeight="SemiBold"
+											FontSize="20"
 											Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 											IsVisible="{Binding !IsLast}" />
 										<TextBlock
 											Text="{Binding Content}"
 											VerticalAlignment="Center"
-											FontSize="24"
+											FontSize="20"
 											FontWeight="SemiBold"
 											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 											IsVisible="{Binding IsLast}" />
@@ -197,9 +210,9 @@
 
 						<TextBlock
 							x:Name="PageTitleText"
-							FontSize="24"
+							FontSize="20"
 							FontWeight="SemiBold"
-							Margin="0,0,0,12"
+							Margin="0,0,0,4"
 							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 							Text="{Binding CurrentPageTitle}"
 							IsVisible="{Binding ShowPageTitle}" />
@@ -209,10 +222,10 @@
 							FontSize="13"
 							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 							MarkdownText="{Binding CurrentPageDescription}"
-							Margin="0,0,0,4"
+							Margin="0,0,0,2"
 							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
-						<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,4" IsOpen="True" Message="FluentAvalonia so w lowkey" Severity="Warning" IsVisible="False" IsClosable="False" />
+						<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,0" IsOpen="True" Severity="Warning" IsVisible="False" IsClosable="False" />
 					</StackPanel>
 				</Border>
 
@@ -221,26 +234,27 @@
 					Grid.Row="1"
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Stretch"
-					Background="{DynamicResource LayerFillColorDefaultBrush}" />
+					Background="{DynamicResource ApplicationBackgroundColor}" />
 			</Grid>
 		</Grid>
 
 		<Border
 			Grid.Row="2"
-			Padding="12"
-			Background="{DynamicResource LayerFillColorDefaultBrush}"
-			BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}"
+			Height="56"
+			Padding="16,0"
+			Background="{DynamicResource FrostSidebarBackground}"
+			BorderBrush="{DynamicResource FrostBorderDefault}"
 			BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
-				<StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+
+				<StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="10">
 					<ToggleSwitch
 						IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
 						OffContent=""
 						OnContent="" />
 					<TextBlock
-						Margin="8,0,0,0"
 						VerticalAlignment="Center"
-						FontWeight="Medium"
+						FontSize="14"
 						Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 						Text="{x:Static resources:Strings.Menu_TestMode}" />
 				</StackPanel>
@@ -250,25 +264,38 @@
 					Grid.ColumnSpan="4"
 					Orientation="Horizontal"
 					Spacing="8">
+
 					<Button
 						Classes="accent"
+						Height="36"
+						Padding="20,0"
 						Command="{Binding SaveAndLaunchSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}"/>
+						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
+
 					<Button
 						Classes="accent"
+						Height="36"
+						Padding="20,0"
 						Command="{Binding RestartAppCommand}"
-						Content="{x:Static resources:Strings.Menu_Restart}"/>
+						Content="{x:Static resources:Strings.Menu_Restart}" />
+
 					<Button
 						Classes="accent"
+						Height="36"
+						Padding="20,0"
 						Command="{Binding SaveSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_Save}"/>
+						Content="{x:Static resources:Strings.Menu_Save}" />
+
 					<Button
-						Background="{DynamicResource LayerFillColorAltBrush}"
+						Classes="FrostSubtle"
+						Height="36"
+						Padding="20,0"
 						Command="{Binding CloseWindowCommand}"
-						Content="{x:Static resources:Strings.Common_Close}"
-						Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+						Content="{x:Static resources:Strings.Common_Close}" />
+
 				</StackPanel>
 			</Grid>
 		</Border>
+
 	</Grid>
 </base:AvaloniaWindow>

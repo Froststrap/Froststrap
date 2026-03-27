@@ -14,108 +14,152 @@
     mc:Ignorable="d">
 
     <ScrollViewer>
-        <StackPanel Margin="14">
-         <controls:CardAction 
-            Icon="FileDocumentEditOutline" 
-            Header="{x:Static resources:Strings.Menu_FastFlagEditor_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_Editor_Description}"
-            Command="{Binding OpenFastFlagEditorCommand}"/>
+        <StackPanel Margin="24,16,24,24" Spacing="0">
 
-        <controls:OptionControl 
-            x:Name="ManagerEnabled"
-            Header="{x:Static resources:Strings.Menu_FastFlags_ManagerEnabled_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_ManagerEnabled_Description}">
-            <ToggleSwitch IsChecked="{Binding UseFastFlagManager, Mode=TwoWay}" />
-        </controls:OptionControl>
+            <controls:CardAction
+                Icon="FileDocumentEditOutline"
+                Header="{x:Static resources:Strings.Menu_FastFlagEditor_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Editor_Description}"
+                Command="{Binding OpenFastFlagEditorCommand}"
+                Margin="0,0,0,8" />
 
-        <controls:OptionControl 
-            x:Name="Reset"
-            Header="{x:Static resources:Strings.Menu_FastFlags_Reset_Title}">
-            <ToggleSwitch IsChecked="{Binding ResetConfiguration, Mode=TwoWay}" />
-        </controls:OptionControl>
+            <controls:OptionControl
+                x:Name="ManagerEnabled"
+                Header="{x:Static resources:Strings.Menu_FastFlags_ManagerEnabled_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_ManagerEnabled_Description}">
+                <ToggleSwitch IsChecked="{Binding UseFastFlagManager, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-        <Separator Margin="0,8,0,4"/>
+            <controls:OptionControl
+                x:Name="Reset"
+                Header="{x:Static resources:Strings.Menu_FastFlags_Reset_Title}">
+                <ToggleSwitch IsChecked="{Binding ResetConfiguration, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-        <TextBlock Text="{x:Static resources:Strings.Common_Presets}" FontSize="20" FontWeight="Bold"/>
+            <TextBlock
+                Text="{x:Static resources:Strings.Common_Presets}"
+                FontSize="12"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Margin="0,20,0,8"
+                Opacity="1" />
 
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Title}" 
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Description}">
-            <ComboBox Margin="5,0,0,0" Padding="10,5,10,5" Width="200" ItemsSource="{Binding MSAALevels.Keys, Mode=OneTime}" SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </controls:OptionControl>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_MSAA_Description}">
+                <ComboBox
+                    Margin="0"
+                    Padding="10,5"
+                    Width="120"
+                    ItemsSource="{Binding MSAALevels.Keys, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </controls:OptionControl>
 
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_PauseVoxelizer_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_PauseVoxelizer_Description}">
-            <ToggleSwitch IsChecked="{Binding PauseVoxelizer, Mode=TwoWay}" />
-        </controls:OptionControl>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_PauseVoxelizer_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_PauseVoxelizer_Description}">
+                <ToggleSwitch IsChecked="{Binding PauseVoxelizer, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_GraySky_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_GraySky_Description}">
-            <ToggleSwitch IsChecked="{Binding GraySky, Mode=TwoWay}" />
-        </controls:OptionControl>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_GraySky_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_GraySky_Description}">
+                <ToggleSwitch IsChecked="{Binding GraySky, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RemoveGrass_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RemoveGrass_Description}">
-            <ToggleSwitch IsChecked="{Binding RemoveGrass, Mode=TwoWay}" />
-        </controls:OptionControl>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RemoveGrass_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RemoveGrass_Description}">
+                <ToggleSwitch IsChecked="{Binding RemoveGrass, Mode=TwoWay}" />
+            </controls:OptionControl>
 
+            <controls:CardExpander
+                IsExpanded="{Binding Path=LowPolyMeshesEnabled, Mode=OneWay}"
+                Classes="NoUserExpansion"
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Description}">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding LowPolyMeshesEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+                <StackPanel Margin="0,8,0,0" Spacing="8">
+                    <TextBlock
+                        Padding="4"
+                        Text="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Information}"
+                        FontSize="13"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="{x:Static resources:Strings.Common_Performance}"
+                            FontSize="13"
+                            VerticalAlignment="Center" />
+                        <Slider
+                            Grid.Column="1"
+                            Margin="12,0"
+                            Minimum="0"
+                            Maximum="9"
+                            TickFrequency="1"
+                            IsSnapToTickEnabled="True"
+                            Value="{Binding LowPolyMeshesLevel, Mode=TwoWay}" />
+                        <TextBlock
+                            Grid.Column="2"
+                            Text="{x:Static resources:Strings.Common_Quality}"
+                            FontSize="13"
+                            VerticalAlignment="Center" />
+                    </Grid>
+                </StackPanel>
+            </controls:CardExpander>
 
-        <controls:CardExpander IsExpanded="{Binding Path=LowPolyMeshesEnabled, Mode=OneWay}" Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Title}" Description="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Description}">
-            <controls:CardExpander.HeaderContent>
-                <ToggleSwitch Grid.Column="1" IsChecked="{Binding LowPolyMeshesEnabled, Mode=TwoWay}" />
-            </controls:CardExpander.HeaderContent>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_FixDisplayScaling_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_FixDisplayScaling_Description}"
+                HelpLink="https://bloxstraplabs.com/wiki/features/engine-settings/#preserving-rendering-quality">
+                <ToggleSwitch IsChecked="{Binding FixDisplayScaling, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-            <StackPanel Margin="0,8,0,0">
-                <TextBlock Padding="8" Text="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Information}" TextAlignment="Center" />
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    <TextBlock Text="{x:Static resources:Strings.Common_Performance}" Grid.Column="0" />
-                    <Slider Grid.Column="1" Margin="8,0,8,0" Minimum="0" Maximum="9" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding LowPolyMeshesLevel, Mode=TwoWay}" />
-                    <TextBlock Text="{x:Static resources:Strings.Common_Quality}" Grid.Column="2" />
-                </Grid>
-            </StackPanel>
-        </controls:CardExpander>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Description}"
+                HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#rendering-mode">
+                <ComboBox
+                    Width="160"
+                    Margin="0"
+                    Padding="10,5"
+                    ItemsSource="{Binding RenderingModes.Keys, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedRenderingMode, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </controls:OptionControl>
 
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_FixDisplayScaling_Title}" 
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_FixDisplayScaling_Description}" 
-            HelpLink="https://bloxstraplabs.com/wiki/features/engine-settings/#preserving-rendering-quality">
-            <ToggleSwitch IsChecked="{Binding FixDisplayScaling, Mode=TwoWay}" />
-        </controls:OptionControl>
-
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Description}"
-            HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#rendering-mode">
-            <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding RenderingModes.Keys, Mode=OneTime}" SelectedItem="{Binding SelectedRenderingMode, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </controls:OptionControl>
-
-        <controls:OptionControl 
-            Header="{x:Static resources:Strings.Menu_FastFlags_Presets_OverrideGraphicQuality_Title}"
-            Description="{x:Static resources:Strings.Menu_FastFlags_Presets_OverrideGraphicQuality_Description}"
-            HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#override-graphic-level">
-            <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding QualityLevels.Keys , Mode=OneTime}" SelectedItem="{Binding SelectedQualityLevel, Mode=TwoWay}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-        </controls:OptionControl>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_FastFlags_Presets_OverrideGraphicQuality_Title}"
+                Description="{x:Static resources:Strings.Menu_FastFlags_Presets_OverrideGraphicQuality_Description}"
+                HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#override-graphic-level">
+                <ComboBox
+                    Width="160"
+                    Margin="0"
+                    Padding="10,5"
+                    ItemsSource="{Binding QualityLevels.Keys, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedQualityLevel, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </controls:OptionControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
