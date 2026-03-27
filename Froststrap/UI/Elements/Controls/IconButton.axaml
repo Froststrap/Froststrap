@@ -1,103 +1,92 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ic="using:IconPacks.Avalonia.Material"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
-    <Style Selector="controls|IconButton">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="12,6" />
-        <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Transitions">
-            <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.1" />
-            </Transitions>
-        </Setter>
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="PART_LayoutRoot"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
-                        <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
-                                            Foreground="{TemplateBinding Foreground}"
-                                            Width="{TemplateBinding IconSize}"
-                                            Height="{TemplateBinding IconSize}"
-                                            VerticalAlignment="Center"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+	<Style Selector="controls|IconButton">
+		<Setter Property="Background"      Value="{DynamicResource ControlFillColorDefaultBrush}" />
+		<Setter Property="Foreground"      Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding"         Value="12,6" />
+		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="Transitions">
+			<Transitions>
+				<BrushTransition Property="Background" Duration="0:0:0.1" />
+			</Transitions>
+		</Setter>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="PART_LayoutRoot"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						Padding="{TemplateBinding Padding}">
 
-                        <Path Data="{TemplateBinding IconData}"
-                              Fill="{TemplateBinding Foreground}"
-                              Width="{TemplateBinding IconSize}"
-                              Height="{TemplateBinding IconSize}"
-                              Stretch="Uniform"
-                              VerticalAlignment="Center">
-                            <Path.IsVisible>
-                                <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
-                                </MultiBinding>
-                            </Path.IsVisible>
-                        </Path>
-                        
-                        <ContentPresenter Content="{TemplateBinding Content}"
-                                          VerticalAlignment="Center"
-                                          HorizontalAlignment="Center"
-                                          IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-                    </StackPanel>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+						<ic:PackIconMaterial
+							Kind="{TemplateBinding Icon}"
+							Foreground="{TemplateBinding Foreground}"
+							Width="{TemplateBinding IconSize}"
+							Height="{TemplateBinding IconSize}"
+							VerticalAlignment="Center"
+							IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
-    <Style Selector="controls|IconButton:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-    </Style>
+						<Path
+							Data="{TemplateBinding IconData}"
+							Fill="{TemplateBinding Foreground}"
+							Width="{TemplateBinding IconSize}"
+							Height="{TemplateBinding IconSize}"
+							Stretch="Uniform"
+							VerticalAlignment="Center">
+							<Path.IsVisible>
+								<MultiBinding Converter="{x:Static BoolConverters.And}">
+									<Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}" />
+									<Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon"     Converter="{x:Static ObjectConverters.IsNull}" />
+								</MultiBinding>
+							</Path.IsVisible>
+						</Path>
 
-    <Style Selector="controls|IconButton:pressed">
-        <Setter Property="RenderTransform" Value="scale(0.98)" />
-    </Style>
+						<ContentPresenter
+							Content="{TemplateBinding Content}"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							IsVisible="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}" />
+					</StackPanel>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
 
-    <Style Selector="controls|IconButton:disabled /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorDisabledBrush}" />
-        <Setter Property="Opacity" Value="0.5" />
-    </Style>
+	<Style Selector="controls|IconButton:pointerover /template/ Border#PART_LayoutRoot">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+	</Style>
+	<Style Selector="controls|IconButton:pressed">
+		<Setter Property="RenderTransform" Value="scale(0.98)" />
+	</Style>
+	<Style Selector="controls|IconButton:disabled /template/ Border#PART_LayoutRoot">
+		<Setter Property="Opacity" Value="0.4" />
+	</Style>
 
-    <Style Selector="controls|IconButton.Danger:not(:disabled)">
-        <Setter Property="Background" Value="#FF3B30" />
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="BorderBrush" Value="#E03026" />
-    </Style>
+	<!-- Danger variant -->
+	<Style Selector="controls|IconButton.Danger:not(:disabled)">
+		<Setter Property="Background"  Value="#BF2D20" />
+		<Setter Property="Foreground"  Value="White" />
+		<Setter Property="BorderBrush" Value="#992318" />
+	</Style>
+	<Style Selector="controls|IconButton.Danger:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+		<Setter Property="Background" Value="#D43326" />
+	</Style>
 
-    <Style Selector="controls|IconButton.Danger:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="#FF5247" />
-    </Style>
-
-    <Style Selector="controls|IconButton.Danger:disabled /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="#80FF3B30" />
-        <Setter Property="BorderBrush" Value="#80E03026" />
-    </Style>
-
-    <Style Selector="controls|IconButton.Primary">
-        <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" />
-        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
-    </Style>
-
-    <Style Selector="controls|IconButton.Primary:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushPointerOver}" />
-    </Style>
-
-    <Style Selector="controls|IconButton.Primary:disabled /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundDisabled}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushDisabled}" />
-    </Style>
-
+	<!-- Primary (accent) variant -->
+	<Style Selector="controls|IconButton.Primary">
+		<Setter Property="Background"  Value="{DynamicResource FrostAccentBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBrush}" />
+		<Setter Property="Foreground"  Value="#FFFFFF" />
+	</Style>
+	<Style Selector="controls|IconButton.Primary:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+		<Setter Property="Background"  Value="{DynamicResource FrostAccentTextBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentTextBrush}" />
+	</Style>
 </Styles>

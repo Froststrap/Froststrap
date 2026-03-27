@@ -1,61 +1,67 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:ic="using:IconPacks.Avalonia.Material">
 
-    <Style Selector="controls|CardAction">
-        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="16,12" />
-        <Setter Property="CornerRadius" Value="4" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Name="OuterBorder"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        Margin="0,4">
-                    <Grid ColumnDefinitions="Auto,*,Auto">
-                        
-                        <ic:PackIconMaterial Grid.Column="0"
-                                            Kind="{TemplateBinding Icon}"
-                                            Width="20" Height="20"
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"/>
+	<Style Selector="controls|CardAction">
+		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Padding"         Value="6,12" />
+		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="Cursor"          Value="Hand" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border Name="OuterBorder"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						CornerRadius="{TemplateBinding CornerRadius}"
+						Padding="{TemplateBinding Padding}"
+						MinHeight="64"
+						Margin="0,2">
+					<Grid ColumnDefinitions="Auto,*" Margin="0,0,8,0">
 
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="0">
-                            <TextBlock Text="{TemplateBinding Header}"
-                                       FontSize="14"
-                                       FontWeight="Normal"
-                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-                            
-                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
-                                       FontSize="12"
-                                       Margin="0,2,0,0"
-                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                       TextWrapping="Wrap" 
-                                       IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                        </StackPanel>
+						<Border
+							Grid.Column="0"
+							Width="36" Height="36"
+							CornerRadius="6"
+							Background="{DynamicResource FrostAccentSubtleBrush}"
+							BorderBrush="{DynamicResource FrostAccentBorderBrush}"
+							BorderThickness="1"
+							Margin="0,0,16,0"
+							VerticalAlignment="Center">
+							<ic:PackIconMaterial
+								Kind="{TemplateBinding Icon}"
+								Width="16" Height="16"
+								Foreground="{DynamicResource FrostAccentTextBrush}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center" />
+						</Border>
 
-                        <Path Grid.Column="2" 
-                              Width="8" Height="12" 
-                              Margin="16,0,0,0"
-                              Data="M 1,1 L 5,6 L 1,11"
-                              Stroke="{DynamicResource TextFillColorTertiaryBrush}" 
-                              StrokeThickness="1.5" 
-                              StrokeLineCap="Round" 
-                              StrokeJoin="Round"
-                              VerticalAlignment="Center" />
-                    </Grid>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
+						<!-- Text -->
+						<StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3">
+							<TextBlock
+								Text="{TemplateBinding Header}"
+								FontSize="14"
+								FontWeight="SemiBold"
+								Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+							<controls:MarkdownTextBlock
+								MarkdownText="{TemplateBinding Description}"
+								FontSize="12"
+								Margin="0,0,0,0"
+								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								TextWrapping="Wrap"
+								IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+						</StackPanel>
 
-    <Style Selector="controls|CardAction:pointerover /template/ Border#OuterBorder">
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-    </Style>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="controls|CardAction:pointerover /template/ Border#OuterBorder">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+	</Style>
 </Styles>

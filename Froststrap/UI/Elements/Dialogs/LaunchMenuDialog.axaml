@@ -10,7 +10,7 @@
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
     x:DataType="vm:LaunchMenuViewModel"
     Title="Froststrap"
-    Width="580" SizeToContent="Height"
+    Width="640" SizeToContent="Height"
     CanResize="False"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -18,15 +18,15 @@
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*">
         <controls:TitleBar Grid.Row="0" Title="Froststrap" Icon="avares://Froststrap/Froststrap.ico" />
 
-        <Grid Grid.Row="1" Margin="20" ColumnDefinitions="240, *">
-            
-            <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="24">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="12">
-                    <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                    <StackPanel VerticalAlignment="Center">
-                        <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="24" FontWeight="Bold" />
+        <Grid Grid.Row="1" Margin="24" ColumnDefinitions="260, *" RowSpacing="24" ColumnSpacing="24">
+
+            <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="28">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
+                    <Image Width="72" Height="72" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                    <StackPanel VerticalAlignment="Center" Spacing="4">
+                        <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
                         <TextBlock Text="{Binding Version}" 
-                                   FontSize="12" 
+                                   FontSize="13" 
                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                     </StackPanel>
                 </StackPanel>
@@ -34,43 +34,56 @@
                 <StackPanel HorizontalAlignment="Center" Spacing="8">
                     <controls:IconButton Icon="HelpCircleOutline" 
                                          Content="{x:Static resources:Strings.About_Title}" 
-                                         Command="{Binding LaunchAboutCommand}" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" />
-                    
+                                         Command="{Binding LaunchAboutCommand}" 
+                                         BorderBrush="Transparent" 
+                                         BorderThickness="0" 
+                                         Background="Transparent"
+                                         Padding="8,6" />
+
                     <controls:IconButton Icon="ChatProcessingOutline" 
                                          Content="{x:Static resources:Strings.LaunchMenu_Discord}" 
-                                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" CommandParameter="https://discord.gg/KdR9vpRcUN" BorderBrush="Transparent" BorderThickness="0" Background="Transparent" />
+                                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
+                                         CommandParameter="https://discord.gg/KdR9vpRcUN" 
+                                         BorderBrush="Transparent" 
+                                         BorderThickness="0" 
+                                         Background="Transparent"
+                                         Padding="8,6" />
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Column="1">
-                
-                <controls:CardAction Height="64"
+            <StackPanel Grid.Column="1" Spacing="6">
+
+                <controls:CardAction
                     Icon="PlayCircleOutline"
                     Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}"
-                    Command="{Binding LaunchRobloxCommand}" />
+                    Command="{Binding LaunchRobloxCommand}"
+                    Padding="16,14" />
 
-                <UniformGrid Columns="2">
-                    <controls:CardAction Height="64"
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <controls:CardAction 
+                        Grid.Column="0"
                         Icon="CogOutline"
                         Header="{x:Static resources:Strings.Common_Settings}"
                         Command="{Binding LaunchSettingsCommand}"
-                        Margin="0,0,5,0" />
+                        Padding="16,14" />
 
-                    <controls:CardAction Height="64"
+                    <controls:CardAction 
+                        Grid.Column="1"
                         Icon="WrenchOutline"
                         Header="{x:Static resources:Strings.Common_Studio}"
                         Command="{Binding LaunchRobloxStudioCommand}"
-                        Margin="5,0,0,0" />
-                </UniformGrid>
+                        Padding="16,14" />
+                </Grid>
 
-                <Separator Margin="0,5" Opacity="0.7" />
+                <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,2" />
 
                 <controls:CardAction 
                     Icon="BookOutline"
                     Header="{x:Static resources:Strings.LaunchMenu_Wiki_Title}"
                     Description="{x:Static resources:Strings.LaunchMenu_Wiki_Description}"
                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                    CommandParameter="https://github.com/Meddsam/Froststrap/wiki" />
+                    CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
+                    Padding="16,14" />
             </StackPanel>
         </Grid>
     </Grid>

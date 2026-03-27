@@ -1,13 +1,26 @@
-﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<SolidColorBrush x:Key="NewTextEditorBackground" Color="#2D2D2D" />
-	<SolidColorBrush x:Key="NewTextEditorForeground" Color="White" />
-	<SolidColorBrush x:Key="NewTextEditorLink" Color="#3A9CEA" />
-	<SolidColorBrush x:Key="CompletionListBackgroundBrush" Color="#1F1F1F" />
-	<SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#19000000" />
-	<SolidColorBrush x:Key="NormalDarkAndLightBackground" Color="#0FFFFFFF" />
-	<SolidColorBrush x:Key="ApplicationBackgroundColor" Color="#01000000" />
-	<Color x:Key="ControlFillColorDefault">#19000000</Color>
+	<SolidColorBrush x:Key="NewTextEditorBackground"       Color="#1A2436" />
+	<SolidColorBrush x:Key="NewTextEditorForeground"       Color="#E8F1FB" />
+	<SolidColorBrush x:Key="NewTextEditorLink"             Color="#7AAEE8" />
+	<SolidColorBrush x:Key="CompletionListBackgroundBrush" Color="#111C2C" />
+
+	<SolidColorBrush x:Key="PrimaryBackgroundColor"        Color="#18243A" />
+	<SolidColorBrush x:Key="NormalDarkAndLightBackground"  Color="#1A2840" />
+
+	<SolidColorBrush x:Key="ApplicationBackgroundColor"    Color="#0B1017" />
+
+	<Color x:Key="ControlFillColorDefault">#0D1929</Color>
+
+	<SolidColorBrush x:Key="FrostAccentBrush"       Color="#5B91E0" />
+	<SolidColorBrush x:Key="FrostAccentTextBrush"   Color="#7AAEE8" />
+	<SolidColorBrush x:Key="FrostAccentSubtleBrush" Color="#0E1E35" />
+	<SolidColorBrush x:Key="FrostAccentBorderBrush" Color="#1E3A5F" />
+
+	<SolidColorBrush x:Key="FrostSidebarBackground" Color="#0D1520" />
+
+	<SolidColorBrush x:Key="FrostBorderSubtle"      Color="#141F30" />
+	<SolidColorBrush x:Key="FrostBorderDefault"     Color="#1C2E48" />
 
 </ResourceDictionary>
