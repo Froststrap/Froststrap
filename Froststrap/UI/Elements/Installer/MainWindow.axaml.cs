@@ -1,6 +1,7 @@
-﻿using Froststrap.UI.ViewModels.Installer;
+﻿using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Installer.Pages;
-using Froststrap.UI.Elements.Base;
+using Froststrap.UI.ViewModels.Installer;
+using System.Collections;
 using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Installer
@@ -8,7 +9,6 @@ namespace Froststrap.UI.Elements.Installer
     public partial class MainWindow : AvaloniaWindow
     {
         internal readonly MainWindowViewModel _viewModel = new();
-
         private Type _currentPage = typeof(WelcomePage);
 
         private readonly List<Type> _pages = new()
@@ -19,11 +19,8 @@ namespace Froststrap.UI.Elements.Installer
         };
 
         private DateTimeOffset _lastNavigation = DateTimeOffset.Now;
-
         public Func<Task<bool>>? NextPageCallback;
-
         public NextAction CloseAction = NextAction.Terminate;
-
         public bool Finished => _currentPage == _pages.Last();
 
         public MainWindow()
@@ -32,7 +29,6 @@ namespace Froststrap.UI.Elements.Installer
             InitializeComponent();
 
             _viewModel.CloseWindowRequest += (_, _) => CloseWindow();
-
             App.FrostRPC?.SetDialog("Installer");
 
             _viewModel.PageRequest += (_, type) =>
@@ -105,7 +101,6 @@ namespace Froststrap.UI.Elements.Installer
         }
 
         public void SetNextButtonText(string text) => _viewModel.SetNextButtonText(text);
-
         public void SetButtonEnabled(string type, bool state) => _viewModel.SetButtonEnabled(type, state);
 
         #region Navigation methods
@@ -119,9 +114,13 @@ namespace Froststrap.UI.Elements.Installer
             RootFrame.Content = pageInstance;
 
             var index = _pages.IndexOf(pageType);
-            if (index >= 0 && index < RootNavigation.MenuItems.Count())
+
+            if (index >= 0 && RootNavigation.Items is IList items)
             {
-                RootNavigation.SelectedItem = RootNavigation.MenuItems.ElementAt(index);
+                if (index < items.Count)
+                {
+                    RootNavigation.SelectedItem = items[index];
+                }
             }
 
             return true;

@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="using:FluentAvalonia.UI.Controls"
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         xmlns:resources="clr-namespace:Froststrap.Resources"
+        xmlns:suki="https://github.com/kikipoulet/SukiUI"
         x:DataType="vm:CommunityModInfoViewModel"
         mc:Ignorable="d"
         Width="650"
@@ -27,7 +27,7 @@
                         <Image Source="{Binding Mod.ThumbnailImage}" 
                                Stretch="UniformToFill" 
                                RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                        <fa:ProgressRing IsIndeterminate="True" 
+                        <suki:CircleProgressBar IsIndeterminate="True" 
                                          IsVisible="{Binding Mod.IsLoadingThumbnail}"
                                          Width="30" Height="30" />
                     </Panel>
@@ -55,7 +55,7 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <fa:ProgressRing IsIndeterminate="True" 
+                                <suki:CircleProgressBar IsIndeterminate="True" 
                                                  IsVisible="{Binding IsLoadingGlyphs}" 
                                                  Width="24" Height="24"/>
                             </Panel>

@@ -2,8 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
              xmlns:enums="using:Froststrap.Enums"
              xmlns:models="using:Froststrap.Models.APIs.Config"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
@@ -105,7 +105,7 @@
                                                Stretch="UniformToFill"
                                                RenderOptions.BitmapInterpolationMode="HighQuality"/>
                                         
-                                        <ui:ProgressRing IsVisible="{Binding IsLoadingThumbnail}"
+                                        <suki:CircleProgressBar IsVisible="{Binding IsLoadingThumbnail}"
                                                          IsIndeterminate="True"
                                                          Width="24" Height="24"
                                                          HorizontalAlignment="Center"

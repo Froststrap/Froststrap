@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:resources="using:Froststrap.Resources"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:ic="using:IconPacks.Avalonia.Material"
@@ -203,7 +203,7 @@
 			            VerticalAlignment="Center"
 			            Spacing="16">
 
-						<ui:ProgressRing IsIndeterminate="True"
+						<suki:CircleProgressBar IsIndeterminate="True"
 									 Width="100" Height="100"
 									 HorizontalAlignment="Center" />
 

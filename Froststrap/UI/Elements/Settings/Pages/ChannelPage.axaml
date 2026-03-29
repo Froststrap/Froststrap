@@ -6,8 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
     d:DesignHeight="900"
     d:DesignWidth="800"
     x:DataType="vm:ChannelViewModel"
@@ -146,7 +146,7 @@
                         </Grid>
 
                         <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
-                            <ui:ProgressRing
+                            <suki:CircleProgressBar
                                 Grid.Column="0"
                                 Width="64"
                                 Height="64"

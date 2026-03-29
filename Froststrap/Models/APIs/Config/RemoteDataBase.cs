@@ -1,4 +1,4 @@
-using FluentAvalonia.UI.Controls;
+using Avalonia.Controls.Notifications;
 
 namespace Froststrap.Models.APIs.Config
 {
@@ -11,7 +11,7 @@ namespace Froststrap.Models.APIs.Config
         public string AlertContent { get; set; } = null!;
 
         [JsonPropertyName("alertSeverity")]
-        public InfoBarSeverity AlertSeverity { get; set; } = InfoBarSeverity.Warning;
+        public NotificationType AlertSeverity { get; set; } = NotificationType.Information;
 
         [JsonPropertyName("packageMaps")]
         public PackageMaps PackageMaps { get; set; } = new();
