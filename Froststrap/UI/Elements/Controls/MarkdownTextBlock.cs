@@ -122,12 +122,16 @@ namespace Froststrap.UI.Elements.Controls
                         }
                         var bold = new Bold();
                         bold.Inlines.Add(childInline);
+                        bold.FontWeight = FontWeight.SemiBold;
                         return bold;
+
                     case '=':
                         var span = new Span();
                         span.Inlines.Add(childInline);
-                        span.Background = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+                        span.Background = (IBrush)Application.Current!.FindResource("SukiAccentColor20")!;
+                        span.Foreground = (IBrush)Application.Current!.FindResource("SukiPrimaryColor")!;
                         return span;
+
                     default:
                         return childInline;
                 }
@@ -139,24 +143,15 @@ namespace Froststrap.UI.Elements.Controls
                 var textInline = linkInline.FirstChild;
                 string linkText = textInline?.ToString() ?? url;
 
-                var textBlock = new TextBlock
-                {
-                    Text = linkText
-                };
-
                 var hyperlinkControl = new Hyperlink(linkText, url)
                 {
-                    Content = textBlock
+                    Content = linkText,
+                    FontSize = this.FontSize
                 };
-
-                textBlock[!TextBlock.ForegroundProperty] = hyperlinkControl[!Hyperlink.ForegroundProperty];
-
-                hyperlinkControl.PointerEntered += (s, e) => textBlock.TextDecorations = Avalonia.Media.TextDecorations.Underline;
-                hyperlinkControl.PointerExited += (s, e) => textBlock.TextDecorations = null;
 
                 return new InlineUIContainer(hyperlinkControl)
                 {
-                    BaselineAlignment = BaselineAlignment.TextBottom
+                    BaselineAlignment = BaselineAlignment.Center
                 };
             }
 

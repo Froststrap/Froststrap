@@ -3,19 +3,24 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Styling;
-using FluentAvalonia.Styling;
 using Avalonia.Platform;
+using Avalonia.Styling;
+using SukiUI;
+using SukiUI.Controls;
+using SukiUI.Enums;
 
 namespace Froststrap.UI.Elements.Base
 {
-    public abstract class AvaloniaWindow : Window
+    public abstract class AvaloniaWindow : SukiWindow
     {
         private static IStyle? _activeColorStyle;
         private static ResourceDictionary? _activeThemeDictionary;
 
         public AvaloniaWindow()
         {
+            this.IsTitleBarVisible = false;
+            this.ShowBottomBorder = false;
+
             this.ExtendClientAreaToDecorationsHint = true;
             this.ExtendClientAreaTitleBarHeightHint = -1;
             this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
@@ -31,12 +36,18 @@ namespace Froststrap.UI.Elements.Base
             var finalTheme = App.Settings.Prop.Theme.GetFinal();
             string themeName = Enum.GetName(finalTheme) ?? "Dark";
 
+            var sukiTheme = SukiTheme.GetInstance();
+
+            sukiTheme.ChangeColorTheme(SukiColor.Blue);
+
             Application.Current.RequestedThemeVariant = finalTheme == Enums.Theme.Light
                 ? ThemeVariant.Light
                 : ThemeVariant.Dark;
 
-            var faTheme = Application.Current.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
-            if (faTheme != null) faTheme.PreferSystemTheme = false;
+            if (finalTheme == Enums.Theme.Light)
+                sukiTheme.ChangeBaseTheme(ThemeVariant.Light);
+            else
+                sukiTheme.ChangeBaseTheme(ThemeVariant.Dark);
 
             if (_activeThemeDictionary != null)
             {
@@ -57,19 +68,17 @@ namespace Froststrap.UI.Elements.Base
                     Application.Current.Resources.Remove("ApplicationBackgroundColor");
 
                     var themeUri = new Uri($"avares://Froststrap/UI/AppThemes/ResourceDictionarys/{themeName}.axaml");
-                    var loadedTheme = AvaloniaXamlLoader.Load(themeUri);
-                    if (loadedTheme is ResourceDictionary dict)
+                    if (AvaloniaXamlLoader.Load(themeUri) is ResourceDictionary dict)
                     {
                         _activeThemeDictionary = dict;
                         Application.Current.Resources.MergedDictionaries.Add(dict);
                     }
 
                     var styleUri = new Uri($"avares://Froststrap/UI/AppThemes/Styles/{themeName}.axaml");
-                    var loadedStyle = AvaloniaXamlLoader.Load(styleUri);
-                    if (loadedStyle is Styles loadedStyles)
+                    if (AvaloniaXamlLoader.Load(styleUri) is Styles loadedStyles)
                     {
-                        _activeColorStyle = loadedStyles;
-                        Application.Current.Styles.Insert(1, loadedStyles);
+                        _activeColorStyle = (IStyle)loadedStyles;
+                        Application.Current.Styles.Insert(1, (IStyle)loadedStyles);
                     }
                 }
                 catch (Exception ex)
@@ -84,31 +93,17 @@ namespace Froststrap.UI.Elements.Base
                 if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
                 {
                     var avaloniaStops = new Avalonia.Media.GradientStops();
-
                     foreach (var s in App.Settings.Prop.CustomGradientStops)
                     {
                         if (Color.TryParse(s.Color, out var color))
-                        {
                             avaloniaStops.Add(new GradientStop(color, s.Offset));
-                        }
                     }
 
                     double angleRad = (Math.PI / 180.0) * (App.Settings.Prop.GradientAngle - 90);
-                    var startPoint = new RelativePoint(
-                        0.5 - Math.Cos(angleRad) * 0.5,
-                        0.5 - Math.Sin(angleRad) * 0.5,
-                        RelativeUnit.Relative);
-                    var endPoint = new RelativePoint(
-                        0.5 + Math.Cos(angleRad) * 0.5,
-                        0.5 + Math.Sin(angleRad) * 0.5,
-                        RelativeUnit.Relative);
+                    var startPoint = new RelativePoint(0.5 - Math.Cos(angleRad) * 0.5, 0.5 - Math.Sin(angleRad) * 0.5, RelativeUnit.Relative);
+                    var endPoint = new RelativePoint(0.5 + Math.Cos(angleRad) * 0.5, 0.5 + Math.Sin(angleRad) * 0.5, RelativeUnit.Relative);
 
-                    customBackground = new LinearGradientBrush
-                    {
-                        GradientStops = avaloniaStops,
-                        StartPoint = startPoint,
-                        EndPoint = endPoint
-                    };
+                    customBackground = new LinearGradientBrush { GradientStops = avaloniaStops, StartPoint = startPoint, EndPoint = endPoint };
                 }
                 else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
                 {
@@ -117,35 +112,24 @@ namespace Froststrap.UI.Elements.Base
                     {
                         try
                         {
-                            var bitmap = new Bitmap(path);
-                            customBackground = new ImageBrush(bitmap)
+                            customBackground = new ImageBrush(new Bitmap(path))
                             {
                                 Stretch = (Stretch)App.Settings.Prop.BackgroundStretch,
                                 Opacity = App.Settings.Prop.BackgroundOpacity
                             };
                         }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine("AvaloniaWindow", $"Image load error: {ex.Message}");
-                        }
+                        catch (Exception ex) { App.Logger.WriteLine("AvaloniaWindow", $"Image load error: {ex.Message}"); }
                     }
                 }
 
-                if (customBackground != null)
-                {
-                    Application.Current.Resources["ApplicationBackgroundColor"] = customBackground;
-                }
-                else
-                {
-                    Application.Current.Resources["ApplicationBackgroundColor"] = Brushes.Transparent;
-                }
+                Application.Current.Resources["ApplicationBackgroundColor"] = customBackground ?? Brushes.Transparent;
             }
         }
 
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-#if QA_BUILD            
+#if QA_BUILD
             this.BorderBrush = Brushes.Red;
             this.BorderThickness = new Thickness(4);
 #endif

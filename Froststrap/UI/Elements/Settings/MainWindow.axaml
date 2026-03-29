@@ -7,7 +7,7 @@
 	xmlns:resources="using:Froststrap.Resources"
 	xmlns:ic="using:IconPacks.Avalonia.Material"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-	xmlns:ui="using:FluentAvalonia.UI.Controls"
+	xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
 	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
 	Title="{x:Static resources:Strings.Menu_Title}"
 	Width="1125"
@@ -225,7 +225,7 @@
 							Margin="0,0,0,2"
 							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
-						<ui:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,0" IsOpen="True" Severity="Warning" IsVisible="False" IsClosable="False" />
+						<suki:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
 					</StackPanel>
 				</Border>
 
