@@ -4,23 +4,21 @@
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|SquareCard">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SukiBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="16" />
-        <Setter Property="CornerRadius" Value="12" />
+		<Setter Property="Background"      Value="Transparent" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding"         Value="16" />
+		<Setter Property="CornerRadius"    Value="8" />
+		<Setter Property="MinHeight"       Value="64" />
 
-        <Setter Property="Template">
-            <ControlTemplate>
-                <suki:GlassCard Name="PART_RootCard"
-                                IsInteractive="True"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{TemplateBinding CornerRadius}"
-                                Padding="{TemplateBinding Padding}"
-                                Margin="0,6,6,6">
-
+		<Setter Property="Template">
+			<ControlTemplate>
+				<suki:GlassCard Name="PART_GlassCard"
+							   IsInteractive="True"
+							   CornerRadius="{TemplateBinding CornerRadius}"
+							   BorderThickness="{TemplateBinding BorderThickness}"
+							   BorderBrush="{TemplateBinding BorderBrush}"
+							   Margin="4">
                     <Grid MinHeight="140" RowDefinitions="Auto,Auto,*">
                         <TextBlock Grid.Row="0"
                                    FontSize="18"
@@ -45,12 +43,12 @@
                                           HorizontalAlignment="Stretch"
                                           Margin="0,12,0,0"/>
                     </Grid>
-                </suki:GlassCard>
-            </ControlTemplate>
-        </Setter>
-    </Style>
+				</suki:GlassCard>
+			</ControlTemplate>
+		</Setter>
+	</Style>
 
-    <Style Selector="controls|SquareCard:pointerover /template/ suki|GlassCard#PART_RootCard">
-        <Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
-    </Style>
+	<Style Selector="controls|SquareCard:pointerover /template/ suki|GlassCard#PART_GlassCard">
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
+	</Style>
 </Styles>
