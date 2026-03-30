@@ -1,67 +1,64 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:suki="https://github.com/kikipoulet/SukiUI"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:ic="using:IconPacks.Avalonia.Material">
 
 	<Style Selector="controls|CardAction">
-		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="Background"      Value="Transparent" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Padding"         Value="6,12" />
-		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="Padding"         Value="16,12" />
+		<Setter Property="CornerRadius"    Value="8" />
 		<Setter Property="Cursor"          Value="Hand" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Name="OuterBorder"
-						Background="{TemplateBinding Background}"
-						BorderBrush="{TemplateBinding BorderBrush}"
-						BorderThickness="{TemplateBinding BorderThickness}"
-						CornerRadius="{TemplateBinding CornerRadius}"
-						Padding="{TemplateBinding Padding}"
-						MinHeight="64"
-						Margin="0,2">
-					<Grid ColumnDefinitions="Auto,*" Margin="0,0,8,0">
-
+				<suki:GlassCard Name="PART_GlassCard"
+							   IsInteractive="True"
+							   Padding="{TemplateBinding Padding}"
+							   CornerRadius="{TemplateBinding CornerRadius}"
+							   BorderThickness="{TemplateBinding BorderThickness}"
+							   BorderBrush="{TemplateBinding BorderBrush}"
+							   Margin="0,2">
+					
+					<Grid ColumnDefinitions="Auto,*" Background="Transparent">
 						<Border
 							Grid.Column="0"
 							Width="36" Height="36"
 							CornerRadius="6"
-							Background="{DynamicResource FrostAccentSubtleBrush}"
-							BorderBrush="{DynamicResource FrostAccentBorderBrush}"
+							Background="{DynamicResource SukiPrimaryColor10}"
+							BorderBrush="{DynamicResource SukiPrimaryColor50}"
 							BorderThickness="1"
-							Margin="0,0,16,0"
+							Margin="0,0,-4,0"
 							VerticalAlignment="Center">
 							<ic:PackIconMaterial
 								Kind="{TemplateBinding Icon}"
-								Width="16" Height="16"
-								Foreground="{DynamicResource FrostAccentTextBrush}"
+								Width="18" Height="18"
+								Foreground="{DynamicResource SukiPrimaryColor}"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center" />
 						</Border>
 
-						<!-- Text -->
-						<StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3">
+						<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="2">
 							<TextBlock
 								Text="{TemplateBinding Header}"
 								FontSize="14"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+								Foreground="{DynamicResource SukiText}" />
 							<controls:MarkdownTextBlock
 								MarkdownText="{TemplateBinding Description}"
 								FontSize="12"
-								Margin="0,0,0,0"
-								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								Foreground="{DynamicResource SukiLowText}"
 								TextWrapping="Wrap"
 								IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 						</StackPanel>
-
 					</Grid>
-				</Border>
+				</suki:GlassCard>
 			</ControlTemplate>
 		</Setter>
 	</Style>
 
-	<Style Selector="controls|CardAction:pointerover /template/ Border#OuterBorder">
-		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+	<Style Selector="controls|CardAction:pointerover /template/ suki|GlassCard#PART_GlassCard">
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
 	</Style>
 </Styles>

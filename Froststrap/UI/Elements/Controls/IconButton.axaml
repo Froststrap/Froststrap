@@ -5,29 +5,33 @@
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|IconButton">
-        <Setter Property="Background"      Value="{DynamicResource SukiAccentColor10}" />
+        <Setter Property="Background"      Value="Transparent" />
         <Setter Property="Foreground"      Value="{DynamicResource SukiText}" />
-        <Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding"         Value="12,8" />
-        <Setter Property="CornerRadius"    Value="8" />
+        <Setter Property="BorderBrush"     Value="{DynamicResource SukiControlBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1.2" />
+        <Setter Property="Padding"         Value="20, 8" />
+        <Setter Property="CornerRadius"    Value="{DynamicResource SmallCornerRadius}" />
+        <Setter Property="FontSize"        Value="15" />
+        <Setter Property="FontWeight"      Value="{DynamicResource DefaultDemiBold}" />
         <Setter Property="Transitions">
             <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.15" />
-                <BrushTransition Property="BorderBrush" Duration="0:0:0.15" />
-                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.075" />
+                <BrushTransition Property="Background" Duration="0:0:0.1" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.1" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.20" />
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" />
             </Transitions>
         </Setter>
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="PART_LayoutRoot"
+                        Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Spacing="10">
                         <ic:PackIconMaterial
                             Kind="{TemplateBinding Icon}"
                             Foreground="{TemplateBinding Foreground}"
@@ -52,11 +56,11 @@
                         </Path>
 
                         <ContentPresenter
+                            Name="PART_ContentPresenter"
                             Content="{TemplateBinding Content}"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
                             RecognizesAccessKey="True"
-                            FontWeight="Medium"
                             IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}" />
                     </StackPanel>
                 </Border>
@@ -64,37 +68,47 @@
         </Setter>
     </Style>
 
-    <Style Selector="controls|IconButton:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource SukiAccentColor20}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
-    </Style>
-    
-    <Style Selector="controls|IconButton:pressed">
-        <Setter Property="RenderTransform" Value="scale(0.96)" />
-    </Style>
-    
-    <Style Selector="controls|IconButton:disabled">
-        <Setter Property="Opacity" Value="0.4" />
+    <Style Selector="controls|IconButton:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor120}" />
+        <Style Selector="^ /template/ Border#PART_LayoutRoot">
+            <Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor120}" />
+        </Style>
     </Style>
 
-    <Style Selector="controls|IconButton.Danger:not(:disabled)">
-        <Setter Property="Background"  Value="#25FF4545" /> <Setter Property="Foreground"  Value="#FF4545" />
-        <Setter Property="BorderBrush" Value="#40FF4545" />
-    </Style>
-    
-    <Style Selector="controls|IconButton.Danger:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="#FF4545" />
+    <Style Selector="controls|IconButton:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.97)" />
     </Style>
 
     <Style Selector="controls|IconButton.Primary:not(:disabled)">
-        <Setter Property="Background"  Value="{DynamicResource SukiPrimaryColor}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColorGradient}" />
-        <Setter Property="Foreground"  Value="White" />
+        <Setter Property="Background" Value="{DynamicResource SukiPrimaryColor}" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Style Selector="^ /template/ Border#PART_LayoutRoot">
+            <Setter Property="BoxShadow" Value="{DynamicResource SukiLowShadow}" />
+        </Style>
     </Style>
     
-    <Style Selector="controls|IconButton.Primary:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Opacity" Value="0.9" />
-        <Setter Property="Background" Value="{DynamicResource SukiPrimaryColorGradient}" />
+    <Style Selector="controls|IconButton.Primary:not(:disabled):pointerover">
+        <Setter Property="Background" Value="{DynamicResource SukiPrimaryColor75}" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="controls|IconButton.Danger:not(:disabled)">
+        <Setter Property="Background" Value="{DynamicResource SukiDangerColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource SukiDangerForeground}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Style Selector="^ /template/ Border#PART_LayoutRoot">
+            <Setter Property="BoxShadow" Value="{DynamicResource SukiLowShadow}" />
+        </Style>
+    </Style>
+    
+    <Style Selector="controls|IconButton.Danger:not(:disabled):pointerover">
+        <Setter Property="Background" Value="{DynamicResource SukiDangerMediumColor}" />
+        <Setter Property="Foreground" Value="{DynamicResource SukiDangerForeground}" />
+    </Style>
+
+    <Style Selector="controls|IconButton:disabled">
+        <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
     </Style>
 
 </Styles>

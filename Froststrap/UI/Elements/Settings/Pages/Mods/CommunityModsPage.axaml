@@ -95,6 +95,7 @@
                             <controls:Card VerticalAlignment="Top"
                                     Height="270"
                                     Margin="4"
+                                    Padding="0"
                                     Background="{DynamicResource NormalDarkAndLightBackground}"
                                     CornerRadius="8"
                                     ClipToBounds="True">

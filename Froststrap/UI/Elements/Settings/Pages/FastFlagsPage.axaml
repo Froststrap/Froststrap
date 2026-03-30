@@ -50,7 +50,7 @@
                 <ComboBox
                     Margin="0"
                     Padding="10,5"
-                    Width="120"
+                    MinWidth="200"
                     ItemsSource="{Binding MSAALevels.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -130,7 +130,7 @@
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Description}"
                 HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#rendering-mode">
                 <ComboBox
-                    Width="160"
+                    MinWidth="200"
                     Margin="0"
                     Padding="10,5"
                     ItemsSource="{Binding RenderingModes.Keys, Mode=OneTime}"
@@ -148,7 +148,7 @@
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_OverrideGraphicQuality_Description}"
                 HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#override-graphic-level">
                 <ComboBox
-                    Width="160"
+                    MinWidth="200"
                     Margin="0"
                     Padding="10,5"
                     ItemsSource="{Binding QualityLevels.Keys, Mode=OneTime}"

@@ -13,6 +13,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <suki:GlassCard Name="PART_RootCard"
+                                IsInteractive="True"
                                 Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -50,7 +51,6 @@
     </Style>
 
     <Style Selector="controls|SquareCard:pointerover /template/ suki|GlassCard#PART_RootCard">
-        <Setter Property="Background" Value="{DynamicResource SukiAccentColor10}" />
         <Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
     </Style>
 </Styles>

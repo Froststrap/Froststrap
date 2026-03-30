@@ -58,7 +58,7 @@
                 Header="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Description}">
                 <ComboBox
-                    Width="200"
+                    MinWidth="200"
                     ItemsSource="{Binding ProcessPriorityOptions}"
                     SelectedItem="{Binding SelectedPriority, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -146,7 +146,7 @@
                         Description="Changes the visual theme for Roblox."
                         IsVisible="{Binding ShowTheme}">
                         <ComboBox
-                            Width="200"
+                            MinWidth="200"
                             ItemsSource="{Binding AppThemeOptions}"
                             SelectedItem="{Binding SelectedTheme, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
@@ -188,7 +188,7 @@
                     <controls:OptionControl 
                         Header="{x:Static resources:Strings.Menu_Bootstrapper_Cleaner_Age_Title}" 
                         Description="{x:Static resources:Strings.Menu_Bootstrapper_Cleaner_Age_Description}">
-                        <ComboBox Width="200" ItemsSource="{Binding CleanerOptions}" SelectedItem="{Binding CleanerOption, Mode=TwoWay}">
+                        <ComboBox MinWidth="200" ItemsSource="{Binding CleanerOptions}" SelectedItem="{Binding CleanerOption, Mode=TwoWay}">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
