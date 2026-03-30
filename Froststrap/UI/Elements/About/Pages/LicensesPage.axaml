@@ -50,7 +50,7 @@
                                      Header="Suki UI"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                                     CommandParameter="https://github.com/amwx/FluentAvalonia/blob/master/LICENSE" />
+                                     CommandParameter="https://github.com/kikipoulet/SukiUI/blob/main/LICENSE" />
 
                 <ui:CardAction Margin="4"
                                      Header="IconPacks Avalonia"
