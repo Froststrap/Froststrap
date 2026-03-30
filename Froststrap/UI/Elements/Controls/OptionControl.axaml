@@ -15,7 +15,7 @@
 			<ControlTemplate>
 				<suki:GlassCard CornerRadius="8" 
 							   IsInteractive="True"
-							   Margin="0,2"
+							   Margin="0,4"
 							   Padding="{TemplateBinding Padding}"
 							   BorderThickness="{TemplateBinding BorderThickness}"
 							   BorderBrush="{TemplateBinding BorderBrush}">

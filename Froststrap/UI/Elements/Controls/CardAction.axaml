@@ -10,7 +10,6 @@
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Padding"         Value="16,12" />
 		<Setter Property="CornerRadius"    Value="8" />
-		<Setter Property="Cursor"          Value="Hand" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<suki:GlassCard Name="PART_GlassCard"
@@ -19,7 +18,7 @@
 							   CornerRadius="{TemplateBinding CornerRadius}"
 							   BorderThickness="{TemplateBinding BorderThickness}"
 							   BorderBrush="{TemplateBinding BorderBrush}"
-							   Margin="0,2">
+							   Margin="0,4">
 					
 					<Grid ColumnDefinitions="Auto,*" Background="Transparent">
 						<Border

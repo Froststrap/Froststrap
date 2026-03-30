@@ -316,6 +316,5 @@
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
-	</Style>
 
 </Styles>

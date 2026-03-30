@@ -16,7 +16,6 @@
     <ScrollViewer>
         <StackPanel Margin="14">
                 <TextBlock
-                    Margin="0,16,0,0"
                     FontSize="20"
                     FontWeight="Bold"
                     Text="Froststrap" />

@@ -9,7 +9,6 @@
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius"    Value="8" />
 		<Setter Property="MinHeight"       Value="64" />
-
 		<Setter Property="Template">
 			<ControlTemplate>
 				<suki:GlassCard Name="PART_GlassCard"
