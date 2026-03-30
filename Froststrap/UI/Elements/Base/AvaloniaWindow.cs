@@ -18,9 +18,12 @@ namespace Froststrap.UI.Elements.Base
 
         public AvaloniaWindow()
         {
+            // Remove suki titlebar + Change background Style
             this.IsTitleBarVisible = false;
             this.ShowBottomBorder = false;
+            this.BackgroundStyle = SukiBackgroundStyle.GradientSoft;
 
+            // This is so we can resize the window
             this.ExtendClientAreaToDecorationsHint = true;
             this.ExtendClientAreaTitleBarHeightHint = -1;
             this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;

@@ -18,14 +18,13 @@
 	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
-	<Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
+	<Grid RowDefinitions="Auto,*,Auto">
 
 		<controls:TitleBar
 			Title="{x:Static resources:Strings.Menu_Title}"
 			Icon="avares://Froststrap/Froststrap.ico"
 			Grid.Row="0"
-			Height="32"
-			Background="{DynamicResource FrostSidebarBackground}" />
+			Height="32" />
 
 		<Panel
 			Name="NotificationPanel"
@@ -38,10 +37,8 @@
 
 		<Grid Name="MainGrid" Grid.Row="1" ColumnDefinitions="220,*">
 
-			<Border
+			<Border BorderBrush="{DynamicResource FrostBorderDefault}"
 				Grid.Column="0"
-				Background="{DynamicResource FrostSidebarBackground}"
-				BorderBrush="{DynamicResource FrostBorderDefault}"
 				BorderThickness="0,0,1,0">
 
 				<Grid RowDefinitions="*,Auto">
@@ -163,7 +160,6 @@
 				<Border
 					Grid.Row="0"
 					Padding="24,24,24,16"
-					Background="{DynamicResource LayerFillColorAltBrush}"
 					BorderBrush="{DynamicResource FrostBorderDefault}"
 					BorderThickness="0,0,0,1">
 					<StackPanel>
@@ -233,8 +229,7 @@
 					x:Name="PageContentControl"
 					Grid.Row="1"
 					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch"
-					Background="{DynamicResource ApplicationBackgroundColor}" />
+					VerticalAlignment="Stretch" />
 			</Grid>
 		</Grid>
 
@@ -242,7 +237,6 @@
 			Grid.Row="2"
 			Height="56"
 			Padding="16,0"
-			Background="{DynamicResource FrostSidebarBackground}"
 			BorderBrush="{DynamicResource FrostBorderDefault}"
 			BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">

@@ -15,7 +15,6 @@
 
     <ScrollViewer>
         <StackPanel Margin="14">
-            <StackPanel Margin="0,0,14,14">
                 <TextBlock
                     Margin="0,16,0,0"
                     FontSize="20"
@@ -183,7 +182,6 @@
                         ItemsSource="{Binding ChannelChangeModes.Keys, Mode=OneTime}"
                         SelectedItem="{Binding SelectedChannelChangeMode, Mode=TwoWay}" />
                 </controls:OptionControl>
-            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

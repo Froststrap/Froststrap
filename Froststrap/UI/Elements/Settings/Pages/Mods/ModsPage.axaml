@@ -45,7 +45,6 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:ModConfig}">
                         <controls:Card Margin="0,0,0,8">
-                            <Border Padding="16,20" Background="Transparent">
 								<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
                                 
                                     <controls:IconButton Grid.Column="0" 
@@ -60,7 +59,7 @@
                                          GotFocus="ModName_GotFocus"
                                          LostFocus="ModName_LostFocus" />
 
-                                    <ComboBox Grid.Column="3" Width="150" Margin="0,0,8,0"
+                                    <ComboBox Grid.Column="3" MinWidth="150" Margin="0,0,8,0"
                                           SelectedItem="{Binding Target}">
                                                 <x:String>Both</x:String>
                                                 <x:String>Player</x:String>
@@ -83,7 +82,6 @@
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).MoveDownCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
                                 </Grid>
-                            </Border>
                         </controls:Card>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

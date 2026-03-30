@@ -9,7 +9,7 @@ using Markdig.Syntax.Inlines;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    class MarkdownTextBlock : TextBlock
+    public class MarkdownTextBlock : TextBlock
     {
         private static readonly MarkdownPipeline _markdownPipeline = new MarkdownPipelineBuilder()
             .UseEmphasisExtras(Markdig.Extensions.EmphasisExtras.EmphasisExtraOptions.Marked)
@@ -20,8 +20,7 @@ namespace Froststrap.UI.Elements.Controls
             AvaloniaProperty.Register<MarkdownTextBlock, string>(
                 nameof(MarkdownText),
                 defaultValue: string.Empty,
-                defaultBindingMode: BindingMode.OneWay,
-                coerce: OnCoerceMarkdownText);
+                defaultBindingMode: BindingMode.OneWay);
 
         public string MarkdownText
         {
@@ -31,133 +30,104 @@ namespace Froststrap.UI.Elements.Controls
 
         static MarkdownTextBlock()
         {
-            MarkdownTextProperty.Changed.AddClassHandler<MarkdownTextBlock>((x, e) => x.OnMarkdownTextChanged(e));
+            MarkdownTextProperty.Changed.AddClassHandler<MarkdownTextBlock>((x, e) => x.UpdateMarkdown(e.NewValue as string));
+
+            FontSizeProperty.Changed.AddClassHandler<MarkdownTextBlock>((x, e) => x.UpdateMarkdown(x.MarkdownText));
         }
 
-        private static string OnCoerceMarkdownText(AvaloniaObject sender, string value)
+        private void UpdateMarkdown(string? markdown)
         {
-            if (sender is MarkdownTextBlock markdownTextBlock && value != null)
-            {
-                markdownTextBlock.UpdateMarkdown(value);
-            }
-            return value ?? string.Empty;
-        }
+            if (Inlines == null) return;
+            Inlines.Clear();
 
-        private void OnMarkdownTextChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            if (e.NewValue is string markdown)
-            {
-                UpdateMarkdown(markdown);
-            }
-        }
+            if (string.IsNullOrEmpty(markdown)) return;
 
-        private void UpdateMarkdown(string markdown)
-        {
-            if (string.IsNullOrEmpty(markdown))
-            {
-                Inlines?.Clear();
-                return;
-            }
-
-            var document = Markdig.Markdown.Parse(markdown, _markdownPipeline);
+            var document = Markdown.Parse(markdown, _markdownPipeline);
             var result = ConvertMarkdownToInlines(document);
 
-            if (Inlines != null)
-            {
-                Inlines.Clear();
-                Inlines.AddRange(result);
-            }
+            Inlines.AddRange(result);
         }
 
-        private InlineCollection ConvertMarkdownToInlines(MarkdownDocument document)
+        private List<Avalonia.Controls.Documents.Inline> ConvertMarkdownToInlines(MarkdownDocument document)
         {
-            var inlines = new InlineCollection();
-            var lastBlock = document.LastChild;
+            var inlines = new List<Avalonia.Controls.Documents.Inline>();
 
             foreach (var block in document)
             {
-                if (block is not ParagraphBlock paragraphBlock || paragraphBlock.Inline == null)
-                    continue;
-
-                foreach (var inline in paragraphBlock.Inline)
+                if (block is ParagraphBlock paragraphBlock && paragraphBlock.Inline != null)
                 {
-                    var avaloniaInline = GetAvaloniaInlineFromMarkdownInline(inline);
-                    if (avaloniaInline != null)
-                        inlines.Add(avaloniaInline);
-                }
+                    foreach (var inline in paragraphBlock.Inline)
+                    {
+                        var avaloniaInlines = GetAvaloniaInlinesFromMarkdownInline(inline);
+                        inlines.AddRange(avaloniaInlines);
+                    }
 
-                if (block != lastBlock)
-                {
-                    inlines.Add(new LineBreak());
-                    inlines.Add(new LineBreak());
+                    if (block != document.LastChild)
+                    {
+                        inlines.Add(new LineBreak());
+                    }
                 }
             }
 
             return inlines;
         }
 
-        private Avalonia.Controls.Documents.Inline? GetAvaloniaInlineFromMarkdownInline(Markdig.Syntax.Inlines.Inline? inline)
+        private IEnumerable<Avalonia.Controls.Documents.Inline> GetAvaloniaInlinesFromMarkdownInline(Markdig.Syntax.Inlines.Inline? inline)
         {
-            if (inline == null) return null;
+            if (inline == null) yield break;
 
             if (inline is LiteralInline literalInline)
             {
-                return new Run(literalInline.ToString());
+                yield return new Run(literalInline.Content.ToString());
             }
-
-            if (inline is EmphasisInline emphasisInline)
+            else if (inline is EmphasisInline emphasisInline)
             {
-                var childInline = GetAvaloniaInlineFromMarkdownInline(emphasisInline.FirstChild);
-                if (childInline == null) return null;
+                var span = emphasisInline.DelimiterCount == 1 && (emphasisInline.DelimiterChar == '*' || emphasisInline.DelimiterChar == '_')
+                    ? new Italic()
+                    : (emphasisInline.DelimiterChar == '=' ? new Span() : new Bold());
 
-                switch (emphasisInline.DelimiterChar)
+                if (span is Bold b) b.FontWeight = FontWeight.SemiBold;
+
+                if (emphasisInline.DelimiterChar == '=')
                 {
-                    case '*':
-                    case '_':
-                        if (emphasisInline.DelimiterCount == 1)
-                        {
-                            var italic = new Italic();
-                            italic.Inlines.Add(childInline);
-                            return italic;
-                        }
-                        var bold = new Bold();
-                        bold.Inlines.Add(childInline);
-                        bold.FontWeight = FontWeight.SemiBold;
-                        return bold;
+                    span.Background = (IBrush)Application.Current!.FindResource("SukiPrimaryColor10")!;
+                    span.Foreground = (IBrush)Application.Current!.FindResource("SukiPrimaryColor")!;
+                }
 
-                    case '=':
-                        var span = new Span();
+                foreach (var child in emphasisInline)
+                {
+                    foreach (var childInline in GetAvaloniaInlinesFromMarkdownInline(child))
                         span.Inlines.Add(childInline);
-                        span.Background = (IBrush)Application.Current!.FindResource("SukiAccentColor20")!;
-                        span.Foreground = (IBrush)Application.Current!.FindResource("SukiPrimaryColor")!;
-                        return span;
+                }
+                yield return span;
+            }
+            else if (inline is LinkInline linkInline)
+            {
+                var url = linkInline.Url ?? string.Empty;
+                var linkText = linkInline.FirstChild?.ToString() ?? url;
 
-                    default:
-                        return childInline;
+                var hyperlinkControl = new Hyperlink()
+                {
+                    Content = linkText
+                };
+
+                yield return new InlineUIContainer(hyperlinkControl)
+                {
+                    BaselineAlignment = BaselineAlignment.Bottom
+                };
+            }
+            else if (inline is LineBreakInline)
+            {
+                yield return new LineBreak();
+            }
+            else if (inline is ContainerInline container)
+            {
+                foreach (var child in container)
+                {
+                    foreach (var childInline in GetAvaloniaInlinesFromMarkdownInline(child))
+                        yield return childInline;
                 }
             }
-
-            if (inline is LinkInline linkInline)
-            {
-                string url = linkInline.Url ?? string.Empty;
-                var textInline = linkInline.FirstChild;
-                string linkText = textInline?.ToString() ?? url;
-
-                var hyperlinkControl = new Hyperlink(linkText, url)
-                {
-                    Content = linkText,
-                    FontSize = this.FontSize
-                };
-
-                return new InlineUIContainer(hyperlinkControl)
-                {
-                    BaselineAlignment = BaselineAlignment.Center
-                };
-            }
-
-            if (inline is LineBreakInline) return new LineBreak();
-
-            return null;
         }
     }
 }

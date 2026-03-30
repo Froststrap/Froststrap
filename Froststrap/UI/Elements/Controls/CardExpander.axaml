@@ -1,28 +1,41 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:suki="https://github.com/kikipoulet/SukiUI"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
 	<Style Selector="controls|CardExpander">
-		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-     <Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="Background"      Value="Transparent" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="6" Margin="0,4" ClipToBounds="True">
+				<suki:GlassCard Name="PART_GlassCard"
+							   CornerRadius="8" 
+							   Margin="0,4" 
+							   Padding="0"
+							   BorderThickness="{TemplateBinding BorderThickness}"
+							   BorderBrush="{TemplateBinding BorderBrush}">
 					<StackPanel>
-						<ToggleButton Name="HeaderButton" Padding="16,12" Background="Transparent" BorderThickness="0"
+						<ToggleButton Name="HeaderButton" 
+									  Padding="16,12" 
+									  Background="Transparent" 
+									  BorderThickness="0"
                                       HorizontalAlignment="Stretch"
                                       IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
 							<ToggleButton.Template>
 								<ControlTemplate>
-									<Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-										<Grid ColumnDefinitions="*,Auto,Auto">
+									<Border Background="Transparent" 
+											Padding="{TemplateBinding Padding}"
+											RenderTransform="none"> <Grid ColumnDefinitions="*,Auto,Auto">
 											<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
-												<TextBlock Text="{Binding $parent[controls:CardExpander].Header}" FontSize="14" FontWeight="Normal" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextWrapping="Wrap" />
-												<controls:MarkdownTextBlock MarkdownText="{Binding $parent[controls:CardExpander].Description}" FontSize="12"
-                                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+												<TextBlock Text="{Binding $parent[controls:CardExpander].Header}" 
+														   FontSize="14" 
+														   FontWeight="SemiBold" 
+														   Foreground="{DynamicResource SukiText}" 
+														   TextWrapping="Wrap" />
+												<controls:MarkdownTextBlock MarkdownText="{Binding $parent[controls:CardExpander].Description}" 
+																		   FontSize="12"
+                                                                           Foreground="{DynamicResource SukiLowText}"
                                                                            IsVisible="{Binding $parent[controls:CardExpander].Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
 											</StackPanel>
 
@@ -31,8 +44,14 @@
                                                               Margin="0,0,12,0"
                                                               VerticalAlignment="Center" />
 
-											<Path Name="ExpanderIcon" Grid.Column="2" Width="10" Height="6" Data="M 1,1 L 5,5 L 9,1"
-                                                  Stroke="{DynamicResource TextFillColorPrimaryBrush}" StrokeThickness="1" StrokeLineCap="Round" VerticalAlignment="Center">
+											<Path Name="ExpanderIcon" 
+												  Grid.Column="2" 
+												  Width="10" Height="6" 
+												  Data="M 1,1 L 5,5 L 9,1"
+                                                  Stroke="{DynamicResource SukiText}" 
+												  StrokeThickness="1.5" 
+												  StrokeLineCap="Round" 
+												  VerticalAlignment="Center">
 												<Path.Transitions>
 													<Transitions>
 														<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut"/>
@@ -46,12 +65,11 @@
 						</ToggleButton>
 
 						<Border Name="PART_ContentContainer"
-								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderBrush="{DynamicResource SukiBorderBrush}"
                                 ClipToBounds="True">
 							<Border.Transitions>
 								<Transitions>
 									<DoubleTransition Property="Height" Duration="0:0:0.25" Easing="CubicEaseOut"/>
-									<DoubleTransition Property="Opacity" Duration="0:0:0.2" Easing="LinearEasing"/>
 								</Transitions>
 							</Border.Transitions>
 
@@ -60,20 +78,26 @@
                                               Padding="16"/>
 						</Border>
 					</StackPanel>
-				</Border>
+				</suki:GlassCard>
 			</ControlTemplate>
 		</Setter>
 	</Style>
 
-	<Style Selector="controls|CardExpander ToggleButton#HeaderButton">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderThickness" Value="0" />
+	<Style Selector="controls|CardExpander ToggleButton#HeaderButton:pressed">
+		<Setter Property="RenderTransform" Value="none" />
 	</Style>
-	<Style Selector="controls|CardExpander ToggleButton#HeaderButton:pointerover /template/ Border">
-		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+	
+	<Style Selector="controls|CardExpander ToggleButton#HeaderButton:pressed /template/ Border">
+		<Setter Property="RenderTransform" Value="none" />
+		<Setter Property="Opacity" Value="1" />
 	</Style>
-	<Style Selector="controls|CardExpander ToggleButton#HeaderButton:checked /template/ Border">
-		<Setter Property="Background" Value="Transparent" />
+
+	<Style Selector="controls|CardExpander:pointerover /template/ suki|GlassCard#PART_GlassCard">
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
+	</Style>
+
+	<Style Selector="controls|CardExpander ToggleButton#HeaderButton:pointerover">
+		<Setter Property="Background" Value="{DynamicResource SukiPrimaryColor5}" />
 	</Style>
 
 	<Style Selector="controls|CardExpander[IsExpanded=True] Path#ExpanderIcon">
@@ -86,7 +110,7 @@
 	</Style>
 
 	<Style Selector="controls|CardExpander[IsExpanded=False] Border#PART_ContentContainer">
-		<Setter Property="Opacity" Value="0" />
+		<Setter Property="Opacity" Value="1" />
 		<Setter Property="Height" Value="0" />
 		<Setter Property="BorderThickness" Value="0" />
 	</Style>

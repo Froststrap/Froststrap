@@ -91,7 +91,7 @@
                 Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ComboBox
-                    Width="200"
+                    MinWidth="200"
                     Margin="5,0,0,0"
                     Padding="10,5,10,5"
                     ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
