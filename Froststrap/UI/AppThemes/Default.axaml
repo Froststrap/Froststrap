@@ -142,6 +142,18 @@
 		<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
 	</Style>
 
+	<Style Selector="controls|Hyperlink">
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="Foreground" Value="{DynamicResource FrostAccentBrush}" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="controls|Hyperlink:pointerover">
+		<Setter Property="Foreground" Value="{DynamicResource FrostAccentTextBrush}" />
+	</Style>
+	<Style Selector="controls|Hyperlink:pressed">
+		<Setter Property="Foreground" Value="{DynamicResource FrostAccentBorderBrush}" />
+	</Style>
+
 	<Style Selector="Button.FrostSidebarAccent">
 		<Setter Property="Background"       Value="{DynamicResource FrostAccentSubtleBrush}" />
 		<Setter Property="BorderBrush"      Value="{DynamicResource FrostAccentBorderBrush}" />
