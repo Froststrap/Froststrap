@@ -266,21 +266,21 @@
 					Spacing="8">
 
 					<Button
-						Classes="accent"
+                        Classes="FrostSidebarAccent"
 						Height="36"
 						Padding="20,0"
 						Command="{Binding SaveAndLaunchSettingsCommand}"
 						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
 
 					<Button
-						Classes="accent"
+                        Classes="FrostSidebarAccent"
 						Height="36"
 						Padding="20,0"
 						Command="{Binding RestartAppCommand}"
 						Content="{x:Static resources:Strings.Menu_Restart}" />
 
 					<Button
-						Classes="accent"
+                        Classes="FrostSidebarAccent"
 						Height="36"
 						Padding="20,0"
 						Command="{Binding SaveSettingsCommand}"
