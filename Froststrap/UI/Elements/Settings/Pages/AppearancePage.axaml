@@ -11,10 +11,16 @@
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:AppearanceViewModel"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch">
 
-    <ScrollViewer>
-        <StackPanel Margin="14">
+  <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch">
+            <StackPanel Margin="14" Spacing="12">
 				<controls:CardExpander Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Description}" IsExpanded="{Binding CustomThemeExpanded, Mode=OneWay}">
 					<controls:CardExpander.HeaderContent>
 						<ComboBox
@@ -353,6 +359,7 @@
                             TextWrapping="Wrap" />
                     </Grid>
                 </controls:CardExpander>
-        </StackPanel>
-    </ScrollViewer>
+           </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>
