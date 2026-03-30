@@ -171,6 +171,16 @@
 		<Setter Property="Opacity" Value="0.9" />
 	</Style>
 
+	<Style Selector="FlyoutPresenter">
+		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="6" />
+	</Style>
+	<Style Selector="FlyoutPresenter:pointerover">
+		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+	</Style>
+
 	<Style Selector="controls|CardExpander.NoUserExpansion">
 		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
 		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
@@ -355,11 +365,15 @@
 	</Style>
 
 	<Style Selector="ComboBox">
+     <Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius"    Value="6" />
-		<Setter Property="MinHeight"       Value="32" />
-		<Setter Property="Padding"         Value="10,5" />
+        <Setter Property="MinHeight"       Value="36" />
+		<Setter Property="Padding"         Value="12,6" />
 		<Setter Property="FontSize"        Value="14" />
 		<Setter Property="Foreground"      Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
 	<Style Selector="controls|OptionControl">
