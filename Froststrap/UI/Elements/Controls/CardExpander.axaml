@@ -4,14 +4,13 @@
 
 	<Style Selector="controls|CardExpander">
 		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+     <Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
+				<Border BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="4" Margin="0,4" ClipToBounds="True">
+                        CornerRadius="6" Margin="0,4" ClipToBounds="True">
 					<StackPanel>
 						<ToggleButton Name="HeaderButton" Padding="16,12" Background="Transparent" BorderThickness="0"
                                       HorizontalAlignment="Stretch"
@@ -64,6 +63,17 @@
 				</Border>
 			</ControlTemplate>
 		</Setter>
+	</Style>
+
+	<Style Selector="controls|CardExpander ToggleButton#HeaderButton">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+	</Style>
+	<Style Selector="controls|CardExpander ToggleButton#HeaderButton:pointerover /template/ Border">
+		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+	</Style>
+	<Style Selector="controls|CardExpander ToggleButton#HeaderButton:checked /template/ Border">
+		<Setter Property="Background" Value="Transparent" />
 	</Style>
 
 	<Style Selector="controls|CardExpander[IsExpanded=True] Path#ExpanderIcon">
