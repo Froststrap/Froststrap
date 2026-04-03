@@ -241,17 +241,8 @@
 			BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
 
-				<StackPanel VerticalAlignment="Center" Orientation="Horizontal" Spacing="10">
-					<ToggleSwitch
-						IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
-						OffContent=""
-						OnContent="" />
-					<TextBlock
-						VerticalAlignment="Center"
-						FontSize="14"
-						Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-						Text="{x:Static resources:Strings.Menu_TestMode}" />
-				</StackPanel>
+				<!-- Test mode ui was here -->
+               <Border Grid.Column="0" Background="Transparent" />
 
 				<StackPanel
 					Grid.Column="1"
