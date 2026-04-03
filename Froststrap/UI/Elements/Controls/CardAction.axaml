@@ -60,4 +60,8 @@
 	<Style Selector="controls|CardAction:pointerover /template/ suki|GlassCard#PART_GlassCard">
 		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
 	</Style>
+
+	<Style Selector="controls|CardAction:focus-visible /template/ suki|GlassCard#PART_GlassCard">
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
+	</Style>
 </Styles>
