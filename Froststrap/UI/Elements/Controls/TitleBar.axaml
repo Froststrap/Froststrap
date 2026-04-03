@@ -1,12 +1,11 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|TitleBar">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Height" Value="36" />
-        
-        <Setter Property="Template">
+        <Setter Property="Height" Value="40" /> <Setter Property="Template">
             <ControlTemplate>
                 <Grid ColumnDefinitions="Auto, *, Auto" 
                       Height="{TemplateBinding Height}" 
@@ -14,8 +13,8 @@
 
                     <Image Grid.Column="0"
                            Source="{TemplateBinding Icon}"
-                           Width="18" Height="18"
-                           Margin="12,0,0,0"
+                           Width="20" Height="20"
+                           Margin="14,0,0,0"
                            VerticalAlignment="Center"
                            IsHitTestVisible="False"
                            RenderOptions.BitmapInterpolationMode="HighQuality" />
@@ -24,12 +23,13 @@
                         <TextBlock Text="{TemplateBinding Title}"
                                    VerticalAlignment="Center"
                                    Margin="12,0"
-                                   FontSize="12"
+                                   FontSize="13"
+                                   FontWeight="Medium"
                                    IsHitTestVisible="False"
-                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                   Foreground="{DynamicResource SukiText}" />
                     </Panel>
 
-                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top">
                         <controls:IconButton Name="PART_MinimizeButton" 
                                            Classes="TitleBarButton" 
                                            Icon="Minus" 
@@ -52,29 +52,29 @@
 
     <Style Selector="controls|IconButton.TitleBarButton">
         <Setter Property="Width" Value="46" />
-        <Setter Property="Height" Value="32" />
+        <Setter Property="Height" Value="34" />
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="{DynamicResource SukiText}" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SukiAccentColor10}" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="#E81123" />
-    </Style>
+        <Setter Property="Background" Value="#C42B1C" /> </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover">
         <Setter Property="Foreground" Value="White" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton:disabled">
-        <Setter Property="Opacity" Value="0.3" />
+        <Setter Property="Opacity" Value="0.2" />
     </Style>
 
 </Styles>

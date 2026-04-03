@@ -3,6 +3,7 @@
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:ic="using:IconPacks.Avalonia.Material"
+        xmlns:suki="https://github.com/kikipoulet/SukiUI"
 		xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
 		xmlns:cc="using:AvaloniaEdit.CodeCompletion"
 		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
@@ -142,35 +143,74 @@
 		<Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
 	</Style>
 
-	<Style Selector="controls|CardExpander.NoUserExpansion">
-		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+	<Style Selector="controls|Hyperlink">
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="Foreground" Value="{DynamicResource FrostAccentBrush}" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="controls|Hyperlink:pointerover">
+		<Setter Property="Foreground" Value="{DynamicResource FrostAccentTextBrush}" />
+	</Style>
+	<Style Selector="controls|Hyperlink:pressed">
+		<Setter Property="Foreground" Value="{DynamicResource FrostAccentBorderBrush}" />
+	</Style>
+
+	<Style Selector="Button.FrostSidebarAccent">
+		<Setter Property="Background"       Value="{DynamicResource FrostAccentSubtleBrush}" />
+		<Setter Property="BorderBrush"      Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="BorderThickness"  Value="1" />
+		<Setter Property="Foreground"       Value="{DynamicResource FrostAccentTextBrush}" />
+		<Setter Property="CornerRadius"     Value="6" />
+		<Setter Property="FontSize"         Value="14" />
+		<Setter Property="FontWeight"       Value="Medium" />
+	</Style>
+	<Style Selector="Button.FrostSidebarAccent:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource FrostAccentSubtleBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBrush}" />
+	</Style>
+	<Style Selector="Button.FrostSidebarAccent:pressed /template/ ContentPresenter">
+		<Setter Property="Opacity" Value="0.9" />
+	</Style>
+
+	<Style Selector="FlyoutPresenter">
+		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="6" />
+	</Style>
+	<Style Selector="FlyoutPresenter:pointerover">
+		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+	</Style>
+
+<Style Selector="controls|CardExpander.NoUserExpansion">
+		<Setter Property="Background"      Value="Transparent" />
+		<Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Padding"         Value="16,12" />
-		<Setter Property="CornerRadius"    Value="6" />
+		<Setter Property="CornerRadius"    Value="8" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Name="ContentBorder"
-						Background="{TemplateBinding Background}"
+				<suki:GlassCard Name="ContentBorder"
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						CornerRadius="{TemplateBinding CornerRadius}"
 						ClipToBounds="True"
+						Padding="0"
 						Margin="0,2">
 					<StackPanel>
-						<Border Padding="16,12">
+						<Border Padding="16,12" Background="Transparent">
 							<Grid ColumnDefinitions="*, Auto">
 								<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
 									<ContentPresenter
 										Content="{TemplateBinding Header}"
 										FontSize="14"
 										FontWeight="SemiBold"
-										Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+										Foreground="{DynamicResource SukiText}"
 										TextWrapping="Wrap" />
 									<controls:MarkdownTextBlock
 										MarkdownText="{TemplateBinding Description}"
 										FontSize="12"
-										Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+										Foreground="{DynamicResource SukiLowText}"
 										IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 										TextWrapping="Wrap" />
 								</StackPanel>
@@ -184,12 +224,11 @@
 						</Border>
 
 						<Border Name="PART_ContentContainer"
-								BorderBrush="{TemplateBinding BorderBrush}"
+								BorderBrush="{DynamicResource SukiBorderBrush}"
 								ClipToBounds="True">
 							<Border.Transitions>
 								<Transitions>
 									<DoubleTransition Property="Height"  Duration="0:0:0.25" Easing="CubicEaseOut" />
-									<DoubleTransition Property="Opacity" Duration="0:0:0.2"  Easing="LinearEasing" />
 								</Transitions>
 							</Border.Transitions>
 							<ContentPresenter Name="PART_ContentPresenter"
@@ -197,7 +236,7 @@
 											  Padding="16" />
 						</Border>
 					</StackPanel>
-				</Border>
+				</suki:GlassCard>
 			</ControlTemplate>
 		</Setter>
 	</Style>
@@ -206,13 +245,15 @@
 		<Setter Property="Opacity"          Value="1" />
 		<Setter Property="BorderThickness"  Value="0,1,0,0" />
 	</Style>
+
 	<Style Selector="controls|CardExpander.NoUserExpansion[IsExpanded=False] Border#PART_ContentContainer">
-		<Setter Property="Opacity"          Value="0" />
+		<Setter Property="Opacity"          Value="1" />
 		<Setter Property="Height"           Value="0" />
 		<Setter Property="BorderThickness"  Value="0" />
 	</Style>
-	<Style Selector="controls|CardExpander.NoUserExpansion:pointerover">
-		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+
+	<Style Selector="controls|CardExpander.NoUserExpansion:pointerover /template/ suki|GlassCard#ContentBorder">
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
 	</Style>
 
 	<Style Selector="AvaloniaEdit|TextEditor">
@@ -235,66 +276,6 @@
 	</Style>
 	<Style Selector="AvaloniaEdit|TextEditor[WordWrap=True] /template/ ScrollViewer#PART_ScrollViewer">
 		<Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
-	</Style>
-
-	<Style Selector="DataGrid">
-		<Setter Property="Background"           Value="Transparent" />
-		<Setter Property="BorderThickness"      Value="1" />
-		<Setter Property="GridLinesVisibility"  Value="Horizontal" />
-		<Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource FrostBorderSubtle}" />
-		<Setter Property="VerticalGridLinesBrush"   Value="Transparent" />
-
-		<Style Selector="^ DataGridColumnHeader">
-			<Setter Property="Background"    Value="{DynamicResource ControlFillColorTertiaryBrush}" />
-			<Setter Property="Foreground"    Value="{DynamicResource TextFillColorPrimaryBrush}" />
-			<Setter Property="Height"        Value="32" />
-			<Setter Property="Padding"       Value="8,0,12,0" />
-			<Setter Property="BorderBrush"   Value="{DynamicResource FrostBorderDefault}" />
-			<Setter Property="BorderThickness" Value="1" />
-			<Setter Property="FontWeight"    Value="SemiBold" />
-			<Style Selector="^:pointerover">
-				<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-			</Style>
-		</Style>
-
-		<Style Selector="^ DataGridCell">
-			<Setter Property="Height"           Value="32" />
-			<Setter Property="Padding"          Value="8,0" />
-			<Setter Property="Background"       Value="Transparent" />
-			<Setter Property="BorderThickness"  Value="0" />
-			<Setter Property="Foreground"       Value="{DynamicResource TextFillColorPrimaryBrush}" />
-			<Style Selector="^:pointerover">
-				<Setter Property="Background" Value="{DynamicResource FrostAccentSubtleBrush}" />
-			</Style>
-		</Style>
-	</Style>
-
-	<Style Selector="ListBox">
-		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderSubtle}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="CornerRadius"    Value="6" />
-		<Setter Property="Margin"          Value="0,4" />
-		<Setter Property="Padding"         Value="0" />
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Border Name="PART_RootBorder"
-						Background="{TemplateBinding Background}"
-						BorderBrush="{TemplateBinding BorderBrush}"
-						BorderThickness="{TemplateBinding BorderThickness}"
-						CornerRadius="{TemplateBinding CornerRadius}"
-						ClipToBounds="True">
-					<ScrollViewer Name="PART_ScrollViewer"
-								  VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-								  HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-								  AllowAutoHide="{TemplateBinding ScrollViewer.AllowAutoHide}">
-						<ItemsPresenter Name="PART_ItemsPresenter"
-										ItemsPanel="{TemplateBinding ItemsPanel}"
-										Margin="{TemplateBinding Padding}" />
-					</ScrollViewer>
-				</Border>
-			</ControlTemplate>
-		</Setter>
 	</Style>
 
 	<Style Selector="cc|CompletionListBox">
@@ -326,58 +307,14 @@
 	</Style>
 
 	<Style Selector="ComboBox">
-		<Setter Property="CornerRadius"    Value="6" />
-		<Setter Property="MinHeight"       Value="32" />
-		<Setter Property="Padding"         Value="10,5" />
-		<Setter Property="FontSize"        Value="14" />
-		<Setter Property="Foreground"      Value="{DynamicResource TextFillColorPrimaryBrush}" />
-	</Style>
-
-	<Style Selector="controls|OptionControl">
-		<Setter Property="Background"      Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource FrostBorderDefault}" />
+		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource FrostBorderDefault}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Padding"         Value="16,12" />
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Border Background="{TemplateBinding Background}"
-						BorderBrush="{TemplateBinding BorderBrush}"
-						BorderThickness="{TemplateBinding BorderThickness}"
-						Padding="{TemplateBinding Padding}"
-						CornerRadius="6"
-						MinHeight="64"
-						Margin="0,2">
-					<Grid ColumnDefinitions="*,Auto">
-						<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
-							<StackPanel Orientation="Horizontal" Spacing="6">
-								<TextBlock
-									Text="{TemplateBinding Header}"
-									FontSize="14"
-									FontWeight="SemiBold"
-									VerticalAlignment="Center"
-									Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-							</StackPanel>
-							<controls:MarkdownTextBlock
-								MarkdownText="{TemplateBinding Description}"
-								FontSize="12"
-								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-								TextWrapping="Wrap"
-								IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-						</StackPanel>
-						<ContentPresenter
-							Grid.Column="1"
-							Content="{TemplateBinding InnerContent}"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Right"
-							Margin="16,0,0,0" />
-					</Grid>
-				</Border>
-			</ControlTemplate>
-		</Setter>
+		<Setter Property="CornerRadius" Value="6" />
+		<Setter Property="MinHeight" Value="40" />
+		<Setter Property="Padding" Value="12,0,0,0" /> <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
-	<Style Selector="controls|OptionControl:pointerover">
-		<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-	</Style>
 
 </Styles>

@@ -14,14 +14,13 @@
     mc:Ignorable="d">
 
     <ScrollViewer>
-        <StackPanel Margin="24,16,24,24" Spacing="0">
+        <StackPanel Margin="14">
 
             <controls:CardAction
                 Icon="FileDocumentEditOutline"
                 Header="{x:Static resources:Strings.Menu_FastFlagEditor_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Editor_Description}"
-                Command="{Binding OpenFastFlagEditorCommand}"
-                Margin="0,0,0,8" />
+                Command="{Binding OpenFastFlagEditorCommand}"/>
 
             <controls:OptionControl
                 x:Name="ManagerEnabled"
@@ -50,7 +49,7 @@
                 <ComboBox
                     Margin="0"
                     Padding="10,5"
-                    Width="120"
+                    MinWidth="200"
                     ItemsSource="{Binding MSAALevels.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedMSAALevel, Mode=TwoWay}">
                     <ComboBox.ItemTemplate>
@@ -130,7 +129,7 @@
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_RenderingMode_Description}"
                 HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#rendering-mode">
                 <ComboBox
-                    Width="160"
+                    MinWidth="200"
                     Margin="0"
                     Padding="10,5"
                     ItemsSource="{Binding RenderingModes.Keys, Mode=OneTime}"
@@ -148,7 +147,7 @@
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_OverrideGraphicQuality_Description}"
                 HelpLink="https://github.com/Meddsam/Froststrap/wiki/A-guide-to-FastFlags#override-graphic-level">
                 <ComboBox
-                    Width="160"
+                    MinWidth="200"
                     Margin="0"
                     Padding="10,5"
                     ItemsSource="{Binding QualityLevels.Keys, Mode=OneTime}"

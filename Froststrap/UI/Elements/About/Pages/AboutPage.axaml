@@ -110,7 +110,7 @@
             <Grid Margin="0,8,0,0" ColumnDefinitions="*,*,*">
                 <Expander Grid.Column="0" Margin="0,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Code}" IsExpanded="True">
                     <StackPanel>
-                        <controls:MarkdownTextBlock Margin="0,-12,0,0" MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
+                        <controls:MarkdownTextBlock MarkdownText="[meddsam](https://discord.com/users/1051148571371647017)" />
                         <controls:MarkdownTextBlock MarkdownText="[SquireDot](https://github.com/UltimatePlayer97)" />
                         <controls:MarkdownTextBlock MarkdownText="[Invra](https://invra.net) ([GitLab](https://gitlab.com/invra), [GitHub](https://github.com/invra))" />
                     </StackPanel>
@@ -118,7 +118,7 @@
 
                 <Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Contributors}" IsExpanded="True">
                     <StackPanel>
-                        <controls:MarkdownTextBlock Margin="0,-12,0,0" MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
+                        <controls:MarkdownTextBlock MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
                         <controls:MarkdownTextBlock MarkdownText="[Scroom](https://discord.com/users/1254472513199673347)" />
                         <controls:MarkdownTextBlock MarkdownText="[MattDinio](https://discord.com/users/1353528667245903892)" />
                         <controls:MarkdownTextBlock MarkdownText="[Stoof](https://discord.com/users/1020107535589593138)" />
@@ -138,7 +138,7 @@
 
                 <Expander Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Insipirations}" IsExpanded="True">
                     <StackPanel>
-                        <controls:MarkdownTextBlock Margin="0,-12,0,0" MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[Bloxstrap](https://github.com/bloxstraplabs/bloxstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[MaximumADHD](https://github.com/MaximumADHD)" />
                     </StackPanel>

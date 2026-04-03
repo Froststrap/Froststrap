@@ -11,15 +11,21 @@
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:AppearanceViewModel"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    HorizontalAlignment="Stretch"
+    VerticalAlignment="Stretch">
 
-    <ScrollViewer>
-        <StackPanel Margin="14">
+  <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalAlignment="Stretch"
+                      HorizontalAlignment="Stretch">
+            <StackPanel Margin="14">
 				<controls:CardExpander Classes="NoUserExpansion" Header="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Custom_Theme_Description}" IsExpanded="{Binding CustomThemeExpanded, Mode=OneWay}">
 					<controls:CardExpander.HeaderContent>
 						<ComboBox
 							Grid.Column="1"
-							Width="200"
+							MinWidth="200"
 							Padding="10,5,10,5"
 							ItemsSource="{Binding Themes}"
 							SelectedItem="{Binding Theme, Mode=TwoWay}">
@@ -143,7 +149,7 @@
                     Header="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Title}" 
                     Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}">
                     <ComboBox
-                        Width="200"
+                        MinWidth="200"
                         Margin="5,0,0,0"
                         Padding="10,5,10,5"
                         ItemsSource="{Binding BackdropOptions}"
@@ -153,7 +159,7 @@
 
                 <controls:OptionControl Description="{x:Static resources:Strings.Menu_Appearance_Language_Description}" Header="{x:Static resources:Strings.Menu_Appearance_Language_Title}">
                     <ComboBox
-                        Width="200"
+                        MinWidth="200"
                         Padding="10,5,10,5"
                         ItemsSource="{Binding Languages, Mode=OneTime}"
                         SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}" />
@@ -189,7 +195,7 @@
                        Description="{x:Static resources:Strings.Menu_Appearance_Launcher_Description}">
 
     <controls:CardExpander.HeaderContent>
-        <ComboBox Width="200"
+        <ComboBox MinWidth="200"
                   Padding="10,5,10,5"
                   ItemsSource="{Binding Dialogs, Mode=OneTime}"
                   SelectedItem="{Binding Dialog, Mode=TwoWay}">
@@ -216,14 +222,15 @@
               Grid.Column="0"
               Margin="0,8,8,0"
               ColumnDefinitions="*,*">
-            <controls:IconButton Grid.Column="0"
+                <controls:IconButton Grid.Column="0"
                     Margin="0,0,4,0"
                     Icon="Plus"
+                    Classes="Primary"
                     HorizontalAlignment="Stretch"
                     Command="{Binding AddCustomThemeCommand}"
                     CommandParameter="{Binding $parent[Window]}"
                     Content="{x:Static resources:Strings.Common_New}" />
-            <controls:IconButton Grid.Column="1"
+                <controls:IconButton Grid.Column="1"
                     Margin="4,0,0,0"
                     Classes="Danger"
                     Icon="TrashCanOutline"
@@ -231,33 +238,33 @@
                     Command="{Binding DeleteCustomThemeCommand}"
                     Content="{x:Static resources:Strings.Common_Delete}"
                     IsEnabled="{Binding IsCustomThemeSelected}"/>
-        </Grid>
+            </Grid>
 
-        <StackPanel Grid.Row="0"
+            <StackPanel Grid.Row="0"
                     Grid.RowSpan="2"
                     Grid.Column="1"
                     Spacing="8"
                     IsVisible="{Binding IsCustomThemeSelected}">
-            <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                        Text="{x:Static resources:Strings.Common_Name}" />
-            <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
+                <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
-            <Grid ColumnDefinitions="*,*,*">
-                <controls:IconButton Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch" Icon="PencilOutline"
+                <Grid ColumnDefinitions="*,*,*">
+                    <controls:IconButton Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch" Icon="PencilOutline"
                         Command="{Binding RenameCustomThemeCommand}" 
                         Content="{x:Static resources:Strings.Common_Rename}" />
-                <controls:IconButton Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch" Icon="FileEditOutline"
+                    <controls:IconButton Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch" Icon="FileEditOutline"
                         Command="{Binding EditCustomThemeCommand}" 
                         CommandParameter="{Binding $self}"
                         Content="{x:Static resources:Strings.Common_Edit}" />
-                <controls:IconButton Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch" Icon="Export"
+                    <controls:IconButton Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch" Icon="Export"
                         Command="{Binding ExportCustomThemeCommand}" 
                         CommandParameter="{Binding $self}"
                         Content="{x:Static resources:Strings.Common_Export}" />
-            </Grid>
-        </StackPanel>
+                </Grid>
+            </StackPanel>
 
-        <TextBlock Grid.Row="0"
+            <TextBlock Grid.Row="0"
                    Grid.RowSpan="2"
                    Grid.Column="1"
                    HorizontalAlignment="Center"
@@ -266,15 +273,15 @@
                    IsVisible="{Binding !IsCustomThemeSelected}"
                    Text="{x:Static resources:Strings.Menu_Appearance_CustomThemes_NoneSelected}"
                    TextWrapping="Wrap" />
-    </Grid>
-</controls:CardExpander>
+        </Grid>
+    </controls:CardExpander>
 
                 <controls:OptionControl
                     x:Name="IconSelector"
                     Description="{x:Static resources:Strings.Menu_Appearance_Icon_Description}"
                     Header="{x:Static resources:Strings.Menu_Appearance_Icon_Title}">
                     <ComboBox
-                        Width="200"
+                        MinWidth="200"
                         Padding="10,5,10,5"
                         ItemsSource="{Binding Icons, Mode=OneWay}"
                         SelectedValue="{Binding Icon, Mode=TwoWay}"
@@ -289,6 +296,7 @@
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="8,0,0,0"
+                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                         Text="{Binding Path=IconType, Converter={StaticResource EnumNameConverter}}" />
                                 </Grid>
                             </DataTemplate>
@@ -353,6 +361,7 @@
                             TextWrapping="Wrap" />
                     </Grid>
                 </controls:CardExpander>
-        </StackPanel>
-    </ScrollViewer>
+           </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

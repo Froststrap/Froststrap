@@ -5,28 +5,36 @@
 
     <Style Selector="controls|Hyperlink">
         <Setter Property="ClipToBounds" Value="False" />
-        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackground}" />
+        <Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor}" />
+        <Setter Property="Cursor"     Value="Hand" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Foreground" Duration="0:0:0.15" />
+            </Transitions>
+        </Setter>
         <Setter Property="Template">
             <ControlTemplate>
                 <ContentPresenter
                     Name="PART_ContentPresenter"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Bottom"
-                    Background="Transparent"
                     Content="{TemplateBinding Content}"
                     ContentTemplate="{TemplateBinding ContentTemplate}"
-                    Cursor="Hand"
-                    Foreground="{TemplateBinding Foreground}" />
+                    Background="Transparent"
+                    Foreground="{TemplateBinding Foreground}"
+                    VerticalAlignment="Center" />
             </ControlTemplate>
         </Setter>
     </Style>
 
-    <Style Selector="controls|Hyperlink:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
+    <Style Selector="controls|Hyperlink:pointerover">
+        <Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor75}" />
+        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+        </Style>
     </Style>
 
-    <Style Selector="controls|Hyperlink:pressed /template/ ContentPresenter#PART_ContentPresenter">
-        <Setter Property="Foreground" Value="{DynamicResource AccentButtonBackgroundPressed}" />
+    <Style Selector="controls|Hyperlink:pressed">
+        <Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor120}" />
+        <Setter Property="RenderTransform" Value="scale(0.98)" />
     </Style>
 
 </Styles>

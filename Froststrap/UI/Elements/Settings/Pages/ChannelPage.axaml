@@ -6,8 +6,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
+    xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
     d:DesignHeight="900"
     d:DesignWidth="800"
     x:DataType="vm:ChannelViewModel"
@@ -15,22 +15,37 @@
 
     <ScrollViewer>
         <StackPanel Margin="14">
-            <StackPanel Margin="0,0,14,14">
                 <TextBlock
-                    Margin="0,16,0,0"
                     FontSize="20"
                     FontWeight="Bold"
                     Text="Froststrap" />
 
-                <controls:OptionControl
+                <controls:CardExpander
                     Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                    Description="Choose how Froststrap handles automatic updates.">
-                    <ComboBox
-                        Width="200"
-                        Margin="5,0,0,0"
-                        Padding="10,5,10,5"
-                        ItemsSource="{Binding UpdateCheckValues}"
-                        SelectedItem="{Binding SelectedUpdateCheck, Mode=TwoWay}" />
+                    IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}">
+
+                    <controls:CardExpander.HeaderContent>
+                        <ToggleSwitch
+                            IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
+                            OffContent=""
+                            OnContent="" />
+                    </controls:CardExpander.HeaderContent>
+
+                    <controls:OptionControl
+                        Header="Update to Pre Releases">
+                        <ToggleSwitch
+                            IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"
+                            OffContent=""
+                            OnContent="" />
+                    </controls:OptionControl>
+                </controls:CardExpander>
+
+                <controls:OptionControl
+                    Header="{x:Static resources:Strings.Menu_TestMode}">
+                    <ToggleSwitch
+                        IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
+                        OffContent=""
+                        OnContent="" />
                 </controls:OptionControl>
 
                 <Separator Margin="0,8,0,4" />
@@ -146,7 +161,7 @@
                         </Grid>
 
                         <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
-                            <ui:ProgressRing
+                            <suki:CircleProgressBar
                                 Grid.Column="0"
                                 Width="64"
                                 Height="64"
@@ -183,7 +198,6 @@
                         ItemsSource="{Binding ChannelChangeModes.Keys, Mode=OneTime}"
                         SelectedItem="{Binding SelectedChannelChangeMode, Mode=TwoWay}" />
                 </controls:OptionControl>
-            </StackPanel>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

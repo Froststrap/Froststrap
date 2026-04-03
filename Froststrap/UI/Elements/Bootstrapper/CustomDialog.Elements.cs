@@ -8,7 +8,7 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
-using FluentAvalonia.UI.Controls;
+using SukiUI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using System.Xml.Linq;
@@ -462,11 +462,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             var fgColorAttr = xmlElement.Attribute("Foreground")?.Value;
             if (!string.IsNullOrEmpty(fgColorAttr) && Color.TryParse(fgColorAttr, out var parsedColor))
             {
-                var brush = new SolidColorBrush(parsedColor);
-                var progressStyle = new Style(x => x.OfType<ProgressBar>().Template().Name("PART_Indicator"));
-                progressStyle.Setters.Add(new Setter(TemplatedControl.BackgroundProperty, brush));
-                progressBar.Styles.Add(progressStyle);
-                progressBar.Foreground = brush;
+                progressBar.Foreground = new SolidColorBrush(parsedColor);
             }
 
             progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
@@ -483,26 +479,25 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private static Control HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
         {
-            var progressRing = new ProgressRing();
+            var progressRing = new ProgressBar();
+
+            progressRing.Classes.Add("Ring");
+
             HandleXmlElement_RangeBase(dialog, progressRing, xmlElement);
 
             var fgColorAttr = xmlElement.Attribute("Foreground")?.Value;
             if (!string.IsNullOrEmpty(fgColorAttr) && Color.TryParse(fgColorAttr, out var parsedColor))
             {
-                var brush = new SolidColorBrush(parsedColor);
-                progressRing.Foreground = brush;
-                var ringStyle = new Style(x => x.OfType<ProgressRing>().Template().OfType<Control>());
-                ringStyle.Setters.Add(new Setter(TemplatedControl.ForegroundProperty, brush));
-                progressRing.Styles.Add(ringStyle);
+                progressRing.Foreground = new SolidColorBrush(parsedColor);
             }
 
-            progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", true);
+            progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
             if (xmlElement.Attribute("Name")?.Value == "PrimaryProgressRing")
             {
-                progressRing.Bind(ProgressRing.IsIndeterminateProperty, new Binding("ProgressIndeterminate"));
-                progressRing.Bind(RangeBase.MaximumProperty, new Binding("ProgressMaximum"));
+                progressRing.Bind(ProgressBar.IsIndeterminateProperty, new Binding("ProgressIndeterminate"));
                 progressRing.Bind(RangeBase.ValueProperty, new Binding("ProgressValue"));
+                progressRing.Bind(RangeBase.MaximumProperty, new Binding("ProgressMaximum"));
             }
 
             return progressRing;

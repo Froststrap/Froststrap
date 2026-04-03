@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:models="using:Froststrap.Models"
              xmlns:vm="using:Froststrap.UI.ViewModels.Installer"
              xmlns:resources="using:Froststrap.Resources"
+             xmlns:suki="https://github.com/kikipoulet/SukiUI"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
              x:Class="Froststrap.UI.Elements.Installer.Pages.InstallPage"
@@ -42,7 +42,7 @@
             <controls:OptionControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,4,0"
             Header="Import Settings From"
             Description="Choose which application's settings to import into this installation.">
-                <ComboBox Width="120"
+                <ComboBox MinWidth="120"
                     ItemsSource="{Binding AvailableImportSources}"
                     SelectedItem="{Binding SelectedImportSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding ImportSettingsEnabled, Mode=OneWay}">
@@ -57,6 +57,6 @@
         </Grid>
 
         <TextBlock Margin="0,8,0,0" FontSize="14" Text="{Binding ErrorMessage}" Foreground="{DynamicResource SystemFillColorCriticalBrush}" TextWrapping="Wrap" IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-        <ui:InfoBar Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0" Padding="8" Title="{x:Static resources:Strings.Installer_InstallationNotFound}" IsOpen="{Binding ShowNotFound, Mode=OneWay}" Severity="Warning" IsClosable="False" />
+        <suki:InfoBar Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0" Padding="8" Title="{x:Static resources:Strings.Installer_InstallationNotFound}" IsOpen="{Binding ShowNotFound, Mode=OneWay}" Severity="Warning" IsClosable="False" />
     </StackPanel>
 </UserControl>
