@@ -14,7 +14,7 @@
 		<Setter Property="Template">
 			<ControlTemplate>
 				<suki:GlassCard CornerRadius="8" 
-							   IsInteractive="True"
+                                IsInteractive="False"
 							   Margin="0,4"
 							   Padding="{TemplateBinding Padding}"
 							   BorderThickness="{TemplateBinding BorderThickness}"
@@ -61,6 +61,10 @@
 	</Style>
 
 	<Style Selector="controls|OptionControl:pointerover /template/ suki|GlassCard">
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
+	</Style>
+
+	<Style Selector="controls|OptionControl:focus-within /template/ suki|GlassCard">
 		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
 	</Style>
 </Styles>
