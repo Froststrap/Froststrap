@@ -2,24 +2,24 @@
     x:Class="Froststrap.App"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:sty="using:FluentAvalonia.Styling"
+    xmlns:suki="clr-namespace:SukiUI;assembly=SukiUI"
     xmlns:converters="using:Froststrap.UI.Converters"
     RequestedThemeVariant="Dark">
 
-	<Application.Styles>
-		<sty:FluentAvaloniaTheme PreferSystemTheme="True" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Card.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardExpander.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardAction.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
-		<StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
-		<StyleInclude Source="avares://IconPacks.Avalonia.Material/Material.axaml" />
-		<StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
-	</Application.Styles>
+    <Application.Styles>
+        <suki:SukiTheme />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Card.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardExpander.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardAction.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
+        <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
+        <StyleInclude Source="avares://IconPacks.Avalonia.Material/Material.axaml" />
+        <StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
+    </Application.Styles>
 
     <Application.Resources>
         <ResourceDictionary>
@@ -29,7 +29,6 @@
                 <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- it just says static resource not found if this is not here in completion window -->
             <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />
             <StaticResource x:Key="ToolTipForeground" ResourceKey="ToolTipForegroundBrush" />
 
@@ -38,8 +37,8 @@
             <FontFamily x:Key="BuilderIconsRegular">avares://Froststrap/Resources/Fonts#BuilderIcons-Regular</FontFamily>
             <FontFamily x:Key="BuilderIconsFilled">avares://Froststrap/Resources/Fonts#BuilderIcons-Filled</FontFamily>
 
-            <SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SystemAccentColorSecondary}" />
-            <SolidColorBrush x:Key="AccentColorTertiaryBrush" Color="{DynamicResource SystemAccentColorTertiary}" />
+            <SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SukiAccentColor75}" />
+            <SolidColorBrush x:Key="AccentColorTertiaryBrush" Color="{DynamicResource SukiAccentColor50}" />
 
             <converters:StringFormatConverter x:Key="StringFormatConverter" />
             <converters:EnumNameConverter x:Key="EnumNameConverter" />

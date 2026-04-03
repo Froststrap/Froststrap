@@ -3,70 +3,92 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:ic="using:IconPacks.Avalonia.Material"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
+    xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Installer"
-    xmlns:pages="clr-namespace:Froststrap.UI.Elements.Installer.Pages"
     Title="{x:Static resources:Strings.Menu_Title}"
     Height="540" Width="840" MinWidth="840"
     x:DataType="vm:MainWindowViewModel"
     WindowStartupLocation="CenterScreen">
 
-    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto, *,Auto">
+    <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto, *, Auto">
+        
         <controls:TitleBar x:Name="RootTitleBar" 
                            Grid.Row="0" 
                            Title="{x:Static resources:Strings.Installer_Title}" 
                            Icon="avares://Froststrap/Froststrap.ico" />
 
-        <ui:NavigationView x:Name="RootNavigation" 
+        <suki:SukiSideMenu x:Name="RootNavigation" 
                            Grid.Row="1"
-                           PaneDisplayMode="Left"
-                           IsBackButtonVisible="False"
-                           IsSettingsVisible="False"
-                           IsPaneToggleButtonVisible="False"
-                           OpenPaneLength="50">
+                           IsSearchEnabled="False">
             
-            <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem IsHitTestVisible="False"
-                                       FontWeight="Medium" />
-                <ui:NavigationViewItem IsHitTestVisible="False"
-                                       FontWeight="Medium" />
-                <ui:NavigationViewItem IsHitTestVisible="False"
-                                       FontWeight="Medium" />
-            </ui:NavigationView.MenuItems>
+            <suki:SukiSideMenu.Items>
+                <suki:SukiSideMenuItem Header="Welcome" IsHitTestVisible="False">
+                    <suki:SukiSideMenuItem.Icon>
+                        <ic:PackIconMaterial Kind="HandWave" Width="18" Height="18" />
+                    </suki:SukiSideMenuItem.Icon>
+                    <suki:SukiSideMenuItem.PageContent>
+                        <Grid />
+                    </suki:SukiSideMenuItem.PageContent>
+                </suki:SukiSideMenuItem>
 
-            <Grid RowDefinitions="Auto, *">
-                <ui:BreadcrumbBar Grid.Row="0" 
-                                  Margin="24,12,24,0" 
-                                  IsHitTestVisible="False" />
-                
-                <TransitioningContentControl x:Name="RootFrame" 
-                                             Grid.Row="1" 
-                                             Margin="24,12,24,24" />
-            </Grid>
-        </ui:NavigationView>
+                <suki:SukiSideMenuItem Header="Install" IsHitTestVisible="False">
+                    <suki:SukiSideMenuItem.Icon>
+                        <ic:PackIconMaterial Kind="Download" Width="18" Height="18" />
+                    </suki:SukiSideMenuItem.Icon>
+                    <suki:SukiSideMenuItem.PageContent>
+                        <Grid />
+                    </suki:SukiSideMenuItem.PageContent>
+                </suki:SukiSideMenuItem>
+
+                <suki:SukiSideMenuItem Header="Complete" IsHitTestVisible="False">
+                    <suki:SukiSideMenuItem.Icon>
+                        <ic:PackIconMaterial Kind="CheckCircle" Width="18" Height="18" />
+                    </suki:SukiSideMenuItem.Icon>
+                    <suki:SukiSideMenuItem.PageContent>
+                        <Grid />
+                    </suki:SukiSideMenuItem.PageContent>
+                </suki:SukiSideMenuItem>
+            </suki:SukiSideMenu.Items>
+
+            <suki:SukiSideMenu.Content>
+                <Grid RowDefinitions="Auto, *">
+                    <TextBlock Grid.Row="0" 
+                               Margin="40,24,24,0" 
+                               Text="Installer Progress" 
+                               Classes="h4" 
+                               Opacity="0.6" />
+                    
+                    <TransitioningContentControl x:Name="RootFrame" 
+                                                 Grid.Row="1" 
+                                                 Margin="40,12,40,40" />
+                </Grid>
+            </suki:SukiSideMenu.Content>
+        </suki:SukiSideMenu>
 
         <Border Grid.Row="2" 
-                Background="{DynamicResource LayerFillColorAltBrush}" 
-                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" 
+                Background="{DynamicResource SukiBackground}" 
+                BorderBrush="{DynamicResource SukiBorderBrush}" 
                 BorderThickness="0,1,0,0" 
                 Padding="16,12">
             <Grid ColumnDefinitions="*, Auto">
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
                     <Button Content="{x:Static resources:Strings.Common_Navigation_Back}" 
                             Width="100"
+                            Classes="Basic"
                             Command="{Binding BackPageCommand}" 
                             IsEnabled="{Binding BackButtonEnabled}" />
 
                     <Button Content="{Binding NextButtonText}" 
                             Width="120"
+                            Classes="Primary"
                             Command="{Binding NextPageCommand}" />
 
                     <Button Content="{x:Static resources:Strings.Common_Close}" 
                             Width="100"
+                            Classes="Basic"
                             Command="{Binding CloseWindowCommand}" />
                 </StackPanel>
             </Grid>

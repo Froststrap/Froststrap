@@ -57,14 +57,16 @@
                     Icon="PlayCircleOutline"
                     Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}"
                     Command="{Binding LaunchRobloxCommand}"
+                    TabIndex="0"
                     Padding="16,14" />
-
+                
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <controls:CardAction 
                         Grid.Column="0"
                         Icon="CogOutline"
                         Header="{x:Static resources:Strings.Common_Settings}"
                         Command="{Binding LaunchSettingsCommand}"
+                        TabIndex="1"
                         Padding="16,14" />
 
                     <controls:CardAction 
@@ -72,6 +74,7 @@
                         Icon="WrenchOutline"
                         Header="{x:Static resources:Strings.Common_Studio}"
                         Command="{Binding LaunchRobloxStudioCommand}"
+                        TabIndex="2"
                         Padding="16,14" />
                 </Grid>
 
@@ -83,6 +86,7 @@
                     Description="{x:Static resources:Strings.LaunchMenu_Wiki_Description}"
                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                     CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
+                    TabIndex="3"
                     Padding="16,14" />
             </StackPanel>
         </Grid>
