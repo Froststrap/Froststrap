@@ -20,15 +20,32 @@
                     FontWeight="Bold"
                     Text="Froststrap" />
 
-                <controls:OptionControl
+                <controls:CardExpander
                     Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                    Description="Choose how Froststrap handles automatic updates.">
-                    <ComboBox
-                        Width="200"
-                        Margin="5,0,0,0"
-                        Padding="10,5,10,5"
-                        ItemsSource="{Binding UpdateCheckValues}"
-                        SelectedItem="{Binding SelectedUpdateCheck, Mode=TwoWay}" />
+                    IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}">
+
+                    <controls:CardExpander.HeaderContent>
+                        <ToggleSwitch
+                            IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
+                            OffContent=""
+                            OnContent="" />
+                    </controls:CardExpander.HeaderContent>
+
+                    <controls:OptionControl
+                        Header="Update to Pre Releases">
+                        <ToggleSwitch
+                            IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"
+                            OffContent=""
+                            OnContent="" />
+                    </controls:OptionControl>
+                </controls:CardExpander>
+
+                <controls:OptionControl
+                    Header="{x:Static resources:Strings.Menu_TestMode}">
+                    <ToggleSwitch
+                        IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
+                        OffContent=""
+                        OnContent="" />
                 </controls:OptionControl>
 
                 <Separator Margin="0,8,0,4" />

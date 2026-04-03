@@ -27,39 +27,6 @@ namespace Froststrap.UI.ViewModels.Settings
             get => _currentPage;
             set => SetProperty(ref _currentPage, value);
         }
-
-
-        // TODO: Fix test mode
-        public bool TestModeEnabled
-        {
-            get => App.LaunchSettings.TestModeFlag.Active;
-            set
-            {
-                if (value && !App.State.Prop.TestModeWarningShown)
-                {
-                    _ = HandleTestModeConfirmation();
-                }
-                else
-                {
-                    App.LaunchSettings.TestModeFlag.Active = value;
-                    OnPropertyChanged(nameof(TestModeEnabled));
-                }
-            }
-        }
-
-        private async Task HandleTestModeConfirmation()
-        {
-            var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                App.State.Prop.TestModeWarningShown = true;
-                App.LaunchSettings.TestModeFlag.Active = true;
-            }
-
-            OnPropertyChanged(nameof(TestModeEnabled));
-        }
-
         private string _selectedPage = "integrations";
         public string SelectedPage { get => _selectedPage; set => SetProperty(ref _selectedPage, value); }
 

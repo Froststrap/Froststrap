@@ -13,6 +13,78 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues(typeof(UpdateCheck)).Cast<UpdateCheck>();
 
+        public bool AutomaticUpdatesEnabled
+        {
+            get => SelectedUpdateCheck != UpdateCheck.Disabled;
+            set
+            {
+                if (value)
+                {
+                    if (SelectedUpdateCheck == UpdateCheck.Disabled)
+                        SelectedUpdateCheck = UpdateCheck.Stable;
+                    else
+                        OnPropertyChanged(nameof(AutomaticUpdatesEnabled));
+                }
+                else if (SelectedUpdateCheck != UpdateCheck.Disabled)
+                {
+                    SelectedUpdateCheck = UpdateCheck.Disabled;
+                }
+
+                OnPropertyChanged(nameof(PreReleaseUpdatesEnabled));
+            }
+        }
+
+        public bool PreReleaseUpdatesEnabled
+        {
+            get => SelectedUpdateCheck is UpdateCheck.Test or UpdateCheck.Both;
+            set
+            {
+                if (value)
+                {
+                    SelectedUpdateCheck = UpdateCheck.Both;
+                }
+                else if (SelectedUpdateCheck is UpdateCheck.Test or UpdateCheck.Both)
+                {
+                    SelectedUpdateCheck = UpdateCheck.Stable;
+                }
+                else
+                {
+                    OnPropertyChanged(nameof(PreReleaseUpdatesEnabled));
+                }
+            }
+        }
+
+        // TODO: Fix test mode
+        public bool TestModeEnabled
+        {
+            get => App.LaunchSettings.TestModeFlag.Active;
+            set
+            {
+                if (value && !App.State.Prop.TestModeWarningShown)
+                {
+                    _ = HandleTestModeConfirmation();
+                }
+                else
+                {
+                    App.LaunchSettings.TestModeFlag.Active = value;
+                    OnPropertyChanged(nameof(TestModeEnabled));
+                }
+            }
+        }
+
+        private async Task HandleTestModeConfirmation()
+        {
+            var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                App.State.Prop.TestModeWarningShown = true;
+                App.LaunchSettings.TestModeFlag.Active = true;
+            }
+
+            OnPropertyChanged(nameof(TestModeEnabled));
+        }
+
         public UpdateCheck SelectedUpdateCheck
         {
             get => App.Settings.Prop.UpdateChecks;
@@ -20,6 +92,8 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 App.Settings.Prop.UpdateChecks = value;
                 OnPropertyChanged(nameof(SelectedUpdateCheck));
+                OnPropertyChanged(nameof(AutomaticUpdatesEnabled));
+                OnPropertyChanged(nameof(PreReleaseUpdatesEnabled));
             }
         }
 
