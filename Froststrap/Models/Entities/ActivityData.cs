@@ -75,7 +75,7 @@ namespace Froststrap.Models.Entities
 
 		public string GetInviteDeeplink(bool launchData = true)
 		{
-			string deeplink = $"roblox://experiences/start?placeId={PlaceId}";
+			string deeplink = $"http://froststrap.github.io/invite?placeId={PlaceId}";
 
 			if (ServerType == ServerType.Private) // thats not going to work
 				deeplink += "&accessCode=" + AccessCode;
