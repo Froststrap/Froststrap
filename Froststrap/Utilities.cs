@@ -1,6 +1,7 @@
 ﻿using Froststrap;
 using Froststrap.AppData;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace Froststrap
 {
@@ -60,10 +61,15 @@ namespace Froststrap
         {
             try
             {
-                var version1 = GetVersionFromString(versionStr1);
-                var version2 = GetVersionFromString(versionStr2);
+                var (version1, prerelease1) = GetVersionParts(versionStr1);
+                var (version2, prerelease2) = GetVersionParts(versionStr2);
 
-                return (VersionComparison)version1.CompareTo(version2);
+                var versionComparison = (VersionComparison)version1.CompareTo(version2);
+
+                if (versionComparison != VersionComparison.Equal)
+                    return versionComparison;
+
+                return ComparePrerelease(prerelease1, prerelease2);
             }
             catch (Exception)
             {
@@ -76,6 +82,75 @@ namespace Froststrap
 
                 throw;
             }
+        }
+
+        private static (Version Version, string? Prerelease) GetVersionParts(string version)
+        {
+            if (version.StartsWith('v'))
+                version = version[1..];
+
+            int idx = version.IndexOf('+');
+            if (idx != -1)
+                version = version[..idx];
+
+            string? prerelease = null;
+            int dashIdx = version.IndexOf('-');
+            if (dashIdx != -1)
+            {
+                prerelease = version[(dashIdx + 1)..];
+                version = version[..dashIdx];
+            }
+
+            return (new Version(version), prerelease);
+        }
+
+        private static VersionComparison ComparePrerelease(string? prerelease1, string? prerelease2)
+        {
+            if (string.IsNullOrEmpty(prerelease1) && string.IsNullOrEmpty(prerelease2))
+                return VersionComparison.Equal;
+
+            if (string.IsNullOrEmpty(prerelease1))
+                return VersionComparison.GreaterThan;
+
+            if (string.IsNullOrEmpty(prerelease2))
+                return VersionComparison.LessThan;
+
+            string[] parts1 = prerelease1.Split('.');
+            string[] parts2 = prerelease2.Split('.');
+
+            for (int i = 0; i < Math.Max(parts1.Length, parts2.Length); i++)
+            {
+                if (i >= parts1.Length)
+                    return VersionComparison.LessThan;
+
+                if (i >= parts2.Length)
+                    return VersionComparison.GreaterThan;
+
+                string part1 = parts1[i];
+                string part2 = parts2[i];
+
+                bool part1IsNumber = int.TryParse(part1, NumberStyles.None, CultureInfo.InvariantCulture, out int part1Number);
+                bool part2IsNumber = int.TryParse(part2, NumberStyles.None, CultureInfo.InvariantCulture, out int part2Number);
+
+                if (part1IsNumber && part2IsNumber)
+                {
+                    int numberComparison = part1Number.CompareTo(part2Number);
+                    if (numberComparison != 0)
+                        return (VersionComparison)numberComparison;
+                }
+                else if (part1IsNumber != part2IsNumber)
+                {
+                    return part1IsNumber ? VersionComparison.LessThan : VersionComparison.GreaterThan;
+                }
+                else
+                {
+                    int stringComparison = string.CompareOrdinal(part1, part2);
+                    if (stringComparison != 0)
+                        return stringComparison < 0 ? VersionComparison.LessThan : VersionComparison.GreaterThan;
+                }
+            }
+
+            return VersionComparison.Equal;
         }
 
         /// <summary>
