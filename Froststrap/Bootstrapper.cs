@@ -204,10 +204,10 @@ namespace Froststrap
                 HandleConnectionError(connectionResult);
 
 #if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
-            if (App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled && !App.LaunchSettings.UpgradeFlag.Active)
+            if (!App.UpdateCheckCompleted && !App.LaunchSettings.BypassUpdateCheck && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
             {
                 bool updatePresent = await CheckForUpdates();
-                
+
                 if (updatePresent)
                     return;
             }
@@ -1135,7 +1135,7 @@ namespace Froststrap
             if (releaseInfo is null)
                 return false;
 
-            string currentVer = App.Version;
+            string currentVer = App.GetUpdateCheckVersion();
             string releaseVer = releaseInfo.TagName;
             version = releaseVer;
 
@@ -1171,30 +1171,43 @@ namespace Froststrap
 
             try
             {
+                string downloadLocation;
+
 #if DEBUG_UPDATER
-        string downloadLocation = Path.Combine(Paths.TempUpdates, "Bloxstrap.exe");
-        Directory.CreateDirectory(Paths.TempUpdates);
-        File.Copy(Paths.Process, downloadLocation, overwrite: true);
+                downloadLocation = Path.Combine(Paths.TempUpdates, "Bloxstrap.exe");
+                Directory.CreateDirectory(Paths.TempUpdates);
+                File.Copy(Paths.Process, downloadLocation, overwrite: true);
 #else
-                if (releaseInfo!.Assets is null || releaseInfo.Assets.Count == 0)
+                if (App.IsMockReleaseEnabled)
+                {
+                    downloadLocation = Path.Combine(Paths.TempUpdates, Path.GetFileName(Paths.Process));
+                    Directory.CreateDirectory(Paths.TempUpdates);
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Using local mock updater payload for {version}.");
+                    File.Copy(Paths.Process, downloadLocation, overwrite: true);
+                }
+                else if (releaseInfo!.Assets is null || releaseInfo.Assets.Count == 0)
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Release found but no assets were available for download.");
                     return false;
                 }
 
-                var asset = releaseInfo.Assets[0];
-                string downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
-                Directory.CreateDirectory(Paths.TempUpdates);
-
-                App.Logger.WriteLine(LOG_IDENT, $"Downloading {version}...");
-
-                if (!File.Exists(downloadLocation))
+                else
                 {
-                    using var response = await App.HttpClient.GetAsync(asset.BrowserDownloadUrl);
-                    response.EnsureSuccessStatusCode();
+                    var asset = releaseInfo.Assets[0];
+                    downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
+                    Directory.CreateDirectory(Paths.TempUpdates);
 
-                    await using var fileStream = new FileStream(downloadLocation, FileMode.Create, FileAccess.Write, FileShare.None);
-                    await response.Content.CopyToAsync(fileStream);
+                    App.Logger.WriteLine(LOG_IDENT, $"Downloading {version}...");
+
+                    if (!File.Exists(downloadLocation))
+                    {
+                        using var response = await App.HttpClient.GetAsync(asset.BrowserDownloadUrl);
+                        response.EnsureSuccessStatusCode();
+
+                        await using var fileStream = new FileStream(downloadLocation, FileMode.Create, FileAccess.Write, FileShare.None);
+                        await response.Content.CopyToAsync(fileStream);
+                    }
                 }
 #endif
 
