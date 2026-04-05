@@ -7,8 +7,8 @@
         public LaunchFlag MultiInstanceWatcherFlag { get; } = new("multiinstancewatcher");
         public LaunchFlag AccountManagerFlag { get; } = new("accountmanager");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
-        public LaunchFlag QuietFlag { get; } = new("quiet");
-        public LaunchFlag UninstallFlag { get; } = new("uninstall");
+        public LaunchFlag QuietFlag { get; } = new("quiet"); // need to update this
+        public LaunchFlag UninstallFlag { get; } = new("uninstall"); // need to update this
         public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
         public LaunchFlag TestModeFlag { get; } = new("testmode");
         public LaunchFlag NoGPUFlag { get; } = new("nogpu");
