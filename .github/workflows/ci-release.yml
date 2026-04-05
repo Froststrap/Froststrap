@@ -1,33 +1,32 @@
 name: CI (Release)
 on: [push, pull_request]
-
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v6
-      with:
-        submodules: true
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
 
-    - uses: actions/setup-dotnet@v5
-      with:
-        dotnet-version: '10.0.x'
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Install NSIS
+        uses: repolevedavaj/install-nsis@v1.1.0
 
-    - name: Build
-      run: dotnet build -c Release --no-restore
+      - name: Setup Just
+        uses: extractions/setup-just@v3
 
-    - name: Publish
-      run: dotnet publish .\Froststrap\Froststrap.csproj -c Release -p:PublishProfile=Publish-x64 -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }}
+      - name: Build and package
+        run: just publish
 
-    - name: Upload Artifact
-      uses: actions/upload-artifact@v6
-      with:
-        name: Froststrap(Release) (${{ github.sha }})
-        path: .\Froststrap\bin\Release\net10.0\publish\*
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: Froststrap(Release) (${{ github.sha }})
+          path: .\build\*
 
   release:
     needs: build
@@ -35,7 +34,6 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write
-
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
