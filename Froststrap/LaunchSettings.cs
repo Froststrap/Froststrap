@@ -2,48 +2,31 @@
 {
     public class LaunchSettings
     {
-        public LaunchFlag MenuFlag                  { get; } = new("preferences,menu,settings");
-
-        public LaunchFlag WatcherFlag               { get; } = new("watcher");
-
-        public LaunchFlag MultiInstanceWatcherFlag  { get; } = new("multiinstancewatcher");
-
-        public LaunchFlag AccountManagerFlag        { get; } = new("accountmanager");
-
-        public LaunchFlag BackgroundUpdaterFlag     { get; } = new("backgroundupdater");
-
-        public LaunchFlag QuietFlag                 { get; } = new("quiet");
-
-        public LaunchFlag UninstallFlag             { get; } = new("uninstall");
-
-        public LaunchFlag NoLaunchFlag              { get; } = new("nolaunch");
-        
-        public LaunchFlag TestModeFlag              { get; } = new("testmode");
-
-        public LaunchFlag NoGPUFlag                 { get; } = new("nogpu");
-
-        public LaunchFlag UpgradeFlag               { get; } = new("upgrade");
-        
-        public LaunchFlag PlayerFlag                { get; } = new("player");
-        
-        public LaunchFlag StudioFlag                { get; } = new("studio");
-
-        public LaunchFlag VersionFlag               { get; } = new("version");
-
-        public LaunchFlag ChannelFlag               { get; } = new("channel");
-
-        public LaunchFlag ForceFlag                 { get; } = new("force");
-
-        public LaunchFlag BloxshadeFlag             { get; } = new("bloxshade");
-
+        public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
+        public LaunchFlag WatcherFlag { get; } = new("watcher");
+        public LaunchFlag MultiInstanceWatcherFlag { get; } = new("multiinstancewatcher");
+        public LaunchFlag AccountManagerFlag { get; } = new("accountmanager");
+        public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
+        public LaunchFlag QuietFlag { get; } = new("quiet");
+        public LaunchFlag UninstallFlag { get; } = new("uninstall");
+        public LaunchFlag NoLaunchFlag { get; } = new("nolaunch");
+        public LaunchFlag TestModeFlag { get; } = new("testmode");
+        public LaunchFlag NoGPUFlag { get; } = new("nogpu");
+        public LaunchFlag UpgradeFlag { get; } = new("upgrade");
+        public LaunchFlag PlayerFlag { get; } = new("player");
+        public LaunchFlag StudioFlag { get; } = new("studio");
+        public LaunchFlag VersionFlag { get; } = new("version");
+        public LaunchFlag ChannelFlag { get; } = new("channel");
+        public LaunchFlag ForceFlag { get; } = new("force");
+        public LaunchFlag BloxshadeFlag { get; } = new("bloxshade");
         public LaunchFlag PostLaunchFlag { get; } = new("postlaunch");
-
         public LaunchFlag GameShortcutFlag { get; } = new("gameshortcut");
+        public LaunchFlag NsisFlag { get; } = new("nsis");
 
 #if DEBUG
         public bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || UpgradeFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || PostLaunchFlag.Active;
+        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || UpgradeFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || PostLaunchFlag.Active || NsisFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
@@ -87,7 +70,7 @@
             {
                 string arg = Args[0];
 
-                if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase) 
+                if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
                     || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Got Roblox player argument");
@@ -131,7 +114,7 @@
 
                 flag.Active = true;
 
-                if (i < Args.Length - 1 && Args[i+1] is string nextArg && !nextArg.StartsWith('-'))
+                if (i < Args.Length - 1 && Args[i + 1] is string nextArg && !nextArg.StartsWith('-'))
                 {
                     flag.Data = nextArg;
                     i++;

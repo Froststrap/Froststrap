@@ -15,6 +15,11 @@ Name "Froststrap"
   !define PUBLISH_DIR "..\build"
 !endif
 
+; Pass /DAPP_VERSION=x.y.z at build time, e.g: makensis /DAPP_VERSION=2.1.0 Installer.nsi
+!ifndef APP_VERSION
+  !define APP_VERSION "Unknown"
+!endif
+
 OutFile "${PUBLISH_DIR}\Froststrap-Setup.exe"
 Icon "..\Froststrap\Froststrap.ico"
 UninstallIcon "..\Froststrap\Froststrap.ico"
@@ -39,6 +44,10 @@ UninstPage Custom un.OptionsPageCreate un.OptionsPageLeave
 
 !insertmacro MUI_LANGUAGE "English"
 
+; ---------------------------------------------------------------------------
+; Install pages
+; ---------------------------------------------------------------------------
+
 Function OptionsPageCreate
     nsDialogs::Create 1018
     Pop $0
@@ -60,6 +69,10 @@ Function OptionsPageLeave
     ${NSD_GetState} $StartMenuShortcutCheckbox $CreateStartMenuShortcut
 FunctionEnd
 
+; ---------------------------------------------------------------------------
+; Uninstall pages
+; ---------------------------------------------------------------------------
+
 Function un.OptionsPageCreate
     nsDialogs::Create 1018
     Pop $0
@@ -77,22 +90,32 @@ Function un.OptionsPageLeave
     ${NSD_GetState} $KeepUserDataCheckbox $KeepUserData
 FunctionEnd
 
+; ---------------------------------------------------------------------------
+; Install section
+; ---------------------------------------------------------------------------
+
 Section "Froststrap"
     SetOutPath "$INSTDIR"
     File /r "${PUBLISH_DIR}\*"
+
+    ; Froststrap app registry keys (used by the app to locate itself)
     WriteRegStr HKCU "Software\Froststrap" "InstallLocation" "$INSTDIR"
     WriteRegStr HKCU "Software\Froststrap" "AppPath" "$INSTDIR\${APP_EXE}"
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayName" "${APP_NAME}"
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayVersion" "2.0.0"
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "InstallLocation" "$INSTDIR"
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayIcon" "$INSTDIR\${APP_EXE},0"
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "Publisher" "Froststrap"
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "InstallDate" ""
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "UninstallString" '"$INSTDIR\Uninstall.exe"'
+
+    ; Programs & Features / winget uninstall entry
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayName"      "${APP_NAME}"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayVersion"   "${APP_VERSION}"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "InstallLocation"  "$INSTDIR"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "DisplayIcon"      "$INSTDIR\${APP_EXE},0"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "Publisher"        "Froststrap"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "UninstallString"  '"$INSTDIR\Uninstall.exe"'
     WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "QuietUninstallString" '"$INSTDIR\Uninstall.exe" /S'
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "ModifyPath" '"$INSTDIR\${APP_EXE}" -settings'
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "URLInfoAbout" "https://github.com/Froststrap/Froststrap/issues/new"
-    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "URLUpdateInfo" "https://github.com/Froststrap/Froststrap/releases"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "ModifyPath"       '"$INSTDIR\${APP_EXE}" -settings'
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "HelpLink"         "https://github.com/Froststrap/Froststrap/wiki"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "URLInfoAbout"     "https://github.com/Froststrap/Froststrap/issues/new"
+    WriteRegStr HKCU "${APP_UNINSTALL_KEY}" "URLUpdateInfo"    "https://github.com/Froststrap/Froststrap/releases"
+    WriteRegDWORD HKCU "${APP_UNINSTALL_KEY}" "NoRepair"       1
+
     ${If} $CreateStartMenuShortcut == ${BST_CHECKED}
         CreateDirectory "$SMPROGRAMS\Froststrap"
         CreateShortCut "$SMPROGRAMS\Froststrap\Froststrap.lnk" "$INSTDIR\${APP_EXE}"
@@ -100,21 +123,40 @@ Section "Froststrap"
     ${If} $CreateDesktopShortcut == ${BST_CHECKED}
         CreateShortCut "$DESKTOP\Froststrap.lnk" "$INSTDIR\${APP_EXE}"
     ${EndIf}
+
     WriteUninstaller "$INSTDIR\Uninstall.exe"
 SectionEnd
 
+; ---------------------------------------------------------------------------
+; Uninstall section
+; ---------------------------------------------------------------------------
+
 Section "Uninstall"
+    ; Step 1: let the app kill Roblox and restore protocol handlers
+    ${If} $KeepUserData == ${BST_CHECKED}
+        ExecWait '"$INSTDIR\${APP_EXE}" -uninstall -quiet -keepdata -nsis' $0
+    ${Else}
+        ExecWait '"$INSTDIR\${APP_EXE}" -uninstall -quiet -nsis' $0
+    ${EndIf}
+
+    ; Step 2: NSIS cleans up what it owns
+
+    ; Shortcuts
     Delete "$DESKTOP\Froststrap.lnk"
     Delete "$SMPROGRAMS\Froststrap\Froststrap.lnk"
-    RMDir "$SMPROGRAMS\Froststrap"
-    DeleteRegKey HKCU "${APP_UNINSTALL_KEY}"
+    RMDir  "$SMPROGRAMS\Froststrap"
+
+    ; Registry keys written by NSIS
+    DeleteRegKey  HKCU "${APP_UNINSTALL_KEY}"
     DeleteRegValue HKCU "Software\Froststrap" "InstallLocation"
     DeleteRegValue HKCU "Software\Froststrap" "AppPath"
     DeleteRegKey /IfEmpty HKCU "Software\Froststrap"
-    ${If} $KeepUserData != ${BST_CHECKED}
-        RMDir /r "$INSTDIR"
-    ${Else}
+
+    ; Step 3: remove the install directory
+    ${If} $KeepUserData == ${BST_CHECKED}
         Delete "$INSTDIR\${APP_EXE}"
         Delete "$INSTDIR\Uninstall.exe"
+    ${Else}
+        RMDir /r "$INSTDIR"
     ${EndIf}
 SectionEnd
