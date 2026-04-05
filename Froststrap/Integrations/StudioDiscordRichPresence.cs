@@ -94,6 +94,8 @@ namespace Froststrap.Integrations
                 {
                     LargeImageKey = "roblox_studio",
                     LargeImageText = "Roblox Studio",
+                    SmallImageKey = "roblox_studio",
+                    SmallImageText = "Roblox Studio",
                 },
             };
 
@@ -122,6 +124,8 @@ namespace Froststrap.Integrations
                 {
                     LargeImageKey = "roblox_studio",
                     LargeImageText = "Roblox Studio",
+                    SmallImageKey = "roblox_studio",
+                    SmallImageText = "Roblox Studio",
                 },
             };
 
@@ -171,7 +175,7 @@ namespace Froststrap.Integrations
                 largeImageText = $"Editing {presenceData.ScriptType}";
             }
 
-            string smallImageKey = null!;
+            string? smallImageKey = null;
             if (presenceData.Testing && App.Settings.Prop.StudioShowTesting)
                 smallImageKey = "play_icon";
 
@@ -179,8 +183,8 @@ namespace Froststrap.Integrations
             {
                 LargeImageKey = largeImageKey,
                 LargeImageText = largeImageText,
-                SmallImageKey = smallImageKey,
-                SmallImageText = "Currently Testing"
+                SmallImageKey = smallImageKey ?? string.Empty,
+                SmallImageText = presenceData.Testing && App.Settings.Prop.StudioShowTesting ? "Currently Testing" : null
             };
 
             if (App.Settings.Prop.StudioGameButton && presenceData.PlaceId > 0 && presenceData.IsPublic)
@@ -216,6 +220,9 @@ namespace Froststrap.Integrations
                 _rpcClient.ClearPresence();
                 return;
             }
+
+            if (_currentPresence.Assets is null)
+                _currentPresence.Assets = new Assets();
 
             App.Logger.WriteLine(LOG_IDENT, $"Updating presence");
 

@@ -3,28 +3,13 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
-using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
-using Froststrap.UI;
 using Froststrap.UI.Elements.Base;
-using Froststrap.UI.Elements.Settings;
-using Froststrap.UI.ViewModels;
-using Froststrap.UI.ViewModels.Settings;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Froststrap;
 
@@ -519,59 +504,64 @@ public partial class App : Application
 
             if (installLocation == null)
             {
-                Logger.Initialize(true);
-                Logger.WriteLine(LOG_IDENT, "Not installed, launching the installer");
+                installLocation = Directory.GetParent(Paths.Process)?.FullName;
 
-                await LaunchHandler.LaunchInstaller();
-                return;
-            }
-            else
-            {
-                Paths.Initialize(installLocation);
-
-                if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
-                    File.Copy(Paths.Process, Paths.Application);
-
-                Logger.Initialize(LaunchSettings.UninstallFlag.Active);
-
-                if (!Logger.Initialized && !Logger.NoWriteMode)
+                if (string.IsNullOrWhiteSpace(installLocation))
                 {
-                    Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
+                    Logger.Initialize(true);
+                    Logger.WriteLine(LOG_IDENT, "No install location could be resolved, terminating.");
                     Terminate();
                     return;
                 }
 
-                _ = Task.Run(RemoteData.LoadData);
-                Settings.Load();
-                State.Load();
-                FastFlags.Load();
-                StorageSettings.Load();
-                GlobalSettings.Load();
-
-                if (Settings.Prop.Theme > Theme.Custom)
-                {
-                    Settings.Prop.Theme = Theme.Dark;
-                    Settings.Save();
-                }
-
-                AvaloniaWindow.ApplyTheme();
-                Locale.Set(Settings.Prop.Locale);
-
-                if (Settings.Prop.AllowCookieAccess)
-                    await Task.Run(Cookies.LoadCookies);
-
-                if (!LaunchSettings.BypassUpdateCheck)
-                {
-                    bool updateFound = await UpdateApplicationAsync();
-                    if (updateFound)
-                        return;
-                }
-
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    WindowsRegistry.RegisterApis();
-
-                LaunchHandler.ProcessLaunchArgs();
+                Logger.Initialize(true);
+                Logger.WriteLine(LOG_IDENT, $"Not installed, running in portable mode from '{installLocation}'");
             }
+
+            Paths.Initialize(installLocation);
+
+            if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
+                File.Copy(Paths.Process, Paths.Application);
+
+            Logger.Initialize(LaunchSettings.UninstallFlag.Active);
+
+            if (!Logger.Initialized && !Logger.NoWriteMode)
+            {
+                Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
+                Terminate();
+                return;
+            }
+
+            _ = Task.Run(RemoteData.LoadData);
+            Settings.Load();
+            State.Load();
+            FastFlags.Load();
+            StorageSettings.Load();
+            GlobalSettings.Load();
+
+            if (Settings.Prop.Theme > Theme.Custom)
+            {
+                Settings.Prop.Theme = Theme.Dark;
+                Settings.Save();
+            }
+
+            AvaloniaWindow.ApplyTheme();
+            Locale.Set(Settings.Prop.Locale);
+
+            if (Settings.Prop.AllowCookieAccess)
+                await Task.Run(Cookies.LoadCookies);
+
+            if (!LaunchSettings.BypassUpdateCheck)
+            {
+                bool updateFound = await UpdateApplicationAsync();
+                if (updateFound)
+                    return;
+            }
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                WindowsRegistry.RegisterApis();
+
+            LaunchHandler.ProcessLaunchArgs();
         }
         base.OnFrameworkInitializationCompleted();
     }
