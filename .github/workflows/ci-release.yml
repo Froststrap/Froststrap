@@ -14,7 +14,7 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Install NSIS
-        run: choco install nsis -y
+        uses: negrutiu/nsis-install@v2
 
       - name: Setup Just
         uses: extractions/setup-just@v3
