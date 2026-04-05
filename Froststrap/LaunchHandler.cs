@@ -101,59 +101,6 @@ namespace Froststrap
             }
         }
 
-        public static async Task LaunchInstaller()
-        {
-            using var interlock = new InterProcessLock("Installer");
-
-            if (!interlock.IsAcquired)
-            {
-                await Frontend.ShowMessageBox(Strings.Dialog_AlreadyRunning_Installer, MessageBoxImage.Error);
-                App.Terminate();
-                return;
-            }
-
-            if (App.LaunchSettings.UninstallFlag.Active)
-            {
-                await Frontend.ShowMessageBox(Strings.Bootstrapper_FirstRunUninstall, MessageBoxImage.Error);
-                App.Terminate(ErrorCode.ERROR_INVALID_FUNCTION);
-                return;
-            }
-
-            if (App.LaunchSettings.QuietFlag.Active)
-            {
-                var installer = new Installer();
-
-                if (!await installer.CheckInstallLocation())
-                    App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
-
-                await installer.DoInstall();
-                interlock.Dispose();
-                ProcessLaunchArgs();
-            }
-            else
-            {
-#if QA_BUILD
-        await Frontend.ShowMessageBox("...", MessageBoxImage.Information);
-#endif
-
-                var langSelector = new LanguageSelectorDialog();
-                var langTcs = new TaskCompletionSource();
-                langSelector.Closed += (s, e) => langTcs.SetResult();
-                langSelector.Show();
-                await langTcs.Task;
-
-                var installerWindow = new UI.Elements.Installer.MainWindow();
-                var installerTcs = new TaskCompletionSource();
-                installerWindow.Closed += (s, e) => installerTcs.SetResult();
-                installerWindow.Show();
-                await installerTcs.Task;
-
-                interlock.Dispose();
-
-                ProcessNextAction(installerWindow.CloseAction, !installerWindow.Finished);
-            }
-        }
-
         public static async Task LaunchUninstaller()
         {
             using var interlock = new InterProcessLock("Uninstaller");
