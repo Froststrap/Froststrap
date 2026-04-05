@@ -118,8 +118,8 @@ namespace Froststrap.Integrations
 
 				if (_currentPresence != null)
 				{
-					_currentPresence.Assets.SmallImageKey = smallUrl;
-					_currentPresence.Assets.LargeImageKey = largeUrl;
+					_currentPresence.Assets.SmallImageKey = smallUrl ?? string.Empty;
+					_currentPresence.Assets.LargeImageKey = largeUrl ?? string.Empty;
 				}
 			}
 			else if (smallImg != null)
@@ -135,7 +135,7 @@ namespace Froststrap.Integrations
 				AddToThumbnailCache((ulong)smallImg, url);
 
 				if (_currentPresence != null)
-					_currentPresence.Assets.SmallImageKey = url;
+					_currentPresence.Assets.SmallImageKey = url ?? string.Empty;
 			}
 			else if (largeImg != null)
 			{
@@ -150,7 +150,7 @@ namespace Froststrap.Integrations
 				AddToThumbnailCache((ulong)largeImg, url);
 
 				if (_currentPresence != null)
-					_currentPresence.Assets.LargeImageKey = url;
+					_currentPresence.Assets.LargeImageKey = url ?? string.Empty;
 			}
 
 			_smallImgBeingFetched = null;
@@ -228,7 +228,8 @@ namespace Froststrap.Integrations
 			{
 				if (presenceData.SmallImage.Clear)
 				{
-					_currentPresence.Assets.SmallImageKey = "";
+                     _currentPresence.Assets.SmallImageKey = _originalPresence.Assets.SmallImageKey;
+						_currentPresence.Assets.SmallImageText = _originalPresence.Assets.SmallImageText;
 					_smallImgBeingFetched = null;
 				}
 				else if (presenceData.SmallImage.Reset)
@@ -249,8 +250,8 @@ namespace Froststrap.Integrations
 						}
 						else
 						{
-							_currentPresence.Assets.SmallImageKey = entry.Url;
-							_smallImgBeingFetched = null;
+                            _currentPresence.Assets.SmallImageKey = entry.Url ?? string.Empty;
+                            _smallImgBeingFetched = null;
 						}
 					}
 
@@ -263,7 +264,8 @@ namespace Froststrap.Integrations
 			{
 				if (presenceData.LargeImage.Clear)
 				{
-					_currentPresence.Assets.LargeImageKey = "";
+                 _currentPresence.Assets.LargeImageKey = _originalPresence.Assets.LargeImageKey;
+					_currentPresence.Assets.LargeImageText = _originalPresence.Assets.LargeImageText;
 					_largeImgBeingFetched = null;
 				}
 				else if (presenceData.LargeImage.Reset)
@@ -284,7 +286,7 @@ namespace Froststrap.Integrations
 						}
 						else
 						{
-							_currentPresence.Assets.LargeImageKey = entry.Url;
+                          _currentPresence.Assets.LargeImageKey = entry.Url ?? string.Empty;
 							_largeImgBeingFetched = null;
 						}
 					}
@@ -465,24 +467,27 @@ namespace Froststrap.Integrations
 			return buttons.ToArray();
 		}
 
-		public void UpdatePresence()
-		{
-			const string LOG_IDENT = "DiscordRichPresence::UpdatePresence";
+        public void UpdatePresence()
+        {
+            const string LOG_IDENT = "DiscordRichPresence::UpdatePresence";
 
-			if (_currentPresence is null)
-			{
-				App.Logger.WriteLine(LOG_IDENT, $"Presence is empty, clearing");
-				_rpcClient.ClearPresence();
-				return;
-			}
+            if (_currentPresence is null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Presence is empty, clearing");
+                _rpcClient.ClearPresence();
+                return;
+            }
 
-			App.Logger.WriteLine(LOG_IDENT, $"Updating presence");
+            if (_currentPresence.Assets is null)
+                _currentPresence.Assets = new Assets();
 
-			if (_visible)
-				_rpcClient.SetPresence(_currentPresence);
-		}
+            App.Logger.WriteLine(LOG_IDENT, $"Updating presence");
 
-		public void Dispose()
+            if (_visible)
+                _rpcClient.SetPresence(_currentPresence);
+        }
+
+        public void Dispose()
 		{
 			App.Logger.WriteLine("DiscordRichPresence::Dispose", "Cleaning up Discord RPC and Presence");
 			_rpcClient.ClearPresence();
