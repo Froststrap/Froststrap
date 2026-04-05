@@ -443,7 +443,6 @@ public partial class App : Application
             LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());
 
             string? installLocation = null;
-            bool fixInstallLocation = false;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
@@ -463,7 +462,6 @@ public partial class App : Application
                             if (Directory.Exists(newLocation))
                             {
                                 installLocation = newLocation;
-                                fixInstallLocation = true;
                             }
                         }
                     }
@@ -476,26 +474,6 @@ public partial class App : Application
                 if (files.Length <= 3 && files.Contains("Settings.json") && files.Contains("State.json"))
                 {
                     installLocation = processDir;
-                    fixInstallLocation = true;
-                }
-            }
-
-            if (fixInstallLocation && installLocation != null)
-            {
-                var installer = new Installer
-                {
-                    InstallLocation = installLocation,
-                    IsImplicitInstall = true
-                };
-
-                if (await installer.CheckInstallLocation())
-                {
-                    Logger.WriteLine(LOG_IDENT, $"Changing install location to '{installLocation}'");
-                    await installer.DoInstall();
-                }
-                else
-                {
-                    installLocation = null;
                 }
             }
 
