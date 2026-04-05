@@ -166,19 +166,16 @@ public partial class App : Application
 
             Logger.WriteLine(LOG_IDENT, $"Starting updater {releaseVer}...");
 
+            Settings.Save();
+
+            // Since we switched to NSIS, -quiet and -upgrade are redundant.
+            // Now we launch the binary with /S to overwrite installed exe and update reg keys
+            // without UI.
             var startInfo = new ProcessStartInfo(downloadLocation)
             {
                 UseShellExecute = true,
             };
-
-            startInfo.ArgumentList.Add("-upgrade");
-
-            foreach (var arg in LaunchSettings.Args.Skip(1))
-                startInfo.ArgumentList.Add(arg);
-
-            Settings.Save();
-
-            using var updateLock = new InterProcessLock("AutoUpdater");
+            startInfo.ArgumentList.Add("/S");
 
             var process = Process.Start(startInfo);
             if (process is null)
@@ -547,6 +544,8 @@ public partial class App : Application
 
             AvaloniaWindow.ApplyTheme();
             Locale.Set(Settings.Prop.Locale);
+
+            await Installer.RunMigrations();
 
             if (Settings.Prop.AllowCookieAccess)
                 await Task.Run(Cookies.LoadCookies);

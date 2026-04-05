@@ -60,6 +60,7 @@ namespace Froststrap
             if (OperatingSystem.IsWindows())
                 RestoreRobloxRegistryHandlers();
 
+            // When invoked by NSIS (-nsis flag), stop here.
             if (App.LaunchSettings.NsisFlag.Active)
                 return;
 
@@ -100,9 +101,6 @@ namespace Froststrap
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
-
-            // NSIS is responsible for deleting the executable, shortcuts, registry
-            // uninstall entry, and the base directory after this process exits.
         }
 
         [SupportedOSPlatform("windows")]
@@ -143,266 +141,188 @@ namespace Froststrap
             }
         }
 
-        public static async void HandleUpgrade()
+        public static async Task RunMigrations()
         {
-            const string LOG_IDENT = "Installer::HandleUpgrade";
+            const string LOG_IDENT = "Installer::RunMigrations";
 
-            if (!File.Exists(Paths.Application) || Paths.Process == Paths.Application)
+            string currentVer = App.Version;
+            string? existingVer = App.State.Prop.LastMigratedVersion;
+
+            // First run after switching to NSIS updater: treat installs that have never
+            // recorded a migration version as coming from the oldest known release so that
+            // all migration blocks are evaluated.
+            if (existingVer is null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "No LastMigratedVersion recorded — treating as fresh migration run");
+                existingVer = "0.0.0";
+            }
+
+            if (Utilities.CompareVersions(existingVer, currentVer) != VersionComparison.LessThan)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Migrations up to date (last={existingVer}, current={currentVer})");
                 return;
-
-            bool isAutoUpgrade = App.LaunchSettings.UpgradeFlag.Active
-                || Paths.Process.StartsWith(Path.Combine(Paths.Base, "Updates"))
-                || Paths.Process.StartsWith(Path.Combine(Paths.LocalAppData, "Temp"))
-                || Paths.Process.StartsWith(Paths.TempUpdates);
-
-            var existingVer = FileVersionInfo.GetVersionInfo(Paths.Application).ProductVersion;
-            var currentVer = FileVersionInfo.GetVersionInfo(Paths.Process).ProductVersion;
-
-            // nothing to do if the binaries are identical
-            if (MD5Hash.FromFile(Paths.Process) == MD5Hash.FromFile(Paths.Application))
-                return;
-
-            if (currentVer is not null && existingVer is not null)
-            {
-                if (Utilities.CompareVersions(currentVer, existingVer) == VersionComparison.LessThan)
-                {
-                    var result = await Frontend.ShowMessageBox(
-                        Strings.InstallChecker_VersionLessThanInstalled,
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
-                    );
-
-                    if (result != MessageBoxResult.Yes)
-                        return;
-                }
             }
 
-            // for manual upgrades (e.g. user ran a newer installer), ask for confirmation
-            if (!isAutoUpgrade)
-            {
-                var result = await Frontend.ShowMessageBox(
-                    Strings.InstallChecker_VersionDifferentThanInstalled,
-                    MessageBoxImage.Question,
-                    MessageBoxButton.YesNo
-                );
+            App.Logger.WriteLine(LOG_IDENT, $"Running migrations: {existingVer} -> {currentVer}");
 
-                if (result != MessageBoxResult.Yes)
-                    return;
+            if (Utilities.CompareVersions(existingVer, "1.2.5.0") == VersionComparison.LessThan)
+            {
+                App.Settings.Prop.ShowServerUptime = false;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Doing upgrade");
-
-            Filesystem.AssertReadOnly(Paths.Application);
-
-            // acquire the AutoUpdater mutex so that concurrent instances don't race
-            using (var ipl = new InterProcessLock("AutoUpdater", TimeSpan.FromSeconds(5)))
+            if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
             {
-                if (!ipl.IsAcquired)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to update! (Could not obtain singleton mutex)");
-                    return;
-                }
-            }
+                JsonManager<RobloxState> legacyRobloxState = new();
 
-            // retry loop kept for compatibility with clients older than 2.8.0
-            for (int i = 1; i <= 10; i++)
-            {
-                try
+                if (legacyRobloxState.IsSaved)
                 {
-                    File.Copy(Paths.Process, Paths.Application, overwrite: true);
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    if (i == 1)
-                        App.Logger.WriteLine(LOG_IDENT, "Waiting for write permissions to update version");
-                    else if (i == 10)
+                    if (legacyRobloxState.Load(false))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to update! (Could not get write permissions after 10 tries/5 seconds)");
-                        App.Logger.WriteException(LOG_IDENT, ex);
-                        return;
+                        App.PlayerState.Prop.VersionGuid = legacyRobloxState.Prop.Player.VersionGuid;
+                        App.PlayerState.Prop.PackageHashes = legacyRobloxState.Prop.Player.PackageHashes;
+                        App.PlayerState.Prop.Size = legacyRobloxState.Prop.Player.Size;
+                        App.PlayerState.Prop.ModManifest = legacyRobloxState.Prop.ModManifest;
+
+                        App.StudioState.Prop.VersionGuid = legacyRobloxState.Prop.Studio.VersionGuid;
+                        App.StudioState.Prop.PackageHashes = legacyRobloxState.Prop.Studio.PackageHashes;
+                        App.StudioState.Prop.Size = legacyRobloxState.Prop.Studio.Size;
                     }
 
-                    Thread.Sleep(500);
+                    legacyRobloxState.Delete();
                 }
+
+                if (App.Settings.Prop.Theme == Theme.Custom)
+                    App.Settings.Prop.Theme = Theme.Default;
+
+                TryDelete(Path.Combine(Paths.Cache, "GameHistory.json"));
             }
 
-
-            if (OperatingSystem.IsWindows())
-                UpdateUninstallRegistryVersion();
-
-            // data migrations 
-            if (existingVer is not null)
+            if (Utilities.CompareVersions(existingVer, "1.4.1.0") == VersionComparison.LessThan)
             {
-                if (Utilities.CompareVersions(existingVer, "1.2.5.0") == VersionComparison.LessThan)
+                if (App.Settings.Prop.MultiInstanceLaunching)
+                    App.Settings.Prop.MultiInstanceLaunching = false;
+
+                TryDelete(Path.Combine(Paths.Cache, "GameHistory.json"));
+            }
+
+            if (Utilities.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
+            {
+                string clientSettingsPath = Path.Combine(Paths.Modifications, "ClientSettings");
+                string migrationPath = Path.Combine(Paths.Modifications, "Migration from 1.4.1.0");
+                string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
+                string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+                string targetSettingsPath = Path.Combine(Paths.Base, "ClientSettings");
+
+                if (Directory.Exists(clientSettingsPath))
                 {
-                    App.Settings.Prop.ShowServerUptime = false;
+                    if (Directory.Exists(targetSettingsPath))
+                        Directory.Delete(targetSettingsPath, true);
+                    Directory.Move(clientSettingsPath, targetSettingsPath);
                 }
 
-                if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
+                Directory.CreateDirectory(migrationPath);
+
+                foreach (FileSystemInfo info in new DirectoryInfo(Paths.Modifications).GetFileSystemInfos())
                 {
-                    JsonManager<RobloxState> legacyRobloxState = new();
+                    if (info.FullName == migrationPath)
+                        continue;
 
-                    if (legacyRobloxState.IsSaved)
+                    string destPath = Path.Combine(migrationPath, info.Name);
+
+                    try
                     {
-                        if (legacyRobloxState.Load(false))
+                        if (info.Attributes.HasFlag(FileAttributes.Directory))
                         {
-                            App.PlayerState.Prop.VersionGuid = legacyRobloxState.Prop.Player.VersionGuid;
-                            App.PlayerState.Prop.PackageHashes = legacyRobloxState.Prop.Player.PackageHashes;
-                            App.PlayerState.Prop.Size = legacyRobloxState.Prop.Player.Size;
-                            App.PlayerState.Prop.ModManifest = legacyRobloxState.Prop.ModManifest;
-
-                            App.StudioState.Prop.VersionGuid = legacyRobloxState.Prop.Studio.VersionGuid;
-                            App.StudioState.Prop.PackageHashes = legacyRobloxState.Prop.Studio.PackageHashes;
-                            App.StudioState.Prop.Size = legacyRobloxState.Prop.Studio.Size;
+                            if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
+                            Directory.Move(info.FullName, destPath);
                         }
-
-                        legacyRobloxState.Delete();
-                    }
-
-                    if (App.Settings.Prop.Theme == Theme.Custom)
-                        App.Settings.Prop.Theme = Theme.Default;
-
-                    if (File.Exists(Path.Combine(Paths.Cache, "GameHistory.json")))
-                        File.Delete(Path.Combine(Paths.Cache, "GameHistory.json"));
-                }
-
-                if (Utilities.CompareVersions(existingVer, "1.4.1.0") == VersionComparison.LessThan)
-                {
-                    if (App.Settings.Prop.MultiInstanceLaunching)
-                        App.Settings.Prop.MultiInstanceLaunching = false;
-
-                    if (File.Exists(Path.Combine(Paths.Cache, "GameHistory.json")))
-                        File.Delete(Path.Combine(Paths.Cache, "GameHistory.json"));
-                }
-
-                if (Utilities.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
-                {
-                    string clientSettingsPath = Path.Combine(Paths.Modifications, "ClientSettings");
-                    string migrationPath = Path.Combine(Paths.Modifications, "Migration from 1.4.1.0");
-                    string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
-                    string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
-                    string targetSettingsPath = Path.Combine(Paths.Base, "ClientSettings");
-
-                    if (Directory.Exists(clientSettingsPath))
-                    {
-                        if (Directory.Exists(targetSettingsPath))
-                            Directory.Delete(targetSettingsPath, true);
-                        Directory.Move(clientSettingsPath, targetSettingsPath);
-                    }
-
-                    Directory.CreateDirectory(migrationPath);
-
-                    foreach (FileSystemInfo info in new DirectoryInfo(Paths.Modifications).GetFileSystemInfos())
-                    {
-                        if (info.FullName == migrationPath)
-                            continue;
-
-                        string destPath = Path.Combine(migrationPath, info.Name);
-
-                        try
+                        else
                         {
-                            if (info.Attributes.HasFlag(FileAttributes.Directory))
-                            {
-                                if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
-                                Directory.Move(info.FullName, destPath);
-                            }
-                            else
-                            {
-                                if (File.Exists(destPath)) File.Delete(destPath);
-                                File.Move(info.FullName, destPath);
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
+                            if (File.Exists(destPath)) File.Delete(destPath);
+                            File.Move(info.FullName, destPath);
                         }
                     }
-
-                    if (Directory.Exists(genCacheDir))
+                    catch (IOException ex)
                     {
-                        Directory.Delete(genCacheDir, true);
-                        App.Logger.WriteLine(LOG_IDENT, "Deleted mod-generator cache for migration.");
+                        App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
                     }
-
-                    if (Directory.Exists(pluginCacheDir))
-                    {
-                        Directory.Delete(pluginCacheDir, true);
-                        App.Logger.WriteLine(LOG_IDENT, "Deleted studio plugin for migration.");
-                    }
-
-                    TryDelete(Path.Combine(Paths.Cache, "channelCache.json"));
-                    TryDelete(Path.Combine(Paths.Cache, "channelCacheMeta.json"));
-                    TryDelete(Path.Combine(Paths.Cache, "datacenters_cache.json"));
                 }
 
-                if (Utilities.CompareVersions(existingVer, "1.5.1.0") == VersionComparison.LessThan)
+                if (Directory.Exists(genCacheDir))
                 {
-                    App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.FluentAeroDialog;
-                    App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
+                    Directory.Delete(genCacheDir, true);
+                    App.Logger.WriteLine(LOG_IDENT, "Deleted mod-generator cache for migration.");
+                }
 
-                    string legacyRoot = Path.Combine(Paths.Modifications, "Preset Modifications");
+                if (Directory.Exists(pluginCacheDir))
+                {
+                    Directory.Delete(pluginCacheDir, true);
+                    App.Logger.WriteLine(LOG_IDENT, "Deleted studio plugin for migration.");
+                }
 
-                    if (Directory.Exists(legacyRoot))
+                TryDelete(Path.Combine(Paths.Cache, "channelCache.json"));
+                TryDelete(Path.Combine(Paths.Cache, "channelCacheMeta.json"));
+                TryDelete(Path.Combine(Paths.Cache, "datacenters_cache.json"));
+            }
+
+            if (Utilities.CompareVersions(existingVer, "1.5.1.0") == VersionComparison.LessThan)
+            {
+                App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.FluentAeroDialog;
+                App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
+
+                string legacyRoot = Path.Combine(Paths.Modifications, "Preset Modifications");
+
+                if (Directory.Exists(legacyRoot))
+                {
+                    foreach (var sourceFolderPath in Directory.GetDirectories(legacyRoot))
                     {
-                        foreach (var sourceFolderPath in Directory.GetDirectories(legacyRoot))
+                        string folderName = Path.GetFileName(sourceFolderPath);
+                        string targetFolderRoot = Path.Combine(Paths.PresetModifications, folderName);
+
+                        foreach (string file in Directory.GetFiles(sourceFolderPath, "*.*", SearchOption.AllDirectories))
                         {
-                            string folderName = Path.GetFileName(sourceFolderPath);
-                            string targetFolderRoot = Path.Combine(Paths.PresetModifications, folderName);
+                            string relativePath = Path.GetRelativePath(sourceFolderPath, file);
+                            string destPath = Path.Combine(targetFolderRoot, relativePath);
+                            string? destDir = Path.GetDirectoryName(destPath);
 
-                            foreach (string file in Directory.GetFiles(sourceFolderPath, "*.*", SearchOption.AllDirectories))
-                            {
-                                string relativePath = Path.GetRelativePath(sourceFolderPath, file);
-                                string destPath = Path.Combine(targetFolderRoot, relativePath);
-                                string? destDir = Path.GetDirectoryName(destPath);
+                            if (!string.IsNullOrEmpty(destDir))
+                                Directory.CreateDirectory(destDir);
 
-                                if (!string.IsNullOrEmpty(destDir))
-                                    Directory.CreateDirectory(destDir);
+                            if (File.Exists(destPath))
+                                File.Delete(destPath);
 
-                                if (File.Exists(destPath))
-                                    File.Delete(destPath);
-
-                                File.Move(file, destPath);
-                            }
-
-                            Directory.Delete(sourceFolderPath, true);
+                            File.Move(file, destPath);
                         }
 
-                        if (Directory.GetFileSystemEntries(legacyRoot).Length == 0)
-                            Directory.Delete(legacyRoot, false);
+                        Directory.Delete(sourceFolderPath, true);
                     }
+
+                    if (Directory.GetFileSystemEntries(legacyRoot).Length == 0)
+                        Directory.Delete(legacyRoot, false);
                 }
-
-                App.Settings.Save();
-                App.FastFlags.Save();
-                App.State.Save();
-
-                if (App.PlayerState.Loaded) App.PlayerState.Save();
-                if (App.StudioState.Loaded) App.StudioState.Save();
             }
 
-            if (currentVer is null)
-                return;
+            // Save everything and stamp the version so this batch doesn't rerun
+            App.Settings.Save();
+            App.FastFlags.Save();
+            App.State.Prop.LastMigratedVersion = currentVer;
+            App.State.Save();
 
-            if (isAutoUpgrade)
-            {
-#pragma warning disable CS0162 // Unreachable code detected
-                if (OpenReleaseNotes)
-                    Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/wiki/Release-notes-for-Froststrap-v{currentVer}");
-#pragma warning restore CS0162
-            }
-            else
-            {
-                await Frontend.ShowMessageBox(
-                    string.Format(Strings.InstallChecker_Updated, currentVer),
-                    MessageBoxImage.Information,
-                    MessageBoxButton.OK
-                );
-            }
+            if (App.PlayerState.Loaded) App.PlayerState.Save();
+            if (App.StudioState.Loaded) App.StudioState.Save();
+
+            App.Logger.WriteLine(LOG_IDENT, $"Migrations complete — LastMigratedVersion set to {currentVer}");
+
+            if (OpenReleaseNotes)
+                // very interesting this clearly never got finished.
+                // Possibly replace this by just opening the release page of the version where all the release notes should be
+                // Or make our website have rleease notes for every version, but that is low reward for a considerable amount of effort
+                Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/wiki/Release-notes-for-Froststrap-v{currentVer}");
         }
 
+ 
         [SupportedOSPlatform("windows")]
-        private static void UpdateUninstallRegistryVersion()
+        public static void UpdateUninstallRegistryVersion()
         {
             using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
             uninstallKey.SetValueSafe("DisplayVersion", App.Version);
