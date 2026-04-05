@@ -79,11 +79,11 @@ Section "Froststrap"
 
     ${If} $CreateStartMenuShortcut == ${BST_CHECKED}
         CreateDirectory "$SMPROGRAMS\Froststrap"
-        CreateShortCut "$SMPROGRAMS\Froststrap\Froststrap.lnk" "$INSTDIR\${APP_EXE}" "-menu"
+        CreateShortCut "$SMPROGRAMS\Froststrap\Froststrap.lnk" "$INSTDIR\${APP_EXE}"
     ${EndIf}
 
     ${If} $CreateDesktopShortcut == ${BST_CHECKED}
-        CreateShortCut "$DESKTOP\Froststrap.lnk" "$INSTDIR\${APP_EXE}" "-menu"
+        CreateShortCut "$DESKTOP\Froststrap.lnk" "$INSTDIR\${APP_EXE}"
     ${EndIf}
 
     WriteUninstaller "$INSTDIR\Uninstall.exe"
