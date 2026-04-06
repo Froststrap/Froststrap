@@ -13,8 +13,5 @@ publish:
     mv ./build/Froststrap-Setup.exe "./build/Froststrap-v$version.exe"
     rm ./build/Froststrap.exe
 
-installer:
-    dotnet publish ./Froststrap/Froststrap.csproj -c Release
-
 clean:
     rm -r obj bin build
