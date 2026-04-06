@@ -1,9 +1,12 @@
 ﻿using Microsoft.Win32;
+using System.Runtime.Versioning;
 
 namespace Froststrap.Extensions
 {
+    [SupportedOSPlatform("windows")]
     public static class RegistryKeyEx
     {
+        [SupportedOSPlatform("windows")]
         public static async void SetValueSafe(this RegistryKey registryKey, string? name, object value)
         {
             try
@@ -18,6 +21,7 @@ namespace Froststrap.Extensions
             }
         }
 
+        [SupportedOSPlatform("windows")]
         public static async void DeleteValueSafe(this RegistryKey registryKey, string name)
         {
             try
