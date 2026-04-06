@@ -28,7 +28,7 @@ namespace Froststrap
                 processes.AddRange(Process.GetProcessesByName(App.RobloxStudioAppName));
 
             // prompt to shut down Roblox if it is currently running
-            if (processes.Any())
+            if (processes.Count != 0)
             {
                 var result = await Frontend.ShowMessageBox(
                     Strings.Bootstrapper_Uninstall_RobloxRunning,
@@ -80,13 +80,13 @@ namespace Froststrap
 
             if (!keepData)
             {
-                cleanupSequence.AddRange(new List<Action>
-                {
+                cleanupSequence.AddRange(
+                [
                     () => Directory.Delete(Paths.Modifications, true),
                     () => Directory.Delete(Paths.CustomCursors, true),
                     () => File.Delete(App.Settings.FileLocation),
                     () => File.Delete(App.State.FileLocation),
-                });
+                ]);
             }
 
             foreach (var step in cleanupSequence)
@@ -245,9 +245,9 @@ namespace Froststrap
                     ? new DirectoryInfo(Paths.Modifications).GetFileSystemInfos()
                         .Where(x => x.FullName != migrationPath)
                         .ToList()
-                    : new List<FileSystemInfo>();
+                    : [];
 
-                if (modFiles.Any())
+                if (modFiles.Count != 0)
                 {
                     Directory.CreateDirectory(migrationPath);
 
