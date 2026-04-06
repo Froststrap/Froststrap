@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
+using System.Runtime.Versioning;
 
 namespace Froststrap.Utility
 {
+    [SupportedOSPlatform("windows")]
     static class WindowsRegistry
     {
         private const string RobloxPlaceKey = "Roblox.Place";

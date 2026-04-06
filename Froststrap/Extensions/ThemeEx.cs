@@ -1,9 +1,11 @@
 ﻿using Microsoft.Win32;
+using System.Runtime.Versioning;
 
 namespace Froststrap.Extensions
 {
     public static class ThemeEx
     {
+        [SupportedOSPlatform("windows")]
         public static Theme GetFinal(this Theme dialogTheme)
         {
             if (dialogTheme != Theme.Default)
