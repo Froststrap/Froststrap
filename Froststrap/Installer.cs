@@ -148,8 +148,8 @@ namespace Froststrap
             string currentVer = App.Version;
             string? existingVer = App.State.Prop.LastMigratedVersion;
 
-            // Fresh install - Settings.json doesn't exist yet so there is nothing to migrate. Stamp the current version and return immediately.
-            // Please don't break
+            // Fresh install — Settings.json doesn't exist yet so there is nothing
+            // to migrate. Stamp the current version and return immediately.
             if (existingVer is null && !App.Settings.IsSaved)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Fresh install detected — stamping LastMigratedVersion as {currentVer}");
@@ -159,10 +159,19 @@ namespace Froststrap
             }
 
             // Existing install that pre-dates LastMigratedVersion being introduced.
-            // Treat as the oldest known release so all migration blocks are evaluated.
+            // Use the presence of the pre-1.4.0.0 legacy RobloxState file to decide.
             if (existingVer is null)
             {
-                App.Logger.WriteLine(LOG_IDENT, "No LastMigratedVersion recorded — treating as pre-migration install");
+                var legacyStateCheck = new JsonManager<RobloxState>();
+                if (!legacyStateCheck.IsSaved)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "No LastMigratedVersion but no legacy data found — treating as already migrated");
+                    App.State.Prop.LastMigratedVersion = currentVer;
+                    App.State.Save();
+                    return;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, "Legacy RobloxState data found — treating as pre-migration install");
                 existingVer = "0.0.0";
             }
 
@@ -229,31 +238,40 @@ namespace Froststrap
                     Directory.Move(clientSettingsPath, targetSettingsPath);
                 }
 
-                Directory.CreateDirectory(migrationPath);
+                // Only create the migration folder and move files if there is
+                // actually something in Modifications to migrate — avoids creating
+                // a phantom empty mod folder on installs with no existing mods.
+                var modFiles = Directory.Exists(Paths.Modifications)
+                    ? new DirectoryInfo(Paths.Modifications).GetFileSystemInfos()
+                        .Where(x => x.FullName != migrationPath)
+                        .ToList()
+                    : new List<FileSystemInfo>();
 
-                foreach (FileSystemInfo info in new DirectoryInfo(Paths.Modifications).GetFileSystemInfos())
+                if (modFiles.Any())
                 {
-                    if (info.FullName == migrationPath)
-                        continue;
+                    Directory.CreateDirectory(migrationPath);
 
-                    string destPath = Path.Combine(migrationPath, info.Name);
+                    foreach (FileSystemInfo info in modFiles)
+                    {
+                        string destPath = Path.Combine(migrationPath, info.Name);
 
-                    try
-                    {
-                        if (info.Attributes.HasFlag(FileAttributes.Directory))
+                        try
                         {
-                            if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
-                            Directory.Move(info.FullName, destPath);
+                            if (info.Attributes.HasFlag(FileAttributes.Directory))
+                            {
+                                if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
+                                Directory.Move(info.FullName, destPath);
+                            }
+                            else
+                            {
+                                if (File.Exists(destPath)) File.Delete(destPath);
+                                File.Move(info.FullName, destPath);
+                            }
                         }
-                        else
+                        catch (IOException ex)
                         {
-                            if (File.Exists(destPath)) File.Delete(destPath);
-                            File.Move(info.FullName, destPath);
+                            App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
                         }
-                    }
-                    catch (IOException ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
                     }
                 }
 
@@ -274,7 +292,7 @@ namespace Froststrap
                 TryDelete(Path.Combine(Paths.Cache, "datacenters_cache.json"));
             }
 
-            if (Utilities.CompareVersions(existingVer, "1.5.1.0") == VersionComparison.LessThan)
+            if (Utilities.CompareVersions(existingVer, "1.5.1") == VersionComparison.LessThan)
             {
                 App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.FluentAeroDialog;
                 App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
@@ -325,7 +343,6 @@ namespace Froststrap
             if (OpenReleaseNotes)
                 Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer}");
         }
-
 
         [SupportedOSPlatform("windows")]
         public static void UpdateUninstallRegistryVersion()
