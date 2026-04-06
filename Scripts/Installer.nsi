@@ -15,7 +15,6 @@ Name "Froststrap"
   !define PUBLISH_DIR "..\build"
 !endif
 
-; Pass /DAPP_VERSION=x.y.z at build time, e.g: makensis /DAPP_VERSION=2.1.0 Installer.nsi
 !ifndef APP_VERSION
   !define APP_VERSION "Unknown"
 !endif
@@ -132,12 +131,15 @@ SectionEnd
 ; ---------------------------------------------------------------------------
 
 Section "Uninstall"
-    ; Step 1: let the app kill Roblox and restore protocol handlers
-    ${If} $KeepUserData == ${BST_CHECKED}
-        ExecWait '"$INSTDIR\${APP_EXE}" -uninstall -quiet -keepdata -nsis' $0
-    ${Else}
-        ExecWait '"$INSTDIR\${APP_EXE}" -uninstall -quiet -nsis' $0
+    ; For silent uninstalls (/S), the options page never runs so $KeepUserData
+    ; is unset. Default it to checked (keep data) to be safe, silent uninstalls
+    ; are triggered by the auto-updater which should never wipe user data.
+    ${If} $KeepUserData == ""
+        StrCpy $KeepUserData ${BST_CHECKED}
     ${EndIf}
+
+    ; Step 1: let the app kill Roblox and restore protocol handlers.
+    ExecWait '"$INSTDIR\${APP_EXE}" -uninstall -quiet -nsis' $0
 
     ; Step 2: NSIS cleans up what it owns
 
@@ -147,12 +149,12 @@ Section "Uninstall"
     RMDir  "$SMPROGRAMS\Froststrap"
 
     ; Registry keys written by NSIS
-    DeleteRegKey  HKCU "${APP_UNINSTALL_KEY}"
+    DeleteRegKey   HKCU "${APP_UNINSTALL_KEY}"
     DeleteRegValue HKCU "Software\Froststrap" "InstallLocation"
     DeleteRegValue HKCU "Software\Froststrap" "AppPath"
     DeleteRegKey /IfEmpty HKCU "Software\Froststrap"
 
-    ; Step 3: remove the install directory
+    ; Step 3: remove the install directory.
     ${If} $KeepUserData == ${BST_CHECKED}
         Delete "$INSTDIR\${APP_EXE}"
         Delete "$INSTDIR\Uninstall.exe"

@@ -148,12 +148,21 @@ namespace Froststrap
             string currentVer = App.Version;
             string? existingVer = App.State.Prop.LastMigratedVersion;
 
-            // First run after switching to NSIS updater: treat installs that have never
-            // recorded a migration version as coming from the oldest known release so that
-            // all migration blocks are evaluated.
+            // Fresh install - Settings.json doesn't exist yet so there is nothing to migrate. Stamp the current version and return immediately.
+            // Please don't break
+            if (existingVer is null && !App.Settings.IsSaved)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Fresh install detected — stamping LastMigratedVersion as {currentVer}");
+                App.State.Prop.LastMigratedVersion = currentVer;
+                App.State.Save();
+                return;
+            }
+
+            // Existing install that pre-dates LastMigratedVersion being introduced.
+            // Treat as the oldest known release so all migration blocks are evaluated.
             if (existingVer is null)
             {
-                App.Logger.WriteLine(LOG_IDENT, "No LastMigratedVersion recorded — treating as fresh migration run");
+                App.Logger.WriteLine(LOG_IDENT, "No LastMigratedVersion recorded — treating as pre-migration install");
                 existingVer = "0.0.0";
             }
 
@@ -302,7 +311,7 @@ namespace Froststrap
                 }
             }
 
-            // Save everything and stamp the version so this batch doesn't rerun
+            // Save everything and stamp the version so this batch doesn't re-run
             App.Settings.Save();
             App.FastFlags.Save();
             App.State.Prop.LastMigratedVersion = currentVer;
@@ -314,13 +323,10 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, $"Migrations complete — LastMigratedVersion set to {currentVer}");
 
             if (OpenReleaseNotes)
-                // very interesting this clearly never got finished.
-                // Possibly replace this by just opening the release page of the version where all the release notes should be
-                // Or make our website have rleease notes for every version, but that is low reward for a considerable amount of effort
-                Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/wiki/Release-notes-for-Froststrap-v{currentVer}");
+                Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer}");
         }
 
- 
+
         [SupportedOSPlatform("windows")]
         public static void UpdateUninstallRegistryVersion()
         {

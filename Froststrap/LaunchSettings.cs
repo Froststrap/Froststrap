@@ -25,7 +25,7 @@
 #if DEBUG
         public bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || UpgradeFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || PostLaunchFlag.Active || NsisFlag.Active;
+        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || PostLaunchFlag.Active || NsisFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
