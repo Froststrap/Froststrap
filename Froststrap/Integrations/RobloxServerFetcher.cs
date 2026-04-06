@@ -7,11 +7,8 @@
  *
  *  SPDX-License-Identifier: AGPL-3.0-or-later
  *
- *  Description: Nix flake for shipping for Nix-darwin, Nix, NixOS, and modules
- *               of the Nix ecosystem. 
  */
 
-using Froststrap;
 using System.Collections.Concurrent;
 using System.Net.Http.Headers;
 
