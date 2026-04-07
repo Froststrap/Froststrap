@@ -22,8 +22,9 @@
 	<Grid RowDefinitions="Auto,*,Auto">
 
 		<Grid Grid.Row="0" Height="48" ColumnDefinitions="*,400,*" Background="{DynamicResource SukiSurfaceColor}">
-			<Grid Grid.Column="0" HorizontalAlignment="Left" Margin="14,0,0,0" VerticalAlignment="Center">
+			<Grid Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="14,0,0,0">
 				<Image Source="avares://Froststrap/Froststrap.ico" Width="20" Height="20" RenderOptions.BitmapInterpolationMode="HighQuality" />
+				<TextBlock Text="Froststrap Settings" />
 			</Grid>
 
 			<Grid Grid.Column="1" VerticalAlignment="Center">
@@ -67,7 +68,7 @@
 					<Border 
 						MinWidth="400"
 						MaxHeight="400"
-						Background="{DynamicResource SukiSurfaceColor}"
+						Background="#2D2D2D"
 						BorderBrush="{DynamicResource FrostBorderDefault}"
 						BorderThickness="1"
 						CornerRadius="6"
@@ -112,7 +113,7 @@
 				</Popup>
 			</Grid>
 
-			<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
+			<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
 				<controls:IconButton Name="PART_MinimizeButton" 
 					Classes="TitleBarButton" 
 					Icon="Minus" />
