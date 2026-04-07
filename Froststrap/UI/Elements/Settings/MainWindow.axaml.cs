@@ -9,7 +9,7 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Froststrap.UI.Elements.Controls;
-using Froststrap.UI.Elements.Settings;
+using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
 using IconPacks.Avalonia.Material;
 using System.ComponentModel;
@@ -33,6 +33,7 @@ namespace Froststrap.UI.Elements.Settings
 
             _viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
+            _viewModel.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
 
             App.Logger.WriteLine("MainWindow", "Initializing settings window");
 
@@ -69,6 +70,8 @@ namespace Froststrap.UI.Elements.Settings
             Dispatcher.UIThread.Post(() =>
             {
                 UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                AttachTitleBarButtons();
+                BuildSearchIndex();
             }, DispatcherPriority.Loaded);
         }
 
@@ -86,6 +89,41 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
+        private SearchBarItem? _pendingSearchScrollItem;
+
+        private void OnSearchResultSelected(SearchBarItem item)
+        {
+            _pendingSearchScrollItem = item;
+
+            if (_viewModel?.SelectedPage != item.PageTag)
+            {
+                // Navigation will trigger UpdatePageView, which will scroll to the item
+                var action = GetNavigationAction(item.PageTag ?? "");
+                action?.Invoke();
+            }
+            else
+            {
+                ScrollToSearchItem(item);
+            }
+        }
+
+        private Action? GetNavigationAction(string pageTag)
+        {
+            return pageTag switch
+            {
+                "integrations" => () => _viewModel?.NavigateToIntegrationsCommand.Execute(null),
+                "behaviour" => () => _viewModel?.NavigateToBehaviourCommand.Execute(null),
+                "mods" => () => _viewModel?.NavigateToPresetModsCommand.Execute(null),
+                "fastflags" => () => _viewModel?.NavigateToFastFlagsCommand.Execute(null),
+                "appearance" => () => _viewModel?.NavigateToAppearanceCommand.Execute(null),
+                "regionselector" => () => _viewModel?.NavigateToRegionSelectorCommand.Execute(null),
+                "globalsettings" => () => _viewModel?.NavigateToGlobalSettingsCommand.Execute(null),
+                "shortcuts" => () => _viewModel?.NavigateToShortcutsCommand.Execute(null),
+                "channels" => () => _viewModel?.NavigateToChannelsCommand.Execute(null),
+                _ => null
+            };
+        }
+
         private void UpdatePageView(object? viewModel)
         {
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
@@ -97,14 +135,27 @@ namespace Froststrap.UI.Elements.Settings
             {
                 view.DataContext = viewModel;
                 pageControl.Content = view;
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    var pageTag = _viewModel?.SelectedPage ?? "";
+                    IndexPage(view, pageTag);
+
+                    if (_pendingSearchScrollItem != null)
+                    {
+                        Dispatcher.UIThread.Post(() =>
+                        {
+                            ScrollToSearchItem(_pendingSearchScrollItem);
+                            _pendingSearchScrollItem = null;
+                        }, DispatcherPriority.Render);
+                    }
+                }, DispatcherPriority.Background);
             }
         }
 
         private void UpdateSelectedButtonStyle(string selectedPage)
         {
-            var sidebarBorder = this.GetVisualDescendants()
-                                    .OfType<Border>()
-                                    .FirstOrDefault(b => b.BorderThickness.Right > 0);
+            var sidebarBorder = this.FindControl<Border>("SidebarBorder");
 
             if (sidebarBorder?.Child is Grid sidebarGrid)
             {
@@ -124,7 +175,7 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
+        private static void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
         {
             var accentFgKey = "AccentButtonBackground";
             var unselectedFgResource = "c";
@@ -155,7 +206,7 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private Control? ResolveViewForViewModel(object viewModel)
+        private static Control? ResolveViewForViewModel(object viewModel)
         {
             var viewModelName = viewModel.GetType().Name;
             var viewName = viewModelName.Replace("ViewModel", "");
@@ -291,11 +342,11 @@ namespace Froststrap.UI.Elements.Settings
             notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("SolidBackgroundFillColorBase"));
 
 
-            notification.Transitions = new Transitions
-            {
+            notification.Transitions =
+            [
                 new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
                 new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
-            };
+            ];
 
             async void Dismiss()
             {
@@ -338,6 +389,200 @@ namespace Froststrap.UI.Elements.Settings
             if (loadingOverlay != null)
             {
                 loadingOverlay.IsVisible = false;
+            }
+        }
+
+        private void AttachTitleBarButtons()
+        {
+            var minimizeButton = this.FindControl<IconButton>("PART_MinimizeButton");
+            var maximizeButton = this.FindControl<IconButton>("PART_MaximizeButton");
+            var closeButton = this.FindControl<IconButton>("PART_CloseButton");
+
+            minimizeButton?.Click += (s, e) =>
+                {
+                    this.WindowState = Avalonia.Controls.WindowState.Minimized;
+                };
+
+            maximizeButton?.Click += (s, e) =>
+                {
+                    this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized 
+                        ? Avalonia.Controls.WindowState.Normal 
+                        : Avalonia.Controls.WindowState.Maximized;
+                };
+
+            closeButton?.Click += (s, e) =>
+                {
+                    this.Close();
+                };
+        }
+
+        private SearchIndexBuilder? _searchIndexBuilder;
+
+        private void BuildSearchIndex()
+        {
+            if (_viewModel == null) return;
+
+            _searchIndexBuilder = new SearchIndexBuilder();
+
+            var pages = new List<(string PageTag, string PageTitle, object PageViewModel)>
+            {
+                ("integrations", "Integrations", new IntegrationsViewModel()),
+                ("behaviour", "Behaviour", new BehaviourViewModel()),
+                ("mods", "Preset Mods", new ModsPresetsViewModel()),
+                ("fastflags", "Fast Flags", new FastFlagsViewModel()),
+                ("appearance", "Appearance", new AppearanceViewModel()),
+                ("regionselector", "Region Selector", new RegionSelectorViewModel()),
+                ("globalsettings", "Global Settings", new GlobalSettingsViewModel()),
+                ("shortcuts", "Shortcuts", new ShortcutsViewModel()),
+                ("channels", "Channels", new ChannelViewModel()),
+            };
+
+            var searchIndex = _searchIndexBuilder.BuildIndex(pages);
+
+            var navigationActions = new Dictionary<string, Action>
+            {
+                { "integrations", () => _viewModel.NavigateToIntegrationsCommand.Execute(null) },
+                { "behaviour", () => _viewModel.NavigateToBehaviourCommand.Execute(null) },
+                { "mods", () => _viewModel.NavigateToPresetModsCommand.Execute(null) },
+                { "fastflags", () => _viewModel.NavigateToFastFlagsCommand.Execute(null) },
+                { "appearance", () => _viewModel.NavigateToAppearanceCommand.Execute(null) },
+                { "regionselector", () => _viewModel.NavigateToRegionSelectorCommand.Execute(null) },
+                { "globalsettings", () => _viewModel.NavigateToGlobalSettingsCommand.Execute(null) },
+                { "shortcuts", () => _viewModel.NavigateToShortcutsCommand.Execute(null) },
+                { "channels", () => _viewModel.NavigateToChannelsCommand.Execute(null) },
+            };
+
+            foreach (var item in searchIndex)
+            {
+                if (item.PageTag != null && navigationActions.TryGetValue(item.PageTag, out var action))
+                {
+                    item.NavigateAction = action;
+                }
+            }
+
+            _viewModel.SetSearchIndex(searchIndex);
+
+            PreIndexPages(pages);
+        }
+
+        private async void PreIndexPages(List<(string PageTag, string PageTitle, object PageViewModel)> pages)
+        {
+            var stagingArea = this.FindControl<Border>("OffscreenIndexingCanvas");
+            if (stagingArea == null)
+            {
+                App.Logger.WriteLine("MainWindow::PreIndexPages", "OffscreenIndexingCanvas not found, skipping pre-index");
+                return;
+            }
+
+            stagingArea.IsVisible = true;
+
+            foreach (var (pageTag, _, pageViewModel) in pages)
+            {
+                try
+                {
+                    var view = ResolveViewForViewModel(pageViewModel);
+                    if (view == null) continue;
+
+                    view.DataContext = pageViewModel;
+                    stagingArea.Child = view;
+
+                    await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+                    await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+
+                    IndexPage(view, pageTag);
+
+                    stagingArea.Child = null;
+
+                    // Small yield between pages to keep the UI responsive
+                    await Task.Delay(30);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("MainWindow::PreIndexPages", $"Error pre-indexing page {pageTag}: {ex.Message}");
+                }
+            }
+
+            stagingArea.IsVisible = false;
+        }
+
+        private void IndexPage(Control pageView, string pageTag)
+        {
+            if (_viewModel == null || _searchIndexBuilder == null) return;
+
+            try
+            {
+                var addedItems = _searchIndexBuilder.ScanRenderedPageForElements(pageView, pageTag);
+
+                if (addedItems.Count > 0)
+                {
+                    var currentIndex = _viewModel.GetSearchIndex();
+                    currentIndex.AddRange(addedItems);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("MainWindow::IndexPage", 
+                    $"Error scanning page {pageTag}: {ex.Message}");
+            }
+        }
+
+        private void ScrollToSearchItem(SearchBarItem item)
+        {
+            try
+            {
+                var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
+                if (pageControl?.Content is not Control pageView) return;
+
+                if (!string.IsNullOrWhiteSpace(item.ParentSectionName))
+                {
+                    var parentExpander = pageView.GetVisualDescendants()
+                        .OfType<CardExpander>()
+                        .FirstOrDefault(ce => (ce.Header as string) == item.ParentSectionName);
+
+                    if (parentExpander != null)
+                    {
+                        parentExpander.IsExpanded = true;
+                    }
+                }
+
+                Control? targetControl = null;
+
+                switch (item.Category)
+                {
+                    case "Section":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<CardExpander>()
+                            .FirstOrDefault(ce => (ce.Header as string) == item.DisplayName);
+                        break;
+
+                    case "Setting":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<OptionControl>()
+                            .FirstOrDefault(oc => oc.Header == item.DisplayName);
+                        break;
+
+                    case "Action":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<CardAction>()
+                            .FirstOrDefault(ca => (ca.Content as string) == item.DisplayName);
+                        break;
+
+                    case "Label":
+                        targetControl = pageView.GetVisualDescendants()
+                            .OfType<TextBlock>()
+                            .FirstOrDefault(tb => tb.Text == item.DisplayName);
+                        break;
+                }
+
+                if (targetControl != null)
+                {
+                    targetControl.BringIntoView();
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("MainWindow::ScrollToSearchItem", 
+                    $"Error scrolling to item: {ex.Message}");
             }
         }
 
