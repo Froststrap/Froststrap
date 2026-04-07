@@ -127,6 +127,9 @@
     <AutoGen>True</AutoGen>
     <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
+    <Compile Update="UI\Elements\Settings\AccountSelectorView.axaml.cs">
+      <DependentUpon>AccountSelectorView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
