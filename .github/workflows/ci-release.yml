@@ -40,10 +40,7 @@ jobs:
         with:
           name: Froststrap(Release) (${{ github.sha }})
           path: release
-
-      - name: Rename binaries
-        run: mv release/Froststrap-Setup.exe Froststrap-${{ github.ref_name }}.exe
-
+          
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
