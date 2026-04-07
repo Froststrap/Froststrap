@@ -20,153 +20,27 @@
 	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
-	<Grid RowDefinitions="Auto,*,Auto">
+	<Grid RowDefinitions="*,Auto">
 
-		<Grid Grid.Row="0" Height="48" ColumnDefinitions="Auto,*,400,*,Auto" Background="{DynamicResource SukiSurfaceColor}">
-			<!-- Icon on the LEFT -->
-			<Grid Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="14,0,0,0" Height="24">
-				<Image Source="avares://Froststrap/Froststrap.ico" Width="20" Height="20" RenderOptions.BitmapInterpolationMode="HighQuality" VerticalAlignment="Center" />
-			</Grid>
+		<!-- Main content area: sidebar + page content, full height -->
+		<Grid Name="MainGrid" Grid.Row="0" ColumnDefinitions="220,*">
 
-			<!-- Search bar in the CENTER -->
-			<Grid Grid.Column="2" VerticalAlignment="Center">
-				<Border 
-					CornerRadius="6" 
-					BorderThickness="1" 
-					BorderBrush="{DynamicResource SukiControlBorderBrush}"
-					Padding="12,0"
-					VerticalAlignment="Center"
-					Background="{DynamicResource SukiSurfaceColor}">
-					<Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
-						<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
-						<TextBox x:Name="SearchTextBox"
-							Grid.Column="1" 
-							Margin="8,0" 
-							Watermark="Find a setting"
-							BorderThickness="0"
-							Background="Transparent"
-							Padding="0"
-							VerticalAlignment="Center"
-							VerticalContentAlignment="Center"
-							Foreground="{DynamicResource SukiText}"
-							Text="{Binding SearchQuery}" />
-						<Button Grid.Column="2" 
-							IsVisible="False"
-							Width="20" 
-							Height="20" 
-							Padding="0"
-							BorderThickness="0"
-							Background="Transparent"
-							Content="×" />
-					</Grid>
-				</Border>
-
-				<!-- Search Results Dropdown -->
-				<Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
-					Placement="Bottom" 
-					PlacementTarget="{Binding #SearchTextBox}"
-					VerticalOffset="4"
-					IsLightDismissEnabled="False">
-					<Border 
-						MinWidth="400"
-						MaxHeight="400"
-						Background="#2D2D2D"
-						BorderBrush="{DynamicResource SukiControlBorderBrush}"
-						BorderThickness="1"
-						CornerRadius="6"
-						BoxShadow="0 8 32 0 #20000000">
-						<Grid>
-							<ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding FilteredSearchResults.Count}">
-								<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<StackPanel Spacing="0" />
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-											<DataTemplate DataType="models:SearchBarItem">
-											<Button 
-												Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
-												CommandParameter="{Binding}"
-												Background="Transparent"
-												BorderThickness="0"
-												Padding="16,12"
-												HorizontalAlignment="Stretch"
-												HorizontalContentAlignment="Left"
-												Margin="4,2"
-												CornerRadius="4">
-												<Button.Styles>
-													<Style Selector="Button:pointerover /template/ ContentPresenter">
-														<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-													</Style>
-												</Button.Styles>
-												<StackPanel Spacing="4" HorizontalAlignment="Stretch">
-													<TextBlock 
-														Text="{Binding DisplayName}"
-														FontSize="13"
-														FontWeight="SemiBold"
-														Foreground="{DynamicResource SukiText}" />
-												</StackPanel>
-											</Button>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</ScrollViewer>
-							<TextBlock 
-								Text="0 results found"
-								FontSize="13"
-								Foreground="{DynamicResource SukiLowText}"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								Padding="16,24"
-								IsVisible="{Binding !FilteredSearchResults.Count}" />
-						</Grid>
-					</Border>
-				</Popup>
-			</Grid>
-
-			<!-- Window decorations on the RIGHT -->
-			<StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
-				<controls:IconButton Name="PART_MinimizeButton" 
-					Classes="TitleBarButton" 
-					Icon="Minus" />
-
-				<controls:IconButton Name="PART_MaximizeButton" 
-					Classes="TitleBarButton" 
-					Icon="SquareOutline" />
-
-				<controls:IconButton Name="PART_CloseButton" 
-					Classes="TitleBarButton Close" 
-					Icon="Close" />
-			</StackPanel>
-		</Grid>
-
-		<Panel
-			Name="NotificationPanel"
-			Grid.Row="1"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Bottom"
-			Margin="0,0,0,15"
-			MaxWidth="450"
-			ZIndex="1000" />
-
-		<Grid Name="MainGrid" Grid.Row="1" ColumnDefinitions="220,*">
-
-			<Border BorderBrush="{DynamicResource SukiControlBorderBrush}"
+			<!-- Sidebar: full height, no top offset -->
+			<Border Name="SidebarBorder"
+				BorderBrush="{DynamicResource FrostBorderDefault}"
 				Grid.Column="0"
-				BorderThickness="0,0,1,0">
+				BorderThickness="0,0,1,0"
+				Background="{DynamicResource SukiSurfaceColor}">
 
-				<Grid RowDefinitions="*,Auto">
-
-					<ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+				<Grid RowDefinitions="Auto,*,Auto">
+					<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
 						<StackPanel Spacing="0" Margin="8,6,8,0">
 
-							<!-- Section label: Main -->
 							<TextBlock
 								Text="MAIN"
 								FontSize="11"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource SukiMediumText}"
+								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 								Margin="10,8,10,4"
 								Opacity="0.7" />
 
@@ -238,10 +112,10 @@
 						</StackPanel>
 					</ScrollViewer>
 
-					<StackPanel Grid.Row="1" Spacing="0" Margin="8,0,8,8">
+					<StackPanel Grid.Row="2" Spacing="0" Margin="8,0,8,8">
 						<Separator
 							Margin="2,6"
-							Background="{DynamicResource SukiBorderBrush}"
+							Background="{DynamicResource FrostBorderDefault}"
 							Height="1" />
 
 						<controls:IconButton
@@ -270,12 +144,118 @@
 				</Grid>
 			</Border>
 
-			<Grid Grid.Column="1" RowDefinitions="Auto,*">
+			<Grid Grid.Column="1" RowDefinitions="48,Auto,*">
 
+				<Grid Grid.Row="0" ColumnDefinitions="*,400,*" Background="{DynamicResource SukiSurfaceColor}">
+
+					<Grid Grid.Column="1" VerticalAlignment="Center">
+						<Border
+							CornerRadius="6"
+							BorderThickness="1"
+							BorderBrush="{DynamicResource FrostBorderDefault}"
+							Padding="12,0"
+							VerticalAlignment="Center"
+							Background="{DynamicResource SukiSurfaceColor}">
+							<Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
+								<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Width="16" Height="16" VerticalAlignment="Center" />
+								<TextBox x:Name="SearchTextBox"
+									Grid.Column="1"
+									Margin="8,0"
+									Watermark="Find a setting"
+									BorderThickness="0"
+									Background="Transparent"
+									Padding="0"
+									VerticalAlignment="Center"
+									VerticalContentAlignment="Center"
+									Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+									Text="{Binding SearchQuery}" />
+								<Button Grid.Column="2"
+									IsVisible="False"
+									Width="20"
+									Height="20"
+									Padding="0"
+									BorderThickness="0"
+									Background="Transparent"
+									Content="×" />
+							</Grid>
+						</Border>
+
+						<!-- Search Results Dropdown -->
+						<Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+							Placement="Bottom"
+							PlacementTarget="{Binding #SearchTextBox}"
+							VerticalOffset="4"
+							IsLightDismissEnabled="False">
+							<Border
+								MinWidth="400"
+								MaxHeight="400"
+								Background="#2D2D2D"
+								BorderBrush="{DynamicResource FrostBorderDefault}"
+								BorderThickness="1"
+								CornerRadius="6"
+								BoxShadow="0 8 32 0 #20000000">
+								<Grid>
+									<ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding FilteredSearchResults.Count}">
+										<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
+											<ItemsControl.ItemsPanel>
+												<ItemsPanelTemplate>
+													<StackPanel Spacing="0" />
+												</ItemsPanelTemplate>
+											</ItemsControl.ItemsPanel>
+											<ItemsControl.ItemTemplate>
+												<DataTemplate DataType="models:SearchBarItem">
+													<Button
+														Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
+														CommandParameter="{Binding}"
+														Background="Transparent"
+														BorderThickness="0"
+														Padding="16,12"
+														HorizontalAlignment="Stretch"
+														HorizontalContentAlignment="Left"
+														Margin="4,2"
+														CornerRadius="4">
+														<Button.Styles>
+															<Style Selector="Button:pointerover /template/ ContentPresenter">
+																<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+															</Style>
+														</Button.Styles>
+														<StackPanel Spacing="4" HorizontalAlignment="Stretch">
+															<TextBlock
+																Text="{Binding DisplayName}"
+																FontSize="13"
+																FontWeight="SemiBold"
+																Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+														</StackPanel>
+													</Button>
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+									</ScrollViewer>
+									<TextBlock
+										Text="0 results found"
+										FontSize="13"
+										Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center"
+										Padding="16,24"
+										IsVisible="{Binding !FilteredSearchResults.Count}" />
+								</Grid>
+							</Border>
+						</Popup>
+					</Grid>
+
+					<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
+						<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />
+						<controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Icon="SquareOutline" />
+						<controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" />
+					</StackPanel>
+				</Grid>
+
+				<!-- Page header: title, description, alert bar -->
 				<Border
-					Grid.Row="0"
+					Grid.Row="1"
 					Padding="24,24,24,16"
-					BorderBrush="{DynamicResource SukiBorderBrush}"
+					BorderBrush="{DynamicResource FrostBorderDefault}"
 					BorderThickness="0,0,0,1">
 					<StackPanel>
 						<ItemsControl
@@ -296,7 +276,7 @@
 											CommandParameter="{Binding}"
 											Background="Transparent"
 											BorderThickness="0"
-											Foreground="{DynamicResource SukiText}"
+											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 											FontSize="20"
 											FontWeight="SemiBold"
 											Padding="0"
@@ -305,14 +285,14 @@
 											Text="›"
 											VerticalAlignment="Center"
 											FontSize="20"
-											Foreground="{DynamicResource SukiLowText}"
+											Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 											IsVisible="{Binding !IsLast}" />
 										<TextBlock
 											Text="{Binding Content}"
 											VerticalAlignment="Center"
 											FontSize="20"
 											FontWeight="SemiBold"
-											Foreground="{DynamicResource SukiText}"
+											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 											IsVisible="{Binding IsLast}" />
 									</StackPanel>
 								</DataTemplate>
@@ -324,44 +304,49 @@
 							FontSize="20"
 							FontWeight="SemiBold"
 							Margin="0,0,0,4"
-							Foreground="{DynamicResource SukiText}"
+							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 							Text="{Binding CurrentPageTitle}"
 							IsVisible="{Binding ShowPageTitle}" />
 
 						<controls:MarkdownTextBlock
 							x:Name="PageDescriptionText"
 							FontSize="13"
-							Foreground="{DynamicResource SukiLowText}"
+							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 							MarkdownText="{Binding CurrentPageDescription}"
 							Margin="0,0,0,2"
 							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
-						<suki:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
+						<suki:InfoBar x:Name="AlertBar" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
 					</StackPanel>
 				</Border>
 
-				<TransitioningContentControl
-					x:Name="PageContentControl"
-					Grid.Row="1"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch" />
+				<!-- Page content -->
+				<Panel Grid.Row="2">
+					<Panel Name="NotificationPanel"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Bottom"
+						Margin="0,0,0,15"
+						MaxWidth="450"
+						ZIndex="1000" />
+
+					<TransitioningContentControl
+						x:Name="PageContentControl"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch" />
+				</Panel>
+
 			</Grid>
 		</Grid>
 
+		<!-- Footer -->
 		<Border
-			Grid.Row="2"
+			Grid.Row="1"
 			Height="56"
-<<<<<<< HEAD
 			Padding="0,0,16,0"
 			BorderBrush="{DynamicResource FrostBorderDefault}"
-=======
-			Padding="16,0"
-			BorderBrush="{DynamicResource SukiBorderBrush}"
->>>>>>> avaloniaui
 			BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="220,*">
 
-				<!-- Account Selector -->
 				<local:AccountSelectorView x:Name="AccountSelectorView" Grid.Column="0" VerticalAlignment="Center" />
 
 				<StackPanel
@@ -371,21 +356,21 @@
 					HorizontalAlignment="Right">
 
 					<Button
-                        Classes="FrostSidebarAccent"
+						Classes="FrostSidebarAccent"
 						Height="36"
 						Padding="20,0"
 						Command="{Binding SaveAndLaunchSettingsCommand}"
 						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
 
 					<Button
-                        Classes="FrostSidebarAccent"
+						Classes="FrostSidebarAccent"
 						Height="36"
 						Padding="20,0"
 						Command="{Binding RestartAppCommand}"
 						Content="{x:Static resources:Strings.Menu_Restart}" />
 
 					<Button
-                        Classes="FrostSidebarAccent"
+						Classes="FrostSidebarAccent"
 						Height="36"
 						Padding="20,0"
 						Command="{Binding SaveSettingsCommand}"
@@ -402,14 +387,16 @@
 			</Grid>
 		</Border>
 
-	  <Border
-        x:Name="OffscreenIndexingCanvas"
-        Grid.Row="1"
-        Width="1125"
-        Height="700"
-        Opacity="0"
-        IsHitTestVisible="False"
-        IsVisible="False"
-        ZIndex="-1000" />
+		<!-- Hidden staging area for search pre-indexing -->
+		<Border
+			x:Name="OffscreenIndexingCanvas"
+			Grid.Row="0"
+			Width="905"
+			Height="700"
+			Opacity="0"
+			IsHitTestVisible="False"
+			IsVisible="False"
+			ZIndex="-1000" />
+
 	</Grid>
 </base:AvaloniaWindow>
