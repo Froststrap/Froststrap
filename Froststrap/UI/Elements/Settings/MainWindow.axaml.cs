@@ -439,7 +439,6 @@ namespace Froststrap.UI.Elements.Settings
 
             var searchIndex = _searchIndexBuilder.BuildIndex(pages);
 
-            // Add navigation actions
             var navigationActions = new Dictionary<string, Action>
             {
                 { "integrations", () => _viewModel.NavigateToIntegrationsCommand.Execute(null) },
@@ -463,7 +462,47 @@ namespace Froststrap.UI.Elements.Settings
 
             _viewModel.SetSearchIndex(searchIndex);
 
-            App.Logger.WriteLine("MainWindow", $"Built search index with {searchIndex.Count} navigation items (detailed items added as pages are viewed)");
+            PreIndexPages(pages);
+        }
+
+        private async void PreIndexPages(List<(string PageTag, string PageTitle, object PageViewModel)> pages)
+        {
+            var stagingArea = this.FindControl<Border>("OffscreenIndexingCanvas");
+            if (stagingArea == null)
+            {
+                App.Logger.WriteLine("MainWindow::PreIndexPages", "OffscreenIndexingCanvas not found, skipping pre-index");
+                return;
+            }
+
+            stagingArea.IsVisible = true;
+
+            foreach (var (pageTag, _, pageViewModel) in pages)
+            {
+                try
+                {
+                    var view = ResolveViewForViewModel(pageViewModel);
+                    if (view == null) continue;
+
+                    view.DataContext = pageViewModel;
+                    stagingArea.Child = view;
+
+                    await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
+                    await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+
+                    IndexPage(view, pageTag);
+
+                    stagingArea.Child = null;
+
+                    // Small yield between pages to keep the UI responsive
+                    await Task.Delay(30);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("MainWindow::PreIndexPages", $"Error pre-indexing page {pageTag}: {ex.Message}");
+                }
+            }
+
+            stagingArea.IsVisible = false;
         }
 
         private void IndexPage(Control pageView, string pageTag)

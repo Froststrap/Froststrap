@@ -384,5 +384,14 @@
 			</Grid>
 		</Border>
 
+	  <Border
+        x:Name="OffscreenIndexingCanvas"
+        Grid.Row="1"
+        Width="1125"
+        Height="700"
+        Opacity="0"
+        IsHitTestVisible="False"
+        IsVisible="False"
+        ZIndex="-1000" />
 	</Grid>
 </base:AvaloniaWindow>
