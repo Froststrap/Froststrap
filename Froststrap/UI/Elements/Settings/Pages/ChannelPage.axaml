@@ -118,12 +118,12 @@
                                 Grid.Column="0"
                                 Margin="0,0,16,8"
                                 VerticalAlignment="Center"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Foreground="{DynamicResource SukiLowText}"
                                 Text="{x:Static resources:Strings.Common_Version}" />
                             <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Foreground="{DynamicResource SukiMediumText}"
                                 Text="{Binding ChannelDeployInfo.Version, Mode=OneWay}" />
 
                             <!-- Version GUID Row -->
@@ -132,12 +132,12 @@
                                 Grid.Column="0"
                                 Margin="0,0,16,8"
                                 VerticalAlignment="Center"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Foreground="{DynamicResource SukiLowText}"
                                 Text="{x:Static resources:Strings.Common_VersionGuid}" />
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Foreground="{DynamicResource SukiMediumText}"
                                 Text="{Binding ChannelDeployInfo.VersionGuid, Mode=OneWay}" />
 
                             <!-- Timestamp Row -->
@@ -146,12 +146,12 @@
                                 Grid.Column="0"
                                 Margin="0,0,16,8"
                                 VerticalAlignment="Center"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Foreground="{DynamicResource SukiLowText}"
                                 Text="{x:Static resources:Strings.Common_Timestamp}" />
                             <TextBlock
                                 Grid.Row="2"
                                 Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Foreground="{DynamicResource SukiMediumText}"
                                 Text="{Binding ChannelDeployInfo.Timestamp, Mode=OneWay}" />
 
                             <!-- Available Channels Button -->

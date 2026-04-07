@@ -86,7 +86,7 @@
                                                               Margin="0,2,0,0"
                                                               Width="14"
                                                               Height="14"
-                                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                              Foreground="{DynamicResource SukiLowText}"
                                                               Kind="AccountMultiple"/>
                                                             <TextBlock
                                                                VerticalAlignment="Center"
@@ -183,13 +183,13 @@
                                Height="64"
                                HorizontalAlignment="Center" 
                                Opacity="0.5"
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               Foreground="{DynamicResource SukiLowText}"
                                Kind="Magnify"/>
 					<TextBlock HorizontalAlignment="Center"
                                Margin="0,0,0,8"
 							   FontSize="16"
 							   FontWeight="Medium"
-							   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+							   Foreground="{DynamicResource SukiLowText}"
 							   IsHitTestVisible="False"
 							   Text="{Binding ServerListMessage}"
 							   TextAlignment="Center"
@@ -210,7 +210,7 @@
 						<TextBlock HorizontalAlignment="Center"
 								   FontSize="14"
 								   FontWeight="SemiBold"
-								   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+								   Foreground="{DynamicResource SukiText}"
 								   Text="{Binding LoadingMessage}" />
 					</StackPanel>
 				</Grid>

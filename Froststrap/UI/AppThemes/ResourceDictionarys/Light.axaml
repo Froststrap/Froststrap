@@ -8,17 +8,4 @@
 	<SolidColorBrush x:Key="PrimaryBackgroundColor"        Color="#B3FFFFFF" />
 	<SolidColorBrush x:Key="NormalDarkAndLightBackground"  Color="#B3FFFFFF" />
 	<SolidColorBrush x:Key="ApplicationBackgroundColor"    Color="#F3F3F3" />
-	<Color x:Key="ControlFillColorDefault">#B3FFFFFF</Color>
-
-	<SolidColorBrush x:Key="FrostAccentBrush"       Color="#2B6FCC" />
-	<SolidColorBrush x:Key="FrostAccentTextBrush"   Color="#1A5AAF" />
-	<SolidColorBrush x:Key="FrostAccentSubtleBrush" Color="#E8F0FB" />
-	<SolidColorBrush x:Key="FrostAccentBorderBrush" Color="#A8C3EF" />
-  <SolidColorBrush x:Key="TextFillColorPrimaryBrush"   Color="#1F2937" />
-	<SolidColorBrush x:Key="TextFillColorSecondaryBrush" Color="#4B5563" />
-	<SolidColorBrush x:Key="TextFillColorTertiaryBrush"  Color="#6B7280" />
-	<SolidColorBrush x:Key="FrostSidebarBackground" Color="#EAEAEA" />
-	<SolidColorBrush x:Key="FrostBorderSubtle"      Color="#E0E0E0" />
-	<SolidColorBrush x:Key="FrostBorderDefault"     Color="#C8C8C8" />
-
 </ResourceDictionary>
