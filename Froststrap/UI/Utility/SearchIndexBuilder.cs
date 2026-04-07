@@ -83,6 +83,7 @@ namespace Froststrap.UI.Utility
                 ScanForCardExpanders(pageView, pageTag, "", newItems);
                 ScanForOptionControls(pageView, pageTag, "", newItems);
                 ScanForCardActions(pageView, pageTag, "", newItems);
+                ScanForSquareCards(pageView, pageTag, "", newItems);
                 ScanForTextLabels(pageView, pageTag, "", newItems);
 
                 if (newItems.Count > 0)
@@ -177,6 +178,30 @@ namespace Froststrap.UI.Utility
                         PageTag = pageTag,
                         PageTitle = pageTitle,
                         Category = "Action"
+                    });
+                }
+            }
+        }
+
+        private void ScanForSquareCards(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
+        {
+            var squareCards = pageView.GetVisualDescendants()
+                .OfType<SquareCard>()
+                .ToList();
+
+            foreach (var card in squareCards)
+            {
+                var header = card.Header as string;
+                if (!string.IsNullOrWhiteSpace(header))
+                {
+                    searchIndex.Add(new SearchBarItem
+                    {
+                        DisplayName = header,
+                        Tag = NormalizeTag(header),
+                        PageTag = pageTag,
+                        PageTitle = pageTitle,
+                        Category = "Card",
+                        Description = card.Description as string
                     });
                 }
             }
