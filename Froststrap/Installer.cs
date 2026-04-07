@@ -340,8 +340,10 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Migrations complete — LastMigratedVersion set to {currentVer}");
 
+#pragma warning disable CS0162 // Keep this here
             if (OpenReleaseNotes)
                 Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer}");
+#pragma warning restore CS0162
         }
 
         [SupportedOSPlatform("windows")]

@@ -147,7 +147,7 @@ namespace Froststrap.UI.Elements.About
             if (sidebarStackPanel == null) return;
 
             var accentFgKey = "AccentButtonBackground";
-            var unselectedFgResource = "TextFillColorPrimaryBrush";
+            var unselectedFgResource = "SukiText";
             var highlightBgResource = "ControlFillColorSecondaryBrush";
 
             foreach (var child in sidebarStackPanel.Children)

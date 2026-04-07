@@ -124,7 +124,7 @@
                        VerticalAlignment="Center" 
                        IsHitTestVisible="False"
                        IsVisible="False"
-                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                       Foreground="{DynamicResource SukiLowText}"
                        TextAlignment="Center"/>
         </Grid>
     </Grid>

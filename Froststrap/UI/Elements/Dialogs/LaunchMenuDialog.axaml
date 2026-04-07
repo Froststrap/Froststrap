@@ -27,7 +27,7 @@
                         <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
                         <TextBlock Text="{Binding Version}" 
                                    FontSize="13" 
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                   Foreground="{DynamicResource SukiMediumText}" />
                     </StackPanel>
                 </StackPanel>
 

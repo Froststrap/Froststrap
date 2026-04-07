@@ -65,6 +65,36 @@ public partial class App : Application
 
     public static bool IsStudioInstalled => StudioState.IsSaved && !String.IsNullOrEmpty(StudioState.Prop.VersionGuid);
 
+    public static readonly MD5 MD5Provider = MD5.Create();
+
+    public static readonly Logger Logger = new();
+
+    public static readonly Dictionary<string, BaseTask> PendingSettingTasks = new();
+
+    // Disambiguate Settings so we use the persistable Settings (Bloxstrap.Models.Persistable.Settings),
+    // not the auto-generated Properties.Settings which doesn't contain the clicker fields.
+    public static readonly JsonManager<Settings> Settings = new();
+
+    public static readonly JsonManager<State> State = new();
+
+    public static readonly AppStorageManager StorageSettings = new();
+
+    public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
+
+    public static readonly LazyJsonManager<DistributionState> StudioState = new(nameof(StudioState));
+
+    public static readonly RemoteDataManager RemoteData = new();
+
+    public static readonly FastFlagManager FastFlags = new();
+
+    public static readonly GBSEditor GlobalSettings = new();
+
+    public static readonly CookiesManager Cookies = new();
+
+    public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
+
+    private static bool _showingExceptionDialog = false;
+
     private static string? GetEnvironmentVariable(params string[] names)
     {
         foreach (string name in names)
@@ -213,36 +243,6 @@ public partial class App : Application
             UpdateCheckCompleted = true;
         }
     }
-
-    public static readonly MD5 MD5Provider = MD5.Create();
-
-    public static readonly Logger Logger = new();
-
-    public static readonly Dictionary<string, BaseTask> PendingSettingTasks = new();
-
-    // Disambiguate Settings so we use the persistable Settings (Bloxstrap.Models.Persistable.Settings),
-    // not the auto-generated Properties.Settings which doesn't contain the clicker fields.
-    public static readonly JsonManager<Settings> Settings = new();
-
-    public static readonly JsonManager<State> State = new();
-
-    public static readonly AppStorageManager StorageSettings = new();
-
-    public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
-
-    public static readonly LazyJsonManager<DistributionState> StudioState = new(nameof(StudioState));
-
-    public static readonly RemoteDataManager RemoteData = new();
-
-    public static readonly FastFlagManager FastFlags = new();
-
-    public static readonly GBSEditor GlobalSettings = new();
-
-    public static readonly CookiesManager Cookies = new();
-
-    public static readonly HttpClient HttpClient = new(new HttpClientLoggingHandler(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All }));
-
-    private static bool _showingExceptionDialog = false;
 
     private async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e)
     {
