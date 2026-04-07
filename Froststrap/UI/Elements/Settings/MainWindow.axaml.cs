@@ -312,10 +312,10 @@ namespace Froststrap.UI.Elements.Settings
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
 
             var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14 };
-            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
+            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiText"));
 
             var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap };
-            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
+            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiLowText"));
 
             textPanel.Children.Add(titleText);
             textPanel.Children.Add(subtitleText);

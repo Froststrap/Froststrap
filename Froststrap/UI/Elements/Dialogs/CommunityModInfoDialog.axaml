@@ -82,11 +82,11 @@
                     <StackPanel Spacing="4">
                         <TextBlock Text="{Binding Mod.Name}" FontSize="24" FontWeight="Bold" TextWrapping="Wrap"/>
                         <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" 
-                                   FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                   FontSize="12" Foreground="{DynamicResource SukiMediumText}" />
                         
                         <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4">
                              <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex: {0}'}" 
-                                       FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                                       FontSize="12" Foreground="{DynamicResource SukiMediumText}" />
                              <Border Width="12" Height="12" CornerRadius="2" 
                                      Background="{Binding PreviewBrush}" VerticalAlignment="Center"/>
                         </StackPanel>
@@ -102,7 +102,7 @@
                         <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
                         <TextBlock Text="{Binding Mod.Description}" 
                                    TextWrapping="Wrap" 
-                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                   Foreground="{DynamicResource SukiLowText}" />
                     </StackPanel>
                 </DockPanel>
             </md:Card>

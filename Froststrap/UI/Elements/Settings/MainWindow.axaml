@@ -33,12 +33,12 @@
 				<Border 
 					CornerRadius="6" 
 					BorderThickness="1" 
-					BorderBrush="{DynamicResource FrostBorderDefault}"
+					BorderBrush="{DynamicResource SukiControlBorderBrush}"
 					Padding="12,0"
 					VerticalAlignment="Center"
 					Background="{DynamicResource SukiSurfaceColor}">
 					<Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
-						<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Width="16" Height="16" VerticalAlignment="Center" />
+						<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
 						<TextBox x:Name="SearchTextBox"
 							Grid.Column="1" 
 							Margin="8,0" 
@@ -48,7 +48,7 @@
 							Padding="0"
 							VerticalAlignment="Center"
 							VerticalContentAlignment="Center"
-							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+							Foreground="{DynamicResource SukiText}"
 							Text="{Binding SearchQuery}" />
 						<Button Grid.Column="2" 
 							IsVisible="False"
@@ -71,7 +71,7 @@
 						MinWidth="400"
 						MaxHeight="400"
 						Background="#2D2D2D"
-						BorderBrush="{DynamicResource FrostBorderDefault}"
+						BorderBrush="{DynamicResource SukiControlBorderBrush}"
 						BorderThickness="1"
 						CornerRadius="6"
 						BoxShadow="0 8 32 0 #20000000">
@@ -105,7 +105,7 @@
 														Text="{Binding DisplayName}"
 														FontSize="13"
 														FontWeight="SemiBold"
-														Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+														Foreground="{DynamicResource SukiText}" />
 												</StackPanel>
 											</Button>
 										</DataTemplate>
@@ -115,7 +115,7 @@
 							<TextBlock 
 								Text="0 results found"
 								FontSize="13"
-								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								Foreground="{DynamicResource SukiLowText}"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Center"
 								Padding="16,24"
@@ -152,8 +152,7 @@
 
 		<Grid Name="MainGrid" Grid.Row="1" ColumnDefinitions="220,*">
 
-			<Border Name="SidebarBorder"
-				BorderBrush="{DynamicResource FrostBorderDefault}"
+			<Border BorderBrush="{DynamicResource SukiControlBorderBrush}"
 				Grid.Column="0"
 				BorderThickness="0,0,1,0">
 
@@ -167,7 +166,7 @@
 								Text="MAIN"
 								FontSize="11"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+								Foreground="{DynamicResource SukiMediumText}"
 								Margin="10,8,10,4"
 								Opacity="0.7" />
 
@@ -242,7 +241,7 @@
 					<StackPanel Grid.Row="1" Spacing="0" Margin="8,0,8,8">
 						<Separator
 							Margin="2,6"
-							Background="{DynamicResource FrostBorderDefault}"
+							Background="{DynamicResource SukiBorderBrush}"
 							Height="1" />
 
 						<controls:IconButton
@@ -276,7 +275,7 @@
 				<Border
 					Grid.Row="0"
 					Padding="24,24,24,16"
-					BorderBrush="{DynamicResource FrostBorderDefault}"
+					BorderBrush="{DynamicResource SukiBorderBrush}"
 					BorderThickness="0,0,0,1">
 					<StackPanel>
 						<ItemsControl
@@ -297,7 +296,7 @@
 											CommandParameter="{Binding}"
 											Background="Transparent"
 											BorderThickness="0"
-											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+											Foreground="{DynamicResource SukiText}"
 											FontSize="20"
 											FontWeight="SemiBold"
 											Padding="0"
@@ -306,14 +305,14 @@
 											Text="›"
 											VerticalAlignment="Center"
 											FontSize="20"
-											Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+											Foreground="{DynamicResource SukiLowText}"
 											IsVisible="{Binding !IsLast}" />
 										<TextBlock
 											Text="{Binding Content}"
 											VerticalAlignment="Center"
 											FontSize="20"
 											FontWeight="SemiBold"
-											Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+											Foreground="{DynamicResource SukiText}"
 											IsVisible="{Binding IsLast}" />
 									</StackPanel>
 								</DataTemplate>
@@ -325,14 +324,14 @@
 							FontSize="20"
 							FontWeight="SemiBold"
 							Margin="0,0,0,4"
-							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+							Foreground="{DynamicResource SukiText}"
 							Text="{Binding CurrentPageTitle}"
 							IsVisible="{Binding ShowPageTitle}" />
 
 						<controls:MarkdownTextBlock
 							x:Name="PageDescriptionText"
 							FontSize="13"
-							Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+							Foreground="{DynamicResource SukiLowText}"
 							MarkdownText="{Binding CurrentPageDescription}"
 							Margin="0,0,0,2"
 							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
@@ -352,8 +351,13 @@
 		<Border
 			Grid.Row="2"
 			Height="56"
+<<<<<<< HEAD
 			Padding="0,0,16,0"
 			BorderBrush="{DynamicResource FrostBorderDefault}"
+=======
+			Padding="16,0"
+			BorderBrush="{DynamicResource SukiBorderBrush}"
+>>>>>>> avaloniaui
 			BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="220,*">
 

@@ -43,7 +43,7 @@
                 Background="{DynamicResource PrimaryBackgroundColor}">
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<TextBlock x:Name="VersionText"
-                           Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                           Foreground="{DynamicResource SukiMediumText}"
                            Margin="0,0,280,0" Height="24" FontSize="14" />
 				<Button x:Name="CloseButton" MinWidth="100"
                         Content="{x:Static resources:Strings.Common_Close}"

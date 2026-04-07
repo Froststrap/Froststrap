@@ -27,7 +27,7 @@
                     <TextBlock Text="Hex Code" 
                                FontSize="12" 
                                FontWeight="SemiBold" 
-                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                               Foreground="{DynamicResource SukiLowText}"/>
                     <TextBox x:Name="Part_HexBox" 
                              Watermark="#RRGGBB"
                              VerticalContentAlignment="Center"

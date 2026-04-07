@@ -146,6 +146,28 @@
 				</controls:CardExpander>
                 
                 <controls:OptionControl
+                    Header="Background Style" 
+                    Description="Change the Background Style of the UI.">
+                    <ComboBox
+                        MinWidth="200"
+                        Margin="5,0,0,0"
+                        Padding="10,5,10,5"
+                        ItemsSource="{Binding SukiWindowStyles}"
+                        SelectedItem="{Binding SukiWindowStyle, Mode=TwoWay}" />
+                </controls:OptionControl>
+
+                <controls:OptionControl
+                    Header="Color Theme" 
+                    Description="Change the Color Theme of the UI.">
+                    <ComboBox
+                        MinWidth="200"
+                        Margin="5,0,0,0"
+                        Padding="10,5,10,5"
+                        ItemsSource="{Binding SukiColorThemes}"
+                        SelectedItem="{Binding SukiColorTheme, Mode=TwoWay}" />
+                </controls:OptionControl>
+
+                <controls:OptionControl
                     Header="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Title}" 
                     Description="{x:Static resources:Strings.Menu_Appearance_WindowsBackdrop_Description}">
                     <ComboBox
@@ -175,7 +197,7 @@
                             FontWeight="Bold"
                             Text="{x:Static resources:Strings.Menu_Appearance_Bootstrapper_Title}" />
                         <TextBlock
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Foreground="{DynamicResource SukiLowText}"
                             Text="{x:Static resources:Strings.Menu_Appearance_Bootstrapper_Description}"
                             TextWrapping="Wrap" />
                     </StackPanel>
@@ -225,14 +247,12 @@
                 <controls:IconButton Grid.Column="0"
                     Margin="0,0,4,0"
                     Icon="Plus"
-                    Classes="Primary"
                     HorizontalAlignment="Stretch"
                     Command="{Binding AddCustomThemeCommand}"
                     CommandParameter="{Binding $parent[Window]}"
                     Content="{x:Static resources:Strings.Common_New}" />
                 <controls:IconButton Grid.Column="1"
                     Margin="4,0,0,0"
-                    Classes="Danger"
                     Icon="TrashCanOutline"
                     HorizontalAlignment="Stretch"
                     Command="{Binding DeleteCustomThemeCommand}"
@@ -245,7 +265,7 @@
                     Grid.Column="1"
                     Spacing="8"
                     IsVisible="{Binding IsCustomThemeSelected}">
-                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                <TextBlock Foreground="{DynamicResource SukiLowText}"
                        Text="{x:Static resources:Strings.Common_Name}" />
                 <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
@@ -296,7 +316,7 @@
                                     <TextBlock
                                         Grid.Column="1"
                                         Margin="8,0,0,0"
-                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                        Foreground="{DynamicResource SukiText}"
                                         Text="{Binding Path=IconType, Converter={StaticResource EnumNameConverter}}" />
                                 </Grid>
                             </DataTemplate>
@@ -313,7 +333,7 @@
                             Grid.Row="0"
                             Grid.Column="0"
                             VerticalAlignment="Center"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Foreground="{DynamicResource SukiLowText}"
                             Text="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" />
                         <TextBox Grid.Column="1" Text="{Binding Title, Mode=TwoWay}" />
                         <TextBlock
@@ -321,14 +341,14 @@
                             Grid.Column="1"
                             Margin="0,4,0,0"
                             FontSize="12"
-                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Foreground="{DynamicResource SukiMediumText}"
                             Text="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}" />
                         <TextBlock
                             Grid.Row="2"
                             Grid.Column="0"
                             Margin="0,12,0,0"
                             VerticalAlignment="Center"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Foreground="{DynamicResource SukiLowText}"
                             Text="{x:Static resources:Strings.Menu_Appearance_CustomisationIcon_Title}"
                             TextWrapping="Wrap" />
 
@@ -356,7 +376,7 @@
                             Grid.Column="1"
                             Margin="0,4,0,0"
                             FontSize="12"
-                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Foreground="{DynamicResource SukiMediumText}"
                             Text="{x:Static resources:Strings.Menu_Appearance_CustomisationIcon_Description}"
                             TextWrapping="Wrap" />
                     </Grid>

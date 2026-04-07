@@ -10,7 +10,7 @@
 
 	<Style Selector="controls|IconButton.nav-button">
 		<Setter Property="Background"        Value="Transparent" />
-		<Setter Property="Foreground"        Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		<Setter Property="Foreground"        Value="{DynamicResource SukiLowText}" />
 		<Setter Property="BorderThickness"   Value="0" />
 		<Setter Property="Padding"           Value="10,0" />
 		<Setter Property="Height"            Value="40" />
@@ -39,7 +39,7 @@
 								Width="3"
 								Margin="-10,6,8,6"
 								CornerRadius="0,2,2,0"
-								Background="{DynamicResource FrostAccentBrush}" />
+								Background="{DynamicResource SukiPrimaryColor}" />
 
 						<StackPanel
 							Grid.Column="0"
@@ -87,22 +87,22 @@
 	</Style>
 
 	<Style Selector="controls|IconButton.nav-button:pointerover /template/ Border#PART_LayoutRoot">
-		<Setter Property="Background" Value="{DynamicResource FrostAccentSubtleBrush}" />
+		<Setter Property="Background" Value="{DynamicResource SukiPrimaryColor10}" />
 	</Style>
 	<Style Selector="controls|IconButton.nav-button:pointerover">
-		<Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource SukiText}" />
 	</Style>
 	<Style Selector="controls|IconButton.nav-button:pointerover /template/ ic|PackIconMaterial">
 		<Setter Property="Opacity" Value="0.85" />
 	</Style>
 
 	<Style Selector="controls|IconButton.nav-button.Selected /template/ Border#PART_LayoutRoot">
-		<Setter Property="Background"    Value="{DynamicResource FrostAccentSubtleBrush}" />
-		<Setter Property="BorderBrush"   Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="Background"    Value="{DynamicResource SukiPrimaryColor10}" />
+		<Setter Property="BorderBrush"   Value="{DynamicResource SukiPrimaryColor25}" />
 		<Setter Property="BorderThickness" Value="1" />
 	</Style>
 	<Style Selector="controls|IconButton.nav-button.Selected">
-		<Setter Property="Foreground" Value="{DynamicResource FrostAccentTextBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor75}" />
 	</Style>
 	<Style Selector="controls|IconButton.nav-button.Selected /template/ ic|PackIconMaterial">
 		<Setter Property="Opacity" Value="1" />
@@ -115,17 +115,17 @@
 	</Style>
 
 	<Style Selector="Button.FrostTinted">
-		<Setter Property="Background"   Value="{DynamicResource FrostAccentSubtleBrush}" />
-		<Setter Property="BorderBrush"  Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="Background"   Value="{DynamicResource SukiPrimaryColor10}" />
+		<Setter Property="BorderBrush"  Value="{DynamicResource SukiPrimaryColor25}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Foreground"   Value="{DynamicResource FrostAccentTextBrush}" />
+		<Setter Property="Foreground"   Value="{DynamicResource SukiPrimaryColor75}" />
 		<Setter Property="CornerRadius" Value="6" />
 		<Setter Property="FontSize"     Value="14" />
 		<Setter Property="FontWeight"   Value="Medium" />
 	</Style>
 	<Style Selector="Button.FrostTinted:pointerover /template/ ContentPresenter">
-		<Setter Property="Background"  Value="{DynamicResource FrostAccentBorderBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBrush}" />
+		<Setter Property="Background"  Value="{DynamicResource SukiPrimaryColor25}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
 	</Style>
 	<Style Selector="Button.FrostTinted:pressed /template/ ContentPresenter">
 		<Setter Property="Opacity" Value="0.85" />
@@ -135,7 +135,7 @@
 		<Setter Property="Background"      Value="Transparent" />
 		<Setter Property="BorderBrush"     Value="Transparent" />
 		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="Foreground"      Value="{DynamicResource TextFillColorSecondaryBrush}" />
+		<Setter Property="Foreground"      Value="{DynamicResource SukiLowText}" />
 		<Setter Property="CornerRadius"    Value="6" />
 		<Setter Property="FontSize"        Value="14" />
 	</Style>
@@ -145,28 +145,28 @@
 
 	<Style Selector="controls|Hyperlink">
 		<Setter Property="ClipToBounds" Value="False" />
-		<Setter Property="Foreground" Value="{DynamicResource FrostAccentBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor}" />
 		<Setter Property="Cursor" Value="Hand" />
 	</Style>
 	<Style Selector="controls|Hyperlink:pointerover">
-		<Setter Property="Foreground" Value="{DynamicResource FrostAccentTextBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor75}" />
 	</Style>
 	<Style Selector="controls|Hyperlink:pressed">
-		<Setter Property="Foreground" Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource SukiPrimaryColor25}" />
 	</Style>
 
 	<Style Selector="Button.FrostSidebarAccent">
-		<Setter Property="Background"       Value="{DynamicResource FrostAccentSubtleBrush}" />
-		<Setter Property="BorderBrush"      Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="Background"       Value="{DynamicResource SukiPrimaryColor10}" />
+		<Setter Property="BorderBrush"      Value="{DynamicResource SukiPrimaryColor25}" />
 		<Setter Property="BorderThickness"  Value="1" />
-		<Setter Property="Foreground"       Value="{DynamicResource FrostAccentTextBrush}" />
+		<Setter Property="Foreground"       Value="{DynamicResource SukiPrimaryColor75}" />
 		<Setter Property="CornerRadius"     Value="6" />
 		<Setter Property="FontSize"         Value="14" />
 		<Setter Property="FontWeight"       Value="Medium" />
 	</Style>
 	<Style Selector="Button.FrostSidebarAccent:pointerover /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource FrostAccentSubtleBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBrush}" />
+		<Setter Property="Background" Value="{DynamicResource SukiPrimaryColor10}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
 	</Style>
 	<Style Selector="Button.FrostSidebarAccent:pressed /template/ ContentPresenter">
 		<Setter Property="Opacity" Value="0.9" />
@@ -174,7 +174,7 @@
 
 	<Style Selector="FlyoutPresenter">
 		<Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource FrostAccentBorderBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor25}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius" Value="6" />
 	</Style>
