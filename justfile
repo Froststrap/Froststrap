@@ -10,7 +10,7 @@ publish:
     cp ./Froststrap/bin/Release/net10.0/publish/Froststrap.exe ./build/
     $version = (git describe --tags --abbrev=0); \
     makensis /DPUBLISH_DIR="..\build" /DAPP_VERSION="$version" Scripts\Installer.nsi; \
-    mv ./build/Froststrap-Setup.exe "./build/Froststrap-v$version.exe"
+    mv ./build/Froststrap-Setup.exe "./build/Froststrap-$version.exe"
     rm ./build/Froststrap.exe
 
 clean:
