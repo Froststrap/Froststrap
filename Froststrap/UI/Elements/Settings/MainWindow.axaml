@@ -22,7 +22,7 @@
 	<Grid RowDefinitions="Auto,*,Auto">
 
 		<Grid Grid.Row="0" Height="48" ColumnDefinitions="*,400,*" Background="{DynamicResource SukiSurfaceColor}">
-			<Grid Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="14,0,0,0">
+			<Grid Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="14,0,0,0">
 				<Image Source="avares://Froststrap/Froststrap.ico" Width="20" Height="20" RenderOptions.BitmapInterpolationMode="HighQuality" />
 			</Grid>
 
