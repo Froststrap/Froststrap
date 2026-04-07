@@ -22,10 +22,6 @@
 	<Grid RowDefinitions="Auto,*,Auto">
 
 		<Grid Grid.Row="0" Height="48" ColumnDefinitions="*,400,*" Background="{DynamicResource SukiSurfaceColor}">
-			<Grid Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="14,0,0,0">
-				<Image Source="avares://Froststrap/Froststrap.ico" Width="20" Height="20" RenderOptions.BitmapInterpolationMode="HighQuality" />
-			</Grid>
-
 			<Grid Grid.Column="1" VerticalAlignment="Center">
 				<Border 
 					CornerRadius="6" 
@@ -72,42 +68,52 @@
 						BorderThickness="1"
 						CornerRadius="6"
 						BoxShadow="0 8 32 0 #20000000">
-						<ScrollViewer VerticalScrollBarVisibility="Auto">
-							<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
-								<ItemsControl.ItemsPanel>
-									<ItemsPanelTemplate>
-										<StackPanel Spacing="0" />
-									</ItemsPanelTemplate>
-								</ItemsControl.ItemsPanel>
-								<ItemsControl.ItemTemplate>
-									<DataTemplate DataType="local:SearchBarItem">
-										<Button 
-											Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
-											CommandParameter="{Binding}"
-											Background="Transparent"
-											BorderThickness="0"
-											Padding="16,12"
-											HorizontalAlignment="Stretch"
-											HorizontalContentAlignment="Left"
-											Margin="4,2"
-											CornerRadius="4">
-											<Button.Styles>
-												<Style Selector="Button:pointerover /template/ ContentPresenter">
-													<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-												</Style>
-											</Button.Styles>
-											<StackPanel Spacing="4" HorizontalAlignment="Stretch">
-												<TextBlock 
-													Text="{Binding DisplayName}"
-													FontSize="13"
-													FontWeight="SemiBold"
-													Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-											</StackPanel>
-										</Button>
-									</DataTemplate>
-								</ItemsControl.ItemTemplate>
-							</ItemsControl>
-						</ScrollViewer>
+						<Grid>
+							<ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding FilteredSearchResults.Count}">
+								<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Spacing="0" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+									<ItemsControl.ItemTemplate>
+										<DataTemplate DataType="local:SearchBarItem">
+											<Button 
+												Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
+												CommandParameter="{Binding}"
+												Background="Transparent"
+												BorderThickness="0"
+												Padding="16,12"
+												HorizontalAlignment="Stretch"
+												HorizontalContentAlignment="Left"
+												Margin="4,2"
+												CornerRadius="4">
+												<Button.Styles>
+													<Style Selector="Button:pointerover /template/ ContentPresenter">
+														<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+													</Style>
+												</Button.Styles>
+												<StackPanel Spacing="4" HorizontalAlignment="Stretch">
+													<TextBlock 
+														Text="{Binding DisplayName}"
+														FontSize="13"
+														FontWeight="SemiBold"
+														Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+												</StackPanel>
+											</Button>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+							</ScrollViewer>
+							<TextBlock 
+								Text="0 results found"
+								FontSize="13"
+								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Padding="16,24"
+								IsVisible="{Binding !FilteredSearchResults.Count}" />
+						</Grid>
 					</Border>
 				</Popup>
 			</Grid>
