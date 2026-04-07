@@ -108,9 +108,7 @@ namespace Froststrap.UI.Elements.Settings
 
         private void UpdateSelectedButtonStyle(string selectedPage)
         {
-            var sidebarBorder = this.GetVisualDescendants()
-                                    .OfType<Border>()
-                                    .FirstOrDefault(b => b.BorderThickness.Right > 0);
+            var sidebarBorder = this.FindControl<Border>("SidebarBorder");
 
             if (sidebarBorder?.Child is Grid sidebarGrid)
             {

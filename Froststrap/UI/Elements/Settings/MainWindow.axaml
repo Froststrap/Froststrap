@@ -138,7 +138,8 @@
 
 		<Grid Name="MainGrid" Grid.Row="1" ColumnDefinitions="220,*">
 
-			<Border BorderBrush="{DynamicResource FrostBorderDefault}"
+			<Border Name="SidebarBorder"
+				BorderBrush="{DynamicResource FrostBorderDefault}"
 				Grid.Column="0"
 				BorderThickness="0,0,1,0">
 
