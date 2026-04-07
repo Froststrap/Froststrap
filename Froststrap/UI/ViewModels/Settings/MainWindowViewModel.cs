@@ -340,10 +340,15 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public EventHandler<SearchBarItem>? SearchResultSelected;
+
         private void HandleSearchResultSelected(SearchBarItem? item)
         {
-            if (item?.NavigateAction == null) return;
-            item.NavigateAction.Invoke();
+            if (item == null) return;
+
+            SearchQuery = string.Empty;
+            SearchResultSelected?.Invoke(this, item);
+            item.NavigateAction?.Invoke();
         }
 
         private void FilterSearchResults()
@@ -365,6 +370,11 @@ namespace Froststrap.UI.ViewModels.Settings
         public void SetSearchIndex(List<SearchBarItem> searchIndex)
         {
             _searchIndex = searchIndex ?? [];
+        }
+
+        public List<SearchBarItem> GetSearchIndex()
+        {
+            return _searchIndex;
         }
     }
 }
