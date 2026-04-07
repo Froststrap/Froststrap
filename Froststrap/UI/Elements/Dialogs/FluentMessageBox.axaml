@@ -17,7 +17,7 @@
             <md:MarkdownTextBlock x:Name="MessageMarkdownTextBlock" Grid.Column="1"
                                      VerticalAlignment="Center"
                                      TextWrapping="Wrap"
-                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                     Foreground="{DynamicResource SukiText}" />
         </Grid>
 
         <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">

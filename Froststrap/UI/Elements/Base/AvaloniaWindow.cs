@@ -21,7 +21,6 @@ namespace Froststrap.UI.Elements.Base
             // Remove suki titlebar + Change background Style
             this.IsTitleBarVisible = false;
             this.ShowBottomBorder = false;
-            this.BackgroundStyle = SukiBackgroundStyle.GradientSoft;
 
             // This is so we can resize the window
             this.ExtendClientAreaToDecorationsHint = true;
@@ -30,6 +29,8 @@ namespace Froststrap.UI.Elements.Base
             this.SystemDecorations = SystemDecorations.Full;
 
             ApplyTheme();
+
+            this.BackgroundStyle = App.Settings.Prop.SukiWindowStyle;
         }
 
         public static void ApplyTheme()
@@ -41,16 +42,11 @@ namespace Froststrap.UI.Elements.Base
 
             var sukiTheme = SukiTheme.GetInstance();
 
-            sukiTheme.ChangeColorTheme(SukiColor.Blue);
+            sukiTheme.ChangeColorTheme(App.Settings.Prop.SukiColorTheme);
 
-            Application.Current.RequestedThemeVariant = finalTheme == Enums.Theme.Light
-                ? ThemeVariant.Light
-                : ThemeVariant.Dark;
-
-            if (finalTheme == Enums.Theme.Light)
-                sukiTheme.ChangeBaseTheme(ThemeVariant.Light);
-            else
-                sukiTheme.ChangeBaseTheme(ThemeVariant.Dark);
+            var targetBaseTheme = finalTheme == Enums.Theme.Light ? ThemeVariant.Light : ThemeVariant.Dark;
+            Application.Current.RequestedThemeVariant = targetBaseTheme;
+            sukiTheme.ChangeBaseTheme(targetBaseTheme);
 
             if (_activeThemeDictionary != null)
             {
@@ -126,6 +122,17 @@ namespace Froststrap.UI.Elements.Base
                 }
 
                 Application.Current.Resources["ApplicationBackgroundColor"] = customBackground ?? Brushes.Transparent;
+            }
+
+            if (Application.Current.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                foreach (var window in desktop.Windows)
+                {
+                    if (window is SukiWindow sukiWin)
+                    {
+                        sukiWin.BackgroundStyle = App.Settings.Prop.SukiWindowStyle;
+                    }
+                }
             }
         }
 

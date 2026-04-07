@@ -69,7 +69,7 @@
 							FontSize="24"
 							FontWeight="SemiBold"
 							Margin="0,0,0,12"
-							Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+							Foreground="{DynamicResource SukiText}"
 							Text="{Binding CurrentPageTitle}" />
 					</StackPanel>
 				</Border>
@@ -92,7 +92,7 @@
 								   FontSize="22"
 								   FontWeight="SemiBold"
 								   HorizontalAlignment="Center"
-								   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+								   Foreground="{DynamicResource SukiText}" />
 
 						<suki:CircleProgressBar IsIndeterminate="True"
 										 Width="60"

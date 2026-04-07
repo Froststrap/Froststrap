@@ -24,7 +24,7 @@
 		<TextBlock Grid.Row="1"
                    Text="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels_Description}"
                    FontSize="12"
-                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   Foreground="{DynamicResource SukiLowText}"
                    Margin="8,8,0,4"
                    TextWrapping="Wrap" />
 

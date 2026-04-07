@@ -89,7 +89,7 @@
 
                             <StackPanel Grid.Column="1" Margin="16,0,4,0" VerticalAlignment="Center" Spacing="2">
                                 <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding UniverseDetails.Data.Name}" />
-                                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding JobId}" FontSize="11" />
+                                <TextBlock Foreground="{DynamicResource SukiLowText}" Text="{Binding JobId}" FontSize="11" />
 
                                 <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Spacing="8">
                                     <controls:IconButton 

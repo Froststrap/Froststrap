@@ -27,7 +27,7 @@
                                         Background="{DynamicResource ControlFillColorSecondaryBrush}">
                                     <Panel>
                                         <ic:PackIconMaterial Kind="FileQuestionOutline" Width="32" Height="32"
-                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource SukiLowText}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                            IsVisible="{Binding !CurrentUserAvatarUrl, Converter={x:Static ObjectConverters.IsNull}}"/>
                                         <Image Source="{Binding CurrentUserAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}" 
                                                Stretch="UniformToFill"
@@ -49,13 +49,13 @@
 
                             <StackPanel VerticalAlignment="Center">
                                 <TextBlock FontSize="18" FontWeight="SemiBold" Text="{Binding CurrentUserDisplayName}" />
-                                <TextBlock FontSize="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding CurrentUserUsername}" />
+                                <TextBlock FontSize="14" Foreground="{DynamicResource SukiLowText}" Text="{Binding CurrentUserUsername}" />
 
                                 <StackPanel Orientation="Horizontal" Margin="0,4,0,0" Spacing="8"
                                             IsVisible="{Binding IsAccountInformationVisible}">
-                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource SukiLowText}"
                                                Text="{Binding FriendsCount, StringFormat='{}{0} Friends'}" />
-                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource SukiLowText}"
                                                Text="{Binding FollowersCount, StringFormat='{}{0} Followers'}" />
                                 </StackPanel>
                             </StackPanel>
@@ -92,7 +92,7 @@
                                         </Border>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock FontSize="14" FontWeight="SemiBold" Text="{Binding DisplayName}" />
-                                            <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding Username}" />
+                                            <TextBlock FontSize="12" Foreground="{DynamicResource SukiLowText}" Text="{Binding Username}" />
                                         </StackPanel>
                                     </StackPanel>
 

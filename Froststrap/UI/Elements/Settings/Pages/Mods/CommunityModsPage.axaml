@@ -121,7 +121,7 @@
                                                TextTrimming="CharacterEllipsis"/>
 
                                     <TextBlock Grid.Row="2" 
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
+                                               Foreground="{DynamicResource SukiLowText}" 
                                                FontSize="12"
                                                Margin="12,2,12,4" 
                                                TextTrimming="CharacterEllipsis">

@@ -47,7 +47,7 @@
                 Grid.Row="1"
                 Margin="0,0,0,12"
                 FontSize="14"
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Foreground="{DynamicResource SukiLowText}"
                 MarkdownText="Copy this code and paste it in the [Quick Sign-In Page](https://www.roblox.com/crossdevicelogin/ConfirmCode)."
                 TextWrapping="Wrap"
                 IsVisible="True" />
@@ -71,7 +71,7 @@
                     FontFamily="Consolas"
                     FontSize="20"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Foreground="{DynamicResource SukiText}"
                     IsReadOnly="True"
                     TextAlignment="Center"
                     TextWrapping="NoWrap" />
@@ -95,7 +95,7 @@
                         Text="Waiting for Quick Sign-In...&#x0a;The app will close this window when sign-in completes." 
                         TextWrapping="Wrap"
                         FontSize="13"
-                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Foreground="{DynamicResource SukiText}"
                         VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>

@@ -8,6 +8,7 @@
 
     <Application.Styles>
         <suki:SukiTheme />
+        
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/SquareCard.axaml" />
@@ -16,8 +17,10 @@
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/TitleBar.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/CardAction.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/IconButton.axaml" />
+        
         <StyleInclude Source="avares://AvaloniaEdit/Themes/Fluent/AvaloniaEdit.xaml" />
         <StyleInclude Source="avares://IconPacks.Avalonia.Material/Material.axaml" />
+        
         <StyleInclude Source="avares://Froststrap/UI/AppThemes/Default.axaml" />
     </Application.Styles>
 
@@ -29,16 +32,20 @@
                 <ResourceInclude Source="avares://ColorPicker.AvaloniaUI/Templates/SquarePicker.axaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <StaticResource x:Key="ToolTipBackground" ResourceKey="ToolTipBackgroundBrush" />
-            <StaticResource x:Key="ToolTipForeground" ResourceKey="ToolTipForegroundBrush" />
+            <x:Double x:Key="ControlContentThemeFontSize">14</x:Double>
+            <Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
+            <Thickness x:Key="TextControlBorderThemeThickness">1</Thickness>
+            <Thickness x:Key="TextControlBorderThemeThicknessFocused">2</Thickness>
+            <CornerRadius x:Key="ControlCornerRadius">6</CornerRadius>
+            <CornerRadius x:Key="OverlayCornerRadius">8</CornerRadius>
+
+            <SolidColorBrush x:Key="ToolTipBackground" Color="#171718" />
+            <SolidColorBrush x:Key="ToolTipForeground" Color="#E1E1E1" />
+            <SolidColorBrush x:Key="ToolTipBorderBrush" Color="#3F3F41" />
 
             <FontFamily x:Key="Rubik">avares://Froststrap/Resources/Fonts/Rubik-VariableFont_wght.ttf</FontFamily>
-
             <FontFamily x:Key="BuilderIconsRegular">avares://Froststrap/Resources/Fonts#BuilderIcons-Regular</FontFamily>
             <FontFamily x:Key="BuilderIconsFilled">avares://Froststrap/Resources/Fonts#BuilderIcons-Filled</FontFamily>
-
-            <SolidColorBrush x:Key="AccentColorSecondaryBrush" Color="{DynamicResource SukiAccentColor75}" />
-            <SolidColorBrush x:Key="AccentColorTertiaryBrush" Color="{DynamicResource SukiAccentColor50}" />
 
             <converters:StringFormatConverter x:Key="StringFormatConverter" />
             <converters:EnumNameConverter x:Key="EnumNameConverter" />
