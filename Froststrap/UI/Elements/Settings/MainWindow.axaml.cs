@@ -161,7 +161,7 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private Control? ResolveViewForViewModel(object viewModel)
+        private static Control? ResolveViewForViewModel(object viewModel)
         {
             var viewModelName = viewModel.GetType().Name;
             var viewName = viewModelName.Replace("ViewModel", "");
@@ -361,23 +361,17 @@ namespace Froststrap.UI.Elements.Settings
                 };
             }
 
-            if (maximizeButton != null)
-            {
-                maximizeButton.Click += (s, e) =>
+            maximizeButton?.Click += (s, e) =>
                 {
                     this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized 
                         ? Avalonia.Controls.WindowState.Normal 
                         : Avalonia.Controls.WindowState.Maximized;
                 };
-            }
 
-            if (closeButton != null)
-            {
-                closeButton.Click += (s, e) =>
+            closeButton?.Click += (s, e) =>
                 {
                     this.Close();
                 };
-            }
         }
 
         private void BuildSearchIndex()
