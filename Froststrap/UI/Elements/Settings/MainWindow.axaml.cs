@@ -8,11 +8,15 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Froststrap.Models;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels.Settings;
 using IconPacks.Avalonia.Material;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -69,6 +73,8 @@ namespace Froststrap.UI.Elements.Settings
             Dispatcher.UIThread.Post(() =>
             {
                 UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                AttachTitleBarButtons();
+                BuildSearchIndex();
             }, DispatcherPriority.Loaded);
         }
 
@@ -339,6 +345,73 @@ namespace Froststrap.UI.Elements.Settings
             {
                 loadingOverlay.IsVisible = false;
             }
+        }
+
+        private void AttachTitleBarButtons()
+        {
+            var minimizeButton = this.FindControl<IconButton>("PART_MinimizeButton");
+            var maximizeButton = this.FindControl<IconButton>("PART_MaximizeButton");
+            var closeButton = this.FindControl<IconButton>("PART_CloseButton");
+
+            if (minimizeButton != null)
+            {
+                minimizeButton.Click += (s, e) =>
+                {
+                    this.WindowState = Avalonia.Controls.WindowState.Minimized;
+                };
+            }
+
+            if (maximizeButton != null)
+            {
+                maximizeButton.Click += (s, e) =>
+                {
+                    this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized 
+                        ? Avalonia.Controls.WindowState.Normal 
+                        : Avalonia.Controls.WindowState.Maximized;
+                };
+            }
+
+            if (closeButton != null)
+            {
+                closeButton.Click += (s, e) =>
+                {
+                    this.Close();
+                };
+            }
+        }
+
+        private void BuildSearchIndex()
+        {
+            var searchIndex = new List<SearchBarItem>();
+
+            var navigationItems = new[]
+            {
+                new { Display = Strings.Menu_Integrations_Title, Tag = "integrations", Action = (Action)(() => _viewModel!.NavigateToIntegrationsCommand.Execute(null)) },
+                new { Display = Strings.Menu_Behaviour_Title, Tag = "behaviour", Action = (Action)(() => _viewModel!.NavigateToBehaviourCommand.Execute(null)) },
+                new { Display = "Preset Mods", Tag = "mods", Action = (Action)(() => _viewModel!.NavigateToPresetModsCommand.Execute(null)) },
+                new { Display = Strings.Menu_FastFlags_Title, Tag = "fastflags", Action = (Action)(() => _viewModel!.NavigateToFastFlagsCommand.Execute(null)) },
+                new { Display = Strings.Menu_Appearance_Title, Tag = "appearance", Action = (Action)(() => _viewModel!.NavigateToAppearanceCommand.Execute(null)) },
+                new { Display = Strings.Menu_RegionSelector_Title, Tag = "regionselector", Action = (Action)(() => _viewModel!.NavigateToRegionSelectorCommand.Execute(null)) },
+                new { Display = Strings.Menu_GlobalSettings_Title, Tag = "globalsettings", Action = (Action)(() => _viewModel!.NavigateToGlobalSettingsCommand.Execute(null)) },
+                new { Display = Strings.Common_Shortcuts, Tag = "shortcuts", Action = (Action)(() => _viewModel!.NavigateToShortcutsCommand.Execute(null)) },
+                new { Display = Strings.Common_Settings, Tag = "channels", Action = (Action)(() => _viewModel!.NavigateToChannelsCommand.Execute(null)) }
+            };
+
+            // Add main navigation items to search index
+            foreach (var item in navigationItems)
+            {
+                searchIndex.Add(new SearchBarItem
+                {
+                    DisplayName = item.Display,
+                    Tag = item.Tag,
+                    NavigateAction = item.Action
+                });
+            }
+
+            // TODO: Scan pages for OptionControl and CardExpander headers to add detailed settings
+            // This would require loading each page instance and extracting headers from OptionControls/CardExpanders
+
+            _viewModel?.SetSearchIndex(searchIndex);
         }
 
         #region Event Handlers
