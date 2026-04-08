@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Froststrap.Integrations;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.ViewModels.Settings;
 
@@ -15,12 +14,14 @@ namespace Froststrap.UI.Elements.Settings
         public AccountSelectorView()
         {
             InitializeComponent();
+
+            _viewModel = new AccountSelectorViewModel();
+            DataContext = _viewModel;
         }
 
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            _viewModel = this.DataContext as AccountSelectorViewModel;
 
             if (_viewModel != null)
             {
@@ -31,25 +32,6 @@ namespace Froststrap.UI.Elements.Settings
         protected override void OnLoaded(RoutedEventArgs e)
         {
             base.OnLoaded(e);
-
-            if (this.FindControl<Button>("AccountButton") is Button accountButton)
-            {
-                accountButton.Click += (s, args) => ToggleDropdown();
-            }
-
-            // Hook up account item buttons for selection and deletion
-            if (this.FindControl<ItemsControl>("") is ItemsControl itemsControl)
-            {
-                // The ItemsControl will handle binding to the ViewModel commands
-            }
-        }
-
-        private void ToggleDropdown()
-        {
-            if (_viewModel != null)
-            {
-                _viewModel.IsDropdownOpen = !_viewModel.IsDropdownOpen;
-            }
         }
 
         private async void HandleManualAddRequested()
@@ -63,7 +45,6 @@ namespace Froststrap.UI.Elements.Settings
             {
                 App.Logger.WriteLine(LOG_IDENT, "Showing manual cookie dialog");
 
-                // Follow the same pattern as AccountsViewModel
                 var dialog = new ManualCookieDialog();
 
                 var desktop = Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
