@@ -73,7 +73,7 @@
                     <Border Grid.Row="0" 
                            Padding="12,12,12,12"
                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                           BorderBrush="{DynamicResource FrostBorderDefault}"
+                           BorderBrush="{DynamicResource SukiControlBorderBrush}"
                            BorderThickness="0,0,0,1">
                         <StackPanel Spacing="6">
                             <Button Content="Add Account"
@@ -90,7 +90,7 @@
                                      HorizontalAlignment="Stretch"
                                      CornerRadius="6"
                                      BorderThickness="1"
-                                     BorderBrush="{DynamicResource FrostBorderDefault}"/>
+                                     BorderBrush="{DynamicResource SukiControlBorderBrush}"/>
                         </StackPanel>
                     </Border>
 
