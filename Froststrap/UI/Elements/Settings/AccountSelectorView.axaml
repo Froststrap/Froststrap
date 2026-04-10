@@ -32,7 +32,7 @@
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
-                                            IsVisible="{Binding !CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                                            IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
                         <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}" 
                                Stretch="UniformToFill"
                                IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
