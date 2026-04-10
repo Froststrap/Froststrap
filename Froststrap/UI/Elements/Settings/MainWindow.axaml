@@ -223,18 +223,11 @@
 
 						<controls:IconButton
 							Classes="nav-button"
-							Command="{Binding OpenAccountManagerCommand}"
-							Icon="AccountMultipleOutline"
-							IconSize="16"
-							Content="{x:Static resources:Strings.Menu_AccountManager_Title}" />
-
-						<controls:IconButton
-							Classes="nav-button"
 							Command="{Binding NavigateToChannelsCommand}"
 							Tag="channels"
-							Icon="TuneVertical"
+							Icon="CloudArrowUp"
 							IconSize="16"
-							Content="{x:Static resources:Strings.Common_Settings}" />
+							Content="{x:Static resources:Strings.Common_Deployment}" />
 
 						<controls:IconButton
 							Classes="nav-button"
