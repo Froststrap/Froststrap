@@ -102,7 +102,8 @@
                                 <Grid RowDefinitions="140, Auto, Auto, *">
                                     
                                     <Border Grid.Row="0"
-                                            Margin="-16,-16,-16,0"
+                                            Margin="-20,-20,-20,0"
+                                            CornerRadius="8,8,0,0"
                                             ClipToBounds="True">
                                         <Grid>
                                             <Image Source="{Binding ThumbnailImage}" 
