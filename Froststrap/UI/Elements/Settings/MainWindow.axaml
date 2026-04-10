@@ -20,125 +20,124 @@
 	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
-	<Grid RowDefinitions="Auto,*,Auto">
-		<Grid Grid.Row="0" Height="48" ColumnDefinitions="*,400,*" Background="{DynamicResource SukiSurfaceColor}">
-
-			<Grid Grid.Column="1" VerticalAlignment="Center">
-				<Border
-					CornerRadius="6"
-					BorderThickness="1"
-					BorderBrush="{DynamicResource SukiControlBorderBrush}"
-					Padding="12,0"
-					VerticalAlignment="Center"
-					Background="{DynamicResource SukiSurfaceColor}">
-					<Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
-						<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
-						<TextBox x:Name="SearchTextBox"
-							Grid.Column="1"
-							Margin="8,0"
-							Watermark="Find a setting"
-							BorderThickness="0"
-							Background="Transparent"
-							Padding="0"
-							VerticalAlignment="Center"
-							VerticalContentAlignment="Center"
-							Foreground="{DynamicResource SukiText}"
-							Text="{Binding SearchQuery}" />
-						<Button Grid.Column="2"
-							IsVisible="False"
-							Width="20"
-							Height="20"
-							Padding="0"
-							BorderThickness="0"
-							Background="Transparent"
-							Content="×" />
-					</Grid>
-				</Border>
-
-				<!-- Search Results Dropdown -->
-				<Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-					Placement="Bottom"
-					PlacementTarget="{Binding #SearchTextBox}"
-					VerticalOffset="4"
-					IsLightDismissEnabled="False">
+	<Grid RowDefinitions="48,*,56" ColumnDefinitions="220,*">
+		<!-- Top bar (right side only; sidebar spans the full height on the left) -->
+		<Grid Grid.Row="0" Grid.Column="1" Background="{DynamicResource SukiSurfaceColor}">
+			<Grid ColumnDefinitions="*,400,Auto">
+				<Grid Grid.Column="1" VerticalAlignment="Center">
 					<Border
-						MinWidth="400"
-						MaxHeight="400"
-						Background="#2D2D2D"
-						BorderBrush="{DynamicResource SukiControlBorderBrush}"
-						BorderThickness="1"
 						CornerRadius="6"
-						BoxShadow="0 8 32 0 #20000000">
-						<Grid>
-							<ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding FilteredSearchResults.Count}">
-								<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<StackPanel Spacing="0" />
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate DataType="models:SearchBarItem">
-											<Button
-												Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
-												CommandParameter="{Binding}"
-												Background="Transparent"
-												BorderThickness="0"
-												Padding="16,12"
-												HorizontalAlignment="Stretch"
-												HorizontalContentAlignment="Left"
-												Margin="4,2"
-												CornerRadius="4">
-												<Button.Styles>
-													<Style Selector="Button:pointerover /template/ ContentPresenter">
-														<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-													</Style>
-												</Button.Styles>
-												<StackPanel Spacing="4" HorizontalAlignment="Stretch">
-													<TextBlock
-														Text="{Binding DisplayName}"
-														FontSize="13"
-														FontWeight="SemiBold"
-														Foreground="{DynamicResource SukiText}" />
-												</StackPanel>
-											</Button>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</ScrollViewer>
-							<TextBlock
-								Text="0 results found"
-								FontSize="13"
-								Foreground="{DynamicResource SukiLowText}"
-								HorizontalAlignment="Center"
+						BorderThickness="1"
+						BorderBrush="{DynamicResource SukiControlBorderBrush}"
+						Padding="12,0"
+						VerticalAlignment="Center"
+						Background="{DynamicResource SukiSurfaceColor}">
+						<Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
+							<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
+							<TextBox x:Name="SearchTextBox"
+								Grid.Column="1"
+								Margin="8,0"
+								Watermark="Find a setting"
+								BorderThickness="0"
+								Background="Transparent"
+								Padding="0"
 								VerticalAlignment="Center"
-								Padding="16,24"
-								IsVisible="{Binding !FilteredSearchResults.Count}" />
+								VerticalContentAlignment="Center"
+								Foreground="{DynamicResource SukiText}"
+								Text="{Binding SearchQuery}" />
+							<Button Grid.Column="2"
+								IsVisible="False"
+								Width="20"
+								Height="20"
+								Padding="0"
+								BorderThickness="0"
+								Background="Transparent"
+								Content="×" />
 						</Grid>
 					</Border>
-				</Popup>
+
+					<!-- Search Results Dropdown -->
+					<Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+						Placement="Bottom"
+						PlacementTarget="{Binding #SearchTextBox}"
+						VerticalOffset="4"
+						IsLightDismissEnabled="False">
+						<Border
+							MinWidth="400"
+							MaxHeight="400"
+							Background="#2D2D2D"
+							BorderBrush="{DynamicResource SukiControlBorderBrush}"
+							BorderThickness="1"
+							CornerRadius="6"
+							BoxShadow="0 8 32 0 #20000000">
+							<Grid>
+								<ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding FilteredSearchResults.Count}">
+									<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<StackPanel Spacing="0" />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate DataType="models:SearchBarItem">
+												<Button
+													Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
+													CommandParameter="{Binding}"
+													Background="Transparent"
+													BorderThickness="0"
+													Padding="16,12"
+													HorizontalAlignment="Stretch"
+													HorizontalContentAlignment="Left"
+													Margin="4,2"
+													CornerRadius="4">
+													<Button.Styles>
+														<Style Selector="Button:pointerover /template/ ContentPresenter">
+															<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+														</Style>
+													</Button.Styles>
+													<StackPanel Spacing="4" HorizontalAlignment="Stretch">
+														<TextBlock
+															Text="{Binding DisplayName}"
+															FontSize="13"
+															FontWeight="SemiBold"
+															Foreground="{DynamicResource SukiText}" />
+													</StackPanel>
+												</Button>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
+								</ScrollViewer>
+								<TextBlock
+									Text="0 results found"
+									FontSize="13"
+									Foreground="{DynamicResource SukiLowText}"
+									HorizontalAlignment="Center"
+									VerticalAlignment="Center"
+									Padding="16,24"
+									IsVisible="{Binding !FilteredSearchResults.Count}" />
+							</Grid>
+						</Border>
+					</Popup>
+				</Grid>
+
+				<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
+					<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />
+					<controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Icon="SquareOutline" />
+					<controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" />
+				</StackPanel>
 			</Grid>
-
-			<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
-				<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />
-				<controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Icon="SquareOutline" />
-				<controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" />
-			</StackPanel>
-		</Grid>
-
-		<Grid Name="MainGrid" Grid.Row="1" ColumnDefinitions="220,*">
-
-			<!-- Sidebar -->
-			<Border Name="SidebarBorder"
-				BorderBrush="{DynamicResource SukiControlBorderBrush}"
-				Grid.Column="0"
-				BorderThickness="0,0,1,0"
-				Background="{DynamicResource SukiSurfaceColor}">
-
-				<Grid RowDefinitions="Auto,*,Auto">
-					<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-						<StackPanel Spacing="0" Margin="8,6,8,0">
-
+        </Grid>
+		<!-- Sidebar -->
+		<Border Name="SidebarBorder"
+			BorderBrush="{DynamicResource SukiControlBorderBrush}"
+			Grid.Column="0"
+			Grid.RowSpan="3"
+			BorderThickness="0,0,1,0"
+			Background="{DynamicResource SukiSurfaceColor}">
+			<Grid RowDefinitions="*,Auto">
+				<ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+					<StackPanel Spacing="12" Margin="8,0,8,0">
+						<StackPanel Spacing="0">
 							<TextBlock
 								Text="MAIN"
 								FontSize="11"
@@ -165,11 +164,54 @@
 
 							<controls:IconButton
 								Classes="nav-button"
+								Command="{Binding NavigateToChannelsCommand}"
+								Tag="channels"
+								Icon="CloudArrowUp"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Common_Deployment}" />
+
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding OpenAboutCommand}"
+								Icon="InformationOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_About_Title}" />
+						</StackPanel>
+
+						<StackPanel Spacing="0">
+							<TextBlock
+								Text="APPEARANCE"
+								FontSize="11"
+								FontWeight="SemiBold"
+								Foreground="{DynamicResource SukiMediumText}"
+								Margin="10,8,10,4"
+								Opacity="0.7" />
+
+							<controls:IconButton
+								Classes="nav-button"
 								Command="{Binding NavigateToPresetModsCommand}"
 								Tag="mods"
 								Icon="PuzzleOutline"
 								IconSize="16"
 								Content="Preset Mods" />
+
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding NavigateToAppearanceCommand}"
+								Tag="appearance"
+								Icon="PaletteOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_Appearance_Title}" />
+						</StackPanel>
+
+						<StackPanel Spacing="0">
+							<TextBlock
+								Text="ROBLOX TWEAKS"
+								FontSize="11"
+								FontWeight="SemiBold"
+								Foreground="{DynamicResource SukiMediumText}"
+								Margin="10,8,10,4"
+								Opacity="0.7" />
 
 							<controls:IconButton
 								Classes="nav-button"
@@ -180,12 +222,23 @@
 								Content="{x:Static resources:Strings.Menu_FastFlags_Title}" />
 
 							<controls:IconButton
+								Name="gbs"
 								Classes="nav-button"
-								Command="{Binding NavigateToAppearanceCommand}"
-								Tag="appearance"
-								Icon="PaletteOutline"
+								Command="{Binding NavigateToGlobalSettingsCommand}"
+								Tag="globalsettings"
+								Icon="SquareEditOutline"
 								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_Appearance_Title}" />
+								Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
+						</StackPanel>
+
+						<StackPanel Spacing="0">
+							<TextBlock
+								Text="MISC"
+								FontSize="11"
+								FontWeight="SemiBold"
+								Foreground="{DynamicResource SukiMediumText}"
+								Margin="10,8,10,4"
+								Opacity="0.7" />
 
 							<controls:IconButton
 								Classes="nav-button"
@@ -196,195 +249,160 @@
 								Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
 
 							<controls:IconButton
-								Name="gbs"
-								Classes="nav-button"
-								Command="{Binding NavigateToGlobalSettingsCommand}"
-								Tag="globalsettings"
-								Icon="SquareEditOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
-
-							<controls:IconButton
 								Classes="nav-button"
 								Command="{Binding NavigateToShortcutsCommand}"
 								Tag="shortcuts"
 								Icon="LinkBoxOutline"
 								IconSize="16"
 								Content="{x:Static resources:Strings.Common_Shortcuts}" />
-
 						</StackPanel>
-					</ScrollViewer>
-
-					<StackPanel Grid.Row="2" Spacing="0" Margin="8,0,8,8">
-						<Separator
-							Margin="2,6"
-							Background="{DynamicResource SukiBorderBrush}"
-							Height="1" />
-
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToChannelsCommand}"
-							Tag="channels"
-							Icon="CloudArrowUp"
-							IconSize="16"
-							Content="{x:Static resources:Strings.Common_Deployment}" />
-
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding OpenAboutCommand}"
-							Icon="InformationOutline"
-							IconSize="16"
-							Content="{x:Static resources:Strings.Menu_About_Title}" />
 					</StackPanel>
+				</ScrollViewer>
 
-				</Grid>
+				<Border Grid.Row="1"
+						BorderBrush="{DynamicResource SukiControlBorderBrush}"
+						BorderThickness="0,1,0,0"
+						Background="{DynamicResource SukiSurfaceColor}">
+					<local:AccountSelectorView x:Name="AccountSelectorView" />
+				</Border>
+			</Grid>
+		</Border>
+
+		<!-- Page area -->
+		<Grid Grid.Column="1" Grid.Row="1" RowDefinitions="Auto,*">
+
+			<Border
+				Grid.Row="0"
+				Padding="24,24,24,16"
+				BorderBrush="{DynamicResource SukiBorderBrush}"
+				BorderThickness="0,0,0,1">
+				<StackPanel>
+					<ItemsControl
+						ItemsSource="{Binding BreadcrumbItems}"
+						Margin="0,0,0,10"
+						IsVisible="{Binding HasBreadcrumbs}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="vm:BreadcrumbItemModel">
+								<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+									<Button
+										Content="{Binding Content}"
+										Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
+										CommandParameter="{Binding}"
+										Background="Transparent"
+										BorderThickness="0"
+										Foreground="{DynamicResource SukiText}"
+										FontSize="20"
+										FontWeight="SemiBold"
+										Padding="0"
+										IsVisible="{Binding !IsLast}" />
+									<TextBlock
+										Text="›"
+										VerticalAlignment="Center"
+										FontSize="20"
+										Foreground="{DynamicResource SukiLowText}"
+										IsVisible="{Binding !IsLast}" />
+									<TextBlock
+										Text="{Binding Content}"
+										VerticalAlignment="Center"
+										FontSize="20"
+										FontWeight="SemiBold"
+										Foreground="{DynamicResource SukiText}"
+										IsVisible="{Binding IsLast}" />
+								</StackPanel>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<TextBlock
+						x:Name="PageTitleText"
+						FontSize="20"
+						FontWeight="SemiBold"
+						Margin="0,0,0,4"
+						Foreground="{DynamicResource SukiText}"
+						Text="{Binding CurrentPageTitle}"
+						IsVisible="{Binding ShowPageTitle}" />
+
+					<controls:MarkdownTextBlock
+						x:Name="PageDescriptionText"
+						FontSize="13"
+						Foreground="{DynamicResource SukiLowText}"
+						MarkdownText="{Binding CurrentPageDescription}"
+						Margin="0,0,0,2"
+						IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+					<suki:InfoBar x:Name="AlertBar" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
+				</StackPanel>
 			</Border>
 
-			<Grid Grid.Column="1" RowDefinitions="Auto,*">
+			<Panel Grid.Row="1">
+				<Panel Name="NotificationPanel"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Bottom"
+					Margin="0,0,0,15"
+					MaxWidth="450"
+					ZIndex="1000" />
 
-				<!-- Page header -->
-				<Border
-					Grid.Row="0"
-					Padding="24,24,24,16"
-					BorderBrush="{DynamicResource SukiBorderBrush}"
-					BorderThickness="0,0,0,1">
-					<StackPanel>
-						<ItemsControl
-							ItemsSource="{Binding BreadcrumbItems}"
-							Margin="0,0,0,10"
-							IsVisible="{Binding HasBreadcrumbs}">
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-							<ItemsControl.ItemTemplate>
-								<DataTemplate DataType="vm:BreadcrumbItemModel">
-									<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-										<Button
-											Content="{Binding Content}"
-											Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
-											CommandParameter="{Binding}"
-											Background="Transparent"
-											BorderThickness="0"
-											Foreground="{DynamicResource SukiText}"
-											FontSize="20"
-											FontWeight="SemiBold"
-											Padding="0"
-											IsVisible="{Binding !IsLast}" />
-										<TextBlock
-											Text="›"
-											VerticalAlignment="Center"
-											FontSize="20"
-											Foreground="{DynamicResource SukiLowText}"
-											IsVisible="{Binding !IsLast}" />
-										<TextBlock
-											Text="{Binding Content}"
-											VerticalAlignment="Center"
-											FontSize="20"
-											FontWeight="SemiBold"
-											Foreground="{DynamicResource SukiText}"
-											IsVisible="{Binding IsLast}" />
-									</StackPanel>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
+				<TransitioningContentControl
+					x:Name="PageContentControl"
+					HorizontalAlignment="Stretch"
+					VerticalAlignment="Stretch" />
+			</Panel>
 
-						<TextBlock
-							x:Name="PageTitleText"
-							FontSize="20"
-							FontWeight="SemiBold"
-							Margin="0,0,0,4"
-							Foreground="{DynamicResource SukiText}"
-							Text="{Binding CurrentPageTitle}"
-							IsVisible="{Binding ShowPageTitle}" />
-
-						<controls:MarkdownTextBlock
-							x:Name="PageDescriptionText"
-							FontSize="13"
-							Foreground="{DynamicResource SukiLowText}"
-							MarkdownText="{Binding CurrentPageDescription}"
-							Margin="0,0,0,2"
-							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-
-						<suki:InfoBar x:Name="AlertBar" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
-					</StackPanel>
-				</Border>
-
-				<!-- Page content -->
-				<Panel Grid.Row="1">
-					<Panel Name="NotificationPanel"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Bottom"
-						Margin="0,0,0,15"
-						MaxWidth="450"
-						ZIndex="1000" />
-
-					<TransitioningContentControl
-						x:Name="PageContentControl"
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Stretch" />
-				</Panel>
-
-			</Grid>
 		</Grid>
 
 		<!-- Footer -->
 		<Border
 			Grid.Row="2"
+			Grid.ColumnSpan="2"
 			Height="56"
 			Padding="0,0,16,0"
 			BorderBrush="{DynamicResource SukiBorderBrush}"
 			BorderThickness="0,1,0,0">
-			<Grid ColumnDefinitions="220,*">
+			<StackPanel
+				Orientation="Horizontal"
+				Spacing="8"
+				HorizontalAlignment="Right">
 
-               <local:AccountSelectorView x:Name="AccountSelectorView"
-					Grid.Column="0"
-					VerticalAlignment="Stretch"
-					HorizontalAlignment="Stretch" />
+				<Button
+					Classes="FrostSidebarAccent"
+					Height="36"
+					Padding="20,0"
+					Command="{Binding SaveAndLaunchSettingsCommand}"
+					Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
 
-				<StackPanel
-					Grid.Column="1"
-					Orientation="Horizontal"
-					Spacing="8"
-					HorizontalAlignment="Right">
+				<Button
+					Classes="FrostSidebarAccent"
+					Height="36"
+					Padding="20,0"
+					Command="{Binding RestartAppCommand}"
+					Content="{x:Static resources:Strings.Menu_Restart}" />
 
-					<Button
-						Classes="FrostSidebarAccent"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding SaveAndLaunchSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
+				<Button
+					Classes="FrostSidebarAccent"
+					Height="36"
+					Padding="20,0"
+					Command="{Binding SaveSettingsCommand}"
+					Content="{x:Static resources:Strings.Menu_Save}" />
 
-					<Button
-						Classes="FrostSidebarAccent"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding RestartAppCommand}"
-						Content="{x:Static resources:Strings.Menu_Restart}" />
+				<Button
+					Classes="FrostSubtle"
+					Height="36"
+					Padding="20,0"
+					Command="{Binding CloseWindowCommand}"
+					Content="{x:Static resources:Strings.Common_Close}" />
 
-					<Button
-						Classes="FrostSidebarAccent"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding SaveSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_Save}" />
-
-					<Button
-						Classes="FrostSubtle"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding CloseWindowCommand}"
-						Content="{x:Static resources:Strings.Common_Close}" />
-
-				</StackPanel>
-			</Grid>
+			</StackPanel>
 		</Border>
 
-		<!-- Hidden staging area for search pre-indexing -->
 		<Border
 			x:Name="OffscreenIndexingCanvas"
 			Grid.Row="1"
+			Grid.Column="1"
 			Width="905"
 			Height="700"
 			Opacity="0"
