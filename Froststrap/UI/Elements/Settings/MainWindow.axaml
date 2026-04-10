@@ -338,7 +338,10 @@
 			BorderThickness="0,1,0,0">
 			<Grid ColumnDefinitions="220,*">
 
-				<local:AccountSelectorView x:Name="AccountSelectorView" Grid.Column="0" VerticalAlignment="Center" />
+               <local:AccountSelectorView x:Name="AccountSelectorView"
+					Grid.Column="0"
+					VerticalAlignment="Stretch"
+					HorizontalAlignment="Stretch" />
 
 				<StackPanel
 					Grid.Column="1"
