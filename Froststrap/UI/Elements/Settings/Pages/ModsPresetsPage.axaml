@@ -79,12 +79,12 @@
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Title}"
                                         Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Description}">
                     <Panel>
-                        <controls:IconButton Command="{Binding ManageCustomFontCommand}"
+                        <controls:IconButton Command="{Binding ChooseCustomFontCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Choose}"
-                                            Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
+                                            Icon="FileDocumentPlusOutline"
                                             IsVisible="{Binding !IsCustomFontSet}" />
                         <controls:IconButton Classes="Danger"
-                                            Command="{Binding ManageCustomFontCommand}"
+                                            Command="{Binding RemoveCustomFontCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Remove}"
                                             Icon="TrashCanOutline"
                                             IsVisible="{Binding IsCustomFontSet}" />
@@ -96,7 +96,7 @@
                     <Panel>
                         <controls:IconButton Command="{Binding AddCustomDeathSoundCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Choose}"
-                                            Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
+                                            Icon="FileDocumentPlusOutline"
                                             IsVisible="{Binding !HasCustomDeathSound}" />
                         <controls:IconButton Classes="Danger"
                                             Command="{Binding RemoveCustomDeathSoundCommand}"
@@ -114,7 +114,7 @@
                                                 Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Description}">
                             <Panel>
                                 <controls:IconButton Command="{Binding AddCustomCursorModCommand}" Icon="FileDocumentPlusOutline"
-                                                   Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Choose}" CommandParameter="{Binding $self}"
+                                                   Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Choose}"
                                                    IsVisible="{Binding !HasCustomCursors}" />
                                 <controls:IconButton Classes="Danger" Command="{Binding RemoveCustomCursorModCommand}" Icon="TrashCanOutline"
                                                    Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Remove}"
@@ -129,7 +129,7 @@
                         <StackPanel>
                             <controls:IconButton Command="{Binding AddCustomShiftlockModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Choose}"
-                                        Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
+                                        Icon="FileDocumentPlusOutline"
                                         IsVisible="{Binding !HasCustomShiftlock}" />
 
                             <controls:IconButton Classes="Danger"

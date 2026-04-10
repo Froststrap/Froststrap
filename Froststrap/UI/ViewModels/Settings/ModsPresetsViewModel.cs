@@ -7,9 +7,7 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.AppData;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.IO.Compression;
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 
@@ -36,9 +34,9 @@ namespace Froststrap.UI.ViewModels.Settings
         private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
         private void OpenCommunityMods() => OpenCommunityModsEvent?.Invoke(this, EventArgs.Empty);
         private void OpenModGenerator() => OpenModGeneratorEvent?.Invoke(this, EventArgs.Empty);
-        public ICommand OpenModsCommand => new RelayCommand(OpenMods);
-        public ICommand OpenCommunityModsCommand => new RelayCommand(OpenCommunityMods);
-        public ICommand OpenModGeneratorCommand => new RelayCommand(OpenModGenerator);
+        public ICommand OpenModsCommand { get; }
+        public ICommand OpenCommunityModsCommand { get; }
+        public ICommand OpenModGeneratorCommand { get; }
 
         private static readonly Dictionary<string, byte[]> FontHeaders = new()
         {
@@ -49,6 +47,19 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ModsPresetsViewModel()
         {
+            OpenModsCommand = new RelayCommand(OpenMods);
+            OpenCommunityModsCommand = new RelayCommand(OpenCommunityMods);
+            OpenModGeneratorCommand = new RelayCommand(OpenModGenerator);
+
+            AddCustomCursorModCommand = new AsyncRelayCommand(AddCustomCursorMod);
+            AddCustomShiftlockModCommand = new AsyncRelayCommand(AddCustomShiftlockMod);
+            AddCustomDeathSoundCommand = new AsyncRelayCommand(AddCustomDeathSound);
+            ChooseCustomFontCommand = new AsyncRelayCommand(ChooseCustomFont);
+            RemoveCustomFontCommand = new RelayCommand(RemoveCustomFont);
+            RemoveCustomCursorModCommand = new RelayCommand(RemoveCustomCursorMod);
+            RemoveCustomShiftlockModCommand = new RelayCommand(RemoveCustomShiftlockMod);
+            RemoveCustomDeathSoundCommand = new RelayCommand(RemoveCustomDeathSound);
+
             LoadCustomCursorSets();
 
             LoadCursorPathsForSelectedSet();
@@ -56,74 +67,72 @@ namespace Froststrap.UI.ViewModels.Settings
             NotifyCursorStates();
         }
 
-        public async Task ManageCustomFont(Control? control)
+        public IAsyncRelayCommand AddCustomCursorModCommand { get; }
+        public IAsyncRelayCommand AddCustomShiftlockModCommand { get; }
+        public IAsyncRelayCommand AddCustomDeathSoundCommand { get; }
+        public IAsyncRelayCommand ChooseCustomFontCommand { get; }
+        public IRelayCommand RemoveCustomFontCommand { get; }
+
+        public IRelayCommand RemoveCustomCursorModCommand { get; }
+        public IRelayCommand RemoveCustomShiftlockModCommand { get; }
+        public IRelayCommand RemoveCustomDeathSoundCommand { get; }
+
+        public bool IsCustomFontSet => !string.IsNullOrEmpty(TextFontTask?.NewState);
+            
+        private async Task ChooseCustomFont()
         {
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel == null)
+            var topLevel = GetDialogTopLevel();
+            if (topLevel is null)
             {
-                App.Logger.WriteLine("ModsViewModel", "Could not find TopLevel from control.");
+                App.Logger.WriteLine("ModsViewModel", "Could not find a main window for custom font selection.");
                 return;
             }
 
-            if (IsCustomFontSet)
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
-                TextFontTask.NewState = string.Empty;
-            }
-            else
-            {
-                var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+                Title = "Select Custom Font",
+                FileTypeFilter = new[]
                 {
-                    Title = "Select Custom Font",
-                    FileTypeFilter = new[]
+                    new FilePickerFileType("Font Files")
                     {
-                        new FilePickerFileType("Font Files")
-                        {
-                            Patterns = new[] { "*.ttf", "*.otf", "*.ttc" }
-                        }
-                    },
-                    AllowMultiple = false
-                });
-
-                if (files == null || files.Count == 0) return;
-
-                string? filePath = files[0].TryGetLocalPath();
-                if (string.IsNullOrEmpty(filePath)) return;
-
-                try
-                {
-                    string extension = Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
-                    byte[] fileHeader = await File.ReadAllBytesAsync(filePath);
-                    byte[] headerSnippet = fileHeader.Take(4).ToArray();
-
-                    if (!FontHeaders.TryGetValue(extension, out var expectedHeader) ||
-                        !expectedHeader.SequenceEqual(headerSnippet))
-                    {
-                        await Frontend.ShowMessageBox("Custom Font Invalid", MessageBoxImage.Error);
-                        return;
+                        Patterns = new[] { "*.ttf", "*.otf", "*.ttc" }
                     }
+                },
+                AllowMultiple = false
+            });
 
-                    TextFontTask.NewState = filePath;
-                }
-                catch (Exception ex)
+            if (files == null || files.Count == 0) return;
+
+            string? filePath = files[0].TryGetLocalPath();
+            if (string.IsNullOrEmpty(filePath)) return;
+
+            try
+            {
+                string extension = Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
+                byte[] fileHeader = await File.ReadAllBytesAsync(filePath);
+                byte[] headerSnippet = fileHeader.Take(4).ToArray();
+
+                if (!FontHeaders.TryGetValue(extension, out var expectedHeader) ||
+                    !expectedHeader.SequenceEqual(headerSnippet))
                 {
-                    await Frontend.ShowMessageBox($"Error loading font: {ex.Message}", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox("Custom Font Invalid", MessageBoxImage.Error);
                     return;
                 }
-            }
 
-            OnPropertyChanged(nameof(IsCustomFontSet));
+                TextFontTask.NewState = filePath;
+                OnPropertyChanged(nameof(IsCustomFontSet));
+            }
+            catch (Exception ex)
+            {
+                await Frontend.ShowMessageBox($"Error loading font: {ex.Message}", MessageBoxImage.Error);
+            }
         }
 
-        public IAsyncRelayCommand<Control> AddCustomCursorModCommand => new AsyncRelayCommand<Control>(async c => await AddCustomCursorMod(c));
-        public IAsyncRelayCommand<Control> AddCustomShiftlockModCommand => new AsyncRelayCommand<Control>(async c => await AddCustomShiftlockMod(c));
-        public IAsyncRelayCommand<Control> AddCustomDeathSoundCommand => new AsyncRelayCommand<Control>(async c => await AddCustomDeathSound(c));
-        public IAsyncRelayCommand<Control> ManageCustomFontCommand => new AsyncRelayCommand<Control>(async c => await ManageCustomFont(c));
-
-        public IRelayCommand RemoveCustomCursorModCommand => new RelayCommand(RemoveCustomCursorMod);
-        public IRelayCommand RemoveCustomShiftlockModCommand => new RelayCommand(RemoveCustomShiftlockMod);
-        public IRelayCommand RemoveCustomDeathSoundCommand => new RelayCommand(RemoveCustomDeathSound);
-
-        public bool IsCustomFontSet => !string.IsNullOrEmpty(TextFontTask?.NewState);
+        private void RemoveCustomFont()
+        {
+            TextFontTask.NewState = string.Empty;
+            OnPropertyChanged(nameof(IsCustomFontSet));
+        }
 
         public ICommand OpenCompatSettingsCommand => new RelayCommand(OpenCompatSettings);
         public ICommand OpenModsFolderCommand => new RelayCommand(OpenModsFolder);
@@ -213,16 +222,16 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(HasCustomDeathSound));
         }
 
-        public async Task AddCustomCursorMod(Control? c) =>
-            await AddCustomFileAsync(c, CursorFiles, CursorPath, "Select Cursor",
+        public async Task AddCustomCursorMod() =>
+            await AddCustomFileAsync(CursorFiles, CursorPath, "Select Cursor",
                 new[] { FilePickerFileTypes.ImagePng }, "cursors", RefreshStates);
 
-        public async Task AddCustomShiftlockMod(Control? c) =>
-            await AddCustomFileAsync(c, ShiftlockFiles, ShiftlockPath, "Select Shiftlock",
+        public async Task AddCustomShiftlockMod() =>
+            await AddCustomFileAsync(ShiftlockFiles, ShiftlockPath, "Select Shiftlock",
                 new[] { FilePickerFileTypes.ImagePng }, "shiftlock", RefreshStates);
 
-        public async Task AddCustomDeathSound(Control? c) =>
-            await AddCustomFileAsync(c, SoundFiles, SoundPath, "Select Death Sound",
+        public async Task AddCustomDeathSound() =>
+            await AddCustomFileAsync(SoundFiles, SoundPath, "Select Death Sound",
                 new[] { new FilePickerFileType("Audio") { Patterns = new[] { "*.ogg" } } }, "death sound", RefreshStates);
 
         public void RemoveCustomCursorMod() =>
@@ -234,9 +243,17 @@ namespace Froststrap.UI.ViewModels.Settings
         public void RemoveCustomDeathSound() =>
             RemoveCustomFile(SoundFiles, SoundPath, "No death sound found.", RefreshStates);
 
-        private async Task AddCustomFileAsync(Control? control, string[] targetFiles, string targetDir, string dialogTitle, FilePickerFileType[] filters, string failureText, Action? postAction)
+        private static TopLevel? GetDialogTopLevel()
         {
-            var topLevel = TopLevel.GetTopLevel(control);
+            if (Avalonia.Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return null;
+
+            return desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
+        }
+
+        private async Task AddCustomFileAsync(string[] targetFiles, string targetDir, string dialogTitle, FilePickerFileType[] filters, string failureText, Action? postAction)
+        {
+            var topLevel = GetDialogTopLevel();
 
             if (topLevel == null) return;
 
@@ -448,7 +465,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomCursorSet is null) return;
 
-            var topLevel = TopLevel.GetTopLevel(control);
+            var topLevel = GetDialogTopLevel() ?? TopLevel.GetTopLevel(control);
             if (topLevel == null) return;
 
             var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
@@ -481,7 +498,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomCursorSet is null) return;
 
-            var topLevel = TopLevel.GetTopLevel(control);
+            var topLevel = GetDialogTopLevel() ?? TopLevel.GetTopLevel(control);
             if (topLevel == null) return;
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
@@ -527,7 +544,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomCursorSet is null) return;
 
-            var topLevel = TopLevel.GetTopLevel(control);
+            var topLevel = GetDialogTopLevel() ?? TopLevel.GetTopLevel(control);
             if (topLevel == null) return;
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
