@@ -101,17 +101,23 @@
                                     ClipToBounds="True">
                                 <Grid RowDefinitions="140, Auto, Auto, *">
                                     
-                                    <Panel Grid.Row="0">
-                                        <Image Source="{Binding ThumbnailImage}" 
-                                               Stretch="UniformToFill"
-                                               RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                                        
-                                        <suki:CircleProgressBar IsVisible="{Binding IsLoadingThumbnail}"
-                                                         IsIndeterminate="True"
-                                                         Width="24" Height="24"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center"/>
-                                    </Panel>
+                                    <Border Grid.Row="0"
+                                            Margin="-16,-16,-16,0"
+                                            ClipToBounds="True">
+                                        <Grid>
+                                            <Image Source="{Binding ThumbnailImage}" 
+                                                   Stretch="UniformToFill"
+                                                   HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   RenderOptions.BitmapInterpolationMode="HighQuality"/>
+
+                                            <suki:CircleProgressBar IsVisible="{Binding IsLoadingThumbnail}"
+                                                                    IsIndeterminate="True"
+                                                                    Width="24" Height="24"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
 
                                     <TextBlock Grid.Row="1"
                                                Text="{Binding Name}"
