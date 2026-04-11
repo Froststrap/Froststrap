@@ -7,6 +7,7 @@
 	xmlns:resources="using:Froststrap.Resources"
 	xmlns:ic="using:IconPacks.Avalonia.Material"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+    xmlns:elements="clr-namespace:Froststrap.UI.Elements"
 	xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
 	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
 	xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
@@ -23,101 +24,7 @@
 	<Grid RowDefinitions="48,*,56" ColumnDefinitions="220,*">
 		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource SukiSurfaceColor}">
 			<Grid>
-				<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
-					<Border
-						CornerRadius="6"
-						BorderThickness="1"
-						BorderBrush="{DynamicResource SukiControlBorderBrush}"
-						Padding="12,0"
-						VerticalAlignment="Center"
-						Background="{DynamicResource SukiSurfaceColor}">
-						<Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
-							<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
-							
-							<TextBox x:Name="SearchTextBox"
-								Grid.Column="1"
-								Margin="8,0"
-								Watermark="Find a setting"
-								BorderThickness="0"
-								Background="Transparent"
-								Padding="0"
-								VerticalAlignment="Center"
-								VerticalContentAlignment="Center"
-								Foreground="{DynamicResource SukiText}"
-								Text="{Binding SearchQuery}" />
-
-							<Button Grid.Column="2"
-								IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-								Width="20"
-								Height="20"
-								Padding="0"
-								BorderThickness="0"
-								Background="Transparent" />
-						</Grid>
-					</Border>
-
-					<Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-						Placement="Bottom"
-						PlacementTarget="{Binding #SearchTextBox}"
-						VerticalOffset="4"
-						IsLightDismissEnabled="False">
-						<Border
-							MinWidth="400"
-							MaxHeight="400"
-							Background="#2D2D2D"
-							BorderBrush="{DynamicResource SukiControlBorderBrush}"
-							BorderThickness="1"
-							CornerRadius="6"
-							BoxShadow="0 8 32 0 #20000000">
-							<Grid>
-								<ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding FilteredSearchResults.Count}">
-									<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
-										<ItemsControl.ItemsPanel>
-											<ItemsPanelTemplate>
-												<StackPanel Spacing="0" />
-											</ItemsPanelTemplate>
-										</ItemsControl.ItemsPanel>
-										<ItemsControl.ItemTemplate>
-											<DataTemplate DataType="models:SearchBarItem">
-												<Button
-													Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
-													CommandParameter="{Binding}"
-													Background="Transparent"
-													BorderThickness="0"
-													Padding="16,12"
-													HorizontalAlignment="Stretch"
-													HorizontalContentAlignment="Left"
-													Margin="4,2"
-													CornerRadius="4">
-													<Button.Styles>
-														<Style Selector="Button:pointerover /template/ ContentPresenter">
-															<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-														</Style>
-													</Button.Styles>
-													<StackPanel Spacing="4" HorizontalAlignment="Stretch">
-														<TextBlock
-															Text="{Binding DisplayName}"
-															FontSize="13"
-															FontWeight="SemiBold"
-															Foreground="{DynamicResource SukiText}" />
-													</StackPanel>
-												</Button>
-											</DataTemplate>
-										</ItemsControl.ItemTemplate>
-									</ItemsControl>
-								</ScrollViewer>
-								<TextBlock
-									Text="0 results found"
-									FontSize="13"
-									Foreground="{DynamicResource SukiLowText}"
-									HorizontalAlignment="Center"
-									VerticalAlignment="Center"
-									Padding="16,24"
-									IsVisible="{Binding !FilteredSearchResults.Count}" />
-							</Grid>
-						</Border>
-					</Popup>
-				</Grid>
+              <elements:SearchBar DataContext="{Binding SearchBar}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
 				<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
 					<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />

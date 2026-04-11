@@ -33,7 +33,7 @@ namespace Froststrap.UI.Elements.Settings
 
             _viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
-            _viewModel.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
+            _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
 
             App.Logger.WriteLine("MainWindow", "Initializing settings window");
 
@@ -460,7 +460,7 @@ namespace Froststrap.UI.Elements.Settings
                 }
             }
 
-            _viewModel.SetSearchIndex(searchIndex);
+            _viewModel.SearchBar.SetSearchIndex(searchIndex);
 
             PreIndexPages(pages);
         }
@@ -515,7 +515,7 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (addedItems.Count > 0)
                 {
-                    var currentIndex = _viewModel.GetSearchIndex();
+                var currentIndex = _viewModel.SearchBar.GetSearchIndex();
                     currentIndex.AddRange(addedItems);
                 }
             }

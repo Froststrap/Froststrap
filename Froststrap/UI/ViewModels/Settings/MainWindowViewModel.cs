@@ -4,6 +4,7 @@ using Froststrap.Models;
 using Froststrap.UI.ViewModels.Settings.FastFlags;
 using Froststrap.UI.ViewModels.Settings.GlobalSettings;
 using Froststrap.UI.ViewModels.Settings.Mods;
+using Froststrap.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -40,28 +41,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private string _currentPageDescription = "";
         public string CurrentPageDescription { get => _currentPageDescription; set => SetProperty(ref _currentPageDescription, value); }
 
-        private string _searchQuery = string.Empty;
-        public string SearchQuery 
-        { 
-            get => _searchQuery; 
-            set
-            {
-                if (SetProperty(ref _searchQuery, value))
-                {
-                    FilterSearchResults();
-                }
-            }
-        }
-
-        private ObservableCollection<SearchBarItem> _filteredSearchResults = new();
-        public ObservableCollection<SearchBarItem> FilteredSearchResults
-        {
-            get => _filteredSearchResults;
-            set => SetProperty(ref _filteredSearchResults, value);
-        }
-
-        // Search index cache
-        private List<SearchBarItem> _searchIndex = new();
+        public SearchBarViewModel SearchBar { get; }
 
         private ObservableCollection<BreadcrumbItemModel> _breadcrumbItems = new();
         public ObservableCollection<BreadcrumbItemModel> BreadcrumbItems
@@ -114,7 +94,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand RestartAppCommand { get; }
         public ICommand CloseWindowCommand { get; }
         public ICommand BreadcrumbItemClickedCommand { get; }
-        public IRelayCommand<SearchBarItem> SearchResultSelectedCommand { get; }
 
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
@@ -132,7 +111,7 @@ namespace Froststrap.UI.ViewModels.Settings
             RestartAppCommand = new RelayCommand(RestartApp);
             CloseWindowCommand = new RelayCommand(CloseWindow);
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
-            SearchResultSelectedCommand = new RelayCommand<SearchBarItem>(HandleSearchResultSelected);
+            SearchBar = new SearchBarViewModel();
 
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", "Integrations", Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", "Behaviour", Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
@@ -209,7 +188,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CurrentPageDescription = description;
                 BreadcrumbItems = customBreadcrumbs ?? new ObservableCollection<BreadcrumbItemModel>();
                 CurrentPage = viewModel;
-                SearchQuery = string.Empty;
+                SearchBar.Clear();
             }
             catch (Exception ex)
             {
@@ -340,41 +319,14 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public EventHandler<SearchBarItem>? SearchResultSelected;
-
-        private void HandleSearchResultSelected(SearchBarItem? item)
-        {
-            if (item == null) return;
-
-            SearchQuery = string.Empty;
-            SearchResultSelected?.Invoke(this, item);
-            item.NavigateAction?.Invoke();
-        }
-
-        private void FilterSearchResults()
-        {
-            if (string.IsNullOrWhiteSpace(SearchQuery))
-            {
-                FilteredSearchResults = [];
-                return;
-            }
-
-            var query = SearchQuery.ToLower();
-            var filtered = _searchIndex
-                .Where(item => item.DisplayName.ToLower().Contains(query))
-                .ToList();
-
-            FilteredSearchResults = new ObservableCollection<SearchBarItem>(filtered);
-        }
-
         public void SetSearchIndex(List<SearchBarItem> searchIndex)
         {
-            _searchIndex = searchIndex ?? [];
+            SearchBar.SetSearchIndex(searchIndex);
         }
 
         public List<SearchBarItem> GetSearchIndex()
         {
-            return _searchIndex;
+            return SearchBar.GetSearchIndex();
         }
     }
 }

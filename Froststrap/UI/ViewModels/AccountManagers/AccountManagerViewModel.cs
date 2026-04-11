@@ -23,12 +23,6 @@ namespace Froststrap.UI.ViewModels.AccountManagers
         {
             NavigateToAccountsCommand = new RelayCommand(() =>
                 Navigate("accounts", "Accounts", () => new AccountsViewModel()));
-
-            NavigateToFriendsCommand = new RelayCommand(() =>
-                Navigate("friends", "Friends", () => new FriendsViewModel()));
-
-            NavigateToGamesCommand = new RelayCommand(() =>
-                Navigate("games", "Games", () => new GamesViewModel()));
         }
 
         private void Navigate(string pageKey, string title, Func<object> viewModelFactory)
