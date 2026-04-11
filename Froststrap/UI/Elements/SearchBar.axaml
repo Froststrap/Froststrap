@@ -1,0 +1,160 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ic="clr-namespace:IconPacks.Avalonia.Material;assembly=IconPacks.Avalonia.Material"
+             xmlns:models="using:Froststrap.Models"
+             xmlns:resources="using:Froststrap.Resources"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels"
+             xmlns:robloxApis="using:Froststrap.Models.APIs.Roblox"
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="450"
+             x:Class="Froststrap.UI.Elements.SearchBar"
+             x:DataType="vm:SearchBarViewModel">
+
+  <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+    <Border CornerRadius="6"
+            BorderThickness="1"
+            BorderBrush="{DynamicResource SukiControlBorderBrush}"
+            Padding="12,0"
+            VerticalAlignment="Center"
+            Background="{DynamicResource SukiSurfaceColor}">
+      <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
+        <ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
+
+        <TextBox x:Name="SearchTextBox"
+                 Grid.Column="1"
+                 Margin="8,0"
+                 Watermark="Search up something and it may show up here...."
+                 BorderThickness="0"
+                 Background="Transparent"
+                 Padding="0"
+                 VerticalAlignment="Center"
+                 VerticalContentAlignment="Center"
+                 Foreground="{DynamicResource SukiText}"
+                 Text="{Binding SearchQuery}" />
+
+        <Button Grid.Column="2"
+                Command="{Binding ClearSearchCommand}"
+                IsVisible="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                Width="20"
+                Height="20"
+                Padding="0"
+                BorderThickness="0"
+                Background="Transparent" />
+      </Grid>
+    </Border>
+
+    <Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+           Placement="Bottom"
+           PlacementTarget="{Binding #SearchTextBox}"
+           VerticalOffset="4"
+           IsLightDismissEnabled="False">
+      <Border MinWidth="400"
+              MaxHeight="400"
+              Background="#2D2D2D"
+              BorderBrush="{DynamicResource SukiControlBorderBrush}"
+              BorderThickness="1"
+              CornerRadius="6"
+              BoxShadow="0 8 32 0 #20000000">
+        <Grid>
+          <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding HasAnyResults}">
+            <StackPanel Spacing="0">
+              <ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Spacing="0" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="models:SearchBarItem">
+                    <Button Command="{Binding $parent[UserControl].DataContext.SearchResultSelectedCommand}"
+                            CommandParameter="{Binding}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="16,12"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Margin="4,2"
+                            CornerRadius="4">
+                      <Button.Styles>
+                        <Style Selector="Button:pointerover /template/ ContentPresenter">
+                          <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                        </Style>
+                      </Button.Styles>
+                      <StackPanel Spacing="4" HorizontalAlignment="Stretch">
+                        <TextBlock Text="{Binding DisplayName}"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource SukiText}" />
+                      </StackPanel>
+                    </Button>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+              <ItemsControl ItemsSource="{Binding GameSearchResults}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Spacing="0" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="robloxApis:OmniSearchContent">
+                    <Border Background="#15FFFFFF"
+                            Padding="8"
+                            Margin="4,4,4,4"
+                            CornerRadius="8">
+                      <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="4" ClipToBounds="True" Background="#10FFFFFF">
+                          <Image RenderOptions.BitmapInterpolationMode="HighQuality"
+                                 Source="{Binding ThumbnailBitmap}"
+                                 Stretch="UniformToFill" />
+                        </Border>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0">
+                          <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource SukiText}" TextTrimming="CharacterEllipsis" />
+
+                          <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,4,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                              <ic:PackIconMaterial Kind="AccountMultiple" Width="14" Height="14" Foreground="{DynamicResource SukiLowText}" VerticalAlignment="Center" />
+                              <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="12" Foreground="{DynamicResource SukiLowText}" VerticalAlignment="Center" />
+                            </StackPanel>
+                          </StackPanel>
+                        </StackPanel>
+
+                        <Button Grid.Column="2" 
+                                Command="{Binding $parent[UserControl].DataContext.RegionJoinGameCommand}" 
+                                CommandParameter="{Binding}"
+                                Margin="0,0,8,0" Width="36" Height="36" Background="#3D72F6" CornerRadius="8" Padding="0" VerticalAlignment="Center">
+                          <ic:PackIconMaterial Kind="Earth" Width="18" Height="18" Foreground="White" />
+                        </Button>
+
+                        <Button Grid.Column="3" 
+                                Command="{Binding $parent[UserControl].DataContext.PlayGameCommand}" 
+                                CommandParameter="{Binding}"
+                                Width="36" Height="36" Background="#3D72F6" CornerRadius="8" Padding="0" VerticalAlignment="Center">
+                          <ic:PackIconMaterial Kind="PlayOutline" Width="22" Height="22" Foreground="White" Margin="2,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Button>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+
+          <TextBlock Text="0 results found"
+                     FontSize="13"
+                     Foreground="{DynamicResource SukiLowText}"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center"
+                     Padding="16,24"
+                     IsVisible="{Binding !HasAnyResults}" />
+          <ProgressBar IsIndeterminate="True" VerticalAlignment="Top" IsVisible="{Binding IsGameSearchLoading}" />
+        </Grid>
+      </Border>
+    </Popup>
+  </Grid>
+</UserControl>
