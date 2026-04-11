@@ -21,10 +21,9 @@
 	WindowStartupLocation="CenterScreen">
 
 	<Grid RowDefinitions="48,*,56" ColumnDefinitions="220,*">
-		<!-- Top bar (right side only; sidebar spans the full height on the left) -->
 		<Grid Grid.Row="0" Grid.Column="1" Background="{DynamicResource SukiSurfaceColor}">
-			<Grid ColumnDefinitions="*,400,Auto">
-				<Grid Grid.Column="1" VerticalAlignment="Center">
+			<Grid>
+				<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
 					<Border
 						CornerRadius="6"
 						BorderThickness="1"
@@ -56,7 +55,6 @@
 						</Grid>
 					</Border>
 
-					<!-- Search Results Dropdown -->
 					<Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
 						Placement="Bottom"
 						PlacementTarget="{Binding #SearchTextBox}"
@@ -120,21 +118,21 @@
 					</Popup>
 				</Grid>
 
-				<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
+				<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
 					<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />
 					<controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Icon="SquareOutline" />
 					<controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" />
 				</StackPanel>
 			</Grid>
         </Grid>
-		<!-- Sidebar -->
+
 		<Border Name="SidebarBorder"
 			BorderBrush="{DynamicResource SukiControlBorderBrush}"
 			Grid.Column="0"
 			Grid.RowSpan="3"
 			BorderThickness="0,0,1,0"
 			Background="{DynamicResource SukiSurfaceColor}">
-			<Grid RowDefinitions="*,Auto">
+			<Grid RowDefinitions="*,56">
 				<ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
 					<StackPanel Spacing="12" Margin="8,0,8,0">
 						<StackPanel Spacing="0">
@@ -260,7 +258,7 @@
 				</ScrollViewer>
 
 				<Border Grid.Row="1"
-						BorderBrush="{DynamicResource SukiControlBorderBrush}"
+						BorderBrush="{DynamicResource SukiBorderBrush}"
 						BorderThickness="0,1,0,0"
 						Background="{DynamicResource SukiSurfaceColor}">
 					<local:AccountSelectorView x:Name="AccountSelectorView" />
@@ -268,7 +266,6 @@
 			</Grid>
 		</Border>
 
-		<!-- Page area -->
 		<Grid Grid.Column="1" Grid.Row="1" RowDefinitions="Auto,*">
 
 			<Border
@@ -355,7 +352,6 @@
 
 		</Grid>
 
-		<!-- Footer -->
 		<Border
 			Grid.Row="2"
 			Grid.ColumnSpan="2"
