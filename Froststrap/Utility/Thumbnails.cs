@@ -1,6 +1,4 @@
-﻿using Froststrap.RobloxInterfaces;
-
-namespace Froststrap.Utility
+﻿namespace Froststrap.Utility
 {
     internal static class Thumbnails
     {
@@ -30,12 +28,8 @@ namespace Froststrap.Utility
                 var currentPayloadData = remainingRequests.Select(x => x.Data).ToList();
                 var payload = new StringContent(JsonSerializer.Serialize(currentPayloadData));
 
-                var json = await App.HttpClient.PostFromJsonWithRetriesAsync<ThumbnailBatchResponse>(
-                    $"https://thumbnails.{Deployment.RobloxDomain}/v1/batch",
-                    payload,
-                    3,
-                    token
-                );
+                Uri apiUrl = UrlBuilder.BuildApiUrl("thumbnails", "v1/batch");
+                var json = await App.HttpClient.PostFromJsonWithRetriesAsync<ThumbnailBatchResponse>(apiUrl, payload, 3, token);
 
                 if (json == null)
                     throw new InvalidHTTPResponseException("Deserialised ThumbnailBatchResponse is null");

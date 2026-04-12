@@ -61,25 +61,7 @@ namespace Froststrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                string rbxLogDir = Path.Combine(Paths.Roblox, "logs");
-                string? detectedLogFile = null;
-
-                App.Logger.WriteLine(LOG_IDENT, "Searching for Roblox log file...");
-
-                for (int i = 0; i < 20; i++)
-                {
-                    if (Directory.Exists(rbxLogDir))
-                    {
-                        detectedLogFile = Directory.GetFiles(rbxLogDir, "*.log")
-                            .Select(f => new FileInfo(f))
-                            .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddMinutes(-2))
-                            .OrderByDescending(f => f.CreationTimeUtc)
-                            .FirstOrDefault()?.FullName;
-                    }
-
-                    if (detectedLogFile != null) break;
-                    Thread.Sleep(500);
-                }
+                string? detectedLogFile = FindMatchingLogFile(_watcherData.ProcessId);
 
                 if (detectedLogFile != null)
                 {
@@ -112,6 +94,60 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "No log file found. Skipping initialization of UI and RPC.");
                 }
             }
+        }
+
+        private string? FindMatchingLogFile(int targetPid)
+        {
+            string rbxLogDir = Path.Combine(Paths.Roblox, "logs");
+
+            if (!Directory.Exists(rbxLogDir)) return null;
+
+            for (int i = 0; i < 45; i++)
+            {
+                try
+                {
+                    var files = Directory.GetFiles(rbxLogDir, "*.log")
+                        .Select(f => new FileInfo(f))
+                        .Where(f => f.LastWriteTimeUtc > DateTime.UtcNow.AddSeconds(-5))
+                        .OrderByDescending(f => f.LastWriteTimeUtc);
+
+                    foreach (var file in files)
+                    {
+                        try
+                        {
+                            using var stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                            using var reader = new StreamReader(stream);
+
+                            for (int lineIdx = 0; lineIdx < 10; lineIdx++)
+                            {
+                                string? line = reader.ReadLine();
+                                if (line == null) break;
+
+                                if (line.Contains($"Process ID: {targetPid}") || line.Contains($", pid:{targetPid},"))
+                                {
+                                    return file.FullName;
+                                }
+                            }
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine("Watcher::LogFinder", $"Error reading {file.Name}: {ex.Message}");
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("Watcher::LogFinder", $"Directory access error: {ex.Message}");
+                }
+
+                Thread.Sleep(250);
+            }
+
+            return null;
         }
 
         public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);

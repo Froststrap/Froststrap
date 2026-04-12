@@ -368,7 +368,7 @@ public partial class App : Application
         {
             if (includePreRelease && IsMockReleaseEnabled)
             {
-                string mockTag = MockReleaseTag!;
+                string mockTag = MockReleaseTag ?? "v0.0.0-mock";
                 Logger.WriteLine(LOG_IDENT, $"Using mocked prerelease {mockTag} from environment.");
 
                 return new GithubRelease
@@ -382,11 +382,14 @@ public partial class App : Application
                 };
             }
 
-            string url = includePreRelease ? $"https://api.github.com/repos/{ProjectRepository}/releases" : $"https://api.github.com/repos/{ProjectRepository}/releases/latest";
+            Uri releasesUrl = includePreRelease
+                ? new($"https://api.github.com/repos/{ProjectRepository}/releases")
+                : new($"https://api.github.com/repos/{ProjectRepository}/releases/latest");
 
             if (includePreRelease)
             {
-                var releases = await Http.GetJson<List<GithubRelease>>(url);
+                // Note: Ensure your Http utility accepts Uri as a parameter
+                var releases = await Http.GetJson<List<GithubRelease>>(releasesUrl);
 
                 if (releases is null || releases.Count == 0)
                 {
@@ -398,7 +401,7 @@ public partial class App : Application
             }
             else
             {
-                return await Http.GetJson<GithubRelease>(url);
+                return await Http.GetJson<GithubRelease>(releasesUrl);
             }
         }
         catch (Exception ex)

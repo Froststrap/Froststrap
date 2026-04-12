@@ -97,6 +97,13 @@
                     <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
                 </controls:OptionControl>
 
+                   <controls:OptionControl 
+                    Header="{x:Static resources:Strings.Menu_Channel_RobloxDomain_Title}"
+                    Description="{x:Static resources:Strings.Menu_Channel_RobloxDomain_Description}">
+                    <TextBox Grid.Column="1" Margin="8,0,8,0" Padding="10,5,10,5" Width="200" Watermark="roblox.com" Text="{Binding RobloxDomain}" />
+                </controls:OptionControl>
+
+
                 <controls:CardExpander
                     Header="{x:Static resources:Strings.Common_Channel}"
                     Description="{x:Static resources:Strings.Menu_ChannelChanger_Description}"

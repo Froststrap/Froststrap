@@ -19,6 +19,7 @@
 	<ItemGroup>
 		<AvaloniaResource Include="Resources\**" />
 		<AvaloniaResource Include="UI\AppThemes\EditorThemes\*.xshd" />
+		<None Remove="Utility\UrlBuilder.cs~RFc2b343.TMP" />
 		<AvaloniaResource Include="Froststrap.ico" />
 		<AvaloniaResource Include="Froststrap.png" />
 	</ItemGroup>
