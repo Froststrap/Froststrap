@@ -86,10 +86,6 @@ namespace Froststrap.UI.Elements.AccountManagers
             var sidebarStackPanel = this.FindControl<StackPanel>("SidebarStackPanel");
             if (sidebarStackPanel == null) return;
 
-            var accentFgKey = "AccentButtonBackground";
-            var unselectedFgResource = "SukiMediumText";
-            var highlightBgResource = "ControlFillColorSecondaryBrush";
-
             foreach (var child in sidebarStackPanel.Children)
             {
                 if (child is IconButton button && button.Tag is string tag)
@@ -100,16 +96,10 @@ namespace Froststrap.UI.Elements.AccountManagers
                     {
                         if (!button.Classes.Contains("Selected"))
                             button.Classes.Add("Selected");
-
-                        button[!IconButton.BackgroundProperty] = button.GetResourceObservable(highlightBgResource).ToBinding();
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(accentFgKey).ToBinding();
                     }
                     else
                     {
                         button.Classes.Remove("Selected");
-
-                        button.Background = Brushes.Transparent;
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(unselectedFgResource).ToBinding();
                     }
                 }
             }

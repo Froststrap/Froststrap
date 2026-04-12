@@ -90,8 +90,8 @@
                              <Border Width="12" Height="12" CornerRadius="2" 
                                      Background="{Binding PreviewBrush}" VerticalAlignment="Center"/>
                         </StackPanel>
-                        
-                        <Border Background="{DynamicResource SystemAccentColor}" 
+
+                        <Border Background="{DynamicResource SukiPrimaryColor}" 
                                 CornerRadius="4" Padding="8,2" 
                                 HorizontalAlignment="Left" Margin="0,8,0,0">
                             <TextBlock Text="{Binding Mod.ModTypeDisplay}" FontSize="10" FontWeight="SemiBold" Foreground="White"/>

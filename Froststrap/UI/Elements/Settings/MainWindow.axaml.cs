@@ -180,30 +180,36 @@ namespace Froststrap.UI.Elements.Settings
 
         private static void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
         {
-            var accentFgKey = "AccentButtonBackground";
-            var unselectedFgResource = "c";
-            var highlightBgResource = "ControlFillColorSecondaryBrush";
-
-            foreach (var child in stackPanel.Children)
+            foreach (var panelChild in stackPanel.Children)
             {
-                if (child is IconButton button && button.Tag is string tag)
+                if (panelChild is StackPanel innerPanel)
                 {
-                    var isSelected = tag == selectedPage;
-
-                    if (isSelected)
+                    foreach (var child in innerPanel.Children)
+                    {
+                        if (child is IconButton button && button.Tag is string tag)
+                        {
+                            if (tag == selectedPage)
+                            {
+                                if (!button.Classes.Contains("Selected"))
+                                    button.Classes.Add("Selected");
+                            }
+                            else
+                            {
+                                button.Classes.Remove("Selected");
+                            }
+                        }
+                    }
+                }
+                else if (panelChild is IconButton button && button.Tag is string tag)
+                {
+                    if (tag == selectedPage)
                     {
                         if (!button.Classes.Contains("Selected"))
                             button.Classes.Add("Selected");
-
-                        button[!IconButton.BackgroundProperty] = button.GetResourceObservable(highlightBgResource).ToBinding();
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(accentFgKey).ToBinding();
                     }
                     else
                     {
                         button.Classes.Remove("Selected");
-                        button.Background = Brushes.Transparent;
-
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(unselectedFgResource).ToBinding();
                     }
                 }
             }
