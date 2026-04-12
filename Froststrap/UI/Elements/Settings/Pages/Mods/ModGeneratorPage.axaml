@@ -139,7 +139,7 @@
                                     Content="Generate Mod"
                                     HorizontalAlignment="Stretch"
                                     Height="40"
-                                    Background="{DynamicResource SystemAccentColor}"
+                                    Background="{DynamicResource SukiPrimaryColor}"
                                     Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
                                     Classes="accent">
                                 <Button.ContentTemplate>

@@ -89,10 +89,10 @@
                             Padding="0"
                             Background="Transparent"
                             BorderThickness="0">
-                        <TextBlock Text="{Binding BuildMetadata.CommitHash}"
-                                   TextDecorations="Underline"
-                                   Foreground="{DynamicResource SystemAccentColor}" />
-                    </Button>
+                                <TextBlock Text="{Binding BuildMetadata.CommitHash}"
+                                       TextDecorations="Underline"
+                                       Foreground="{DynamicResource SukiPrimaryColor}" />
+                        </Button>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Ref"
                                IsVisible="{Binding BuildCommitVisibility}" />
