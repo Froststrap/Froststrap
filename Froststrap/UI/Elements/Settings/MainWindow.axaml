@@ -215,7 +215,8 @@
 										VerticalAlignment="Center"
 										FontSize="20"
 										FontWeight="SemiBold"
-										Foreground="{DynamicResource SukiText}" />
+										Foreground="{DynamicResource SukiText}"
+										IsVisible="{Binding IsLast}" />
 								</StackPanel>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
