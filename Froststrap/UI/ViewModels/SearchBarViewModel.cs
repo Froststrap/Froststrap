@@ -12,18 +12,8 @@ using Avalonia.Threading;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Models;
-using Froststrap.Models.APIs.Roblox;
 using Froststrap.Integrations;
-using Froststrap.Utility;
-using Froststrap.Models.Entities;
-using System;
-using System.IO;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Froststrap.UI.ViewModels
 {
@@ -100,7 +90,7 @@ namespace Froststrap.UI.ViewModels
 
                 IsGameSearchLoading = true;
 
-                List<OmniSearchContent> results = new();
+                List<OmniSearchContent> results = [];
 
                 if (long.TryParse(query, out long placeId))
                 {
@@ -138,7 +128,7 @@ namespace Froststrap.UI.ViewModels
                     catch { /* Fallback to standard search if this fails */ }
                 }
 
-                if (!results.Any())
+                if (results.Count == 0)
                 {
                     var (searchResults, nextCursor) = await GameSearching.GetDetailedGameSearchResultsAsync(query);
                     if (searchResults != null)
@@ -152,32 +142,8 @@ namespace Froststrap.UI.ViewModels
 
                 if (token.IsCancellationRequested) return;
 
-                if (results != null && results.Any())
+                if (results != null && results.Count != 0)
                 {
-                    var thumbRequests = results.Select(r => new ThumbnailRequest
-                    {
-                        Type = ThumbnailType.GameIcon,
-                        TargetId = r.UniverseId,
-                        Size = "128x128"
-                    }).ToList();
-
-                    var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
-                    if (token.IsCancellationRequested) return;
-
-                    for (int i = 0; i < results.Count; i++)
-                    {
-                        if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                        {
-                            try
-                            {
-                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i], token);
-                                using var ms = new MemoryStream(response);
-                                results[i].ThumbnailBitmap = new Bitmap(ms);
-                            }
-                            catch { /* Ignore image load failure */ }
-                        }
-                    }
-
                     Dispatcher.UIThread.Post(() =>
                     {
                         if (token.IsCancellationRequested) return;
@@ -188,6 +154,52 @@ namespace Froststrap.UI.ViewModels
                         OnPropertyChanged(nameof(HasAnyResults));
                         OnPropertyChanged(nameof(CanLoadMore));
                     }, DispatcherPriority.Background);
+
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var thumbRequests = results.Select(r => new ThumbnailRequest
+                            {
+                                Type = ThumbnailType.GameIcon,
+                                TargetId = r.UniverseId,
+                                Size = "128x128"
+                            }).ToList();
+
+                            var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, token);
+                            if (token.IsCancellationRequested) return;
+
+                            var downloadTasks = new List<Task>();
+                            using var semaphore = new SemaphoreSlim(4);
+
+                            for (int i = 0; i < results.Count; i++)
+                            {
+                                if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                                {
+                                    int index = i;
+                                    downloadTasks.Add(Task.Run(async () =>
+                                    {
+                                        await semaphore.WaitAsync(token);
+                                        try
+                                        {
+                                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index], token);
+                                            using var ms = new MemoryStream(response);
+                                            var bitmap = new Bitmap(ms);
+                                            results[index].ThumbnailBitmap = bitmap;
+                                        }
+                                        catch { /* Ignore image load failure */ }
+                                        finally
+                                        {
+                                            semaphore.Release();
+                                        }
+                                    }, token));
+                                }
+                            }
+
+                            await Task.WhenAll(downloadTasks);
+                        }
+                        catch { /* Ignore thumbnail fetch failures */ }
+                    }, token);
                 }
                 else
                 {
@@ -225,31 +237,8 @@ namespace Froststrap.UI.ViewModels
                 var (results, nextCursor) = await GameSearching.GetDetailedGameSearchResultsAsync(SearchQuery, NextPageCursor);
                 NextPageCursor = nextCursor;
 
-                if (results != null && results.Any())
+                if (results != null && results.Count != 0)
                 {
-                    var thumbRequests = results.Select(r => new ThumbnailRequest
-                    {
-                        Type = ThumbnailType.GameIcon,
-                        TargetId = r.UniverseId,
-                        Size = "128x128"
-                    }).ToList();
-
-                    var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-
-                    for (int i = 0; i < results.Count; i++)
-                    {
-                        if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
-                        {
-                            try
-                            {
-                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i]);
-                                using var ms = new MemoryStream(response);
-                                results[i].ThumbnailBitmap = new Bitmap(ms);
-                            }
-                            catch { /* Ignore image load failure */ }
-                        }
-                    }
-
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         foreach (var res in results)
@@ -257,6 +246,51 @@ namespace Froststrap.UI.ViewModels
 
                         OnPropertyChanged(nameof(CanLoadMore));
                     }, DispatcherPriority.Background);
+
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            var thumbRequests = results.Select(r => new ThumbnailRequest
+                            {
+                                Type = ThumbnailType.GameIcon,
+                                TargetId = r.UniverseId,
+                                Size = "128x128"
+                            }).ToList();
+
+                            var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+
+                            var downloadTasks = new List<Task>();
+                            using var semaphore = new SemaphoreSlim(4);
+
+                            for (int i = 0; i < results.Count; i++)
+                            {
+                                if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                                {
+                                    int index = i;
+                                    downloadTasks.Add(Task.Run(async () =>
+                                    {
+                                        await semaphore.WaitAsync();
+                                        try
+                                        {
+                                            var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[index]);
+                                            using var ms = new MemoryStream(response);
+                                            var bitmap = new Bitmap(ms);
+                                            results[index].ThumbnailBitmap = bitmap;
+                                        }
+                                        catch { /* Ignore image load failure */ }
+                                        finally
+                                        {
+                                            semaphore.Release();
+                                        }
+                                    }));
+                                }
+                            }
+
+                            await Task.WhenAll(downloadTasks);
+                        }
+                        catch { /* Ignore thumbnail fetch failures */ }
+                    });
                 }
                 else
                 {
@@ -371,7 +405,7 @@ namespace Froststrap.UI.ViewModels
                     // Assume SortOrder 2 (Large servers)
                     var result = await fetcher.FetchServerInstancesAsync(content.RootPlaceId, cookie, nextCursor, 2);
 
-                    if (result?.Servers == null || !result.Servers.Any())
+                    if (result?.Servers == null || result.Servers.Count == 0)
                     {
                         await Task.Delay(1000);
                         continue;
