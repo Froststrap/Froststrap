@@ -66,6 +66,25 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private bool ValidateDomain(string domain)
+        {
+            const string domainPattern = @"^([a-zA-Z0-9.-]+)\.([a-zA-Z0-9]+)$";
+
+            return Regex.IsMatch(domain, domainPattern);
+        }
+
+        public string RobloxDomain
+        {
+            get => App.Settings.Prop.RobloxDomain;
+            set
+            {
+                if (ValidateDomain(value))
+                    App.Settings.Prop.RobloxDomain = value;
+                else
+                    _ = Frontend.ShowMessageBox("You entered an invalid domain\nPlease dont mess with this if you dont know what your doing", MessageBoxImage.Warning, MessageBoxButton.OK);
+            }
+        }
+
         // TODO: Fix test mode
         public bool TestModeEnabled
         {

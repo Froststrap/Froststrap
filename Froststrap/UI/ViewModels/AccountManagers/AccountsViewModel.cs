@@ -208,6 +208,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                 return result;
 
             const int batchSize = 100;
+            const string LOG_IDENT_METHOD = "GetAvatarUrlsBulkAsync";
 
             try
             {
@@ -216,11 +217,11 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                     var batch = userIds.Skip(i).Take(batchSize).ToList();
                     string idsParam = string.Join(',', batch);
 
-                    string url = $"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true";
+                    Uri thumbnailUri = new($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
 
                     try
                     {
-                        var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(url);
+                        var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailUri);
 
                         if (response?.Data != null)
                         {
@@ -235,15 +236,13 @@ namespace Froststrap.UI.ViewModels.AccountManagers
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine($"{LOG_IDENT}::GetAvatarUrlsBulkAsync",
-                            $"Batch failed: {ex.Message}");
+                        App.Logger.WriteLine($"{LOG_IDENT}::{LOG_IDENT_METHOD}", $"Batch failed: {ex.Message}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine($"{LOG_IDENT}::GetAvatarUrlsBulkAsync",
-                    $"Exception: {ex.Message}");
+                App.Logger.WriteLine($"{LOG_IDENT}::{LOG_IDENT_METHOD}", $"Exception: {ex.Message}");
             }
 
             return result;
@@ -256,28 +255,23 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
             try
             {
-                var friendsTask = App.HttpClient.GetAsync($"https://friends.roblox.com/v1/users/{userId}/friends/count");
-                var followersTask = App.HttpClient.GetAsync($"https://friends.roblox.com/v1/users/{userId}/followers/count");
-                var followingTask = App.HttpClient.GetAsync($"https://friends.roblox.com/v1/users/{userId}/followings/count");
+                Uri friendsUrl = new($"https://friends.roblox.com/v1/users/{userId}/friends/count");
+                Uri followersUrl = new($"https://friends.roblox.com/v1/users/{userId}/followers/count");
+                Uri followingsUrl = new($"https://friends.roblox.com/v1/users/{userId}/followings/count");
+
+                var friendsTask = Http.GetJson<JsonElement>(friendsUrl);
+                var followersTask = Http.GetJson<JsonElement>(followersUrl);
+                var followingTask = Http.GetJson<JsonElement>(followingsUrl);
 
                 await Task.WhenAll(friendsTask, followersTask, followingTask);
 
-                async Task<int> ParseCount(HttpResponseMessage response)
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var content = await response.Content.ReadAsStringAsync();
-                        var json = JsonSerializer.Deserialize<JsonElement>(content);
-                        return json.GetProperty("count").GetInt32();
-                    }
-                    return 0;
-                }
+                int GetCount(JsonElement element) => element.TryGetProperty("count", out var p) ? p.GetInt32() : 0;
 
-                var friendsCount = await ParseCount(friendsTask.Result);
-                var followersCount = await ParseCount(followersTask.Result);
-                var followingCount = await ParseCount(followingTask.Result);
-
-                return (friendsCount, followersCount, followingCount);
+                return (
+                    GetCount(await friendsTask),
+                    GetCount(await followersTask),
+                    GetCount(await followingTask)
+                );
             }
             catch (Exception ex)
             {
