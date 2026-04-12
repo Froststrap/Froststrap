@@ -14,6 +14,9 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Collections.ObjectModel;
+using Froststrap.UI.Elements.Settings;
+using IconPacks.Avalonia.Material;
+using Avalonia.Controls.Notifications;
 
 namespace Froststrap.UI.ViewModels
 {
@@ -384,6 +387,14 @@ namespace Froststrap.UI.ViewModels
 
             Clear();
 
+            MainWindow.ShowGlobalNotification(
+                "Joining Game", 
+                $"Searching for region {selectedRegion}", 
+                NotificationType.Information,
+                5000, 
+                PackIconMaterialKind.Earth
+            );
+
             var fetcher = new RobloxServerFetcher();
             string? nextCursor = "";
             int attemptCount = 0;
@@ -402,7 +413,6 @@ namespace Froststrap.UI.ViewModels
                 while (attemptCount < maxAttempts)
                 {
                     attemptCount++;
-                    // Assume SortOrder 2 (Large servers)
                     var result = await fetcher.FetchServerInstancesAsync(content.RootPlaceId, cookie, nextCursor, 2);
 
                     if (result?.Servers == null || result.Servers.Count == 0)
@@ -418,6 +428,13 @@ namespace Froststrap.UI.ViewModels
 
                     if (matchingServer != null)
                     {
+                        MainWindow.ShowGlobalNotification(
+                            "Server Found", 
+                            $"Joining server in {selectedRegion}", 
+                            NotificationType.Success, 
+                            5000, 
+                            PackIconMaterialKind.Check
+                        );
                         await AccountManager.Shared.LaunchAccountAsync(account, content.RootPlaceId, matchingServer.Id);
                         return;
                     }
@@ -428,11 +445,26 @@ namespace Froststrap.UI.ViewModels
                     }
                     else
                     {
+                        MainWindow.ShowGlobalNotification(
+                            "Not Found", 
+                            $"Could not find a server in {selectedRegion}.", 
+                            NotificationType.Warning, 
+                            5000, 
+                            PackIconMaterialKind.AlertCircle
+                        );
                         return; // Searched all servers
                     }
 
                     await Task.Delay(500);
                 }
+
+                MainWindow.ShowGlobalNotification(
+                    "Search Timeout", 
+                    $"Failed to find a server in {selectedRegion} after {maxAttempts} attempts.", 
+                    NotificationType.Warning, 
+                    5000, 
+                    PackIconMaterialKind.AlertCircle
+                );
             }
             catch (Exception ex)
             {
