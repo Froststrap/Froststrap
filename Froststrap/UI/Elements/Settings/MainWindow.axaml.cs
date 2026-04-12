@@ -18,11 +18,14 @@ namespace Froststrap.UI.Elements.Settings
 {
     public partial class MainWindow : Base.AvaloniaWindow
     {
+        public static MainWindow? Instance { get; private set; }
+
         private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
         private MainWindowViewModel? _viewModel;
 
         public MainWindow()
         {
+            Instance = this;
             InitializeComponent();
         }
 
@@ -281,15 +284,20 @@ namespace Froststrap.UI.Elements.Settings
                 5000);
         }
 
-        private void ShowNotification(string title, string subtitle, NotificationType type, int timeout)
+        public static void ShowGlobalNotification(string title, string subtitle, NotificationType type, int timeout = 3000, PackIconMaterialKind? icon = null)
+        {
+            Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
+        }
+
+        public void ShowNotification(string title, string subtitle, NotificationType type, int timeout, PackIconMaterialKind? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
             var accentColor = type == NotificationType.Success ? "#00D084" : "#FFB900";
-            var iconKind = type == NotificationType.Success
+            var iconKind = customIcon ?? (type == NotificationType.Success
                 ? PackIconMaterialKind.CheckboxMultipleMarkedCircleOutline
-                : PackIconMaterialKind.AlertOutline;
+                : PackIconMaterialKind.AlertOutline);
 
             var contentGrid = new Grid
             {
