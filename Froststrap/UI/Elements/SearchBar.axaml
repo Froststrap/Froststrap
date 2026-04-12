@@ -16,12 +16,12 @@
   <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
     <Border CornerRadius="6"
             BorderThickness="1"
-            BorderBrush="{DynamicResource SukiControlBorderBrush}"
+            BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
             Padding="12,0"
             VerticalAlignment="Center"
-            Background="{DynamicResource SukiSurfaceColor}">
+            Background="{DynamicResource ControlFillColorDefaultBrush}">
       <Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
-        <ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
+        <ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource TextFillColorSecondaryBrush}" Width="16" Height="16" VerticalAlignment="Center" />
 
         <TextBox x:Name="SearchTextBox"
                  Grid.Column="1"
@@ -32,7 +32,7 @@
                  Padding="0"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center"
-                 Foreground="{DynamicResource SukiText}"
+                 Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                  Text="{Binding SearchQuery}" />
 
         <Button Grid.Column="2"
@@ -53,8 +53,8 @@
            IsLightDismissEnabled="False">
       <Border MinWidth="400"
               MaxHeight="400"
-              Background="#2D2D2D"
-              BorderBrush="{DynamicResource SukiControlBorderBrush}"
+              Background="{DynamicResource ElevatedObjectBackgroundFillColorStandardBrush}"
+              BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
               BorderThickness="1"
               CornerRadius="6"
               BoxShadow="0 8 32 0 #20000000">
@@ -87,7 +87,7 @@
                         <TextBlock Text="{Binding DisplayName}"
                                    FontSize="13"
                                    FontWeight="SemiBold"
-                                   Foreground="{DynamicResource SukiText}" />
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                       </StackPanel>
                     </Button>
                   </DataTemplate>
@@ -114,12 +114,12 @@
                         </Border>
 
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0">
-                          <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource SukiText}" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextFillColorPrimaryBrush}" TextTrimming="CharacterEllipsis" />
 
                           <StackPanel Orientation="Horizontal" Spacing="16" Margin="0,4,0,0">
                             <StackPanel Orientation="Horizontal" Spacing="4">
-                              <ic:PackIconMaterial Kind="AccountMultiple" Width="14" Height="14" Foreground="{DynamicResource SukiLowText}" VerticalAlignment="Center" />
-                              <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="12" Foreground="{DynamicResource SukiLowText}" VerticalAlignment="Center" />
+                              <ic:PackIconMaterial Kind="AccountMultiple" Width="14" Height="14" Foreground="{DynamicResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" />
+                              <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" VerticalAlignment="Center" />
                             </StackPanel>
                           </StackPanel>
                         </StackPanel>
@@ -147,7 +147,7 @@
 
           <TextBlock Text="0 results found"
                      FontSize="13"
-                     Foreground="{DynamicResource SukiLowText}"
+                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                      HorizontalAlignment="Center"
                      VerticalAlignment="Center"
                      Padding="16,24"

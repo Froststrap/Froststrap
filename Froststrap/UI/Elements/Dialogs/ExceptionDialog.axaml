@@ -42,7 +42,7 @@
 			<Grid>
 				<TextBlock x:Name="VersionText" VerticalAlignment="Center"
                            HorizontalAlignment="Left"
-                           Foreground="{DynamicResource SukiMediumText}" />
+                           Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 					<Button x:Name="ReportExceptionButton"

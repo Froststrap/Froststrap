@@ -1,9 +1,5 @@
 ﻿using Froststrap.AppData;
 using Froststrap.Integrations;
-using Froststrap.UI;
-using System.Text.Json;
-using System.Text;
-using System.Diagnostics;
 
 namespace Froststrap
 {
@@ -15,12 +11,12 @@ namespace Froststrap
 
         private readonly NotifyIconWrapper? _notifyIcon;
 
-        public ActivityWatcher? ActivityWatcher;
+        public readonly ActivityWatcher? ActivityWatcher;
 
         public readonly IntegrationWatcher? IntegrationWatcher;
 
-        public PlayerDiscordRichPresence? PlayerRichPresence;
-        public StudioDiscordRichPresence? StudioRichPresence;
+        public readonly PlayerDiscordRichPresence? PlayerRichPresence;
+        public readonly StudioDiscordRichPresence? StudioRichPresence;
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed = false;
@@ -61,56 +57,23 @@ namespace Froststrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                string rbxLogDir = Path.Combine(Paths.Roblox, "logs");
-                string? detectedLogFile = null;
+                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
-                App.Logger.WriteLine(LOG_IDENT, "Searching for Roblox log file...");
-
-                for (int i = 0; i < 20; i++)
+                if (App.Settings.Prop.UseDisableAppPatch)
                 {
-                    if (Directory.Exists(rbxLogDir))
+                    ActivityWatcher.OnAppClose += delegate
                     {
-                        detectedLogFile = Directory.GetFiles(rbxLogDir, "*.log")
-                            .Select(f => new FileInfo(f))
-                            .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddMinutes(-2))
-                            .OrderByDescending(f => f.CreationTimeUtc)
-                            .FirstOrDefault()?.FullName;
-                    }
-
-                    if (detectedLogFile != null) break;
-                    Thread.Sleep(500);
-                }
-
-                if (detectedLogFile != null)
-                {
-                    ActivityWatcher = new(detectedLogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
-
-                    if (App.Settings.Prop.UseDisableAppPatch)
-                    {
-                        ActivityWatcher.OnAppClose += delegate
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, "Received desktop app exit, closing Roblox");
-                            try
-                            {
-                                using var process = Process.GetProcessById(_watcherData.ProcessId);
-                                process.CloseMainWindow();
-                            }
-                            catch { }
-                        };
-                    }
-
+                        App.Logger.WriteLine(LOG_IDENT, "Received desktop app exit, closing Roblox");
+                        using var process = Process.GetProcessById(_watcherData.ProcessId);
+                        process.CloseMainWindow();
+                    };
                     if ((_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
                         StudioRichPresence = new(ActivityWatcher);
                     else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                         PlayerRichPresence = new(ActivityWatcher);
+                }
 
-                    _notifyIcon = new(this);
-                    IntegrationWatcher = new IntegrationWatcher(ActivityWatcher);
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "No log file found. Skipping initialization of UI and RPC.");
-                }
+                _notifyIcon = new(this);
             }
         }
 
@@ -153,20 +116,8 @@ namespace Froststrap
 
             try
             {
-                while (!_cancellationTokenSource.Token.IsCancellationRequested)
-                {
-                    bool running = false;
-                    try
-                    {
-                        using var process = Process.GetProcessById(_watcherData.ProcessId);
-                        running = !process.HasExited;
-                    }
-                    catch { running = false; }
-
-                    if (!running) break;
-
-                    await Task.Delay(1000, _cancellationTokenSource.Token);
-                }
+                while (!_cancellationTokenSource.Token.IsCancellationRequested &&
+                                       Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId));
             }
             catch (OperationCanceledException)
             {

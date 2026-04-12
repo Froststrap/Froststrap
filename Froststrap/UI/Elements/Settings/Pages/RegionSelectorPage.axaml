@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
     xmlns:resources="using:Froststrap.Resources"
-    xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:ic="using:IconPacks.Avalonia.Material"
@@ -86,7 +86,7 @@
                                                               Margin="0,2,0,0"
                                                               Width="14"
                                                               Height="14"
-                                                              Foreground="{DynamicResource SukiLowText}"
+                                                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                               Kind="AccountMultiple"/>
                                                             <TextBlock
                                                                VerticalAlignment="Center"
@@ -183,13 +183,13 @@
                                Height="64"
                                HorizontalAlignment="Center" 
                                Opacity="0.5"
-                               Foreground="{DynamicResource SukiLowText}"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                Kind="Magnify"/>
 					<TextBlock HorizontalAlignment="Center"
                                Margin="0,0,0,8"
 							   FontSize="16"
 							   FontWeight="Medium"
-							   Foreground="{DynamicResource SukiLowText}"
+							   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 							   IsHitTestVisible="False"
 							   Text="{Binding ServerListMessage}"
 							   TextAlignment="Center"
@@ -203,14 +203,14 @@
 			            VerticalAlignment="Center"
 			            Spacing="16">
 
-						<suki:CircleProgressBar IsIndeterminate="True"
+						<ui:ProgressRing IsIndeterminate="True"
 									 Width="100" Height="100"
 									 HorizontalAlignment="Center" />
 
 						<TextBlock HorizontalAlignment="Center"
 								   FontSize="14"
 								   FontWeight="SemiBold"
-								   Foreground="{DynamicResource SukiText}"
+								   Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 								   Text="{Binding LoadingMessage}" />
 					</StackPanel>
 				</Grid>

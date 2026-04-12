@@ -1,70 +1,53 @@
 <Styles xmlns="https://github.com/avaloniaui"
-		xmlns:resources="clr-namespace:Froststrap.Resources"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:ic="using:IconPacks.Avalonia.Material"
-		xmlns:suki="https://github.com/kikipoulet/SukiUI"
-		xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-		xmlns:d="http://schemas.microsoft.com/expression/blend/2008">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+        xmlns:ic="using:IconPacks.Avalonia.Material">
 
-	<Style Selector="controls|OptionControl">
-		<Setter Property="Background"      Value="Transparent" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Padding"         Value="16,12" /> 
-		<Setter Property="Template">
-			<ControlTemplate>
-				<suki:GlassCard CornerRadius="8" 
-                                IsInteractive="False"
-							   Margin="0,4"
-							   Padding="{TemplateBinding Padding}"
-							   BorderThickness="{TemplateBinding BorderThickness}"
-							   BorderBrush="{TemplateBinding BorderBrush}">
-					
-					<Grid ColumnDefinitions="*,Auto">
-						<StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
-							<StackPanel Orientation="Horizontal" Spacing="6">
-								<TextBlock
-									Text="{TemplateBinding Header}"
-									FontSize="14"
-									FontWeight="SemiBold"
-									VerticalAlignment="Center"
-									Foreground="{DynamicResource SukiText}" />
+    <Style Selector="controls|OptionControl">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <controls:Card Name="PART_RootCard"
+                               Padding="{TemplateBinding Padding}"
+                               Margin="0,4">
 
-								<controls:Hyperlink 
-									IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-									VerticalAlignment="Center">
-									<ic:PackIconMaterial 
-										Kind="HelpCircleOutline" 
-										Width="14" Height="14"
-										Foreground="{DynamicResource SukiPrimaryColor}" />
-								</controls:Hyperlink>
-							</StackPanel>
-							
-							<controls:MarkdownTextBlock
-								MarkdownText="{TemplateBinding Description}"
-								FontSize="12"
-								Foreground="{DynamicResource SukiLowText}"
-								TextWrapping="Wrap"
-								IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-						</StackPanel>
-						
-						<ContentPresenter
-							Grid.Column="1"
-							Content="{TemplateBinding InnerContent}"
-							VerticalAlignment="Center"
-							HorizontalAlignment="Right"
-							Margin="16,0,0,0" />
-					</Grid>
-				</suki:GlassCard>
-			</ControlTemplate>
-		</Setter>
-	</Style>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{TemplateBinding Header}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
-	<Style Selector="controls|OptionControl:pointerover /template/ suki|GlassCard">
-		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
-	</Style>
+                                <controls:Hyperlink IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                    VerticalAlignment="Center">
+                                    <ic:PackIconMaterial Kind="HelpCircleOutline"
+                                                         Width="14" Height="14"
+                                                         Foreground="{DynamicResource SystemAccentColor}" />
+                                </controls:Hyperlink>
+                            </StackPanel>
 
-	<Style Selector="controls|OptionControl:focus-within /template/ suki|GlassCard">
-		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
-	</Style>
+                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
+                                                        FontSize="12"
+                                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                        Background="Transparent"
+                                                        IsHitTestVisible="True"
+                                                        TextWrapping="Wrap"
+                                                        IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        </StackPanel>
+
+                        <ContentPresenter Grid.Column="1"
+                                          Content="{TemplateBinding InnerContent}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Right"
+                                          Margin="16,0,0,0" />
+                    </Grid>
+                </controls:Card>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 </Styles>

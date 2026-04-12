@@ -3,12 +3,12 @@
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
 	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
 	xmlns:resources="using:Froststrap.Resources"
 	xmlns:ic="using:IconPacks.Avalonia.Material"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:elements="clr-namespace:Froststrap.UI.Elements"
-	xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
 	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
 	xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
 	xmlns:models="using:Froststrap.Models"
@@ -21,25 +21,38 @@
 	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
-	<Grid RowDefinitions="48,*,56" ColumnDefinitions="220,*">
-		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource SukiSurfaceColor}">
-			<Grid>
-              <elements:SearchBar DataContext="{Binding SearchBar}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+	<Grid RowDefinitions="48,*,56" ColumnDefinitions="220,*" Background="{DynamicResource ApplicationBackgroundColor}">
+		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ControlFillColorDefaultBrush}">
+		   <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" >
+				<Image
+					Source="avares://Froststrap/Froststrap.ico"
+                    Width="16" Height="16"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    IsHitTestVisible="False"
+                    RenderOptions.BitmapInterpolationMode="HighQuality" />
+                <TextBlock Text="Froststrap Settings"
+					VerticalAlignment="Center"
+					Margin="10,0"
+					FontSize="12"
+					FontWeight="Normal"
+					IsHitTestVisible="False" />
+		   </StackPanel>
+           <elements:SearchBar DataContext="{Binding SearchBar}" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
-				<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
-					<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />
-					<controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Icon="SquareOutline" />
-					<controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" />
-				</StackPanel>
-			</Grid>
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
+				<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />
+				<controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Icon="SquareOutline" />
+				<controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" />
+			</StackPanel>
 		</Grid>
 
 		<Border Name="SidebarBorder"
-			BorderBrush="{DynamicResource SukiControlBorderBrush}"
+			BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 			Grid.Column="0"
-			Grid.RowSpan="3"
+			Grid.Row="1"
 			BorderThickness="0,0,1,0"
-			Background="{DynamicResource SukiSurfaceColor}">
+			Background="{DynamicResource ControlFillColorDefaultBrush}">
 			<Grid RowDefinitions="*,56">
 				<ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
 					<StackPanel Spacing="12" Margin="8,0,8,0">
@@ -48,7 +61,7 @@
 								Text="MAIN"
 								FontSize="11"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource SukiMediumText}"
+								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 								Margin="10,8,10,4"
 								Opacity="0.7" />
 
@@ -75,13 +88,6 @@
 								Icon="CloudArrowUp"
 								IconSize="16"
 								Content="{x:Static resources:Strings.Common_Deployment}" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding OpenAboutCommand}"
-								Icon="InformationOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_About_Title}" />
 						</StackPanel>
 
 						<StackPanel Spacing="0">
@@ -89,7 +95,7 @@
 								Text="APPEARANCE"
 								FontSize="11"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource SukiMediumText}"
+								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 								Margin="10,8,10,4"
 								Opacity="0.7" />
 
@@ -115,7 +121,7 @@
 								Text="ROBLOX TWEAKS"
 								FontSize="11"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource SukiMediumText}"
+								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 								Margin="10,8,10,4"
 								Opacity="0.7" />
 
@@ -142,7 +148,7 @@
 								Text="MISC"
 								FontSize="11"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource SukiMediumText}"
+								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
 								Margin="10,8,10,4"
 								Opacity="0.7" />
 
@@ -161,16 +167,16 @@
 								Icon="LinkBoxOutline"
 								IconSize="16"
 								Content="{x:Static resources:Strings.Common_Shortcuts}" />
+
+							<controls:IconButton
+								Classes="nav-button"
+								Command="{Binding OpenAboutCommand}"
+								Icon="InformationOutline"
+								IconSize="16"
+								Content="{x:Static resources:Strings.Menu_About_Title}" />
 						</StackPanel>
 					</StackPanel>
 				</ScrollViewer>
-
-				<Border Grid.Row="1"
-						BorderBrush="{DynamicResource SukiBorderBrush}"
-						BorderThickness="0,1,0,0"
-						Background="{DynamicResource SukiSurfaceColor}">
-					<local:AccountSelectorView x:Name="AccountSelectorView" />
-				</Border>
 			</Grid>
 		</Border>
 
@@ -178,7 +184,7 @@
 			<Border
 				Grid.Row="0"
 				Padding="24,24,24,16"
-				BorderBrush="{DynamicResource SukiBorderBrush}"
+				BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 				BorderThickness="0,0,0,1">
 				<StackPanel>
 					<ItemsControl
@@ -199,7 +205,7 @@
 										CommandParameter="{Binding}"
 										Background="Transparent"
 										BorderThickness="0"
-										Foreground="{DynamicResource SukiText}"
+										Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 										FontSize="20"
 										FontWeight="SemiBold"
 										Padding="0"
@@ -208,14 +214,14 @@
 										Text="›"
 										VerticalAlignment="Center"
 										FontSize="20"
-										Foreground="{DynamicResource SukiLowText}"
+										Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 										IsVisible="{Binding !IsLast}" />
 									<TextBlock
 										Text="{Binding Content}"
 										VerticalAlignment="Center"
 										FontSize="20"
 										FontWeight="SemiBold"
-										Foreground="{DynamicResource SukiText}"
+										Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 										IsVisible="{Binding IsLast}" />
 								</StackPanel>
 							</DataTemplate>
@@ -227,19 +233,19 @@
 						FontSize="20"
 						FontWeight="SemiBold"
 						Margin="0,0,0,4"
-						Foreground="{DynamicResource SukiText}"
+						Foreground="{DynamicResource TextFillColorPrimaryBrush}"
 						Text="{Binding CurrentPageTitle}"
 						IsVisible="{Binding ShowPageTitle}" />
 
 					<controls:MarkdownTextBlock
 						x:Name="PageDescriptionText"
 						FontSize="13"
-						Foreground="{DynamicResource SukiLowText}"
+						Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 						MarkdownText="{Binding CurrentPageDescription}"
 						Margin="0,0,0,2"
 						IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 
-					<suki:InfoBar x:Name="AlertBar" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
+					<ui:InfoBar x:Name="AlertBar" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
 				</StackPanel>
 			</Border>
 
@@ -263,37 +269,35 @@
 			Grid.ColumnSpan="2"
 			Height="56"
 			Padding="0,0,16,0"
-			BorderBrush="{DynamicResource SukiBorderBrush}"
+			BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
 			BorderThickness="0,1,0,0">
-			<StackPanel
-				Orientation="Horizontal"
-				Spacing="8"
-				HorizontalAlignment="Right">
-				<Button
-					Classes="FrostSidebarAccent"
+			<Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto"
+				ColumnSpacing="8">
+				<local:AccountSelectorView x:Name="AccountSelectorView" Grid.Column="0" Margin="8,0,0,0" />
+				<Button Grid.Column="2"
+					Classes="accent"
 					Height="36"
 					Padding="20,0"
 					Command="{Binding SaveAndLaunchSettingsCommand}"
 					Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
-				<Button
-					Classes="FrostSidebarAccent"
+				<Button Grid.Column="3"
+					Classes="accent"
 					Height="36"
 					Padding="20,0"
 					Command="{Binding RestartAppCommand}"
 					Content="{x:Static resources:Strings.Menu_Restart}" />
-				<Button
-					Classes="FrostSidebarAccent"
+				<Button Grid.Column="4"
+					Classes="accent"
 					Height="36"
 					Padding="20,0"
 					Command="{Binding SaveSettingsCommand}"
 					Content="{x:Static resources:Strings.Menu_Save}" />
-				<Button
-					Classes="FrostSubtle"
+				<Button Grid.Column="5"
 					Height="36"
 					Padding="20,0"
 					Command="{Binding CloseWindowCommand}"
 					Content="{x:Static resources:Strings.Common_Close}" />
-			</StackPanel>
+			</Grid>
 		</Border>
 
 		<Border

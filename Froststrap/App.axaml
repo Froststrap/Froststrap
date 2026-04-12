@@ -2,12 +2,12 @@
     x:Class="Froststrap.App"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:suki="clr-namespace:SukiUI;assembly=SukiUI"
+    xmlns:sty="using:FluentAvalonia.Styling"
     xmlns:converters="using:Froststrap.UI.Converters"
     RequestedThemeVariant="Dark">
 
     <Application.Styles>
-        <suki:SukiTheme />
+        <sty:FluentAvaloniaTheme PreferSystemTheme="True" />
         
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />

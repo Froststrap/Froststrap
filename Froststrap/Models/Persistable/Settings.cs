@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-﻿using SukiUI.Enums;
 
 namespace Froststrap.Models.Persistable
 {
@@ -66,8 +65,6 @@ namespace Froststrap.Models.Persistable
         public string BootstrapperIconCustomLocation { get; set; } = "";
         public string DownloadingStringFormat { get; set; } = Strings.Bootstrapper_Status_Downloading + " {0} - {1}MB / {2}MB";
         public Theme Theme { get; set; } = Theme.Default;
-        public SukiColor SukiColorTheme { get; set; } = SukiColor.Blue;
-        public SukiBackgroundStyle SukiWindowStyle { get; set; } = SukiBackgroundStyle.GradientSoft;
 
         // Settings Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;

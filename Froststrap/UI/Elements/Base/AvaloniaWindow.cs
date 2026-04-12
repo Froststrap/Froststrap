@@ -3,34 +3,25 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Avalonia.Styling;
-using SukiUI;
-using SukiUI.Controls;
-using SukiUI.Enums;
+using FluentAvalonia.Styling;
+using Avalonia.Platform;
 
 namespace Froststrap.UI.Elements.Base
 {
-    public abstract class AvaloniaWindow : SukiWindow
+    public abstract class AvaloniaWindow : Window
     {
         private static IStyle? _activeColorStyle;
         private static ResourceDictionary? _activeThemeDictionary;
 
         public AvaloniaWindow()
         {
-            // Remove suki titlebar + Change background Style
-            this.IsTitleBarVisible = false;
-            this.ShowBottomBorder = false;
-
-            // This is so we can resize the window
             this.ExtendClientAreaToDecorationsHint = true;
             this.ExtendClientAreaTitleBarHeightHint = -1;
             this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
             this.SystemDecorations = SystemDecorations.Full;
 
             ApplyTheme();
-
-            this.BackgroundStyle = App.Settings.Prop.SukiWindowStyle;
         }
 
         public static void ApplyTheme()
@@ -40,13 +31,12 @@ namespace Froststrap.UI.Elements.Base
             var finalTheme = App.Settings.Prop.Theme.GetFinal();
             string themeName = Enum.GetName(finalTheme) ?? "Dark";
 
-            var sukiTheme = SukiTheme.GetInstance();
+            Application.Current.RequestedThemeVariant = finalTheme == Enums.Theme.Light
+                ? ThemeVariant.Light
+                : ThemeVariant.Dark;
 
-            sukiTheme.ChangeColorTheme(App.Settings.Prop.SukiColorTheme);
-
-            var targetBaseTheme = finalTheme == Enums.Theme.Light ? ThemeVariant.Light : ThemeVariant.Dark;
-            Application.Current.RequestedThemeVariant = targetBaseTheme;
-            sukiTheme.ChangeBaseTheme(targetBaseTheme);
+            var faTheme = Application.Current.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
+            if (faTheme != null) faTheme.PreferSystemTheme = false;
 
             if (_activeThemeDictionary != null)
             {
@@ -67,17 +57,19 @@ namespace Froststrap.UI.Elements.Base
                     Application.Current.Resources.Remove("ApplicationBackgroundColor");
 
                     var themeUri = new Uri($"avares://Froststrap/UI/AppThemes/ResourceDictionarys/{themeName}.axaml");
-                    if (AvaloniaXamlLoader.Load(themeUri) is ResourceDictionary dict)
+                    var loadedTheme = AvaloniaXamlLoader.Load(themeUri);
+                    if (loadedTheme is ResourceDictionary dict)
                     {
                         _activeThemeDictionary = dict;
                         Application.Current.Resources.MergedDictionaries.Add(dict);
                     }
 
                     var styleUri = new Uri($"avares://Froststrap/UI/AppThemes/Styles/{themeName}.axaml");
-                    if (AvaloniaXamlLoader.Load(styleUri) is Styles loadedStyles)
+                    var loadedStyle = AvaloniaXamlLoader.Load(styleUri);
+                    if (loadedStyle is Styles loadedStyles)
                     {
-                        _activeColorStyle = (IStyle)loadedStyles;
-                        Application.Current.Styles.Insert(1, (IStyle)loadedStyles);
+                        _activeColorStyle = loadedStyles;
+                        Application.Current.Styles.Insert(1, loadedStyles);
                     }
                 }
                 catch (Exception ex)
@@ -92,17 +84,31 @@ namespace Froststrap.UI.Elements.Base
                 if (App.Settings.Prop.BackgroundType == BackgroundMode.Gradient)
                 {
                     var avaloniaStops = new Avalonia.Media.GradientStops();
+
                     foreach (var s in App.Settings.Prop.CustomGradientStops)
                     {
                         if (Color.TryParse(s.Color, out var color))
+                        {
                             avaloniaStops.Add(new GradientStop(color, s.Offset));
+                        }
                     }
 
                     double angleRad = (Math.PI / 180.0) * (App.Settings.Prop.GradientAngle - 90);
-                    var startPoint = new RelativePoint(0.5 - Math.Cos(angleRad) * 0.5, 0.5 - Math.Sin(angleRad) * 0.5, RelativeUnit.Relative);
-                    var endPoint = new RelativePoint(0.5 + Math.Cos(angleRad) * 0.5, 0.5 + Math.Sin(angleRad) * 0.5, RelativeUnit.Relative);
+                    var startPoint = new RelativePoint(
+                        0.5 - Math.Cos(angleRad) * 0.5,
+                        0.5 - Math.Sin(angleRad) * 0.5,
+                        RelativeUnit.Relative);
+                    var endPoint = new RelativePoint(
+                        0.5 + Math.Cos(angleRad) * 0.5,
+                        0.5 + Math.Sin(angleRad) * 0.5,
+                        RelativeUnit.Relative);
 
-                    customBackground = new LinearGradientBrush { GradientStops = avaloniaStops, StartPoint = startPoint, EndPoint = endPoint };
+                    customBackground = new LinearGradientBrush
+                    {
+                        GradientStops = avaloniaStops,
+                        StartPoint = startPoint,
+                        EndPoint = endPoint
+                    };
                 }
                 else if (App.Settings.Prop.BackgroundType == BackgroundMode.Image)
                 {
@@ -111,27 +117,27 @@ namespace Froststrap.UI.Elements.Base
                     {
                         try
                         {
-                            customBackground = new ImageBrush(new Bitmap(path))
+                            var bitmap = new Bitmap(path);
+                            customBackground = new ImageBrush(bitmap)
                             {
                                 Stretch = (Stretch)App.Settings.Prop.BackgroundStretch,
                                 Opacity = App.Settings.Prop.BackgroundOpacity
                             };
                         }
-                        catch (Exception ex) { App.Logger.WriteLine("AvaloniaWindow", $"Image load error: {ex.Message}"); }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine("AvaloniaWindow", $"Image load error: {ex.Message}");
+                        }
                     }
                 }
 
-                Application.Current.Resources["ApplicationBackgroundColor"] = customBackground ?? Brushes.Transparent;
-            }
-
-            if (Application.Current.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                foreach (var window in desktop.Windows)
+                if (customBackground != null)
                 {
-                    if (window is SukiWindow sukiWin)
-                    {
-                        sukiWin.BackgroundStyle = App.Settings.Prop.SukiWindowStyle;
-                    }
+                    Application.Current.Resources["ApplicationBackgroundColor"] = customBackground;
+                }
+                else
+                {
+                    Application.Current.Resources["ApplicationBackgroundColor"] = Brushes.Transparent;
                 }
             }
         }
@@ -139,7 +145,7 @@ namespace Froststrap.UI.Elements.Base
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-#if QA_BUILD
+#if QA_BUILD            
             this.BorderBrush = Brushes.Red;
             this.BorderThickness = new Thickness(4);
 #endif

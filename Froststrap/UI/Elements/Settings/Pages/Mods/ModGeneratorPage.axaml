@@ -53,13 +53,13 @@
                                        FontWeight="SemiBold" 
                                        Text="Style Preview" 
                                        VerticalAlignment="Center" 
-                                       Foreground="{DynamicResource SukiText}" />
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
                             <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,8,0,0">
                                 <TextBlock VerticalAlignment="Center" 
                                            Text="Icon Set:" 
                                            Margin="0,0,8,0" 
-                                           Foreground="{DynamicResource SukiLowText}" />
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                                 <ComboBox Width="200" 
                                           ItemsSource="{Binding FontDisplayNames}" 
                                           SelectedItem="{Binding SelectedFontDisplayName}" />
@@ -106,7 +106,7 @@
                                        FontWeight="Bold" 
                                        Text="Appearance" 
                                        Margin="0,0,0,12" 
-                                       Foreground="{DynamicResource SukiText}"/>
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                             <colorpicker:SquarePicker Height="200" SelectedColor="{Binding SelectedMediaColor, Mode=TwoWay}" />
                             <TextBox Text="{Binding SolidColorHex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                      HorizontalAlignment="Stretch" 
@@ -125,7 +125,7 @@
                                        FontWeight="Bold" 
                                        Text="Mod Options" 
                                        Margin="0,0,0,8" 
-                                       Foreground="{DynamicResource SukiText}"/>
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
 
                             <CheckBox Content="Apply to Cursors" IsChecked="{Binding ColorCursors}" Margin="0,4"/>
                             <CheckBox Content="Apply to Shiftlock" IsChecked="{Binding ColorShiftlock}" Margin="0,4"/>
@@ -139,7 +139,7 @@
                                     Content="Generate Mod"
                                     HorizontalAlignment="Stretch"
                                     Height="40"
-                                    Background="{DynamicResource SukiPrimaryColor}"
+                                    Background="{DynamicResource SystemAccentColor}"
                                     Foreground="{DynamicResource TextOnAccentFillColorPrimaryBrush}"
                                     Classes="accent">
                                 <Button.ContentTemplate>
@@ -156,7 +156,7 @@
                                        Margin="0,12,0,0"
                                        FontSize="12"
                                        HorizontalAlignment="Center"
-                                       Foreground="{DynamicResource SukiMediumText}"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                        TextWrapping="Wrap" />
 
                             <ProgressBar Value="{Binding Progress}"

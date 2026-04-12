@@ -93,18 +93,18 @@
 
 					<controls:SquareCard Header="1st Person Sensitivity" Description="X and Y sensitivity for first person.">
 						<Grid Margin="0,0,0,4" ColumnDefinitions="Auto,*,Auto,*">
-							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource SukiLowText}" />
+							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 							<TextBox Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityFirstPersonX, Mode=TwoWay}" />
-							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource SukiLowText}" />
+							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 							<TextBox Grid.Column="3" Text="{Binding MouseSensitivityFirstPersonY, Mode=TwoWay}" />
 						</Grid>
 					</controls:SquareCard>
 
 					<controls:SquareCard Header="3rd Person Sensitivity" Description="X and Y sensitivity for third person.">
 						<Grid Margin="0,0,0,4" ColumnDefinitions="Auto,*,Auto,*">
-							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource SukiLowText}" />
+							<TextBlock Grid.Column="0" Text="X:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 							<TextBox Grid.Column="1" Margin="0,0,8,0" Text="{Binding MouseSensitivityThirdPersonX, Mode=TwoWay}" />
-							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource SukiLowText}" />
+							<TextBlock Grid.Column="2" Text="Y:" VerticalAlignment="Center" Margin="0,0,4,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
 							<TextBox Grid.Column="3" Text="{Binding MouseSensitivityThirdPersonY, Mode=TwoWay}" />
 						</Grid>
 					</controls:SquareCard>
@@ -124,7 +124,7 @@
 						<TextBox Text="{Binding UITransparency}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Text Size" Description="Preferred display text size.">
-						<ComboBox Margin="5,0,0,0" Padding="10,5,10,5" MinWidth="200" ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
+						<ComboBox Margin="4,0,4,0" Padding="10,5,10,5" MinWidth="200" ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
 									<TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />

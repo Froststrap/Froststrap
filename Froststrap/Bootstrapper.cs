@@ -1015,6 +1015,24 @@ namespace Froststrap
                 });
             }
 
+            string? logFileName = null;
+            string rbxLogDir = Path.Combine(Paths.Roblox, "logs");
+
+            for (int i = 0; i < 60; i++)
+            {
+                if (Directory.Exists(rbxLogDir))
+                {
+                    logFileName = Directory.GetFiles(rbxLogDir, "*.log")
+                        .Select(f => new FileInfo(f))
+                        .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddMinutes(-5))
+                        .OrderByDescending(f => f.CreationTimeUtc)
+                        .FirstOrDefault()?.FullName;
+                }
+
+                if (logFileName != null) break;
+                await Task.Delay(500);
+            }
+
             if (App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Any())
             {
                 using var ipl = new InterProcessLock("WatcherLaunch", TimeSpan.FromSeconds(5));
@@ -1023,6 +1041,7 @@ namespace Froststrap
                     var watcherData = new WatcherData
                     {
                         ProcessId = _appPid,
+                        LogFile = logFileName, 
                         AutoclosePids = autoclosePids,
                         LaunchMode = _launchMode
                     };
@@ -1035,7 +1054,8 @@ namespace Froststrap
                 }
             }
 
-            Thread.Sleep(500);
+            // allow for window to show, since the log is created pretty far beforehand
+            Thread.Sleep(1000);
         }
 
         private bool ShouldRunAsAdmin()

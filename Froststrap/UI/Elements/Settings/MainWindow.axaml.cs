@@ -2,12 +2,12 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
@@ -276,7 +276,7 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_SettingsSaved_Title,
                 Strings.Menu_SettingsSaved_Message,
-                NotificationType.Success,
+                InfoBarSeverity.Success,
                 3000);
         }
 
@@ -286,22 +286,22 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_AlreadyRunning_Title,
                 Strings.Menu_AlreadyRunning_Caption,
-                NotificationType.Warning,
+                InfoBarSeverity.Warning,
                 5000);
         }
 
-        public static void ShowGlobalNotification(string title, string subtitle, NotificationType type, int timeout = 3000, PackIconMaterialKind? icon = null)
+        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, PackIconMaterialKind? icon = null)
         {
             Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
         }
 
-        public void ShowNotification(string title, string subtitle, NotificationType type, int timeout, PackIconMaterialKind? customIcon = null)
+        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, PackIconMaterialKind? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            var accentColor = type == NotificationType.Success ? "#00D084" : "#FFB900";
-            var iconKind = customIcon ?? (type == NotificationType.Success
+            var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
+            var iconKind = customIcon ?? (type == InfoBarSeverity.Success
                 ? PackIconMaterialKind.CheckboxMultipleMarkedCircleOutline
                 : PackIconMaterialKind.AlertOutline);
 
@@ -326,10 +326,10 @@ namespace Froststrap.UI.Elements.Settings
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
 
             var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14 };
-            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiText"));
+            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
 
             var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap };
-            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiLowText"));
+            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
 
             textPanel.Children.Add(titleText);
             textPanel.Children.Add(subtitleText);

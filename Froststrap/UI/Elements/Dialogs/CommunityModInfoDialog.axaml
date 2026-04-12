@@ -7,7 +7,7 @@
         xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:suki="https://github.com/kikipoulet/SukiUI"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         x:DataType="vm:CommunityModInfoViewModel"
         mc:Ignorable="d"
         Width="650"
@@ -27,7 +27,7 @@
                         <Image Source="{Binding Mod.ThumbnailImage}" 
                                Stretch="UniformToFill" 
                                RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                        <suki:CircleProgressBar IsIndeterminate="True" 
+                        <ui:ProgressRing IsIndeterminate="True" 
                                          IsVisible="{Binding Mod.IsLoadingThumbnail}"
                                          Width="30" Height="30" />
                     </Panel>
@@ -55,7 +55,7 @@
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
-                                <suki:CircleProgressBar IsIndeterminate="True" 
+                                <ui:ProgressRing IsIndeterminate="True" 
                                                  IsVisible="{Binding IsLoadingGlyphs}" 
                                                  Width="24" Height="24"/>
                             </Panel>
@@ -82,16 +82,16 @@
                     <StackPanel Spacing="4">
                         <TextBlock Text="{Binding Mod.Name}" FontSize="24" FontWeight="Bold" TextWrapping="Wrap"/>
                         <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}" 
-                                   FontSize="12" Foreground="{DynamicResource SukiMediumText}" />
+                                   FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                         
                         <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4">
                              <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex: {0}'}" 
-                                       FontSize="12" Foreground="{DynamicResource SukiMediumText}" />
+                                       FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                              <Border Width="12" Height="12" CornerRadius="2" 
                                      Background="{Binding PreviewBrush}" VerticalAlignment="Center"/>
                         </StackPanel>
 
-                        <Border Background="{DynamicResource SukiPrimaryColor}" 
+                        <Border Background="{DynamicResource SystemAccentColor}" 
                                 CornerRadius="4" Padding="8,2" 
                                 HorizontalAlignment="Left" Margin="0,8,0,0">
                             <TextBlock Text="{Binding Mod.ModTypeDisplay}" FontSize="10" FontWeight="SemiBold" Foreground="White"/>
@@ -102,7 +102,7 @@
                         <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
                         <TextBlock Text="{Binding Mod.Description}" 
                                    TextWrapping="Wrap" 
-                                   Foreground="{DynamicResource SukiLowText}" />
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                     </StackPanel>
                 </DockPanel>
             </md:Card>
