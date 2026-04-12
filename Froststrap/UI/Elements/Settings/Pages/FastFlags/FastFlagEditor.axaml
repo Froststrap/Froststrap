@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:IconPacks.Avalonia.Material"
              xmlns:resources="using:Froststrap.Resources"
-             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:model="clr-namespace:Froststrap.Models"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              d:DesignHeight="600"
@@ -15,10 +15,10 @@
     
     <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="14">
         
-        <suki:InfoBar Grid.Row="0" 
+        <ui:InfoBar Grid.Row="0" 
                     Title="Important" 
                     Message="Following the whitelisting of some Roblox FastFlags, these are the only remaining available for use." 
-                    Severity="Information" 
+                    Severity="Informational" 
                     IsOpen="True" 
                     IsClosable="False" 
                     Margin="0,4,0,8" />
@@ -124,7 +124,7 @@
                        VerticalAlignment="Center" 
                        IsHitTestVisible="False"
                        IsVisible="False"
-                       Foreground="{DynamicResource SukiLowText}"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                        TextAlignment="Center"/>
         </Grid>
     </Grid>

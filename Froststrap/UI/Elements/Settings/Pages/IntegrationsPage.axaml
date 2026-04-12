@@ -67,7 +67,9 @@
             <controls:CardExpander
                 IsEnabled="{Binding ActivityTrackingEnabled}"
                 IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
-                Classes="NoUserExpansion" Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
+                Classes="NoUserExpansion" 
+                Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" 
+                Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
                 </controls:CardExpander.HeaderContent>
@@ -104,7 +106,7 @@
                 </ComboBox>
             </controls:OptionControl>
 
-            <controls:CardExpander Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}">
+            <controls:CardExpander Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}" IsExpanded="True">
                 <StackPanel>
                     <controls:OptionControl
                         Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_DesktopApp_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#dont-exit-to-desktop-app'}"
@@ -132,7 +134,7 @@
                 Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
             
             <controls:MarkdownTextBlock
-                Foreground="{DynamicResource SukiLowText}"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
                 TextWrapping="Wrap" />
 
@@ -233,7 +235,7 @@
                 FontWeight="Bold"
                 Text="{x:Static resources:Strings.Menu_Integrations_Custom_Title}" />
             <TextBlock
-                Foreground="{DynamicResource SukiLowText}"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 Text="{x:Static resources:Strings.Menu_Integrations_Custom_Description}"
                 TextWrapping="Wrap" />
 
@@ -279,12 +281,12 @@
                     Margin="4,0,0,0"
                     IsVisible="{Binding IsCustomIntegrationSelected}">
                     
-                    <TextBlock Foreground="{DynamicResource SukiLowText}" Text="{x:Static resources:Strings.Common_Name}" />
+                    <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Common_Name}" />
                     <TextBox Margin="0,4,0,0" Text="{Binding SelectedCustomIntegration.Name, UpdateSourceTrigger=PropertyChanged}" />
                     
                     <TextBlock
                         Margin="0,8,0,0"
-                        Foreground="{DynamicResource SukiLowText}"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         Text="{x:Static resources:Strings.Menu_Integrations_Custom_AppLocation}" />
                     
                     <Grid Margin="0,4,0,0" ColumnDefinitions="*, Auto">
@@ -303,10 +305,10 @@
                     </Grid>
 
                     <Grid Margin="0,8,0,0" ColumnDefinitions="Auto, 1*, Auto, 2*">
-                        <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="Launch Delay" Foreground="{DynamicResource SukiLowText}" />
+                        <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="Launch Delay" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <TextBox Grid.Column="1" Margin="0,0,16,0" Watermark="200" Text="{Binding SelectedCustomIntegration.Delay}" />
                         
-                        <TextBlock Grid.Column="2" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" Foreground="{DynamicResource SukiLowText}" />
+                        <TextBlock Grid.Column="2" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <TextBox Grid.Column="3" Watermark="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}" Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
                     </Grid>
 
@@ -319,7 +321,7 @@
                     <StackPanel IsVisible="{Binding SelectedCustomIntegration.SpecifyGame}">
                         <TextBlock
                             Margin="0,8,0,0"
-                            Foreground="{DynamicResource SukiLowText}"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                             Text="{x:Static resources:Strings.Menu_Integrations_Custom_GameID}" />
                         <TextBox
                             Margin="0,4,0,0"

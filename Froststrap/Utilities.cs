@@ -1,7 +1,7 @@
 ﻿using Froststrap;
 using Froststrap.AppData;
 using System.ComponentModel;
-using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace Froststrap
 {
@@ -11,22 +11,36 @@ namespace Froststrap
         {
             try
             {
-                Process.Start(new ProcessStartInfo 
-                { 
-                    FileName = website, 
-                    UseShellExecute = true 
-                });
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = website,
+                        UseShellExecute = true
+                    });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    Process.Start("xdg-open", website);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                {
+                    Process.Start("open", website);
+                }
             }
             catch (Win32Exception ex)
             {
                 if (ex.NativeErrorCode != (int)ErrorCode.CO_E_APPNOTFOUND)
                     throw;
 
-                Process.Start(new ProcessStartInfo
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    FileName = "rundll32.exe",
-                    Arguments = $"shell32,OpenAs_RunDLL {website}"
-                });
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "rundll32.exe",
+                        Arguments = $"shell32,OpenAs_RunDLL {website}"
+                    });
+                }
             }
         }
 

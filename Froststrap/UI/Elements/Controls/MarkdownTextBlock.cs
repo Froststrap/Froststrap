@@ -90,8 +90,8 @@ namespace Froststrap.UI.Elements.Controls
 
                 if (emphasisInline.DelimiterChar == '=')
                 {
-                    span.Background = (IBrush)Application.Current!.FindResource("SukiPrimaryColor10")!;
-                    span.Foreground = (IBrush)Application.Current!.FindResource("SukiPrimaryColor")!;
+                    span.Background = (IBrush)Application.Current!.FindResource("AccentFillColorSelectedTextBackgroundBrush")!;
+                    span.Foreground = (IBrush)Application.Current!.FindResource("SystemAccentColor")!;
                 }
 
                 foreach (var child in emphasisInline)

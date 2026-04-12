@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using Froststrap.UI.Elements.Settings;
 using IconPacks.Avalonia.Material;
 using Avalonia.Controls.Notifications;
+using FluentAvalonia.UI.Controls;
 
 namespace Froststrap.UI.ViewModels
 {
@@ -390,7 +391,7 @@ namespace Froststrap.UI.ViewModels
             MainWindow.ShowGlobalNotification(
                 "Joining Game", 
                 $"Searching for region {selectedRegion}", 
-                NotificationType.Information,
+                InfoBarSeverity.Informational,
                 5000, 
                 PackIconMaterialKind.Earth
             );
@@ -430,8 +431,8 @@ namespace Froststrap.UI.ViewModels
                     {
                         MainWindow.ShowGlobalNotification(
                             "Server Found", 
-                            $"Joining server in {selectedRegion}", 
-                            NotificationType.Success, 
+                            $"Joining server in {selectedRegion}",
+                            InfoBarSeverity.Success, 
                             5000, 
                             PackIconMaterialKind.Check
                         );
@@ -447,8 +448,8 @@ namespace Froststrap.UI.ViewModels
                     {
                         MainWindow.ShowGlobalNotification(
                             "Not Found", 
-                            $"Could not find a server in {selectedRegion}.", 
-                            NotificationType.Warning, 
+                            $"Could not find a server in {selectedRegion}.",
+                            InfoBarSeverity.Warning, 
                             5000, 
                             PackIconMaterialKind.AlertCircle
                         );
@@ -460,8 +461,8 @@ namespace Froststrap.UI.ViewModels
 
                 MainWindow.ShowGlobalNotification(
                     "Search Timeout", 
-                    $"Failed to find a server in {selectedRegion} after {maxAttempts} attempts.", 
-                    NotificationType.Warning, 
+                    $"Failed to find a server in {selectedRegion} after {maxAttempts} attempts.",
+                    InfoBarSeverity.Warning, 
                     5000, 
                     PackIconMaterialKind.AlertCircle
                 );

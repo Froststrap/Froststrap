@@ -41,7 +41,7 @@
                 <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
                     <TextBlock Text="Froststrap" FontSize="24" FontWeight="Bold" />
                     <TextBlock Text="{x:Static resources:Strings.Menu_About_Description}"
-                               Foreground="{DynamicResource SukiMediumText}"  />
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"  />
                 </StackPanel>
             </Grid>
 
@@ -73,11 +73,11 @@
                 <Grid Margin="0,8,0,0" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
                     <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Timestamp" />
                     <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
-                               Text="{Binding BuildTimestamp}" Foreground="{DynamicResource SukiMediumText}" />
+                               Text="{Binding BuildTimestamp}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
                     <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Version" />
                     <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
-                               Text="{Binding Version}" Foreground="{DynamicResource SukiMediumText}" />
+                               Text="{Binding Version}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
                     <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Hash"
                                IsVisible="{Binding BuildCommitVisibility}" />
@@ -91,21 +91,21 @@
                             BorderThickness="0">
                                 <TextBlock Text="{Binding BuildMetadata.CommitHash}"
                                        TextDecorations="Underline"
-                                       Foreground="{DynamicResource SukiPrimaryColor}" />
+                                       Foreground="{DynamicResource SystemAccentColor}" />
                         </Button>
 
                     <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Ref"
                                IsVisible="{Binding BuildCommitVisibility}" />
                     <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding BuildMetadata.CommitRef}" 
-                               Foreground="{DynamicResource SukiMediumText}"
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                IsVisible="{Binding BuildCommitVisibility}" />
                 </Grid>
             </StackPanel>
 
             <TextBlock Text="{x:Static resources:Strings.Menu_About_Contributors}" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
             <TextBlock Text="{x:Static resources:Strings.Menu_About_Contributors_Description}" TextWrapping="Wrap"
-                       Foreground="{DynamicResource SukiMediumText}" />
+                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
             <Grid Margin="0,8,0,0" ColumnDefinitions="*,*,*">
                 <Expander Grid.Column="0" Margin="0,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Code}" IsExpanded="True">

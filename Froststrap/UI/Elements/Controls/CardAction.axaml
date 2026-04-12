@@ -1,67 +1,41 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:suki="https://github.com/kikipoulet/SukiUI"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         xmlns:ic="using:IconPacks.Avalonia.Material">
 
-	<Style Selector="controls|CardAction">
-		<Setter Property="Background"      Value="Transparent" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Padding"         Value="16,12" />
-		<Setter Property="CornerRadius"    Value="8" />
-		<Setter Property="Template">
-			<ControlTemplate>
-				<suki:GlassCard Name="PART_GlassCard"
-							   IsInteractive="True"
-							   Padding="{TemplateBinding Padding}"
-							   CornerRadius="{TemplateBinding CornerRadius}"
-							   BorderThickness="{TemplateBinding BorderThickness}"
-							   BorderBrush="{TemplateBinding BorderBrush}"
-							   Margin="0,4">
-					
-					<Grid ColumnDefinitions="Auto,*" Background="Transparent">
-						<Border
-							Grid.Column="0"
-							Width="36" Height="36"
-							CornerRadius="6"
-							Background="{DynamicResource SukiPrimaryColor10}"
-							BorderBrush="{DynamicResource SukiPrimaryColor50}"
-							BorderThickness="1"
-							Margin="0,0,-4,0"
-							VerticalAlignment="Center">
-							<ic:PackIconMaterial
-								Kind="{TemplateBinding Icon}"
-								Width="18" Height="18"
-								Foreground="{DynamicResource SukiPrimaryColor}"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center" />
-						</Border>
+    <Style Selector="controls|CardAction">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="16,12" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <controls:Card Name="PART_RootCard"
+                               Padding="{TemplateBinding Padding}"
+                               Margin="0,4">
+                    <Grid ColumnDefinitions="Auto,*">
+                            <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
+                                                 Grid.Column="0"
+                                                 Width="24" Height="24"
+                                                 HorizontalAlignment="Center"
+                                                 VerticalAlignment="Center" />
 
-						<StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="16,0,0,0" Spacing="2">
-							<TextBlock
-								Text="{TemplateBinding Header}"
-								FontSize="14"
-								FontWeight="SemiBold"
-								Foreground="{DynamicResource SukiText}" />
-							<controls:MarkdownTextBlock
-								MarkdownText="{TemplateBinding Description}"
-								FontSize="12"
-								Foreground="{DynamicResource SukiLowText}"
-								TextWrapping="Wrap"
-								IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-						</StackPanel>
-					</Grid>
-				</suki:GlassCard>
-			</ControlTemplate>
-		</Setter>
-	</Style>
-
-	<Style Selector="controls|CardAction:pointerover /template/ suki|GlassCard#PART_GlassCard">
-		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
-	</Style>
-
-	<Style Selector="controls|CardAction:focus-visible /template/ suki|GlassCard#PART_GlassCard">
-		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
-	</Style>
+                        <StackPanel Grid.Column="1" 
+                                    VerticalAlignment="Center" 
+                                    Margin="16,0,0,0" 
+                                    Spacing="2">
+                            <TextBlock Text="{TemplateBinding Header}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                            <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
+                                                        FontSize="12"
+                                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                        TextWrapping="Wrap"
+                                                        IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                        </StackPanel>
+                    </Grid>
+                </controls:Card>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 </Styles>

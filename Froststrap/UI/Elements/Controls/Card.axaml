@@ -1,34 +1,44 @@
 <Styles xmlns="https://github.com/avaloniaui"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:suki="https://github.com/kikipoulet/SukiUI"
-		xmlns:controls="using:Froststrap.UI.Elements.Controls">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:controls="using:Froststrap.UI.Elements.Controls">
 
-	<Style Selector="controls|Card">
-		<Setter Property="Background"      Value="Transparent" />
-		<Setter Property="BorderBrush"     Value="{DynamicResource SukiBorderBrush}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="CornerRadius"    Value="8" />
-		<Setter Property="MinHeight"       Value="64" />
-		<Setter Property="Template">
-			<ControlTemplate>
-				<suki:GlassCard Name="PART_GlassCard"
-							   IsInteractive="True"
-							   CornerRadius="{TemplateBinding CornerRadius}"
-							   BorderThickness="{TemplateBinding BorderThickness}"
-							   BorderBrush="{TemplateBinding BorderBrush}"
-							   Margin="0">
-					<ContentPresenter Name="PART_ContentPresenter"
-						Content="{TemplateBinding Content}"
-						ContentTemplate="{TemplateBinding ContentTemplate}"
-						HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-						VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-				</suki:GlassCard>
-			</ControlTemplate>
-		</Setter>
-	</Style>
+    <Style Selector="controls|Card">
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}" />
+        <Setter Property="MinHeight" Value="64" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.083" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_RootBorder"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
 
-	<Style Selector="controls|Card:pointerover /template/ suki|GlassCard#PART_GlassCard">
-		<Setter Property="BorderBrush" Value="{DynamicResource SukiPrimaryColor}" />
-	</Style>
+    <Style Selector="controls|Card:pointerover">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+    </Style>
+
+    <Style Selector="controls|Card:pressed">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorTertiaryBrush}" />
+    </Style>
 
 </Styles>

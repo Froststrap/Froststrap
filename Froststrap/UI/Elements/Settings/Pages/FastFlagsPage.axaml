@@ -39,7 +39,7 @@
                 Text="{x:Static resources:Strings.Common_Presets}"
                 FontSize="12"
                 FontWeight="SemiBold"
-                Foreground="{DynamicResource SukiLowText}"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 Margin="0,20,0,8"
                 Opacity="1" />
 
@@ -91,7 +91,7 @@
                         Padding="4"
                         Text="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Information}"
                         FontSize="13"
-                        Foreground="{DynamicResource SukiLowText}"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         TextAlignment="Center"
                         TextWrapping="Wrap" />
                     <Grid ColumnDefinitions="Auto,*,Auto">

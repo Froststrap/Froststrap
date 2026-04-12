@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:resources="clr-namespace:Froststrap.Resources"
-             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:enums="using:Froststrap.Enums"
              xmlns:models="using:Froststrap.Models.APIs.Config"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
@@ -112,7 +112,7 @@
                                                    VerticalAlignment="Stretch"
                                                    RenderOptions.BitmapInterpolationMode="HighQuality"/>
 
-                                            <suki:CircleProgressBar IsVisible="{Binding IsLoadingThumbnail}"
+                                            <ui:ProgressRing IsVisible="{Binding IsLoadingThumbnail}"
                                                                     IsIndeterminate="True"
                                                                     Width="24" Height="24"
                                                                     HorizontalAlignment="Center"
@@ -128,7 +128,7 @@
                                                TextTrimming="CharacterEllipsis"/>
 
                                     <TextBlock Grid.Row="2" 
-                                               Foreground="{DynamicResource SukiLowText}" 
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
                                                FontSize="12"
                                                Margin="12,2,12,4" 
                                                TextTrimming="CharacterEllipsis">

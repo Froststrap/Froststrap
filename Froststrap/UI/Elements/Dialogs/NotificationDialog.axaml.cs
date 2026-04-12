@@ -55,7 +55,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 FontSize = 13,
                 TextTrimming = TextTrimming.CharacterEllipsis
             };
-            titleBlock.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiText"));
+            titleBlock.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
 
             var messageBlock = new TextBlock
             {
@@ -64,7 +64,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 TextWrapping = TextWrapping.Wrap,
                 MaxLines = 2
             };
-            messageBlock.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiLowText"));
+            messageBlock.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
 
             var mainBorder = new Border
             {
@@ -87,7 +87,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 Command = new RelayCommand(() => { _cts.Cancel(); Close(); })
             };
 
-            closeButton.Bind(Button.ForegroundProperty, new DynamicResourceExtension("SukiLowText"));
+            closeButton.Bind(Button.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
 
             mainBorder.Child = new Grid
             {
