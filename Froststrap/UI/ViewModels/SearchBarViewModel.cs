@@ -1,4 +1,14 @@
-﻿using Avalonia.Threading;
+﻿/*
+*  Froststrap
+*  Copyright (c) Froststrap Team
+*
+*  This file is part of Froststrap and is distributed under the terms of the
+*  GNU Affero General Public License, version 3 or later.
+*
+*  SPDX-License-Identifier: AGPL-3.0-or-later
+*/
+
+using Avalonia.Threading;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -38,6 +48,11 @@ namespace Froststrap.UI.ViewModels
 
         [ObservableProperty]
         private bool _isGameSearchLoading = false;
+
+        [ObservableProperty]
+        private string _nextPageCursor = "";
+
+        public bool CanLoadMore => !string.IsNullOrEmpty(NextPageCursor) && !IsGameSearchLoading;
 
         private CancellationTokenSource? _searchDebounceCts;
 
@@ -125,9 +140,14 @@ namespace Froststrap.UI.ViewModels
 
                 if (!results.Any())
                 {
-                    var searchResults = await GameSearching.GetGameSearchResultsAsync(query);
+                    var (searchResults, nextCursor) = await GameSearching.GetDetailedGameSearchResultsAsync(query);
                     if (searchResults != null)
                         results.AddRange(searchResults);
+                    NextPageCursor = nextCursor;
+                }
+                else 
+                {
+                    NextPageCursor = "";
                 }
 
                 if (token.IsCancellationRequested) return;
@@ -166,6 +186,7 @@ namespace Froststrap.UI.ViewModels
                             GameSearchResults.Add(res);
 
                         OnPropertyChanged(nameof(HasAnyResults));
+                        OnPropertyChanged(nameof(CanLoadMore));
                     }, DispatcherPriority.Background);
                 }
                 else
@@ -174,6 +195,7 @@ namespace Froststrap.UI.ViewModels
                     {
                         GameSearchResults.Clear();
                         OnPropertyChanged(nameof(HasAnyResults));
+                        OnPropertyChanged(nameof(CanLoadMore));
                     });
                 }
             }
@@ -186,6 +208,70 @@ namespace Froststrap.UI.ViewModels
             {
                 IsGameSearchLoading = false;
                 OnPropertyChanged(nameof(HasAnyResults));
+                OnPropertyChanged(nameof(CanLoadMore));
+            }
+        }
+
+        [RelayCommand]
+        private async Task LoadMoreGamesAsync()
+        {
+            if (string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading) return;
+
+            try
+            {
+                IsGameSearchLoading = true;
+                OnPropertyChanged(nameof(CanLoadMore));
+
+                var (results, nextCursor) = await GameSearching.GetDetailedGameSearchResultsAsync(SearchQuery, NextPageCursor);
+                NextPageCursor = nextCursor;
+
+                if (results != null && results.Any())
+                {
+                    var thumbRequests = results.Select(r => new ThumbnailRequest
+                    {
+                        Type = ThumbnailType.GameIcon,
+                        TargetId = r.UniverseId,
+                        Size = "128x128"
+                    }).ToList();
+
+                    var fetchedUrls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+
+                    for (int i = 0; i < results.Count; i++)
+                    {
+                        if (fetchedUrls != null && i < fetchedUrls.Length && !string.IsNullOrEmpty(fetchedUrls[i]))
+                        {
+                            try
+                            {
+                                var response = await App.HttpClient.GetByteArrayAsync(fetchedUrls[i]);
+                                using var ms = new MemoryStream(response);
+                                results[i].ThumbnailBitmap = new Bitmap(ms);
+                            }
+                            catch { /* Ignore image load failure */ }
+                        }
+                    }
+
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        foreach (var res in results)
+                            GameSearchResults.Add(res);
+
+                        OnPropertyChanged(nameof(CanLoadMore));
+                    }, DispatcherPriority.Background);
+                }
+                else
+                {
+                    NextPageCursor = "";
+                    OnPropertyChanged(nameof(CanLoadMore));
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("SearchBarViewModel", $"Load more error: {ex.Message}");
+            }
+            finally
+            {
+                IsGameSearchLoading = false;
+                OnPropertyChanged(nameof(CanLoadMore));
             }
         }
 
