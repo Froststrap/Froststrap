@@ -15,21 +15,24 @@
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
+                            
+                            <DockPanel LastChildFill="True">
+                                <controls:Hyperlink DockPanel.Dock="Right"
+                                                    IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                                    VerticalAlignment="Center"
+                                                    Margin="6,0,0,0">
+                                    <ic:PackIconMaterial Kind="HelpCircleOutline"
+                                                         Width="14" Height="14"
+                                                         Foreground="{DynamicResource SystemAccentColor}" />
+                                </controls:Hyperlink>
+
                                 <TextBlock Text="{TemplateBinding Header}"
                                            FontSize="14"
                                            FontWeight="SemiBold"
                                            VerticalAlignment="Center"
                                            TextWrapping="Wrap"
                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-
-                                <controls:Hyperlink IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
-                                                    VerticalAlignment="Center">
-                                    <ic:PackIconMaterial Kind="HelpCircleOutline"
-                                                         Width="14" Height="14"
-                                                         Foreground="{DynamicResource SystemAccentColor}" />
-                                </controls:Hyperlink>
-                            </StackPanel>
+                            </DockPanel>
 
                             <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
                                                         FontSize="12"
