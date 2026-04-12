@@ -70,5 +70,67 @@ namespace Froststrap.Models.Entities
 
             return results;
         }
+
+        public static async Task<(List<OmniSearchContent> Results, string NextCursor)> GetDetailedGameSearchResultsAsync(string keyword, string cursor = "")
+        {
+            var results = new List<OmniSearchContent>();
+
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                return (results, "");
+            }
+
+            try
+            {
+                string cursorParam = string.IsNullOrEmpty(cursor) ? "" : $"&pageToken={Uri.EscapeDataString(cursor)}";
+                string url = $"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(keyword)}&sessionId=0&pageType=Game{cursorParam}";
+
+                var response = await Http.GetJson<System.Text.Json.JsonDocument>(url);
+
+                if (response != null && response.RootElement.TryGetProperty("searchResults", out var groupsArray) && groupsArray.ValueKind == System.Text.Json.JsonValueKind.Array)
+                {
+                    string nextCursor = "";
+                    if (response.RootElement.TryGetProperty("nextPageToken", out var nextCursorProp) && nextCursorProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                    {
+                        nextCursor = nextCursorProp.GetString() ?? "";
+                    }
+
+                    var seenUniverses = new HashSet<ulong>();
+
+                    foreach (var group in groupsArray.EnumerateArray())
+                    {
+                        if (group.TryGetProperty("contents", out var contentsArray) && contentsArray.ValueKind == System.Text.Json.JsonValueKind.Array)
+                        {
+                            foreach (var item in contentsArray.EnumerateArray())
+                            {
+                                ulong universeId = item.TryGetProperty("universeId", out var u) ? (ulong)u.GetInt64() : 0;
+                                long placeId = item.TryGetProperty("rootPlaceId", out var p) ? p.GetInt64() : 0;
+                                string name = item.TryGetProperty("name", out var n) ? (n.GetString() ?? $"Game {universeId}") : $"Game {universeId}";
+                                int playerCount = item.TryGetProperty("playerCount", out var pc) ? pc.GetInt32() : 0;
+
+                                if (universeId == 0 || !seenUniverses.Add(universeId))
+                                    continue;
+
+                                results.Add(new OmniSearchContent
+                                {
+                                    UniverseId = universeId,
+                                    RootPlaceId = placeId,
+                                    Name = name,
+                                    PlayerCount = playerCount
+                                });
+                            }
+                        }
+                    }
+
+                    return (results, nextCursor);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Error fetching detailed search results: {ex.Message}");
+            }
+
+            return (results, "");
+        }
     }
 }

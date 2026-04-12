@@ -59,7 +59,7 @@
               CornerRadius="6"
               BoxShadow="0 8 32 0 #20000000">
         <Grid>
-          <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding HasAnyResults}">
+          <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding HasAnyResults}" ScrollChanged="OnScrollChanged">
             <StackPanel Spacing="0">
               <ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
                 <ItemsControl.ItemsPanel>
