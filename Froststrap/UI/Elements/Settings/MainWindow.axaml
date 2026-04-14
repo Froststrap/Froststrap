@@ -23,28 +23,14 @@
 
 	<Grid RowDefinitions="48,*,56" Background="{DynamicResource ApplicationBackgroundColor}">
 		<Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
-		   <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" >
-				<Image
-					Source="avares://Froststrap/Froststrap.ico"
-                    Width="16" Height="16"
-                    Margin="12,0,0,0"
-                    VerticalAlignment="Center"
-                    IsHitTestVisible="False"
-                    RenderOptions.BitmapInterpolationMode="HighQuality" />
-                <TextBlock Text="Froststrap Settings"
-					VerticalAlignment="Center"
-					Margin="10,0"
-					FontSize="12"
-					FontWeight="Normal"
-					IsHitTestVisible="False" />
-		   </StackPanel>
-           <elements:SearchBar DataContext="{Binding SearchBar}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-			<StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
-				<controls:IconButton Name="PART_MinimizeButton" Classes="TitleBarButton" Icon="Minus" />
-				<controls:IconButton Name="PART_MaximizeButton" Classes="TitleBarButton" Icon="SquareOutline" />
-				<controls:IconButton Name="PART_CloseButton" Classes="TitleBarButton Close" Icon="Close" />
-			</StackPanel>
+			<controls:TitleBar Grid.Row="0" 
+                       Title="Froststrap Settings"
+                       Icon="avares://Froststrap/Froststrap.ico"
+                       Background="{DynamicResource ControlFillColorDefaultBrush}">
+        
+			<elements:SearchBar DataContext="{Binding SearchBar}" Width="400" />
+        
+			</controls:TitleBar>
 		</Grid>
 
 		<ui:NavigationView Grid.Row="1"
@@ -53,6 +39,7 @@
 						   IsSettingsVisible="False"
 						   IsBackButtonVisible="False"
 						   OpenPaneLength="220"
+						   Background="{DynamicResource ControlFillColorDefaultBrush}"
 						   ItemInvoked="NavView_ItemInvoked">
 			<ui:NavigationView.MenuItems>
 				<ui:NavigationViewItemHeader Content="MAIN" />

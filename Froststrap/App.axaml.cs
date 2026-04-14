@@ -1,8 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Documents;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
@@ -540,6 +542,7 @@ public partial class App : Application
 
             LaunchHandler.ProcessLaunchArgs();
         }
+
         base.OnFrameworkInitializationCompleted();
     }
 }
