@@ -1047,8 +1047,11 @@ namespace Froststrap
                     };
 
                     string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
+
                     string args = $"-watcher \"{watcherDataArg}\"";
-                    if (App.LaunchSettings.TestModeFlag.Active) args += " -testmode";
+
+                    if (App.LaunchSettings.TestModeFlag.Active)
+                        args += " -testmode";
 
                     Process.Start(Paths.Process, args);
                 }
