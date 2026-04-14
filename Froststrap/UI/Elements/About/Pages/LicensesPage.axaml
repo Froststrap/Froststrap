@@ -53,10 +53,10 @@
                                      CommandParameter="https://github.com/amwx/FluentAvalonia/blob/master/LICENSE" />
 
                 <ui:CardAction Margin="4"
-                                     Header="IconPacks Avalonia"
+                                     Header="FluentAvalonia FluentIcons"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                                     CommandParameter="https://github.com/MahApps/IconPacks.Avalonia/blob/main/LICENSE" />
+                                     CommandParameter="https://github.com/jmkinzer/FluentAvalonia.FluentIcons/blob/main/LICENSE" />
 
                 <ui:CardAction Margin="4"
                                      Header="CommunityToolKit MVVM"
