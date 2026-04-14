@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.ViewModels.About;
 using Froststrap.UI.Elements.Controls;
 
@@ -32,7 +33,7 @@ namespace Froststrap.UI.Elements.About
 
             _viewModel.NavigateToAboutCommand.Execute(null);
 
-            UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+            UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -46,7 +47,7 @@ namespace Froststrap.UI.Elements.About
 
             if (e.PropertyName == nameof(MainWindowViewModel.SelectedPage))
             {
-                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }
         }
 
@@ -132,26 +133,35 @@ namespace Froststrap.UI.Elements.About
             return null;
         }
 
-        private void UpdateSelectedButtonStyle(string selectedTag)
+        private void UpdateSelectedNavigationViewItem(string selectedTag)
         {
-            var sidebarStackPanel = this.FindControl<StackPanel>("SidebarStackPanel");
-            if (sidebarStackPanel == null) return;
+            var navView = this.FindControl<NavigationView>("NavView");
+            if (navView == null) return;
 
-            foreach (var child in sidebarStackPanel.Children)
+            foreach (var item in navView.MenuItems)
             {
-                if (child is IconButton button && button.Tag is string tag)
+                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
                 {
-                    var isSelected = tag == selectedTag;
+                    if (tag == selectedTag)
+                    {
+                        navView.SelectedItem = navItem;
+                        return;
+                    }
+                }
+            }
+        }
 
-                    if (isSelected)
-                    {
-                        if (!button.Classes.Contains("Selected"))
-                            button.Classes.Add("Selected");
-                    }
-                    else
-                    {
-                        button.Classes.Remove("Selected");
-                    }
+        private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+        {
+            if (e.InvokedItemContainer is NavigationViewItem navItem && navItem.Tag is string tag)
+            {
+                if (tag == "about")
+                {
+                    _viewModel?.NavigateToAboutCommand.Execute(null);
+                }
+                else if (tag == "licenses")
+                {
+                    _viewModel?.NavigateToLicensesCommand.Execute(null);
                 }
             }
         }
