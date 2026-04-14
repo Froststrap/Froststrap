@@ -21,6 +21,8 @@ namespace Froststrap.UI.Elements.Base
             this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
             this.SystemDecorations = SystemDecorations.Full;
 
+            RenderOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
+
             ApplyTheme();
         }
 
