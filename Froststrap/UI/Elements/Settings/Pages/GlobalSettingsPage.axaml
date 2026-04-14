@@ -124,7 +124,7 @@
 						<TextBox Text="{Binding UITransparency}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Text Size" Description="Preferred display text size.">
-						<ComboBox Margin="4,0,4,0" Padding="10,5,10,5" MinWidth="200" ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
+						<ComboBox Margin="4,0" Padding="10,5" HorizontalAlignment="Stretch" ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
 									<TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
