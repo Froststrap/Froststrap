@@ -71,13 +71,13 @@
 				<TextBlock FontSize="20" FontWeight="Bold" Text="Audio Settings" Margin="0,0,0,8" />
 				<UniformGrid Columns="4">
 					<controls:SquareCard Header="Master Volume" Description="Global volume level.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolume}" ToolTip.Tip="{Binding $self.Value}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolume}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Studio Volume" Description="Volume for Roblox Studio.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding MasterVolumeStudio}" ToolTip.Tip="{Binding $self.Value}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MasterVolumeStudio}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Party Volume" Description="Volume for party voice mode.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding PartyVoiceVolume}" ToolTip.Tip="{Binding $self.Value}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding PartyVoiceVolume}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 				</UniformGrid>
 
@@ -113,7 +113,7 @@
 						<ToggleSwitch IsChecked="{Binding CameraYInverted}" />
 					</controls:SquareCard>
 					<controls:SquareCard Header="Haptic Strength" Description="Controller vibration strength.">
-						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" Value="{Binding HapticStrength}" ToolTip.Tip="{Binding $self.Value}" />
+						<Slider Minimum="0" Maximum="1" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding HapticStrength}" ToolTip.Tip="{Binding $self.Value}" />
 					</controls:SquareCard>
 				</UniformGrid>
 
