@@ -130,6 +130,7 @@
 													  Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 									<controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
 																FontSize="12"
+																TextWrapping="Wrap"
 																Foreground="{DynamicResource TextFillColorSecondaryBrush}"
 																IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
 								</StackPanel>
