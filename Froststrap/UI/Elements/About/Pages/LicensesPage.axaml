@@ -16,91 +16,91 @@
                        Text="{x:Static resources:Strings.Menu_About_Licenses}" />
 
 			<UniformGrid Columns="3">
-				<ui:CardAction Margin="4"
+				<ui:CardAction Margin="4" Icon="License"
                                      Header="Bloxstrap"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/bloxstraplabs/bloxstrap/blob/main/LICENSE" />
 
-				<ui:CardAction Margin="4"
+				<ui:CardAction Margin="4" Icon="License"
                                      Header="Fishstrap"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/Fishstrap/Fishstrap/blob/main/LICENSE" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Avalonia"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/AvaloniaUI/Avalonia/blob/master/licence.md" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Animated Image Avalonia"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_Apache}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/whistyun/AnimatedImage/blob/master/LICENSE.txt" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Avalonia Edit"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/AvaloniaUI/AvaloniaEdit/blob/master/LICENSE" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Fluent Avalonia UI"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/amwx/FluentAvalonia/blob/master/LICENSE" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="FluentAvalonia FluentIcons"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/jmkinzer/FluentAvalonia.FluentIcons/blob/main/LICENSE" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="CommunityToolKit MVVM"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/CommunityToolkit/dotnet/blob/main/License.md" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Discord Rich Presence"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/Lachee/discord-rpc-csharp/blob/master/LICENSE" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="MarkDig"
                                      Description="BSD 2-Clause License"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/xoofx/markdig/blob/main/license.txt" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="SharpZipLib"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/icsharpcode/SharpZipLib/blob/master/LICENSE.txt" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Puppeteer Sharp"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/hardkoded/puppeteer-sharp/blob/master/LICENSE" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Puppeteer Sharp Extra"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/Overmiind/Puppeteer-sharp-extra/blob/master/LICENSE" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="Shell Link"
                                      Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                                      CommandParameter="https://github.com/securifybv/ShellLink/blob/master/LICENSE.txt" />
 
-                <ui:CardAction Margin="4"
+                <ui:CardAction Margin="4" Icon="License"
                                      Header="SixLabors ImageSharp"
                                      Description="Custom License"
                                      Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"

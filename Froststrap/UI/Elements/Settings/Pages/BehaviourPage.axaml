@@ -69,7 +69,7 @@
                 </ComboBox>
             </controls:OptionControl>
             
-            <controls:CardExpander Header="Experimental" Description="A collection of experimental settings. Be careful while using them, as they may or may not work as intended.">
+            <controls:CardExpander Header="Experimental" Description="A collection of experimental settings. Be careful while using them, as they may or may not work as intended." IsExpanded="True">
 				<StackPanel>
             <controls:OptionControl 
                 Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
