@@ -16,8 +16,15 @@
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
                             
-                            <DockPanel LastChildFill="True">
-                                <controls:Hyperlink DockPanel.Dock="Right"
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{TemplateBinding Header}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+
+                                <controls:Hyperlink
                                                     IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                                     VerticalAlignment="Center"
                                                     Margin="6,0,0,0">
@@ -25,14 +32,7 @@
                                                          Width="14" Height="14"
                                                          Foreground="{DynamicResource SystemAccentColor}" />
                                 </controls:Hyperlink>
-
-                                <TextBlock Text="{TemplateBinding Header}"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"
-                                           VerticalAlignment="Center"
-                                           TextWrapping="Wrap"
-                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
-                            </DockPanel>
+                            </StackPanel>
 
                             <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
                                                         FontSize="12"
