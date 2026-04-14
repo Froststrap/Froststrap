@@ -72,7 +72,7 @@ namespace Froststrap.UI.Elements.Settings
 
             Dispatcher.UIThread.Post(() =>
             {
-                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
                 AttachTitleBarButtons();
                 BuildSearchIndex();
             }, DispatcherPriority.Loaded);
@@ -88,7 +88,7 @@ namespace Froststrap.UI.Elements.Settings
             }
             else if (e.PropertyName == nameof(MainWindowViewModel.SelectedPage))
             {
-                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }
         }
 
@@ -156,60 +156,45 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private void UpdateSelectedButtonStyle(string selectedPage)
+        private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
         {
-            var sidebarBorder = this.FindControl<Border>("SidebarBorder");
-
-            if (sidebarBorder?.Child is Grid sidebarGrid)
+            if (e.InvokedItemContainer is NavigationViewItem navItem && navItem.Tag is string tag)
             {
-                var topSection = sidebarGrid.Children
-                                           .OfType<ScrollViewer>()
-                                           .FirstOrDefault()?.Content as StackPanel;
+                if (tag == "about")
+                {
+                    _viewModel?.OpenAboutCommand.Execute(null);
+                    return;
+                }
 
-                if (topSection != null)
-                    UpdateButtonStyles(topSection, selectedPage);
-
-                var bottomSection = sidebarGrid.Children
-                                              .OfType<StackPanel>()
-                                              .FirstOrDefault();
-
-                if (bottomSection != null)
-                    UpdateButtonStyles(bottomSection, selectedPage);
+                var action = GetNavigationAction(tag);
+                action?.Invoke();
             }
         }
 
-        private static void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
+        private void UpdateSelectedNavigationViewItem(string selectedPage)
         {
-            foreach (var panelChild in stackPanel.Children)
+            var navView = this.FindControl<NavigationView>("NavView");
+            if (navView == null) return;
+
+            foreach(var item in navView.MenuItems)
             {
-                if (panelChild is StackPanel innerPanel)
-                {
-                    foreach (var child in innerPanel.Children)
-                    {
-                        if (child is IconButton button && button.Tag is string tag)
-                        {
-                            if (tag == selectedPage)
-                            {
-                                if (!button.Classes.Contains("Selected"))
-                                    button.Classes.Add("Selected");
-                            }
-                            else
-                            {
-                                button.Classes.Remove("Selected");
-                            }
-                        }
-                    }
-                }
-                else if (panelChild is IconButton button && button.Tag is string tag)
+                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
                 {
                     if (tag == selectedPage)
                     {
-                        if (!button.Classes.Contains("Selected"))
-                            button.Classes.Add("Selected");
+                        navView.SelectedItem = navItem;
+                        return;
                     }
-                    else
+                }
+            }
+            foreach(var item in navView.FooterMenuItems)
+            {
+                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
+                {
+                    if (tag == selectedPage)
                     {
-                        button.Classes.Remove("Selected");
+                        navView.SelectedItem = navItem;
+                        return;
                     }
                 }
             }
