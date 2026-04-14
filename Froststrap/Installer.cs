@@ -296,37 +296,6 @@ namespace Froststrap
             {
                 App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.FluentAeroDialog;
                 App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
-
-                string legacyRoot = Path.Combine(Paths.Modifications, "Preset Modifications");
-
-                if (Directory.Exists(legacyRoot))
-                {
-                    foreach (var sourceFolderPath in Directory.GetDirectories(legacyRoot))
-                    {
-                        string folderName = Path.GetFileName(sourceFolderPath);
-                        string targetFolderRoot = Path.Combine(Paths.PresetModifications, folderName);
-
-                        foreach (string file in Directory.GetFiles(sourceFolderPath, "*.*", SearchOption.AllDirectories))
-                        {
-                            string relativePath = Path.GetRelativePath(sourceFolderPath, file);
-                            string destPath = Path.Combine(targetFolderRoot, relativePath);
-                            string? destDir = Path.GetDirectoryName(destPath);
-
-                            if (!string.IsNullOrEmpty(destDir))
-                                Directory.CreateDirectory(destDir);
-
-                            if (File.Exists(destPath))
-                                File.Delete(destPath);
-
-                            File.Move(file, destPath);
-                        }
-
-                        Directory.Delete(sourceFolderPath, true);
-                    }
-
-                    if (Directory.GetFileSystemEntries(legacyRoot).Length == 0)
-                        Directory.Delete(legacyRoot, false);
-                }
             }
 
             // Save everything and stamp the version so this batch doesn't re-run
