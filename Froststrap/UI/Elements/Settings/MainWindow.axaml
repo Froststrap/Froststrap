@@ -6,7 +6,7 @@
     xmlns:ui="using:FluentAvalonia.UI.Controls"
 	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
 	xmlns:resources="using:Froststrap.Resources"
-	xmlns:ic="using:IconPacks.Avalonia.Material"
+	xmlns:ic="using:FluentIcons.Avalonia.Fluent"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:elements="clr-namespace:Froststrap.UI.Elements"
 	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
@@ -21,8 +21,8 @@
 	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
-	<Grid RowDefinitions="48,*,56" ColumnDefinitions="220,*" Background="{DynamicResource ApplicationBackgroundColor}">
-		<Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Background="{DynamicResource ControlFillColorDefaultBrush}">
+	<Grid RowDefinitions="48,*,56" Background="{DynamicResource ApplicationBackgroundColor}">
+		<Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
 		   <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" >
 				<Image
 					Source="avares://Froststrap/Froststrap.ico"
@@ -47,145 +47,80 @@
 			</StackPanel>
 		</Grid>
 
-		<Border Name="SidebarBorder"
-			BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-			Grid.Column="0"
-			Grid.Row="1"
-			BorderThickness="0,0,1,0"
-			Background="{DynamicResource ControlFillColorDefaultBrush}">
-			<Grid RowDefinitions="*,56">
-				<ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-					<StackPanel Spacing="12" Margin="8,0,8,0">
-						<StackPanel Spacing="0">
-							<TextBlock
-								Text="MAIN"
-								FontSize="11"
-								FontWeight="SemiBold"
-								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-								Margin="10,8,10,4"
-								Opacity="0.7" />
+		<ui:NavigationView Grid.Row="1"
+						   Name="NavView"
+						   PaneDisplayMode="Left"
+						   IsSettingsVisible="False"
+						   IsBackButtonVisible="False"
+						   OpenPaneLength="220"
+						   ItemInvoked="NavView_ItemInvoked">
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItemHeader Content="MAIN" />
+				<ui:NavigationViewItem Tag="integrations" Content="{x:Static resources:Strings.Menu_Integrations_Title}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Link" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Tag="behaviour" Content="{x:Static resources:Strings.Menu_Behaviour_Title}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Play" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Tag="channels" Content="{x:Static resources:Strings.Common_Deployment}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="CloudArrowUp" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
 
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToIntegrationsCommand}"
-								Tag="integrations"
-								Icon="Connection"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_Integrations_Title}" />
+				<ui:NavigationViewItemHeader Content="APPEARANCE" />
+				<ui:NavigationViewItem Tag="mods" Content="Preset Mods">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="PuzzlePiece" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Tag="appearance" Content="{x:Static resources:Strings.Menu_Appearance_Title}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Color" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
 
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToBehaviourCommand}"
-								Tag="behaviour"
-								Icon="CogOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_Behaviour_Title}" />
+				<ui:NavigationViewItemHeader Content="ROBLOX TWEAKS" />
+				<ui:NavigationViewItem Tag="fastflags" Content="{x:Static resources:Strings.Menu_FastFlags_Title}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Flag" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Name="gbs" Tag="globalsettings" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="EditSettings" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
 
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToChannelsCommand}"
-								Tag="channels"
-								Icon="CloudArrowUp"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Common_Deployment}" />
-						</StackPanel>
+				<ui:NavigationViewItemHeader Content="MISC" />
+				<ui:NavigationViewItem Tag="regionselector" Content="{x:Static resources:Strings.Menu_RegionSelector_Title}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Earth" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Tag="shortcuts" Content="{x:Static resources:Strings.Common_Shortcuts}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Link" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Info" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+			</ui:NavigationView.MenuItems>
 
-						<StackPanel Spacing="0">
-							<TextBlock
-								Text="APPEARANCE"
-								FontSize="11"
-								FontWeight="SemiBold"
-								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-								Margin="10,8,10,4"
-								Opacity="0.7" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToPresetModsCommand}"
-								Tag="mods"
-								Icon="PuzzleOutline"
-								IconSize="16"
-								Content="Preset Mods" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToAppearanceCommand}"
-								Tag="appearance"
-								Icon="PaletteOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_Appearance_Title}" />
-						</StackPanel>
-
-						<StackPanel Spacing="0">
-							<TextBlock
-								Text="ROBLOX TWEAKS"
-								FontSize="11"
-								FontWeight="SemiBold"
-								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-								Margin="10,8,10,4"
-								Opacity="0.7" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToFastFlagsCommand}"
-								Tag="fastflags"
-								Icon="FlagOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_FastFlags_Title}" />
-
-							<controls:IconButton
-								Name="gbs"
-								Classes="nav-button"
-								Command="{Binding NavigateToGlobalSettingsCommand}"
-								Tag="globalsettings"
-								Icon="SquareEditOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
-						</StackPanel>
-
-						<StackPanel Spacing="0">
-							<TextBlock
-								Text="MISC"
-								FontSize="11"
-								FontWeight="SemiBold"
-								Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-								Margin="10,8,10,4"
-								Opacity="0.7" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToRegionSelectorCommand}"
-								Tag="regionselector"
-								Icon="Earth"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToShortcutsCommand}"
-								Tag="shortcuts"
-								Icon="LinkBoxOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Common_Shortcuts}" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding OpenAboutCommand}"
-								Icon="InformationOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_About_Title}" />
-						</StackPanel>
-					</StackPanel>
-				</ScrollViewer>
-			</Grid>
-		</Border>
-
-		<Grid Grid.Column="1" Grid.Row="1" RowDefinitions="Auto,*">
-			<Border
-				Grid.Row="0"
-				Padding="24,24,24,16"
-				BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
-				BorderThickness="0,0,0,1">
+			<ui:NavigationView.Content>
+				<Grid RowDefinitions="Auto,*">
+					<Border
+						Grid.Row="0"
+						Padding="24,24,24,16"
+						BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
+						BorderThickness="0,0,0,1">
 				<StackPanel>
 					<ItemsControl
 						ItemsSource="{Binding BreadcrumbItems}"
@@ -257,16 +192,17 @@
 					MaxWidth="450"
 					ZIndex="1000" />
 
-				<TransitioningContentControl
-					x:Name="PageContentControl"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch" />
-			</Panel>
-		</Grid>
+							<TransitioningContentControl
+								x:Name="PageContentControl"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Stretch" />
+						</Panel>
+					</Grid>
+					</ui:NavigationView.Content>
+				</ui:NavigationView>
 
-		<Border
-			Grid.Row="2"
-			Grid.ColumnSpan="2"
+				<Border
+					Grid.Row="2"
 			Height="56"
 			Padding="0,0,16,0"
 			Background="{DynamicResource ControlFillColorDefaultBrush}"
