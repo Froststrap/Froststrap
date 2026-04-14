@@ -3,15 +3,15 @@
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
-	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-	xmlns:resources="using:Froststrap.Resources"
-	xmlns:ic="using:FluentIcons.Avalonia.Fluent"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:elements="clr-namespace:Froststrap.UI.Elements"
-	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+	xmlns:elements="clr-namespace:Froststrap.UI.Elements"
+	xmlns:ic="using:FluentIcons.Avalonia.Fluent"
 	xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
+	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
 	xmlns:models="using:Froststrap.Models"
+	xmlns:resources="using:Froststrap.Resources"
+	xmlns:ui="using:FluentAvalonia.UI.Controls"
+	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
 	Title="{x:Static resources:Strings.Menu_Title}"
 	Width="1125"
 	Height="700"
@@ -21,80 +21,84 @@
 	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
-	<Grid RowDefinitions="48,*,56" Background="{DynamicResource ApplicationBackgroundColor}">
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="48,*,56">
 		<Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
-			<controls:TitleBar Grid.Row="0" 
-                       Title="Froststrap Settings"
-                       Icon="avares://Froststrap/Froststrap.ico"
-                       Background="{DynamicResource ControlFillColorDefaultBrush}">
-        
-			<elements:SearchBar DataContext="{Binding SearchBar}" Width="400" />
-        
+			<controls:TitleBar
+				Title="Froststrap Settings"
+				Grid.Row="0"
+				Icon="avares://Froststrap/Froststrap.ico">
+
+				<elements:SearchBar Width="400" DataContext="{Binding SearchBar}" />
+
 			</controls:TitleBar>
 		</Grid>
 
-		<ui:NavigationView Grid.Row="1"
-						   Name="NavView"
-						   PaneDisplayMode="Left"
-						   IsSettingsVisible="False"
-						   IsBackButtonVisible="False"
-						   OpenPaneLength="220"
-						   Background="{DynamicResource ControlFillColorDefaultBrush}"
-						   ItemInvoked="NavView_ItemInvoked">
+		<ui:NavigationView
+			Name="NavView"
+			Grid.Row="1"
+			Background="{DynamicResource ControlFillColorDefaultBrush}"
+			IsBackButtonVisible="False"
+			IsSettingsVisible="False"
+			ItemInvoked="NavView_ItemInvoked"
+			OpenPaneLength="220"
+			PaneDisplayMode="Left">
 			<ui:NavigationView.MenuItems>
 				<ui:NavigationViewItemHeader Content="MAIN" />
-				<ui:NavigationViewItem Tag="integrations" Content="{x:Static resources:Strings.Menu_Integrations_Title}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Link" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Tag="behaviour" Content="{x:Static resources:Strings.Menu_Behaviour_Title}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Play" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Tag="channels" Content="{x:Static resources:Strings.Common_Deployment}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="CloudArrowUp" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
 
 				<ui:NavigationViewItemHeader Content="APPEARANCE" />
-				<ui:NavigationViewItem Tag="mods" Content="Preset Mods">
+				<ui:NavigationViewItem Content="Preset Mods" Tag="mods">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="PuzzlePiece" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Tag="appearance" Content="{x:Static resources:Strings.Menu_Appearance_Title}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Color" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
 
 				<ui:NavigationViewItemHeader Content="ROBLOX TWEAKS" />
-				<ui:NavigationViewItem Tag="fastflags" Content="{x:Static resources:Strings.Menu_FastFlags_Title}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Flag" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Name="gbs" Tag="globalsettings" Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}">
+				<ui:NavigationViewItem
+					Name="gbs"
+					Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}"
+					Tag="globalsettings">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="EditSettings" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
 
 				<ui:NavigationViewItemHeader Content="MISC" />
-				<ui:NavigationViewItem Tag="regionselector" Content="{x:Static resources:Strings.Menu_RegionSelector_Title}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Earth" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Tag="shortcuts" Content="{x:Static resources:Strings.Common_Shortcuts}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Link" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Info" />
 					</ui:NavigationViewItem.IconSource>
@@ -106,117 +110,133 @@
 					<Border
 						Grid.Row="0"
 						Padding="24,24,24,16"
-						BorderBrush="{DynamicResource ControlFillColorDefaultBrush}"
-						BorderThickness="0,0,0,1">
-				<StackPanel>
-					<ItemsControl
-						ItemsSource="{Binding BreadcrumbItems}"
-						Margin="0,0,0,10"
-						IsVisible="{Binding HasBreadcrumbs}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="vm:BreadcrumbItemModel">
-								<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-									<Button
-										Content="{Binding Content}"
-										Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
-										CommandParameter="{Binding}"
-										Background="Transparent"
-										BorderThickness="0"
-										Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-										FontSize="20"
-										FontWeight="SemiBold"
-										Padding="0"
-										IsVisible="{Binding !IsLast}" />
-									<TextBlock
-										Text="›"
-										VerticalAlignment="Center"
-										FontSize="20"
-										Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-										IsVisible="{Binding !IsLast}" />
-									<TextBlock
-										Text="{Binding Content}"
-										VerticalAlignment="Center"
-										FontSize="20"
-										FontWeight="SemiBold"
-										Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-										IsVisible="{Binding IsLast}" />
-								</StackPanel>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
+						BorderBrush="{DynamicResource ControlStrokeColorDefault}">
+						<StackPanel>
+							<ItemsControl
+								Margin="0,0,0,10"
+								IsVisible="{Binding HasBreadcrumbs}"
+								ItemsSource="{Binding BreadcrumbItems}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel
+											VerticalAlignment="Center"
+											Orientation="Horizontal"
+											Spacing="8" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate DataType="vm:BreadcrumbItemModel">
+										<StackPanel
+											VerticalAlignment="Center"
+											Orientation="Horizontal"
+											Spacing="8">
+											<Button
+												Padding="0"
+												Background="Transparent"
+												BorderThickness="0"
+												Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
+												CommandParameter="{Binding}"
+												Content="{Binding Content}"
+												FontSize="20"
+												FontWeight="SemiBold"
+												Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+												IsVisible="{Binding !IsLast}" />
+											<TextBlock
+												VerticalAlignment="Center"
+												FontSize="20"
+												Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+												IsVisible="{Binding !IsLast}"
+												Text="›" />
+											<TextBlock
+												VerticalAlignment="Center"
+												FontSize="20"
+												FontWeight="SemiBold"
+												Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+												IsVisible="{Binding IsLast}"
+												Text="{Binding Content}" />
+										</StackPanel>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
 
-					<TextBlock
-						x:Name="PageTitleText"
-						FontSize="20"
-						FontWeight="SemiBold"
-						Margin="0,0,0,4"
-						Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-						Text="{Binding CurrentPageTitle}"
-						IsVisible="{Binding ShowPageTitle}" />
+							<TextBlock
+								x:Name="PageTitleText"
+								Margin="0,0,0,4"
+								FontSize="20"
+								FontWeight="SemiBold"
+								Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+								IsVisible="{Binding ShowPageTitle}"
+								Text="{Binding CurrentPageTitle}" />
 
-					<controls:MarkdownTextBlock
-						x:Name="PageDescriptionText"
-						FontSize="13"
-						Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-						MarkdownText="{Binding CurrentPageDescription}"
-						Margin="0,0,0,2"
-						IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+							<controls:MarkdownTextBlock
+								x:Name="PageDescriptionText"
+								Margin="0,0,0,2"
+								FontSize="13"
+								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+								MarkdownText="{Binding CurrentPageDescription}" />
 
-					<ui:InfoBar x:Name="AlertBar" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
-				</StackPanel>
-			</Border>
+							<ui:InfoBar
+								x:Name="AlertBar"
+								Margin="0,8,0,0"
+								IsVisible="False"
+								Severity="Warning" />
+						</StackPanel>
+					</Border>
 
-			<Panel Grid.Row="1">
-				<Panel Name="NotificationPanel"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Bottom"
-					Margin="0,0,0,15"
-					MaxWidth="450"
-					ZIndex="1000" />
+					<Panel Grid.Row="1">
+						<Panel
+							Name="NotificationPanel"
+							MaxWidth="450"
+							Margin="0,0,0,15"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Bottom"
+							ZIndex="1000" />
 
-							<TransitioningContentControl
-								x:Name="PageContentControl"
-								HorizontalAlignment="Stretch"
-								VerticalAlignment="Stretch" />
-						</Panel>
-					</Grid>
-					</ui:NavigationView.Content>
-				</ui:NavigationView>
+						<TransitioningContentControl
+							x:Name="PageContentControl"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch" />
+					</Panel>
+				</Grid>
+			</ui:NavigationView.Content>
+		</ui:NavigationView>
 
-				<Border
-					Grid.Row="2"
+		<Border
+			Grid.Row="2"
 			Height="56"
 			Padding="0,0,16,0"
 			Background="{DynamicResource ControlFillColorDefaultBrush}"
 			BorderBrush="{DynamicResource ControlStrokeColorDefault}"
 			BorderThickness="0,1,0,0">
-			<Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto"
-				ColumnSpacing="8">
-				<local:AccountSelectorView x:Name="AccountSelectorView" Grid.Column="0" Margin="8,0,0,0" />
-				<Button Grid.Column="2"
-					Classes="accent"
+			<Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto" ColumnSpacing="8">
+				<local:AccountSelectorView
+					x:Name="AccountSelectorView"
+					Grid.Column="0"
+					Margin="8,0,0,0" />
+				<Button
+					Grid.Column="2"
 					Height="36"
 					Padding="20,0"
+					Classes="accent"
 					Command="{Binding SaveAndLaunchSettingsCommand}"
 					Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
-				<Button Grid.Column="3"
-					Classes="accent"
+				<Button
+					Grid.Column="3"
 					Height="36"
 					Padding="20,0"
+					Classes="accent"
 					Command="{Binding RestartAppCommand}"
 					Content="{x:Static resources:Strings.Menu_Restart}" />
-				<Button Grid.Column="4"
-					Classes="accent"
+				<Button
+					Grid.Column="4"
 					Height="36"
 					Padding="20,0"
+					Classes="accent"
 					Command="{Binding SaveSettingsCommand}"
 					Content="{x:Static resources:Strings.Menu_Save}" />
-				<Button Grid.Column="5"
+				<Button
+					Grid.Column="5"
 					Height="36"
 					Padding="20,0"
 					Command="{Binding CloseWindowCommand}"
@@ -230,9 +250,9 @@
 			Grid.Column="1"
 			Width="905"
 			Height="700"
-			Opacity="0"
 			IsHitTestVisible="False"
 			IsVisible="False"
+			Opacity="0"
 			ZIndex="-1000" />
 	</Grid>
 </base:AvaloniaWindow>
