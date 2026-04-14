@@ -595,7 +595,15 @@ namespace Froststrap.UI.Elements.Settings
             _state.Top = this.Position.Y;
         }
 
-        private void MainWindow_Closed(object? sender, EventArgs e) => App.Logger.WriteLine("MainWindow", "Settings window closed");
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            if (App.LaunchSettings.TestModeFlag.Active)
+                LaunchHandler.LaunchRoblox(LaunchMode.Player);
+            else
+                App.SoftTerminate();
+
+            App.Logger.WriteLine("MainWindow", "Settings window closed");
+        }
 
         #endregion
     }

@@ -116,17 +116,15 @@ namespace Froststrap
 
             try
             {
-                while (!_cancellationTokenSource.Token.IsCancellationRequested &&
-                                       Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId));
-            }
-            catch (OperationCanceledException)
-            {
-                App.Logger.WriteLine("Watcher::Run", "Watcher was cancelled");
-                return;
-            }
+                while (!_cancellationTokenSource.Token.IsCancellationRequested)
+                {
+                    var processExists = Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId);
+                    if (!processExists) break;
 
-            if (_cancellationTokenSource.Token.IsCancellationRequested)
-                return;
+                    await Task.Delay(1000, _cancellationTokenSource.Token);
+                }
+            }
+            catch (OperationCanceledException) { return; }
 
             if (_watcherData.AutoclosePids is not null)
             {
