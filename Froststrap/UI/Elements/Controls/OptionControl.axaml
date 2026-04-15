@@ -16,7 +16,7 @@
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
                             
-                            <StackPanel Orientation="Horizontal">
+                            <WrapPanel Orientation="Horizontal">
                                 <TextBlock Text="{TemplateBinding Header}"
                                            FontSize="14"
                                            FontWeight="SemiBold"
@@ -32,7 +32,7 @@
                                                          Width="14" Height="14"
                                                          Foreground="{DynamicResource SystemAccentColor}" />
                                 </controls:Hyperlink>
-                            </StackPanel>
+                            </WrapPanel>
 
                             <controls:MarkdownTextBlock MarkdownText="{TemplateBinding Description}"
                                                         FontSize="12"
