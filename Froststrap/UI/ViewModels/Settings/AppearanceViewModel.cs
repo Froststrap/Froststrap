@@ -98,7 +98,12 @@ namespace Froststrap.UI.ViewModels.Settings
         public WindowsBackdrops SelectedBackdrop
         {
             get => App.Settings.Prop.SelectedBackdrop;
-            set => App.Settings.Prop.SelectedBackdrop = value;
+            set
+            {
+                App.Settings.Prop.SelectedBackdrop = value;
+                App.WindowsBackdrop();
+                OnPropertyChanged(nameof(SelectedBackdrop));
+            }
         }
 
         public string Title
