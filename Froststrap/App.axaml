@@ -7,7 +7,7 @@
     RequestedThemeVariant="Dark">
 
     <Application.Styles>
-        <sty:FluentAvaloniaTheme PreferSystemTheme="True" />
+        <sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True" />
 
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
