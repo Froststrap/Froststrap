@@ -1,8 +1,8 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ic="using:IconPacks.Avalonia.Material"
+        xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+        xmlns:converters="clr-namespace:Froststrap.UI.Converters"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
-
 
     <Style Selector="controls|IconButton">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
@@ -24,14 +24,13 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
-                    
+
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
-                        <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
-                                            Foreground="{TemplateBinding Foreground}"
-                                            Width="{TemplateBinding IconSize}"
-                                            Height="{TemplateBinding IconSize}"
-                                            VerticalAlignment="Center"
-                                            IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       FontSize="{TemplateBinding IconSize}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
                         <Path Data="{TemplateBinding IconData}"
                               Fill="{TemplateBinding Foreground}"
@@ -46,7 +45,7 @@
                                 </MultiBinding>
                             </Path.IsVisible>
                         </Path>
-                        
+
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Center"

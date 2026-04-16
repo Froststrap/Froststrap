@@ -7,7 +7,7 @@
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:ic="using:IconPacks.Avalonia.Material"
+    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     x:DataType="vm:ShortcutsViewModel">
 
     <ScrollViewer>
@@ -99,7 +99,7 @@
                     <StackPanel Grid.Column="1" Margin="16,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="{Binding PreviewName}" FontSize="20" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                            <ic:PackIconMaterial Kind="TagOutline" FontSize="14" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                            <ic:SymbolIcon Symbol="Tag" FontSize="14" Margin="0,0,6,0" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                             <TextBlock Text="{Binding PreviewId}" FontSize="13" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         </StackPanel>
                     </StackPanel>
@@ -116,7 +116,7 @@
                             <TextBox.InnerRightContent>
                                 <controls:IconButton
                                     Command="{Binding SearchGamesCommand}"
-                                    Icon="Magnify"
+                                    Icon="Search"
                                     IconSize="16"
                                     Click="OnSearchButtonClick"
                                     Background="Transparent"
@@ -168,12 +168,12 @@
                                                             VerticalAlignment="Center"
                                                             Orientation="Horizontal"
                                                             Spacing="4">
-                                                            <ic:PackIconMaterial 
+                                                            <ic:SymbolIcon 
                                                               Margin="8,2,0,0"
                                                               Width="14"
                                                               Height="14"
                                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                              Kind="AccountMultiple"/>
+                                                              Symbol="People"/>
                                                             <TextBlock
                                                                VerticalAlignment="Center"
                                                                FontSize="12"
@@ -208,7 +208,7 @@
                 <Separator Margin="0,8"/>
 
                 <DockPanel>
-                    <controls:IconButton Command="{Binding CreateGameShortcutCommand}" Content="Create Shortcut" Icon="Plus" />
+                    <controls:IconButton Command="{Binding CreateGameShortcutCommand}" Content="Create Shortcut" Icon="Add" />
                     <TextBlock Text="{Binding ShortcutStatus}" Margin="16,8,0,0" FontSize="12" />
                 </DockPanel>
             </StackPanel>

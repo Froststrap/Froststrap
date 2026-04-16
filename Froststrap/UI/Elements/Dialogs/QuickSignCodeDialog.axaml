@@ -4,9 +4,9 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:ic="using:IconPacks.Avalonia.Material"
+        xmlns:ic="using:FluentIcons.Avalonia.Fluent"
 		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
@@ -32,10 +32,10 @@
                 Grid.Row="0"
                 Margin="0,0,0,16"
                 Orientation="Horizontal">
-                <ic:PackIconMaterial
+                <ic:SymbolIcon
                     Margin="0,0,8,0"
                     FontSize="20"
-                    Kind="Link" />
+                    Symbol="Link" />
                 <TextBlock
                     FontSize="18"
                     FontWeight="SemiBold"
@@ -85,8 +85,8 @@
                 CornerRadius="6"
                 Padding="12,10">
                 <StackPanel Orientation="Horizontal">
-                    <ic:PackIconMaterial 
-                        Kind="Information"
+                    <ic:SymbolIcon   
+                        Symbol="Info"
                         FontSize="16"
                         Margin="0,0,8,0"
                         Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>

@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:ic="using:IconPacks.Avalonia.Material"
+    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:BehaviourViewModel"
@@ -75,18 +75,18 @@
                 Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
                 Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <ic:PackIconMaterial Kind="AlertOutline" VerticalAlignment="Center" Foreground="Orange">
-                        <ic:PackIconMaterial.Styles>
-                            <Style Selector="ic|PackIconMaterial">
+                    <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
+                        <ic:SymbolIcon.Styles>
+                            <Style Selector="ic|SymbolIcon">
                                 <Setter Property="IsVisible" Value="False"/>
                             </Style>
-                            <Style Selector="ic|PackIconMaterial">
+                            <Style Selector="ic|SymbolIcon">
                                 <Style.Resources>
                                     </Style.Resources>
                                 <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
                             </Style>
-                        </ic:PackIconMaterial.Styles>
-                    </ic:PackIconMaterial>
+                        </ic:SymbolIcon.Styles>
+                    </ic:SymbolIcon>
                     <ToggleSwitch IsChecked="{Binding CookieAccess, Mode=TwoWay}" />
                 </StackPanel>
             </controls:OptionControl>
@@ -95,18 +95,18 @@
                 Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Title}"
                 Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Description}">
                 <StackPanel Orientation="Horizontal">
-                    <ic:PackIconMaterial Kind="AlertOutline" VerticalAlignment="Center" Foreground="Orange">
-                        <ic:PackIconMaterial.Styles>
-                            <Style Selector="ic|PackIconMaterial">
+                    <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
+                        <ic:SymbolIcon.Styles>
+                            <Style Selector="ic|SymbolIcon">
                                 <Setter Property="IsVisible" Value="False"/>
                             </Style>
-                            <Style Selector="ic|PackIconMaterial">
+                            <Style Selector="ic|SymbolIcon">
                                 <Style.Resources>
                                     </Style.Resources>
                                 <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
                             </Style>
-                        </ic:PackIconMaterial.Styles>
-                    </ic:PackIconMaterial>
+                        </ic:SymbolIcon.Styles>
+                    </ic:SymbolIcon>
                 <ToggleSwitch IsChecked="{Binding EnableBetterMatchmaking, Mode=TwoWay}" />
             </StackPanel>
         </controls:OptionControl>
@@ -115,18 +115,18 @@
                 Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Title}"
                 Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Description}">
                     <StackPanel Orientation="Horizontal">
-                        <ic:PackIconMaterial Kind="AlertOutline" VerticalAlignment="Center" Foreground="Orange">
-                            <ic:PackIconMaterial.Styles>
-                                <Style Selector="ic|PackIconMaterial">
+                        <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
+                            <ic:SymbolIcon.Styles>
+                                <Style Selector="ic|SymbolIcon">
                                     <Setter Property="IsVisible" Value="False"/>
                                 </Style>
-                                <Style Selector="ic|PackIconMaterial">
+                                <Style Selector="ic|SymbolIcon">
                                     <Style.Resources>
                                         </Style.Resources>
                                     <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
                                 </Style>
-                            </ic:PackIconMaterial.Styles>
-                        </ic:PackIconMaterial>
+                            </ic:SymbolIcon.Styles>
+                        </ic:SymbolIcon>
                     <ToggleSwitch IsChecked="{Binding EnableBetterMatchmakingRandomization, Mode=TwoWay}" />
                 </StackPanel>
             </controls:OptionControl>

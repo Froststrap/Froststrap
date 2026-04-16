@@ -2,7 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-        xmlns:ic="using:IconPacks.Avalonia.Material">
+        xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+        xmlns:converters="clr-namespace:Froststrap.UI.Converters">
 
     <Style Selector="controls|CardAction">
         <Setter Property="Background" Value="Transparent" />
@@ -13,13 +14,13 @@
                                Padding="{TemplateBinding Padding}"
                                Margin="0,4">
                     <Grid ColumnDefinitions="Auto,*">
-                            <ic:PackIconMaterial Kind="{TemplateBinding Icon}"
-                                                 Grid.Column="0"
-                                                 Width="24" Height="24"
-                                                 HorizontalAlignment="Center"
-                                                 VerticalAlignment="Center" />
+                            <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
+                                           Grid.Column="0"
+                                           Width="24" Height="24"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center" />
 
-                        <StackPanel Grid.Column="1" 
+                        <StackPanel Grid.Column="1"
                                     VerticalAlignment="Center" 
                                     Margin="16,0,0,0" 
                                     Spacing="2">

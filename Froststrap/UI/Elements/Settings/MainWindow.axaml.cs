@@ -8,10 +8,10 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
+using FluentIcons.Common;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
-using IconPacks.Avalonia.Material;
 using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Settings
@@ -275,20 +275,20 @@ namespace Froststrap.UI.Elements.Settings
                 5000);
         }
 
-        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, PackIconMaterialKind? icon = null)
+        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, FluentIcons.Common.Symbol? icon = null)
         {
             Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
         }
 
-        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, PackIconMaterialKind? customIcon = null)
+        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, FluentIcons.Common.Symbol? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
             var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
-            var iconKind = customIcon ?? (type == InfoBarSeverity.Success
-                ? PackIconMaterialKind.CheckboxMultipleMarkedCircleOutline
-                : PackIconMaterialKind.AlertOutline);
+            var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
+                ? FluentIcons.Common.Symbol.CheckmarkCircle
+                : FluentIcons.Common.Symbol.Warning);
 
             var contentGrid = new Grid
             {
@@ -296,11 +296,10 @@ namespace Froststrap.UI.Elements.Settings
                 Margin = new Thickness(0)
             };
 
-            var icon = new PackIconMaterial
+            var icon = new FluentIcons.Avalonia.Fluent.SymbolIcon
             {
-                Kind = iconKind,
-                Width = 28,
-                Height = 28,
+                Symbol = iconSymbol,
+                FontSize = 28,
                 Foreground = new SolidColorBrush(Color.Parse(accentColor)),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 Margin = new Thickness(16, 0, 12, 0)

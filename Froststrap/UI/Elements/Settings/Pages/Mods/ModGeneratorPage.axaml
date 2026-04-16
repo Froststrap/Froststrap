@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
-             xmlns:ic="using:IconPacks.Avalonia.Material"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:resources="using:Froststrap.Resources"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings.Mods"
@@ -20,19 +20,19 @@
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" 
                                      Command="{Binding OpenCommunityModsCommand}"
                                      Header="Community Mods"
-                                     Icon="StorefrontOutline"
+                                     Icon="ShoppingStore"
                                      Description="Explore user-created mods." />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0" 
                                      Command="{Binding OpenPresetModsCommand}"
                                      Header="Preset Mods"
-                                     Icon="BookOpenPageVariantOutline"
+                                     Icon="BookOpen"
                                      Description="Official built-in mods." />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0" 
                                      Command="{Binding OpenModsCommand}"
                                      Header="My Mods"
-                                     Icon="FormatListBulletedSquare"
+                                     Icon="TextBulletList"
                                      Description="Manage your active mods." />
             </Grid>
 
@@ -145,7 +145,7 @@
                                 <Button.ContentTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                            <ic:PackIconMaterial Kind="PlayCircleOutline" />
+                                            <ic:SymbolIcon Symbol="PlayCircle" />
                                             <TextBlock Text="{Binding}" />
                                         </StackPanel>
                                     </DataTemplate>

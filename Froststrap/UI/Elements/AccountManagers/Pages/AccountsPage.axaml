@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="using:IconPacks.Avalonia.Material" 
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent" 
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.AccountManagers"
              xmlns:converters="clr-namespace:Froststrap.UI.Converters"
@@ -26,7 +26,7 @@
                                 <Border CornerRadius="35" ClipToBounds="True"
                                         Background="{DynamicResource ControlFillColorSecondaryBrush}">
                                     <Panel>
-                                        <ic:PackIconMaterial Kind="FileQuestionOutline" Width="32" Height="32"
+                                        <ic:SymbolIcon Symbol="Person" Width="32" Height="32"
                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
                                            IsVisible="{Binding !CurrentUserAvatarUrl, Converter={x:Static ObjectConverters.IsNull}}"/>
                                         <Image Source="{Binding CurrentUserAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}" 

@@ -8,8 +8,8 @@ using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
+using FluentIcons.Common;
 using Froststrap.UI.Elements.Base;
-using IconPacks.Avalonia.Material;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
@@ -83,7 +83,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 VerticalAlignment = VerticalAlignment.Top,
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
-                Content = new PackIconMaterial { Kind = PackIconMaterialKind.Close, Width = 12, Height = 12 },
+                Content = new FluentIcons.Avalonia.Fluent.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Dismiss, FontSize = 12 },
                 Command = new RelayCommand(() => { _cts.Cancel(); Close(); })
             };
 

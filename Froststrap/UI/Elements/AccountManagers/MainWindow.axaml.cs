@@ -105,12 +105,12 @@ namespace Froststrap.UI.Elements.AccountManagers
             }
         }
 
-        private IconPacks.Avalonia.Material.PackIconMaterial? FindIconInButton(Button button)
+        private FluentIcons.Avalonia.Fluent.SymbolIcon? FindIconInButton(Button button)
         {
             if (button.Content is Panel panel)
-                return panel.Children.OfType<IconPacks.Avalonia.Material.PackIconMaterial>().FirstOrDefault();
+                return panel.Children.OfType<FluentIcons.Avalonia.Fluent.SymbolIcon>().FirstOrDefault();
 
-            if (button.Content is IconPacks.Avalonia.Material.PackIconMaterial icon)
+            if (button.Content is FluentIcons.Avalonia.Fluent.SymbolIcon icon)
                 return icon;
 
             return null;

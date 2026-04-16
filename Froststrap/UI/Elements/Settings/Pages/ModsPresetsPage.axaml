@@ -15,25 +15,25 @@
         <StackPanel Margin="14">
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto, Auto">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
-                                     Icon="StorefrontOutline" Description="Explore user-created mods."
+                                     Icon="ShoppingStore" Description="Explore user-created mods."
                                      Command="{Binding OpenCommunityModsCommand}" />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="My Mods"
-                                     Icon="FormatListBulletedSquare" Description="Manage your active mods."
+                                     Icon="TextBulletList" Description="Manage your active mods."
                                      Command="{Binding OpenModsCommand}" />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
-                                     Icon="PaletteOutline" Description="Generate mods easily with a single click."
+                                     Icon="PaintBrush" Description="Generate mods easily with a single click."
                                      Command="{Binding OpenModGeneratorCommand}"/>
                 <controls:CardAction Grid.Row="1" Grid.ColumnSpan="3"
                                      Header="Open Preset Mods Folder"
-                                     Icon="FolderOpenOutline" 
+                                     Icon="FolderOpen" 
                                      Description="Opens your Preset Modification folder, Used like Bloxstrap."
                                      Command="{Binding OpenModsFolderCommand}"/>
-                
+
                 <controls:CardAction Grid.Row="2" Grid.ColumnSpan="3"
                                      Header="{x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Title}"
-                                     Icon="ShieldCheckOutline" 
+                                     Icon="ShieldCheckmark" 
                                      Description="{Binding Source={x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"
                                      Command="{Binding OpenCompatSettingsCommand}"/>
             </Grid>
