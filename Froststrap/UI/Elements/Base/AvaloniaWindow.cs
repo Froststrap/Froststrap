@@ -38,7 +38,11 @@ namespace Froststrap.UI.Elements.Base
                 : ThemeVariant.Dark;
 
             var faTheme = Application.Current.Styles.OfType<FluentAvaloniaTheme>().FirstOrDefault();
-            if (faTheme != null) faTheme.PreferSystemTheme = false;
+            if (faTheme != null)
+            {
+                faTheme.PreferSystemTheme = false;
+                faTheme.PreferUserAccentColor = true;
+            }
 
             if (_activeThemeDictionary != null)
             {
