@@ -96,13 +96,11 @@
                                     Height="270"
                                     Margin="4"
                                     Padding="0"
-                                    Background="{DynamicResource NormalDarkAndLightBackground}"
                                     CornerRadius="8"
                                     ClipToBounds="True">
                                 <Grid RowDefinitions="140, Auto, Auto, *">
                                     
                                     <Border Grid.Row="0"
-                                            Margin="-20,-20,-20,0"
                                             CornerRadius="8,8,0,0"
                                             ClipToBounds="True">
                                         <Grid>
