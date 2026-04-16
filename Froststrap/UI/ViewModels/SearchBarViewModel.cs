@@ -15,7 +15,7 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Collections.ObjectModel;
 using Froststrap.UI.Elements.Settings;
-using IconPacks.Avalonia.Material;
+using FluentIcons.Common;
 using Avalonia.Controls.Notifications;
 using FluentAvalonia.UI.Controls;
 
@@ -393,7 +393,7 @@ namespace Froststrap.UI.ViewModels
                 $"Searching for region {selectedRegion}", 
                 InfoBarSeverity.Informational,
                 5000, 
-                PackIconMaterialKind.Earth
+                FluentIcons.Common.Symbol.Globe
             );
 
             var fetcher = new RobloxServerFetcher();
@@ -434,7 +434,7 @@ namespace Froststrap.UI.ViewModels
                             $"Joining server in {selectedRegion}",
                             InfoBarSeverity.Success, 
                             5000, 
-                            PackIconMaterialKind.Check
+                            FluentIcons.Common.Symbol.Checkmark
                         );
                         await AccountManager.Shared.LaunchAccountAsync(account, content.RootPlaceId, matchingServer.Id);
                         return;
@@ -451,7 +451,7 @@ namespace Froststrap.UI.ViewModels
                             $"Could not find a server in {selectedRegion}.",
                             InfoBarSeverity.Warning, 
                             5000, 
-                            PackIconMaterialKind.AlertCircle
+                            FluentIcons.Common.Symbol.Warning
                         );
                         return; // Searched all servers
                     }
@@ -464,7 +464,7 @@ namespace Froststrap.UI.ViewModels
                     $"Failed to find a server in {selectedRegion} after {maxAttempts} attempts.",
                     InfoBarSeverity.Warning, 
                     5000, 
-                    PackIconMaterialKind.AlertCircle
+                    FluentIcons.Common.Symbol.Warning
                 );
             }
             catch (Exception ex)

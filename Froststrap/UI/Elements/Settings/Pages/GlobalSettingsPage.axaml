@@ -3,39 +3,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-             xmlns:resources="clr-namespace:Froststrap.Resources"
-             xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
-             x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettingsPage"
+			 xmlns:resources="clr-namespace:Froststrap.Resources"
+			 xmlns:models="clr-namespace:Froststrap.Models.APIs.Config"
+			 xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+			 x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettingsPage"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
              x:DataType="vm:GlobalSettingsViewModel"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="1500">
 	<ScrollViewer>
 		<StackPanel Margin="14">
-            <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+			<Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
 				<controls:CardAction Grid.Column="0" Grid.Row="0"
-                                    Margin="0,0,4,0"
-                                    Icon="Import" 
-                                    Header="Import Settings"
-                                    Command="{Binding ImportCommand}"/>
-                
+									Margin="0,0,4,0"
+									Icon="ArrowImport" 
+									Header="Import Settings"
+									Command="{Binding ImportCommand}"/>
+
 				<controls:CardAction Grid.Column="1"  Grid.Row="0"
-                                    Margin="4,0,4,0"
-                                    Icon="FolderOpenOutline" 
-                                    Header="Open Roblox Folder"
-                                    Command="{Binding OpenRobloxFolderCommand}"/>
-                
+									Margin="4,0,4,0"
+									Icon="FolderOpen" 
+									Header="Open Roblox Folder"
+									Command="{Binding OpenRobloxFolderCommand}"/>
+
 				<controls:CardAction Grid.Column="2"  Grid.Row="0"
-                                    Margin="4,0,0,0"
-                                    Icon="Export" 
-                                    Header="Export Settings"
-                                    Command="{Binding ExportCommand}"/>
+									Margin="4,0,0,0"
+									Icon="ArrowExport" 
+									Header="Export Settings"
+									Command="{Binding ExportCommand}"/>
 				<controls:CardAction Grid.ColumnSpan="3" 
-									Grid.Row="1"
-                                    Margin="0,0,4,0"
-                                    Icon="FileDocumentEditOutline" 
-                                    Header="Global Settings Editor"
-									Description="Edit all your Global Settings in one place"
-                                    Command="{Binding OpenGlobalSettingsEditorCommand}"/>
+								Grid.Row="1"
+									Margin="0,0,4,0"
+									Icon="DocumentEdit" 
+									Header="Global Settings Editor"
+								Description="Edit all your Global Settings in one place"
+									Command="{Binding OpenGlobalSettingsEditorCommand}"/>
 			</Grid>
 
 			<controls:OptionControl Description="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Description}" Header="{x:Static resources:Strings.Menu_GBSEditor_ReadOnly_Title}">
