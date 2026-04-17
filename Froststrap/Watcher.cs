@@ -1,9 +1,5 @@
 ﻿using Froststrap.AppData;
 using Froststrap.Integrations;
-using Froststrap.UI;
-using System.Text.Json;
-using System.Text;
-using System.Diagnostics;
 
 namespace Froststrap
 {
@@ -15,12 +11,12 @@ namespace Froststrap
 
         private readonly NotifyIconWrapper? _notifyIcon;
 
-        public ActivityWatcher? ActivityWatcher;
+        public readonly ActivityWatcher? ActivityWatcher;
 
         public readonly IntegrationWatcher? IntegrationWatcher;
 
-        public PlayerDiscordRichPresence? PlayerRichPresence;
-        public StudioDiscordRichPresence? StudioRichPresence;
+        public readonly PlayerDiscordRichPresence? PlayerRichPresence;
+        public readonly StudioDiscordRichPresence? StudioRichPresence;
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed = false;
@@ -61,93 +57,24 @@ namespace Froststrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                string? detectedLogFile = FindMatchingLogFile(_watcherData.ProcessId);
+                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
-                if (detectedLogFile != null)
+                if (App.Settings.Prop.UseDisableAppPatch)
                 {
-                    ActivityWatcher = new(detectedLogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
-
-                    if (App.Settings.Prop.UseDisableAppPatch)
+                    ActivityWatcher.OnAppClose += delegate
                     {
-                        ActivityWatcher.OnAppClose += delegate
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, "Received desktop app exit, closing Roblox");
-                            try
-                            {
-                                using var process = Process.GetProcessById(_watcherData.ProcessId);
-                                process.CloseMainWindow();
-                            }
-                            catch { }
-                        };
-                    }
-
+                        App.Logger.WriteLine(LOG_IDENT, "Received desktop app exit, closing Roblox");
+                        using var process = Process.GetProcessById(_watcherData.ProcessId);
+                        process.CloseMainWindow();
+                    };
                     if ((_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
                         StudioRichPresence = new(ActivityWatcher);
                     else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                         PlayerRichPresence = new(ActivityWatcher);
+                }
 
-                    _notifyIcon = new(this);
-                    IntegrationWatcher = new IntegrationWatcher(ActivityWatcher);
-                }
-                else
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "No log file found. Skipping initialization of UI and RPC.");
-                }
+                _notifyIcon = new(this);
             }
-        }
-
-        private string? FindMatchingLogFile(int targetPid)
-        {
-            string rbxLogDir = Path.Combine(Paths.Roblox, "logs");
-
-            if (!Directory.Exists(rbxLogDir)) return null;
-
-            for (int i = 0; i < 45; i++)
-            {
-                try
-                {
-                    var files = Directory.GetFiles(rbxLogDir, "*.log")
-                        .Select(f => new FileInfo(f))
-                        .Where(f => f.LastWriteTimeUtc > DateTime.UtcNow.AddSeconds(-5))
-                        .OrderByDescending(f => f.LastWriteTimeUtc);
-
-                    foreach (var file in files)
-                    {
-                        try
-                        {
-                            using var stream = new FileStream(file.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                            using var reader = new StreamReader(stream);
-
-                            for (int lineIdx = 0; lineIdx < 10; lineIdx++)
-                            {
-                                string? line = reader.ReadLine();
-                                if (line == null) break;
-
-                                if (line.Contains($"Process ID: {targetPid}") || line.Contains($", pid:{targetPid},"))
-                                {
-                                    return file.FullName;
-                                }
-                            }
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine("Watcher::LogFinder", $"Error reading {file.Name}: {ex.Message}");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine("Watcher::LogFinder", $"Directory access error: {ex.Message}");
-                }
-
-                Thread.Sleep(250);
-            }
-
-            return null;
         }
 
         public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);
@@ -191,27 +118,13 @@ namespace Froststrap
             {
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
-                    bool running = false;
-                    try
-                    {
-                        using var process = Process.GetProcessById(_watcherData.ProcessId);
-                        running = !process.HasExited;
-                    }
-                    catch { running = false; }
-
-                    if (!running) break;
+                    var processExists = Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId);
+                    if (!processExists) break;
 
                     await Task.Delay(1000, _cancellationTokenSource.Token);
                 }
             }
-            catch (OperationCanceledException)
-            {
-                App.Logger.WriteLine("Watcher::Run", "Watcher was cancelled");
-                return;
-            }
-
-            if (_cancellationTokenSource.Token.IsCancellationRequested)
-                return;
+            catch (OperationCanceledException) { return; }
 
             if (_watcherData.AutoclosePids is not null)
             {
