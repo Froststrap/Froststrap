@@ -153,8 +153,7 @@
                         Margin="5,0,0,0"
                         Padding="10,5,10,5"
                         ItemsSource="{Binding BackdropOptions}"
-                        SelectedItem="{Binding SelectedBackdrop, Mode=TwoWay}"
-                        SelectionChanged="WindowsBackdropChangeSelectionChanged" />
+                        SelectedItem="{Binding SelectedBackdrop, Mode=TwoWay}"/>
                 </controls:OptionControl>
 
                 <controls:OptionControl Description="{x:Static resources:Strings.Menu_Appearance_Language_Description}" Header="{x:Static resources:Strings.Menu_Appearance_Language_Title}">

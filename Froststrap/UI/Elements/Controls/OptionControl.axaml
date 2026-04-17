@@ -28,8 +28,10 @@
                                                     IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                                     VerticalAlignment="Center"
                                                     Margin="6,0,0,0">
-                                    <ic:SymbolIcon Symbol="QuestionCircle"
-                                                         Width="14" Height="14"
+
+                                    <!-- Fluent Icons dosent have the symbol we need, so use this for now ig -->
+                                    <PathIcon Data="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM4 12C4 7.58172 7.58172 4 12 4C16.4183 4 20 7.58172 20 12C20 16.4183 16.4183 20 12 20C7.58172 20 4 16.4183 4 12ZM12.25 14V14.25C12.25 14.6642 11.9142 15 11.5 15C11.0858 15 10.75 14.6642 10.75 14.25V14C10.75 12.8954 11.6454 12 12.75 12C13.3023 12 13.75 11.5523 13.75 11C13.75 10.4477 13.3023 10 12.75 10C12.1977 10 11.75 10.4477 11.75 11C11.75 11.4142 11.4142 11.75 11 11.75C10.5858 11.75 10.25 11.4142 10.25 11C10.25 9.61929 11.3693 8.5 12.75 8.5C14.1307 8.5 15.25 9.61929 15.25 11C15.25 12.0465 14.6067 12.9424 13.6934 13.305C12.8394 13.6441 12.25 13.7825 12.25 14Z"
+                                                         Width="16" Height="16"
                                                          Foreground="{DynamicResource SystemAccentColor}" />
                                 </controls:Hyperlink>
                             </WrapPanel>
