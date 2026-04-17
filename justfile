@@ -16,23 +16,23 @@ publish-windows commit_hash commit_ref:
 publish-macos commit_hash commit_ref:
     rm -rf build || true
     mkdir build
-    dotnet publish ./Froststrap/Froststrap.csproj -p:PublishSingleFile=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r osx-arm64 -c Release --self-contained false
+    dotnet publish ./Froststrap/Froststrap.csproj -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r osx-arm64 -c Release --self-contained false
     mv ./Froststrap/bin/Release/net10.0/osx-arm64/publish/Froststrap ./build/Froststrap-macOS-arm64
 
 publish-linux commit_hash commit_ref:
     rm -rf build || true
     mkdir build
-    dotnet publish ./Froststrap/Froststrap.csproj -p:PublishSingleFile=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r linux-x64 -c Release --self-contained false
+    dotnet publish ./Froststrap/Froststrap.csproj -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r linux-x64 -c Release --self-contained false
     mv ./Froststrap/bin/Release/net10.0/linux-x64/publish/Froststrap ./build/Froststrap-linux-x64
 
 debug-windows commit_hash commit_ref:
     dotnet publish Froststrap/Froststrap.csproj -p:PublishSingleFile=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r win-x64 -c Debug --self-contained false
 
 debug-macos commit_hash commit_ref:
-    dotnet publish Froststrap/Froststrap.csproj -p:PublishSingleFile=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r osx-arm64 -c Debug --self-contained false
+    dotnet publish Froststrap/Froststrap.csproj -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r osx-arm64 -c Debug --self-contained false
 
 debug-linux commit_hash commit_ref:
-    dotnet publish Froststrap/Froststrap.csproj -p:PublishSingleFile=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r linux-x64 -c Debug --self-contained false
+    dotnet publish Froststrap/Froststrap.csproj -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true "-p:CommitHash={{commit_hash}}" "-p:CommitRef={{commit_ref}}" -r linux-x64 -c Debug --self-contained false
 
 clean:
     rm -r obj bin build
