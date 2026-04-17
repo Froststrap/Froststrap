@@ -3,7 +3,15 @@ on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v6
@@ -21,10 +29,10 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Publish
-      run: dotnet publish -p:PublishSingleFile=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r win-x64 -c Debug --self-contained false .\Froststrap\Froststrap.csproj
+      run: dotnet publish -p:PublishSingleFile=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r ${{ matrix.rid }} -c Debug --self-contained false Froststrap/Froststrap.csproj
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
       with:
-        name: Froststrap (Debug) (${{ github.sha }})
-        path: .\Froststrap\bin\Debug\net10.0-windows\win-x64\publish\*
+        name: Froststrap (Debug) (${{ matrix.os }}) (${{ github.sha }})
+        path: Froststrap/bin/Debug/net10.0/${{ matrix.rid }}/publish/*
