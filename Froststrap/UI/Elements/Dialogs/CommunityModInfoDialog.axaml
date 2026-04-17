@@ -71,7 +71,7 @@
                                      Height="4" 
                                      IsVisible="{Binding Mod.IsDownloading}"/>
                         <md:IconButton Content="Download" 
-                                       Icon="Download" 
+                                       Icon="ArrowDownload" 
                                        Classes="Primary"
                                        HorizontalAlignment="Stretch" 
                                        Height="40" 

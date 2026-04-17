@@ -38,17 +38,17 @@
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Stretch">
                         <controls:IconButton Name="PART_MinimizeButton" 
                                            Classes="TitleBarButton" 
-                                           Icon="Minus" 
+                                           Icon="Subtract" 
                                            IsVisible="{TemplateBinding ShowMinimize}"/>
 
                         <controls:IconButton Name="PART_MaximizeButton" 
                                            Classes="TitleBarButton" 
                                            IsVisible="{TemplateBinding ShowMaximize}" 
-                                           Icon="SquareOutline"/>
+                                           Icon="FullScreenMaximize"/>
 
                         <controls:IconButton Name="PART_CloseButton" 
                                            Classes="TitleBarButton Close" 
-                                           Icon="Close" 
+                                           Icon="Dismiss" 
                                            IsVisible="{TemplateBinding ShowClose}"/>
                     </StackPanel>
                 </Grid>

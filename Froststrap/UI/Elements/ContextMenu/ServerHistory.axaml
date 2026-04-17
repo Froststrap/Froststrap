@@ -104,12 +104,12 @@
                                         Command="{Binding CopyDeeplinkCommand}" />
 
                                     <controls:IconButton 
-                                        Icon="ClipboardEditOutline"
+                                        Icon="ClipboardSettings"
                                         Content="Server ID"
                                         Command="{Binding CopyServerIdCommand}" />
 
                                     <controls:IconButton 
-                                        Icon="TrashCanOutline"
+                                        Icon="Delete"
                                         Command="{Binding DeleteHistoryCommand}"
                                         Classes="Danger"/>
                                 </StackPanel>
