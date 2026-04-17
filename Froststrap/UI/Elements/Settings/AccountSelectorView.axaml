@@ -92,23 +92,40 @@
                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
                            BorderThickness="0,0,0,1">
-                        <StackPanel Spacing="6">
-                            <Button Content="Add Account"
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Button Grid.Column="0"
+                                   Content="Add Account"
                                    Command="{Binding AddAccountCommand}"
                                    IsEnabled="{Binding !IsAddingAccount}"
                                    Classes="FrostSubtle"
                                    Height="32"
+                                   Margin="0,0,6,0"
                                    HorizontalAlignment="Stretch"/>
 
-                            <ComboBox ItemsSource="{Binding AddMethods}"
-                                     SelectedItem="{Binding SelectedAddMethod}"
-                                     IsEnabled="{Binding !IsAddingAccount}"
-                                     Height="32"
-                                     HorizontalAlignment="Stretch"
-                                     CornerRadius="6"
-                                     BorderThickness="1"
-                                     BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"/>
-                        </StackPanel>
+                            <Border Grid.Column="1"
+                                    Width="36" Height="32"
+                                    CornerRadius="6"
+                                    ClipToBounds="True">
+                                <ComboBox ItemsSource="{Binding AddMethods}"
+                                         SelectedItem="{Binding SelectedAddMethod}"
+                                         IsEnabled="{Binding !IsAddingAccount}"
+                                         Width="36" Height="32"
+                                         MinWidth="0" Padding="0"
+                                         HorizontalAlignment="Stretch"
+                                         CornerRadius="6"
+                                         BorderThickness="1"
+                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+                                    <ComboBox.Styles>
+                                        <Style Selector="ComboBox /template/ ContentPresenter">
+                                            <Setter Property="Opacity" Value="0" />
+                                        </Style>
+                                        <Style Selector="ComboBox /template/ ContentControl">
+                                            <Setter Property="Opacity" Value="0" />
+                                        </Style>
+                                    </ComboBox.Styles>
+                                </ComboBox>
+                            </Border>
+                        </Grid>
                     </Border>
 
                     <!-- Accounts List or Empty State -->
