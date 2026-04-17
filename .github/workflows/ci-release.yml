@@ -2,7 +2,10 @@ name: CI (Release)
 on: [push, pull_request]
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -14,19 +17,28 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Install NSIS
+        if: matrix.os == 'windows-latest'
         uses: negrutiu/nsis-install@v2
 
       - name: Setup Just
         uses: extractions/setup-just@v3
 
-      - name: Build and package
+      - name: Build and package (Windows)
+        if: matrix.os == 'windows-latest'
         run: just publish
+
+      - name: Build and package (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          dotnet publish -p:PublishSingleFile=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r osx-arm64 -c Release --self-contained false Froststrap/Froststrap.csproj
+          mkdir build
+          mv Froststrap/bin/Release/net10.0/osx-arm64/publish/Froststrap build/Froststrap-macOS-arm64
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: Froststrap(Release) (${{ github.sha }})
-          path: .\build\*
+          name: Froststrap(Release) (${{ matrix.os }}) (${{ github.sha }})
+          path: build/*
 
   release:
     needs: build
@@ -35,17 +47,25 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Download artifact
+      - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: Froststrap(Release) (${{ github.sha }})
+          name: Froststrap(Release) (windows-latest) (${{ github.sha }})
           path: release
-          
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Froststrap(Release) (macos-latest) (${{ github.sha }})
+          path: release
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           prerelease: ${{ contains(github.ref_name, '-') }}
           draft: true
-          files: release/Froststrap-${{ github.ref_name }}.exe
+          files: |
+            release/Froststrap-${{ github.ref_name }}.exe
+            release/Froststrap-macOS-arm64
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
