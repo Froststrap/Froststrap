@@ -34,7 +34,6 @@
 
     <Style Selector="controls|Hyperlink:pressed">
         <Setter Property="Foreground" Value="{DynamicResource AccentFillColorTertiaryBrush}" />
-        <Setter Property="RenderTransform" Value="scale(0.98)" />
     </Style>
 
 </Styles>
