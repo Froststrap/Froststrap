@@ -30,7 +30,7 @@
                             <TextBox.InnerRightContent>
                                 <controls:IconButton
                                     Command="{Binding SearchGamesCommand}"
-                                    Icon="Magnify"
+                                    Icon="Search"
                                     IconSize="16"
                                     Click="OnSearchButtonClick"
                                     Background="Transparent"

@@ -224,7 +224,7 @@
               ColumnDefinitions="*,*">
                 <controls:IconButton Grid.Column="0"
                     Margin="0,0,4,0"
-                    Icon="Plus"
+                    Icon="Add"
                     HorizontalAlignment="Stretch"
                     Command="{Binding AddCustomThemeCommand}"
                     CommandParameter="{Binding $parent[Window]}"
@@ -232,7 +232,7 @@
                 <controls:IconButton Grid.Column="1"
                     Margin="4,0,0,0"
                     Classes="Danger"
-                    Icon="TrashCanOutline"
+                    Icon="Delete"
                     HorizontalAlignment="Stretch"
                     Command="{Binding DeleteCustomThemeCommand}"
                     Content="{x:Static resources:Strings.Common_Delete}"
@@ -249,14 +249,14 @@
                 <TextBox Text="{Binding SelectedCustomThemeName, Mode=TwoWay}" />
 
                 <Grid ColumnDefinitions="*,*,*">
-                    <controls:IconButton Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch" Icon="PencilOutline"
+                    <controls:IconButton Grid.Column="0" Margin="0,0,4,0" HorizontalAlignment="Stretch" Icon="Edit"
                         Command="{Binding RenameCustomThemeCommand}" 
                         Content="{x:Static resources:Strings.Common_Rename}" />
-                    <controls:IconButton Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch" Icon="FileEditOutline"
+                    <controls:IconButton Grid.Column="1" Margin="4,0,4,0" HorizontalAlignment="Stretch" Icon="DocumentEdit"
                         Command="{Binding EditCustomThemeCommand}" 
                         CommandParameter="{Binding $self}"
                         Content="{x:Static resources:Strings.Common_Edit}" />
-                    <controls:IconButton Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch" Icon="Export"
+                    <controls:IconButton Grid.Column="2" Margin="4,0,0,0" HorizontalAlignment="Stretch" Icon="ArrowExport"
                         Command="{Binding ExportCustomThemeCommand}" 
                         CommandParameter="{Binding $self}"
                         Content="{x:Static resources:Strings.Common_Export}" />

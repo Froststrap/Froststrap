@@ -35,7 +35,7 @@
                         IsOpen="True"
                         IsClosable="False" />
 
-            <controls:IconButton Icon="Plus"
+            <controls:IconButton Icon="Add"
                                  Content="Add new mod"
                                  HorizontalAlignment="Stretch"
                                  Command="{Binding AddModCommand}"
@@ -48,7 +48,7 @@
 								<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
                                 
                                     <controls:IconButton Grid.Column="0" 
-                                                     Icon="TrashCanOutline" 
+                                                     Icon="Delete" 
                                                      Classes="Danger"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).DeleteModCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
@@ -68,7 +68,7 @@
                                     </ComboBox>
 
                                     <controls:IconButton Grid.Column="4" 
-                                                     Icon="FolderOutline"
+                                                     Icon="Folder"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).OpenModFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 

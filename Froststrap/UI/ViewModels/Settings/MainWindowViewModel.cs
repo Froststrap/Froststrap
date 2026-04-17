@@ -81,7 +81,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public IRelayCommand NavigateToModGeneratorCommand { get; }
 
         public ICommand OpenAboutCommand { get; }
-        public ICommand OpenAccountManagerCommand { get; }
         public ICommand SaveSettingsCommand { get; }
         public ICommand SaveAndLaunchSettingsCommand { get; }
         public ICommand RestartAppCommand { get; }
@@ -98,7 +97,6 @@ namespace Froststrap.UI.ViewModels.Settings
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
 
             OpenAboutCommand = new RelayCommand(OpenAbout);
-            OpenAccountManagerCommand = new RelayCommand(OpenAccountManager);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
             SaveAndLaunchSettingsCommand = new RelayCommand(SaveAndLaunchSettings);
             RestartAppCommand = new RelayCommand(RestartApp);
@@ -226,13 +224,6 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             App.FrostRPC?.SetDialog("About");
             new Elements.About.MainWindow().Show();
-            App.FrostRPC?.ClearDialog();
-        }
-
-        private void OpenAccountManager()
-        {
-            App.FrostRPC?.SetDialog("Account Manager");
-            new Elements.AccountManagers.MainWindow().Show();
             App.FrostRPC?.ClearDialog();
         }
 

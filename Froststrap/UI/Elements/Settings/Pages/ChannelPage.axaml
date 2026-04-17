@@ -17,19 +17,19 @@
         <StackPanel Margin="14">
             <StackPanel Orientation="Horizontal" Spacing="6">
                 <controls:IconButton
-                    Icon="Import"
+                    Icon="ArrowImport"
                     Content="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:IconButton
-                    Icon="Export"
+                    Icon="ArrowExport"
                     Content="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:IconButton
-                    Icon="Restore"
+                    Icon="ArrowReset"
                     Content="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
                     Command="{Binding ResetSettingsToDefaultCommand}" />
             </StackPanel>

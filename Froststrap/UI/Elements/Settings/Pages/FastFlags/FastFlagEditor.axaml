@@ -24,12 +24,12 @@
                     Margin="0,4,0,8" />
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
-            <controls:IconButton Click="AddButton_Click" Icon="PlusCircleOutline" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
-            <controls:IconButton Click="DeleteButton_Click" Icon="TrashCanOutline" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
-            <controls:IconButton Click="DeleteAllButton_Click" Icon="PailRemoveOutline" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
-            <controls:IconButton Click="CopyJSONButton_Click" Icon="ClipboardOutline" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
-            <controls:IconButton Click="ExportJSONButton_Click" Icon="Export" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
-            <controls:IconButton Click="FlagProfiles_Click" Icon="FileDocumentOutline" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
+            <controls:IconButton Click="AddButton_Click" Icon="Add" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
+            <controls:IconButton Click="DeleteButton_Click" Icon="Delete" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
+            <controls:IconButton Click="DeleteAllButton_Click" Icon="Delete" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
+            <controls:IconButton Click="CopyJSONButton_Click" Icon="Clipboard" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
+            <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowExport" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
+            <controls:IconButton Click="FlagProfiles_Click" Icon="DocumentEdit" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
             <controls:IconButton Click="CleanListButton_Click" Icon="Broom" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
             
             <ToggleButton Name="TogglePresetsButton"

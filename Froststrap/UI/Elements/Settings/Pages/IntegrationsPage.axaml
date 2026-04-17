@@ -262,7 +262,7 @@
                         HorizontalAlignment="Stretch"
                         Command="{Binding AddIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_New}"
-                        Icon="Plus" />
+                        Icon="Add" />
                     <controls:IconButton
                         Grid.Column="1"
                         Margin="4,0,0,0"
@@ -270,7 +270,7 @@
                         Classes="Danger"
                         Command="{Binding DeleteIntegrationCommand, Mode=OneTime}"
                         Content="{x:Static resources:Strings.Common_Delete}"
-                        Icon="TrashCanOutline"
+                        Icon="Delete"
                         IsEnabled="{Binding IsCustomIntegrationSelected, Mode=OneWay}" />
                 </Grid>
 
@@ -301,7 +301,7 @@
                             Command="{Binding BrowseIntegrationLocationCommand}"
                             CommandParameter="{Binding $self}"
                             Content="{x:Static resources:Strings.Common_Browse}"
-                            Icon="FolderOutline" />
+                            Icon="Folder" />
                     </Grid>
 
                     <Grid Margin="0,8,0,0" ColumnDefinitions="Auto, 1*, Auto, 2*">

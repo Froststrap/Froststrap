@@ -59,7 +59,7 @@
                 Background="{DynamicResource PrimaryBackgroundColor}">
 			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 				<controls:IconButton MinWidth="100"
-						Icon="Sync"
+						Icon="ArrowSync"
 						Padding="12,6"
 						Classes="Primary"
                         Content="{x:Static resources:Strings.Common_Refresh}"

@@ -150,7 +150,7 @@
                                                              Height="34"
                                                              HorizontalAlignment="Stretch" 
                                                              Content="Download" 
-                                                             Icon="Download"
+                                                             Icon="ArrowDownload"
                                                              Classes="Primary"
                                                              Command="{Binding DownloadCommand}" 
                                                              CommandParameter="{Binding}"/>
@@ -158,7 +158,7 @@
                                         <controls:IconButton Grid.Column="1" Grid.Row="1"
                                                              Height="34"
                                                              Margin="2,0,0,0"
-                                                             Icon="InformationOutline"
+                                                             Icon="Info"
                                                              Command="{Binding $parent[UserControl].((vm:CommunityModsViewModel)DataContext).OpenModInfoDialogCommand}"
                                                              CommandParameter="{Binding $self}"/>
                                     </Grid>

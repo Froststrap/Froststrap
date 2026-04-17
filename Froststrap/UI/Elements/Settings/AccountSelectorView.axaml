@@ -45,7 +45,7 @@
                 <Border Width="28" Height="28" CornerRadius="14" >
                     <Panel>
                         <ic:SymbolIcon Symbol="Person" 
-                                            Width="16" Height="16"
+                                            FontSize="16"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
@@ -142,7 +142,7 @@
                                                         ClipToBounds="True">
                                                     <Panel>
                                                         <ic:SymbolIcon Symbol="Person"
-                                                                            Width="16" Height="16"
+                                                                            FontSize="16"
                                                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                                             HorizontalAlignment="Center"
                                                                             VerticalAlignment="Center"
@@ -173,7 +173,7 @@
                                                              Margin="12,0,12,0"
                                                              HorizontalAlignment="Right"
                                                              VerticalAlignment="Center"
-                                                             Icon="TrashCanOutline"
+                                                             Icon="Delete"
                                                              Classes="Danger"
                                                              Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
                                                              CommandParameter="{Binding}"/>

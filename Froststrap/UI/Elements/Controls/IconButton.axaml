@@ -100,4 +100,57 @@
         <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushDisabled}" />
     </Style>
 
+    <Design.PreviewWith>
+        <StackPanel Spacing="16" Background="{DynamicResource ApplicationPageBackgroundThemeBrush}">
+            <!-- Default IconButton -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Default" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton Icon="Home" Content="Home" />
+                    <controls:IconButton Icon="Settings" Content="Settings" />
+                    <controls:IconButton Icon="Delete" Content="Delete" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Primary IconButton -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Primary" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton Classes="Primary" Icon="Save" Content="Save" />
+                    <controls:IconButton Classes="Primary" Icon="Add" Content="Add" />
+                    <controls:IconButton Classes="Primary" Icon="Checkmark" Content="Confirm" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Danger IconButton -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Danger" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton Classes="Danger" Icon="Delete" Content="Delete" />
+                    <controls:IconButton Classes="Danger" Icon="Warning" Content="Warning" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Disabled IconButton -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Disabled" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton IsEnabled="False" Icon="Settings" Content="Disabled" />
+                    <controls:IconButton Classes="Primary" IsEnabled="False" Icon="Save" Content="Disabled" />
+                    <controls:IconButton Classes="Danger" IsEnabled="False" Icon="Delete" Content="Disabled" />
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Icon Only -->
+            <StackPanel Spacing="8">
+                <TextBlock Text="Icon Only" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <controls:IconButton Icon="Home" />
+                    <controls:IconButton Classes="Primary" Icon="Save" />
+                    <controls:IconButton Classes="Danger" Icon="Delete" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </Design.PreviewWith>
+
 </Styles>

@@ -33,7 +33,7 @@
                 </StackPanel>
 
                 <StackPanel HorizontalAlignment="Center" Spacing="8">
-                    <controls:IconButton Icon="HelpCircleOutline" 
+                    <controls:IconButton Icon="Info" 
                                          Content="{x:Static resources:Strings.About_Title}" 
                                          Command="{Binding LaunchAboutCommand}" 
                                          BorderBrush="Transparent" 
@@ -41,7 +41,7 @@
                                          Background="Transparent"
                                          Padding="8,6" />
 
-                    <controls:IconButton Icon="ChatProcessingOutline" 
+                    <controls:IconButton Icon="Chat" 
                                          Content="{x:Static resources:Strings.LaunchMenu_Discord}" 
                                          Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
                                          CommandParameter="https://discord.gg/KdR9vpRcUN" 

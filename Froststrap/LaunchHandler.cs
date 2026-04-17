@@ -49,11 +49,6 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Opening settings");
                 LaunchSettings();
             }
-            else if (App.LaunchSettings.AccountManagerFlag.Active)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Opening account manager");
-                LaunchAccountManager();
-            }
             else if (App.LaunchSettings.WatcherFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening watcher");
@@ -202,24 +197,6 @@ namespace Froststrap
             {
                 App.FrostRPC?.Dispose();
                 ProcessNextAction(dialog.CloseAction);
-            };
-
-            dialog.Show();
-        }
-
-        public static void LaunchAccountManager()
-        {
-            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
-            {
-                App.FrostRPC = new FroststrapRichPresence();
-            }
-
-            var dialog = new UI.Elements.AccountManagers.MainWindow();
-            App.FrostRPC?.SetDialog("Account Manager");
-
-            dialog.Closed += (s, e) =>
-            {
-                App.FrostRPC?.Dispose();
             };
 
             dialog.Show();
