@@ -19,7 +19,15 @@ namespace Froststrap.UI.Elements.Base
             this.ExtendClientAreaToDecorationsHint = true;
             this.ExtendClientAreaTitleBarHeightHint = -1;
             this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
-            this.SystemDecorations = SystemDecorations.Full;
+
+            if (OperatingSystem.IsWindows())
+            {
+                this.SystemDecorations = SystemDecorations.Full;
+            }
+            else
+            {
+                this.SystemDecorations = SystemDecorations.None;
+            }
 
             RenderOptions.SetTextRenderingMode(this, TextRenderingMode.Antialias);
 
