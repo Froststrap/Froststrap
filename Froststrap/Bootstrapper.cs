@@ -303,17 +303,28 @@ namespace Froststrap
 
             // check registry entries for every launch, just in case the stock bootstrapper changes it back
 
-            if (IsStudioLaunch)
+            if (OperatingSystem.IsWindows())
             {
-                WindowsRegistry.RegisterStudio();
+                if (IsStudioLaunch)
+                {
+                    WindowsRegistry.RegisterStudio();
 
-                App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
-                StudioPluginManager.Sync();
+                    App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                    StudioPluginManager.Sync();
+                }
+                else
+                    WindowsRegistry.RegisterPlayer();
+
+                WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
             }
             else
-                WindowsRegistry.RegisterPlayer();
-
-            WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory); // if it for some reason doesnt exist
+            {
+                if (IsStudioLaunch)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Studio launch detected, syncing RPC plugin...");
+                    StudioPluginManager.Sync();
+                }
+            }
 
             if (_launchMode != LaunchMode.Player)
                 await mutex.ReleaseAsync();
@@ -355,8 +366,6 @@ namespace Froststrap
             // before we do anything, we need to query our channel
             // if it's set in the launch uri, we need to use it and set the registry key for it
             // else, check if the registry key for it exists, and use it
-
-            using var key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\ROBLOX Corporation\\Environments\\{AppData.RegistryName}\\Channel");
 
             var match = Regex.Match(
                 App.LaunchSettings.RobloxLaunchArgs,
@@ -510,7 +519,11 @@ namespace Froststrap
                     }
                 }
 
-                key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
+                if (OperatingSystem.IsWindows())
+                {
+                    using var key = Registry.CurrentUser.CreateSubKey($"SOFTWARE\\ROBLOX Corporation\\Environments\\{AppData.RegistryName}\\Channel");
+                    key.SetValueSafe("www." + Deployment.RobloxDomain, Deployment.IsDefaultChannel ? "" : Deployment.Channel);
+                }
 
                 _latestVersionGuid = clientVersion.VersionGuid;
                 _latestVersion = Utilities.ParseVersionSafe(clientVersion.Version);
@@ -1063,6 +1076,9 @@ namespace Froststrap
 
         private bool ShouldRunAsAdmin()
         {
+            if (!OperatingSystem.IsWindows())
+                return false;
+
             foreach (var root in WindowsRegistry.Roots)
             {
                 using var key = root.OpenSubKey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers");
@@ -1098,7 +1114,8 @@ namespace Froststrap
                 try
                 {
                     // clean up registry keys
-                    WindowsRegistry.RegisterClientLocation(IsStudioLaunch, null);
+                    if (OperatingSystem.IsWindows())
+                        WindowsRegistry.RegisterClientLocation(IsStudioLaunch, null);
 
                     // clean up install
                     if (Directory.Exists(_latestVersionDirectory))
@@ -1372,6 +1389,9 @@ namespace Froststrap
 
         private void MigrateCompatibilityFlags()
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             const string LOG_IDENT = "Bootstrapper::MigrateCompatibilityFlags";
 
             string oldClientLocation = Path.Combine(Paths.Versions, AppData.DistributionState.VersionGuid, AppData.ExecutableName);
@@ -1555,7 +1575,7 @@ namespace Froststrap
             if (_cancelTokenSource.IsCancellationRequested)
                 return;
 
-            if (App.State.Prop.PromptWebView2Install)
+            if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
             {
                 using var hklmKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
                 using var hkcuKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
@@ -1654,12 +1674,15 @@ namespace Froststrap
 
             int totalSize = App.PlayerState.Prop.Size + App.PlayerState.Prop.Size;
 
-            using (var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey))
+            if (OperatingSystem.IsWindows())
             {
-                uninstallKey.SetValueSafe("EstimatedSize", totalSize);
-            }
+                using (var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey))
+                {
+                    uninstallKey.SetValueSafe("EstimatedSize", totalSize);
+                }
 
-            WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory);
+                WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory);
+            }
 
             App.Logger.WriteLine(LOG_IDENT, $"Registered as {totalSize} KB");
 
