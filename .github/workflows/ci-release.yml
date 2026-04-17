@@ -4,7 +4,14 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        include:
+          - os: windows-latest
+            just_target: publish-windows
+          - os: macos-latest
+            just_target: publish-macos
+          - os: ubuntu-latest
+            just_target: publish-linux
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -23,16 +30,8 @@ jobs:
       - name: Setup Just
         uses: extractions/setup-just@v3
 
-      - name: Build and package (Windows)
-        if: matrix.os == 'windows-latest'
-        run: just publish
-
-      - name: Build and package (macOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          dotnet publish -p:PublishSingleFile=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r osx-arm64 -c Release --self-contained false Froststrap/Froststrap.csproj
-          mkdir build
-          mv Froststrap/bin/Release/net10.0/osx-arm64/publish/Froststrap build/Froststrap-macOS-arm64
+      - name: Build and package
+        run: just ${{ matrix.just_target }} ${{ github.sha }} ${{ github.ref_type }}/${{ github.ref_name }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v6
@@ -59,6 +58,12 @@ jobs:
           name: Froststrap(Release) (macos-latest) (${{ github.sha }})
           path: release
 
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Froststrap(Release) (ubuntu-latest) (${{ github.sha }})
+          path: release
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -67,5 +72,6 @@ jobs:
           files: |
             release/Froststrap-${{ github.ref_name }}.exe
             release/Froststrap-macOS-arm64
+            release/Froststrap-linux-x64
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true

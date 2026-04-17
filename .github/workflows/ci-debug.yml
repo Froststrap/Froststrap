@@ -5,12 +5,17 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-latest, ubuntu-latest]
         include:
           - os: windows-latest
             rid: win-x64
+            just_target: debug-windows
           - os: macos-latest
             rid: osx-arm64
+            just_target: debug-macos
+          - os: ubuntu-latest
+            rid: linux-x64
+            just_target: debug-linux
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -22,6 +27,9 @@ jobs:
       with:
         dotnet-version: '10.0.x'
 
+    - name: Setup Just
+      uses: extractions/setup-just@v3
+
     - name: Restore dependencies
       run: dotnet restore
 
@@ -29,7 +37,7 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Publish
-      run: dotnet publish -p:PublishSingleFile=true -p:CommitHash=${{ github.sha }} -p:CommitRef=${{ github.ref_type }}/${{ github.ref_name }} -r ${{ matrix.rid }} -c Debug --self-contained false Froststrap/Froststrap.csproj
+      run: just ${{ matrix.just_target }} ${{ github.sha }} ${{ github.ref_type }}/${{ github.ref_name }}
 
     - name: Upload Artifact
       uses: actions/upload-artifact@v6
