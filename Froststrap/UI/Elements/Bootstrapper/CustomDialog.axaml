@@ -13,13 +13,26 @@
         MaxWidth="1000"
         MaxHeight="1000"
         CanResize="False"
-        SystemDecorations="None"
-        WindowStartupLocation="CenterScreen"
-        ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaTitleBarHeightHint="-1"
-        Background="{DynamicResource ApplicationPageBackgroundThemeBrush}">
+        WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*">
-        <Grid x:Name="ElementGrid" Grid.Row="1" />
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <controls:TitleBar
+                x:Name="RootTitleBar"
+                Title=""
+                Grid.Row="0"
+                Padding="8"
+                ZIndex="1001"
+                ShowClose="False"
+                ShowMaximize="False"
+                ShowMinimize="False" />
+
+            <Grid x:Name="ElementGrid" Grid.Row="1" />
+        </Grid>
     </Grid>
 </Window>

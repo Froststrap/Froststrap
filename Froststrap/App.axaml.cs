@@ -1,8 +1,10 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Documents;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
@@ -351,6 +353,8 @@ public partial class App : Application
                     window.TransparencyLevelHint = Settings.Prop.SelectedBackdrop switch
                     {
                         WindowsBackdrops.Acrylic => new[] { WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None },
+                        WindowsBackdrops.Mica => new[] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.None },
+                        WindowsBackdrops.Aero => new[] { WindowTransparencyLevel.Blur, WindowTransparencyLevel.None },
                         _ => new[] { WindowTransparencyLevel.None }
                     };
 
@@ -388,7 +392,6 @@ public partial class App : Application
 
             if (includePreRelease)
             {
-                // Note: Ensure your Http utility accepts Uri as a parameter
                 var releases = await Http.GetJson<List<GithubRelease>>(releasesUrl);
 
                 if (releases is null || releases.Count == 0)
@@ -543,6 +546,7 @@ public partial class App : Application
 
             LaunchHandler.ProcessLaunchArgs();
         }
+
         base.OnFrameworkInitializationCompleted();
     }
 }

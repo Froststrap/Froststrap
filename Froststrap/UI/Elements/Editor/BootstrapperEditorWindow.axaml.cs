@@ -14,11 +14,11 @@ using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
 using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
+using FluentIcons.Common;
 using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels.Editor;
 using Froststrap.UI.ViewModels.Settings;
-using IconPacks.Avalonia.Material;
 using System.ComponentModel;
 using System.Xml;
 
@@ -244,17 +244,16 @@ namespace Froststrap.UI.Elements.Editor
             if (notificationPanel == null) return;
 
             var accentColor = type == NotificationType.Success ? "#00D084" : "#FFB900";
-            var iconKind = type == NotificationType.Success
-                ? PackIconMaterialKind.CheckboxMultipleMarkedCircleOutline
-                : PackIconMaterialKind.AlertOutline;
+            var iconSymbol = type == NotificationType.Success
+                ? FluentIcons.Common.Symbol.CheckmarkCircle
+                : FluentIcons.Common.Symbol.Warning;
 
             var contentGrid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*") };
 
-            var icon = new PackIconMaterial
+            var icon = new FluentIcons.Avalonia.Fluent.SymbolIcon
             {
-                Kind = iconKind,
-                Width = 28,
-                Height = 28,
+                Symbol = iconSymbol,
+                FontSize = 28,
                 Foreground = new SolidColorBrush(Color.Parse(accentColor)),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 Margin = new Thickness(16, 0, 12, 0)
@@ -265,10 +264,10 @@ namespace Froststrap.UI.Elements.Editor
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
 
             var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14 };
-            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiText"));
+            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
 
             var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap };
-            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiLowText"));
+            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
 
             textPanel.Children.Add(titleText);
             textPanel.Children.Add(subtitleText);

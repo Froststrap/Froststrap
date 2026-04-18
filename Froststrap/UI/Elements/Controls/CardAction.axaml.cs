@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using IconPacks.Avalonia.Material;
+using FluentIcons.Common;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -12,8 +12,8 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<string> DescriptionProperty =
             AvaloniaProperty.Register<CardAction, string>(nameof(Description));
 
-        public static readonly StyledProperty<PackIconMaterialKind> IconProperty =
-            AvaloniaProperty.Register<CardAction, PackIconMaterialKind>(nameof(Icon));
+        public static readonly StyledProperty<object> IconProperty =
+            AvaloniaProperty.Register<CardAction, object>(nameof(Icon));
 
         public string Header
         {
@@ -27,7 +27,7 @@ namespace Froststrap.UI.Elements.Controls
             set => SetValue(DescriptionProperty, value);
         }
 
-        public PackIconMaterialKind Icon
+        public object Icon
         {
             get => GetValue(IconProperty);
             set => SetValue(IconProperty, value);

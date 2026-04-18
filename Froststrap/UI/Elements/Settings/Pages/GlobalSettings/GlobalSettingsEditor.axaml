@@ -1,7 +1,7 @@
 <UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.GlobalSettings.GlobalSettingsEditor"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:ic="using:IconPacks.Avalonia.Material"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:model="clr-namespace:Froststrap.Models"
              xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
              x:DataType="local:GlobalSettingsEditor">
@@ -13,7 +13,7 @@
                      Watermark="Search settings..." 
                      TextChanged="SearchTextBox_TextChanged">
                 <TextBox.InnerLeftContent>
-                    <ic:PackIconMaterial Kind="Magnify" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <ic:SymbolIcon Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                 </TextBox.InnerLeftContent>
             </TextBox>
         </Grid>

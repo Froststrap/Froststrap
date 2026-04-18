@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:ic="using:IconPacks.Avalonia.Material"
+    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
     x:DataType="vm:FastFlagsViewModel"
@@ -17,7 +17,7 @@
         <StackPanel Margin="14">
 
             <controls:CardAction
-                Icon="FileDocumentEditOutline"
+                Icon="DocumentEdit"
                 Header="{x:Static resources:Strings.Menu_FastFlagEditor_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Editor_Description}"
                 Command="{Binding OpenFastFlagEditorCommand}"/>
@@ -39,7 +39,7 @@
                 Text="{x:Static resources:Strings.Common_Presets}"
                 FontSize="12"
                 FontWeight="SemiBold"
-                Foreground="{DynamicResource SukiLowText}"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 Margin="0,20,0,8"
                 Opacity="1" />
 
@@ -91,7 +91,7 @@
                         Padding="4"
                         Text="{x:Static resources:Strings.Menu_FastFlags_Presets_LowPolyMeshes_Information}"
                         FontSize="13"
-                        Foreground="{DynamicResource SukiLowText}"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         TextAlignment="Center"
                         TextWrapping="Wrap" />
                     <Grid ColumnDefinitions="Auto,*,Auto">

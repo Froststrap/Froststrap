@@ -8,6 +8,12 @@ namespace Froststrap.UI.Converters
     {
         private static readonly ConcurrentDictionary<string, Bitmap?> _imageCache = new();
 
+        static UrlToBitmapConverter()
+        {
+            if (App.HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
+                App.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Roblox/Froststrap");
+        }
+
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
             if (value is not string url || string.IsNullOrEmpty(url))
@@ -18,8 +24,7 @@ namespace Froststrap.UI.Converters
                 if (_imageCache.TryGetValue(url, out var cachedBitmap))
                     return cachedBitmap;
 
-                using var httpClient = new HttpClient();
-                using var response = httpClient.GetAsync(url).Result;
+                using var response = App.HttpClient.GetAsync(url).Result;
 
                 Bitmap? bitmap = null;
                 if (response.IsSuccessStatusCode)

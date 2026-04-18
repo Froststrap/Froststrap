@@ -2,27 +2,30 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Controls.Notifications;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using FluentAvalonia.UI.Controls;
+using FluentIcons.Common;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
-using IconPacks.Avalonia.Material;
 using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Settings
 {
     public partial class MainWindow : Base.AvaloniaWindow
     {
+        public static MainWindow? Instance { get; private set; }
+
         private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
         private MainWindowViewModel? _viewModel;
 
         public MainWindow()
         {
+            Instance = this;
             InitializeComponent();
         }
 
@@ -33,7 +36,7 @@ namespace Froststrap.UI.Elements.Settings
 
             _viewModel.RequestSaveNoticeEvent += (_, _) => ShowSaveNotification();
             _viewModel.RequestCloseWindowEvent += (_, _) => Close();
-            _viewModel.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
+            _viewModel.SearchBar.SearchResultSelected += (_, item) => OnSearchResultSelected(item);
 
             App.Logger.WriteLine("MainWindow", "Initializing settings window");
 
@@ -69,7 +72,7 @@ namespace Froststrap.UI.Elements.Settings
 
             Dispatcher.UIThread.Post(() =>
             {
-                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
                 AttachTitleBarButtons();
                 BuildSearchIndex();
             }, DispatcherPriority.Loaded);
@@ -85,7 +88,7 @@ namespace Froststrap.UI.Elements.Settings
             }
             else if (e.PropertyName == nameof(MainWindowViewModel.SelectedPage))
             {
-                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }
         }
 
@@ -153,54 +156,45 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
-        private void UpdateSelectedButtonStyle(string selectedPage)
+        private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
         {
-            var sidebarBorder = this.FindControl<Border>("SidebarBorder");
-
-            if (sidebarBorder?.Child is Grid sidebarGrid)
+            if (e.InvokedItemContainer is NavigationViewItem navItem && navItem.Tag is string tag)
             {
-                var topSection = sidebarGrid.Children
-                                           .OfType<ScrollViewer>()
-                                           .FirstOrDefault()?.Content as StackPanel;
+                if (tag == "about")
+                {
+                    _viewModel?.OpenAboutCommand.Execute(null);
+                    return;
+                }
 
-                if (topSection != null)
-                    UpdateButtonStyles(topSection, selectedPage);
-
-                var bottomSection = sidebarGrid.Children
-                                              .OfType<StackPanel>()
-                                              .FirstOrDefault();
-
-                if (bottomSection != null)
-                    UpdateButtonStyles(bottomSection, selectedPage);
+                var action = GetNavigationAction(tag);
+                action?.Invoke();
             }
         }
 
-        private static void UpdateButtonStyles(StackPanel stackPanel, string selectedPage)
+        private void UpdateSelectedNavigationViewItem(string selectedPage)
         {
-            var accentFgKey = "AccentButtonBackground";
-            var unselectedFgResource = "c";
-            var highlightBgResource = "ControlFillColorSecondaryBrush";
+            var navView = this.FindControl<NavigationView>("NavView");
+            if (navView == null) return;
 
-            foreach (var child in stackPanel.Children)
+            foreach(var item in navView.MenuItems)
             {
-                if (child is IconButton button && button.Tag is string tag)
+                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
                 {
-                    var isSelected = tag == selectedPage;
-
-                    if (isSelected)
+                    if (tag == selectedPage)
                     {
-                        if (!button.Classes.Contains("Selected"))
-                            button.Classes.Add("Selected");
-
-                        button[!IconButton.BackgroundProperty] = button.GetResourceObservable(highlightBgResource).ToBinding();
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(accentFgKey).ToBinding();
+                        navView.SelectedItem = navItem;
+                        return;
                     }
-                    else
+                }
+            }
+            foreach(var item in navView.FooterMenuItems)
+            {
+                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
+                {
+                    if (tag == selectedPage)
                     {
-                        button.Classes.Remove("Selected");
-                        button.Background = Brushes.Transparent;
-
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(unselectedFgResource).ToBinding();
+                        navView.SelectedItem = navItem;
+                        return;
                     }
                 }
             }
@@ -267,7 +261,7 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_SettingsSaved_Title,
                 Strings.Menu_SettingsSaved_Message,
-                NotificationType.Success,
+                InfoBarSeverity.Success,
                 3000);
         }
 
@@ -277,19 +271,24 @@ namespace Froststrap.UI.Elements.Settings
             ShowNotification(
                 Strings.Menu_AlreadyRunning_Title,
                 Strings.Menu_AlreadyRunning_Caption,
-                NotificationType.Warning,
+                InfoBarSeverity.Warning,
                 5000);
         }
 
-        private void ShowNotification(string title, string subtitle, NotificationType type, int timeout)
+        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, FluentIcons.Common.Symbol? icon = null)
+        {
+            Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
+        }
+
+        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, FluentIcons.Common.Symbol? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            var accentColor = type == NotificationType.Success ? "#00D084" : "#FFB900";
-            var iconKind = type == NotificationType.Success
-                ? PackIconMaterialKind.CheckboxMultipleMarkedCircleOutline
-                : PackIconMaterialKind.AlertOutline;
+            var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
+            var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
+                ? FluentIcons.Common.Symbol.CheckmarkCircle
+                : FluentIcons.Common.Symbol.Warning);
 
             var contentGrid = new Grid
             {
@@ -297,11 +296,10 @@ namespace Froststrap.UI.Elements.Settings
                 Margin = new Thickness(0)
             };
 
-            var icon = new PackIconMaterial
+            var icon = new FluentIcons.Avalonia.Fluent.SymbolIcon
             {
-                Kind = iconKind,
-                Width = 28,
-                Height = 28,
+                Symbol = iconSymbol,
+                FontSize = 28,
                 Foreground = new SolidColorBrush(Color.Parse(accentColor)),
                 VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
                 Margin = new Thickness(16, 0, 12, 0)
@@ -312,10 +310,10 @@ namespace Froststrap.UI.Elements.Settings
             var textPanel = new StackPanel { VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center, Spacing = 2 };
 
             var titleText = new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, FontSize = 14 };
-            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiText"));
+            titleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorPrimaryBrush"));
 
             var subtitleText = new TextBlock { Text = subtitle, FontSize = 12, TextWrapping = TextWrapping.Wrap };
-            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("SukiLowText"));
+            subtitleText.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
 
             textPanel.Children.Add(titleText);
             textPanel.Children.Add(subtitleText);
@@ -460,7 +458,7 @@ namespace Froststrap.UI.Elements.Settings
                 }
             }
 
-            _viewModel.SetSearchIndex(searchIndex);
+            _viewModel.SearchBar.SetSearchIndex(searchIndex);
 
             PreIndexPages(pages);
         }
@@ -515,7 +513,7 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (addedItems.Count > 0)
                 {
-                    var currentIndex = _viewModel.GetSearchIndex();
+                var currentIndex = _viewModel.SearchBar.GetSearchIndex();
                     currentIndex.AddRange(addedItems);
                 }
             }
@@ -596,7 +594,15 @@ namespace Froststrap.UI.Elements.Settings
             _state.Top = this.Position.Y;
         }
 
-        private void MainWindow_Closed(object? sender, EventArgs e) => App.Logger.WriteLine("MainWindow", "Settings window closed");
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            if (App.LaunchSettings.TestModeFlag.Active)
+                LaunchHandler.LaunchRoblox(LaunchMode.Player);
+            else
+                App.SoftTerminate();
+
+            App.Logger.WriteLine("MainWindow", "Settings window closed");
+        }
 
         #endregion
     }

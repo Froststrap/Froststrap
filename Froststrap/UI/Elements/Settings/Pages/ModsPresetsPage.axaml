@@ -15,25 +15,25 @@
         <StackPanel Margin="14">
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto, Auto">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
-                                     Icon="StorefrontOutline" Description="Explore user-created mods."
+                                     Icon="ShoppingStore" Description="Explore user-created mods."
                                      Command="{Binding OpenCommunityModsCommand}" />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="My Mods"
-                                     Icon="FormatListBulletedSquare" Description="Manage your active mods."
+                                     Icon="TextBulletList" Description="Manage your active mods."
                                      Command="{Binding OpenModsCommand}" />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
-                                     Icon="PaletteOutline" Description="Generate mods easily with a single click."
+                                     Icon="PaintBrush" Description="Generate mods easily with a single click."
                                      Command="{Binding OpenModGeneratorCommand}"/>
                 <controls:CardAction Grid.Row="1" Grid.ColumnSpan="3"
                                      Header="Open Preset Mods Folder"
-                                     Icon="FolderOpenOutline" 
+                                     Icon="FolderOpen" 
                                      Description="Opens your Preset Modification folder, Used like Bloxstrap."
                                      Command="{Binding OpenModsFolderCommand}"/>
-                
+
                 <controls:CardAction Grid.Row="2" Grid.ColumnSpan="3"
                                      Header="{x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Title}"
-                                     Icon="ShieldCheckOutline" 
+                                     Icon="ShieldCheckmark" 
                                      Description="{Binding Source={x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"
                                      Command="{Binding OpenCompatSettingsCommand}"/>
             </Grid>
@@ -79,14 +79,14 @@
                 <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Title}"
                                         Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Description}">
                     <Panel>
-                        <controls:IconButton Command="{Binding ManageCustomFontCommand}"
+                        <controls:IconButton Command="{Binding ChooseCustomFontCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Choose}"
-                                            Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
+                                            Icon="DocumentAdd"
                                             IsVisible="{Binding !IsCustomFontSet}" />
                         <controls:IconButton Classes="Danger"
-                                            Command="{Binding ManageCustomFontCommand}"
+                                            Command="{Binding RemoveCustomFontCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Remove}"
-                                            Icon="TrashCanOutline"
+                                            Icon="Delete"
                                             IsVisible="{Binding IsCustomFontSet}" />
                     </Panel>
                 </controls:OptionControl>
@@ -96,12 +96,12 @@
                     <Panel>
                         <controls:IconButton Command="{Binding AddCustomDeathSoundCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Choose}"
-                                            Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
+                                            Icon="DocumentAdd"
                                             IsVisible="{Binding !HasCustomDeathSound}" />
                         <controls:IconButton Classes="Danger"
                                             Command="{Binding RemoveCustomDeathSoundCommand}"
                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Remove}"
-                                            Icon="TrashCanOutline"
+                                            Icon="Delete"
                                             IsVisible="{Binding HasCustomDeathSound}" />
                     </Panel>
                 </controls:OptionControl>
@@ -113,10 +113,10 @@
                         <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Title}"
                                                 Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Description}">
                             <Panel>
-                                <controls:IconButton Command="{Binding AddCustomCursorModCommand}" Icon="FileDocumentPlusOutline"
-                                                   Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Choose}" CommandParameter="{Binding $self}"
+                                <controls:IconButton Command="{Binding AddCustomCursorModCommand}" Icon="DocumentAdd"
+                                                   Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Choose}"
                                                    IsVisible="{Binding !HasCustomCursors}" />
-                                <controls:IconButton Classes="Danger" Command="{Binding RemoveCustomCursorModCommand}" Icon="TrashCanOutline"
+                                <controls:IconButton Classes="Danger" Command="{Binding RemoveCustomCursorModCommand}" Icon="Delete"
                                                    Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Remove}"
                                                    IsVisible="{Binding HasCustomCursors}" />
                             </Panel>
@@ -129,13 +129,13 @@
                         <StackPanel>
                             <controls:IconButton Command="{Binding AddCustomShiftlockModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Choose}"
-                                        Icon="FileDocumentPlusOutline" CommandParameter="{Binding $self}"
+                                        Icon="DocumentAdd"
                                         IsVisible="{Binding !HasCustomShiftlock}" />
 
                             <controls:IconButton Classes="Danger"
                                         Command="{Binding RemoveCustomShiftlockModCommand}"
                                         Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Remove}"
-                                        Icon="TrashCanOutline"
+                                        Icon="Delete"
                                         IsVisible="{Binding HasCustomShiftlock}" />
                         </StackPanel>
                     </controls:OptionControl>
@@ -161,13 +161,13 @@
                                 <controls:IconButton Grid.Column="0" Height="32" HorizontalAlignment="Stretch" Margin="0,0,4,0"
                        Command="{Binding AddCustomCursorSetCommand}"
                        Content="{x:Static resources:Strings.Common_New}"
-                       Icon="Plus" />
+                       Icon="Add" />
 
                                 <controls:IconButton Grid.Column="1" Height="32" HorizontalAlignment="Stretch" Margin="4,0,0,0"
                        Classes="Danger"
                        Command="{Binding DeleteCustomCursorSetCommand}"
                        Content="{x:Static resources:Strings.Common_Delete}"
-                       Icon="TrashCanOutline"
+                       Icon="Delete"
                        IsEnabled="{Binding IsCustomCursorSetSelected}" />
                             </Grid>
 
@@ -175,7 +175,7 @@
                                 <Grid Margin="0,0,0,48" RowDefinitions="Auto,16,Auto" ColumnDefinitions="*,*,*,*">
                                     <Grid Grid.Row="0" Grid.ColumnSpan="4" ColumnDefinitions="*,Auto">
                                         <TextBox Grid.Column="0" Watermark="Custom Cursor Set 1" Text="{Binding SelectedCustomCursorSetName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" />
-                                        <controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="PencilOutline" Content="Rename" Command="{Binding RenameCustomCursorSetCommand}" FontWeight="Medium" />
+                                        <controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="Edit" Content="Rename" Command="{Binding RenameCustomCursorSetCommand}" FontWeight="Medium" />
                                     </Grid>
 
                                     <Grid Grid.Row="2" Grid.Column="0" Margin="4,16,8,16" RowDefinitions="Auto,*,Auto">
@@ -186,9 +186,9 @@
                                             </Viewbox>
                                         </Border>
                                         <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                            <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddMouseLockedCursorCommand}" CommandParameter="{Binding $self}"
+                                            <controls:IconButton Content="Browse" Icon="Folder" Command="{Binding AddMouseLockedCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasShiftlockCursor}" HorizontalAlignment="Stretch" Height="32" />
-                                            <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="MouseLockedCursor.png"
+                                            <controls:IconButton Content="Remove" Icon="Delete" Command="{Binding DeleteCursorCommand}" CommandParameter="MouseLockedCursor.png"
                                    IsVisible="{Binding HasShiftlockCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
@@ -201,9 +201,9 @@
                                             </Viewbox>
                                         </Border>
                                         <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                            <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddArrowCursorCommand}" CommandParameter="{Binding $self}"
+                                            <controls:IconButton Content="Browse" Icon="Folder" Command="{Binding AddArrowCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasArrowCursor}" HorizontalAlignment="Stretch" Height="32" />
-                                            <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowCursor.png"
+                                            <controls:IconButton Content="Remove" Icon="Delete" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowCursor.png"
                                    IsVisible="{Binding HasArrowCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
@@ -216,9 +216,9 @@
                                             </Viewbox>
                                         </Border>
                                         <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                            <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddArrowFarCursorCommand}" CommandParameter="{Binding $self}"
+                                            <controls:IconButton Content="Browse" Icon="Folder" Command="{Binding AddArrowFarCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasArrowFarCursor}" HorizontalAlignment="Stretch" Height="32" />
-                                            <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowFarCursor.png"
+                                            <controls:IconButton Content="Remove" Icon="Delete" Command="{Binding DeleteCursorCommand}" CommandParameter="ArrowFarCursor.png"
                                    IsVisible="{Binding HasArrowFarCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
@@ -231,9 +231,9 @@
                                             </Viewbox>
                                         </Border>
                                         <StackPanel Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" Margin="0,8,0,0">
-                                            <controls:IconButton Content="Browse" Icon="FolderOutline" Command="{Binding AddIBeamCursorCommand}" CommandParameter="{Binding $self}"
+                                            <controls:IconButton Content="Browse" Icon="Folder" Command="{Binding AddIBeamCursorCommand}" CommandParameter="{Binding $self}"
                                    IsVisible="{Binding !HasIBeamCursor}" HorizontalAlignment="Stretch" Height="32" />
-                                            <controls:IconButton Content="Remove" Icon="TrashCanOutline" Command="{Binding DeleteCursorCommand}" CommandParameter="IBeamCursor.png"
+                                            <controls:IconButton Content="Remove" Icon="Delete" Command="{Binding DeleteCursorCommand}" CommandParameter="IBeamCursor.png"
                                    IsVisible="{Binding HasIBeamCursor}" Classes="Danger" HorizontalAlignment="Stretch" Height="32" />
                                         </StackPanel>
                                     </Grid>
@@ -243,8 +243,8 @@
                             <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*,*,*" Height="36" IsVisible="{Binding IsCustomCursorSetSelected}">
                                 <controls:IconButton Grid.Column="0" Height="32" Content="Apply Set" Icon="Check" Command="{Binding ApplyCursorSetCommand}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="This will apply your cursors into your Mods Folder." />
                                 <controls:IconButton Grid.Column="1" Height="32" Content="Fetch Set" Icon="ImageMultiple" Command="{Binding GetCurrentCursorSetCommand}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="This will copy the cursors from your Mods folder." />
-                                <controls:IconButton Grid.Column="2" Height="32" Content="Import Set" Icon="FolderZipOutline" Command="{Binding ImportCursorSetCommand}" CommandParameter="{Binding $self}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="Allows you to Import Cursor from others easily." />
-                                <controls:IconButton Grid.Column="3" Height="32" Content="Export Set" Icon="Export" Command="{Binding ExportCursorSetCommand}" CommandParameter="{Binding $self}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="Allows you to export your Cursor to other people or save somewhere." />
+                                <controls:IconButton Grid.Column="2" Height="32" Content="Import Set" Icon="FolderZip" Command="{Binding ImportCursorSetCommand}" CommandParameter="{Binding $self}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="Allows you to Import Cursor from others easily." />
+                                <controls:IconButton Grid.Column="3" Height="32" Content="Export Set" Icon="ArrowExport" Command="{Binding ExportCursorSetCommand}" CommandParameter="{Binding $self}" HorizontalAlignment="Stretch" Margin="4,0,0,0" ToolTip.Tip="Allows you to export your Cursor to other people or save somewhere." />
                             </Grid>
 
                             <TextBlock Grid.RowSpan="2" Grid.Column="1" Text="No Custom Cursor Set selected." FontWeight="Medium" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding !IsCustomCursorSetSelected}"/>

@@ -1,16 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Models;
 using Froststrap.UI.ViewModels.Settings.FastFlags;
 using Froststrap.UI.ViewModels.Settings.GlobalSettings;
 using Froststrap.UI.ViewModels.Settings.Mods;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -40,28 +34,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private string _currentPageDescription = "";
         public string CurrentPageDescription { get => _currentPageDescription; set => SetProperty(ref _currentPageDescription, value); }
 
-        private string _searchQuery = string.Empty;
-        public string SearchQuery 
-        { 
-            get => _searchQuery; 
-            set
-            {
-                if (SetProperty(ref _searchQuery, value))
-                {
-                    FilterSearchResults();
-                }
-            }
-        }
-
-        private ObservableCollection<SearchBarItem> _filteredSearchResults = new();
-        public ObservableCollection<SearchBarItem> FilteredSearchResults
-        {
-            get => _filteredSearchResults;
-            set => SetProperty(ref _filteredSearchResults, value);
-        }
-
-        // Search index cache
-        private List<SearchBarItem> _searchIndex = new();
+        public SearchBarViewModel SearchBar { get; }
 
         private ObservableCollection<BreadcrumbItemModel> _breadcrumbItems = new();
         public ObservableCollection<BreadcrumbItemModel> BreadcrumbItems
@@ -108,13 +81,11 @@ namespace Froststrap.UI.ViewModels.Settings
         public IRelayCommand NavigateToModGeneratorCommand { get; }
 
         public ICommand OpenAboutCommand { get; }
-        public ICommand OpenAccountManagerCommand { get; }
         public ICommand SaveSettingsCommand { get; }
         public ICommand SaveAndLaunchSettingsCommand { get; }
         public ICommand RestartAppCommand { get; }
         public ICommand CloseWindowCommand { get; }
         public ICommand BreadcrumbItemClickedCommand { get; }
-        public IRelayCommand<SearchBarItem> SearchResultSelectedCommand { get; }
 
         public EventHandler? RequestSaveNoticeEvent;
         public EventHandler? RequestCloseWindowEvent;
@@ -126,23 +97,22 @@ namespace Froststrap.UI.ViewModels.Settings
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
 
             OpenAboutCommand = new RelayCommand(OpenAbout);
-            OpenAccountManagerCommand = new RelayCommand(OpenAccountManager);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
             SaveAndLaunchSettingsCommand = new RelayCommand(SaveAndLaunchSettings);
             RestartAppCommand = new RelayCommand(RestartApp);
             CloseWindowCommand = new RelayCommand(CloseWindow);
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
-            SearchResultSelectedCommand = new RelayCommand<SearchBarItem>(HandleSearchResultSelected);
+            SearchBar = new SearchBarViewModel();
 
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", "Integrations", Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", "Behaviour", Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
             NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", "Preset Mods", "Official built-in mods.", new ModsPresetsViewModel()));
             NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", "Fast Flags", Strings.Menu_FastFlags_Description, new FastFlagsViewModel()));
             NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
-            NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", "Region Selector", Strings.Menu_RegionSelector_Description, new RegionSelectorViewModel()));
+            NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", "Region Selector", null!, new RegionSelectorViewModel()));
             NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", "Global Settings", Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
             NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", "Shortcuts", Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
-            NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", "Channels Page", Strings.Menu_Channel_Description, new ChannelViewModel()));
+            NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", "Deployment", Strings.Menu_Channel_Description, new ChannelViewModel()));
 
             NavigateToGlobalSettingsEditorCommand = new RelayCommand(() =>
             {
@@ -209,7 +179,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 CurrentPageDescription = description;
                 BreadcrumbItems = customBreadcrumbs ?? new ObservableCollection<BreadcrumbItemModel>();
                 CurrentPage = viewModel;
-                SearchQuery = string.Empty;
+                SearchBar.Clear();
             }
             catch (Exception ex)
             {
@@ -254,13 +224,6 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             App.FrostRPC?.SetDialog("About");
             new Elements.About.MainWindow().Show();
-            App.FrostRPC?.ClearDialog();
-        }
-
-        private void OpenAccountManager()
-        {
-            App.FrostRPC?.SetDialog("Account Manager");
-            new Elements.AccountManagers.MainWindow().Show();
             App.FrostRPC?.ClearDialog();
         }
 
@@ -340,41 +303,14 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public EventHandler<SearchBarItem>? SearchResultSelected;
-
-        private void HandleSearchResultSelected(SearchBarItem? item)
-        {
-            if (item == null) return;
-
-            SearchQuery = string.Empty;
-            SearchResultSelected?.Invoke(this, item);
-            item.NavigateAction?.Invoke();
-        }
-
-        private void FilterSearchResults()
-        {
-            if (string.IsNullOrWhiteSpace(SearchQuery))
-            {
-                FilteredSearchResults = [];
-                return;
-            }
-
-            var query = SearchQuery.ToLower();
-            var filtered = _searchIndex
-                .Where(item => item.DisplayName.ToLower().Contains(query))
-                .ToList();
-
-            FilteredSearchResults = new ObservableCollection<SearchBarItem>(filtered);
-        }
-
         public void SetSearchIndex(List<SearchBarItem> searchIndex)
         {
-            _searchIndex = searchIndex ?? [];
+            SearchBar.SetSearchIndex(searchIndex);
         }
 
         public List<SearchBarItem> GetSearchIndex()
         {
-            return _searchIndex;
+            return SearchBar.GetSearchIndex();
         }
     }
 }

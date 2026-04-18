@@ -7,7 +7,8 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:resources="clr-namespace:Froststrap.Resources"
         xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.About"
-        xmlns:ic="using:IconPacks.Avalonia.Material"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:ic="using:FluentIcons.Avalonia.Fluent"
         mc:Ignorable="d"
         x:Class="Froststrap.UI.Elements.About.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -18,35 +19,39 @@
   <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
         <controls:TitleBar Grid.Row="0" Background="{DynamicResource LayerFillColorDefaultBrush}" Title="{x:Static resources:Strings.About_Title}" Icon="avares://Froststrap/Froststrap.ico" />
 
-        <Grid Grid.Row="1" ColumnDefinitions="125,*" Name="MainGrid">
-            <Border Grid.Column="0" Background="{DynamicResource LayerFillColorDefaultBrush}" BorderThickness="0,0,1,0" BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
-                <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                    <StackPanel Spacing="0" VerticalAlignment="Top" Name="SidebarStackPanel">
-                        <controls:IconButton 
-                            Classes="nav-button" 
-                            Content="{x:Static resources:Strings.Menu_About_Title}" 
-                            Command="{Binding NavigateToAboutCommand}" 
-                            Tag="about"
-                            Icon="Information"
-                            IconSize="20" />
+        <Grid Grid.Row="1" Name="MainGrid">
+            <ui:NavigationView Name="NavView"
+                               PaneDisplayMode="Left"
+                               IsSettingsVisible="False"
+                               IsBackButtonVisible="False"
+                               OpenPaneLength="140"
+                               ItemInvoked="NavView_ItemInvoked">
+                <ui:NavigationView.Styles>
+                    <Style Selector="ui|NavigationView /template/ ScrollViewer#MenuItemsScrollViewer">
+                        <Setter Property="VerticalScrollBarVisibility" Value="Hidden"/>
+                    </Style>
+                </ui:NavigationView.Styles>
+                <ui:NavigationView.MenuItems>
+                    <ui:NavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
+                        <ui:NavigationViewItem.IconSource>
+                            <ic:SymbolIconSource Symbol="Info" />
+                        </ui:NavigationViewItem.IconSource>
+                    </ui:NavigationViewItem>
+                    <ui:NavigationViewItem Tag="licenses" Content="{x:Static resources:Strings.About_Licenses_Title}">
+                        <ui:NavigationViewItem.IconSource>
+                            <ic:SymbolIconSource Symbol="Book" />
+                        </ui:NavigationViewItem.IconSource>
+                    </ui:NavigationViewItem>
+                </ui:NavigationView.MenuItems>
 
-                        <controls:IconButton 
-                            Classes="nav-button" 
-                            Content="{x:Static resources:Strings.About_Licenses_Title}" 
-                            Command="{Binding NavigateToLicensesCommand}" 
-                            Tag="licenses"
-                            Icon="License"
-                            IconSize="20" />
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
-
-            <TransitioningContentControl
-                x:Name="PageContentControl"
-                Grid.Column="1"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                Background="{DynamicResource LayerFillColorDefaultBrush}" />
+                <ui:NavigationView.Content>
+                    <TransitioningContentControl
+                        x:Name="PageContentControl"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Background="{DynamicResource LayerFillColorDefaultBrush}" />
+                </ui:NavigationView.Content>
+            </ui:NavigationView>
         </Grid>
     </Grid>
 </base:AvaloniaWindow>

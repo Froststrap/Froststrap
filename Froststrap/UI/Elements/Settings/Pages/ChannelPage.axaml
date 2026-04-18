@@ -1,12 +1,12 @@
 <UserControl
     x:Class="Froststrap.UI.Elements.Settings.Pages.ChannelPage"
     xmlns="https://github.com/avaloniaui"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
-    xmlns:suki="https://github.com/kikipoulet/SukiUI"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="900"
     d:DesignWidth="800"
@@ -17,19 +17,19 @@
         <StackPanel Margin="14">
             <StackPanel Orientation="Horizontal" Spacing="6">
                 <controls:IconButton
-                    Icon="Import"
+                    Icon="ArrowImport"
                     Content="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:IconButton
-                    Icon="Export"
+                    Icon="ArrowExport"
                     Content="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
                 <controls:IconButton
-                    Icon="Restore"
+                    Icon="ArrowReset"
                     Content="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
                     Command="{Binding ResetSettingsToDefaultCommand}" />
             </StackPanel>
@@ -125,12 +125,12 @@
                                 Grid.Column="0"
                                 Margin="0,0,16,8"
                                 VerticalAlignment="Center"
-                                Foreground="{DynamicResource SukiLowText}"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                 Text="{x:Static resources:Strings.Common_Version}" />
                             <TextBlock
                                 Grid.Row="0"
                                 Grid.Column="1"
-                                Foreground="{DynamicResource SukiMediumText}"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                 Text="{Binding ChannelDeployInfo.Version, Mode=OneWay}" />
 
                             <!-- Version GUID Row -->
@@ -139,12 +139,12 @@
                                 Grid.Column="0"
                                 Margin="0,0,16,8"
                                 VerticalAlignment="Center"
-                                Foreground="{DynamicResource SukiLowText}"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                 Text="{x:Static resources:Strings.Common_VersionGuid}" />
                             <TextBlock
                                 Grid.Row="1"
                                 Grid.Column="1"
-                                Foreground="{DynamicResource SukiMediumText}"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                 Text="{Binding ChannelDeployInfo.VersionGuid, Mode=OneWay}" />
 
                             <!-- Timestamp Row -->
@@ -153,12 +153,12 @@
                                 Grid.Column="0"
                                 Margin="0,0,16,8"
                                 VerticalAlignment="Center"
-                                Foreground="{DynamicResource SukiLowText}"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                 Text="{x:Static resources:Strings.Common_Timestamp}" />
                             <TextBlock
                                 Grid.Row="2"
                                 Grid.Column="1"
-                                Foreground="{DynamicResource SukiMediumText}"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                 Text="{Binding ChannelDeployInfo.Timestamp, Mode=OneWay}" />
 
                             <!-- Available Channels Button -->
@@ -189,7 +189,7 @@
                         </Grid>
 
                         <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
-                            <suki:CircleProgressBar
+                            <ui:ProgressRing
                                 Grid.Column="0"
                                 Width="64"
                                 Height="64"

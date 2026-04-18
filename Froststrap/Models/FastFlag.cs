@@ -1,4 +1,4 @@
-﻿using IconPacks.Avalonia.Material;
+﻿using FluentIcons.Common;
 using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
@@ -6,11 +6,11 @@ namespace Froststrap.Models
     public class FastFlag : NotifyPropertyChangedViewModel
     {
         // public bool Enabled { get; set; }
-        private PackIconMaterialKind _preset;
+        private Symbol _preset;
         private string _name = string.Empty;
         private string _value = string.Empty;
 
-        public PackIconMaterialKind Preset
+        public Symbol Preset
         {
             get => _preset;
             set => SetProperty(ref _preset, value);

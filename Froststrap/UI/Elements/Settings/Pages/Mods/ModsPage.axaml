@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:models="using:Froststrap.Models"
-             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
@@ -15,27 +15,27 @@
         <StackPanel Margin="14">
             <Grid ColumnDefinitions="*,*,*">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
-                                     Icon="StorefrontOutline" Description="Explore user-created mods."
+                                     Icon="ShoppingStore" Description="Explore user-created mods."
                                      Command="{Binding OpenCommunityModsCommand}" />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="Preset Mods"
-                                     Icon="BookOpenPageVariantOutline" Description="Official built-in mods."
+                                     Icon="BookOpen" Description="Official built-in mods."
                                      Command="{Binding OpenPresetModsCommand}" />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
-                                     Icon="PaletteOutline" Description="Generate mods easily with a single click."
+                                     Icon="PaintBrush" Description="Generate mods easily with a single click."
                                      Command="{Binding OpenModGeneratorCommand}"/>
             </Grid>
 
             <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
 
-            <suki:InfoBar Title="Important"
+            <ui:InfoBar Title="Important"
                         Message="You can drag and drop your mod to auto add it here"
-                        Severity="Information"
+                        Severity="Informational"
                         IsOpen="True"
                         IsClosable="False" />
 
-            <controls:IconButton Icon="Plus"
+            <controls:IconButton Icon="Add"
                                  Content="Add new mod"
                                  HorizontalAlignment="Stretch"
                                  Command="{Binding AddModCommand}"
@@ -48,7 +48,7 @@
 								<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
                                 
                                     <controls:IconButton Grid.Column="0" 
-                                                     Icon="TrashCanOutline" 
+                                                     Icon="Delete" 
                                                      Classes="Danger"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).DeleteModCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
@@ -68,7 +68,7 @@
                                     </ComboBox>
 
                                     <controls:IconButton Grid.Column="4" 
-                                                     Icon="FolderOutline"
+                                                     Icon="Folder"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).OpenModFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 

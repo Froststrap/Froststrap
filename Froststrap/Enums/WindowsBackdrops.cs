@@ -2,7 +2,9 @@
 {
     public enum WindowsBackdrops
     {
+        Mica,
         Acrylic,
+        Aero,
         None
     }
 }

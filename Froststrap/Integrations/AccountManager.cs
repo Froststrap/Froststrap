@@ -12,13 +12,9 @@ using Avalonia.Threading;
 using Froststrap.UI.Elements.Dialogs;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using PuppeteerExtraSharp;
-using PuppeteerExtraSharp.Plugins.ExtraStealth;
 using PuppeteerSharp;
 using System.Runtime.InteropServices;
 using System.Web;
-using System;
-using System.Text;
 using System.Security.Cryptography;
 
 namespace Froststrap.Integrations
@@ -35,6 +31,7 @@ namespace Froststrap.Integrations
 
         private readonly string _accountsLocation;
         private List<AccountManagerAccount> _accounts = new();
+        private readonly Dictionary<long, string?> _avatarUrlCache = new();
 
         private Browser? _browser;
         private static readonly byte[] DpapiEntropy = Encoding.UTF8.GetBytes("Froststrap_DPAPI_v1");
@@ -1367,6 +1364,59 @@ namespace Froststrap.Integrations
                 return tokens.FirstOrDefault() ?? "";
 
             return "";
+        }
+
+        public async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)
+        {
+            const string LOG_IDENT_AVATARS = $"{LOG_IDENT}::GetAvatarUrlsBulk";
+            var result = new Dictionary<long, string?>();
+            if (userIds == null || userIds.Count == 0)
+                return result;
+
+            const int batchSize = 100;
+
+            try
+            {
+                for (int i = 0; i < userIds.Count; i += batchSize)
+                {
+                    var batch = userIds.Skip(i).Take(batchSize).ToList();
+                    string idsParam = string.Join(',', batch);
+
+                    Uri url = UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
+
+                    try
+                    {
+                        var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(url);
+
+                        if (response?.Data != null)
+                        {
+                            foreach (var item in response.Data)
+                            {
+                                if (item.TargetId > 0 && !string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    result[item.TargetId] = item.ImageUrl;
+                                    _avatarUrlCache[item.TargetId] = item.ImageUrl;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine($"{LOG_IDENT_AVATARS}", $"Batch failed: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine($"{LOG_IDENT_AVATARS}", $"Exception: {ex.Message}");
+            }
+
+            return result;
+        }
+
+        public string? GetCachedAvatarUrl(long userId)
+        {
+            return _avatarUrlCache.TryGetValue(userId, out var url) ? url : null;
         }
     }
 }
