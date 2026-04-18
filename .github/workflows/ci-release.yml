@@ -7,11 +7,11 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
         include:
           - os: windows-latest
-            just_target: publish-windows
+            just_target: ci-publish-windows
           - os: macos-latest
-            just_target: publish-macos
+            just_target: ci-publish-macos
           - os: ubuntu-latest
-            just_target: publish-linux
+            just_target: ci-publish-linux
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
@@ -31,12 +31,12 @@ jobs:
         uses: extractions/setup-just@v3
 
       - name: Build and package
-        run: just ${{ matrix.just_target }} ${{ github.sha }} ${{ github.ref_type }}/${{ github.ref_name }}
+        run: just ${{ matrix.just_target }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v6
         with:
-          name: Froststrap(Release) (${{ matrix.os }}) (${{ github.sha }})
+          name: Froststrap (Release) (${{ matrix.os }}) (${{ github.sha }})
           path: build/*
 
   release:
@@ -49,19 +49,19 @@ jobs:
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: Froststrap(Release) (windows-latest) (${{ github.sha }})
+          name: Froststrap (Release) (windows-latest) (${{ github.sha }})
           path: release
 
       - name: Download macOS artifact
         uses: actions/download-artifact@v4
         with:
-          name: Froststrap(Release) (macos-latest) (${{ github.sha }})
+          name: Froststrap (Release) (macos-latest) (${{ github.sha }})
           path: release
 
       - name: Download Linux artifact
         uses: actions/download-artifact@v4
         with:
-          name: Froststrap(Release) (ubuntu-latest) (${{ github.sha }})
+          name: Froststrap (Release) (ubuntu-latest) (${{ github.sha }})
           path: release
 
       - name: Create release
@@ -71,7 +71,7 @@ jobs:
           draft: true
           files: |
             release/Froststrap-${{ github.ref_name }}.exe
-            release/Froststrap-macOS-arm64
-            release/Froststrap-linux-x64
+            release/Froststrap-macOS-arm64-${{ github.ref_name }}.zip
+            release/Froststrap-linux-x64-${{ github.ref_name }}
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
