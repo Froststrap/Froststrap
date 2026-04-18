@@ -32,7 +32,6 @@ publish-macos:
     mkdir -p {{ build_dir }}/temp/x64
     mkdir -p {{ build_dir }}/Froststrap.app/Contents/{MacOS,Resources}
 
-    # Build ARM64 (Apple Silicon)
     dotnet publish {{ project_file }} \
         -r osx-arm64 \
         -c {{ release_config }} \
@@ -41,21 +40,11 @@ publish-macos:
         -p:IncludeNativeLibrariesForSelfExtract=true \
         -o ./{{ build_dir }}/temp/arm64
 
-    # Build x64 (Intel)
-    dotnet publish {{ project_file }} \
-        -r osx-x64 \
-        -c {{ release_config }} \
-        --self-contained true \
-        -p:PublishSingleFile=true \
-        -p:IncludeNativeLibrariesForSelfExtract=true \
-        -o ./{{ build_dir }}/temp/x64
-
     lipo -create \
         ./{{ build_dir }}/temp/arm64/Froststrap \
-        ./{{ build_dir }}/temp/x64/Froststrap \
         -output ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
 
-    cp Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
+    cp ./macos/Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
     chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
 
     # Ad-hoc code sign the app (self-signed)
