@@ -718,7 +718,8 @@ namespace Froststrap
 
             try
             {
-                int count = Process.GetProcesses().Count(x => x.ProcessName is "RobloxPlayerBeta");
+                string processName = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
+                int count = Process.GetProcesses().Count(x => x.ProcessName == processName);
                 count -= 1;
 
                 if (count > 0)
@@ -1430,7 +1431,8 @@ namespace Froststrap
             const string LOG_IDENT = "Bootstrapper::KillRobloxPlayers";
 
             var processesToKill = new List<Process>();
-            processesToKill.AddRange(Process.GetProcessesByName("RobloxPlayerBeta"));
+            string playerProcessName = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
+            processesToKill.AddRange(Process.GetProcessesByName(playerProcessName));
             processesToKill.AddRange(Process.GetProcessesByName("RobloxCrashHandler"));
 
             foreach (Process process in processesToKill)
@@ -1447,7 +1449,8 @@ namespace Froststrap
                 }
             }
 
-            var studioProcesses = Process.GetProcessesByName("RobloxStudioBeta");
+            string studioProcessName = OperatingSystem.IsMacOS() ? "RobloxStudio" : "RobloxStudioBeta";
+            var studioProcesses = Process.GetProcessesByName(studioProcessName);
 
             if (studioProcesses.Any())
             {
@@ -1455,7 +1458,7 @@ namespace Froststrap
 
                 SetStatus("Waitting for Roblox Studio...");
 
-                while (Process.GetProcessesByName("RobloxStudioBeta").Any())
+                while (Process.GetProcessesByName(studioProcessName).Any())
                 {
                     Thread.Sleep(1000);
 
