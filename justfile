@@ -32,7 +32,7 @@ publish-macos:
     mkdir -p {{ build_dir }}/temp/x64
     mkdir -p {{ build_dir }}/Froststrap.app/Contents/{MacOS,Resources}
 
-    # Publish for Apple Silicon
+    # Build ARM64 (Apple Silicon)
     dotnet publish {{ project_file }} \
         -r osx-arm64 \
         -c {{ release_config }} \
@@ -41,7 +41,7 @@ publish-macos:
         -p:IncludeNativeLibrariesForSelfExtract=true \
         -o ./{{ build_dir }}/temp/arm64
 
-    # Publish for Intel
+    # Build x64 (Intel)
     dotnet publish {{ project_file }} \
         -r osx-x64 \
         -c {{ release_config }} \
@@ -50,7 +50,6 @@ publish-macos:
         -p:IncludeNativeLibrariesForSelfExtract=true \
         -o ./{{ build_dir }}/temp/x64
 
-    # Use lipo to create the Universal Binary
     lipo -create \
         ./{{ build_dir }}/temp/arm64/Froststrap \
         ./{{ build_dir }}/temp/x64/Froststrap \
@@ -59,8 +58,17 @@ publish-macos:
     cp Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
     chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
 
-    hdiutil create -volname "Froststrap" -srcfolder ./{{ build_dir }}/Froststrap.app -ov -format UDZO ./{{ build_dir }}/Froststrap-MacOS.dmg
+    # use boilerplater create-dmg to make gui
+    create-dmg \
+      --volname "Froststrap Installer" \
+      --window-size 500 300 \
+      --icon-size 96 \
+      --icon "Froststrap.app" 125 150 \
+      --app-drop-link 375 150 \
+      "./{{ build_dir }}/Froststrap-MacOS.dmg" \
+      "./{{ build_dir }}/Froststrap.app"
 
+    # Clean up
     rm -rf ./{{ build_dir }}/temp
     rm -rf ./{{ build_dir }}/Froststrap.app
 
