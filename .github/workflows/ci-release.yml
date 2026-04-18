@@ -71,8 +71,8 @@ jobs:
           prerelease: ${{ contains(github.ref_name, '-') }}
           draft: true
           files: |
-            release/Froststrap-${{ github.ref_name }}.exe
-            release/Froststrap-macOS-arm64-${{ github.ref_name }}.zip
-            release/Froststrap-linux-x64-${{ github.ref_name }}
+            release/Froststrap.exe
+            release/Froststrap-macOS-arm64.zip
+            release/Froststrap-linux-x64
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true

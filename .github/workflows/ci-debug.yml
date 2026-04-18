@@ -32,7 +32,7 @@ jobs:
         uses: extractions/setup-just@v3
 
       - name: Publish
-        run: just ${{ matrix.just_target }} ${{ github.sha }} ${{ github.ref_type }}/${{ github.ref_name }}
+        run: just ${{ matrix.just_target }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v6
