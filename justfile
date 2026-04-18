@@ -94,7 +94,7 @@ publish-linux commit_hash commit_ref: (_validate-publish commit_hash commit_ref)
         "-p:CommitRef={{ commit_ref }}" \
         -o ./{{ build_dir }}/linux-temp
 
-    version=$(git describe --tags --abbrev=0)
+    version=$(git describe --tags --abbrev=0 2>/dev/null || echo unknown)
     mv ./{{ build_dir }}/linux-temp/Froststrap ./{{ build_dir }}/Froststrap-linux-x64-$version
     rm -rf ./{{ build_dir }}/linux-temp
     chmod +x ./{{ build_dir }}/Froststrap-linux-x64-$version
