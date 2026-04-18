@@ -58,7 +58,10 @@ publish-macos:
     cp Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
     chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
 
-    # use boilerplater create-dmg to make gui
+    # Ad-hoc code sign the app (self-signed)
+    codesign --force --deep --sign - ./{{ build_dir }}/Froststrap.app
+
+    # use create-dmg to make gui
     create-dmg \
       --volname "Froststrap Installer" \
       --window-size 500 300 \
