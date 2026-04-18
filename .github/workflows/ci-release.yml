@@ -1,5 +1,7 @@
 name: CI (Release)
+
 on: [push, pull_request]
+
 jobs:
   build:
     strategy:
@@ -37,6 +39,12 @@ jobs:
 
       - name: Build and package
         run: just ${{ matrix.just_target }}
+
+      - name: Remove quarantine from artifacts (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          xattr -rd com.apple.quarantine build/Froststrap-MacOS.dmg 2>/dev/null || true
+          echo "Quarantine attributes removed from DMG"
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v6

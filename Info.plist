@@ -2,21 +2,28 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>en</string>
+    <key>CFBundleExecutable</key>
+    <string>Froststrap</string>
+    <key>CFBundleIdentifier</key>
+    <string>io.github.froststrap.app</string>
+    <key>CFBundleInfoDictionaryVersion</key>
+    <string>6.0</string>
     <key>CFBundleName</key>
     <string>Froststrap</string>
     <key>CFBundleDisplayName</key>
     <string>Froststrap</string>
-    <key>CFBundleIdentifier</key>
-    <string>io.github.froststrap.app</string>
-    <key>CFBundleVersion</key>
-    <string>2.0.0</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
-    <key>CFBundleExecutable</key>
-    <string>Froststrap</string>
+    <key>CFBundleShortVersionString</key>
+    <string>2.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>2.0.0</string>
     <key>LSMinimumSystemVersion</key>
     <string>10.15</string>
-
+    <key>NSPrincipalClass</key>
+    <string>NSApplication</string>
     <!-- Register the URL schemes -->
     <key>CFBundleURLTypes</key>
     <array>
