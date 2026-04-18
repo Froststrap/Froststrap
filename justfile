@@ -4,13 +4,7 @@ project_file := "Froststrap/Froststrap.csproj"
 build_dir := "build"
 release_config := "Release"
 
-# Git Helpers
-
-git-commit-hash := `git rev-parse --short HEAD 2>/dev/null || echo unknown`
-git-commit-ref := `git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo unknown`
-
 # Build
-
 build:
     dotnet build -c {{ release_config }} --no-restore
 
@@ -21,21 +15,14 @@ clean:
 # Windows Release
 [windows]
 publish-windows:
-    if (Test-Path {{ build_dir }}) { Remove-Item -Recurse -Force {{ build_dir }} }
-    New-Item -ItemType Directory -Path {{ build_dir }} -Force | Out-Null
-
-    dotnet publish {{ project_file }} `
-        -r win-x64 `
-        -c {{ release_config }} `
-        --self-contained false `
-        -p:PublishSingleFile=true `
-        -o ./Froststrap/bin/{{ release_config }}/net10.0/publish
-
-    $publishPath = "./Froststrap/bin/{{ release_config }}/net10.0/publish/Froststrap.exe"
-    if (-not (Test-Path $publishPath)) { throw "Binary not found" }
-    Copy-Item $publishPath ./{{ build_dir }}/Froststrap.exe
-    & makensis /DPUBLISH_DIR="{{ build_dir }}" Scripts/Installer.nsi
-    Move-Item "./{{ build_dir }}/Froststrap-Setup.exe" "./{{ build_dir }}/Froststrap.exe" -Force
+    if (Test-Path -Path ./{{ build_dir }}) { rm -r {{ build_dir }} }
+    mkdir {{ build_dir }}
+    dotnet publish ./{{ project_file }} /p:PublishProfile=Publish-x64
+    cp ./Froststrap/bin/{{ release_config }}/net10.0/publish/Froststrap.exe ./{{ build_dir }}/
+    $version = (git describe --tags --abbrev=0); \
+    & makensis /DPUBLISH_DIR="..\{{ build_dir }}" /DAPP_VERSION="$version" Scripts/Installer.nsi
+    mv ./{{ build_dir }}/Froststrap-Setup.exe "./{{ build_dir }}/Froststrap-Setup.exe"
+    rm ./{{ build_dir }}/Froststrap.exe
 
 # MacOS Release
 [unix]
@@ -46,7 +33,7 @@ publish-macos:
     dotnet publish {{ project_file }} \
         -r osx-arm64 \
         -c {{ release_config }} \
-        --self-contained false \
+        --self-contained true \
         -p:PublishSingleFile=true \
         -p:IncludeNativeLibrariesForSelfExtract=true \
         -o ./{{ build_dir }}/Froststrap.app/Contents/MacOS
@@ -84,18 +71,17 @@ ci-publish-linux:
 
 # Debug Commands
 debug-windows:
-    dotnet publish {{ project_file }} -r win-x64 -c Debug --self-contained false -p:PublishSingleFile=true
+    dotnet publish {{ project_file }} -r win-x64 -c Debug --self-contained true -p:PublishSingleFile=true
 
 [unix]
 debug-macos:
-    dotnet publish {{ project_file }} -r osx-arm64 -c Debug --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+    dotnet publish {{ project_file }} -r osx-arm64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
 [unix]
 debug-linux:
-    dotnet publish {{ project_file }} -r linux-x64 -c Debug --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+    dotnet publish {{ project_file }} -r linux-x64 -c Debug --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
 
 info:
     @echo "Build Information"
     @echo "  Project:     {{ project_file }}"
     @echo "  Config:      {{ release_config }}"
-    @echo "  Commit:      {{ git-commit-hash }} ({{ git-commit-ref }})"
