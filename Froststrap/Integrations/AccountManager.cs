@@ -1382,7 +1382,7 @@ namespace Froststrap.Integrations
                     var batch = userIds.Skip(i).Take(batchSize).ToList();
                     string idsParam = string.Join(',', batch);
 
-                    string url = $"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true";
+                    Uri url = UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
 
                     try
                     {
@@ -1402,15 +1402,13 @@ namespace Froststrap.Integrations
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine($"{LOG_IDENT_AVATARS}",
-                            $"Batch failed: {ex.Message}");
+                        App.Logger.WriteLine($"{LOG_IDENT_AVATARS}", $"Batch failed: {ex.Message}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine($"{LOG_IDENT_AVATARS}",
-                    $"Exception: {ex.Message}");
+                App.Logger.WriteLine($"{LOG_IDENT_AVATARS}", $"Exception: {ex.Message}");
             }
 
             return result;
