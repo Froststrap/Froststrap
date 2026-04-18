@@ -1,8 +1,7 @@
-<base:AvaloniaWindow xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         mc:Ignorable="d" 
         x:Class="Froststrap.UI.Elements.Bootstrapper.CustomDialog"
@@ -23,4 +22,4 @@
     <Grid RowDefinitions="Auto,*">
         <Grid x:Name="ElementGrid" Grid.Row="1" />
     </Grid>
-</base:AvaloniaWindow>
+</Window>

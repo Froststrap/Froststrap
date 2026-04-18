@@ -154,7 +154,8 @@ namespace Froststrap.RobloxInterfaces
             const string LOG_IDENT = "Deployment::GetUserChannel";
             try
             {
-                HttpResponseMessage response = await App.Cookies.AuthGet($"https://clientsettings.{RobloxDomain}/v2/user-channel?binaryType={binaryType}");
+                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettings", "v2/user-channel?binaryType=" + binaryType);
+                HttpResponseMessage response = await App.Cookies.AuthGet(apiUrl);
                 response.EnsureSuccessStatusCode();
 
                 string content = await response.Content.ReadAsStringAsync();
@@ -177,9 +178,14 @@ namespace Froststrap.RobloxInterfaces
             if (channel == "production")
                 channel = "live";
 
+            if (channel == "live")
+                return true;
+
             try
             {
-                var response = await App.HttpClient.GetAsync($"https://clientsettingscdn.{RobloxDomain}/v2/client-version/WindowsPlayer/channel/{channel}");
+
+                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", "v2/client-version/WindowsPlayer/channel/" + channel);
+                var response = await App.HttpClient.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException ex)
@@ -256,14 +262,14 @@ namespace Froststrap.RobloxInterfaces
             }
             else
             {
-                string path = $"/v2/client-version/{BinaryType}";
+                string path = $"v2/client-version/{BinaryType}";
 
                 if (!isDefaultChannel)
-                    path = $"/v2/client-version/{BinaryType}/channel/{channel}";
+                    path += $"/channel/{channel}";
 
                 try
                 {
-                    request.RequestUri = new Uri("https://clientsettingscdn." + RobloxDomain + path);
+                    request.RequestUri = UrlBuilder.BuildApiUrl("clientsettingscdn", path);
                     clientVersion = await Http.SendJson<ClientVersion>(request);
                 }
                 catch (HttpRequestException httpEx)
@@ -278,7 +284,7 @@ namespace Froststrap.RobloxInterfaces
 
                     try
                     {
-                        request.RequestUri = new Uri("https://clientsettings." + RobloxDomain + path);
+                        request.RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path);
                         clientVersion = await Http.SendJson<ClientVersion>(request);
                     }
                     catch (HttpRequestException httpEx)
