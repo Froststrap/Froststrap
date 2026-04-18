@@ -59,12 +59,6 @@ jobs:
           name: Froststrap (Release) (macos-latest) (${{ github.sha }})
           path: release
 
-      - name: Download Linux artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: Froststrap (Release) (ubuntu-latest) (${{ github.sha }})
-          path: release
-
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -73,6 +67,5 @@ jobs:
           files: |
             release/Froststrap.exe
             release/Froststrap-macOS-arm64.zip
-            release/Froststrap-linux-x64
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
