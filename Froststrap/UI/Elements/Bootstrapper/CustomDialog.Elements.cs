@@ -689,7 +689,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
                     try
                     {
                         //TODO: Fix issue causing it to run in background after stopping preview
-                        image.SetValue(AnimatedImage.Avalonia.ImageBehavior.AnimatedSourceProperty, sourceData.Uri);
+                    	image.SetValue(ImageBehavior.AnimatedSourceProperty, imageData.Uri);
+
+                    	var repeat = ParseXmlAttribute<RepeatBehavior>(xmlElement, "RepeatBehavior", RepeatBehavior.Forever);
+                    	image.SetValue(ImageBehavior.RepeatBehaviorProperty, repeat);
                     }
                     catch (Exception)
                     {
