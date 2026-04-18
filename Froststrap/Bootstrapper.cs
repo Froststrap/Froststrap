@@ -105,7 +105,6 @@ namespace Froststrap
         private void SetupAppData()
         {
             AppData = IsStudioLaunch ? new RobloxStudioData() : new RobloxPlayerData();
-            Deployment.BinaryType = AppData.BinaryType;
         }
 
         // we will use this later on since we have to wait for remote data
@@ -540,17 +539,29 @@ namespace Froststrap
             else
                 _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
-            string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
-            var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
+            if (OperatingSystem.IsMacOS())
+            {
+                // Mac uses monolithic zip downloads instead of individual packages
+                string zipName = IsStudioLaunch ? "RobloxStudioApp.zip" : "RobloxPlayer.zip";
 
-            _versionPackageManifest = new(pkgManifestData);
+                // Construct a fake package manifest response to trick the internal system
+                string fakeManifest = $"v0\n{zipName}\n{_latestVersionGuid}\n0\n0";
+                _versionPackageManifest = new(fakeManifest);
+            }
+            else
+            {
+                string pkgManifestUrl = Deployment.GetLocation($"/{_latestVersionGuid}-rbxPkgManifest.txt");
+                var pkgManifestData = await App.HttpClient.GetStringAsync(pkgManifestUrl);
+
+                _versionPackageManifest = new(pkgManifestData);
+            }
 
             // this can happen if version is set through arguments
             if (_launchMode == LaunchMode.Unknown)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Identifying launch mode from package manifest");
 
-                bool isPlayer = _versionPackageManifest.Exists(x => x.Name == "RobloxApp.zip");
+                bool isPlayer = _versionPackageManifest.Exists(x => x.Name == "RobloxApp.zip" || x.Name == "RobloxPlayer.zip");
                 App.Logger.WriteLine(LOG_IDENT, $"isPlayer: {isPlayer}");
 
                 _launchMode = isPlayer ? LaunchMode.Player : LaunchMode.Studio;
@@ -901,7 +912,7 @@ namespace Froststrap
             foreach (string Name in Names)
             {
                 string DirectoryPath = Path.Combine((string)AppData.Directory, Name);
-                if (File.Exists(DirectoryPath))
+                if (Directory.Exists(DirectoryPath) || File.Exists(DirectoryPath)) // mac uses App bundles (Directories)
                     ResolvedName = Name;
             }
 
@@ -910,10 +921,15 @@ namespace Froststrap
 
             var startInfo = new ProcessStartInfo()
             {
-                FileName = Path.Combine(AppData.Directory, ResolvedName),
-                Arguments = _launchCommandLine,
+                FileName = OperatingSystem.IsMacOS() ? "open" : Path.Combine(AppData.Directory, ResolvedName),
+                Arguments = OperatingSystem.IsMacOS() ? $"-n \"{Path.Combine(AppData.Directory, ResolvedName)}\" --args {_launchCommandLine}" : _launchCommandLine,
                 WorkingDirectory = AppData.Directory
             };
+
+            if (OperatingSystem.IsMacOS())
+            {
+                startInfo.UseShellExecute = true;
+            }
 
             if (_launchMode == LaunchMode.Player && ShouldRunAsAdmin())
             {
@@ -1722,6 +1738,10 @@ namespace Froststrap
             var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
             Directory.CreateDirectory(Paths.Modifications);
 
+            string ContentDirectory = OperatingSystem.IsMacOS()
+                ? Path.Combine(_latestVersionDirectory, App.RobloxPlayerAppName, "Contents", "Resources")
+                : _latestVersionDirectory;
+
             var activeMods = App.State.Prop.Mods
                                 .Where(x => x.Target != "Disabled" && (
                                             x.Target == "Both" ||
@@ -1750,7 +1770,7 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Executing font patcher for {activeFontFilename}...");
                 string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
-                string familiesFolder = Path.Combine(_latestVersionDirectory, "content", "fonts", "families");
+                string familiesFolder = Path.Combine(ContentDirectory, "content", "fonts", "families");
 
                 Directory.CreateDirectory(familiesFolder);
                 Directory.CreateDirectory(modFontFamiliesFolder);
@@ -1805,7 +1825,7 @@ namespace Froststrap
 
             foreach (var relPath in filesToDelete)
             {
-                string targetFile = Path.Combine(_latestVersionDirectory, relPath);
+                string targetFile = Path.Combine(ContentDirectory, relPath);
                 if (File.Exists(targetFile))
                 {
                     Filesystem.AssertReadOnly(targetFile);
@@ -1814,7 +1834,7 @@ namespace Froststrap
 
                     string? parentDir = Path.GetDirectoryName(targetFile);
                     while (!string.IsNullOrEmpty(parentDir) &&
-                            parentDir.TrimEnd(Path.DirectorySeparatorChar) != _latestVersionDirectory.TrimEnd(Path.DirectorySeparatorChar))
+                            parentDir.TrimEnd(Path.DirectorySeparatorChar) != ContentDirectory.TrimEnd(Path.DirectorySeparatorChar))
                     {
                         if (Directory.Exists(parentDir) && !Directory.EnumerateFileSystemEntries(parentDir).Any())
                         {
@@ -1837,7 +1857,7 @@ namespace Froststrap
 
                 string relativeFile = entry.Key;
                 string sourceFile = entry.Value;
-                string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
+                string fileVersionFolder = Path.Combine(ContentDirectory, relativeFile);
 
                 fileTasks.Add(Task.Run(async () =>
                 {
@@ -1901,8 +1921,12 @@ namespace Froststrap
                 string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
                 if (File.Exists(source))
                 {
+                    string destDir = OperatingSystem.IsMacOS()
+                        ? Path.Combine(_latestVersionDirectory, App.RobloxPlayerAppName, "Contents", "MacOS", "ClientSettings")
+                        : Path.Combine(_latestVersionDirectory, "ClientSettings");
+
+                    string dest = Path.Combine(destDir, "ClientAppSettings.json");
                     string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                    string dest = Path.Combine(_latestVersionDirectory, rel);
                     var info = new FileInfo(source);
 
                     lock (currentModManifest)
@@ -2018,7 +2042,9 @@ namespace Froststrap
 
             Directory.CreateDirectory(Paths.Downloads);
 
-            string packageUrl = Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
+            string packageUrl = OperatingSystem.IsMacOS()
+                ? Deployment.GetLocation($"/mac/arm64/{_latestVersionGuid}-{package.Name}")
+                : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
             string robloxPackageLocation = Path.Combine(Paths.Roblox, "Downloads", package.Signature);
 
             if (File.Exists(package.DownloadPath))
@@ -2027,7 +2053,8 @@ namespace Froststrap
 
                 string calculatedMD5 = MD5Hash.FromFile(package.DownloadPath);
 
-                if (calculatedMD5 != package.Signature)
+                // Skip hash validation for macOS as the mock manifest lacks actual signature MD5s
+                if (!OperatingSystem.IsMacOS() && calculatedMD5 != package.Signature)
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Package is corrupted ({calculatedMD5} != {package.Signature})! Deleting and re-downloading...");
                     file.Delete();
@@ -2108,7 +2135,7 @@ namespace Froststrap
 
                     string hash = MD5Hash.FromStream(fileStream);
 
-                    if (hash != package.Signature)
+                    if (!OperatingSystem.IsMacOS() && hash != package.Signature)
                         throw new ChecksumFailedException($"Failed to verify download of {packageUrl}\n\nExpected hash: {package.Signature}\nGot hash: {hash}");
 
                     App.Logger.WriteLine(LOG_IDENT, $"Finished downloading! ({totalBytesRead} bytes total)");
@@ -2155,15 +2182,19 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::ExtractPackage";
 
-            string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-
-            if (packageDir is null)
+            string packageFolder = _latestVersionDirectory;
+            if (!OperatingSystem.IsMacOS())
             {
-                App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                return;
-            }
+                string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
 
-            string packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
+                if (packageDir is null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
+                    return;
+                }
+
+                packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
+            }
             string? fileFilter = null;
 
             // for sharpziplib, each file in the filter needs to be a regex

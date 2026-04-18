@@ -27,7 +27,7 @@ namespace Froststrap.RobloxInterfaces
 
         public static string ChannelToken = string.Empty;
 
-        public static string BinaryType = "WindowsPlayer";
+        public static string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer";
 
         public static string RobloxDomain => App.Settings.Prop.RobloxDomain;
 

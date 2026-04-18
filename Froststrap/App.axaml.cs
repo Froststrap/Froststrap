@@ -34,8 +34,8 @@ public partial class App : Application
     public const string ProjectSupportLink = "https://github.com/Froststrap/Froststrap/issues/new";
     public const string ProjectRemoteDataLink = "https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Data.json";
 
-    public const string RobloxPlayerAppName = "RobloxPlayerBeta.exe";
-    public const string RobloxStudioAppName = "RobloxStudioBeta.exe";
+    public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
+    public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
 
     // simple shorthand for extremely frequently used and long string - this goes under HKCU
     public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
