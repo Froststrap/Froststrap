@@ -28,9 +28,9 @@ namespace Froststrap.Models.Entities
 
             try
             {
-                string url = $"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(searchQuery)}&sessionid=0&pageType=Game";
+                Uri omniSearchUrl = new($"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(searchQuery)}&sessionid=0&pageType=Game");
 
-                var response = await Http.GetJson<OmniSearchResponse>(url);
+                var response = await Http.GetJson<OmniSearchResponse>(omniSearchUrl);
 
                 if (response?.SearchResults is null)
                 {

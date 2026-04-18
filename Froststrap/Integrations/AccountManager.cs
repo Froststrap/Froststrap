@@ -272,32 +272,21 @@ namespace Froststrap.Integrations
 
             try
             {
-                var content = new StringContent("{}", Encoding.UTF8, "application/json");
+                using var request = new HttpRequestMessage(HttpMethod.Post, new Uri("https://apis.roblox.com/auth-token-service/v1/login/create"));
+                request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
 
-                var resp = await App.HttpClient.PostAsync("https://apis.roblox.com/auth-token-service/v1/login/create", content).ConfigureAwait(false);
+                var result = await Http.SendJson<JObject>(request).ConfigureAwait(false);
+                if (result == null) return null;
 
-                if (!resp.IsSuccessStatusCode)
-                {
-                    App.Logger.WriteLine(LOG_IDENT_CREATE_TOKEN, $"CreateQuickTokenAsync: non-success status {(int)resp.StatusCode} - {await resp.Content.ReadAsStringAsync()}");
-                    return null;
-                }
-
-                var body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var jo = JsonConvert.DeserializeObject<JObject>(body);
-                if (jo == null) return null;
-
-                string code = jo["code"]?.Value<string>() ?? "";
-                string privateKey = jo["privateKey"]?.Value<string>() ?? "";
-                string status = jo["status"]?.Value<string>() ?? "";
-                string exp = jo["expirationTime"]?.Value<string>() ?? "";
+                string code = result["code"]?.Value<string>() ?? "";
+                string privateKey = result["privateKey"]?.Value<string>() ?? "";
+                string status = result["status"]?.Value<string>() ?? "";
+                string exp = result["expirationTime"]?.Value<string>() ?? "";
 
                 DateTime expiration = DateTime.UtcNow.AddMinutes(2);
-                if (!string.IsNullOrEmpty(exp))
+                if (!string.IsNullOrEmpty(exp) && DateTime.TryParse(exp, out var parsedExp))
                 {
-                    if (!DateTime.TryParse(exp, out expiration))
-                        expiration = DateTime.UtcNow.AddMinutes(2);
-                    else
-                        expiration = expiration.ToUniversalTime();
+                    expiration = parsedExp.ToUniversalTime();
                 }
 
                 return new QuickTokenCreation(code, privateKey, expiration, status);
@@ -1135,39 +1124,29 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT_GET_INFO = $"{LOG_IDENT}::GetAccountInfoFromCookie";
 
-            var handler = new HttpClientHandler { CookieContainer = new System.Net.CookieContainer() };
-            handler.CookieContainer.Add(new System.Net.Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
-            using var client = new HttpClient(handler);
-            var response = await client.GetAsync("https://users.roblox.com/v1/users/authenticated");
-            if (!response.IsSuccessStatusCode) return null;
-            string json = await response.Content.ReadAsStringAsync();
-
             try
             {
-                var jo = JsonConvert.DeserializeObject<JObject>(json);
-                if (jo == null)
-                {
-                    App.Logger.WriteLine(LOG_IDENT_GET_INFO, "GetAccountInfoFromCookie: response JSON was null");
-                    return null;
-                }
+                var handler = new HttpClientHandler { CookieContainer = new System.Net.CookieContainer() };
+                handler.CookieContainer.Add(new System.Net.Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
+
+                using var client = new HttpClient(handler);
+                var response = await client.GetAsync(new Uri("https://users.roblox.com/v1/users/authenticated"));
+                response.EnsureSuccessStatusCode();
+
+                string json = await response.Content.ReadAsStringAsync();
+                var jo = System.Text.Json.JsonSerializer.Deserialize<JObject>(json);
+
+                if (jo == null) return null;
 
                 long userId = jo["id"]?.Value<long>() ?? 0;
                 string username = jo["name"]?.Value<string>() ?? string.Empty;
                 string displayName = jo["displayName"]?.Value<string>() ?? string.Empty;
-
-                if (userId == 0 || string.IsNullOrEmpty(username))
-                {
-                    App.Logger.WriteLine(LOG_IDENT_GET_INFO, "GetAccountInfoFromCookie: missing required fields in response JSON");
-                    App.Logger.WriteLine(LOG_IDENT_GET_INFO, "Response JSON: " + json);
-                    return null;
-                }
 
                 return new AccountManagerAccount(securityCookie, userId, username, displayName);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException(LOG_IDENT_GET_INFO, ex);
-                App.Logger.WriteLine(LOG_IDENT_GET_INFO, "Response JSON: " + json);
                 return null;
             }
         }
@@ -1179,22 +1158,12 @@ namespace Froststrap.Integrations
             try
             {
                 var requestData = new { userIds = new[] { userId } };
-                string jsonPayload = JsonConvert.SerializeObject(requestData);
+                string jsonPayload = System.Text.Json.JsonSerializer.Serialize(requestData);
 
-                using var request = new HttpRequestMessage(HttpMethod.Post, "https://presence.roblox.com/v1/presence/users");
+                using var request = new HttpRequestMessage(HttpMethod.Post, new Uri("https://presence.roblox.com/v1/presence/users"));
                 request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-                var response = await App.HttpClient.SendAsync(request).ConfigureAwait(false);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    App.Logger.WriteLine(LOG_IDENT_PRESENCE, $"Presence API returned error: {(int)response.StatusCode}");
-                    return null;
-                }
-
-                string content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                var result = JsonConvert.DeserializeObject<UserPresenceResponse>(content);
+                var result = await Http.SendJson<UserPresenceResponse>(request).ConfigureAwait(false);
 
                 return result?.UserPresences?.FirstOrDefault(x => x.UserId == userId);
             }

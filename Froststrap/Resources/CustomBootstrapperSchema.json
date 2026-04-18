@@ -125,7 +125,8 @@
 				"Stretch": "Stretch",
 				"StretchDirection": "StretchDirection",
 				"Source": "ImageSource",
-				"IsAnimated": "bool"
+				"IsAnimated": "bool",
+				"RepeatBehavior": "RepeatBehavior"
 			}
 		},
 		"Grid": {

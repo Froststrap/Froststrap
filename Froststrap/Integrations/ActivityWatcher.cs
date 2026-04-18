@@ -14,7 +14,7 @@
         private const string GameJoiningReservedServerEntry = "[FLog::GameJoinUtil] GameJoinUtil::initiateTeleportToReservedServer";
         private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
         private const string GameJoiningUDMUXEntry = "[FLog::Network] UDMUX Address = ";
-        private const string GameJoinedEntry = "[FLog::Network] serverId:";
+        private const string GameJoinedEntry = "[FLog::Network] Replicator created: ";
         private const string GameDisconnectedEntry = "[FLog::Network] Time to disconnect replication data:";
         private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
         private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
@@ -26,7 +26,6 @@
         private const string GameJoiningPrivateServerPattern = @"""accessCode"":""([0-9a-f\-]{36})""";
         private const string GameJoiningUniversePattern = @"universeid:([0-9]+).*userid:([0-9]+)";
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
-        private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
         private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
 
@@ -397,15 +396,6 @@
                 }
                 else if (logMessage.StartsWith(GameJoinedEntry))
                 {
-                    Match match = Regex.Match(logMessage, GameJoinedEntryPattern);
-
-                    if (match.Groups.Count != 2 || match.Groups[1].Value != Data.MachineAddress)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for game joined entry");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
-                        return;
-                    }
-
                     App.Logger.WriteLine(LOG_IDENT, $"Joined Game ({Data})");
 
                     InGame = true;

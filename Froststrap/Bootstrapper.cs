@@ -22,6 +22,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Data;
+using System.Web;
 
 namespace Froststrap
 {
@@ -787,12 +788,15 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::GetBetterMatchmakingServerID";
 
-            var ipinfo = await Http.GetJson<IPInfoResponse>("https://ipinfo.io/json");
+            Uri ipinfoUrl = new("https://ipinfo.io/json");
+            Uri roValraDatacentersUrl = new("https://apis.rovalra.com/v1/datacenters/list");
+
+            var ipinfo = await Http.GetJson<IPInfoResponse>(ipinfoUrl);
 
             if (string.IsNullOrEmpty(ipinfo.Country))
                 throw new HttpRequestException("Country is blank.");
 
-            var datacenters = await Http.GetJson<List<RoValraDatacenter>>($"https://apis.rovalra.com/v1/datacenters/list");
+            var datacenters = await Http.GetJson<List<RoValraDatacenter>>(roValraDatacentersUrl);
 
             if (datacenters == null || !datacenters.Any())
                 throw new HttpRequestException("No datacenters in response.");
@@ -816,12 +820,12 @@ namespace Froststrap
             foreach (var region in regions)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Checking for servers in user region");
+                Uri roValraServersApi = new($"https://apis.rovalra.com/v1/servers/region?place_id={_joinData.PlaceId}&region={region}");
 
-                var valraResponse = await Http.GetJson<RoValraServers>($"https://apis.rovalra.com/v1/servers/region?place_id={_joinData.PlaceId}&region={region}");
+                var valraResponse = await Http.GetJson<RoValraServers>(roValraServersApi);
 
                 if (valraResponse?.Servers != null && valraResponse.Servers.Count > 0 && valraResponse.Servers[0].ServerId != null)
                 {
-
                     if (App.Settings.Prop.EnableBetterMatchmakingRandomization)
                     {
                         int index = Random.Shared.Next(0, valraResponse.Servers.Count);
@@ -873,9 +877,10 @@ namespace Froststrap
                 if (App.Settings.Prop.EnableBetterMatchmaking && _joinData.JoinType != GameJoinType.RequestPrivateGame && _joinData.PlaceId != null && !isFollowUser)
                 {
                     string serverid = await GetBetterMatchmakingServerID();
+                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
 
                     if (!string.IsNullOrEmpty(serverid))
-                        _launchCommandLine = $"roblox://experiences/start?placeId={_joinData.PlaceId}&gameInstanceId={serverid}";
+                        _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
                 }
 
                 if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))

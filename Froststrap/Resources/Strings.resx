@@ -2286,4 +2286,10 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
     <value>Multi-Instancing is prone to breaking. We will not provide support for issues with Multi-Instancing, since Roblox is actively adding measures to make sure it doesn't work. We cannot and won't attempt to bypass these measures.</value>
   </data>
+  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
+	<value>Roblox domain</value>
+  </data>
+  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
+	<value>Set what domain Roblox and Fishstrap will use. Enter only trusted domains.</value>
+  </data>
 </root>
