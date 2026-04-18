@@ -392,7 +392,6 @@ public partial class App : Application
 
             if (includePreRelease)
             {
-                // Note: Ensure your Http utility accepts Uri as a parameter
                 var releases = await Http.GetJson<List<GithubRelease>>(releasesUrl);
 
                 if (releases is null || releases.Count == 0)
