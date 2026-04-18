@@ -8,16 +8,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
 {
     public partial class CustomDialog
     {
-        private static T? ConvertValue<T>(string input)
+        private static T? ConvertValue<T>(string input) where T : struct
         {
             try
             {
                 var converter = TypeDescriptor.GetConverter(typeof(T));
-                if (converter != null)
-                {
-                    return (T?)converter.ConvertFromInvariantString(input);
-                }
-                return default;
+                return (T?)converter?.ConvertFromInvariantString(input);
             }
             catch (NotSupportedException)
             {
@@ -25,10 +21,11 @@ namespace Froststrap.UI.Elements.Bootstrapper
             }
         }
 
-        private static object? GetValueFromXElement<T>(XElement xmlElement, string attributeName, Func<string, T> parser)
+        private static object? GetTypeFromXElement<T>(XElement xmlElement, string attributeName, Func<string, T> parser)
         {
             string? attributeValue = xmlElement.Attribute(attributeName)?.Value;
-            if (string.IsNullOrEmpty(attributeValue)) return null;
+            if (attributeValue == null)
+                return null;
 
             try
             {
@@ -36,32 +33,33 @@ namespace Froststrap.UI.Elements.Bootstrapper
             }
             catch (Exception ex)
             {
-                throw new CustomThemeException(ex, "CustomTheme.Errors.AttributeConversionFailed", xmlElement.Name.ToString(), attributeName);
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError", xmlElement.Name, attributeName, ex.Message);
             }
         }
 
-        private static object? GetThicknessFromXElement(XElement xmlElement, string attributeName)
-            => GetValueFromXElement(xmlElement, attributeName, Thickness.Parse);
+        private static object? GetThicknessFromXElement(XElement xmlElement, string attributeName) =>
+            GetTypeFromXElement(xmlElement, attributeName, Thickness.Parse);
 
-        private static object? GetRectFromXElement(XElement xmlElement, string attributeName)
-            => GetValueFromXElement(xmlElement, attributeName, Rect.Parse);
+        private static object? GetRectFromXElement(XElement xmlElement, string attributeName) =>
+            GetTypeFromXElement(xmlElement, attributeName, Rect.Parse);
 
-        private static object? GetColorFromXElement(XElement xmlElement, string attributeName)
-            => GetValueFromXElement(xmlElement, attributeName, Color.Parse);
+        private static object? GetColorFromXElement(XElement xmlElement, string attributeName) =>
+            GetTypeFromXElement(xmlElement, attributeName, Color.Parse);
 
-        private static object? GetPointFromXElement(XElement xmlElement, string attributeName)
-            => GetValueFromXElement(xmlElement, attributeName, Point.Parse);
+        private static object? GetPointFromXElement(XElement xmlElement, string attributeName) =>
+            GetTypeFromXElement(xmlElement, attributeName, Point.Parse);
 
-        private static object? GetCornerRadiusFromXElement(XElement xmlElement, string attributeName)
-            => GetValueFromXElement(xmlElement, attributeName, CornerRadius.Parse);
+        private static object? GetCornerRadiusFromXElement(XElement xmlElement, string attributeName) =>
+            GetTypeFromXElement(xmlElement, attributeName, CornerRadius.Parse);
 
-        private static object? GetGridLengthFromXElement(XElement xmlElement, string attributeName)
-            => GetValueFromXElement(xmlElement, attributeName, GridLength.Parse);
+        private static object? GetGridLengthFromXElement(XElement xmlElement, string attributeName) =>
+            GetTypeFromXElement(xmlElement, attributeName, GridLength.Parse);
 
         private static object? GetBrushFromXElement(XElement element, string attributeName)
         {
             string? value = element.Attribute(attributeName)?.Value;
-            if (string.IsNullOrEmpty(value)) return null;
+            if (value == null)
+                return null;
 
             if (value.StartsWith('{') && value.EndsWith('}'))
                 return value[1..^1];
@@ -72,7 +70,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             }
             catch (Exception ex)
             {
-                throw new CustomThemeException(ex, "CustomTheme.Errors.AttributeConversionFailed", element.Name.ToString(), attributeName);
+                throw new CustomThemeException(ex, "CustomTheme.Errors.ElementAttributeConversionError", element.Name, attributeName, ex.Message);
             }
         }
     }

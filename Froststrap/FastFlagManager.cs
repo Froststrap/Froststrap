@@ -1,4 +1,5 @@
-﻿using Froststrap.Enums.FlagPresets;
+﻿using FluentIcons.Common;
+using Froststrap.Enums.FlagPresets;
 
 namespace Froststrap
 {
@@ -243,7 +244,7 @@ namespace Froststrap
                 {
                     Name = kvp.Key,
                     Value = kvp.Value?.ToString() ?? "",
-                    Preset = IconPacks.Avalonia.Material.PackIconMaterialKind.Minus // optional/default
+                    Preset = FluentIcons.Common.Symbol.Subtract // optional/default
                 };
             }
         }

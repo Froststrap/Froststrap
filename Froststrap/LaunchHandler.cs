@@ -49,11 +49,6 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Opening settings");
                 LaunchSettings();
             }
-            else if (App.LaunchSettings.AccountManagerFlag.Active)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Opening account manager");
-                LaunchAccountManager();
-            }
             else if (App.LaunchSettings.WatcherFlag.Active)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Opening watcher");
@@ -207,24 +202,6 @@ namespace Froststrap
             dialog.Show();
         }
 
-        public static void LaunchAccountManager()
-        {
-            if (App.Settings.Prop.ShowUsingFroststrapRPC && App.FrostRPC == null)
-            {
-                App.FrostRPC = new FroststrapRichPresence();
-            }
-
-            var dialog = new UI.Elements.AccountManagers.MainWindow();
-            App.FrostRPC?.SetDialog("Account Manager");
-
-            dialog.Closed += (s, e) =>
-            {
-                App.FrostRPC?.Dispose();
-            };
-
-            dialog.Show();
-        }
-
         public static async void LaunchRoblox(LaunchMode launchMode)
         {
             const string LOG_IDENT = "LaunchHandler::LaunchRoblox";
@@ -242,8 +219,8 @@ namespace Froststrap
                 App.Terminate(ErrorCode.ERROR_FILE_NOT_FOUND);
             }
 
-			if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && !App.Settings.Prop.MultiInstanceLaunching)
-			{
+            if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && !App.Settings.Prop.MultiInstanceLaunching && launchMode != LaunchMode.Studio)
+            {
                 var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
 
                 if (result != MessageBoxResult.Yes)

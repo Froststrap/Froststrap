@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:resources="clr-namespace:Froststrap.Resources"
-    xmlns:suki="https://github.com/kikipoulet/SukiUI"
+    xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.ContextMenu"
     x:DataType="vm:ServerHistoryViewModel"
     Title="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
@@ -62,7 +62,7 @@
         <Border Grid.Row="2"
                 Classes="loadingView"
                 Tag="{Binding LoadState}">
-            <suki:CircleProgressBar IsIndeterminate="True" 
+            <ui:ProgressRing IsIndeterminate="True" 
                          Width="100" Height="100"
                          VerticalAlignment="Center" 
                          HorizontalAlignment="Center" />
@@ -89,7 +89,7 @@
 
                             <StackPanel Grid.Column="1" Margin="16,0,4,0" VerticalAlignment="Center" Spacing="2">
                                 <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding UniverseDetails.Data.Name}" />
-                                <TextBlock Foreground="{DynamicResource SukiLowText}" Text="{Binding JobId}" FontSize="11" />
+                                <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding JobId}" FontSize="11" />
 
                                 <StackPanel Margin="0,10,0,0" Orientation="Horizontal" Spacing="8">
                                     <controls:IconButton 
@@ -104,12 +104,12 @@
                                         Command="{Binding CopyDeeplinkCommand}" />
 
                                     <controls:IconButton 
-                                        Icon="ClipboardEditOutline"
+                                        Icon="ClipboardSettings"
                                         Content="Server ID"
                                         Command="{Binding CopyServerIdCommand}" />
 
                                     <controls:IconButton 
-                                        Icon="TrashCanOutline"
+                                        Icon="Delete"
                                         Command="{Binding DeleteHistoryCommand}"
                                         Classes="Danger"/>
                                 </StackPanel>

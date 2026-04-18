@@ -40,7 +40,7 @@ namespace Froststrap.UI.Utility
                 new { Display = Resources.Strings.Menu_RegionSelector_Title, Tag = "regionselector", Action = (Action?)null },
                 new { Display = Resources.Strings.Menu_GlobalSettings_Title, Tag = "globalsettings", Action = (Action?)null },
                 new { Display = Resources.Strings.Common_Shortcuts, Tag = "shortcuts", Action = (Action?)null },
-                new { Display = Resources.Strings.Common_Settings, Tag = "channels", Action = (Action?)null }
+                new { Display = Resources.Strings.Common_Deployment, Tag = "channels", Action = (Action?)null }
             };
 
             _navigationItemsCache = new List<SearchBarItem>();

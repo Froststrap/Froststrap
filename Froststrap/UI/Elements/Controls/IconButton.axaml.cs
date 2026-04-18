@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using IconPacks.Avalonia.Material;
+using FluentIcons.Common;
 
 namespace Froststrap.UI.Elements.Controls
 {
@@ -13,8 +13,8 @@ namespace Froststrap.UI.Elements.Controls
         public static readonly StyledProperty<double> IconSizeProperty =
             AvaloniaProperty.Register<IconButton, double>(nameof(IconSize), 12);
 
-        public static readonly StyledProperty<PackIconMaterialKind> IconProperty =
-            AvaloniaProperty.Register<IconButton, PackIconMaterialKind>(nameof(Icon));
+        public static readonly StyledProperty<Symbol?> IconProperty =
+            AvaloniaProperty.Register<IconButton, Symbol?>(nameof(Icon), null);
 
         public Geometry? IconData
         {
@@ -28,7 +28,7 @@ namespace Froststrap.UI.Elements.Controls
             set => SetValue(IconSizeProperty, value);
         }
 
-        public PackIconMaterialKind Icon
+        public Symbol? Icon
         {
             get => GetValue(IconProperty);
             set => SetValue(IconProperty, value);

@@ -3,13 +3,15 @@
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-	xmlns:resources="using:Froststrap.Resources"
-	xmlns:ic="using:IconPacks.Avalonia.Material"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-	xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+	xmlns:elements="clr-namespace:Froststrap.UI.Elements"
+	xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+	xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
+	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
+	xmlns:models="using:Froststrap.Models"
+	xmlns:resources="using:Froststrap.Resources"
+	xmlns:ui="using:FluentAvalonia.UI.Controls"
 	xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-	xmlns:local="using:Froststrap.Models"
 	Title="{x:Static resources:Strings.Menu_Title}"
 	Width="1125"
 	Height="700"
@@ -19,384 +21,238 @@
 	CanResize="True"
 	WindowStartupLocation="CenterScreen">
 
-	<Grid RowDefinitions="Auto,*,Auto">
+	<Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="48,*,56">
+		<Grid Grid.Row="0" Background="{DynamicResource ControlFillColorDefaultBrush}">
+			<controls:TitleBar
+				Title="Froststrap Settings"
+				Grid.Row="0"
+				Icon="avares://Froststrap/Froststrap.ico">
 
-		<Grid Grid.Row="0" Height="48" ColumnDefinitions="*,400,*" Background="{DynamicResource SukiSurfaceColor}">
-			<Grid Grid.Column="1" VerticalAlignment="Center">
-				<Border 
-					CornerRadius="6" 
-					BorderThickness="1" 
-					BorderBrush="{DynamicResource SukiControlBorderBrush}"
-					Padding="12,0"
-					VerticalAlignment="Center"
-					Background="{DynamicResource SukiSurfaceColor}">
-					<Grid ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Center" Height="32">
-						<ic:PackIconMaterial Grid.Column="0" Kind="Magnify" Foreground="{DynamicResource SukiLowText}" Width="16" Height="16" VerticalAlignment="Center" />
-						<TextBox x:Name="SearchTextBox"
-							Grid.Column="1" 
-							Margin="8,0" 
-							Watermark="Find a setting"
-							BorderThickness="0"
-							Background="Transparent"
-							Padding="0"
-							VerticalAlignment="Center"
-							VerticalContentAlignment="Center"
-							Foreground="{DynamicResource SukiText}"
-							Text="{Binding SearchQuery}" />
-						<Button Grid.Column="2" 
-							IsVisible="False"
-							Width="20" 
-							Height="20" 
-							Padding="0"
-							BorderThickness="0"
-							Background="Transparent"
-							Content="×" />
-					</Grid>
-				</Border>
+				<elements:SearchBar Width="400" DataContext="{Binding SearchBar}" />
 
-				<!-- Search Results Dropdown -->
-				<Popup IsOpen="{Binding SearchQuery, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" 
-					Placement="Bottom" 
-					PlacementTarget="{Binding #SearchTextBox}"
-					VerticalOffset="4"
-					IsLightDismissEnabled="False">
-					<Border 
-						MinWidth="400"
-						MaxHeight="400"
-						Background="#2D2D2D"
-						BorderBrush="{DynamicResource SukiControlBorderBrush}"
-						BorderThickness="1"
-						CornerRadius="6"
-						BoxShadow="0 8 32 0 #20000000">
-						<Grid>
-							<ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding FilteredSearchResults.Count}">
-								<ItemsControl ItemsSource="{Binding FilteredSearchResults}" x:Name="SearchResultsItemsControl">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<StackPanel Spacing="0" />
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate DataType="local:SearchBarItem">
-											<Button 
-												Command="{Binding $parent[Window].DataContext.SearchResultSelectedCommand}"
-												CommandParameter="{Binding}"
+			</controls:TitleBar>
+		</Grid>
+
+		<ui:NavigationView
+			Name="NavView"
+			Grid.Row="1"
+			Background="{DynamicResource ControlFillColorDefaultBrush}"
+			IsBackButtonVisible="False"
+			IsSettingsVisible="False"
+			ItemInvoked="NavView_ItemInvoked"
+			OpenPaneLength="220"
+			PaneDisplayMode="Left">
+			<ui:NavigationView.MenuItems>
+				<ui:NavigationViewItemHeader Content="MAIN" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Link" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Play" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="CloudArrowUp" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+
+				<ui:NavigationViewItemHeader Content="APPEARANCE" />
+				<ui:NavigationViewItem Content="Preset Mods" Tag="mods">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="PuzzlePiece" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Color" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+
+				<ui:NavigationViewItemHeader Content="ROBLOX TWEAKS" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Flag" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem
+					Name="gbs"
+					Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}"
+					Tag="globalsettings">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="EditSettings" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+
+				<ui:NavigationViewItemHeader Content="MISC" />
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Earth" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Link" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Info" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+			</ui:NavigationView.MenuItems>
+
+			<ui:NavigationView.Content>
+				<Grid RowDefinitions="Auto,*">
+					<Border
+						Grid.Row="0"
+						Padding="24,24,24,16"
+						BorderBrush="{DynamicResource ControlStrokeColorDefault}">
+						<StackPanel>
+							<ItemsControl
+								Margin="0,0,0,10"
+								IsVisible="{Binding HasBreadcrumbs}"
+								ItemsSource="{Binding BreadcrumbItems}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<StackPanel
+											VerticalAlignment="Center"
+											Orientation="Horizontal"
+											Spacing="8" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate DataType="vm:BreadcrumbItemModel">
+										<StackPanel
+											VerticalAlignment="Center"
+											Orientation="Horizontal"
+											Spacing="8">
+											<Button
+												Padding="0"
 												Background="Transparent"
 												BorderThickness="0"
-												Padding="16,12"
-												HorizontalAlignment="Stretch"
-												HorizontalContentAlignment="Left"
-												Margin="4,2"
-												CornerRadius="4">
-												<Button.Styles>
-													<Style Selector="Button:pointerover /template/ ContentPresenter">
-														<Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-													</Style>
-												</Button.Styles>
-												<StackPanel Spacing="4" HorizontalAlignment="Stretch">
-													<TextBlock 
-														Text="{Binding DisplayName}"
-														FontSize="13"
-														FontWeight="SemiBold"
-														Foreground="{DynamicResource SukiText}" />
-												</StackPanel>
-											</Button>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-								</ItemsControl>
-							</ScrollViewer>
-							<TextBlock 
-								Text="0 results found"
-								FontSize="13"
-								Foreground="{DynamicResource SukiLowText}"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								Padding="16,24"
-								IsVisible="{Binding !FilteredSearchResults.Count}" />
-						</Grid>
-					</Border>
-				</Popup>
-			</Grid>
+												Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
+												CommandParameter="{Binding}"
+												Content="{Binding Content}"
+												FontSize="20"
+												FontWeight="SemiBold"
+												Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+												IsVisible="{Binding !IsLast}" />
+											<TextBlock
+												VerticalAlignment="Center"
+												FontSize="20"
+												Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+												IsVisible="{Binding !IsLast}"
+												Text="›" />
+											<TextBlock
+												VerticalAlignment="Center"
+												FontSize="20"
+												FontWeight="SemiBold"
+												Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+												IsVisible="{Binding IsLast}"
+												Text="{Binding Content}" />
+										</StackPanel>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
 
-			<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Spacing="0" Margin="0,0,2,0">
-				<controls:IconButton Name="PART_MinimizeButton" 
-					Classes="TitleBarButton" 
-					Icon="Minus" />
-
-				<controls:IconButton Name="PART_MaximizeButton" 
-					Classes="TitleBarButton" 
-					Icon="SquareOutline" />
-
-				<controls:IconButton Name="PART_CloseButton" 
-					Classes="TitleBarButton Close" 
-					Icon="Close" />
-			</StackPanel>
-		</Grid>
-
-		<Panel
-			Name="NotificationPanel"
-			Grid.Row="1"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Bottom"
-			Margin="0,0,0,15"
-			MaxWidth="450"
-			ZIndex="1000" />
-
-		<Grid Name="MainGrid" Grid.Row="1" ColumnDefinitions="220,*">
-
-			<Border BorderBrush="{DynamicResource SukiControlBorderBrush}"
-				Grid.Column="0"
-				BorderThickness="0,0,1,0">
-
-				<Grid RowDefinitions="*,Auto">
-
-					<ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
-						<StackPanel Spacing="0" Margin="8,6,8,0">
-
-							<!-- Section label: Main -->
 							<TextBlock
-								Text="MAIN"
-								FontSize="11"
+								x:Name="PageTitleText"
+								Margin="0,0,0,4"
+								FontSize="20"
 								FontWeight="SemiBold"
-								Foreground="{DynamicResource SukiMediumText}"
-								Margin="10,8,10,4"
-								Opacity="0.7" />
+								Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+								IsVisible="{Binding ShowPageTitle}"
+								Text="{Binding CurrentPageTitle}" />
 
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToIntegrationsCommand}"
-								Tag="integrations"
-								Icon="Connection"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_Integrations_Title}" />
+							<controls:MarkdownTextBlock
+								x:Name="PageDescriptionText"
+								Margin="0,0,0,2"
+								FontSize="13"
+								Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+								IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+								MarkdownText="{Binding CurrentPageDescription}" />
 
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToBehaviourCommand}"
-								Tag="behaviour"
-								Icon="CogOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_Behaviour_Title}" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToPresetModsCommand}"
-								Tag="mods"
-								Icon="PuzzleOutline"
-								IconSize="16"
-								Content="Preset Mods" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToFastFlagsCommand}"
-								Tag="fastflags"
-								Icon="FlagOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_FastFlags_Title}" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToAppearanceCommand}"
-								Tag="appearance"
-								Icon="PaletteOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_Appearance_Title}" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToRegionSelectorCommand}"
-								Tag="regionselector"
-								Icon="Earth"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" />
-
-							<controls:IconButton
-								Name="gbs"
-								Classes="nav-button"
-								Command="{Binding NavigateToGlobalSettingsCommand}"
-								Tag="globalsettings"
-								Icon="SquareEditOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}" />
-
-							<controls:IconButton
-								Classes="nav-button"
-								Command="{Binding NavigateToShortcutsCommand}"
-								Tag="shortcuts"
-								Icon="LinkBoxOutline"
-								IconSize="16"
-								Content="{x:Static resources:Strings.Common_Shortcuts}" />
-
+							<ui:InfoBar
+								x:Name="AlertBar"
+								Margin="0,8,0,0"
+								IsVisible="False"
+								Severity="Warning" />
 						</StackPanel>
-					</ScrollViewer>
+					</Border>
 
-					<StackPanel Grid.Row="1" Spacing="0" Margin="8,0,8,8">
-						<Separator
-							Margin="2,6"
-							Background="{DynamicResource SukiBorderBrush}"
-							Height="1" />
+					<Panel Grid.Row="1">
+						<Panel
+							Name="NotificationPanel"
+							MaxWidth="450"
+							Margin="0,0,0,15"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Bottom"
+							ZIndex="1000" />
 
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding OpenAccountManagerCommand}"
-							Icon="AccountMultipleOutline"
-							IconSize="16"
-							Content="{x:Static resources:Strings.Menu_AccountManager_Title}" />
-
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding NavigateToChannelsCommand}"
-							Tag="channels"
-							Icon="TuneVertical"
-							IconSize="16"
-							Content="{x:Static resources:Strings.Common_Settings}" />
-
-						<controls:IconButton
-							Classes="nav-button"
-							Command="{Binding OpenAboutCommand}"
-							Icon="InformationOutline"
-							IconSize="16"
-							Content="{x:Static resources:Strings.Menu_About_Title}" />
-					</StackPanel>
-
+						<TransitioningContentControl
+							x:Name="PageContentControl"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch" />
+					</Panel>
 				</Grid>
-			</Border>
-
-			<Grid Grid.Column="1" RowDefinitions="Auto,*">
-
-				<Border
-					Grid.Row="0"
-					Padding="24,24,24,16"
-					BorderBrush="{DynamicResource SukiBorderBrush}"
-					BorderThickness="0,0,0,1">
-					<StackPanel>
-						<ItemsControl
-							ItemsSource="{Binding BreadcrumbItems}"
-							Margin="0,0,0,10"
-							IsVisible="{Binding HasBreadcrumbs}">
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-							<ItemsControl.ItemTemplate>
-								<DataTemplate DataType="vm:BreadcrumbItemModel">
-									<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-										<Button
-											Content="{Binding Content}"
-											Command="{Binding $parent[Window].((vm:MainWindowViewModel)DataContext).BreadcrumbItemClickedCommand}"
-											CommandParameter="{Binding}"
-											Background="Transparent"
-											BorderThickness="0"
-											Foreground="{DynamicResource SukiText}"
-											FontSize="20"
-											FontWeight="SemiBold"
-											Padding="0"
-											IsVisible="{Binding !IsLast}" />
-										<TextBlock
-											Text="›"
-											VerticalAlignment="Center"
-											FontSize="20"
-											Foreground="{DynamicResource SukiLowText}"
-											IsVisible="{Binding !IsLast}" />
-										<TextBlock
-											Text="{Binding Content}"
-											VerticalAlignment="Center"
-											FontSize="20"
-											FontWeight="SemiBold"
-											Foreground="{DynamicResource SukiText}"
-											IsVisible="{Binding IsLast}" />
-									</StackPanel>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</ItemsControl>
-
-						<TextBlock
-							x:Name="PageTitleText"
-							FontSize="20"
-							FontWeight="SemiBold"
-							Margin="0,0,0,4"
-							Foreground="{DynamicResource SukiText}"
-							Text="{Binding CurrentPageTitle}"
-							IsVisible="{Binding ShowPageTitle}" />
-
-						<controls:MarkdownTextBlock
-							x:Name="PageDescriptionText"
-							FontSize="13"
-							Foreground="{DynamicResource SukiLowText}"
-							MarkdownText="{Binding CurrentPageDescription}"
-							Margin="0,0,0,2"
-							IsVisible="{Binding CurrentPageDescription, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
-
-						<suki:InfoBar x:Name="AlertBar" Grid.Row="0" Margin="0,8,0,0" Severity="Warning" IsVisible="False" />
-					</StackPanel>
-				</Border>
-
-				<TransitioningContentControl
-					x:Name="PageContentControl"
-					Grid.Row="1"
-					HorizontalAlignment="Stretch"
-					VerticalAlignment="Stretch" />
-			</Grid>
-		</Grid>
+			</ui:NavigationView.Content>
+		</ui:NavigationView>
 
 		<Border
 			Grid.Row="2"
 			Height="56"
-			Padding="16,0"
-			BorderBrush="{DynamicResource SukiBorderBrush}"
+			Padding="0,0,16,0"
+			Background="{DynamicResource ControlFillColorDefaultBrush}"
+			BorderBrush="{DynamicResource ControlStrokeColorDefault}"
 			BorderThickness="0,1,0,0">
-			<Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto">
-
-				<!-- Test mode ui was here -->
-               <Border Grid.Column="0" Background="Transparent" />
-
-				<StackPanel
-					Grid.Column="1"
-					Grid.ColumnSpan="4"
-					Orientation="Horizontal"
-					Spacing="8">
-
-					<Button
-                        Classes="FrostSidebarAccent"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding SaveAndLaunchSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
-
-					<Button
-                        Classes="FrostSidebarAccent"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding RestartAppCommand}"
-						Content="{x:Static resources:Strings.Menu_Restart}" />
-
-					<Button
-                        Classes="FrostSidebarAccent"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding SaveSettingsCommand}"
-						Content="{x:Static resources:Strings.Menu_Save}" />
-
-					<Button
-						Classes="FrostSubtle"
-						Height="36"
-						Padding="20,0"
-						Command="{Binding CloseWindowCommand}"
-						Content="{x:Static resources:Strings.Common_Close}" />
-
-				</StackPanel>
+			<Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto, Auto" ColumnSpacing="8">
+				<local:AccountSelectorView
+					x:Name="AccountSelectorView"
+					Grid.Column="0"
+					Margin="8,0,0,0" />
+				<Button
+					Grid.Column="2"
+					Height="36"
+					Padding="20,0"
+					Classes="accent"
+					Command="{Binding SaveAndLaunchSettingsCommand}"
+					Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
+				<Button
+					Grid.Column="3"
+					Height="36"
+					Padding="20,0"
+					Classes="accent"
+					Command="{Binding RestartAppCommand}"
+					Content="{x:Static resources:Strings.Menu_Restart}" />
+				<Button
+					Grid.Column="4"
+					Height="36"
+					Padding="20,0"
+					Classes="accent"
+					Command="{Binding SaveSettingsCommand}"
+					Content="{x:Static resources:Strings.Menu_Save}" />
+				<Button
+					Grid.Column="5"
+					Height="36"
+					Padding="20,0"
+					Command="{Binding CloseWindowCommand}"
+					Content="{x:Static resources:Strings.Common_Close}" />
 			</Grid>
 		</Border>
 
-	  <Border
-        x:Name="OffscreenIndexingCanvas"
-        Grid.Row="1"
-        Width="1125"
-        Height="700"
-        Opacity="0"
-        IsHitTestVisible="False"
-        IsVisible="False"
-        ZIndex="-1000" />
+		<Border
+			x:Name="OffscreenIndexingCanvas"
+			Grid.Row="1"
+			Grid.Column="1"
+			Width="905"
+			Height="700"
+			IsHitTestVisible="False"
+			IsVisible="False"
+			Opacity="0"
+			ZIndex="-1000" />
 	</Grid>
 </base:AvaloniaWindow>

@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:resources="clr-namespace:Froststrap.Resources"
-             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:enums="using:Froststrap.Enums"
              xmlns:models="using:Froststrap.Models.APIs.Config"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
@@ -24,15 +24,15 @@
         <StackPanel Margin="14">
             <Grid ColumnDefinitions="*,*,*">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Preset Mods"
-                                     Icon="BookOpenPageVariantOutline" Description="Official built-in mods."
+                                     Icon="BookOpen" Description="Official built-in mods."
                                      Command="{Binding OpenPresetModsCommand}" />
 
                 <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="My Mods"
-                                     Icon="FormatListBulletedSquare" Description="Manage your active mods."
+                                     Icon="TextBulletList" Description="Manage your active mods."
                                      Command="{Binding OpenModsCommand}" />
 
                 <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
-                                     Icon="PaletteOutline" Description="Generate mods easily with a single click."
+                                     Icon="PaintBrush" Description="Generate mods easily with a single click."
                                      Command="{Binding OpenModGeneratorCommand}"/>
             </Grid>
 
@@ -96,22 +96,27 @@
                                     Height="270"
                                     Margin="4"
                                     Padding="0"
-                                    Background="{DynamicResource NormalDarkAndLightBackground}"
                                     CornerRadius="8"
                                     ClipToBounds="True">
                                 <Grid RowDefinitions="140, Auto, Auto, *">
                                     
-                                    <Panel Grid.Row="0">
-                                        <Image Source="{Binding ThumbnailImage}" 
-                                               Stretch="UniformToFill"
-                                               RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                                        
-                                        <suki:CircleProgressBar IsVisible="{Binding IsLoadingThumbnail}"
-                                                         IsIndeterminate="True"
-                                                         Width="24" Height="24"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Center"/>
-                                    </Panel>
+                                    <Border Grid.Row="0"
+                                            CornerRadius="8,8,0,0"
+                                            ClipToBounds="True">
+                                        <Grid>
+                                            <Image Source="{Binding ThumbnailImage}" 
+                                                   Stretch="UniformToFill"
+                                                   HorizontalAlignment="Stretch"
+                                                   VerticalAlignment="Stretch"
+                                                   RenderOptions.BitmapInterpolationMode="HighQuality"/>
+
+                                            <ui:ProgressRing IsVisible="{Binding IsLoadingThumbnail}"
+                                                                    IsIndeterminate="True"
+                                                                    Width="24" Height="24"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
 
                                     <TextBlock Grid.Row="1"
                                                Text="{Binding Name}"
@@ -121,7 +126,7 @@
                                                TextTrimming="CharacterEllipsis"/>
 
                                     <TextBlock Grid.Row="2" 
-                                               Foreground="{DynamicResource SukiLowText}" 
+                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" 
                                                FontSize="12"
                                                Margin="12,2,12,4" 
                                                TextTrimming="CharacterEllipsis">
@@ -145,7 +150,7 @@
                                                              Height="34"
                                                              HorizontalAlignment="Stretch" 
                                                              Content="Download" 
-                                                             Icon="Download"
+                                                             Icon="ArrowDownload"
                                                              Classes="Primary"
                                                              Command="{Binding DownloadCommand}" 
                                                              CommandParameter="{Binding}"/>
@@ -153,7 +158,7 @@
                                         <controls:IconButton Grid.Column="1" Grid.Row="1"
                                                              Height="34"
                                                              Margin="2,0,0,0"
-                                                             Icon="InformationOutline"
+                                                             Icon="Info"
                                                              Command="{Binding $parent[UserControl].((vm:CommunityModsViewModel)DataContext).OpenModInfoDialogCommand}"
                                                              CommandParameter="{Binding $self}"/>
                                     </Grid>

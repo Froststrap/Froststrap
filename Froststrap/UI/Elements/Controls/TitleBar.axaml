@@ -1,48 +1,54 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:suki="clr-namespace:SukiUI.Controls;assembly=SukiUI"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls">
 
     <Style Selector="controls|TitleBar">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Height" Value="40" /> <Setter Property="Template">
+        <Setter Property="Height" Value="48" /> 
+        <Setter Property="Template">
             <ControlTemplate>
                 <Grid ColumnDefinitions="Auto, *, Auto" 
                       Height="{TemplateBinding Height}" 
                       Background="{TemplateBinding Background}">
 
-                    <Image Grid.Column="0"
-                           Source="{TemplateBinding Icon}"
-                           Width="20" Height="20"
-                           Margin="14,0,0,0"
-                           VerticalAlignment="Center"
-                           IsHitTestVisible="False"
-                           RenderOptions.BitmapInterpolationMode="HighQuality" />
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" IsHitTestVisible="False">
+                        <Image Source="{TemplateBinding Icon}"
+                               Width="16" Height="16"
+                               Margin="12,0,0,0"
+                               VerticalAlignment="Center"
+                               RenderOptions.BitmapInterpolationMode="HighQuality" />
 
-                    <Panel Name="PART_DragLayer" Grid.Column="1" Background="Transparent">
                         <TextBlock Text="{TemplateBinding Title}"
                                    VerticalAlignment="Center"
-                                   Margin="12,0"
-                                   FontSize="13"
-                                   FontWeight="Medium"
-                                   IsHitTestVisible="False"
-                                   Foreground="{DynamicResource SukiText}" />
+                                   Margin="10,0"
+                                   FontSize="12"
+                                   FontWeight="Normal"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    </StackPanel>
+
+                    <Panel Grid.Column="1">
+                        <Panel Name="PART_DragLayer" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+                        
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center" />
                     </Panel>
 
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Top">
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Stretch">
                         <controls:IconButton Name="PART_MinimizeButton" 
                                            Classes="TitleBarButton" 
-                                           Icon="Minus" 
+                                           Icon="Subtract" 
                                            IsVisible="{TemplateBinding ShowMinimize}"/>
 
                         <controls:IconButton Name="PART_MaximizeButton" 
                                            Classes="TitleBarButton" 
                                            IsVisible="{TemplateBinding ShowMaximize}" 
-                                           Icon="SquareOutline"/>
+                                           Icon="FullScreenMaximize"/>
 
                         <controls:IconButton Name="PART_CloseButton" 
                                            Classes="TitleBarButton Close" 
-                                           Icon="Close" 
+                                           Icon="Dismiss" 
                                            IsVisible="{TemplateBinding ShowClose}"/>
                     </StackPanel>
                 </Grid>
@@ -52,29 +58,28 @@
 
     <Style Selector="controls|IconButton.TitleBarButton">
         <Setter Property="Width" Value="46" />
-        <Setter Property="Height" Value="34" />
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Height" Value="32" /> <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="0" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Foreground" Value="{DynamicResource SukiText}" />
+        <Setter Property="VerticalAlignment" Value="Top" /> <Setter Property="IconSize" Value="10" />
+        <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="{DynamicResource SukiAccentColor10}" />
+        <Setter Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="#C42B1C" /> </Style>
+        <Setter Property="Background" Value="#C42B1C" /> 
+    </Style>
 
-    <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover">
-        <Setter Property="Foreground" Value="White" />
+
+    <Style Selector="controls|IconButton.TitleBarButton.Close:pressed /template/ Border#PART_LayoutRoot">
+        <Setter Property="Background" Value="#B22619" />
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton:disabled">
-        <Setter Property="Opacity" Value="0.2" />
+        <Setter Property="Opacity" Value="{DynamicResource ThemeDisabledOpacity}" />
     </Style>
 
 </Styles>

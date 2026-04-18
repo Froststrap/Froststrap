@@ -6,7 +6,6 @@ using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Elements.Dialogs;
 using Froststrap.UI.Elements.Editor;
 using ICSharpCode.SharpZipLib.Zip;
-using SukiUI.Enums;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -99,30 +98,11 @@ namespace Froststrap.UI.ViewModels.Settings
         public WindowsBackdrops SelectedBackdrop
         {
             get => App.Settings.Prop.SelectedBackdrop;
-            set => App.Settings.Prop.SelectedBackdrop = value;
-        }
-
-        public IEnumerable<SukiBackgroundStyle> SukiWindowStyles => Enum.GetValues(typeof(SukiBackgroundStyle)).Cast<SukiBackgroundStyle>();
-
-        public SukiBackgroundStyle SukiWindowStyle
-        {
-            get => App.Settings.Prop.SukiWindowStyle;
             set
             {
-                App.Settings.Prop.SukiWindowStyle = value;
-                AvaloniaWindow.ApplyTheme();
-            }
-        }
-
-        public IEnumerable<SukiColor> SukiColorThemes => Enum.GetValues(typeof(SukiColor)).Cast<SukiColor>();
-
-        public SukiColor SukiColorTheme
-        {
-            get => App.Settings.Prop.SukiColorTheme;
-            set
-            {
-                App.Settings.Prop.SukiColorTheme = value;
-                AvaloniaWindow.ApplyTheme();
+                App.Settings.Prop.SelectedBackdrop = value;
+                App.WindowsBackdrop();
+                OnPropertyChanged(nameof(SelectedBackdrop));
             }
         }
 

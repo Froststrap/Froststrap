@@ -4,7 +4,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using IconPacks.Avalonia.Material;
+using FluentIcons.Common;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
 
@@ -58,7 +58,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 {
                     Name = pair.Key,
                     Value = pair.Value?.ToString() ?? string.Empty,
-                    Preset = presetFlags.Contains(pair.Key) ? PackIconMaterialKind.CheckCircleOutline : PackIconMaterialKind.CloseCircleOutline
+                    Preset = presetFlags.Contains(pair.Key) ? FluentIcons.Common.Symbol.CheckmarkCircle : FluentIcons.Common.Symbol.CircleOff
                 };
 
                 _fastFlagList.Add(entry);
@@ -631,7 +631,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     ClearSearch();
 
                 var presetFlags = FastFlagManager.PresetFlags.Values;
-                entry.Preset = presetFlags.Contains(newText) ? PackIconMaterialKind.CheckCircleOutline : PackIconMaterialKind.CloseCircleOutline;
+                entry.Preset = presetFlags.Contains(newText) ? FluentIcons.Common.Symbol.CheckmarkCircle : FluentIcons.Common.Symbol.CircleOff;
             }
             else if (header == Strings.Common_Value)
             {

@@ -10,14 +10,14 @@
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
         <md:TitleBar Grid.Row="0" x:Name="RootTitleBar" Icon="avares://Froststrap/Froststrap.ico" Title="Froststrap" />
 
-        <Grid Grid.Row="1" Margin="20,20,20,20" ColumnDefinitions="Auto,*">
+        <Grid Grid.Row="1" Margin="20" ColumnDefinitions="Auto,*">
             <Image x:Name="IconImage" Grid.Column="0" Width="32" Height="32"
                    Margin="0,0,15,0" VerticalAlignment="Top" />
 
             <md:MarkdownTextBlock x:Name="MessageMarkdownTextBlock" Grid.Column="1"
                                      VerticalAlignment="Center"
                                      TextWrapping="Wrap"
-                                     Foreground="{DynamicResource SukiText}" />
+                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
         </Grid>
 
         <Border Grid.Row="2" Padding="15" Background="{DynamicResource PrimaryBackgroundColor}">

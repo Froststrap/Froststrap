@@ -1,13 +1,9 @@
-using System;
 using System.ComponentModel;
 using System.Reflection;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media;
 using Avalonia.Interactivity;
-using Avalonia.Input;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.ViewModels.About;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Froststrap.UI.Elements.Controls;
 
 namespace Froststrap.UI.Elements.About
@@ -37,7 +33,7 @@ namespace Froststrap.UI.Elements.About
 
             _viewModel.NavigateToAboutCommand.Execute(null);
 
-            UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+            UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
         }
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -51,21 +47,18 @@ namespace Froststrap.UI.Elements.About
 
             if (e.PropertyName == nameof(MainWindowViewModel.SelectedPage))
             {
-                UpdateSelectedButtonStyle(_viewModel.SelectedPage);
+                UpdateSelectedNavigationViewItem(_viewModel.SelectedPage);
             }
         }
 
         private void HookTitleBar()
         {
             var dragArea = this.FindControl<Panel>("TitleBarDragArea");
-            if (dragArea != null)
-            {
-                dragArea.PointerPressed += (_, e) =>
+            dragArea?.PointerPressed += (_, e) =>
                 {
                     if (e.GetCurrentPoint(dragArea).Properties.IsLeftButtonPressed)
                         BeginMoveDrag(e);
                 };
-            }
         }
 
         private void OnMinimize(object? sender, RoutedEventArgs e) => this.WindowState = Avalonia.Controls.WindowState.Minimized;
@@ -94,7 +87,7 @@ namespace Froststrap.UI.Elements.About
             }
         }
 
-        private Control? ResolveViewForViewModel(object viewModel)
+        private static Control? ResolveViewForViewModel(object viewModel)
         {
             var actualViewModelType = viewModel.GetType();
             var viewModelName = actualViewModelType.Name;
@@ -128,8 +121,7 @@ namespace Froststrap.UI.Elements.About
                 {
                     try
                     {
-                        var view = Activator.CreateInstance(viewType) as Control;
-                        if (view != null) return view;
+                        if (Activator.CreateInstance(viewType) is Control view) return view;
                     }
                     catch (Exception ex)
                     {
@@ -141,36 +133,35 @@ namespace Froststrap.UI.Elements.About
             return null;
         }
 
-        private void UpdateSelectedButtonStyle(string selectedTag)
+        private void UpdateSelectedNavigationViewItem(string selectedTag)
         {
-            var sidebarStackPanel = this.FindControl<StackPanel>("SidebarStackPanel");
-            if (sidebarStackPanel == null) return;
+            var navView = this.FindControl<NavigationView>("NavView");
+            if (navView == null) return;
 
-            var accentFgKey = "AccentButtonBackground";
-            var unselectedFgResource = "SukiText";
-            var highlightBgResource = "ControlFillColorSecondaryBrush";
-
-            foreach (var child in sidebarStackPanel.Children)
+            foreach (var item in navView.MenuItems)
             {
-                if (child is IconButton button && button.Tag is string tag)
+                if (item is NavigationViewItem navItem && navItem.Tag is string tag)
                 {
-                    var isSelected = tag == selectedTag;
-
-                    if (isSelected)
+                    if (tag == selectedTag)
                     {
-                        if (!button.Classes.Contains("Selected"))
-                            button.Classes.Add("Selected");
-
-                        button[!IconButton.BackgroundProperty] = button.GetResourceObservable(highlightBgResource).ToBinding();
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(accentFgKey).ToBinding();
+                        navView.SelectedItem = navItem;
+                        return;
                     }
-                    else
-                    {
-                        button.Classes.Remove("Selected");
+                }
+            }
+        }
 
-                        button.Background = Brushes.Transparent;
-                        button[!IconButton.ForegroundProperty] = button.GetResourceObservable(unselectedFgResource).ToBinding();
-                    }
+        private void NavView_ItemInvoked(object? sender, NavigationViewItemInvokedEventArgs e)
+        {
+            if (e.InvokedItemContainer is NavigationViewItem navItem && navItem.Tag is string tag)
+            {
+                if (tag == "about")
+                {
+                    _viewModel?.NavigateToAboutCommand.Execute(null);
+                }
+                else if (tag == "licenses")
+                {
+                    _viewModel?.NavigateToLicensesCommand.Execute(null);
                 }
             }
         }

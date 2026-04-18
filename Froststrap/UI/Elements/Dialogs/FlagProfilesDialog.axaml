@@ -59,7 +59,7 @@
                           IsVisible="False" />
 
                 <controls:IconButton x:Name="DeleteButton"
-                        Icon="TrashCanOutline"
+                        Icon="Delete"
                         Classes="Danger"
                         Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" 
                         Click="DeleteButton_Click" 

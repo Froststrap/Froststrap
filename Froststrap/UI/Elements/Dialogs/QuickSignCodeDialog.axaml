@@ -4,9 +4,9 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:fa="using:FluentAvalonia.UI.Controls"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
         xmlns:resources="clr-namespace:Froststrap.Resources"
-        xmlns:ic="using:IconPacks.Avalonia.Material"
+        xmlns:ic="using:FluentIcons.Avalonia.Fluent"
 		xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         Title="{x:Static resources:Strings.Menu_Dialog_QuickSignIn_Title}"
@@ -32,10 +32,10 @@
                 Grid.Row="0"
                 Margin="0,0,0,16"
                 Orientation="Horizontal">
-                <ic:PackIconMaterial
+                <ic:SymbolIcon
                     Margin="0,0,8,0"
                     FontSize="20"
-                    Kind="Link" />
+                    Symbol="Link" />
                 <TextBlock
                     FontSize="18"
                     FontWeight="SemiBold"
@@ -47,7 +47,7 @@
                 Grid.Row="1"
                 Margin="0,0,0,12"
                 FontSize="14"
-                Foreground="{DynamicResource SukiLowText}"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 MarkdownText="Copy this code and paste it in the [Quick Sign-In Page](https://www.roblox.com/crossdevicelogin/ConfirmCode)."
                 TextWrapping="Wrap"
                 IsVisible="True" />
@@ -71,7 +71,7 @@
                     FontFamily="Consolas"
                     FontSize="20"
                     FontWeight="Bold"
-                    Foreground="{DynamicResource SukiText}"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                     IsReadOnly="True"
                     TextAlignment="Center"
                     TextWrapping="NoWrap" />
@@ -85,8 +85,8 @@
                 CornerRadius="6"
                 Padding="12,10">
                 <StackPanel Orientation="Horizontal">
-                    <ic:PackIconMaterial 
-                        Kind="Information"
+                    <ic:SymbolIcon   
+                        Symbol="Info"
                         FontSize="16"
                         Margin="0,0,8,0"
                         Foreground="{DynamicResource SystemFillColorAttentionBrush}"/>
@@ -95,7 +95,7 @@
                         Text="Waiting for Quick Sign-In...&#x0a;The app will close this window when sign-in completes." 
                         TextWrapping="Wrap"
                         FontSize="13"
-                        Foreground="{DynamicResource SukiText}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         VerticalAlignment="Center"/>
                 </StackPanel>
             </Border>

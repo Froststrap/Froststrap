@@ -8,6 +8,7 @@
     xmlns:resources="clr-namespace:Froststrap.Resources"
     xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     x:DataType="vm:LaunchMenuViewModel"
     Title="Froststrap"
     Width="640" SizeToContent="Height"
@@ -27,12 +28,12 @@
                         <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
                         <TextBlock Text="{Binding Version}" 
                                    FontSize="13" 
-                                   Foreground="{DynamicResource SukiMediumText}" />
+                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                     </StackPanel>
                 </StackPanel>
 
                 <StackPanel HorizontalAlignment="Center" Spacing="8">
-                    <controls:IconButton Icon="HelpCircleOutline" 
+                    <controls:IconButton Icon="Info" 
                                          Content="{x:Static resources:Strings.About_Title}" 
                                          Command="{Binding LaunchAboutCommand}" 
                                          BorderBrush="Transparent" 
@@ -40,7 +41,7 @@
                                          Background="Transparent"
                                          Padding="8,6" />
 
-                    <controls:IconButton Icon="ChatProcessingOutline" 
+                    <controls:IconButton Icon="Chat" 
                                          Content="{x:Static resources:Strings.LaunchMenu_Discord}" 
                                          Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
                                          CommandParameter="https://discord.gg/KdR9vpRcUN" 
@@ -54,16 +55,16 @@
             <StackPanel Grid.Column="1" Spacing="6">
 
                 <controls:CardAction
-                    Icon="PlayCircleOutline"
+                    Icon="PlayCircle"
                     Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}"
                     Command="{Binding LaunchRobloxCommand}"
                     TabIndex="0"
                     Padding="16,14" />
-                
+
                 <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                     <controls:CardAction 
                         Grid.Column="0"
-                        Icon="CogOutline"
+                        Icon="Settings"
                         Header="{x:Static resources:Strings.Common_Settings}"
                         Command="{Binding LaunchSettingsCommand}"
                         TabIndex="1"
@@ -71,7 +72,7 @@
 
                     <controls:CardAction 
                         Grid.Column="1"
-                        Icon="WrenchOutline"
+                        Icon="Wrench"
                         Header="{x:Static resources:Strings.Common_Studio}"
                         Command="{Binding LaunchRobloxStudioCommand}"
                         TabIndex="2"
@@ -81,7 +82,7 @@
                 <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,2" />
 
                 <controls:CardAction 
-                    Icon="BookOutline"
+                    Icon="BookOpen"
                     Header="{x:Static resources:Strings.LaunchMenu_Wiki_Title}"
                     Description="{x:Static resources:Strings.LaunchMenu_Wiki_Description}"
                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"

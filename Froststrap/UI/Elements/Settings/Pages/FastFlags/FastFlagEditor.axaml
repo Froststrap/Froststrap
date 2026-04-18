@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:ic="using:IconPacks.Avalonia.Material"
+             xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:resources="using:Froststrap.Resources"
-             xmlns:suki="https://github.com/kikipoulet/SukiUI"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:model="clr-namespace:Froststrap.Models"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              d:DesignHeight="600"
@@ -15,21 +15,21 @@
     
     <Grid RowDefinitions="Auto,Auto,Auto,*" Margin="14">
         
-        <suki:InfoBar Grid.Row="0" 
+        <ui:InfoBar Grid.Row="0" 
                     Title="Important" 
                     Message="Following the whitelisting of some Roblox FastFlags, these are the only remaining available for use." 
-                    Severity="Information" 
+                    Severity="Informational" 
                     IsOpen="True" 
                     IsClosable="False" 
                     Margin="0,4,0,8" />
 
         <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
-            <controls:IconButton Click="AddButton_Click" Icon="PlusCircleOutline" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
-            <controls:IconButton Click="DeleteButton_Click" Icon="TrashCanOutline" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
-            <controls:IconButton Click="DeleteAllButton_Click" Icon="PailRemoveOutline" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
-            <controls:IconButton Click="CopyJSONButton_Click" Icon="ClipboardOutline" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
-            <controls:IconButton Click="ExportJSONButton_Click" Icon="Export" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
-            <controls:IconButton Click="FlagProfiles_Click" Icon="FileDocumentOutline" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
+            <controls:IconButton Click="AddButton_Click" Icon="Add" Content="{x:Static resources:Strings.Menu_FastFlagEditor_AddNew}" Margin="0,0,8,8" />
+            <controls:IconButton Click="DeleteButton_Click" Icon="Delete" Classes="Danger" Content="{x:Static resources:Strings.Menu_FastFlagEditor_DeleteSelected}" Margin="0,0,8,8" x:Name="DeleteSelectedButton" IsEnabled="False" />
+            <controls:IconButton Click="DeleteAllButton_Click" Icon="Delete" Content="{x:Static resources:Strings.Common_DeleteAll}" Margin="0,0,8,8" />
+            <controls:IconButton Click="CopyJSONButton_Click" Icon="Clipboard" Content="{x:Static resources:Strings.Common_CopyAll}" Margin="0,0,8,8" />
+            <controls:IconButton Click="ExportJSONButton_Click" Icon="ArrowExport" Content="{x:Static resources:Strings.Menu_FastFlagEditor_ExportJson}" Margin="0,0,8,8" />
+            <controls:IconButton Click="FlagProfiles_Click" Icon="DocumentEdit" Content="{x:Static resources:Strings.Common_Profiles}" Margin="0,0,8,8" />
             <controls:IconButton Click="CleanListButton_Click" Icon="Broom" Content="{x:Static resources:Strings.Menu_FastFlagEditor_CleanList}" Margin="0,0,8,8" />
             
             <ToggleButton Name="TogglePresetsButton"
@@ -56,7 +56,7 @@
                          Watermark="{x:Static resources:Strings.Menu_FastFlagEditor_Search}"
                          TextChanged="SearchTextBox_TextChanged">
                     <TextBox.InnerLeftContent>
-                        <ic:PackIconMaterial Kind="Magnify" Margin="10,0,0,0" VerticalAlignment="Center" />
+                        <ic:SymbolIcon Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                     </TextBox.InnerLeftContent>
                 </TextBox>
         
@@ -95,9 +95,9 @@
                                             IsVisible="{Binding #TogglePresetsButton.IsChecked}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:FastFlag">
-                                <ic:PackIconMaterial Height="20" 
+                                <ic:SymbolIcon Height="20" 
                                                      Width="20"
-                                                     Kind="{Binding Preset}"
+                                                     Symbol="{Binding Preset}"
                                                      HorizontalAlignment="Center" 
                                                      VerticalAlignment="Center" />
                             </DataTemplate>
@@ -124,7 +124,7 @@
                        VerticalAlignment="Center" 
                        IsHitTestVisible="False"
                        IsVisible="False"
-                       Foreground="{DynamicResource SukiLowText}"
+                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                        TextAlignment="Center"/>
         </Grid>
     </Grid>

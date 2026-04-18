@@ -66,8 +66,8 @@ namespace Froststrap
             Logs = Path.Combine(DataRoot, "Logs");
             Integrations = Path.Combine(DataRoot, "Integrations");
             Versions = Path.Combine(DataRoot, "Versions");
-            Modifications = Path.Combine(DataRoot, "Modifications");
-            PresetModifications = Path.Combine(DataRoot, "PresetModifications");
+            Modifications = Path.Combine(DataRoot, "ModificationProfiles");
+            PresetModifications = Path.Combine(DataRoot, "Modifications");
             Cache = Path.Combine(DataRoot, "Cache");
 
             RobloxLogs = Path.Combine(Roblox, "logs");

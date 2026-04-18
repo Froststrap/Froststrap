@@ -124,25 +124,17 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private bool CanGenerateMod() => IsValidHexColor(SolidColorHex) && IsNotGeneratingMod;
 
-        private string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
-        private string FontDir => Path.Combine(Paths.Cache, "FontPreview");
+        private static string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
 
         private async Task LoadFontFilesAsync()
         {
             try
             {
-                if (!Directory.Exists(FontDir))
-                    Directory.CreateDirectory(FontDir);
-
-                var fontFiles = Directory.GetFiles(FontDir)
-                    .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
-                    .ToArray();
-
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     FontDisplayNames.Clear();
-                    foreach (var file in fontFiles)
-                        FontDisplayNames.Add(Path.GetFileNameWithoutExtension(file).Replace("BuilderIcons-", ""));
+                    FontDisplayNames.Add("Regular");
+                    FontDisplayNames.Add("Filled");
 
                     if (FontDisplayNames.Count > 0)
                         SelectedFontDisplayName = FontDisplayNames[0];
@@ -166,51 +158,27 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 return;
             }
 
-            var fontFiles = Directory.GetFiles(FontDir)
-                                     .Where(f => f.EndsWith(".ttf") || f.EndsWith(".otf"))
-                                     .ToArray();
-
-            string selectedFontPath = FindFontFile(SelectedFontDisplayName, fontFiles);
-
-            if (!string.IsNullOrEmpty(selectedFontPath) && File.Exists(selectedFontPath))
-                await LoadGlyphPreviewsAsync(selectedFontPath);
+            await LoadGlyphPreviewsAsync(SelectedFontDisplayName);
         }
 
-        private string FindFontFile(string displayName, string[] fontFiles)
+        private async Task LoadGlyphPreviewsAsync(string fontVariant)
         {
-            return fontFiles.FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Equals($"BuilderIcons-{displayName}", StringComparison.OrdinalIgnoreCase))
-                   ?? fontFiles.FirstOrDefault()
-                   ?? string.Empty;
-        }
-
-        private bool IsFileReady(string filename)
-        {
-            try
-            {
-                using var fs = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None);
-                return fs.Length > 0;
-            }
-            catch (IOException)
-            {
-                return false;
-            }
-        }
-
-        private async Task LoadGlyphPreviewsAsync(string fontPath)
-        {
-            if (!File.Exists(fontPath) || !IsFileReady(fontPath)) return;
-
             var glyphItems = new ObservableCollection<GlyphItem>();
             UpdateGlyphColors();
 
             try
             {
-                string variantName = Path.GetFileNameWithoutExtension(fontPath);
+                var resourceKey = string.Equals(fontVariant, "Filled", StringComparison.OrdinalIgnoreCase)
+                    ? "BuilderIconsFilled"
+                    : "BuilderIconsRegular";
 
-                // Damn you Avalonia for not allowing me to render non Avalonia resource font files
-                var fontFamily = variantName.EndsWith("Filled")
-                    ? (Avalonia.Media.FontFamily)Avalonia.Application.Current!.Resources["BuilderIconsFilled"]!
-                    : (Avalonia.Media.FontFamily)Avalonia.Application.Current!.Resources["BuilderIconsRegular"]!;
+                var fontFamily = (Avalonia.Media.FontFamily?)null;
+                if (Avalonia.Application.Current?.Resources.TryGetResource(resourceKey, null, out object? resource) == true)
+                    fontFamily = resource as Avalonia.Media.FontFamily;
+
+                fontFamily ??= string.Equals(fontVariant, "Filled", StringComparison.OrdinalIgnoreCase)
+                    ? new Avalonia.Media.FontFamily("avares://Froststrap/Resources/Fonts#BuilderIcons-Filled")
+                    : new Avalonia.Media.FontFamily("avares://Froststrap/Resources/Fonts#BuilderIcons-Regular");
 
                 var typeface = new Typeface(fontFamily);
 
