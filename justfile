@@ -28,19 +28,40 @@ publish-windows:
 [unix]
 publish-macos:
     rm -rf {{ build_dir }}
+    mkdir -p {{ build_dir }}/temp/arm64
+    mkdir -p {{ build_dir }}/temp/x64
     mkdir -p {{ build_dir }}/Froststrap.app/Contents/{MacOS,Resources}
 
+    # Publish for Apple Silicon
     dotnet publish {{ project_file }} \
-        -r osx-arm64,osx-x64 \
+        -r osx-arm64 \
         -c {{ release_config }} \
         --self-contained true \
         -p:PublishSingleFile=true \
         -p:IncludeNativeLibrariesForSelfExtract=true \
-        -o ./{{ build_dir }}/Froststrap.app/Contents/MacOS
+        -o ./{{ build_dir }}/temp/arm64
+
+    # Publish for Intel
+    dotnet publish {{ project_file }} \
+        -r osx-x64 \
+        -c {{ release_config }} \
+        --self-contained true \
+        -p:PublishSingleFile=true \
+        -p:IncludeNativeLibrariesForSelfExtract=true \
+        -o ./{{ build_dir }}/temp/x64
+
+    # Use lipo to create the Universal Binary
+    lipo -create \
+        ./{{ build_dir }}/temp/arm64/Froststrap \
+        ./{{ build_dir }}/temp/x64/Froststrap \
+        -output ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
 
     cp Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
     chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
+
     hdiutil create -volname "Froststrap" -srcfolder ./{{ build_dir }}/Froststrap.app -ov -format UDZO ./{{ build_dir }}/Froststrap-MacOS.dmg
+
+    rm -rf ./{{ build_dir }}/temp
     rm -rf ./{{ build_dir }}/Froststrap.app
 
 # Linux Release
