@@ -141,7 +141,8 @@ namespace Froststrap.Integrations
 
         public static async Task<(string luaZip, string extraZip, string contentZip, string hash, string version)> DownloadForModGenerator(bool overwrite = false)
         {
-            var clientInfo = await Http.GetJson<ClientVersion>("https://clientsettingscdn.roblox.com/v2/client-version/WindowsStudio64");
+            Uri clientVersionUrl = new("https://clientsettingscdn.roblox.com/v2/client-version/WindowsStudio64");
+            var clientInfo = await Http.GetJson<ClientVersion>(clientVersionUrl);
             string hash = clientInfo.VersionGuid.Replace("version-", "");
             string tempPath = Path.Combine(Path.GetTempPath(), "Froststrap");
             Directory.CreateDirectory(tempPath);

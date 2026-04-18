@@ -88,154 +88,151 @@ namespace Froststrap.Models.Entities
 			return deeplink;
 		}
 
-		public async Task<DateTime?> QueryServerTime()
-		{
-			const string LOG_IDENT = "ActivityData::QueryServerTime";
+        public async Task<DateTime?> QueryServerTime()
+        {
+            const string LOG_IDENT = "ActivityData::QueryServerTime";
 
-			if (string.IsNullOrEmpty(JobId))
-				throw new InvalidOperationException("JobId is null");
+            if (string.IsNullOrEmpty(JobId))
+                throw new InvalidOperationException("JobId is null");
 
-			if (PlaceId == 0)
-				throw new InvalidOperationException("PlaceId is null");
+            if (PlaceId == 0)
+                throw new InvalidOperationException("PlaceId is null");
 
-			await serverTimeSemaphore.WaitAsync();
+            await serverTimeSemaphore.WaitAsync();
 
-			if (GlobalCache.ServerTime.TryGetValue(JobId, out DateTime? time))
-			{
-				serverTimeSemaphore.Release();
-				return time;
-			}
+            if (GlobalCache.ServerTime.TryGetValue(JobId, out DateTime? time))
+            {
+                serverTimeSemaphore.Release();
+                return time;
+            }
 
-			DateTime? firstSeen = DateTime.UtcNow;
-			try
-			{
-				var serverTimeRaw = await Http.GetJson<RoValraTimeResponse>($"https://apis.rovalra.com/v1/server_details?place_id={PlaceId}&server_ids={JobId}");
+            DateTime? firstSeen = DateTime.UtcNow;
+            try
+            {
+                Uri serverDetailsUrl = new($"https://apis.rovalra.com/v1/server_details?place_id={PlaceId}&server_ids={JobId}");
+                var serverTimeRaw = await Http.GetJson<RoValraTimeResponse>(serverDetailsUrl);
 
-				var serverBody = new RoValraProcessServerBody
-				{
-					PlaceId = PlaceId,
-					ServerIds = new() { JobId }
-				};
+                var serverBody = new RoValraProcessServerBody
+                {
+                    PlaceId = PlaceId,
+                    ServerIds = new() { JobId }
+                };
 
-				string json = JsonSerializer.Serialize(serverBody);
-				HttpContent postContent = new StringContent(json, Encoding.UTF8, "application/json");
+                string json = JsonSerializer.Serialize(serverBody);
+                HttpContent postContent = new StringContent(json, Encoding.UTF8, "application/json");
 
-				// we dont need to await it since its not as important
-				// we want to return uptime quickly
-				_ = App.HttpClient.PostAsync("https://apis.rovalra.com/process_servers", postContent);
+                Uri processServersUrl = new("https://apis.rovalra.com/process_servers");
+                _ = App.HttpClient.PostAsync(processServersUrl, postContent);
 
+                RoValrasServer? server = null;
 
-				RoValrasServer? server = null;
+                if (serverTimeRaw?.Servers != null && serverTimeRaw.Servers.Count > 0)
+                    server = serverTimeRaw.Servers[0];
 
-				if (serverTimeRaw?.Servers != null && serverTimeRaw.Servers.Count > 0)
-					server = serverTimeRaw.Servers[0];
+                if (server?.FirstSeen != null)
+                    firstSeen = server.FirstSeen;
 
-				// if the server hasnt been registered we will simply return UtcNow
-				// since firstSeen is UtcNow by default we dont have to check anything else
-				if (server?.FirstSeen != null)
-					firstSeen = server.FirstSeen;
+                GlobalCache.ServerTime[JobId] = firstSeen;
+                serverTimeSemaphore.Release();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to get server time for {PlaceId}/{JobId}");
+                App.Logger.WriteException(LOG_IDENT, ex);
 
-				GlobalCache.ServerTime[JobId] = firstSeen;
-				serverTimeSemaphore.Release();
-			}
-			catch (Exception ex)
-			{
-				App.Logger.WriteLine(LOG_IDENT, $"Failed to get server time for {PlaceId}/{JobId}");
-				App.Logger.WriteException(LOG_IDENT, ex);
+                GlobalCache.ServerTime[JobId] = firstSeen;
+                serverTimeSemaphore.Release();
 
-				GlobalCache.ServerTime[JobId] = firstSeen;
-				serverTimeSemaphore.Release();
+                _ = Frontend.ShowConnectivityDialog(
+                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                    Strings.ActivityWatcher_LocationQueryFailed,
+                    MessageBoxImage.Warning,
+                    ex
+                );
+            }
 
-				_ = Frontend.ShowConnectivityDialog(
-					string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-					Strings.ActivityWatcher_LocationQueryFailed,
-					MessageBoxImage.Warning,
-					ex
-				);
-			}
+            return firstSeen;
+        }
 
-			return firstSeen;
-		}
+        public async Task<string?> QueryServerLocation()
+        {
+            const string LOG_IDENT = "ActivityData::QueryServerLocation";
 
-		public async Task<string?> QueryServerLocation()
-		{
-			const string LOG_IDENT = "ActivityData::QueryServerLocation";
+            if (!MachineAddressValid)
+                throw new InvalidOperationException($"Machine address is invalid ({MachineAddress})");
 
-			if (!MachineAddressValid)
-				throw new InvalidOperationException($"Machine address is invalid ({MachineAddress})");
+            await serverQuerySemaphore.WaitAsync();
 
-			await serverQuerySemaphore.WaitAsync();
+            if (GlobalCache.ServerLocation.TryGetValue(MachineAddress, out string? location))
+            {
+                serverQuerySemaphore.Release();
+                return location;
+            }
 
-			if (GlobalCache.ServerLocation.TryGetValue(MachineAddress, out string? location))
-			{
-				serverQuerySemaphore.Release();
-				return location;
-			}
+            try
+            {
+                try
+                {
+                    Uri roValraGeoUrl = new($"https://apis.rovalra.com/v1/geolocation?ip={MachineAddress}");
+                    var response = await Http.GetJson<RoValraGeolocation>(roValraGeoUrl);
+                    var geolocation = response.Location;
 
-			try
-			{
-				// Try RoValra API first
-				try
-				{
-					var response = await Http.GetJson<RoValraGeolocation>($"https://apis.rovalra.com/v1/geolocation?ip={MachineAddress}");
-					var geolocation = response.Location;
+                    if (geolocation is not null)
+                    {
+                        if (geolocation.City == geolocation.Region && geolocation.City == geolocation.Country)
+                            location = geolocation.Country;
+                        else if (geolocation.City == geolocation.Region)
+                            location = $"{geolocation.Region}, {geolocation.Country}";
+                        else
+                            location = $"{geolocation.City}, {geolocation.Region}, {geolocation.Country}";
 
-					if (geolocation is not null)
-					{
-						if (geolocation.City == geolocation.Region && geolocation.City == geolocation.Country)
-							location = geolocation.Country;
-						else if (geolocation.City == geolocation.Region)
-							location = $"{geolocation.Region}, {geolocation.Country}";
-						else
-							location = $"{geolocation.City}, {geolocation.Region}, {geolocation.Country}";
+                        App.Logger.WriteLine(LOG_IDENT, $"Got location from RoValra: {location}");
+                        GlobalCache.ServerLocation[MachineAddress] = location;
+                        serverQuerySemaphore.Release();
+                        return location;
+                    }
+                }
+                catch (Exception rovalraEx)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"RoValra API failed, falling back to ipinfo.io: {rovalraEx.Message}");
+                }
 
-						App.Logger.WriteLine(LOG_IDENT, $"Got location from RoValra: {location}");
-						GlobalCache.ServerLocation[MachineAddress] = location;
-						serverQuerySemaphore.Release();
-						return location;
-					}
-				}
-				catch (Exception rovalraEx)
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"RoValra API failed, falling back to ipinfo.io: {rovalraEx.Message}");
-				}
+                Uri ipInfoUrl = new($"https://ipinfo.io/{MachineAddress}/json");
+                var ipInfo = await Http.GetJson<IPInfoResponse>(ipInfoUrl);
 
-				// Fallback to ipinfo.io
-				var ipInfo = await Http.GetJson<IPInfoResponse>($"https://ipinfo.io/{MachineAddress}/json");
+                if (string.IsNullOrEmpty(ipInfo.City))
+                    throw new InvalidHTTPResponseException("Reported city was blank");
 
-				if (string.IsNullOrEmpty(ipInfo.City))
-					throw new InvalidHTTPResponseException("Reported city was blank");
+                if (ipInfo.City == ipInfo.Region)
+                    location = $"{ipInfo.Region}, {ipInfo.Country}";
+                else
+                    location = $"{ipInfo.City}, {ipInfo.Region}, {ipInfo.Country}";
 
-				if (ipInfo.City == ipInfo.Region)
-					location = $"{ipInfo.Region}, {ipInfo.Country}";
-				else
-					location = $"{ipInfo.City}, {ipInfo.Region}, {ipInfo.Country}";
+                App.Logger.WriteLine(LOG_IDENT, $"Got location from ipinfo.io: {location}");
+                GlobalCache.ServerLocation[MachineAddress] = location;
+                serverQuerySemaphore.Release();
+                return location;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to get server location for {MachineAddress}");
+                App.Logger.WriteException(LOG_IDENT, ex);
 
-				App.Logger.WriteLine(LOG_IDENT, $"Got location from ipinfo.io: {location}");
-				GlobalCache.ServerLocation[MachineAddress] = location;
-				serverQuerySemaphore.Release();
-				return location;
-			}
-			catch (Exception ex)
-			{
-				App.Logger.WriteLine(LOG_IDENT, $"Failed to get server location for {MachineAddress}");
-				App.Logger.WriteException(LOG_IDENT, ex);
+                GlobalCache.ServerLocation[MachineAddress] = location;
+                serverQuerySemaphore.Release();
 
-				GlobalCache.ServerLocation[MachineAddress] = location;
-				serverQuerySemaphore.Release();
+                _ = Frontend.ShowConnectivityDialog(
+                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com/ipinfo.io"),
+                    Strings.ActivityWatcher_LocationQueryFailed,
+                    MessageBoxImage.Warning,
+                    ex
+                );
 
-				_ = Frontend.ShowConnectivityDialog(
-					string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com/ipinfo.io"),
-					Strings.ActivityWatcher_LocationQueryFailed,
-					MessageBoxImage.Warning,
-					ex
-				);
+                return location;
+            }
+        }
 
-				return location;
-			}
-		}
-
-		public void RejoinServer(bool CloseRoblox = true)
+        public void RejoinServer(bool CloseRoblox = true)
 		{
 			try
 			{

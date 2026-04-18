@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using AnimatedImage.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
@@ -10,6 +11,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
+using SukiUI.Controls;
 using System.Xml.Linq;
 
 namespace Froststrap.UI.Elements.Bootstrapper
@@ -582,14 +584,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
                 if (isAnimated)
                 {
-                    try
-                    {
-                        image.SetValue(AnimatedImage.Avalonia.ImageBehavior.AnimatedSourceProperty, imageData.Uri);
-                    }
-                    catch (Exception)
-                    {
-                        image.Source = new Bitmap(imageData.Uri.LocalPath);
-                    }
+                    image.SetValue(ImageBehavior.AnimatedSourceProperty, imageData.Uri);
+
+                    var repeat = ParseXmlAttribute<RepeatBehavior>(xmlElement, "RepeatBehavior", RepeatBehavior.Forever);
+                    image.SetValue(ImageBehavior.RepeatBehaviorProperty, repeat);
                 }
                 else
                 {
