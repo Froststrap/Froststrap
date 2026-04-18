@@ -67,5 +67,6 @@ jobs:
           files: |
             release/Froststrap-Setup.exe
             release/Froststrap-macOS-arm64.dmg
+            release/Froststrap-macOS-x64.dmg
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true

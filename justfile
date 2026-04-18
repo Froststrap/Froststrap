@@ -28,20 +28,34 @@ publish-windows:
 [unix]
 publish-macos:
     rm -rf {{ build_dir }}
-    mkdir -p {{ build_dir }}/Froststrap.app/Contents/{MacOS,Resources}
 
+    # Build ARM64
+    mkdir -p {{ build_dir }}/Froststrap-arm64.app/Contents/{MacOS,Resources}
     dotnet publish {{ project_file }} \
         -r osx-arm64 \
         -c {{ release_config }} \
         --self-contained true \
         -p:PublishSingleFile=true \
         -p:IncludeNativeLibrariesForSelfExtract=true \
-        -o ./{{ build_dir }}/Froststrap.app/Contents/MacOS
+        -o ./{{ build_dir }}/Froststrap-arm64.app/Contents/MacOS
+    cp Info.plist ./{{ build_dir }}/Froststrap-arm64.app/Contents/Info.plist
+    chmod +x ./{{ build_dir }}/Froststrap-arm64.app/Contents/MacOS/Froststrap
+    hdiutil create -volname "Froststrap" -srcfolder ./{{ build_dir }}/Froststrap-arm64.app -ov -format UDZO ./{{ build_dir }}/Froststrap-macOS-arm64.dmg
+    rm -rf ./{{ build_dir }}/Froststrap-arm64.app
 
-    cp Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
-    chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
-    hdiutil create -volname "Froststrap" -srcfolder ./{{ build_dir }}/Froststrap.app -ov -format UDZO ./{{ build_dir }}/Froststrap-macOS-arm64.dmg
-    rm -rf ./{{ build_dir }}/Froststrap.app
+    # Build x64
+    mkdir -p {{ build_dir }}/Froststrap-x64.app/Contents/{MacOS,Resources}
+    dotnet publish {{ project_file }} \
+        -r osx-x64 \
+        -c {{ release_config }} \
+        --self-contained true \
+        -p:PublishSingleFile=true \
+        -p:IncludeNativeLibrariesForSelfExtract=true \
+        -o ./{{ build_dir }}/Froststrap-x64.app/Contents/MacOS
+    cp Info.plist ./{{ build_dir }}/Froststrap-x64.app/Contents/Info.plist
+    chmod +x ./{{ build_dir }}/Froststrap-x64.app/Contents/MacOS/Froststrap
+    hdiutil create -volname "Froststrap" -srcfolder ./{{ build_dir }}/Froststrap-x64.app -ov -format UDZO ./{{ build_dir }}/Froststrap-macOS-x64.dmg
+    rm -rf ./{{ build_dir }}/Froststrap-x64.app
 
 # Linux Release
 [unix]
