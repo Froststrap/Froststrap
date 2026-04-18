@@ -40,7 +40,8 @@ publish-macos:
 
     cp Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
     chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
-    (cd {{ build_dir }} && zip -r "Froststrap-macOS-arm64.zip" Froststrap.app)
+    hdiutil create -volname "Froststrap" -srcfolder ./{{ build_dir }}/Froststrap.app -ov -format UDZO ./{{ build_dir }}/Froststrap-macOS-arm64.dmg
+    rm -rf ./{{ build_dir }}/Froststrap.app
 
 # Linux Release
 [unix]
