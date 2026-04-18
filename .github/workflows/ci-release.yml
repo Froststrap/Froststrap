@@ -31,6 +31,10 @@ jobs:
       - name: Setup Just
         uses: extractions/setup-just@v3
 
+      - name: Install create-dmg
+        if: matrix.os == 'macos-latest'
+        run: brew install create-dmg
+
       - name: Build and package
         run: just ${{ matrix.just_target }}
 
