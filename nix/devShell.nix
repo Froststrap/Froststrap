@@ -14,7 +14,8 @@
   pkg-config,
   dotnetCorePackages,
   just,
-  glib
+  glib,
+  create-dmg
 }:
 mkShell rec {
   meta.license = lib.licenses.unlicense;
@@ -42,6 +43,7 @@ mkShell rec {
 
   buildInputs = [
     dotnetCorePackages.sdk_10_0-bin
+    create-dmg
     just
   ] ++ lib.optionals stdenv.isLinux [
     glib
