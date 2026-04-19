@@ -43,7 +43,6 @@
 			OpenPaneLength="220"
 			PaneDisplayMode="Left">
 			<ui:NavigationView.MenuItems>
-				<ui:NavigationViewItemHeader Content="MAIN" />
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Integrations_Title}" Tag="integrations">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Link" />
@@ -60,7 +59,7 @@
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
 
-				<ui:NavigationViewItemHeader Content="APPEARANCE" />
+				<ui:NavigationViewItemSeparator />
 				<ui:NavigationViewItem Content="Preset Mods" Tag="mods">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="PuzzlePiece" />
@@ -72,7 +71,7 @@
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
 
-				<ui:NavigationViewItemHeader Content="ROBLOX TWEAKS" />
+				<ui:NavigationViewItemSeparator />
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Flag" />
@@ -87,7 +86,7 @@
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
 
-				<ui:NavigationViewItemHeader Content="MISC" />
+				<ui:NavigationViewItemSeparator />
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Earth" />
