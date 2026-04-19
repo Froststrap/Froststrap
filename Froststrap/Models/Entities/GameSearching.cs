@@ -83,7 +83,7 @@ namespace Froststrap.Models.Entities
             try
             {
                 string cursorParam = string.IsNullOrEmpty(cursor) ? "" : $"&pageToken={Uri.EscapeDataString(cursor)}";
-                string url = $"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(keyword)}&sessionId=0&pageType=Game{cursorParam}";
+                Uri url = new Uri($"https://apis.{Deployment.RobloxDomain}/search-api/omni-search?searchQuery={Uri.EscapeDataString(keyword)}&sessionId=0&pageType=Game{cursorParam}");
 
                 var response = await Http.GetJson<System.Text.Json.JsonDocument>(url);
 
