@@ -1050,7 +1050,7 @@ namespace Froststrap
             }
 
             string? logFileName = null;
-            string rbxLogDir = Path.Combine(Paths.Roblox, "logs");
+            string rbxLogDir = Paths.RobloxLogs;
 
             for (int i = 0; i < 60; i++)
             {
@@ -1335,13 +1335,20 @@ namespace Froststrap
             foreach (string exe in executables)
             {
                 string path = Path.Combine(dir, exe);
-                if (!File.Exists(path))
+
+                bool exists = OperatingSystem.IsMacOS() ? Directory.Exists(path) : File.Exists(path);
+                if (!exists)
                     return true;
 
                 try
                 {
-                    File.SetAttributes(path, FileAttributes.Normal);
-                    File.Delete(path);
+                    if (OperatingSystem.IsMacOS())
+                        Directory.Delete(path, true);
+                    else
+                    {
+                        File.SetAttributes(path, FileAttributes.Normal);
+                        File.Delete(path);
+                    }
                 }
                 catch (Exception)
                 {
@@ -1603,7 +1610,10 @@ namespace Froststrap
                 string[] appNames = { "RobloxPlayer.app", "RobloxStudio.app" };
                 foreach (string appName in appNames)
                 {
-                    string macOsDir = Path.Combine(_latestVersionDirectory, appName, "Contents", "MacOS");
+                    string appPath = Path.Combine(_latestVersionDirectory, appName);
+                    if (!Directory.Exists(appPath)) continue;
+
+                    string macOsDir = Path.Combine(appPath, "Contents", "MacOS");
                     if (Directory.Exists(macOsDir))
                     {
                         foreach (string file in Directory.GetFiles(macOsDir))
@@ -1612,6 +1622,16 @@ namespace Froststrap
                             fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
                         }
                     }
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Removing quarantine from {appName}...");
+                    using var xattr = Process.Start(new ProcessStartInfo
+                    {
+                        FileName = "xattr",
+                        ArgumentList = { "-dr", "com.apple.quarantine", appPath },
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    });
+                    xattr?.WaitForExit();
                 }
             }
 
@@ -2057,6 +2077,14 @@ namespace Froststrap
             }
         }
 
+        private static string GetMacArchPath()
+        {
+            return System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture
+                == System.Runtime.InteropServices.Architecture.Arm64
+                ? "/mac/arm64"
+                : "/mac";
+        }
+
         private async Task DownloadPackage(Package package)
         {
             string LOG_IDENT = $"Bootstrapper::DownloadPackage.{package.Name}";
@@ -2067,8 +2095,9 @@ namespace Froststrap
             Directory.CreateDirectory(Paths.Downloads);
 
             string packageUrl = OperatingSystem.IsMacOS()
-                ? Deployment.GetLocation($"/mac/{_latestVersionGuid}-{package.Name}")
+                ? Deployment.GetLocation($"{GetMacArchPath()}/{_latestVersionGuid}-{package.Name}")
                 : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
+
             string robloxPackageLocation = Path.Combine(Paths.Roblox, "Downloads", package.Signature);
 
             if (File.Exists(package.DownloadPath))
