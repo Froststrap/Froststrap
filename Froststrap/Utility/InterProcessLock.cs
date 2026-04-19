@@ -1,8 +1,12 @@
-﻿namespace Froststrap.Utility
+﻿using System.Runtime.InteropServices;
+
+namespace Froststrap.Utility
 {
     public class InterProcessLock : IDisposable
     {
-        public Mutex Mutex { get; private set; }
+        private readonly string _lockName;
+        private Mutex? _windowsMutex;
+        private FileStream? _unixLockFile;
 
         public bool IsAcquired { get; private set; }
 
@@ -10,15 +14,48 @@
 
         public InterProcessLock(string name, TimeSpan timeout)
         {
-            Mutex = new Mutex(false, "Froststrap-" + name);
+            _lockName = "Froststrap-" + name;
 
-            try
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                IsAcquired = Mutex.WaitOne(timeout);
+                _windowsMutex = new Mutex(false, _lockName);
+                try
+                {
+                    IsAcquired = _windowsMutex.WaitOne(timeout);
+                }
+                catch (AbandonedMutexException)
+                {
+                    IsAcquired = true;
+                }
             }
-            catch (AbandonedMutexException)
+            else
             {
-                IsAcquired = true;
+                // Use file-based locking on macOS/Linux
+                try
+                {
+                    string lockDir = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        "Froststrap"
+                    );
+                    Directory.CreateDirectory(lockDir);
+
+                    string lockFile = Path.Combine(lockDir, $"{_lockName}.lock");
+
+                    // Try to open with exclusive access
+                    _unixLockFile = File.Open(
+                        lockFile,
+                        FileMode.Create,
+                        FileAccess.ReadWrite,
+                        FileShare.None
+                    );
+
+                    IsAcquired = true;
+                }
+                catch (IOException)
+                {
+                    // Lock file is already in use
+                    IsAcquired = false;
+                }
             }
         }
 
@@ -26,7 +63,15 @@
         {
             if (IsAcquired)
             {
-                Mutex.ReleaseMutex();
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    _windowsMutex?.ReleaseMutex();
+                }
+                else
+                {
+                    _unixLockFile?.Dispose();
+                }
+
                 IsAcquired = false;
             }
 

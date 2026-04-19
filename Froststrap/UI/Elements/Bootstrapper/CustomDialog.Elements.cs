@@ -11,7 +11,6 @@ using Avalonia.Media.Imaging;
 using Avalonia.Styling;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
-using SukiUI.Controls;
 using System.Xml.Linq;
 
 namespace Froststrap.UI.Elements.Bootstrapper
