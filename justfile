@@ -40,30 +40,6 @@ publish-macos:
         -p:IncludeNativeLibrariesForSelfExtract=true \
         -o ./{{ build_dir }}/temp/arm64
 
-    lipo -create \
-        ./{{ build_dir }}/temp/arm64/Froststrap \
-        -output ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
-
-    cp ./macos/Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
-    chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
-
-    # Ad-hoc code sign the app (self-signed)
-    codesign --force --deep --sign - ./{{ build_dir }}/Froststrap.app
-
-    # use create-dmg to make gui
-    create-dmg \
-      --volname "Froststrap Installer" \
-      --window-size 500 300 \
-      --icon-size 96 \
-      --icon "Froststrap.app" 125 150 \
-      --app-drop-link 375 150 \
-      "./{{ build_dir }}/Froststrap-MacOS.dmg" \
-      "./{{ build_dir }}/Froststrap.app"
-
-    # Clean up
-    rm -rf ./{{ build_dir }}/temp
-    rm -rf ./{{ build_dir }}/Froststrap.app
-
 # Linux Release
 [unix]
 publish-linux:
@@ -87,6 +63,29 @@ ci-publish-windows:
 
 ci-publish-macos:
     @just publish-macos
+    lipo -create \
+        ./{{ build_dir }}/temp/arm64/Froststrap \
+        -output ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
+
+    cp ./macos/Info.plist ./{{ build_dir }}/Froststrap.app/Contents/Info.plist
+    chmod +x ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
+
+    # Ad-hoc code sign the app (self-signed)
+    codesign --force --deep --sign - ./{{ build_dir }}/Froststrap.app
+
+    # use create-dmg to make gui
+    create-dmg \
+      --volname "Froststrap Installer" \
+      --window-size 500 300 \
+      --icon-size 96 \
+      --icon "Froststrap.app" 125 150 \
+      --app-drop-link 375 150 \
+      "./{{ build_dir }}/Froststrap-MacOS.dmg" \
+      "./{{ build_dir }}/Froststrap.app"
+
+    # Clean up
+    rm -rf ./{{ build_dir }}/temp
+    rm -rf ./{{ build_dir }}/Froststrap.app
 
 ci-publish-linux:
     @just publish-linux
