@@ -184,7 +184,7 @@ namespace Froststrap.RobloxInterfaces
             try
             {
 
-                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", "v2/client-version/WindowsPlayer/channel/" + channel);
+                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", $"v2/client-version/{BinaryType}/channel/" + channel);
                 var response = await App.HttpClient.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
             }
