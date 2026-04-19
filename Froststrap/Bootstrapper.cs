@@ -912,18 +912,23 @@ namespace Froststrap
             }
 
             string expectedName = IsStudioLaunch ? App.RobloxStudioAppName : App.RobloxPlayerAppName;
-            string DirectoryPath = Path.Combine((string)AppData.Directory, expectedName);
-            string ResolvedName = (Directory.Exists(DirectoryPath) || File.Exists(DirectoryPath))
-                ? expectedName
-                : null!;
+            string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
 
-            if (String.IsNullOrEmpty(ResolvedName))
+            if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"{expectedName} not found at {expectedPath}, triggering upgrade...");
                 await UpgradeRoblox();
+            }
+
+            if (!Directory.Exists(expectedPath) && !File.Exists(expectedPath))
+                throw new FileNotFoundException($"Roblox application not found at expected path after upgrade: {expectedPath}");
+
+            App.Logger.WriteLine(LOG_IDENT, $"Resolved Roblox path: {expectedPath}");
 
             var startInfo = new ProcessStartInfo()
             {
-                FileName = OperatingSystem.IsMacOS() ? "open" : Path.Combine(AppData.Directory, ResolvedName),
-                Arguments = OperatingSystem.IsMacOS() ? $"-n \"{Path.Combine(AppData.Directory, ResolvedName)}\" --args {_launchCommandLine}" : _launchCommandLine,
+                FileName = OperatingSystem.IsMacOS() ? "open" : expectedPath,
+                Arguments = OperatingSystem.IsMacOS() ? $"-n \"{expectedPath}\" --args {_launchCommandLine}" : _launchCommandLine,
                 WorkingDirectory = AppData.Directory
             };
 
