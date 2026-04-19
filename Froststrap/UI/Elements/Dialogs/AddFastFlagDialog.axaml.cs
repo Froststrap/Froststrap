@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using DiscordRPC;
 using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.Elements.Dialogs
