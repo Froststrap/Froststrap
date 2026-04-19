@@ -3,7 +3,7 @@
     public class Logger
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
-        private FileStream? _filestream;
+        private StreamWriter? _writer;
 
         public readonly List<string> History = new();
         public bool Initialized = false;
@@ -12,9 +12,7 @@
 
         public string AsDocument => String.Join('\n', History);
 
-        private static readonly string LineEnding = OperatingSystem.IsMacOS() ? "\n" : "\r\n";
-
-        private static readonly string HomeVarName = OperatingSystem.IsMacOS() ? "$HOME" : "%UserProfile%";
+        private static readonly string HomeVarName = OperatingSystem.IsWindows() ? "%USERPROFILE%" : "$HOME";
 
         public async void Initialize(bool useTempDir = false)
         {
@@ -43,7 +41,10 @@
 
             try
             {
-                _filestream = File.Open(location, FileMode.Create, FileAccess.Write, FileShare.Read);
+                _writer = new StreamWriter(location, false, Encoding.UTF8)
+                {
+                    AutoFlush = true
+                };
             }
             catch (IOException)
             {
@@ -70,8 +71,7 @@
 
             Initialized = true;
 
-            if (History.Count > 0)
-                WriteToLog(string.Join(LineEnding, History));
+            if (History.Count > 0) foreach (var line in History) WriteToLog(line);
 
             WriteLine(LOG_IDENT, "Finished initializing!");
 
@@ -127,16 +127,14 @@
             Thread.CurrentThread.CurrentUICulture = Locale.CurrentCulture;
         }
 
-        private async void WriteToLog(string message)
+        private async Task WriteToLog(string message)
         {
-            if (!Initialized)
-                return;
+            if (!Initialized) return;
 
             try
             {
                 await _semaphore.WaitAsync();
-                await _filestream!.WriteAsync(Encoding.UTF8.GetBytes($"{message}{LineEnding}"));
-                _ = _filestream.FlushAsync();
+                await _writer!.WriteLineAsync(message);
             }
             finally
             {
