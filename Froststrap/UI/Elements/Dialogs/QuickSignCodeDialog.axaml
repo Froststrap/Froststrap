@@ -85,7 +85,7 @@
                 CornerRadius="6"
                 Padding="12,10">
                 <StackPanel Orientation="Horizontal">
-                    <ic:SymbolIcon   
+                    <ic:SymbolIcon
                         Symbol="Info"
                         FontSize="16"
                         Margin="0,0,8,0"

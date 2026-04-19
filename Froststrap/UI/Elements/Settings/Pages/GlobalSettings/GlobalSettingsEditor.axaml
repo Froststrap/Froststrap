@@ -13,7 +13,7 @@
                      Watermark="Search settings..." 
                      TextChanged="SearchTextBox_TextChanged">
                 <TextBox.InnerLeftContent>
-                    <ic:SymbolIcon Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                 </TextBox.InnerLeftContent>
             </TextBox>
         </Grid>

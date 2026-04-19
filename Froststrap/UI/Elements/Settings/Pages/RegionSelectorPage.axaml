@@ -82,7 +82,7 @@
                                                             VerticalAlignment="Center"
                                                             Orientation="Horizontal"
                                                             Spacing="4">
-                                                            <ic:SymbolIcon 
+                                                            <ic:SymbolIcon
                                                               Margin="0,2,0,0"
                                                               Width="14"
                                                               Height="14"
@@ -177,7 +177,7 @@
 							Margin="40"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center">
-                    <ic:SymbolIcon 
+                    <ic:SymbolIcon
                                Margin="0,2,0,0"
                                Width="64"
                                Height="64"

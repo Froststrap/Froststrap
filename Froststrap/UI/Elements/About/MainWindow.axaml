@@ -34,12 +34,12 @@
                 <ui:NavigationView.MenuItems>
                     <ui:NavigationViewItem Tag="about" Content="{x:Static resources:Strings.Menu_About_Title}">
                         <ui:NavigationViewItem.IconSource>
-                            <ic:SymbolIconSource Symbol="Info" />
+                            <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Info" />
                         </ui:NavigationViewItem.IconSource>
                     </ui:NavigationViewItem>
                     <ui:NavigationViewItem Tag="licenses" Content="{x:Static resources:Strings.About_Licenses_Title}">
                         <ui:NavigationViewItem.IconSource>
-                            <ic:SymbolIconSource Symbol="Book" />
+                            <ic:SymbolIconSource Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Book" />
                         </ui:NavigationViewItem.IconSource>
                     </ui:NavigationViewItem>
                 </ui:NavigationView.MenuItems>
