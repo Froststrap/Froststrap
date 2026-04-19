@@ -63,7 +63,7 @@ namespace Froststrap
         private long _totalDownloadedBytes = 0;
         private bool _packageExtractionSuccess = true;
 
-        private bool _mustUpgrade => App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid) || !File.Exists(AppData.ExecutablePath);
+        private bool _mustUpgrade => App.LaunchSettings.ForceFlag.Active || App.State.Prop.ForceReinstall || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid) || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath));
 
         private bool _noConnection = false;
 
@@ -1374,7 +1374,7 @@ namespace Froststrap
 
                 if (
                     !_staticDirectory && (dirName != App.PlayerState.Prop.VersionGuid && dirName != App.StudioState.Prop.VersionGuid) ||
-                    _staticDirectory && (dirName != "WindowsPlayer" && dirName != "WindowsStudio64")
+                    _staticDirectory && (dirName != "WindowsPlayer" && dirName != "WindowsStudio64" && dirName != "MacPlayer" && dirName != "MacStudio")
                     )
                 {
 
@@ -1555,14 +1555,14 @@ namespace Froststrap
 
                 // compute total bytes to download
                 int totalPackedSize = _versionPackageManifest.Sum(package => package.PackedSize);
-                _progressIncrement = (double)ProgressBarMaximum / totalPackedSize;
+                _progressIncrement = totalPackedSize > 0 ? (double)ProgressBarMaximum / totalPackedSize : 0;
 
                 if (Dialog is AvaloniaDialogBase)
                     _taskbarProgressMaximum = (double)TaskbarProgressMaximumWinForms;
                 else
                     _taskbarProgressMaximum = (double)TaskbarProgressMaximumWpf;
 
-                _taskbarProgressIncrement = _taskbarProgressMaximum / (double)totalPackedSize;
+                _taskbarProgressIncrement = totalPackedSize > 0 ? _taskbarProgressMaximum / (double)totalPackedSize : 0;
             }
 
             var extractionTasks = new List<Task>();
