@@ -16,8 +16,10 @@ namespace Froststrap.UI.ViewModels.AccountManagers
         private string _currentPageTitle = "Accounts";
 
         public IRelayCommand NavigateToAccountsCommand { get; }
-        public IRelayCommand NavigateToFriendsCommand { get; }
-        public IRelayCommand NavigateToGamesCommand { get; }
+        // FIXME: I shouldn't be using a init to null.
+        public IRelayCommand NavigateToFriendsCommand { get; } = null!;
+        // FIXME: I shouldn't be using a init to null.
+        public IRelayCommand NavigateToGamesCommand { get; } = null!;
 
         public AccountManagerViewModel()
         {
