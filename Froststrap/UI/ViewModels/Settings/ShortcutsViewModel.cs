@@ -1,6 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Drawing;
 using Avalonia.Media.Imaging;
 using System.Security.Cryptography;
 using CommunityToolkit.Mvvm.ComponentModel;
