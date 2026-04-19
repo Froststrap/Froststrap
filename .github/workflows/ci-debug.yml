@@ -1,6 +1,5 @@
 name: CI (Debug)
 on: [push, pull_request]
-
 jobs:
   build:
     strategy:
@@ -17,7 +16,6 @@ jobs:
             rid: linux-x64
             just_target: debug-linux
     runs-on: ${{ matrix.os }}
-
     steps:
       - uses: actions/checkout@v6
         with:
@@ -25,14 +23,22 @@ jobs:
           fetch-depth: 0
 
       - uses: actions/setup-dotnet@v5
+        if: matrix.os != 'macos-latest'
         with:
           dotnet-version: "10.0.x"
-
       - name: Setup Just
+        if: matrix.os != 'macos-latest'
         uses: extractions/setup-just@v3
-
-      - name: Publish
+      - name: Publish (Windows / Linux)
+        if: matrix.os != 'macos-latest'
         run: just ${{ matrix.just_target }}
+
+      - name: Install Nix
+        if: matrix.os == 'macos-latest'
+        uses: DeterminateSystems/nix-installer-action@v14
+      - name: Publish (macOS via Nix)
+        if: matrix.os == 'macos-latest'
+        run: nix develop -c just debug-macos
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v6
