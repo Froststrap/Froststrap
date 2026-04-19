@@ -114,7 +114,7 @@
                 StringComparison.InvariantCultureIgnoreCase
             );
 
-            Debug.WriteLine(outcon);
+            Console.WriteLine(outcon);
             WriteToLog(outlog);
 
             History.Add(outlog);
