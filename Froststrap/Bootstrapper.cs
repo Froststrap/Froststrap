@@ -108,7 +108,6 @@ namespace Froststrap
             AppData = IsStudioLaunch ? new RobloxStudioData() : new RobloxPlayerData();
         }
 
-        // we will use this later on since we have to wait for remote data
         private async Task SetupPackageDictionaries()
         {
             await App.RemoteData.WaitUntilDataFetched();
