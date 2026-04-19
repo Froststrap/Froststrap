@@ -1,47 +1,59 @@
-name: CI (Debug)
+name: Build (Debug)
 on: [push, pull_request]
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        include:
-          - os: windows-latest
-            rid: win-x64
-            just_target: debug-windows
-          - os: macos-latest
-            rid: osx-arm64
-            just_target: debug-macos
-          - os: ubuntu-latest
-            rid: linux-x64
-            just_target: debug-linux
-    runs-on: ${{ matrix.os }}
+  build-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: true
           fetch-depth: 0
-
       - uses: actions/setup-dotnet@v5
-        if: matrix.os != 'macos-latest'
         with:
           dotnet-version: "10.0.x"
-      - name: Setup Just
-        if: matrix.os != 'macos-latest'
-        uses: extractions/setup-just@v3
-      - name: Publish (Windows / Linux)
-        if: matrix.os != 'macos-latest'
-        run: just ${{ matrix.just_target }}
-
-      - name: Install Nix
-        if: matrix.os == 'macos-latest'
-        uses: DeterminateSystems/nix-installer-action@v14
-      - name: Publish (macOS via Nix)
-        if: matrix.os == 'macos-latest'
-        run: nix develop -c just debug-macos
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v6
+      - uses: extractions/setup-just@v3
+      - name: Set short SHA
+        run: echo "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
+      - name: Publish
+        run: just debug-windows
+      - uses: actions/upload-artifact@v6
         with:
-          name: Froststrap (Debug) (${{ matrix.os }}) (${{ github.sha }})
-          path: Froststrap/bin/Debug/net10.0/${{ matrix.rid }}/publish/*
+          name: froststrap-debug-win-x64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/win-x64/publish/*
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: DeterminateSystems/nix-installer-action@v14
+      - name: Publish
+        run: nix develop -c just debug-macos
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-debug-macos-arm64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/osx-arm64/publish/*
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+      - uses: extractions/setup-just@v3
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - name: Publish
+        run: just debug-linux
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
+          path: Froststrap/bin/Debug/net10.0/linux-x64/publish/*
