@@ -2237,18 +2237,43 @@ namespace Froststrap
             const string LOG_IDENT = "Bootstrapper::ExtractPackage";
 
             string packageFolder = _latestVersionDirectory;
-            if (!OperatingSystem.IsMacOS())
+
+            if (OperatingSystem.IsMacOS())
             {
-                string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
+                App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} using system unzip...");
 
-                if (packageDir is null)
+                var unzipInfo = new ProcessStartInfo
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                    return;
-                }
+                    FileName = "unzip",
+                    ArgumentList = { "-o", package.DownloadPath, "-d", packageFolder },
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
 
-                packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
+                using var unzipProcess = Process.Start(unzipInfo)!;
+                string stdout = unzipProcess.StandardOutput.ReadToEnd();
+                string stderr = unzipProcess.StandardError.ReadToEnd();
+                unzipProcess.WaitForExit();
+
+                if (unzipProcess.ExitCode != 0)
+                    throw new Exception($"unzip failed with exit code {unzipProcess.ExitCode}: {stderr}");
+
+                App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name} (exit code 0)");
+                return;
             }
+
+            string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
+
+            if (packageDir is null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
+                return;
+            }
+
+            packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
+
             string? fileFilter = null;
 
             // for sharpziplib, each file in the filter needs to be a regex
