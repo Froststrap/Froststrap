@@ -27,14 +27,14 @@
             Text="{x:Static resources:Strings.Menu_Shortcuts_General_Title}" />
         <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_General_Description}" />
 
-        <Grid ColumnDefinitions="*,*">
+        <StackPanel>
             <controls:OptionControl
                 Grid.Column="0"
                 Margin="0,0,4,0"
                 Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}">
                 <ToggleSwitch IsChecked="{Binding DesktopIconTask.NewState, Mode=TwoWay}" />
             </controls:OptionControl>
-        </Grid>
+        </StackPanel>
 
         <Separator Margin="0,8,0,4" />
 
@@ -44,7 +44,7 @@
             Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Title}" />
         <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Menu_Shortcuts_Function_Description}" />
 
-        <Grid ColumnDefinitions="*,*,*,*">
+        <StackPanel>
             <controls:OptionControl
                 Grid.Column="0"
                 Margin="0,0,2,0"
@@ -72,7 +72,7 @@
                 Header="Account Manager">
                 <ToggleSwitch IsChecked="{Binding AccountManagerIconTask.NewState, Mode=TwoWay}" />
             </controls:OptionControl>
-        </Grid>
+        </StackPanel>
 
         <Separator Margin="0,8,0,4" />
 
