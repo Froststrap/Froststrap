@@ -47,14 +47,13 @@ namespace Froststrap
                 DataRoot = baseDirectory;
                 Roblox = Path.Combine(LocalAppData, "Roblox");
             }
-            else
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                // Tried to follow XDG Base Directory Specification
-                ConfigRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), App.ProjectName);
-                DataRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), App.ProjectName);
+                string libraryPath = Path.Combine(UserProfile, "Library");
+                ConfigRoot = Path.Combine(libraryPath, "Application Support", App.ProjectName);
+                DataRoot = Path.Combine(libraryPath, "Application Support", App.ProjectName);
 
-
-                Roblox = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Roblox");
+                Roblox = Path.Combine(libraryPath, "Application Support", "Roblox");
             }
 
             SavedFlagProfiles = Path.Combine(ConfigRoot, "SavedFlagProfiles");
@@ -69,8 +68,16 @@ namespace Froststrap
             PresetModifications = Path.Combine(DataRoot, "Modifications");
             Cache = Path.Combine(DataRoot, "Cache");
 
-            RobloxLogs = Path.Combine(Roblox, "logs");
-            RobloxCache = Path.Combine(Path.GetTempPath(), "Roblox");
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                RobloxLogs = Path.Combine(UserProfile, "Library", "Logs", "Roblox");
+                RobloxCache = Path.Combine(UserProfile, "Library", "Caches", "com.roblox.RobloxPlayer");
+            }
+            else
+            {
+                RobloxLogs = Path.Combine(Roblox, "logs");
+                RobloxCache = Path.Combine(Path.GetTempPath(), "Roblox");
+            }
 
             string exeName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{App.ProjectName}.exe" : App.ProjectName;
             Application = Path.Combine(DataRoot, exeName);

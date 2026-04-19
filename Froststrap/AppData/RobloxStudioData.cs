@@ -4,7 +4,7 @@
     {
         public string ProductName => "Roblox Studio";
 
-        public override string BinaryType => "WindowsStudio64";
+        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacStudio" : "WindowsStudio64";
 
         public string RegistryName => "RobloxStudio";
 

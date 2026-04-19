@@ -4,7 +4,7 @@
     {
         public string ProductName => "Roblox";
 
-        public override string BinaryType => "WindowsPlayer";
+        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer";
 
         public string RegistryName => "RobloxPlayer";
 
