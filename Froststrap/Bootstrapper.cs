@@ -1858,8 +1858,15 @@ namespace Froststrap
             foreach (var mod in activeMods)
             {
                 string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+
                 if (Directory.Exists(modSource))
+                {
                     ProcessModDirectory(modSource, finalFilesToCopy, filesToDelete);
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Skipping mod '{mod.FolderName}': directory not found");
+                }
             }
 
             if (Directory.Exists(Paths.PresetModifications))
@@ -1966,12 +1973,8 @@ namespace Froststrap
                 string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
                 if (File.Exists(source))
                 {
-                    string destDir = OperatingSystem.IsMacOS()
-                        ? Path.Combine(_latestVersionDirectory, App.RobloxPlayerAppName, "Contents", "MacOS", "ClientSettings")
-                        : Path.Combine(_latestVersionDirectory, "ClientSettings");
-
-                    string dest = Path.Combine(destDir, "ClientAppSettings.json");
                     string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                    string dest = Path.Combine(ContentDirectory, rel);
                     var info = new FileInfo(source);
 
                     lock (currentModManifest)
