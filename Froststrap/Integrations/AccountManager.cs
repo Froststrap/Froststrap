@@ -1382,7 +1382,7 @@ namespace Froststrap.Integrations
                     var batch = userIds.Skip(i).Take(batchSize).ToList();
                     string idsParam = string.Join(',', batch);
 
-                    string url = $"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true";
+                    Uri url = new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
 
                     try
                     {
