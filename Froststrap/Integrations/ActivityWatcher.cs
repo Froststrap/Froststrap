@@ -129,7 +129,7 @@
 
             if (String.IsNullOrEmpty(LogLocation))
             {
-                string logDirectory = Path.Combine(Paths.Roblox, "logs");
+                string logDirectory = Paths.RobloxLogs;
 
                 if (!Directory.Exists(logDirectory))
                     return;
@@ -140,13 +140,26 @@
 
                 App.Logger.WriteLine(LOG_IDENT, "Opening Roblox log file...");
 
+                string logNameFilter = (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
+                    ? "Studio"
+                    : "Player";
+
                 while (true)
                 {
-                    logFileInfo = new DirectoryInfo(logDirectory)
+                    var candidates = new DirectoryInfo(logDirectory)
                         .GetFiles()
-                        .Where(x => x.Name.Contains("Player", StringComparison.OrdinalIgnoreCase) && x.CreationTime <= DateTime.Now)
+                        .Where(x => x.Name.Contains(logNameFilter, StringComparison.OrdinalIgnoreCase) && x.CreationTime <= DateTime.Now)
                         .OrderByDescending(x => x.CreationTime)
-                        .First();
+                        .ToList();
+
+                    if (candidates.Count == 0)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"No '{logNameFilter}' log files found, waiting...");
+                        await Task.Delay(1000);
+                        continue;
+                    }
+
+                    logFileInfo = candidates.First();
 
                     if (logFileInfo.CreationTime.AddSeconds(15) > DateTime.Now)
                         break;
