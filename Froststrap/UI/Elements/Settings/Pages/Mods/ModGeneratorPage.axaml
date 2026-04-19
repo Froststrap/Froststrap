@@ -145,7 +145,7 @@
                                 <Button.ContentTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                                            <ic:SymbolIcon Symbol="PlayCircle" />
+                                            <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="PlayCircle" />
                                             <TextBlock Text="{Binding}" />
                                         </StackPanel>
                                     </DataTemplate>

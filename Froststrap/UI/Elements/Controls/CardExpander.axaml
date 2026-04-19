@@ -39,11 +39,11 @@
                                                               Margin="0,0,12,0"
                                                               VerticalAlignment="Center" />
 
-                                            <ui:SymbolIcon Name="ExpanderIcon" 
+                                            <ui:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                           Name="ExpanderIcon" 
                                                            Grid.Column="2" 
                                                            Symbol="ChevronDown"
-                                                           FontSize="18"
-                                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}">
+                                                           FontSize="18"><
                                                 <ui:SymbolIcon.Transitions>
                                                     <Transitions>
                                                         <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut"/>

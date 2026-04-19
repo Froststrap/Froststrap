@@ -83,7 +83,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 VerticalAlignment = VerticalAlignment.Top,
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
-                Content = new FluentIcons.Avalonia.Fluent.SymbolIcon { Symbol = FluentIcons.Common.Symbol.Dismiss, FontSize = 12 },
+                Content = new FluentIcons.Avalonia.Fluent.SymbolIcon { Symbol = Symbol.Dismiss, FontSize = 12 },
                 Command = new RelayCommand(() => { _cts.Cancel(); Close(); })
             };
 

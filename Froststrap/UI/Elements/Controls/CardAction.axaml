@@ -14,7 +14,8 @@
                                Padding="{TemplateBinding Padding}"
                                Margin="0,4">
                     <Grid ColumnDefinitions="Auto,*">
-                            <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
+                            <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                           Symbol="{TemplateBinding Icon}"
                                            Grid.Column="0"
                                            Width="24" Height="24"
                                            HorizontalAlignment="Center"

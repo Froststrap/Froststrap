@@ -56,7 +56,7 @@
                          Watermark="{x:Static resources:Strings.Menu_FastFlagEditor_Search}"
                          TextChanged="SearchTextBox_TextChanged">
                     <TextBox.InnerLeftContent>
-                        <ic:SymbolIcon Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
+                        <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                     </TextBox.InnerLeftContent>
                 </TextBox>
         
@@ -95,7 +95,8 @@
                                             IsVisible="{Binding #TogglePresetsButton.IsChecked}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="model:FastFlag">
-                                <ic:SymbolIcon Height="20" 
+                                <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" 
+                                                     Height="20" 
                                                      Width="20"
                                                      Symbol="{Binding Preset}"
                                                      HorizontalAlignment="Center" 
