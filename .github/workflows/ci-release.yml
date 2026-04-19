@@ -1,76 +1,87 @@
-name: CI (Release)
-
+name: Build (Release)
 on: [push, pull_request]
-
 jobs:
-  build:
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
-        include:
-          - os: windows-latest
-            just_target: ci-publish-windows
-          - os: macos-latest
-            just_target: ci-publish-macos
-          - os: ubuntu-latest
-            just_target: ci-publish-linux
-    runs-on: ${{ matrix.os }}
+  build-windows:
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
         with:
           submodules: true
           fetch-depth: 0
-
-      - name: Setup .NET 10
-        uses: actions/setup-dotnet@v5
+      - uses: actions/setup-dotnet@v5
         with:
           dotnet-version: "10.0.x"
-
+      - uses: extractions/setup-just@v3
       - name: Install NSIS
-        if: matrix.os == 'windows-latest'
         uses: negrutiu/nsis-install@v2
-
-      - name: Setup Just
-        uses: extractions/setup-just@v3
-
-      - name: Install create-dmg
-        if: matrix.os == 'macos-latest'
-        run: brew install create-dmg
-
+      - name: Set short SHA
+        run: echo "SHORT_SHA=$("${{ github.sha }}".Substring(0, 7))" >> $env:GITHUB_ENV
       - name: Build and package
-        run: just ${{ matrix.just_target }}
+        run: just ci-publish-windows
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
+          path: build/*
 
-      - name: Remove quarantine from artifacts (macOS)
-        if: matrix.os == 'macos-latest'
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: DeterminateSystems/nix-installer-action@v14
+      - name: Build and package
+        run: nix develop -c just ci-publish-macos
+      - name: Remove quarantine from artifacts
         run: |
           xattr -rd com.apple.quarantine build/Froststrap-MacOS.dmg 2>/dev/null || true
-          echo "Quarantine attributes removed from DMG"
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v6
         with:
-          name: Froststrap (Release) (${{ matrix.os }}) (${{ github.sha }})
+          name: froststrap-release-macos-arm64-${{ env.SHORT_SHA }}
+          path: build/*
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: "10.0.x"
+      - uses: extractions/setup-just@v3
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - name: Build and package
+        run: just ci-publish-linux
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: build/*
 
   release:
-    needs: build
+    needs: [build-windows, build-macos, build-linux]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
       contents: write
     steps:
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: Froststrap (Release) (windows-latest) (${{ github.sha }})
+          name: froststrap-release-win-x64-${{ env.SHORT_SHA }}
           path: release
-
       - name: Download macOS artifact
         uses: actions/download-artifact@v4
         with:
-          name: Froststrap (Release) (macos-latest) (${{ github.sha }})
+          name: froststrap-release-macos-arm64-${{ env.SHORT_SHA }}
           path: release
-
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
