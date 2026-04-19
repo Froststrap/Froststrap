@@ -226,6 +226,8 @@ namespace Froststrap.UI.Utility
             foreach (var textBlock in textBlocks)
             {
                 var text = textBlock.Text;
+                if (text is null) continue;
+
                 if (!searchIndex.Any(item => item.DisplayName.Equals(text, StringComparison.OrdinalIgnoreCase)))
                 {
                     searchIndex.Add(new SearchBarItem

@@ -51,7 +51,7 @@ namespace Froststrap.UI.Elements.Controls
             foreach (var it in new[] { "PART_LeftPanel", "PART_RightPanel" })
             {
                 var ctrl = e.NameScope.Find<StackPanel>(it);
-                ctrl.IsVisible = !OperatingSystem.IsMacOS();
+                if (ctrl != null) ctrl!.IsVisible = !OperatingSystem.IsMacOS();
             }
 
             window.PropertyChanged += (s, ev) =>
