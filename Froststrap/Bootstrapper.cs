@@ -462,7 +462,7 @@ namespace Froststrap
 
                 try
                 {
-                    clientVersion = await Deployment.GetInfo(Deployment.Channel, behindProductionCheck);
+                    clientVersion = await Deployment.GetInfo(Deployment.Channel, behindProductionCheck, false, AppData.BinaryType);
                 }
                 catch (InvalidChannelException ex)
                 {
@@ -1784,7 +1784,7 @@ namespace Froststrap
             Directory.CreateDirectory(Paths.Modifications);
 
             string ContentDirectory = OperatingSystem.IsMacOS()
-                ? Path.Combine(_latestVersionDirectory, App.RobloxPlayerAppName, "Contents", "Resources")
+                ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
                 : _latestVersionDirectory;
 
             var activeMods = App.State.Prop.Mods
@@ -2237,43 +2237,18 @@ namespace Froststrap
             const string LOG_IDENT = "Bootstrapper::ExtractPackage";
 
             string packageFolder = _latestVersionDirectory;
-
-            if (OperatingSystem.IsMacOS())
+            if (!OperatingSystem.IsMacOS())
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} using system unzip...");
+                string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
 
-                var unzipInfo = new ProcessStartInfo
+                if (packageDir is null)
                 {
-                    FileName = "unzip",
-                    ArgumentList = { "-o", package.DownloadPath, "-d", packageFolder },
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                };
+                    App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
+                    return;
+                }
 
-                using var unzipProcess = Process.Start(unzipInfo)!;
-                string stdout = unzipProcess.StandardOutput.ReadToEnd();
-                string stderr = unzipProcess.StandardError.ReadToEnd();
-                unzipProcess.WaitForExit();
-
-                if (unzipProcess.ExitCode != 0)
-                    throw new Exception($"unzip failed with exit code {unzipProcess.ExitCode}: {stderr}");
-
-                App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name} (exit code 0)");
-                return;
+                packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
             }
-
-            string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-
-            if (packageDir is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                return;
-            }
-
-            packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
-
             string? fileFilter = null;
 
             // for sharpziplib, each file in the filter needs to be a regex
