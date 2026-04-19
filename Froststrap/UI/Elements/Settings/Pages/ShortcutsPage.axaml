@@ -34,13 +34,6 @@
                 Header="{x:Static resources:Strings.Common_Shortcuts_Desktop}">
                 <ToggleSwitch IsChecked="{Binding DesktopIconTask.NewState, Mode=TwoWay}" />
             </controls:OptionControl>
-
-            <controls:OptionControl
-                Grid.Column="1"
-                Margin="4,0,0,0"
-                Header="{x:Static resources:Strings.Common_Shortcuts_StartMenu}">
-                <ToggleSwitch IsChecked="{Binding StartMenuIconTask.NewState, Mode=TwoWay}" />
-            </controls:OptionControl>
         </Grid>
 
         <Separator Margin="0,8,0,4" />
