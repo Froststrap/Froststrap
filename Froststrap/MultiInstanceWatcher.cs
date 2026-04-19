@@ -8,8 +8,9 @@
 
             try
             {
-                // prevent any possible race conditions by checking for Froststrap processes too
-                int count = Process.GetProcesses().Count(x => x.ProcessName is "RobloxPlayerBeta" or "Froststrap");
+                string robloxProcess = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
+                string froststrapProcess = "Froststrap";
+                int count = Process.GetProcesses().Count(x => x.ProcessName == robloxProcess || x.ProcessName == froststrapProcess);
                 count -= 1; // ignore the current process
                 return count;
             }
