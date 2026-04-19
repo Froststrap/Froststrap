@@ -41,11 +41,18 @@ namespace Froststrap
 
         public static void Initialize(string baseDirectory)
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (OperatingSystem.IsWindows())
             {
                 ConfigRoot = baseDirectory;
                 DataRoot = baseDirectory;
                 Roblox = Path.Combine(LocalAppData, "Roblox");
+            }
+            else if (OperatingSystem.IsMacOS())
+            {
+                string appSupport = Path.Combine(UserProfile, "Library", "Application Support");
+                ConfigRoot = Path.Combine(appSupport, App.ProjectName);
+                DataRoot = ConfigRoot;
+                Roblox = Path.Combine(UserProfile, "Library", "Roblox");
             }
             else
             {
