@@ -34,13 +34,28 @@
                     {
                         CancellationToken cancellationToken = _cancellationTokenSource.Token;
                         using var mutex = new Mutex(_initiallyOwned, _name);
+
                         try
                         {
                             // Wait for either the mutex to be acquired, or cancellation
-                            if (WaitHandle.WaitAny(new[] { mutex, cancellationToken.WaitHandle }) != 0)
+                            if (OperatingSystem.IsWindows())
                             {
-                                taskCompletionSource.SetCanceled(cancellationToken);
-                                return;
+                                if (WaitHandle.WaitAny(new[] { mutex, cancellationToken.WaitHandle }) != 0)
+                                {
+                                    taskCompletionSource.SetCanceled(cancellationToken);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                while (!mutex.WaitOne(100))
+                                {
+                                    if (cancellationToken.IsCancellationRequested)
+                                    {
+                                        taskCompletionSource.SetCanceled(cancellationToken);
+                                        return;
+                                    }
+                                }
                             }
                         }
                         catch (AbandonedMutexException)
