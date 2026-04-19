@@ -12,7 +12,7 @@
                       Height="{TemplateBinding Height}" 
                       Background="{TemplateBinding Background}">
 
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" IsHitTestVisible="False">
+                    <StackPanel Grid.Column="0" Name="PART_LeftPanel" Orientation="Horizontal" IsHitTestVisible="False">
                         <Image Source="{TemplateBinding Icon}"
                                Width="16" Height="16"
                                Margin="12,0,0,0"
@@ -35,7 +35,7 @@
                                           HorizontalAlignment="Center" />
                     </Panel>
 
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Stretch">
+                    <StackPanel Grid.Column="2" Name="PART_RightPanel" Orientation="Horizontal" VerticalAlignment="Stretch">
                         <controls:IconButton Name="PART_MinimizeButton" 
                                            Classes="TitleBarButton" 
                                            Icon="Subtract" 

@@ -47,6 +47,13 @@ namespace Froststrap.UI.Elements.Controls
 
             if (VisualRoot is not Window window) return;
 
+            // hides title and close stuff for macOS.
+            foreach (var it in new[] { "PART_LeftPanel", "PART_RightPanel" })
+            {
+                var ctrl = e.NameScope.Find<StackPanel>(it);
+                ctrl.IsVisible = !OperatingSystem.IsMacOS();
+            }
+
             window.PropertyChanged += (s, ev) =>
             {
                 if (ev.Property.Name == nameof(Window.WindowState))
