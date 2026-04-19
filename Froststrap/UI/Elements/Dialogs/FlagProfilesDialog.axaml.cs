@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using DiscordRPC;
 using Froststrap.UI.Elements.Base;
 using System.Reflection;
 

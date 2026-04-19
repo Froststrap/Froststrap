@@ -423,6 +423,9 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             Logger.WriteLine(LOG_IDENT, $"Starting {ProjectName} v{Version}");
+            Logger.WriteLine(LOG_IDENT, $"OS Description: {RuntimeInformation.OSDescription}");
+            Logger.WriteLine(LOG_IDENT, $"OS Architecture: {RuntimeInformation.OSArchitecture}");
+
             var userAgent = new StringBuilder($"{ProjectName}/{Version}");
 
             if (IsActionBuild)
@@ -440,7 +443,6 @@ public partial class App : Application
 #endif
             }
 
-            Logger.WriteLine(LOG_IDENT, $"OSVersion: {Environment.OSVersion}");
             Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
 
             HttpClient.Timeout = TimeSpan.FromSeconds(60);
