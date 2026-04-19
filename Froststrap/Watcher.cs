@@ -38,7 +38,7 @@ namespace Froststrap
 #if DEBUG
                 string path = new RobloxPlayerData().ExecutablePath;
                 if (!File.Exists(path))
-                    throw new ApplicationException("Roblox player is not been installed");
+                    throw new ApplicationException("Roblox player has not been installed");
 
                 using var gameClientProcess = Process.Start(path);
 
@@ -67,7 +67,10 @@ namespace Froststrap
                         using var process = Process.GetProcessById(_watcherData.ProcessId);
                         process.CloseMainWindow();
                     };
-                    if ((_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && App.Settings.Prop.StudioRPC)
+
+                    bool isStudio = _watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth;
+
+                    if (isStudio && App.Settings.Prop.StudioRPC)
                         StudioRichPresence = new(ActivityWatcher);
                     else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                         PlayerRichPresence = new(ActivityWatcher);

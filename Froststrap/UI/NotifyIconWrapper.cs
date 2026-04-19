@@ -9,13 +9,13 @@ using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI
 {
-	public class NotifyIconWrapper : IDisposable
-	{
-		private bool _isDisposed = false;
-		private readonly TrayIcon _trayIcon;
-		private readonly MenuContainer _menuContainer;
-		private readonly Watcher _watcher;
-		private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
+    public class NotifyIconWrapper : IDisposable
+    {
+        private bool _isDisposed = false;
+        private readonly TrayIcon _trayIcon;
+        private readonly MenuContainer _menuContainer;
+        private readonly Watcher _watcher;
+        private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
 
         private DateTime _lastClickTime = DateTime.MinValue;
         private const int DoubleClickThresholdMs = 300;
@@ -44,14 +44,21 @@ namespace Froststrap.UI
             }
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
+
+            App.Logger.WriteLine("NotifyIconWrapper::NotifyIconWrapper", OperatingSystem.IsMacOS() ? "Running as macOS menu bar icon" : "Running as Windows system tray icon");
         }
 
+
+        // On macos simply clicking the icon instantly opens the menu so double click action isnt possible
         private void OnTrayIconClicked(object? sender, EventArgs e)
         {
-            HandleLeftClickLogic();
+            if (OperatingSystem.IsMacOS())
+                return;
+
+            HandleWindowsDoubleClickLogic();
         }
 
-        private void HandleLeftClickLogic()
+        private void HandleWindowsDoubleClickLogic()
         {
             DateTime now = DateTime.Now;
             double elapsed = (now - _lastClickTime).TotalMilliseconds;
@@ -72,7 +79,7 @@ namespace Froststrap.UI
             switch (App.Settings.Prop.DoubleClickAction)
             {
                 case TrayDoubleClickAction.None:
-                    _ = Frontend.ShowMessageBox("You don’t have the double-click action set to anything.", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox("You don't have the double-click action set to anything.", MessageBoxImage.Information);
                     break;
 
                 case TrayDoubleClickAction.GameHistory:
