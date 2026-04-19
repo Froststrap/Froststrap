@@ -103,25 +103,18 @@
             }
         }
 
-        private void WriteLine(string message)
-        {
+        public void WriteLine(string identifier, string context) {
             string timestamp = DateTime.UtcNow.ToString("s") + "Z";
-            string outcon = $"{timestamp} {message}";
-
-            string outlog = outcon.Replace(
+            string line = $"{timestamp} [{identifier}] {context}".Replace(
                 Paths.UserProfile,
                 HomeVarName,
                 StringComparison.InvariantCultureIgnoreCase
             );
 
-            // invra keep it as debug cuz im too lazy to keep going into logs folder just to read logs
-            Debug.WriteLine(outcon);
-            WriteToLog(outlog);
-
-            History.Add(outlog);
+            Console.WriteLine(line);
+            WriteToLog(line);
+            History.Add(line);
         }
-
-        public void WriteLine(string identifier, string message) => WriteLine($"[{identifier}] {message}");
 
         public void WriteException(string identifier, Exception ex)
         {
@@ -129,7 +122,7 @@
 
             string hresult = "0x" + ex.HResult.ToString("X8");
 
-            WriteLine($"[{identifier}] ({hresult}) {ex}");
+            WriteLine(identifier, $"({hresult}) {ex}");
 
             Thread.CurrentThread.CurrentUICulture = Locale.CurrentCulture;
         }
