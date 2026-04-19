@@ -229,7 +229,7 @@ namespace Froststrap.RobloxInterfaces
             return null;
         }
 
-        public static async Task<ClientVersion> GetInfo(string? channel = null, bool behindProductionCheck = false, bool includeTimestamp = false)
+        public static async Task<ClientVersion> GetInfo(string? channel = null, bool behindProductionCheck = false, bool includeTimestamp = false, string? binaryTypeOverride = null)
         {
             const string LOG_IDENT = "Deployment::GetInfo";
 
@@ -240,7 +240,9 @@ namespace Froststrap.RobloxInterfaces
 
             App.Logger.WriteLine(LOG_IDENT, $"Getting deploy info for channel {channel}");
 
-            string cacheKey = $"{channel}-{BinaryType}";
+            string activeBinaryType = binaryTypeOverride ?? BinaryType;
+
+            string cacheKey = $"{channel}-{activeBinaryType}";
 
             HttpRequestMessage request = new()
             {
@@ -262,7 +264,7 @@ namespace Froststrap.RobloxInterfaces
             }
             else
             {
-                string path = $"v2/client-version/{BinaryType}";
+                string path = $"v2/client-version/{activeBinaryType}";
 
                 if (!isDefaultChannel)
                     path += $"/channel/{channel}";
