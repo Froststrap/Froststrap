@@ -11,7 +11,7 @@
     xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     x:DataType="vm:LaunchMenuViewModel"
     Title="Froststrap"
-    Width="640" SizeToContent="Height"
+    Width="350" SizeToContent="Height"
     CanResize="False"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -19,41 +19,18 @@
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*">
         <controls:TitleBar Grid.Row="0" Title="Froststrap" Icon="avares://Froststrap/Froststrap.ico" />
 
-        <Grid Grid.Row="1" Margin="24" ColumnDefinitions="260, *" RowSpacing="24" ColumnSpacing="24">
-
-            <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="28">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
-                    <Image Width="72" Height="72" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                    <StackPanel VerticalAlignment="Center" Spacing="4">
-                        <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
-                        <TextBlock Text="{Binding Version}" 
-                                   FontSize="13" 
-                                   Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel HorizontalAlignment="Center" Spacing="8">
-                    <controls:IconButton Icon="Info" 
-                                         Content="{x:Static resources:Strings.About_Title}" 
-                                         Command="{Binding LaunchAboutCommand}" 
-                                         BorderBrush="Transparent" 
-                                         BorderThickness="0" 
-                                         Background="Transparent"
-                                         Padding="8,6" />
-
-                    <controls:IconButton Icon="Chat" 
-                                         Content="{x:Static resources:Strings.LaunchMenu_Discord}" 
-                                         Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
-                                         CommandParameter="https://discord.gg/KdR9vpRcUN" 
-                                         BorderBrush="Transparent" 
-                                         BorderThickness="0" 
-                                         Background="Transparent"
-                                         Padding="8,6" />
+        <StackPanel Grid.Row="1" Margin="24" Spacing="16">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
+                <Image Width="72" Height="72" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                <StackPanel VerticalAlignment="Center" Spacing="4">
+                    <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
+                    <TextBlock Text="{Binding Version}" 
+                               FontSize="13" 
+                               Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Spacing="6">
-
+            <StackPanel Spacing="6">
                 <controls:CardAction
                     Icon="PlayCircle"
                     Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}"
@@ -78,18 +55,34 @@
                         TabIndex="2"
                         Padding="16,14" />
                 </Grid>
-
-                <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,2" />
-
-                <controls:CardAction 
-                    Icon="BookOpen"
-                    Header="{x:Static resources:Strings.LaunchMenu_Wiki_Title}"
-                    Description="{x:Static resources:Strings.LaunchMenu_Wiki_Description}"
-                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                    CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
-                    TabIndex="3"
-                    Padding="16,14" />
             </StackPanel>
-        </Grid>
+            <StackPanel HorizontalAlignment="Center" Spacing="8">
+                <controls:IconButton
+                     Icon="Info" 
+                     Content="{x:Static resources:Strings.About_Title}" 
+                     Command="{Binding LaunchAboutCommand}" 
+                     BorderBrush="Transparent" 
+                     BorderThickness="0" 
+                     Background="Transparent"
+                     Padding="8,6" />
+                <controls:IconButton Icon="Chat" 
+                     Content="{x:Static resources:Strings.LaunchMenu_Discord}" 
+                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
+                     CommandParameter="https://discord.gg/KdR9vpRcUN" 
+                     BorderBrush="Transparent" 
+                     BorderThickness="0" 
+                     Background="Transparent"
+                     Padding="8,6" />
+                <controls:IconButton
+                     Icon="BookOpen"
+                     Content="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" 
+                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
+                     CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
+                     BorderBrush="Transparent" 
+                     BorderThickness="0" 
+                     Background="Transparent"
+                     Padding="8,6" />
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </base:AvaloniaWindow>

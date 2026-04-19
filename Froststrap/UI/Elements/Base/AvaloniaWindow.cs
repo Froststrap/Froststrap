@@ -18,14 +18,20 @@ namespace Froststrap.UI.Elements.Base
         {
             this.ExtendClientAreaToDecorationsHint = true;
             this.ExtendClientAreaTitleBarHeightHint = -1;
-            this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
 
             if (OperatingSystem.IsWindows())
             {
+                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
+                this.SystemDecorations = SystemDecorations.Full;
+            }
+            if (OperatingSystem.IsMacOS())
+            {
+                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.PreferSystemChrome;
                 this.SystemDecorations = SystemDecorations.Full;
             }
             else
             {
+                this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
                 this.SystemDecorations = SystemDecorations.None;
             }
 
