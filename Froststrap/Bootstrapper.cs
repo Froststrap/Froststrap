@@ -911,15 +911,11 @@ namespace Froststrap
                     _launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
             }
 
-            string[] Names = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
-            string ResolvedName = null!;
-
-            foreach (string Name in Names)
-            {
-                string DirectoryPath = Path.Combine((string)AppData.Directory, Name);
-                if (Directory.Exists(DirectoryPath) || File.Exists(DirectoryPath)) // mac uses App bundles (Directories)
-                    ResolvedName = Name;
-            }
+            string expectedName = IsStudioLaunch ? App.RobloxStudioAppName : App.RobloxPlayerAppName;
+            string DirectoryPath = Path.Combine((string)AppData.Directory, expectedName);
+            string ResolvedName = (Directory.Exists(DirectoryPath) || File.Exists(DirectoryPath))
+                ? expectedName
+                : null!;
 
             if (String.IsNullOrEmpty(ResolvedName))
                 await UpgradeRoblox();
