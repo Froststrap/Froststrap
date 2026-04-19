@@ -1599,6 +1599,23 @@ namespace Froststrap
             if (_cancelTokenSource.IsCancellationRequested)
                 return;
 
+            if (OperatingSystem.IsMacOS())
+            {
+                string[] appNames = { "RobloxPlayer.app", "RobloxStudio.app" };
+                foreach (string appName in appNames)
+                {
+                    string macOsDir = Path.Combine(_latestVersionDirectory, appName, "Contents", "MacOS");
+                    if (Directory.Exists(macOsDir))
+                    {
+                        foreach (string file in Directory.GetFiles(macOsDir))
+                        {
+                            var fileInfo = new FileInfo(file);
+                            fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
+                        }
+                    }
+                }
+            }
+
             if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
             {
                 using var hklmKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
@@ -2051,7 +2068,7 @@ namespace Froststrap
             Directory.CreateDirectory(Paths.Downloads);
 
             string packageUrl = OperatingSystem.IsMacOS()
-                ? Deployment.GetLocation($"/mac/arm64/{_latestVersionGuid}-{package.Name}")
+                ? Deployment.GetLocation($"/mac/{_latestVersionGuid}-{package.Name}")
                 : Deployment.GetLocation($"/{_latestVersionGuid}-{package.Name}");
             string robloxPackageLocation = Path.Combine(Paths.Roblox, "Downloads", package.Signature);
 
