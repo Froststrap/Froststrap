@@ -114,7 +114,8 @@
                 StringComparison.InvariantCultureIgnoreCase
             );
 
-            Console.WriteLine(outcon);
+            // invra keep it as debug cuz im too lazy to keep going into logs folder just to read logs
+            Debug.WriteLine(outcon);
             WriteToLog(outlog);
 
             History.Add(outlog);
