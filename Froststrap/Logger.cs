@@ -1,7 +1,5 @@
 ﻿namespace Froststrap
 {
-    // https://stackoverflow.com/a/53873141/11852173
-
     public class Logger
     {
         private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -13,6 +11,10 @@
         public string? FileLocation;
 
         public string AsDocument => String.Join('\n', History);
+
+        private static readonly string LineEnding = OperatingSystem.IsMacOS() ? "\n" : "\r\n";
+
+        private static readonly string HomeVarName = OperatingSystem.IsMacOS() ? "$HOME" : "%UserProfile%";
 
         public async void Initialize(bool useTempDir = false)
         {
@@ -56,8 +58,8 @@
                 WriteLine(LOG_IDENT, $"Failed to initialize because Froststrap cannot write to {directory}");
 
                 await Frontend.ShowMessageBox(
-                    String.Format(Strings.Logger_NoWriteMode, directory), 
-                    MessageBoxImage.Warning, 
+                    String.Format(Strings.Logger_NoWriteMode, directory),
+                    MessageBoxImage.Warning,
                     MessageBoxButton.OK
                 );
 
@@ -65,12 +67,11 @@
 
                 return;
             }
-            
 
             Initialized = true;
 
             if (History.Count > 0)
-                WriteToLog(string.Join("\r\n", History));
+                WriteToLog(string.Join(LineEnding, History));
 
             WriteLine(LOG_IDENT, "Finished initializing!");
 
@@ -87,12 +88,11 @@
 
                 foreach (FileInfo log in logs.OrderByDescending(log => log.LastWriteTimeUtc).Skip(maxLogs))
                 {
-
                     WriteLine(LOG_IDENT, $"Cleaning up old log file '{log.Name}'");
 
                     try
                     {
-                       log.Delete();
+                        log.Delete();
                     }
                     catch (Exception ex)
                     {
@@ -107,7 +107,12 @@
         {
             string timestamp = DateTime.UtcNow.ToString("s") + "Z";
             string outcon = $"{timestamp} {message}";
-            string outlog = outcon.Replace(Paths.UserProfile, "%UserProfile%", StringComparison.InvariantCultureIgnoreCase);
+
+            string outlog = outcon.Replace(
+                Paths.UserProfile,
+                HomeVarName,
+                StringComparison.InvariantCultureIgnoreCase
+            );
 
             Debug.WriteLine(outcon);
             WriteToLog(outlog);
@@ -136,8 +141,7 @@
             try
             {
                 await _semaphore.WaitAsync();
-                await _filestream!.WriteAsync(Encoding.UTF8.GetBytes($"{message}\r\n"));
-
+                await _filestream!.WriteAsync(Encoding.UTF8.GetBytes($"{message}{LineEnding}"));
                 _ = _filestream.FlushAsync();
             }
             finally
