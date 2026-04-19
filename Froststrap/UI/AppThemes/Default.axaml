@@ -45,7 +45,7 @@
 									VerticalAlignment="Center"
 									Spacing="12">
 
-							<ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"Symbol="{TemplateBinding Icon}"
+							<ic:SymbolIcon Symbol="{TemplateBinding Icon}"
 												 Foreground="{TemplateBinding Foreground}"
 												 Width="{TemplateBinding IconSize}"
 												 Height="{TemplateBinding IconSize}"

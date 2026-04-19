@@ -43,7 +43,7 @@
                                                            Name="ExpanderIcon" 
                                                            Grid.Column="2" 
                                                            Symbol="ChevronDown"
-                                                           FontSize="18"><
+                                                           FontSize="18">
                                                 <ui:SymbolIcon.Transitions>
                                                     <Transitions>
                                                         <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut"/>
