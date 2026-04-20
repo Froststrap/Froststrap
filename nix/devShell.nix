@@ -12,9 +12,11 @@
   libxkbcommon,
   libxkbcommon_8,
   pkg-config,
+  libxcb,
+  xcbutil,
+  libxcursor,
   dotnetCorePackages,
   just,
-  typos,
   glib,
   create-dmg
 }:
@@ -37,26 +39,24 @@ mkShell rec {
     xorg.libSM
     xorg.libXi
     xorg.libXrandr
-    xorg.libXcursor
-    xorg.libxcb
-    xorg.xcbutil
+    libxcursor
+    libxcb
+    xcbutil
   ];
 
   buildInputs = [
     dotnetCorePackages.sdk_10_0-bin
-    create-dmg
-    typos
     just
   ] ++ lib.optionals stdenv.isLinux [
     glib
+  ] ++ lib.optionals stdenv.isDarwin [
+    create-dmg
   ];
 
   nativeBuildInputs = lib.optionals stdenv.isLinux [
     pkg-config
-    # FIXME: Need to use new Nixpkgs spec for these,
-    # this is deprecated
-    xorg.libxcb
-    xorg.xcbutil
+    libxcb
+    xcbutil
     libxkbcommon
     libxkbcommon_8
   ];
