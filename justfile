@@ -24,7 +24,7 @@ publish-windows:
     mv ./{{ build_dir }}/Froststrap-Setup.exe "./{{ build_dir }}/Froststrap-Setup.exe"
     rm ./{{ build_dir }}/Froststrap.exe
 
-# MacOS Release
+# macOS Release
 [unix]
 publish-macos:
     rm -rf {{ build_dir }}
@@ -89,7 +89,7 @@ ci-publish-macos:
       --icon-size 96 \
       --icon "Froststrap.app" 125 150 \
       --app-drop-link 375 150 \
-      "./{{ build_dir }}/Froststrap-MacOS.dmg" \
+      "./{{ build_dir }}/Froststrap-macOS.dmg" \
       "./{{ build_dir }}/Froststrap.app"
 
     # Clean up

@@ -37,7 +37,7 @@ jobs:
         run: nix develop -c just ci-publish-macos
       - name: Remove quarantine from artifacts
         run: |
-          xattr -rd com.apple.quarantine build/Froststrap-MacOS.dmg 2>/dev/null || true
+          xattr -rd com.apple.quarantine build/Froststrap-macOS.dmg 2>/dev/null || true
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
@@ -50,14 +50,11 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-      - uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: "10.0.x"
-      - uses: extractions/setup-just@v3
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: DeterminateSystems/nix-installer-action@v14
       - name: Build and package
-        run: just ci-publish-linux
+        run: nix develop -c just ci-publish-linux
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
@@ -89,6 +86,6 @@ jobs:
           draft: true
           files: |
             release/Froststrap-Setup.exe
-            release/Froststrap-MacOS.dmg
+            release/Froststrap-macOS.dmg
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
