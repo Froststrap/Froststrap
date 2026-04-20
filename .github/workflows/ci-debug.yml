@@ -45,14 +45,11 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-      - uses: actions/setup-dotnet@v5
-        with:
-          dotnet-version: "10.0.x"
-      - uses: extractions/setup-just@v3
       - name: Set short SHA
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: DeterminateSystems/nix-installer-action@v14
       - name: Publish
-        run: just debug-linux
+        run: nix develop -c just debug-linux
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
