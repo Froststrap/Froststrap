@@ -23,7 +23,7 @@ public partial class App : Application
     public static bool UpdateCheckCompleted { get; private set; }
 
 #if QA_BUILD
-        public const string ProjectName = "Froststrap-QA";
+    public const string ProjectName = "Froststrap-QA";
 #else
     public const string ProjectName = "Froststrap";
 #endif
