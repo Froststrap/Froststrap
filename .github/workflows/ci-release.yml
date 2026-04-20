@@ -40,7 +40,7 @@ jobs:
           xattr -rd com.apple.quarantine build/Froststrap-MacOS.dmg 2>/dev/null || true
       - uses: actions/upload-artifact@v6
         with:
-          name: froststrap-release-macos-arm64-${{ env.SHORT_SHA }}
+          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
           path: build/*
 
   build-linux:
@@ -80,7 +80,7 @@ jobs:
       - name: Download macOS artifact
         uses: actions/download-artifact@v4
         with:
-          name: froststrap-release-macos-arm64-${{ env.SHORT_SHA }}
+          name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
           path: release
       - name: Create release
         uses: softprops/action-gh-release@v2
