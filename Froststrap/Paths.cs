@@ -49,18 +49,19 @@ namespace Froststrap
             }
             else if (OperatingSystem.IsMacOS())
             {
-                string appSupport = Path.Combine(UserProfile, "Library", "Application Support");
-                ConfigRoot = Path.Combine(appSupport, App.ProjectName);
-                DataRoot = ConfigRoot;
-                Roblox = Path.Combine(UserProfile, "Library", "Roblox");
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            {
                 string libraryPath = Path.Combine(UserProfile, "Library");
                 ConfigRoot = Path.Combine(libraryPath, "Application Support", App.ProjectName);
                 DataRoot = Path.Combine(libraryPath, "Application Support", App.ProjectName);
 
                 Roblox = Path.Combine(libraryPath, "Application Support", "Roblox");
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                ConfigRoot = Path.Combine(UserProfile, ".config", App.ProjectName);
+                DataRoot = Path.Combine(UserProfile, ".config", App.ProjectName);
+
+                // TODO: give actal path
+                Roblox = Path.Combine("dev", "null");
             }
 
             SavedFlagProfiles = Path.Combine(ConfigRoot, "SavedFlagProfiles");
