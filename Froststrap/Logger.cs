@@ -127,7 +127,7 @@
             Thread.CurrentThread.CurrentUICulture = Locale.CurrentCulture;
         }
 
-        private async Task WriteToLog(string message)
+        private async void WriteToLog(string message)
         {
             if (!Initialized) return;
 
