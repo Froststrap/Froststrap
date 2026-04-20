@@ -14,7 +14,6 @@ namespace Froststrap.UI.Elements.Dialogs
 
         public ExceptionDialog(Exception exception) : this()
         {
-
             App.FrostRPC?.SetDialog("Exception");
 
             AddException(exception);
@@ -30,17 +29,18 @@ namespace Froststrap.UI.Elements.Dialogs
 
             string issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}&log={log}";
 
-            if (issueUrl.Length > MAX_GITHUB_URL_LENGTH)
-            {
+            // GUARD: Shorten url since too long
+            if (issueUrl.Length > MAX_GITHUB_URL_LENGTH) {
                 issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml&title={title}";
 
+                // GUARD: Shorten url (again) since too long
                 if (issueUrl.Length > MAX_GITHUB_URL_LENGTH)
                     issueUrl = $"{repoUrl}/issues/new?template=bug_report.yaml";
             }
 
             string helpMessage = String.Format(Strings.Dialog_Exception_Info_2, wikiUrl, issueUrl);
 
-            if (!App.IsActionBuild && !App.BuildMetadata.Machine.Contains("pizzaboxer", StringComparison.Ordinal))
+            if (!App.IsActionBuild)
                 helpMessage = String.Format(Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
 
             HelpMessageMarkdown.MarkdownText = helpMessage;
@@ -63,8 +63,6 @@ namespace Froststrap.UI.Elements.Dialogs
                     }
                 }
             };
-
-            CloseButton.Click += (_, _) => Close();
 
             Loaded += (_, _) =>
             {
