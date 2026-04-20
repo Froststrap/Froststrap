@@ -4,6 +4,7 @@
   description = "Flake for Froststrap";
 
   inputs = {
+    self.submodules = true;
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -24,6 +25,12 @@
           froststrap = pkgs.callPackage ./nix/devShell.nix {};
           default = froststrap;
         });
+        packages = forAllSystems (system: let
+          pkgs = import nixpkgs { inherit system; };
+        in rec {
+          debug = pkgs.callPackage ./nix/build.nix {};
+          default = debug;
+        });
         formatter = forAllSystems (system:
           let
             pkgs = import nixpkgs { inherit system; };
@@ -34,7 +41,6 @@
               nixfmt.enable = true;
               nixf-diagnose.enable = true;
               toml-sort.enable = true;
-              rustfmt.enable = true;
             };
             settings.formatter = {
               dotnet-format = {
