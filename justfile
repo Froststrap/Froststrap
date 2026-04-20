@@ -40,6 +40,14 @@ publish-macos:
         -p:IncludeNativeLibrariesForSelfExtract=true \
         -o ./{{ build_dir }}/temp/arm64
 
+    dotnet publish {{ project_file }} \
+        -r osx-x64 \
+        -c {{ release_config }} \
+        --self-contained true \
+        -p:PublishSingleFile=true \
+        -p:IncludeNativeLibrariesForSelfExtract=true \
+        -o ./{{ build_dir }}/temp/x64
+
 # Linux Release
 [unix]
 publish-linux:
@@ -64,6 +72,7 @@ ci-publish-windows:
 ci-publish-macos:
     @just publish-macos
     lipo -create \
+        ./{{ build_dir }}/temp/x64/Froststrap \
         ./{{ build_dir }}/temp/arm64/Froststrap \
         -output ./{{ build_dir }}/Froststrap.app/Contents/MacOS/Froststrap
 
