@@ -113,30 +113,14 @@
         public async void Start()
         {
             const string LOG_IDENT = "ActivityWatcher::Start";
-
-            // okay, here's the process:
-            //
-            // - tail the latest log file from %localappdata%\roblox\logs
-            // - check for specific lines to determine player's game activity as shown below:
-            //
-            // - get the place id, job id and machine address from '! Joining game '{{JOBID}}' place {{PLACEID}} at {{MACHINEADDRESS}}' entry
-            // - confirm place join with 'serverId: {{MACHINEADDRESS}}|{{MACHINEPORT}}' entry
-            // - check for leaves/disconnects with 'Time to disconnect replication data: {{TIME}}' entry
-            //
-            // we'll tail the log file continuously, monitoring for any log entries that we need to determine the current game activity
+            const int startupRetries = 30;
+            const int openRetries = 10;
 
             FileInfo logFileInfo;
 
-            if (String.IsNullOrEmpty(LogLocation))
+            if (string.IsNullOrEmpty(LogLocation))
             {
                 string logDirectory = Paths.RobloxLogs;
-
-                if (!Directory.Exists(logDirectory))
-                    return;
-
-                // we need to make sure we're fetching the absolute latest log file
-                // if roblox doesn't start quickly enough, we can wind up fetching the previous log file
-                // good rule of thumb is to find a log file that was created in the last 15 seconds or so
 
                 App.Logger.WriteLine(LOG_IDENT, "Opening Roblox log file...");
 
@@ -144,8 +128,18 @@
                     ? "Studio"
                     : "Player";
 
-                while (true)
+                int startupAttempt = 0;
+
+                while (!IsDisposed && startupAttempt < startupRetries)
                 {
+                    startupAttempt++;
+
+                    if (!Directory.Exists(logDirectory))
+                    {
+                        await Task.Delay(1000);
+                        continue;
+                    }
+
                     var candidates = new DirectoryInfo(logDirectory)
                         .GetFiles()
                         .Where(x => x.Name.Contains(logNameFilter, StringComparison.OrdinalIgnoreCase) && x.CreationTime <= DateTime.Now)
@@ -154,7 +148,7 @@
 
                     if (candidates.Count == 0)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"No '{logNameFilter}' log files found, waiting...");
+                        App.Logger.WriteLine(LOG_IDENT, $"No '{logNameFilter}' log files found, waiting... ({startupAttempt}/{startupRetries})");
                         await Task.Delay(1000);
                         continue;
                     }
@@ -162,35 +156,75 @@
                     logFileInfo = candidates.First();
 
                     if (logFileInfo.CreationTime.AddSeconds(15) > DateTime.Now)
+                    {
+                        LogLocation = logFileInfo.FullName;
                         break;
+                    }
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Could not find recent enough log file, waiting... (newest is {logFileInfo.Name})");
+                    App.Logger.WriteLine(LOG_IDENT, $"Could not find recent enough log file, waiting... (newest is {logFileInfo.Name}, {startupAttempt}/{startupRetries})");
                     await Task.Delay(1000);
                 }
 
-                LogLocation = logFileInfo.FullName;
+                if (string.IsNullOrEmpty(LogLocation))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Timed out waiting for Roblox log file");
+                    return;
+                }
             }
-            else
+
+            logFileInfo = new FileInfo(LogLocation);
+
+            int openAttempt = 0;
+            FileStream? logFileStream = null;
+
+            while (!IsDisposed && openAttempt < openRetries)
             {
-                logFileInfo = new FileInfo(LogLocation);
+                openAttempt++;
+
+                try
+                {
+                    if (!File.Exists(logFileInfo.FullName))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Log file does not exist yet, waiting... ({openAttempt}/{openRetries})");
+                        await Task.Delay(500);
+                        continue;
+                    }
+
+                    logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    break;
+                }
+                catch (IOException)
+                {
+                    await Task.Delay(500);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    await Task.Delay(500);
+                }
+            }
+
+            if (logFileStream is null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to open log file after {openRetries} attempts: {logFileInfo.FullName}");
+                return;
             }
 
             OnLogOpen?.Invoke(this, EventArgs.Empty);
 
-            var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            App.Logger.WriteLine(LOG_IDENT, $"Opened {logFileInfo.FullName}");
 
-            App.Logger.WriteLine(LOG_IDENT, $"Opened {LogLocation}");
-
-            using var streamReader = new StreamReader(logFileStream);
-
-            while (!IsDisposed)
+            using (logFileStream)
+            using (var streamReader = new StreamReader(logFileStream))
             {
-                string? log = await streamReader.ReadLineAsync();
+                while (!IsDisposed)
+                {
+                    string? log = await streamReader.ReadLineAsync();
 
-                if (log is null)
-                    await Task.Delay(1000);
-                else
-                    ReadLogEntry(log);
+                    if (log is null)
+                        await Task.Delay(1000);
+                    else
+                        ReadLogEntry(log);
+                }
             }
         }
 
