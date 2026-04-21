@@ -1076,18 +1076,24 @@ namespace Froststrap
                     var watcherData = new WatcherData
                     {
                         ProcessId = _appPid,
-                        LogFile = logFileName, 
+                        LogFile = logFileName,
                         AutoclosePids = autoclosePids,
                         LaunchMode = _launchMode
                     };
 
-                    string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
+                    App.Logger.WriteLine(LOG_IDENT, $"Preparing watcher launch payload: pid={watcherData.ProcessId}, launchMode={watcherData.LaunchMode}, logFile={(watcherData.LogFile ?? "(null)")}, autocloseCount={(watcherData.AutoclosePids?.Count ?? 0)}");
+
+                    string watcherDataJson = JsonSerializer.Serialize(watcherData);
+                    App.Logger.WriteLine(LOG_IDENT, $"Watcher payload JSON: {watcherDataJson}");
+
+                    string watcherDataArg = Convert.ToBase64String(Encoding.UTF8.GetBytes(watcherDataJson));
 
                     string args = $"-watcher \"{watcherDataArg}\"";
 
                     if (App.LaunchSettings.TestModeFlag.Active)
                         args += " -testmode";
 
+                    App.Logger.WriteLine(LOG_IDENT, $"Launching watcher process with args: {args}");
                     Process.Start(Paths.Process, args);
                 }
             }
