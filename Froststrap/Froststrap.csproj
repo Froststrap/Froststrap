@@ -85,6 +85,7 @@
 		<PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.5" />
+		<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
     </ItemGroup>
 
 	<ItemGroup>
