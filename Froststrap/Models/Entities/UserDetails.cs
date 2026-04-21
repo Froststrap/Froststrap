@@ -14,7 +14,7 @@ namespace Froststrap.Models.Entities
         public static async Task<UserDetails> Fetch(long id)
         {
             Uri userUrl = UrlBuilder.BuildApiUrl("users", "v1/users/" + id);
-            Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("users", $"v1/users/avatar-headshot?userIds={id}&size=180x180&format=Png&isCircular=false");
+            Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={id}&size=180x180&format=Png&isCircular=false");
 
             var cacheQuery = _cache.Where(x => x.Data?.Id == id);
 
