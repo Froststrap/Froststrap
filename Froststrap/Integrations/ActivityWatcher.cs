@@ -611,7 +611,10 @@
                 {
                     var context = await _httpListener.GetContextAsync().WaitAsync(token);
 
-                    _ = Task.Run(() => ProcessHTTPRequest(context), token);
+                    SafeTask.Run(
+                        () => ProcessHTTPRequest(context),
+                        ErrorSeverity.NonFatal,
+                        "ActivityWatcher::HTTPRequest");
                 }
                 catch (OperationCanceledException) { break; }
                 catch (Exception ex)

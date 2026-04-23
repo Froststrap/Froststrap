@@ -23,7 +23,7 @@ namespace Froststrap.Integrations
 
             _rpcClient.OnReady += OnReady;
 
-            Task.Run(InitializeAsync);
+            SafeTask.Run(InitializeAsync, ErrorSeverity.NonFatal, "FroststrapRichPresence::Init");
 
             _startTimestamps = new Timestamps
             {

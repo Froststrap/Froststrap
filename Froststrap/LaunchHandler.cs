@@ -289,7 +289,7 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the watcher");
 
                     if (t.Exception is not null)
-                        await App.FinalizeExceptionHandling(t.Exception);
+                        await App.FinalizeExceptionHandling(t.Exception.GetBaseException());
                 }
 
                 // Shouldn't this be done after client closes?
@@ -379,6 +379,7 @@ namespace Froststrap
                 catch (Exception ex)
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Worker error: {ex.Message}");
+                    await App.FinalizeExceptionHandling(ex, ErrorSeverity.Degraded, alreadyLogged: false);
                 }
 
                 // do this so that if the watcher is open, it dosent close
@@ -404,7 +405,7 @@ namespace Froststrap
 
             CancellationTokenSource cts = new CancellationTokenSource();
 
-            Task.Run(() =>
+            SafeTask.Run(() =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Started event waiter");
                 using (EventWaitHandle handle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
@@ -412,7 +413,7 @@ namespace Froststrap
 
                 App.Logger.WriteLine(LOG_IDENT, "Received close event, killing it all!");
                 App.Bootstrapper.Cancel();
-            }, cts.Token);
+            }, ErrorSeverity.NonFatal, "LaunchHandler::BackgroundUpdaterKillEvent");
 
             Task.Run(App.Bootstrapper.Run).ContinueWith(async t =>
             {
