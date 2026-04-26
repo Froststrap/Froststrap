@@ -113,14 +113,30 @@
         public async void Start()
         {
             const string LOG_IDENT = "ActivityWatcher::Start";
-            const int startupRetries = 30;
-            const int openRetries = 10;
+
+            // okay, here's the process:
+            //
+            // - tail the latest log file from %localappdata%\roblox\logs
+            // - check for specific lines to determine player's game activity as shown below:
+            //
+            // - get the place id, job id and machine address from '! Joining game '{{JOBID}}' place {{PLACEID}} at {{MACHINEADDRESS}}' entry
+            // - confirm place join with 'serverId: {{MACHINEADDRESS}}|{{MACHINEPORT}}' entry
+            // - check for leaves/disconnects with 'Time to disconnect replication data: {{TIME}}' entry
+            //
+            // we'll tail the log file continuously, monitoring for any log entries that we need to determine the current game activity
 
             FileInfo logFileInfo;
 
-            if (string.IsNullOrEmpty(LogLocation))
+            if (String.IsNullOrEmpty(LogLocation))
             {
                 string logDirectory = Paths.RobloxLogs;
+
+                if (!Directory.Exists(logDirectory))
+                    return;
+
+                // we need to make sure we're fetching the absolute latest log file
+                // if roblox doesn't start quickly enough, we can wind up fetching the previous log file
+                // good rule of thumb is to find a log file that was created in the last 15 seconds or so
 
                 App.Logger.WriteLine(LOG_IDENT, "Opening Roblox log file...");
 
@@ -128,18 +144,8 @@
                     ? "Studio"
                     : "Player";
 
-                int startupAttempt = 0;
-
-                while (!IsDisposed && startupAttempt < startupRetries)
+                while (true)
                 {
-                    startupAttempt++;
-
-                    if (!Directory.Exists(logDirectory))
-                    {
-                        await Task.Delay(1000);
-                        continue;
-                    }
-
                     var candidates = new DirectoryInfo(logDirectory)
                         .GetFiles()
                         .Where(x => x.Name.Contains(logNameFilter, StringComparison.OrdinalIgnoreCase) && x.CreationTime <= DateTime.Now)
@@ -148,7 +154,7 @@
 
                     if (candidates.Count == 0)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"No '{logNameFilter}' log files found, waiting... ({startupAttempt}/{startupRetries})");
+                        App.Logger.WriteLine(LOG_IDENT, $"No '{logNameFilter}' log files found, waiting...");
                         await Task.Delay(1000);
                         continue;
                     }
@@ -156,75 +162,35 @@
                     logFileInfo = candidates.First();
 
                     if (logFileInfo.CreationTime.AddSeconds(15) > DateTime.Now)
-                    {
-                        LogLocation = logFileInfo.FullName;
                         break;
-                    }
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Could not find recent enough log file, waiting... (newest is {logFileInfo.Name}, {startupAttempt}/{startupRetries})");
+                    App.Logger.WriteLine(LOG_IDENT, $"Could not find recent enough log file, waiting... (newest is {logFileInfo.Name})");
                     await Task.Delay(1000);
                 }
 
-                if (string.IsNullOrEmpty(LogLocation))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Timed out waiting for Roblox log file");
-                    return;
-                }
+                LogLocation = logFileInfo.FullName;
             }
-
-            logFileInfo = new FileInfo(LogLocation);
-
-            int openAttempt = 0;
-            FileStream? logFileStream = null;
-
-            while (!IsDisposed && openAttempt < openRetries)
+            else
             {
-                openAttempt++;
-
-                try
-                {
-                    if (!File.Exists(logFileInfo.FullName))
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Log file does not exist yet, waiting... ({openAttempt}/{openRetries})");
-                        await Task.Delay(500);
-                        continue;
-                    }
-
-                    logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                    break;
-                }
-                catch (IOException)
-                {
-                    await Task.Delay(500);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    await Task.Delay(500);
-                }
-            }
-
-            if (logFileStream is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to open log file after {openRetries} attempts: {logFileInfo.FullName}");
-                return;
+                logFileInfo = new FileInfo(LogLocation);
             }
 
             OnLogOpen?.Invoke(this, EventArgs.Empty);
 
-            App.Logger.WriteLine(LOG_IDENT, $"Opened {logFileInfo.FullName}");
+            var logFileStream = logFileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
-            using (logFileStream)
-            using (var streamReader = new StreamReader(logFileStream))
+            App.Logger.WriteLine(LOG_IDENT, $"Opened {LogLocation}");
+
+            using var streamReader = new StreamReader(logFileStream);
+
+            while (!IsDisposed)
             {
-                while (!IsDisposed)
-                {
-                    string? log = await streamReader.ReadLineAsync();
+                string? log = await streamReader.ReadLineAsync();
 
-                    if (log is null)
-                        await Task.Delay(1000);
-                    else
-                        ReadLogEntry(log);
-                }
+                if (log is null)
+                    await Task.Delay(1000);
+                else
+                    ReadLogEntry(log);
             }
         }
 
@@ -611,10 +577,7 @@
                 {
                     var context = await _httpListener.GetContextAsync().WaitAsync(token);
 
-                    SafeTask.Run(
-                        () => ProcessHTTPRequest(context),
-                        ErrorSeverity.NonFatal,
-                        "ActivityWatcher::HTTPRequest");
+                    _ = Task.Run(() => ProcessHTTPRequest(context), token);
                 }
                 catch (OperationCanceledException) { break; }
                 catch (Exception ex)

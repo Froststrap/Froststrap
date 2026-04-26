@@ -12,12 +12,6 @@ using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Diagnostics;
 
 namespace Froststrap;
 
@@ -43,6 +37,7 @@ public partial class App : Application
     public static string RobloxPlayerAppName => OperatingSystem.IsMacOS() ? "RobloxPlayer.app" : "RobloxPlayerBeta.exe";
     public static string RobloxStudioAppName => OperatingSystem.IsMacOS() ? "RobloxStudio.app" : "RobloxStudioBeta.exe";
 
+    // simple shorthand for extremely frequently used and long string - this goes under HKCU
     public const string UninstallKey = $@"Software\Microsoft\Windows\CurrentVersion\Uninstall\{ProjectName}";
 
     public const string ApisKey = $"Software\\{ProjectName}";
@@ -78,6 +73,8 @@ public partial class App : Application
 
     public static readonly Dictionary<string, BaseTask> PendingSettingTasks = new();
 
+    // Disambiguate Settings so we use the persistable Settings (Bloxstrap.Models.Persistable.Settings),
+    // not the auto-generated Properties.Settings which doesn't contain the clicker fields.
     public static readonly JsonManager<Settings> Settings = new();
 
     public static readonly JsonManager<State> State = new();
@@ -203,6 +200,9 @@ public partial class App : Application
 
             Settings.Save();
 
+            // Since we switched to NSIS, -quiet and -upgrade are redundant.
+            // Now we launch the binary with /S to overwrite installed exe and update reg keys
+            // without UI.
             var startInfo = new ProcessStartInfo(downloadLocation)
             {
                 UseShellExecute = true,
@@ -260,73 +260,47 @@ public partial class App : Application
     public static void Terminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
     {
         int exitCodeNum = (int)exitCode;
+
         Logger.WriteLine("App::Terminate", $"Terminating with exit code {exitCodeNum} ({exitCode})");
+
         Environment.Exit(exitCodeNum);
     }
 
     public static void SoftTerminate(ErrorCode exitCode = ErrorCode.ERROR_SUCCESS)
     {
         int exitCodeNum = (int)exitCode;
+
         Logger.WriteLine("App::SoftTerminate", $"Terminating with exit code {exitCodeNum} ({exitCode})");
 
         Dispatcher.UIThread.Invoke(() =>
-        {
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                desktop.Shutdown((int)exitCode);
-        });
+            {
+
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                    desktop.Shutdown((int)exitCode);
+            });
     }
 
     async void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;
+
         Logger.WriteLine("App::GlobalExceptionHandler", "An exception occurred");
+
         await FinalizeExceptionHandling(e.Exception);
     }
 
-    public static async Task FinalizeExceptionHandling(AggregateException ex, ErrorSeverity severity = ErrorSeverity.Fatal)
+    public static async Task FinalizeExceptionHandling(AggregateException ex)
     {
         foreach (var innerEx in ex.InnerExceptions)
             Logger.WriteException("App::FinalizeExceptionHandling", innerEx);
 
-        await FinalizeExceptionHandling(ex.GetBaseException(), severity, alreadyLogged: true);
+        await FinalizeExceptionHandling(ex.GetBaseException(), false);
     }
 
-    public static ErrorSeverity ClassifyException(Exception ex) => ex switch
+    public static async Task FinalizeExceptionHandling(Exception ex, bool log = true)
     {
-        HttpRequestException => ErrorSeverity.NonFatal,
-        HttpResponseException => ErrorSeverity.NonFatal,
-        InvalidHTTPResponseException => ErrorSeverity.NonFatal,
-        TaskCanceledException => ErrorSeverity.NonFatal,
-        OperationCanceledException => ErrorSeverity.NonFatal,
-        ObjectDisposedException => ErrorSeverity.NonFatal,
-        NullReferenceException => ErrorSeverity.Degraded,
-        IOException => ErrorSeverity.Degraded,
-        UnauthorizedAccessException => ErrorSeverity.Degraded,
-        JsonException => ErrorSeverity.Degraded,
-        _ => ErrorSeverity.Fatal
-    };
-
-    public static async Task FinalizeExceptionHandling(
-        Exception ex,
-        ErrorSeverity? severity = null,
-        bool alreadyLogged = false)
-    {
-        if (!alreadyLogged)
+        if (log)
             Logger.WriteException("App::FinalizeExceptionHandling", ex);
-
-        ErrorSeverity resolved = severity ?? ClassifyException(ex);
-
-        if (resolved == ErrorSeverity.NonFatal)
-        {
-            Logger.WriteLine("App::FinalizeExceptionHandling", $"Non-fatal swallowed: [{ex.GetType().Name}] {ex.Message}");
-            return;
-        }
-
-        if (resolved == ErrorSeverity.Degraded)
-        {
-            Logger.WriteLine("App::FinalizeExceptionHandling", $"Degraded (continuing): [{ex.GetType().Name}] {ex.Message}");
-            return;
-        }
 
         if (_showingExceptionDialog)
             return;
@@ -336,18 +310,28 @@ public partial class App : Application
         if (Bootstrapper?.Dialog != null)
         {
             if (Bootstrapper.Dialog.TaskbarProgressValue == 0)
-                Bootstrapper.Dialog.TaskbarProgressValue = 1;
+                Bootstrapper.Dialog.TaskbarProgressValue = 1; // make sure it's visible
+
             Bootstrapper.Dialog.TaskbarProgressState = TaskbarItemProgressState.Error;
         }
 
         await Frontend.ShowExceptionDialog(ex);
+
         Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+    }
+
+    public override void Initialize()
+    {
+        AvaloniaXamlLoader.Load(this);
+
+        AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+        TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
     }
 
     public static FroststrapRichPresence? FrostRPC
     {
         get => (Current as App)?.RichPresence;
-        set { if (Current is App app) app.RichPresence = value!; }
+        set{ if (Current is App app) app.RichPresence = value!; }
     }
 
     public static void WindowsBackdrop()
@@ -408,6 +392,7 @@ public partial class App : Application
 
             if (includePreRelease)
             {
+                // Note: Ensure your Http utility accepts Uri as a parameter
                 var releases = await Http.GetJson<List<GithubRelease>>(releasesUrl);
 
                 if (releases is null || releases.Count == 0)
@@ -429,11 +414,6 @@ public partial class App : Application
         }
 
         return null;
-    }
-
-    public override void Initialize()
-    {
-        AvaloniaXamlLoader.Load(this);
     }
 
     public override async void OnFrameworkInitializationCompleted()
@@ -536,7 +516,7 @@ public partial class App : Application
                 return;
             }
 
-            SafeTask.Run(RemoteData.LoadData, ErrorSeverity.NonFatal, "App::RemoteData");
+            _ = Task.Run(RemoteData.LoadData);
             Settings.Load();
             State.Load();
             FastFlags.Load();
