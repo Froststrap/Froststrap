@@ -36,6 +36,7 @@ namespace Froststrap
             { "UI.Transparency", "{UserSettings}/float[@name='PreferredTransparency']" },
             { "UI.ReducedMotion", "{UserSettings}/bool[@name='ReducedMotion']" },
             { "UI.FontSize", "{UserSettings}/token[@name='PreferredTextSize']" },
+            { "UI.PlayerListLayOut", "{UserSettings}/token[@name='PeoplePageLayout']" },
 
             // Miscellaneous Settings
             { "Misc.PerformanceStatsVisible", "{UserSettings}/bool[@name='PerformanceStatsVisible']" },
@@ -58,6 +59,12 @@ namespace Froststrap
             { FontSize.x2, "2" },
             { FontSize.x3, "3" },
             { FontSize.x4, "4" }
+        };
+
+        public static IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => new Dictionary<PlayerListLayOut, string?>
+        {
+            { PlayerListLayOut.x0, "0" },
+            { PlayerListLayOut.x1, "1" }
         };
 
         public bool Loaded { get; set; } = false;
