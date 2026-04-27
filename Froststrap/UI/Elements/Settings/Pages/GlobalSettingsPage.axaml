@@ -124,6 +124,15 @@
 					<controls:SquareCard Header="UI Transparency" Description="Adjust transparency of UI elements.">
 						<TextBox Text="{Binding UITransparency}" />
 					</controls:SquareCard>
+					<controls:SquareCard Header="Player List Layout" Description="Change esc Player List between square and normal ui.">
+						<ComboBox Margin="4,0" Padding="10,5" HorizontalAlignment="Stretch" ItemsSource="{Binding PlayerListLayOuts.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedPlayerListLayOut, Mode=TwoWay}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</controls:SquareCard>
 					<controls:SquareCard Header="Text Size" Description="Preferred display text size.">
 						<ComboBox Margin="4,0" Padding="10,5" HorizontalAlignment="Stretch" ItemsSource="{Binding FontSizes.Keys, Mode=OneTime}" SelectedValue="{Binding SelectedFontSize, Mode=TwoWay}">
 							<ComboBox.ItemTemplate>

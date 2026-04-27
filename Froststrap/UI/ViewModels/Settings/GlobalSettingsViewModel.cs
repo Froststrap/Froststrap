@@ -296,6 +296,13 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.GlobalSettings.SetPreset("UI.FontSize", FontSizes[value]);
         }
 
+        public IReadOnlyDictionary<PlayerListLayOut, string?> PlayerListLayOuts => GBSEditor.PlayerListLayOuts;
+        public PlayerListLayOut SelectedPlayerListLayOut
+        {
+            get => PlayerListLayOuts.FirstOrDefault(x => x.Value == App.GlobalSettings.GetPreset("UI.PlayerListLayOut")).Key;
+            set => App.GlobalSettings.SetPreset("UI.PlayerListLayOut", PlayerListLayOuts[value]);
+        }
+
         public bool PerformanceStatsVisible
         {
             get => App.GlobalSettings.GetPreset("Misc.PerformanceStatsVisible")?.ToLower() == "true";
