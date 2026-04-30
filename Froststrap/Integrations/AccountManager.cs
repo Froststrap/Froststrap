@@ -52,20 +52,33 @@ namespace Froststrap.Integrations
 
         private string Protect(string text)
         {
-            if (string.IsNullOrEmpty(text) || !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return text ?? "";
+            if (string.IsNullOrEmpty(text)) return "";
 
-            return Convert.ToBase64String(ProtectedData.Protect(Encoding.UTF8.GetBytes(text), DpapiEntropy, DataProtectionScope.CurrentUser));
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return text;
+
+            try
+            {
+                return Convert.ToBase64String(ProtectedData.Protect(
+                    Encoding.UTF8.GetBytes(text), DpapiEntropy, DataProtectionScope.CurrentUser));
+            }
+            catch
+            {
+                return text;
+            }
         }
 
         private string Unprotect(string text)
         {
-            if (string.IsNullOrEmpty(text) || !RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                return text ?? "";
+            if (string.IsNullOrEmpty(text)) return "";
+
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return text;
 
             try
             {
-                return Encoding.UTF8.GetString(ProtectedData.Unprotect(Convert.FromBase64String(text), DpapiEntropy, DataProtectionScope.CurrentUser));
+                return Encoding.UTF8.GetString(ProtectedData.Unprotect(
+                    Convert.FromBase64String(text), DpapiEntropy, DataProtectionScope.CurrentUser));
             }
             catch
             {
@@ -1040,7 +1053,7 @@ namespace Froststrap.Integrations
                 try
                 {
                     // Use 'which' to find the binary in PATH
-                    var result = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                    var result = Process.Start(new ProcessStartInfo
                     {
                         FileName = "which",
                         Arguments = candidate,
@@ -1270,113 +1283,62 @@ namespace Froststrap.Integrations
             }
         }
 
+        private async Task<string> GetCsrfToken(string cookie)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/logout");
+            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+
+            var resp = await App.HttpClient.SendAsync(request);
+            return resp.Headers.TryGetValues("X-CSRF-TOKEN", out var tokens) ? tokens.First() : "";
+        }
+
+        public async Task<string?> GetAuthTicket(string cookie, string csrf, long placeId)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
+            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+            request.Headers.Add("X-CSRF-TOKEN", csrf);
+            request.Headers.Add("Referer", $"https://www.roblox.com/games/{placeId}/");
+            request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
+
+            var resp = await App.HttpClient.SendAsync(request);
+            return resp.Headers.TryGetValues("rbx-authentication-ticket", out var vals) ? vals.First() : null;
+        }
+
         public async Task<string> JoinServer(AccountManagerAccount account, long placeId, string jobId = "", bool followUser = false, bool joinVip = false)
         {
-            const string LOG_IDENT_JOIN = "AccountManager::JoinServer";
-
-            if (string.IsNullOrEmpty(_browserTrackerId))
-            {
-                Random r = new Random();
-                _browserTrackerId = r.Next(100000, 175000).ToString() + r.Next(100000, 900000).ToString();
-            }
-
-            string csrf = await GetCsrfToken(account.SecurityToken).ConfigureAwait(false);
-            if (string.IsNullOrEmpty(csrf))
-                return "ERROR: Account Session Expired.";
-            string? ticket = await GetAuthTicket(account.SecurityToken, csrf, placeId).ConfigureAwait(false);
+            string csrf = await GetCsrfToken(account.SecurityToken);
+            string? ticket = await GetAuthTicket(account.SecurityToken, csrf, placeId);
 
             if (string.IsNullOrEmpty(ticket))
-            {
-                App.Logger.WriteLine(LOG_IDENT_JOIN, "Failed to retrieve authentication ticket.");
-                return "ERROR: Invalid Authentication Ticket, re-add the account or try again\n(Failed to get Authentication Ticket, Roblox has probably signed you out)";
-            }
+                return "ERROR: Failed to obtain authentication ticket.";
 
-            string launcherUrl;
-            if (joinVip)
-            {
-                var match = Regex.Match(jobId, "privateServerLinkCode=(.+)");
-                string linkCode = match.Success ? match.Groups[1].Value : "";
-                launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestPrivateGame&placeId={placeId}&accessCode={jobId}&linkCode={linkCode}";
-            }
-            else if (followUser)
-            {
-                launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request=RequestFollowUser&userId={placeId}";
-            }
-            else
-            {
-                string jobIdParam = string.IsNullOrEmpty(jobId) ? "" : $"&gameId={jobId}";
-                string requestType = string.IsNullOrEmpty(jobId) ? "RequestGame" : "RequestGameJob";
-                launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request={requestType}&placeId={placeId}{jobIdParam}&isPlayTogetherGame=false";
-            }
+            var browserTrackerId = new Random().Next(1000000, 9999999);
+            var launchTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
-            double launchTime = Math.Floor((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds * 1000);
+            string requestType = followUser ? "RequestFollowUser" : (joinVip ? "RequestPrivateGame" : "RequestGame");
+            string launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request={requestType}&placeId={placeId}";
 
-            string launchArgs = $"roblox-player:1+launchmode:play+gameinfo:{ticket}+launchtime:{launchTime}+placelauncherurl:{HttpUtility.UrlEncode(launcherUrl)}+browsertrackerid:{_browserTrackerId}+robloxLocale:en_us+gameLocale:en_us+channel:+LaunchExp:InApp";
+            if (joinVip) launcherUrl += $"&accessCode={jobId}";
+            else if (!string.IsNullOrEmpty(jobId)) launcherUrl += $"&gameId={jobId}";
+
+            string launchArgs = $"roblox-player:1+launchmode:play+gameinfo:{ticket}+launchtime:{launchTime}+placelauncherurl:{HttpUtility.UrlEncode(launcherUrl)}+browsertrackerid:{browserTrackerId}+LaunchExp:InApp";
 
             try
             {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    FileName = launchArgs,
-                    UseShellExecute = true
-                });
-
+                    Process.Start("open", $"\"{launchArgs}\"");
+                }
+                else
+                {
+                    Process.Start(new ProcessStartInfo(launchArgs) { UseShellExecute = true });
+                }
                 return "Success";
             }
             catch (Exception ex)
             {
-                App.Logger.WriteException(LOG_IDENT_JOIN, ex);
                 return $"ERROR: {ex.Message}";
             }
-        }
-
-
-        public async Task<string?> GetAuthTicket(string securityCookie, string csrfToken, long placeId)
-        {
-            const string LOG_IDENT_AUTH_TICKET = $"{LOG_IDENT}::GetAuthTicket";
-
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
-
-                request.Headers.Add("Cookie", $".ROBLOSECURITY={securityCookie}");
-                request.Headers.Add("X-CSRF-TOKEN", csrfToken);
-                request.Headers.Add("Referer", $"https://www.roblox.com/games/{placeId}/");
-                request.Headers.Add("Origin", "https://www.roblox.com");
-                request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-
-                request.Content = new StringContent("{}", Encoding.UTF8, "application/json");
-
-                var resp = await App.HttpClient.SendAsync(request).ConfigureAwait(false);
-
-                if (resp.Headers.TryGetValues("rbx-authentication-ticket", out var vals))
-                {
-                    return vals.FirstOrDefault();
-                }
-
-                string body = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
-                App.Logger.WriteLine(LOG_IDENT_AUTH_TICKET, $"Ticket Error Body: {body}");
-
-                return null;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_AUTH_TICKET, ex);
-                return null;
-            }
-        }
-
-        private async Task<string> GetCsrfToken(string securityCookie)
-        {
-            using var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/logout");
-            request.Headers.Add("Cookie", $".ROBLOSECURITY={securityCookie}");
-
-            var resp = await App.HttpClient.SendAsync(request).ConfigureAwait(false);
-
-            if (resp.Headers.TryGetValues("X-CSRF-TOKEN", out var tokens))
-                return tokens.FirstOrDefault() ?? "";
-
-            return "";
         }
 
         public async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)

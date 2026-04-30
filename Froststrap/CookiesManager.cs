@@ -1,6 +1,7 @@
 ﻿using Froststrap.RobloxInterfaces;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Runtime.Versioning;
 
 namespace Froststrap
 {
@@ -25,7 +26,10 @@ namespace Froststrap
         private const string AuthCookieName = ".ROBLOSECURITY";
         private const string SupportedVersion = "1";
         private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
-        private string CookiesPath => Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
+
+        private string CookiesPath => RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+                    ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
+                    : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
 
         public async Task<HttpResponseMessage> AuthRequest(HttpRequestMessage request)
         {
@@ -44,9 +48,7 @@ namespace Froststrap
                 throw new NullReferenceException("Cookie access is not enabled");
 
             request.Headers.Add("Cookie", $".ROBLOSECURITY={AuthCookie}");
-            var response = await App.HttpClient.SendAsync(request);
-
-            return response;
+            return await App.HttpClient.SendAsync(request);
         }
 
         public async Task<HttpResponseMessage> AuthGet(Uri? uri) => await AuthRequest(new HttpRequestMessage { RequestUri = uri, Method = HttpMethod.Get });
@@ -63,9 +65,7 @@ namespace Froststrap
                 response.EnsureSuccessStatusCode();
 
                 string content = await response.Content.ReadAsStringAsync();
-                AuthenticatedUser user = JsonSerializer.Deserialize<AuthenticatedUser>(content)!;
-
-                return user;
+                return JsonSerializer.Deserialize<AuthenticatedUser>(content);
             }
             catch (HttpRequestException ex)
             {
@@ -103,61 +103,59 @@ namespace Froststrap
 
             try
             {
-                string content = File.ReadAllText(CookiesPath);
-                var cookies = JsonSerializer.Deserialize<RobloxCookies>(content)!;
-
-                if (cookies.Version != SupportedVersion)
-                    App.Logger.WriteLine(LOG_IDENT, $"Unknown cookie version: {cookies.Version}");
-
-                // here we got the raw bytes data which we have to decrypt with user scope
-                // from that we get raw cookies data in roblox's format
-                // in our case we will regex it since all we need is auth cookie
-                byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
-                byte[] unencryptedData;
+                string authCookie = string.Empty;
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
+                    authCookie = await LoadWindowsCookies();
                 }
-                else
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    App.Logger?.WriteLine(LOG_IDENT, "DPAPI is only supported on Windows.");
-                    return;
+                    authCookie = await LoadMacCookies(LOG_IDENT);
                 }
 
-                string rawCookies = Encoding.UTF8.GetString(unencryptedData);
-                Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
-
-                if (!authCookieMatch.Success)
+                if (string.IsNullOrEmpty(authCookie))
                 {
                     State = CookieState.Invalid;
-                    App.Logger.WriteLine(LOG_IDENT, "Regex failed for cookies");
                     return;
                 }
 
-                string authCookie = authCookieMatch.Groups[1].Value;
-                AuthCookie = authCookie; // could use better naming
-
-                // we test the cookie to see if its valid
+                AuthCookie = authCookie;
                 AuthenticatedUser? user = await GetAuthenticated();
-                if (user is null || user?.Id == 0)
-                {
-                    State = CookieState.Invalid;
-                    App.Logger.WriteLine(LOG_IDENT, "Cookie is invalid");
-                    return;
-                }
-
-                State = CookieState.Success;
+                State = (user != null && user.Id != 0) ? CookieState.Success : CookieState.Invalid;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to load cookie!");
                 App.Logger.WriteException(LOG_IDENT, ex);
-
                 State = CookieState.Failed;
             }
+        }
 
-            return;
+        [SupportedOSPlatform("windows")]
+        private async Task<string> LoadWindowsCookies()
+        {
+            string content = await File.ReadAllTextAsync(CookiesPath);
+            var cookies = JsonSerializer.Deserialize<RobloxCookies>(content)!;
+
+            byte[] encryptedData = Convert.FromBase64String(cookies.Cookies);
+            byte[] unencryptedData = ProtectedData.Unprotect(encryptedData, null, DataProtectionScope.CurrentUser);
+
+            string rawCookies = Encoding.UTF8.GetString(unencryptedData);
+            Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
+
+            return authCookieMatch.Success ? authCookieMatch.Groups[1].Value : string.Empty;
+        }
+
+        private async Task<string> LoadMacCookies(string logIdent)
+        {
+            byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
+            string fileString = Encoding.Latin1.GetString(fileBytes);
+
+            var match = Regex.Match(fileString, @"_\|WARNING:-DO-NOT-SHARE-.*\|_");
+            if (match.Success) return match.Value;
+
+            App.Logger.WriteLine(logIdent, "Could not find .ROBLOSECURITY in binary cookies file.");
+            return string.Empty;
         }
     }
 }
