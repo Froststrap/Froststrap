@@ -55,8 +55,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 if (!File.Exists(fontPath))
                 {
                     StatusText = "Downloading preview assets...";
-                    using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
-                    var data = await httpClient.GetByteArrayAsync("https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf");
+                    var data = await App.HttpClient.GetByteArrayAsync("https://raw.githubusercontent.com/RealMeddsam/config/main/BuilderIcons-Regular.ttf");
                     await File.WriteAllBytesAsync(fontPath, data);
                 }
 

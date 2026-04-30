@@ -57,8 +57,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             {
                 await Task.Run(async () =>
                 {
-                    using var client = new HttpClient();
-                    var json = await client.GetStringAsync(ChannelsJsonUrl, token);
+                    var json = await App.HttpClient.GetStringAsync(ChannelsJsonUrl, token);
                     var channelNames = JsonSerializer.Deserialize<string[]>(json);
 
                     if (channelNames == null || token.IsCancellationRequested) return;

@@ -1130,17 +1130,30 @@ namespace Froststrap.Integrations
                 handler.CookieContainer.Add(new System.Net.Cookie(".ROBLOSECURITY", securityCookie, "/", ".roblox.com"));
 
                 using var client = new HttpClient(handler);
-                var response = await client.GetAsync(new Uri("https://users.roblox.com/v1/users/authenticated"));
-                response.EnsureSuccessStatusCode();
 
-                string json = await response.Content.ReadAsStringAsync();
-                var jo = System.Text.Json.JsonSerializer.Deserialize<JObject>(json);
+                long userId = 0;
+                string username = string.Empty;
+                string displayName = string.Empty;
 
-                if (jo == null) return null;
+                try
+                {
+                    var response = await client.GetAsync(new Uri("https://users.roblox.com/v1/users/authenticated"));
+                    response.EnsureSuccessStatusCode();
 
-                long userId = jo["id"]?.Value<long>() ?? 0;
-                string username = jo["name"]?.Value<string>() ?? string.Empty;
-                string displayName = jo["displayName"]?.Value<string>() ?? string.Empty;
+                    string json = await response.Content.ReadAsStringAsync();
+                    var jo = JsonConvert.DeserializeObject<JObject>(json);
+
+                    if (jo == null) return null;
+
+                    userId = jo["id"]?.Value<long>() ?? 0;
+                    username = jo["name"]?.Value<string>() ?? string.Empty;
+                    displayName = jo["displayName"]?.Value<string>() ?? string.Empty;
+                }
+                catch (HttpRequestException ex) when (ex.InnerException is System.Net.Sockets.SocketException || ex.Message.Contains("canceled"))
+                {
+                    App.Logger.WriteLine(LOG_IDENT_GET_INFO, "Network socket not ready or canceled. skipping info fetch.");
+                    return null;
+                }
 
                 return new AccountManagerAccount(securityCookie, userId, username, displayName);
             }
@@ -1370,47 +1383,40 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT_AVATARS = $"{LOG_IDENT}::GetAvatarUrlsBulk";
             var result = new Dictionary<long, string?>();
-            if (userIds == null || userIds.Count == 0)
-                return result;
+            if (userIds == null || userIds.Count == 0) return result;
 
             const int batchSize = 100;
 
-            try
+            for (int i = 0; i < userIds.Count; i += batchSize)
             {
-                for (int i = 0; i < userIds.Count; i += batchSize)
+                var batch = userIds.Skip(i).Take(batchSize).ToList();
+                string idsParam = string.Join(',', batch);
+                Uri url = new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
+
+                try
                 {
-                    var batch = userIds.Skip(i).Take(batchSize).ToList();
-                    string idsParam = string.Join(',', batch);
+                    var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(url);
 
-                    Uri url = new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
-
-                    try
+                    if (response?.Data != null)
                     {
-                        var response = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(url);
-
-                        if (response?.Data != null)
+                        foreach (var item in response.Data)
                         {
-                            foreach (var item in response.Data)
+                            if (item.TargetId > 0 && !string.IsNullOrEmpty(item.ImageUrl))
                             {
-                                if (item.TargetId > 0 && !string.IsNullOrEmpty(item.ImageUrl))
-                                {
-                                    result[item.TargetId] = item.ImageUrl;
-                                    _avatarUrlCache[item.TargetId] = item.ImageUrl;
-                                }
+                                result[item.TargetId] = item.ImageUrl;
+                                _avatarUrlCache[item.TargetId] = item.ImageUrl;
                             }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine($"{LOG_IDENT_AVATARS}",
-                            $"Batch failed: {ex.Message}");
-                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine($"{LOG_IDENT_AVATARS}",
-                    $"Exception: {ex.Message}");
+                catch (OperationCanceledException)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_AVATARS, "Avatar fetch was canceled by the system (SocketException 89).");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT_AVATARS, $"Batch failed: {ex.Message}");
+                }
             }
 
             return result;

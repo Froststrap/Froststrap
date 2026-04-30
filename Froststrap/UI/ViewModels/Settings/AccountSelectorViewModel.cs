@@ -47,7 +47,17 @@ namespace Froststrap.UI.ViewModels.Settings
             _accountManager = AccountManager.Shared;
             _accountManager.ActiveAccountChanged += OnActiveAccountChanged;
 
-            _ = InitializeDataAsync();
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await InitializeDataAsync();
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine($"{LOG_IDENT}::Init", $"Safe catch: {ex.Message}");
+                }
+            });
         }
 
         private async Task InitializeDataAsync()
@@ -65,29 +75,36 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task LoadDataAsync()
         {
-            var mgr = _accountManager;
-
-            var accountIds = mgr.Accounts.Select(acc => acc.UserId).ToList();
-            if (accountIds.Count > 0)
+            try
             {
-                var avatarUrls = await mgr.GetAvatarUrlsBulkAsync(accountIds);
-                foreach (var kvp in avatarUrls)
+                var mgr = _accountManager;
+                var accountIds = mgr.Accounts.Select(acc => acc.UserId).ToList();
+
+                if (accountIds.Count > 0)
                 {
-                    _accountAvatarUrls[kvp.Key] = kvp.Value;
+                    var avatarUrls = await mgr.GetAvatarUrlsBulkAsync(accountIds);
+                    foreach (var kvp in avatarUrls)
+                    {
+                        _accountAvatarUrls[kvp.Key] = kvp.Value;
+                    }
+                }
+
+                CurrentAccount = mgr.ActiveAccount;
+                if (CurrentAccount != null)
+                {
+                    CurrentAccountAvatarUrl = GetAccountAvatarUrl(CurrentAccount.UserId);
+                }
+
+                Accounts.Clear();
+                foreach (var account in mgr.Accounts)
+                {
+                    var url = _accountAvatarUrls.TryGetValue(account.UserId, out var u) ? u : null;
+                    Accounts.Add(new AccountWithAvatar(account, url));
                 }
             }
-
-            CurrentAccount = mgr.ActiveAccount;
-            if (CurrentAccount != null)
+            catch (Exception ex)
             {
-                CurrentAccountAvatarUrl = GetAccountAvatarUrl(CurrentAccount.UserId);
-            }
-
-            Accounts.Clear();
-            foreach (var account in mgr.Accounts)
-            {
-                var url = _accountAvatarUrls.TryGetValue(account.UserId, out var u) ? u : null;
-                Accounts.Add(new AccountWithAvatar(account, url));
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to load account data: {ex.Message}");
             }
         }
 
