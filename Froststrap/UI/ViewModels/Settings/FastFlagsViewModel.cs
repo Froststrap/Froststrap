@@ -212,6 +212,25 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public IReadOnlyDictionary<TextureQuality, string?> TextureQualities => FastFlagManager.TextureQualityLevels;
+
+        public TextureQuality SelectedTextureQuality
+        {
+            get => TextureQualities.FirstOrDefault(x => x.Value == _flagsService.GetPreset("Rendering.TextureQuality.Level")).Key;
+            set
+            {
+                if (value == TextureQuality.Default)
+                {
+                    _flagsService.SetPreset("Rendering.TextureQuality", null);
+                }
+                else
+                {
+                    _flagsService.SetPreset("Rendering.TextureQuality.OverrideEnabled", "True");
+                    _flagsService.SetPreset("Rendering.TextureQuality.Level", TextureQualities[value]);
+                }
+            }
+        }
+
         public bool GetFlagAsBool(string flagKey, string falseValue = "False")
         {
             return _flagsService.GetPreset(flagKey) != falseValue;

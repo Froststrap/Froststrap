@@ -66,6 +66,14 @@ namespace Froststrap
 
         };
 
+        public static IReadOnlyDictionary<TextureQuality, string?> TextureQualityLevels => new Dictionary<TextureQuality, string?>
+        {
+            { TextureQuality.Default, null },
+            { TextureQuality.Medium, "0" },
+            { TextureQuality.Low, "1" },
+            { TextureQuality.Lowest, "2" },
+        };
+
         public static IReadOnlyDictionary<MSAAMode, string?> MSAAModes => new Dictionary<MSAAMode, string?>
         {
             { MSAAMode.Default, null },

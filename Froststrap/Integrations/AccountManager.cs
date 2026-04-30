@@ -42,7 +42,6 @@ namespace Froststrap.Integrations
 
         public static AccountManager Shared { get; } = new AccountManager();
         public IReadOnlyList<AccountManagerAccount> Accounts => _accounts;
-        private string? _browserTrackerId;
 
         public AccountManager()
         {
