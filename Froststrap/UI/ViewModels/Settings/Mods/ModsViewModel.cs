@@ -26,7 +26,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ICommand DeleteModCommand => new RelayCommand<ModConfig>(DeleteMod);
         public ICommand OpenModFolderCommand => new RelayCommand<ModConfig>(OpenFolder);
 
-        public ModsViewModel() 
+        public ModsViewModel()
             : this(new DefaultModsDialogService())
         {
         }
@@ -67,7 +67,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (Directory.Exists(folderPath))
             {
-                Process.Start("explorer.exe", folderPath);
+                Utilities.ShellExecute(folderPath, select: true);
             }
             else
             {

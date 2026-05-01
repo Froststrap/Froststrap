@@ -39,7 +39,7 @@ namespace Froststrap.UI.ViewModels.Settings
             await _dialogService.OpenGlobalSettingsEditorAsync();
         });
 
-        public ICommand OpenRobloxFolderCommand => new RelayCommand(() => Process.Start("explorer.exe", Paths.Roblox));
+        public ICommand OpenRobloxFolderCommand => new RelayCommand(() => Utilities.ShellExecute(Paths.Roblox, true));
         public ICommand ExportCommand => new RelayCommand(ExportSettings);
         public ICommand ImportCommand => new RelayCommand(ImportSettings);
 

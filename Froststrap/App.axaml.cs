@@ -8,6 +8,7 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
+using Froststrap.Utility;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -302,6 +303,20 @@ public partial class App : Application
         if (log)
             Logger.WriteException("App::FinalizeExceptionHandling", ex);
 
+        // IOException wrapping SocketException(125 = ECANCELED). This is normal shutdown, not an error.
+        if (ex is IOException && ex.InnerException is System.Net.Sockets.SocketException se && se.ErrorCode == 125)
+        {
+            Logger.WriteLine("App::FinalizeExceptionHandling", "Ignoring expected cancellation IOException on shutdown (ECANCELED).");
+            return;
+        }
+
+        // Also swallow bare OperationCanceledException — these are always intentional cancellations.
+        if (ex is OperationCanceledException)
+        {
+            Logger.WriteLine("App::FinalizeExceptionHandling", "Ignoring OperationCanceledException on shutdown.");
+            return;
+        }
+
         if (_showingExceptionDialog)
             return;
 
@@ -331,7 +346,7 @@ public partial class App : Application
     public static FroststrapRichPresence? FrostRPC
     {
         get => (Current as App)?.RichPresence;
-        set{ if (Current is App app) app.RichPresence = value!; }
+        set { if (Current is App app) app.RichPresence = value!; }
     }
 
     public static void WindowsBackdrop()
@@ -546,6 +561,10 @@ public partial class App : Application
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WindowsRegistry.RegisterApis();
+
+            // Register roblox:// and roblox-player:// URI scheme handlers via xdg-mime / .desktop file.
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                LinuxProtocolHandler.RegisterProtocols();
 
             LaunchHandler.ProcessLaunchArgs();
         }

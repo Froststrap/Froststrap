@@ -34,6 +34,9 @@ namespace Froststrap
         public static string CustomCursors { get; private set; } = "";
         public static string Application { get; private set; } = "";
 
+        public static string SoberAssetOverlay { get; private set; } = "";
+        public static string SoberConfig { get; private set; } = "";
+
         public static string CustomFont => Path.Combine(PresetModifications, "content", "fonts", "CustomFont.ttf");
 
         public static string Base => DataRoot;
@@ -60,8 +63,11 @@ namespace Froststrap
                 ConfigRoot = Path.Combine(UserProfile, ".config", App.ProjectName);
                 DataRoot = Path.Combine(UserProfile, ".config", App.ProjectName);
 
-                // TODO: give actal path
-                Roblox = Path.Combine("dev", "null");
+                Roblox = Path.Combine(DataRoot, "Versions", "Sober");
+
+                SoberAssetOverlay = Path.Combine(Roblox, "data", "sober", "asset_overlay");
+
+                SoberConfig = Path.Combine(Roblox, "config", "sober", "config.json");
             }
 
             SavedFlagProfiles = Path.Combine(ConfigRoot, "SavedFlagProfiles");
@@ -81,6 +87,11 @@ namespace Froststrap
                 RobloxLogs = Path.Combine(UserProfile, "Library", "Logs", "Roblox");
                 RobloxCache = Path.Combine(UserProfile, "Library", "Caches", "com.roblox.RobloxPlayer");
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                RobloxLogs = Path.Combine(Roblox, "data", "sober", "sober_logs");
+                RobloxCache = Path.Combine(Roblox, "cache");
+            }
             else
             {
                 RobloxLogs = Path.Combine(Roblox, "logs");
@@ -88,7 +99,11 @@ namespace Froststrap
             }
 
             string exeName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? $"{App.ProjectName}.exe" : App.ProjectName;
-            Application = Path.Combine(DataRoot, exeName);
+
+            if (OperatingSystem.IsLinux())
+                Application = Process;
+            else
+                Application = Path.Combine(DataRoot, exeName);
 
             Directory.CreateDirectory(ConfigRoot);
             Directory.CreateDirectory(DataRoot);

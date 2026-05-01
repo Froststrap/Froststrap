@@ -8,7 +8,9 @@
 
             try
             {
-                string robloxProcess = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
+                string robloxProcess = OperatingSystem.IsMacOS() ? "RobloxPlayer"
+                    : OperatingSystem.IsLinux() ? "sober"
+                    : "RobloxPlayerBeta";
                 string froststrapProcess = "Froststrap";
                 int count = Process.GetProcesses().Count(x => x.ProcessName == robloxProcess || x.ProcessName == froststrapProcess);
                 count -= 1; // ignore the current process
@@ -31,6 +33,22 @@
         public static void Run()
         {
             const string LOG_IDENT = "MultiInstanceWatcher::Run";
+
+            if (OperatingSystem.IsLinux())
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping singleton mutex on Linux");
+                FireInitialisedEvent();
+                // Still watch for alive processes so the watcher lifecycle works correctly.
+                int count;
+                do
+                {
+                    Thread.Sleep(2500);
+                    count = GetOpenProcessesCount();
+                }
+                while (count == -1 || count > 0);
+                App.Logger.WriteLine(LOG_IDENT, "All Roblox related processes have closed, exiting!");
+                return;
+            }
 
             // try to get the mutex
             bool acquiredMutex;
@@ -58,13 +76,13 @@
             FireInitialisedEvent();
 
             // watch for alive processes
-            int count;
+            int countWin;
             do
             {
                 Thread.Sleep(2500);
-                count = GetOpenProcessesCount();
+                countWin = GetOpenProcessesCount();
             }
-            while (count == -1 || count > 0); // redo if -1 (one of the Process apis failed)
+            while (countWin == -1 || countWin > 0); // redo if -1 (one of the Process apis failed)
 
             App.Logger.WriteLine(LOG_IDENT, "All Roblox related processes have closed, exiting!");
         }

@@ -1,23 +1,22 @@
-﻿using FluentIcons.Common;
-using Froststrap.Enums.FlagPresets;
+﻿using Froststrap.Enums.FlagPresets;
 
 namespace Froststrap
 {
     public class FastFlagManager : JsonManager<Dictionary<string, object>>
     {
-		private Dictionary<string, object> OriginalProp = new();
+        private Dictionary<string, object> OriginalProp = new();
 
-		public override string ClassName => nameof(FastFlagManager);
+        public override string ClassName => nameof(FastFlagManager);
 
         public override string LOG_IDENT_CLASS => ClassName;
 
         public override string ProfilesLocation => Path.Combine(Paths.Base, "Profiles");
 
-		public override string FileName => "ClientAppSettings.json";
+        public override string FileName => "ClientAppSettings.json";
 
-		public override string FileLocation => Path.Combine(Paths.PresetModifications, "ClientSettings", FileName);
+        public override string FileLocation => Path.Combine(Paths.PresetModifications, "ClientSettings", FileName);
 
-		public bool Changed => !OriginalProp.SequenceEqual(Prop);
+        public bool Changed => !OriginalProp.SequenceEqual(Prop);
 
         public static IReadOnlyDictionary<string, string> PresetFlags = new Dictionary<string, string>
         {
@@ -201,30 +200,119 @@ namespace Froststrap
         public override void Save()
         {
             // convert all flag values to strings before saving
-
+            // might not be a bad idea to add type inference here
             foreach (var pair in Prop)
                 Prop[pair.Key] = pair.Value!.ToString()!;
 
             base.Save();
 
-            // clone the dictionary
             OriginalProp = new(Prop);
+
+            if (OperatingSystem.IsLinux())
+                SyncToSoberConfig();
         }
 
-		public override bool Load(bool alertFailure = true)
-		{
-			bool result = base.Load(alertFailure);
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private void SyncToSoberConfig()
+        {
+            const string LOG_IDENT = "FastFlagManager::SyncToSoberConfig";
 
-			// clone the dictionary
-			OriginalProp = new(Prop);
+            string configPath = Paths.SoberConfig;
+
+            if (string.IsNullOrEmpty(configPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Paths.SoberConfig is empty — skipping sync.");
+                return;
+            }
+
+            try
+            {
+                string existingRaw = File.Exists(configPath) ? File.ReadAllText(configPath) : "{}";
+
+                var headerLines = new List<string>();
+                var jsonLines = new List<string>();
+                bool inJson = false;
+
+                foreach (string line in existingRaw.Split('\n'))
+                {
+                    string trimmed = line.TrimStart();
+                    if (!inJson && trimmed.StartsWith("//"))
+                        headerLines.Add(line);
+                    else
+                    {
+                        inJson = true;
+                        jsonLines.Add(line);
+                    }
+                }
+
+                string jsonBody = string.Join('\n', jsonLines);
+
+                Dictionary<string, JsonElement> soberConfig = new();
+                if (!string.IsNullOrWhiteSpace(jsonBody))
+                {
+                    soberConfig = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
+                        jsonBody,
+                        new JsonSerializerOptions { ReadCommentHandling = JsonCommentHandling.Skip }
+                    ) ?? new Dictionary<string, JsonElement>();
+                }
+
+                var fflags = new Dictionary<string, object>();
+                foreach (var kvp in Prop)
+                {
+                    string val = kvp.Value?.ToString() ?? "";
+
+                    if (bool.TryParse(val, out bool boolResult))
+                        fflags[kvp.Key] = boolResult;
+                    else if (long.TryParse(val, out long longResult))
+                        fflags[kvp.Key] = longResult;
+                    else if (double.TryParse(val, System.Globalization.NumberStyles.Float,
+                                             System.Globalization.CultureInfo.InvariantCulture,
+                                             out double doubleResult))
+                        fflags[kvp.Key] = doubleResult;
+                    else
+                        fflags[kvp.Key] = val;
+                }
+
+                var output = new Dictionary<string, object>();
+                foreach (var kvp in soberConfig)
+                {
+                    if (kvp.Key != "fflags")
+                        output[kvp.Key] = kvp.Value;
+                }
+                output["fflags"] = fflags;
+
+                string jsonOut = JsonSerializer.Serialize(output, new JsonSerializerOptions { WriteIndented = true });
+
+                // Re-prepend Sober's comment header so it doesn't get stripped on save.
+                string finalContent = headerLines.Count > 0
+                    ? string.Join('\n', headerLines) + '\n' + jsonOut
+                    : jsonOut;
+
+                Directory.CreateDirectory(Path.GetDirectoryName(configPath)!);
+                File.WriteAllText(configPath, finalContent);
+
+                App.Logger.WriteLine(LOG_IDENT, $"Synced {fflags.Count} fflags to {configPath}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to sync fflags to Sober config.json");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public override bool Load(bool alertFailure = true)
+        {
+            bool result = base.Load(alertFailure);
+
+            OriginalProp = new(Prop);
 
             if (GetPreset("Rendering.ManualFullscreen") != "False")
                 SetPreset("Rendering.ManualFullscreen", "False");
 
             return result;
-		}
+        }
 
-		public async void DeleteProfile(string Profile)
+        public async void DeleteProfile(string Profile)
         {
             try
             {
@@ -252,7 +340,7 @@ namespace Froststrap
                 {
                     Name = kvp.Key,
                     Value = kvp.Value?.ToString() ?? "",
-                    Preset = FluentIcons.Common.Symbol.Subtract // optional/default
+                    Preset = FluentIcons.Common.Symbol.Subtract
                 };
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using Microsoft.Win32;
+using Froststrap.Utility;
 
 namespace Froststrap
 {
@@ -59,6 +60,20 @@ namespace Froststrap
 
             if (OperatingSystem.IsWindows())
                 RestoreRobloxRegistryHandlers();
+
+            // Remove the .desktop URI handler file and refresh xdg-mime on uninstall.
+            if (OperatingSystem.IsLinux())
+            {
+                LinuxProtocolHandler.UnregisterProtocols();
+
+                // Remove the Sober symlink from ~/.var/app so Sober reverts to its default data location.
+                string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", "org.vinegarhq.Sober");
+                if (File.GetAttributes(flatpakDataPath).HasFlag(FileAttributes.ReparsePoint))
+                {
+                    Directory.Delete(flatpakDataPath);
+                    App.Logger.WriteLine(LOG_IDENT, "Removed Sober symlink from ~/.var/app");
+                }
+            }
 
             // When invoked by NSIS (-nsis flag), stop here.
             if (App.LaunchSettings.NsisFlag.Active)
@@ -144,6 +159,10 @@ namespace Froststrap
         public static async Task RunMigrations()
         {
             const string LOG_IDENT = "Installer::RunMigrations";
+
+            // Ensure the Sober data directory symlink is in place every launch.
+            if (OperatingSystem.IsLinux())
+                SetupSoberSymlink();
 
             string currentVer = App.Version;
             string? existingVer = App.State.Prop.LastMigratedVersion;
@@ -324,6 +343,79 @@ namespace Froststrap
             uninstallKey.SetValueSafe("HelpLink", App.ProjectHelpLink);
             uninstallKey.SetValueSafe("URLInfoAbout", App.ProjectSupportLink);
             uninstallKey.SetValueSafe("URLUpdateInfo", App.ProjectDownloadLink);
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private static void SetupSoberSymlink()
+        {
+            const string LOG_IDENT = "Installer::SetupSoberSymlink";
+
+            string flatpakId = "org.vinegarhq.Sober";
+            string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", flatpakId);
+            string soberTarget = Path.Combine(Paths.Versions, "Sober");
+
+            if (IsSymlinkPointingAt(flatpakDataPath, soberTarget))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Sober symlink already in place, skipping.");
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Setting up Sober symlink: {flatpakDataPath} -> {soberTarget}");
+
+            Directory.CreateDirectory(soberTarget);
+
+            if (Directory.Exists(flatpakDataPath) && !IsSymlink(flatpakDataPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Copying existing Sober data from {flatpakDataPath} to {soberTarget}");
+
+                var cp = new ProcessStartInfo("cp", $"-a \"{flatpakDataPath}/.\" \"{soberTarget}/\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var proc = Process.Start(cp))
+                    proc?.WaitForExit();
+
+                App.Logger.WriteLine(LOG_IDENT, $"Removing original Sober data directory at {flatpakDataPath}");
+
+                // rm -rf handles locked subdirs that Directory.Delete can't remove.
+                var rm = new ProcessStartInfo("rm", $"-rf \"{flatpakDataPath}\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var proc = Process.Start(rm))
+                    proc?.WaitForExit();
+            }
+            else if (IsSymlink(flatpakDataPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Removing stale symlink at {flatpakDataPath}");
+                Directory.Delete(flatpakDataPath);
+            }
+
+            Directory.CreateDirectory(Path.GetDirectoryName(flatpakDataPath)!);
+
+            Directory.CreateSymbolicLink(flatpakDataPath, soberTarget);
+            App.Logger.WriteLine(LOG_IDENT, $"Created symlink: {flatpakDataPath} -> {soberTarget}");
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private static bool IsSymlink(string path)
+        {
+            try
+            {
+                return new FileInfo(path).Attributes.HasFlag(FileAttributes.ReparsePoint)
+                    || new DirectoryInfo(path).Attributes.HasFlag(FileAttributes.ReparsePoint);
+            }
+            catch { return false; }
+        }
+
+        [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+        private static bool IsSymlinkPointingAt(string path, string expectedTarget)
+        {
+            if (!IsSymlink(path)) return false;
+            string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
+            return actual == expectedTarget;
         }
 
         private static void TryDelete(string path)

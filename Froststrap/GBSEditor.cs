@@ -69,7 +69,9 @@ namespace Froststrap
 
         public bool Loaded { get; set; } = false;
 
-        public string FileLocation => Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+        public string FileLocation => OperatingSystem.IsLinux()
+            ? Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml")
+            : Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
 
         public void SetPreset(string prefix, object? value)
         {
@@ -147,7 +149,7 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
-            if (!File.Exists(FileLocation)) // since the file gets created after roblox starts it might not exist yet  
+            if (!File.Exists(FileLocation)) // since the file gets created after roblox starts it might not exist yet
                 return;
 
             try

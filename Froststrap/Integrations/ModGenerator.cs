@@ -107,7 +107,7 @@ namespace Froststrap.Integrations
             string fontDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
             if (!Directory.Exists(fontDir)) return;
 
-            string exePath = await DownloadModGeneratorExeAsync();
+            string exePath = await DownloadModGeneratorAsync();
             string hexColor = $"{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}";
 
             string args = $"--path \"{fontDir}\" --color {hexColor} --bootstrapper Froststrap --mod-name \"{modName}\"";
@@ -115,11 +115,20 @@ namespace Froststrap.Integrations
             await ExecuteExeAsync(exePath, args, Path.GetDirectoryName(exePath)!);
         }
 
-        private static async Task<string> DownloadModGeneratorExeAsync()
+        private static string GetModGeneratorAssetName()
         {
+            if (OperatingSystem.IsWindows()) return "mod-generator.exe";
+            if (OperatingSystem.IsMacOS()) return "mod-generator-macos";
+            return "mod-generator-linux";
+        }
+
+        private static async Task<string> DownloadModGeneratorAsync()
+        {
+            string assetName = GetModGeneratorAssetName();
+
             string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
             Directory.CreateDirectory(cacheDir);
-            string exePath = Path.Combine(cacheDir, "mod-generator.exe");
+            string exePath = Path.Combine(cacheDir, assetName);
 
             if (File.Exists(exePath)) return exePath;
 
@@ -128,13 +137,25 @@ namespace Froststrap.Integrations
             var release = await App.HttpClient.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
 
             string? url = release?.Assets?
-                .FirstOrDefault(a => a.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))?
+                .FirstOrDefault(a => a.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase))?
                 .BrowserDownloadUrl;
 
-            url ??= "https://github.com/Froststrap/mod-generator/releases/latest/download/mod_generator.exe";
+            url ??= $"https://github.com/Froststrap/mod-generator/releases/latest/download/{assetName}";
 
             var data = await App.HttpClient.GetByteArrayAsync(url);
             await File.WriteAllBytesAsync(exePath, data);
+
+            // Make the binary executable on Unix platforms
+            if (!OperatingSystem.IsWindows())
+            {
+                var chmodInfo = new ProcessStartInfo("chmod", $"+x \"{exePath}\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var chmod = Process.Start(chmodInfo);
+                if (chmod != null) await chmod.WaitForExitAsync();
+            }
 
             return exePath;
         }

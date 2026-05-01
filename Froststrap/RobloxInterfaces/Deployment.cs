@@ -284,10 +284,20 @@ namespace Froststrap.RobloxInterfaces
                     App.Logger.WriteLine(LOG_IDENT, "Failed to contact clientsettingscdn! Falling back to clientsettings...");
                     App.Logger.WriteException(LOG_IDENT, ex);
 
+                    // HttpRequestMessage is single-use, reusing the same object after it has been sent
+                    // throws InvalidOperationException. Create a fresh request for the fallback attempt.
+                    HttpRequestMessage fallbackRequest = new()
+                    {
+                        Method = HttpMethod.Get,
+                        RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path)
+                    };
+
+                    if (!string.IsNullOrEmpty(ChannelToken))
+                        fallbackRequest.Headers.Add("Roblox-Channel-Token", ChannelToken);
+
                     try
                     {
-                        request.RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path);
-                        clientVersion = await Http.SendJson<ClientVersion>(request);
+                        clientVersion = await Http.SendJson<ClientVersion>(fallbackRequest);
                     }
                     catch (HttpRequestException httpEx)
                     when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))

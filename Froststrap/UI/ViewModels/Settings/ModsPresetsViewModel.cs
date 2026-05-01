@@ -78,7 +78,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public IRelayCommand RemoveCustomDeathSoundCommand { get; }
 
         public bool IsCustomFontSet => !string.IsNullOrEmpty(TextFontTask?.NewState);
-            
+
         private async Task ChooseCustomFont()
         {
             var topLevel = GetDialogTopLevel();
@@ -201,7 +201,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void OpenModsFolder() => Process.Start("explorer.exe", Paths.PresetModifications);
+        private void OpenModsFolder() => Utilities.ShellExecute(Paths.PresetModifications, true);
 
         private static string CursorPath => Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse");
         private static string ShiftlockPath => Path.Combine(Paths.PresetModifications, "Content", "textures");
@@ -486,7 +486,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 ZipFile.CreateFromDirectory(SelectedCustomCursorSet.FolderPath, destinationPath);
 
-                Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{destinationPath}\"") { UseShellExecute = true });
+                Utilities.ShellExecute(destinationPath, select: true);
             }
             catch (Exception ex)
             {

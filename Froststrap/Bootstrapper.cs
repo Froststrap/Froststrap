@@ -195,12 +195,23 @@ namespace Froststrap
 
             SetStatus(Strings.Bootstrapper_Status_Connecting);
 
-            var connectionResult = await Deployment.InitializeConnectivity();
+            // Skip the Roblox deployment API connectivity check entirely.
+            // Sending "LinuxPlayer" as binaryType will return an error, ROBLOX PLEASE JUST MAKE A LINUX PORT
+            if (OperatingSystem.IsLinux())
+            {
+                _noConnection = true;
+                _latestVersionDirectory = Paths.SoberAssetOverlay;
+                App.Logger.WriteLine(LOG_IDENT, "Linux: skipping connectivity check and upgrade flow — Sober manages Roblox.");
+            }
+            else
+            {
+                var connectionResult = await Deployment.InitializeConnectivity();
 
-            App.Logger.WriteLine(LOG_IDENT, "Connectivity check finished");
+                App.Logger.WriteLine(LOG_IDENT, "Connectivity check finished");
 
-            if (connectionResult is not null)
-                HandleConnectionError(connectionResult);
+                if (connectionResult is not null)
+                    HandleConnectionError(connectionResult);
+            }
 
 #if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
             if (!App.UpdateCheckCompleted && !App.LaunchSettings.BypassUpdateCheck && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
@@ -298,6 +309,12 @@ namespace Froststrap
                 // we require deployment details for applying modifications for a worst case scenario,
                 // where we'd need to restore files from a package that isn't present on disk and needs to be redownloaded
                 allModificationsApplied = await ApplyModifications();
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                PackageDirectoryMap ??= new Dictionary<string, string>();
+                if (!_cancelTokenSource.IsCancellationRequested)
+                    allModificationsApplied = await ApplyModifications();
             }
 
             // check registry entries for every launch, just in case the stock bootstrapper changes it back
@@ -538,6 +555,10 @@ namespace Froststrap
                 _latestVersionDirectory = AppData.StaticDirectory;
             else
                 _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
+
+            // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
+            if (OperatingSystem.IsLinux())
+                _latestVersionDirectory = Paths.SoberAssetOverlay;
 
             if (OperatingSystem.IsMacOS())
             {
@@ -911,6 +932,13 @@ namespace Froststrap
                     _launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
             }
 
+            // Skip all binary discovery and download, send directly to Sober via flatpak run.
+            if (OperatingSystem.IsLinux())
+            {
+                await LaunchViaSober();
+                return;
+            }
+
             string expectedName = IsStudioLaunch ? App.RobloxStudioAppName : App.RobloxPlayerAppName;
             string expectedPath = Path.Combine((string)AppData.Directory, expectedName);
 
@@ -1076,7 +1104,7 @@ namespace Froststrap
                     var watcherData = new WatcherData
                     {
                         ProcessId = _appPid,
-                        LogFile = logFileName, 
+                        LogFile = logFileName,
                         AutoclosePids = autoclosePids,
                         LaunchMode = _launchMode
                     };
@@ -1363,6 +1391,12 @@ namespace Froststrap
         public static void CleanupVersionsFolder()
         {
             const string LOG_IDENT = "Bootstrapper::CleanupVersionsFolder";
+
+            if (OperatingSystem.IsLinux())
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping cleanup on Linux to avoid deleting Sober's data directory.");
+                return;
+            }
 
             if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
             {
@@ -1755,6 +1789,125 @@ namespace Froststrap
             _isInstalling = false;
         }
 
+        private async Task LaunchViaSober()
+        {
+            const string LOG_IDENT = "Bootstrapper::LaunchViaSober";
+
+            if (IsStudioLaunch)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Roblox Studio is not supported on Linux via Sober. Aborting.");
+                await Frontend.ShowMessageBox(
+                    "Roblox Studio is not available on Linux. Sober only supports the Roblox Player.",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Launching Sober via flatpak with args: {_launchCommandLine}");
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = $"run org.vinegarhq.Sober {_launchCommandLine}",
+                UseShellExecute = false,
+            };
+
+            try
+            {
+                // Record time before launch so we can detect the new latest.log
+                var launchTime = DateTime.UtcNow;
+
+                using var process = Process.Start(startInfo)!;
+                _appPid = process.Id;
+                App.Logger.WriteLine(LOG_IDENT, $"Sober launched with PID {_appPid}");
+
+                _ = Task.Run(async () =>
+                 {
+                     const string soberReadySignal = "will_handle_app_startup"; // this is cursed
+                     const int pollIntervalMs = 50;
+                     const int timeoutMs = 30_000;
+                     var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
+
+                     try
+                     {
+                         string latestLog = Path.Combine(Paths.RobloxLogs, "latest.log");
+
+                         // Wait for latest.log to exist and be newer than our launch time
+                         // (gives Sober time to rotate the symlink to a fresh file)
+                         while (DateTime.UtcNow < deadline)
+                         {
+                             if (File.Exists(latestLog) &&
+                                 File.GetLastWriteTimeUtc(latestLog) >= launchTime)
+                                 break;
+                             await Task.Delay(pollIntervalMs);
+                         }
+
+                         if (!File.Exists(latestLog))
+                         {
+                             App.Logger.WriteLine(LOG_IDENT, $"latest.log not found at {latestLog}, closing dialog.");
+                             return;
+                         }
+
+                         App.Logger.WriteLine(LOG_IDENT, $"Tailing {latestLog} for ready signal...");
+
+                         using var fs = new FileStream(latestLog, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+                         using var reader = new StreamReader(fs);
+
+                         while (DateTime.UtcNow < deadline)
+                         {
+                             string? line = await reader.ReadLineAsync();
+                             if (line is null)
+                             {
+                                 await Task.Delay(pollIntervalMs);
+                                 continue;
+                             }
+                             if (line.Contains(soberReadySignal))
+                             {
+                                 App.Logger.WriteLine(LOG_IDENT, "Sober window ready — closing bootstrapper dialog.");
+                                 Dialog?.CloseBootstrapper();
+                                 return;
+                             }
+                         }
+
+                         App.Logger.WriteLine(LOG_IDENT, "Timed out waiting for Sober ready signal — closing dialog.");
+                     }
+                     catch (Exception ex)
+                     {
+                         App.Logger.WriteLine(LOG_IDENT, $"Log watcher error: {ex.Message} — closing dialog.");
+                     }
+                     finally
+                     {
+                         // Always ensure the dialog is closed, even if something went wrong
+                         Dialog?.CloseBootstrapper();
+                     }
+                 });
+
+                // flatpak run exits quickly — wait for the actual sober process by name instead
+                await Task.Run(async () =>
+                {
+                    while (!_cancelTokenSource.IsCancellationRequested)
+                    {
+                        await Task.Delay(2500);
+                        if (!Process.GetProcessesByName("sober").Any())
+                            break;
+                    }
+                });
+
+                App.Logger.WriteLine(LOG_IDENT, "Sober process exited");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to launch Sober via flatpak!");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                await Frontend.ShowMessageBox(
+                    $"Failed to launch Sober. Make sure Flatpak and org.vinegarhq.Sober are installed.\n\n{ex.Message}",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+            }
+        }
+
         private static void StartBackgroundUpdater()
         {
             const string LOG_IDENT = "Bootstrapper::StartBackgroundUpdater";
@@ -1962,7 +2115,7 @@ namespace Froststrap
                 }));
             }
 
-            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
+            if (!OperatingSystem.IsLinux() && !File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
                 await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
 
             var fileResults = await Task.WhenAll(fileTasks);
@@ -1970,28 +2123,32 @@ namespace Froststrap
 
             if (App.Settings.Prop.UseFastFlagManager)
             {
-                string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
-                if (File.Exists(source))
+                // Copying ClientAppSettings.json into asset_overlay would be ignored by Sober (probably)
+                if (!OperatingSystem.IsLinux())
                 {
-                    string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
-                    string dest = Path.Combine(ContentDirectory, rel);
-                    var info = new FileInfo(source);
-
-                    lock (currentModManifest)
-                        currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
-
-                    try
+                    string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
+                    if (File.Exists(source))
                     {
-                        bool match = File.Exists(dest) && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
-                        if (!match)
+                        string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                        string dest = Path.Combine(ContentDirectory, rel);
+                        var info = new FileInfo(source);
+
+                        lock (currentModManifest)
+                            currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
+
+                        try
                         {
-                            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
-                            File.Copy(source, dest, true);
-                            File.SetLastWriteTime(dest, info.LastWriteTime);
-                            App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
+                            bool match = File.Exists(dest) && (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+                            if (!match)
+                            {
+                                Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                                File.Copy(source, dest, true);
+                                File.SetLastWriteTime(dest, info.LastWriteTime);
+                                App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
+                            }
                         }
+                        catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                     }
-                    catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                 }
             }
 
@@ -2029,13 +2186,16 @@ namespace Froststrap
                 fileRestoreMap[packageName].Add(internalZipPath);
             }
 
-            foreach (var entry in fileRestoreMap)
+            if (!OperatingSystem.IsLinux())
             {
-                var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
-                if (package is not null)
+                foreach (var entry in fileRestoreMap)
                 {
-                    await DownloadPackage(package);
-                    ExtractPackage(package, entry.Value);
+                    var package = _versionPackageManifest.Find(x => x.Name == entry.Key);
+                    if (package is not null)
+                    {
+                        await DownloadPackage(package);
+                        ExtractPackage(package, entry.Value);
+                    }
                 }
             }
 

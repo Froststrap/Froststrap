@@ -258,6 +258,13 @@ namespace Froststrap
                 App.Terminate();
             });
 
+            if (OperatingSystem.IsLinux() && !App.LaunchSettings.QuietFlag.Active)
+            {
+                if (Avalonia.Application.Current?.ApplicationLifetime is
+                    Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+                    desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnExplicitShutdown;
+            }
+
             dialog?.ShowBootstrapper();
 
             App.Logger.WriteLine(LOG_IDENT, "Exiting");

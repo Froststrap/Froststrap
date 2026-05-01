@@ -113,6 +113,10 @@ namespace Froststrap
                 {
                     authCookie = await LoadMacCookies(LOG_IDENT);
                 }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                {
+                    authCookie = await LoadLinuxCookies(LOG_IDENT);
+                }
 
                 if (string.IsNullOrEmpty(authCookie))
                 {
@@ -156,6 +160,22 @@ namespace Froststrap
 
             App.Logger.WriteLine(logIdent, "Could not find .ROBLOSECURITY in binary cookies file.");
             return string.Empty;
+        }
+
+        private async Task<string> LoadLinuxCookies(string logIdent)
+        {
+            // TODO: add actual cookie support, last time I checked Sober just uses plaintext in their COOKIES file.
+            // Possibly add GNOME keyring/ KWallet support using Tmds.DBus.Protocol.
+            App.Logger.WriteLine(logIdent, "Linux: attempting plaintext cookie read (keyring backend not yet implemented).");
+
+            string content = await File.ReadAllTextAsync(CookiesPath);
+            var cookies = JsonSerializer.Deserialize<RobloxCookies>(content)!;
+
+            byte[] data = Convert.FromBase64String(cookies.Cookies);
+            string rawCookies = Encoding.UTF8.GetString(data);
+            Match authCookieMatch = Regex.Match(rawCookies, AuthPattern);
+
+            return authCookieMatch.Success ? authCookieMatch.Groups[1].Value : string.Empty;
         }
     }
 }

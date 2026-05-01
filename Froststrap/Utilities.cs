@@ -7,7 +7,7 @@ namespace Froststrap
 {
     static class Utilities
     {
-        public static void ShellExecute(string website)
+        public static void ShellExecute(string path, bool select = false)
         {
             try
             {
@@ -15,30 +15,32 @@ namespace Froststrap
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = website,
+                        FileName = select ? "explorer.exe" : path,
+                        Arguments = select ? $"/select,\"{path}\"" : "",
                         UseShellExecute = true
                     });
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    Process.Start("xdg-open", website);
+                    string target = select ? Path.GetDirectoryName(path) ?? path : path;
+                    Process.Start("xdg-open", target);
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    Process.Start("open", website);
+                    string args = select ? $"-R \"{path}\"" : $"\"{path}\"";
+                    Process.Start("open", args);
                 }
             }
             catch (Win32Exception ex)
             {
                 if (ex.NativeErrorCode != (int)ErrorCode.CO_E_APPNOTFOUND)
                     throw;
-
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     Process.Start(new ProcessStartInfo
                     {
                         FileName = "rundll32.exe",
-                        Arguments = $"shell32,OpenAs_RunDLL {website}"
+                        Arguments = $"shell32,OpenAs_RunDLL {path}"
                     });
                 }
             }
@@ -61,7 +63,7 @@ namespace Froststrap
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="versionStr1"></param>
         /// <param name="versionStr2"></param>

@@ -256,11 +256,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 zipStream.Finish();
                 zipStream.Close();
             });
-
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Process.Start("explorer.exe", $"/select,\"{file.Path.LocalPath}\"");
-            }
+            Utilities.ShellExecute(file.Path.LocalPath, select: true);
         }
 
         private async void DeleteCustomTheme()
