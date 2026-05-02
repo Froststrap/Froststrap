@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
+using System.IO.Compression;
 using System.Windows.Input;
 using Avalonia.Media;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,7 +7,6 @@ using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using ICSharpCode.SharpZipLib.Zip;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
@@ -427,7 +427,44 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (string.IsNullOrEmpty(zipPath) || !File.Exists(zipPath)) return;
             if (Directory.Exists(targetDir)) Directory.Delete(targetDir, true);
             Directory.CreateDirectory(targetDir);
-            new FastZip().ExtractZip(zipPath, targetDir, null);
+
+            string targetRoot = Path.GetFullPath(targetDir) + Path.DirectorySeparatorChar;
+
+            using var archive = ZipFile.OpenRead(zipPath);
+            foreach (var entry in archive.Entries)
+            {
+                if (string.IsNullOrWhiteSpace(entry.FullName))
+                    continue;
+
+                // Roblox package zips contain '\' separators; normalize so Linux extracts nested paths correctly.
+                string normalizedEntry = entry.FullName
+                    .Replace('\\', Path.DirectorySeparatorChar)
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .TrimStart(Path.DirectorySeparatorChar);
+
+                if (string.IsNullOrWhiteSpace(normalizedEntry))
+                    continue;
+
+                string destinationPath = Path.GetFullPath(Path.Combine(targetDir, normalizedEntry));
+                if (!destinationPath.StartsWith(targetRoot, StringComparison.Ordinal))
+                    continue;
+
+                bool isDirectory = string.IsNullOrEmpty(entry.Name)
+                    || entry.FullName.EndsWith("/")
+                    || entry.FullName.EndsWith("\\");
+
+                if (isDirectory)
+                {
+                    Directory.CreateDirectory(destinationPath);
+                    continue;
+                }
+
+                string? parent = Path.GetDirectoryName(destinationPath);
+                if (!string.IsNullOrEmpty(parent))
+                    Directory.CreateDirectory(parent);
+
+                entry.ExtractToFile(destinationPath, overwrite: true);
+            }
         }
 
         private bool IsValidHexColor(string hex) =>

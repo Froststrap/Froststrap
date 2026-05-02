@@ -1824,7 +1824,7 @@ namespace Froststrap
 
                 _ = Task.Run(async () =>
                  {
-                     const string soberReadySignal = "will_handle_app_startup"; // this is cursed
+                     string[] soberReadySignals = ["will_handle_app_startup", "will_handle_start_game"]; // this is cursed
                      const int pollIntervalMs = 50;
                      const int timeoutMs = 30_000;
                      var deadline = DateTime.UtcNow.AddMilliseconds(timeoutMs);
@@ -1862,7 +1862,7 @@ namespace Froststrap
                                  await Task.Delay(pollIntervalMs);
                                  continue;
                              }
-                             if (line.Contains(soberReadySignal))
+                             if (soberReadySignals.Any(line.Contains))
                              {
                                  App.Logger.WriteLine(LOG_IDENT, "Sober window ready — closing bootstrapper dialog.");
                                  Dialog?.CloseBootstrapper();
@@ -1940,6 +1940,10 @@ namespace Froststrap
                 ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
                 : _latestVersionDirectory;
 
+            App.Logger.WriteLine(LOG_IDENT, $"Total mods in state: {App.State.Prop.Mods.Count}");
+            foreach (var m in App.State.Prop.Mods)
+                App.Logger.WriteLine(LOG_IDENT, $"  Mod: '{m.FolderName}' Target='{m.Target}' Priority={m.Priority} FolderExists={Directory.Exists(Path.Combine(Paths.Modifications, m.FolderName))}");
+
             var activeMods = App.State.Prop.Mods
                                 .Where(x => x.Target != "Disabled" && (
                                             x.Target == "Both" ||
@@ -1947,6 +1951,8 @@ namespace Froststrap
                                             (!IsStudioLaunch && x.Target == "Player")))
                                 .OrderBy(x => x.Priority)
                                 .ToList();
+
+            App.Logger.WriteLine(LOG_IDENT, $"Active mods after filter: {activeMods.Count}");
 
             string? activeFontFilename = null;
             string? customFontModName = activeMods.LastOrDefault(mod =>
