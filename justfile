@@ -56,7 +56,7 @@ publish-linux:
     dotnet publish {{ project_file }} \
         -r linux-x64 \
         -c {{ release_config }} \
-        --self-contained false \
+        --self-contained true \
         -p:PublishSingleFile=true \
         -p:IncludeNativeLibrariesForSelfExtract=true \
         -o ./{{ build_dir }}/linux-temp
@@ -64,6 +64,49 @@ publish-linux:
     mv ./{{ build_dir }}/linux-temp/Froststrap ./{{ build_dir }}/Froststrap-linux-x64
     rm -rf ./{{ build_dir }}/linux-temp
     chmod +x ./{{ build_dir }}/Froststrap-linux-x64
+
+    rm -rf ./{{ build_dir }}/AppDir
+    mkdir -p ./{{ build_dir }}/AppDir/usr/bin
+    mkdir -p ./{{ build_dir }}/AppDir/usr/share/applications
+    mkdir -p ./{{ build_dir }}/AppDir/usr/share/icons/hicolor/512x512/apps
+    cp ./{{ build_dir }}/Froststrap-linux-x64 ./{{ build_dir }}/AppDir/usr/bin/Froststrap
+    cp ./Froststrap/Froststrap.png ./{{ build_dir }}/AppDir/froststrap.png
+    cp ./Froststrap/Froststrap.png ./{{ build_dir }}/AppDir/usr/share/icons/hicolor/512x512/apps/froststrap.png
+
+    printf '%s\n' \
+        '#!/bin/sh' \
+        'HERE="$(dirname "$(readlink -f "$0")")"' \
+        'exec "$HERE/usr/bin/Froststrap" "$@"' \
+        > ./{{ build_dir }}/AppDir/AppRun
+    chmod +x ./{{ build_dir }}/AppDir/AppRun
+
+    version="$(git describe --tags --always --dirty 2>/dev/null || echo dev)"; \
+    printf '%s\n' \
+        '[Desktop Entry]' \
+        'Type=Application' \
+        'Name=Froststrap' \
+        'Comment=Roblox bootstrapper and mod manager' \
+        'Exec=Froststrap %u' \
+        'TryExec=Froststrap' \
+        'Icon=froststrap' \
+        'Terminal=false' \
+        'Categories=Game;' \
+        'MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;' \
+        "X-AppImage-Version=$version" \
+        > ./{{ build_dir }}/AppDir/Froststrap.desktop
+    cp ./{{ build_dir }}/AppDir/Froststrap.desktop ./{{ build_dir }}/AppDir/usr/share/applications/Froststrap.desktop
+
+    if command -v appimagetool >/dev/null 2>&1; then \
+        APPIMAGE_TOOL=appimagetool; \
+    else \
+        curl -L --fail -o ./{{ build_dir }}/appimagetool.AppImage \
+            https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage && \
+        chmod +x ./{{ build_dir }}/appimagetool.AppImage && \
+        APPIMAGE_TOOL=./{{ build_dir }}/appimagetool.AppImage; \
+    fi; \
+    ARCH=x86_64 "$APPIMAGE_TOOL" --appimage-extract-and-run \
+        ./{{ build_dir }}/AppDir \
+        ./{{ build_dir }}/Froststrap-linux-x64.AppImage
 
 # CI Actions
 ci-publish-windows:

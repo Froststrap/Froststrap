@@ -935,6 +935,9 @@ namespace Froststrap
             // Skip all binary discovery and download, send directly to Sober via flatpak run.
             if (OperatingSystem.IsLinux())
             {
+                if (!await EnsureSoberInstalledAsync())
+                    return;
+
                 await LaunchViaSober();
                 return;
             }
@@ -1787,6 +1790,167 @@ namespace Froststrap
             AppData.DistributionStateManager.Save();
 
             _isInstalling = false;
+        }
+
+        private static string? ParseFlatpakInstallStep(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return null;
+
+            line = Regex.Replace(line, @"\x1B\[[0-9;?]*[ -/]*[@-~]", string.Empty).Replace('\r', ' ').Trim();
+
+            int installingIndex = line.IndexOf("Installing", StringComparison.OrdinalIgnoreCase);
+            if (installingIndex < 0)
+                return null;
+
+            return line[installingIndex..].Trim();
+        }
+
+        private async Task<bool> EnsureSoberInstalledAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::EnsureSoberInstalled";
+
+            SetStatus("Checking Flatpak installation...");
+
+            var flatpakCheck = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = "--version",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            try
+            {
+                using var checkProcess = Process.Start(flatpakCheck);
+                if (checkProcess is null)
+                    throw new InvalidOperationException("Failed to start flatpak process.");
+
+                await checkProcess.WaitForExitAsync();
+
+                if (checkProcess.ExitCode != 0)
+                    throw new InvalidOperationException("Flatpak returned a non-zero exit code.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Flatpak not found.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                await Frontend.ShowMessageBox(
+                    "Flatpak is required on Linux.\n\nPlease install Flatpak first, then launch Froststrap again.",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
+            }
+
+            var infoStartInfo = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = "info --show-ref org.vinegarhq.Sober",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            using (var infoProcess = Process.Start(infoStartInfo))
+            {
+                if (infoProcess is null)
+                {
+                    await Frontend.ShowMessageBox(
+                        "Failed to check whether org.vinegarhq.Sober is installed.",
+                        MessageBoxImage.Error
+                    );
+                    App.Terminate(ErrorCode.ERROR_CANCELLED);
+                    return false;
+                }
+
+                await infoProcess.WaitForExitAsync();
+                if (infoProcess.ExitCode == 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Sober is already installed.");
+                    return true;
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Sober not found, starting installation...");
+
+            if (Dialog is not null)
+            {
+                Dialog.ProgressStyle = ProgressBarStyle.Marquee;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+
+            SetStatus("Installing Sober...");
+
+            var installStartInfo = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = "install --assumeyes flathub org.vinegarhq.Sober",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            using var installProcess = Process.Start(installStartInfo);
+            if (installProcess is null)
+            {
+                await Frontend.ShowMessageBox(
+                    "Failed to start Sober installation via Flatpak.",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
+            }
+
+            var errorLines = new List<string>();
+
+            async Task ReadInstallStream(StreamReader reader)
+            {
+                while (true)
+                {
+                    string? line = await reader.ReadLineAsync();
+                    if (line is null)
+                        break;
+
+                    App.Logger.WriteLine(LOG_IDENT, $"[flatpak] {line}");
+
+                    string? installStep = ParseFlatpakInstallStep(line);
+                    if (!string.IsNullOrEmpty(installStep))
+                    {
+                        SetStatus(installStep);
+                    }
+                    else if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        errorLines.Add(line.Trim());
+                    }
+                }
+            }
+
+            await Task.WhenAll(
+                ReadInstallStream(installProcess.StandardOutput),
+                ReadInstallStream(installProcess.StandardError),
+                installProcess.WaitForExitAsync()
+            );
+
+            if (installProcess.ExitCode != 0)
+            {
+                string details = string.Join('\n', errorLines.TakeLast(8));
+
+                await Frontend.ShowMessageBox(
+                    $"Failed to install org.vinegarhq.Sober via Flatpak.{(string.IsNullOrWhiteSpace(details) ? string.Empty : $"\n\n{details}")}",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Sober installation complete.");
+            SetStatus("Sober installation complete.");
+            return true;
         }
 
         private async Task LaunchViaSober()

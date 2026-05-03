@@ -34,79 +34,79 @@ namespace Froststrap
             ClassName = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
         }
 
-		public virtual bool Load(bool alertFailure = true)
-		{
-			string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
+        public virtual bool Load(bool alertFailure = true)
+        {
+            string LOG_IDENT = $"{LOG_IDENT_CLASS}::Load";
 
-			App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+            App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
-			try
-			{
-				if (File.Exists(FileLocation))
-				{
-					string contents = File.ReadAllText(FileLocation);
+            try
+            {
+                if (File.Exists(FileLocation))
+                {
+                    string contents = File.ReadAllText(FileLocation);
 
                     T? settings = JsonSerializer.Deserialize<T>(contents);
 
-					if (settings is null)
-						throw new ArgumentNullException("Deserialization returned null");
+                    if (settings is null)
+                        throw new ArgumentNullException("Deserialization returned null");
 
-					_prop = settings;
-					Loaded = true;
-					LastFileHash = MD5Hash.FromString(contents);
+                    _prop = settings;
+                    Loaded = true;
+                    LastFileHash = MD5Hash.FromString(contents);
 
-					App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+                    App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
 
-					return true;
-				}
-				else
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
-					Loaded = true;
+                    return true;
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Could not find {FileLocation}.");
+                    Loaded = true;
 
-					return false;
-				}
-			}
-			catch (Exception ex)
-			{
-				App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
-				App.Logger.WriteException(LOG_IDENT, ex);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+                App.Logger.WriteException(LOG_IDENT, ex);
 
-				if (alertFailure)
-				{
-					string message = "";
+                if (alertFailure)
+                {
+                    string message = "";
 
-					if (ClassName == nameof(Settings))
-						message = Strings.JsonManager_SettingsLoadFailed;
-					else if (ClassName == nameof(FastFlagManager))
-						message = Strings.JsonManager_FastFlagsLoadFailed;
+                    if (ClassName == nameof(Settings))
+                        message = Strings.JsonManager_SettingsLoadFailed;
+                    else if (ClassName == nameof(FastFlagManager))
+                        message = Strings.JsonManager_FastFlagsLoadFailed;
 
-					if (!String.IsNullOrEmpty(message))
-						_ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
+                    if (!String.IsNullOrEmpty(message))
+                        _ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
 
-					try
-					{
-						if (File.Exists(FileLocation))
-							File.Copy(FileLocation, FileLocation + ".bak", true);
-					}
-					catch (Exception copyEx)
-					{
-						App.Logger.WriteLine(LOG_IDENT, $"Failed to create backup file: {FileLocation}.bak");
-						App.Logger.WriteException(LOG_IDENT, copyEx);
-					}
-				}
+                    try
+                    {
+                        if (File.Exists(FileLocation))
+                            File.Copy(FileLocation, FileLocation + ".bak", true);
+                    }
+                    catch (Exception copyEx)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to create backup file: {FileLocation}.bak");
+                        App.Logger.WriteException(LOG_IDENT, copyEx);
+                    }
+                }
 
-				Loaded = true;
-				Save();
+                Loaded = true;
+                Save();
 
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
-		public virtual async void Save()
+        public virtual async void Save()
         {
             string LOG_IDENT = $"{LOG_IDENT_CLASS}::Save";
-            
+
             App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
 
             Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
@@ -342,6 +342,10 @@ namespace Froststrap
         /// </summary>
         public bool HasFileOnDiskChanged()
         {
+            // file was deleted after being loaded
+            if (!File.Exists(FileLocation))
+                return !string.IsNullOrEmpty(LastFileHash);
+
             // check if a file has been created since launch
             if (string.IsNullOrEmpty(LastFileHash) && File.Exists(FileLocation))
                 return true;
