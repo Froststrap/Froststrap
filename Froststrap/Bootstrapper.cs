@@ -2123,57 +2123,112 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, $"Active mods after filter: {activeMods.Count}");
 
             string? activeFontFilename = null;
-            string? customFontModName = activeMods.LastOrDefault(mod =>
-            {
-                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
-                {
-                    activeFontFilename = "CustomFont.ttf";
-                    return true;
-                }
-                if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf")))
-                {
-                    activeFontFilename = "CustomFont.otf";
-                    return true;
-                }
-                return false;
-            })?.FolderName;
+            string? modFontFamiliesFolder = null;
 
-            if (customFontModName != null && activeFontFilename != null)
+            if (File.Exists(Paths.CustomFont))
+            {
+                activeFontFilename = "CustomFont.ttf";
+                modFontFamiliesFolder = Path.Combine(Paths.PresetModifications, "content", "fonts", "families");
+            }
+            else
+            {
+                string? customFontModName = activeMods.LastOrDefault(mod =>
+                {
+                    if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
+                    {
+                        activeFontFilename = "CustomFont.ttf";
+                        return true;
+                    }
+                    if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf")))
+                    {
+                        activeFontFilename = "CustomFont.otf";
+                        return true;
+                    }
+                    return false;
+                })?.FolderName;
+
+                if (customFontModName != null && activeFontFilename != null)
+                    modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
+            }
+
+            if (modFontFamiliesFolder != null && activeFontFilename != null)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Executing font patcher for {activeFontFilename}...");
-                string modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
-                string familiesFolder = Path.Combine(ContentDirectory, "content", "fonts", "families");
-
-                Directory.CreateDirectory(familiesFolder);
                 Directory.CreateDirectory(modFontFamiliesFolder);
 
                 string rbxAssetPath = $"rbxasset://fonts/{activeFontFilename}";
-                var jsonFiles = Directory.GetFiles(familiesFolder, "*.json");
+                string[] fontFamilyFiles =
+                {
+                    "AccanthisADFStd.json",
+                    "AmaticSC.json",
+                    "Arimo.json",
+                    "Balthazar.json",
+                    "Bangers.json",
+                    "BuilderExtended.json",
+                    "BuilderMono.json",
+                    "BuilderSans.json",
+                    "ComicNeueAngular.json",
+                    "Creepster.json",
+                    "DenkOne.json",
+                    "Fondamento.json",
+                    "FredokaOne.json",
+                    "GrenzeGotisch.json",
+                    "Guru.json",
+                    "HighwayGothic.json",
+                    "Inconsolata.json",
+                    "IndieFlower.json",
+                    "JosefinSans.json",
+                    "Jura.json",
+                    "Kalam.json",
+                    "LegacyArial.json",
+                    "LegacyArimo.json",
+                    "LuckiestGuy.json",
+                    "Merriweather.json",
+                    "Michroma.json",
+                    "Montserrat.json",
+                    "Nunito.json",
+                    "Oswald.json",
+                    "PatrickHand.json",
+                    "PermanentMarker.json",
+                    "PressStart2P.json",
+                    "Roboto.json",
+                    "RobotoCondensed.json",
+                    "RobotoMono.json",
+                    "RomanAntique.json",
+                    "Sarpanch.json",
+                    "SourceSansPro.json",
+                    "SpecialElite.json",
+                    "TitilliumWeb.json",
+                    "Ubuntu.json",
+                    "Zekton.json"
+                };
 
                 await Task.Run(() =>
                 {
-                    Parallel.ForEach(jsonFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilePath =>
+                    Parallel.ForEach(fontFamilyFiles, new ParallelOptions { MaxDegreeOfParallelism = 4 }, jsonFilename =>
                     {
-                        string jsonFilename = Path.GetFileName(jsonFilePath);
                         string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
 
-                        if (File.Exists(modFilepath)) return;
+                        string familyName = Path.GetFileNameWithoutExtension(jsonFilename);
+                        familyName = Regex.Replace(familyName, "(?<=[A-Z])([A-Z][a-z])", " $1");
+                        familyName = Regex.Replace(familyName, "(?<=[a-z0-9])([A-Z])", " $1");
 
-                        var fontFamilyData = JsonSerializer.Deserialize<Models.FontFamily>(File.ReadAllText(jsonFilePath));
-                        if (fontFamilyData is null) return;
-
-                        bool shouldWrite = false;
-                        foreach (var fontFace in fontFamilyData.Faces)
+                        var fontFamilyData = new Models.FontFamily
                         {
-                            if (fontFace.AssetId != rbxAssetPath)
+                            Name = familyName,
+                            Faces = new[]
                             {
-                                fontFace.AssetId = rbxAssetPath;
-                                shouldWrite = true;
+                                new Models.FontFace { Name = "Thin", Weight = 100, Style = "normal", AssetId = rbxAssetPath },
+                                new Models.FontFace { Name = "Light", Weight = 300, Style = "normal", AssetId = rbxAssetPath },
+                                new Models.FontFace { Name = "Regular", Weight = 400, Style = "normal", AssetId = rbxAssetPath },
+                                new Models.FontFace { Name = "Medium", Weight = 500, Style = "normal", AssetId = rbxAssetPath },
+                                new Models.FontFace { Name = "Semi Bold", Weight = 600, Style = "normal", AssetId = rbxAssetPath },
+                                new Models.FontFace { Name = "Bold", Weight = 700, Style = "normal", AssetId = rbxAssetPath },
+                                new Models.FontFace { Name = "Extra Bold", Weight = 800, Style = "normal", AssetId = rbxAssetPath }
                             }
-                        }
+                        };
 
-                        if (shouldWrite)
-                            File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
+                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
                     });
                 });
                 App.Logger.WriteLine(LOG_IDENT, "End font check");
