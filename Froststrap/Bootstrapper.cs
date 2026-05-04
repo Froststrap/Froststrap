@@ -1190,6 +1190,31 @@ namespace Froststrap
                 catch (Exception) { }
             }
 
+            if (OperatingSystem.IsLinux())
+            {
+                try
+                {
+                    foreach (var soberProcess in Process.GetProcessesByName("sober"))
+                    {
+                        try
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Killing sober process (PID {soberProcess.Id})");
+                            soberProcess.Kill(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to kill sober process (PID {soberProcess.Id})");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to enumerate sober processes.");
+                    App.Logger.WriteException(LOG_IDENT, ex);
+                }
+            }
+
             Dialog?.CloseBootstrapper();
 
             App.SoftTerminate(ErrorCode.ERROR_CANCELLED);
@@ -1817,8 +1842,6 @@ namespace Froststrap
                 FileName = "flatpak",
                 Arguments = "--version",
                 UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
                 CreateNoWindow = true
             };
 
@@ -1828,10 +1851,21 @@ namespace Froststrap
                 if (checkProcess is null)
                     throw new InvalidOperationException("Failed to start flatpak process.");
 
-                await checkProcess.WaitForExitAsync();
+                await checkProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
 
                 if (checkProcess.ExitCode != 0)
                     throw new InvalidOperationException("Flatpak returned a non-zero exit code.");
+            }
+            catch (TimeoutException ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Timed out while checking Flatpak installation.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                await Frontend.ShowMessageBox(
+                    "Timed out while checking Flatpak installation. Please make sure Flatpak is working and try again.",
+                    MessageBoxImage.Error
+                );
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return false;
             }
             catch (Exception ex)
             {
@@ -1845,37 +1879,7 @@ namespace Froststrap
                 return false;
             }
 
-            var infoStartInfo = new ProcessStartInfo
-            {
-                FileName = "flatpak",
-                Arguments = "info --show-ref org.vinegarhq.Sober",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true
-            };
-
-            using (var infoProcess = Process.Start(infoStartInfo))
-            {
-                if (infoProcess is null)
-                {
-                    await Frontend.ShowMessageBox(
-                        "Failed to check whether org.vinegarhq.Sober is installed.",
-                        MessageBoxImage.Error
-                    );
-                    App.Terminate(ErrorCode.ERROR_CANCELLED);
-                    return false;
-                }
-
-                await infoProcess.WaitForExitAsync();
-                if (infoProcess.ExitCode == 0)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Sober is already installed.");
-                    return true;
-                }
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, "Sober not found, starting installation...");
+            App.Logger.WriteLine(LOG_IDENT, "Installing Sober...");
 
             if (Dialog is not null)
             {
@@ -1888,7 +1892,7 @@ namespace Froststrap
             var installStartInfo = new ProcessStartInfo
             {
                 FileName = "flatpak",
-                Arguments = "install --assumeyes flathub org.vinegarhq.Sober",
+                Arguments = "install --assumeyes --noninteractive flathub org.vinegarhq.Sober",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -1949,7 +1953,7 @@ namespace Froststrap
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Sober installation complete.");
-            SetStatus("Sober installation complete.");
+            SetStatus("Starting Sober...");
             return true;
         }
 
