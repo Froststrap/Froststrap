@@ -54,7 +54,7 @@ jobs:
         run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
       - uses: DeterminateSystems/nix-installer-action@v14
       - name: Build and package
-        run: nix develop -c just ci-publish-linux
+        run: env -u SOURCE_DATE_EPOCH nix develop -c just ci-publish-linux
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
