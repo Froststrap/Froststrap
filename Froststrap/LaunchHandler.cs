@@ -166,6 +166,7 @@ namespace Froststrap
                 };
 
                 window.Show();
+                Utilities.StopFlashing(window);
             }
             else
             {
@@ -195,6 +196,7 @@ namespace Froststrap
             };
 
             dialog.Show();
+            Utilities.StopFlashing(dialog);
         }
 
         public static async void LaunchRoblox(LaunchMode launchMode)
@@ -261,6 +263,10 @@ namespace Froststrap
             }
 
             dialog?.ShowBootstrapper();
+            if (dialog != null)
+            {
+                Utilities.StopFlashing(dialog);
+            }
 
             App.Logger.WriteLine(LOG_IDENT, "Exiting");
         }

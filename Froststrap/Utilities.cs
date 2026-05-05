@@ -1,4 +1,4 @@
-﻿using Froststrap;
+﻿using Avalonia.Controls;
 using Froststrap.AppData;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -258,6 +258,55 @@ namespace Froststrap
         {
             using EventWaitHandle handle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
             handle.Set();
+        }
+
+        // To stop app from flashing orange in taskbar when opening
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct FLASHWINFO
+        {
+            public uint cbSize;
+            public IntPtr hwnd;
+            public uint dwFlags;
+            public uint uCount;
+            public uint dwTimeout;
+        }
+
+        public static void StopFlashing(IBootstrapperDialog? dialog)
+        {
+            if (dialog is Window window)
+            {
+                var platformHandle = window.TryGetPlatformHandle();
+                if (platformHandle != null)
+                {
+                    StopFlashingNative(platformHandle.Handle);
+                }
+            }
+        }
+
+        public static void StopFlashing(Window window)
+        {
+            var platformHandle = window.TryGetPlatformHandle();
+            if (platformHandle != null)
+            {
+                StopFlashingNative(platformHandle.Handle);
+            }
+        }
+
+        private static void StopFlashingNative(IntPtr hWnd)
+        {
+            FLASHWINFO fi = new FLASHWINFO
+            {
+                cbSize = (uint)Marshal.SizeOf(typeof(FLASHWINFO)),
+                hwnd = hWnd,
+                dwFlags = 0,
+                uCount = 0,
+                dwTimeout = 0
+            };
+            FlashWindowEx(ref fi);
         }
     }
 }
