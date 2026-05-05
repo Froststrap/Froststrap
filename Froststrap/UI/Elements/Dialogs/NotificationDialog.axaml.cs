@@ -22,8 +22,8 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             InitializeComponent();
 
-            Width = 320;
-            Height = 80;
+            Width = 360;
+            Height = 100;
             SystemDecorations = SystemDecorations.None;
             Topmost = true;
             ShowInTaskbar = false;
@@ -46,7 +46,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
         public NotificationDialog(string title, string message, string imagePath, int timeoutMs = 5000) : this()
         {
-            _iconPresenter = new Image { Width = 40, Height = 40, VerticalAlignment = VerticalAlignment.Center };
+            _iconPresenter = new Image { Width = 48, Height = 48, VerticalAlignment = VerticalAlignment.Center };
 
             var titleBlock = new TextBlock
             {
@@ -62,7 +62,8 @@ namespace Froststrap.UI.Elements.Dialogs
                 Text = message,
                 FontSize = 11,
                 TextWrapping = TextWrapping.Wrap,
-                MaxLines = 2
+                MaxLines = 3,
+                LineHeight = 16
             };
             messageBlock.Bind(TextBlock.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
 
