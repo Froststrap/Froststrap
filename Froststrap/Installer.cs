@@ -233,15 +233,6 @@ namespace Froststrap
 
                 TryDelete(Path.Combine(Paths.Cache, "GameHistory.json"));
             }
-
-            if (Utilities.CompareVersions(existingVer, "1.4.1.0") == VersionComparison.LessThan)
-            {
-                if (App.Settings.Prop.MultiInstanceLaunching)
-                    App.Settings.Prop.MultiInstanceLaunching = false;
-
-                TryDelete(Path.Combine(Paths.Cache, "GameHistory.json"));
-            }
-
             if (Utilities.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
             {
                 string clientSettingsPath = Path.Combine(Paths.Modifications, "ClientSettings");

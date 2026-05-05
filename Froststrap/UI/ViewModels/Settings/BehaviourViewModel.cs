@@ -17,40 +17,6 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.SelectedProcessPriority = value;
         }
 
-        public bool MultiInstances
-        {
-            get => App.Settings.Prop.MultiInstanceLaunching;
-            set => HandleMultiInstanceChange(value);
-        }
-
-        private async void HandleMultiInstanceChange(bool value)
-        {
-            if (value && !App.Settings.Prop.MultiInstanceLaunching)
-            {
-                var result = await Frontend.ShowMessageBox(
-                    "Roblox stated that multi-instance launching is considered an exploit, but it isn't bannable.\n\n" +
-                    "Are you sure you want to enable multi-instance launching?",
-                    MessageBoxImage.Warning,
-                    MessageBoxButton.YesNo
-                );
-
-                if (result != MessageBoxResult.Yes)
-                {
-                    return;
-                }
-            }
-
-            App.Settings.Prop.MultiInstanceLaunching = value;
-
-            if (!value)
-            {
-                Error773Fix = false;
-                OnPropertyChanged(nameof(Error773Fix));
-            }
-
-            OnPropertyChanged(nameof(MultiInstances));
-        }
-
         // Ill move to global settings in the future, too lazy to do it now
         public bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme);
         public bool ShowLaunchAtStartup => !string.IsNullOrEmpty(App.StorageSettings.Prop.LaunchAtStartup);
@@ -98,12 +64,6 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             Light,
             Dark
-        }
-
-        public bool Error773Fix
-        {
-            get => App.Settings.Prop.Error773Fix;
-            set => App.Settings.Prop.Error773Fix = value;
         }
 
         public bool BackgroundUpdates

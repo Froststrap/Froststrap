@@ -35,8 +35,6 @@ namespace Froststrap.Models.Persistable
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
         public List<string> CleanerDirectories { get; set; } = new List<string>();
         public bool BackgroundUpdatesEnabled { get; set; } = false;
-        public bool MultiInstanceLaunching { get; set; } = false;
-        public bool Error773Fix { get; set; } = false;
         public bool EnableBetterMatchmaking { get; set; } = false;
         public bool EnableBetterMatchmakingRandomization { get; set; } = false;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;

@@ -69,9 +69,6 @@ namespace Froststrap
 
         private AsyncMutex? _mutex;
 
-        private static Mutex? _multiInstanceMutex1;
-        private static Mutex? _multiInstanceMutex2;
-
         private int _appPid = 0;
 
         public IBootstrapperDialog? Dialog = null;
@@ -344,13 +341,6 @@ namespace Froststrap
 
             if (_launchMode != LaunchMode.Player)
                 await mutex.ReleaseAsync();
-
-            if (_launchMode == LaunchMode.Player)
-            {
-                // await because some peoples pc are so ass that roblox opens before this finishes causing an error due to the event
-                if (App.Settings.Prop.MultiInstanceLaunching)
-                    await LaunchMultiInstanceWatcher();
-            }
 
             if (!App.LaunchSettings.NoLaunchFlag.Active && !_cancelTokenSource.IsCancellationRequested)
             {
@@ -660,151 +650,6 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Not eligible: Major version diff is {diff}");
                 return false;
-            }
-        }
-
-        private static async Task LaunchMultiInstanceWatcher()
-        {
-            const string LOG_IDENT = "Bootstrapper::LaunchMultiInstanceWatcher";
-
-            try
-            {
-                if (Utilities.DoesMutexExist("ROBLOX_singletonMutex"))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Mutex ROBLOX_singletonMutex already exists, skipping creation");
-                }
-                else
-                {
-                    _multiInstanceMutex1 = new Mutex(true, "ROBLOX_singletonMutex");
-                    App.Logger.WriteLine(LOG_IDENT, "Created multi-instance mutex: ROBLOX_singletonMutex");
-                }
-
-                if (Utilities.DoesMutexExist("ROBLOX_singletonEvent") || Utilities.DoesEventExist("ROBLOX_singletonEvent"))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Mutex ROBLOX_singletonEvent already exists");
-                }
-                else
-                {
-                    _multiInstanceMutex2 = new Mutex(true, "ROBLOX_singletonEvent");
-                    App.Logger.WriteLine(LOG_IDENT, "Created multi-instance mutex: ROBLOX_singletonEvent");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply multi-instance setup: {ex.Message}");
-            }
-
-            if (App.Settings.Prop.Error773Fix)
-            {
-                try
-                {
-                    string cookiesPath = Path.Combine(Paths.Roblox, "LocalStorage", "RobloxCookies.dat");
-
-                    if (File.Exists(cookiesPath))
-                    {
-                        FileAttributes attributes = File.GetAttributes(cookiesPath);
-                        if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                        {
-                            attributes &= ~FileAttributes.ReadOnly;
-                            File.SetAttributes(cookiesPath, attributes);
-                        }
-
-                        File.SetAttributes(cookiesPath, FileAttributes.ReadOnly);
-
-                        App.Logger.WriteLine(LOG_IDENT, "Applied Error 773 fix");
-                    }
-                    else
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "773 fix not needed");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to apply 773 fix: {ex.Message}");
-                }
-            }
-
-            using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-MultiInstanceWatcherInitialisationFinished");
-            Process.Start(Paths.Process, "-multiinstancewatcher");
-
-            await Task.Run(() => initEventHandle.WaitOne(TimeSpan.FromSeconds(2)));
-
-            App.Logger.WriteLine(LOG_IDENT, "Multi-instance watcher initialization completed");
-        }
-
-        // Cleanup starts in watcher not here
-        public void CleanupMultiInstanceResources()
-        {
-            const string LOG_IDENT = "Bootstrapper::CleanupMultiInstanceResources";
-
-            try
-            {
-                string processName = OperatingSystem.IsMacOS() ? "RobloxPlayer" : "RobloxPlayerBeta";
-                int count = Process.GetProcesses().Count(x => x.ProcessName == processName);
-                count -= 1;
-
-                if (count > 0)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Skipping cleanup - {count} Roblox process(es) still running");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
-                return;
-            }
-
-            bool launchingMutex = Utilities.DoesMutexExist(MutexName);
-
-            if (launchingMutex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Skipping cleanup, currently launching roblox");
-                return;
-            }
-
-            try
-            {
-                if (_multiInstanceMutex1 != null)
-                {
-                    _multiInstanceMutex1.Dispose();
-                    _multiInstanceMutex1 = null;
-                    App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonMutex");
-                }
-
-                if (_multiInstanceMutex2 != null)
-                {
-                    _multiInstanceMutex2.Dispose();
-                    _multiInstanceMutex2 = null;
-                    App.Logger.WriteLine(LOG_IDENT, "Disposed ROBLOX_singletonEvent");
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Error disposing mutexes: {ex.Message}");
-            }
-
-            if (App.Settings.Prop.Error773Fix)
-            {
-                try
-                {
-                    string cookiesPath = Path.Combine(Paths.Roblox, "LocalStorage", "RobloxCookies.dat");
-
-                    if (File.Exists(cookiesPath))
-                    {
-                        FileAttributes attributes = File.GetAttributes(cookiesPath);
-                        if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                        {
-                            attributes &= ~FileAttributes.ReadOnly;
-                            File.SetAttributes(cookiesPath, attributes);
-                            App.Logger.WriteLine(LOG_IDENT, "Removed read-only attribute from RobloxCookies.dat");
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to remove read-only attribute: {ex.Message}");
-                }
             }
         }
 

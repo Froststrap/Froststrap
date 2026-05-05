@@ -246,25 +246,6 @@ namespace Froststrap
             }
         }
 
-        public static bool DoesEventExist(string name)
-        {
-#if WINDOWS
-            try
-            {
-                using (EventWaitHandle.OpenExisting(name)) { }
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return true;
-            }
-#else
-            // Not supported on operating systems other than windows
-            return false;
-#endif
-        }
-
-
         public static bool IsRobloxRunning()
         {
             Process[] processes = GetProcessesSafe();
