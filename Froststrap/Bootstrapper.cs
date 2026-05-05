@@ -17,7 +17,6 @@
 using Froststrap.AppData;
 using Froststrap.Models.APIs;
 using Froststrap.RobloxInterfaces;
-using Froststrap.UI.Elements.Bootstrapper.Base;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
 using System.ComponentModel;
@@ -30,9 +29,7 @@ namespace Froststrap
     {
         #region Properties
         private const int ProgressBarMaximum = 10000;
-
-        private const double TaskbarProgressMaximumWpf = 1; // this can not be changed. keep it at 1.
-        private const int TaskbarProgressMaximumWinForms = AvaloniaDialogBase.TaskbarProgressMaximum;
+        private const double TaskbarProgressMaximum = 1.0;
 
         private const string AppSettings =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
@@ -1463,20 +1460,15 @@ namespace Froststrap
 
             if (Dialog is not null)
             {
-                Dialog.ProgressStyle = ProgressBarStyle.Continuous;
+                Dialog.ProgressIndeterminate = false;
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
 
                 Dialog.ProgressMaximum = ProgressBarMaximum;
 
-                // compute total bytes to download
                 int totalPackedSize = _versionPackageManifest.Sum(package => package.PackedSize);
                 _progressIncrement = totalPackedSize > 0 ? (double)ProgressBarMaximum / totalPackedSize : 0;
 
-                if (Dialog is AvaloniaDialogBase)
-                    _taskbarProgressMaximum = (double)TaskbarProgressMaximumWinForms;
-                else
-                    _taskbarProgressMaximum = (double)TaskbarProgressMaximumWpf;
-
+                _taskbarProgressMaximum = TaskbarProgressMaximum;
                 _taskbarProgressIncrement = totalPackedSize > 0 ? _taskbarProgressMaximum / (double)totalPackedSize : 0;
             }
 
@@ -1503,7 +1495,7 @@ namespace Froststrap
 
             if (Dialog is not null)
             {
-                Dialog.ProgressStyle = ProgressBarStyle.Marquee;
+                Dialog.ProgressIndeterminate = true;
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
                 SetStatus(Strings.Bootstrapper_Status_Configuring);
             }
@@ -1728,7 +1720,7 @@ namespace Froststrap
 
             if (Dialog is not null)
             {
-                Dialog.ProgressStyle = ProgressBarStyle.Marquee;
+                Dialog.ProgressIndeterminate = true;
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
             }
 

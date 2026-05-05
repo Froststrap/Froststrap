@@ -94,12 +94,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
             });
         }
 
-        public override ProgressBarStyle ProgressStyle
+        public override bool ProgressIndeterminate
         {
-            get => _viewModel.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            get => _viewModel!.ProgressIndeterminate;
             set => RunOnUI(() =>
             {
-                _viewModel.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel!.ProgressIndeterminate = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
             });
         }

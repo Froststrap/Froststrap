@@ -1,10 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
-using System;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -80,16 +78,15 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 _viewModel!.CancelEnabled = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.CancelEnabled));
                 _viewModel.OnPropertyChanged(nameof(_viewModel.CancelButtonVisible));
-                _viewModel.OnPropertyChanged(nameof(_viewModel.CancelButtonVisible));
             });
         }
 
-        public override ProgressBarStyle ProgressStyle
+        public override bool ProgressIndeterminate
         {
-            get => _viewModel!.ProgressIndeterminate ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            get => _viewModel!.ProgressIndeterminate;
             set => RunOnUI(() =>
             {
-                _viewModel!.ProgressIndeterminate = (value == ProgressBarStyle.Marquee);
+                _viewModel!.ProgressIndeterminate = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
             });
         }
