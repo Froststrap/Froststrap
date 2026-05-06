@@ -3,9 +3,10 @@ namespace Froststrap.Models.SettingTasks
     public class FontModPresetTask : StringBaseTask
     {
         private const string CustomFontAssetId = "rbxasset://fonts/CustomFont.ttf";
+        private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };
         private static string CustomFontFamiliesDirectory => Path.Combine(Paths.PresetModifications, "content", "fonts", "families");
         private static readonly string[] CustomFontFamilyFiles =
-        {
+        [
             "AccanthisADFStd.json",
             "AmaticSC.json",
             "Arimo.json",
@@ -48,10 +49,10 @@ namespace Froststrap.Models.SettingTasks
             "TitilliumWeb.json",
             "Ubuntu.json",
             "Zekton.json"
-        };
+        ];
 
         private static readonly FontFace[] CustomFontFaces =
-        {
+        [
             new() { Name = "Thin", Weight = 100, Style = "normal", AssetId = CustomFontAssetId },
             new() { Name = "Light", Weight = 300, Style = "normal", AssetId = CustomFontAssetId },
             new() { Name = "Regular", Weight = 400, Style = "normal", AssetId = CustomFontAssetId },
@@ -59,9 +60,9 @@ namespace Froststrap.Models.SettingTasks
             new() { Name = "Semi Bold", Weight = 600, Style = "normal", AssetId = CustomFontAssetId },
             new() { Name = "Bold", Weight = 700, Style = "normal", AssetId = CustomFontAssetId },
             new() { Name = "Extra Bold", Weight = 800, Style = "normal", AssetId = CustomFontAssetId }
-        };
+        ];
 
-        public string? GetFileHash()
+        public static string? GetFileHash()
         {
             if (!File.Exists(Paths.CustomFont))
                 return null;
@@ -118,7 +119,7 @@ namespace Froststrap.Models.SettingTasks
                 Filesystem.AssertReadOnly(targetPath);
                 File.WriteAllText(
                     targetPath,
-                    JsonSerializer.Serialize(fontFamily, new JsonSerializerOptions { WriteIndented = true })
+                    JsonSerializer.Serialize(fontFamily, SerializerOptions)
                 );
             }
         }
@@ -144,7 +145,7 @@ namespace Froststrap.Models.SettingTasks
         private static bool IsCustomFontFamilyOverride(string filePath)
         {
             string contents = File.ReadAllText(filePath);
-            return contents.IndexOf(CustomFontAssetId, StringComparison.OrdinalIgnoreCase) >= 0;
+            return contents.Contains(CustomFontAssetId, StringComparison.OrdinalIgnoreCase);
         }
 
         private static string GetFontFamilyNameFromFilename(string familyFile)

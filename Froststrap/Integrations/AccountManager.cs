@@ -30,8 +30,8 @@ namespace Froststrap.Integrations
         public event Action<string, string?>? QuickSignStatusUpdated;
 
         private readonly string _accountsLocation;
-        private List<AccountManagerAccount> _accounts = new();
-        private readonly Dictionary<long, string?> _avatarUrlCache = new();
+        private List<AccountManagerAccount> _accounts = [];
+        private readonly Dictionary<long, string?> _avatarUrlCache = [];
 
         private Browser? _browser;
         private static readonly byte[] DpapiEntropy = Encoding.UTF8.GetBytes("Froststrap_DPAPI_v1");
@@ -49,7 +49,7 @@ namespace Froststrap.Integrations
             LoadAccounts();
         }
 
-        private string Protect(string text)
+        private static string Protect(string text)
         {
             if (string.IsNullOrEmpty(text)) return "";
 
@@ -67,7 +67,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        private string Unprotect(string text)
+        private static string Unprotect(string text)
         {
             if (string.IsNullOrEmpty(text)) return "";
 
@@ -93,7 +93,7 @@ namespace Froststrap.Integrations
                 var data = JsonConvert.DeserializeObject<AccountManagerData>(File.ReadAllText(_accountsLocation));
                 if (data?.Accounts != null)
                 {
-                    _accounts = data.Accounts.Select(acc => acc with { SecurityToken = Unprotect(acc.SecurityToken) }).ToList();
+                    _accounts = [.. data.Accounts.Select(acc => acc with { SecurityToken = Unprotect(acc.SecurityToken) })];
                     if (data.ActiveAccountId.HasValue)
                         ActiveAccount = _accounts.Find(a => a.UserId == data.ActiveAccountId);
                 }
@@ -107,7 +107,7 @@ namespace Froststrap.Integrations
             {
                 var data = new AccountManagerData
                 {
-                    Accounts = _accounts.Select(acc => acc with { SecurityToken = Protect(acc.SecurityToken) }).ToList(),
+                    Accounts = [.. _accounts.Select(acc => acc with { SecurityToken = Protect(acc.SecurityToken) })],
                     ActiveAccountId = ActiveAccount?.UserId,
                     LastUpdated = DateTime.UtcNow,
                     CurrentPlaceId = CurrentPlaceId,
@@ -278,7 +278,7 @@ namespace Froststrap.Integrations
         private record QuickTokenCreation(string Code, string PrivateKey, DateTime ExpirationTime, string Status);
         private record QuickTokenStatus(string Status, string? AccountName, string? AccountPictureUrl, DateTime? ExpirationTime);
 
-        private async Task<QuickTokenCreation?> CreateQuickTokenAsync()
+        private static async Task<QuickTokenCreation?> CreateQuickTokenAsync()
         {
             const string LOG_IDENT_CREATE_TOKEN = $"{LOG_IDENT}::CreateQuickToken";
 
@@ -344,7 +344,7 @@ namespace Froststrap.Integrations
 
                 while (!token.IsCancellationRequested && DateTime.UtcNow < deadline)
                 {
-                    var payload = new { code = code, privateKey = privateKey };
+                    var payload = new { code, privateKey };
                     var jsonPayload = JsonConvert.SerializeObject(payload);
                     var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
@@ -415,10 +415,7 @@ namespace Froststrap.Integrations
                                             {
                                                 Dispatcher.UIThread.Post(() =>
                                                 {
-                                                    if (quickSignWindow != null)
-                                                    {
-                                                        quickSignWindow.UpdateStatus("Cancelled", "Code expired or invalid");
-                                                    }
+                                                    quickSignWindow?.UpdateStatus("Cancelled", "Code expired or invalid");
                                                 }, DispatcherPriority.Normal);
                                             }
                                             else
@@ -551,16 +548,10 @@ namespace Froststrap.Integrations
                 {
                     try
                     {
-                        if (Dispatcher.UIThread != null)
+                        Dispatcher.UIThread?.Post(() =>
                         {
-                            Dispatcher.UIThread.Post(() =>
-                            {
-                                if (quickSignWindow != null)
-                                {
-                                    quickSignWindow.UpdateStatus("TimedOut", "Sign-in timed out");
-                                }
-                            }, DispatcherPriority.Normal);
-                        }
+                            quickSignWindow?.UpdateStatus("TimedOut", "Sign-in timed out");
+                        }, DispatcherPriority.Normal);
                     }
                     catch (Exception dispEx)
                     {
@@ -582,7 +573,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        private async Task<string?> PerformLoginWithAuthTokenAsync(string code, string privateKey)
+        private static async Task<string?> PerformLoginWithAuthTokenAsync(string code, string privateKey)
         {
             const string LOG_IDENT_LOGIN = $"{LOG_IDENT}::PerformLoginWithAuthToken";
 
@@ -674,7 +665,7 @@ namespace Froststrap.Integrations
                                 var end = header.IndexOf(';', start);
                                 if (end == -1) end = header.Length;
 
-                                var token = header.Substring(start, end - start);
+                                var token = header[start..end];
                                 if (!string.IsNullOrEmpty(token))
                                 {
                                     return token;
@@ -709,13 +700,13 @@ namespace Froststrap.Integrations
             }
         }
 
-        private async Task CancelQuickTokenAsync(string code)
+        private static async Task CancelQuickTokenAsync(string code)
         {
             const string LOG_IDENT_CANCEL = $"{LOG_IDENT}::CancelQuickToken";
 
             try
             {
-                var payload = new { code = code };
+                var payload = new { code };
                 var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
                 var resp = await App.HttpClient.PostAsync("https://apis.roblox.com/auth-token-service/v1/login/cancel", content).ConfigureAwait(false);
                 if (!resp.IsSuccessStatusCode)
@@ -728,7 +719,7 @@ namespace Froststrap.Integrations
         }
 
         // logout a .ROBLOSECURITY value
-        private async Task LogoutRoblosecurityAsync(string roblosecurity)
+        private static async Task LogoutRoblosecurityAsync(string roblosecurity)
         {
             const string LOG_IDENT_LOGOUT = $"{LOG_IDENT}::LogoutRoblosecurity";
 
@@ -827,14 +818,14 @@ namespace Froststrap.Integrations
                     Headless = false,
                     DefaultViewport = null,
                     ExecutablePath = executablePath,
-                    Args = new[]
-                    {
+                    Args =
+                    [
                         "--disable-notifications",
                         "--no-sandbox",
                         "--disable-setuid-sandbox",
                         "--disable-blink-features=AutomationControlled"
-                    },
-                    IgnoredDefaultArgs = new[] { "--enable-automation" }
+                    ],
+                    IgnoredDefaultArgs = ["--enable-automation" ]
                 });
 
                 if (_browser == null) return null;
@@ -876,7 +867,7 @@ namespace Froststrap.Integrations
                     App.Logger.WriteLine(LOG_IDENT_BROWSER, "Navigating to Roblox...");
                     await mainPage.GoToAsync("https://www.roblox.com/login", new NavigationOptions
                     {
-                        WaitUntil = new[] { WaitUntilNavigation.Load },
+                        WaitUntil = [WaitUntilNavigation.Load]
                     });
                 }
                 catch (Exception ex)
@@ -937,7 +928,7 @@ namespace Froststrap.Integrations
         }
 
         // this sucks less (I'm guessing these paths bro)
-        private string? GetSystemBrowserPath()
+        private static string? GetSystemBrowserPath()
         {
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 return GetWindowsBrowserPath();
@@ -949,7 +940,7 @@ namespace Froststrap.Integrations
             return null;
         }
 
-        private string? GetWindowsBrowserPath()
+        private static string? GetWindowsBrowserPath()
         {
             string programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
@@ -957,7 +948,7 @@ namespace Froststrap.Integrations
             string programData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
 
             string[] paths =
-            {
+            [
             // Google Chrome
             Path.Combine(programFiles,    "Google", "Chrome", "Application", "chrome.exe"),
             Path.Combine(programFilesX86, "Google", "Chrome", "Application", "chrome.exe"),
@@ -1000,15 +991,15 @@ namespace Froststrap.Integrations
 
             // Arc
             Path.Combine(localAppData,    "Programs", "Arc", "Arc.exe"),
-        };
+            ];
 
             return paths.FirstOrDefault(File.Exists);
         }
 
-        private string? GetLinuxBrowserPath()
+        private static string? GetLinuxBrowserPath()
         {
             string[] candidates =
-            {
+            [
             // Google Chrome
             "google-chrome",
             "google-chrome-stable",
@@ -1045,7 +1036,7 @@ namespace Froststrap.Integrations
 
             // Helium?
             "helium",
-        };
+            ];
 
             foreach (var candidate in candidates)
             {
@@ -1073,7 +1064,7 @@ namespace Froststrap.Integrations
             }
 
             string[] fixedPaths =
-            {
+            [
             "/usr/bin/google-chrome",
             "/usr/bin/google-chrome-stable",
             "/usr/bin/chromium",
@@ -1088,15 +1079,15 @@ namespace Froststrap.Integrations
             "/opt/microsoft/msedge/msedge",
             "/opt/brave.com/brave/brave-browser",
             "/opt/vivaldi/vivaldi",
-        };
+            ];
 
             return fixedPaths.FirstOrDefault(File.Exists);
         }
 
-        private string? GetMacOsBrowserPath()
+        private static string? GetMacOsBrowserPath()
         {
             string[] paths =
-            {
+            [
             // Google Chrome
             "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Applications", "Google Chrome.app", "Contents", "MacOS", "Google Chrome"),
@@ -1127,12 +1118,12 @@ namespace Froststrap.Integrations
 
             // Helium
             "/Applications/Helium.app/Contents/MacOS/Helium",
-        };
+            ];
 
             return paths.FirstOrDefault(File.Exists);
         }
 
-        private async Task<AccountManagerAccount?> GetAccountInfoFromCookie(string securityCookie)
+        private static async Task<AccountManagerAccount?> GetAccountInfoFromCookie(string securityCookie)
         {
             const string LOG_IDENT_GET_INFO = $"{LOG_IDENT}::GetAccountInfoFromCookie";
 
@@ -1176,7 +1167,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        public async Task<UserPresence?> GetUserPresenceAsync(long userId)
+        public static async Task<UserPresence?> GetUserPresenceAsync(long userId)
         {
             const string LOG_IDENT_PRESENCE = $"{LOG_IDENT}::GetUserPresence";
 
@@ -1199,7 +1190,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        public async Task<bool> ValidateAccountAsync(AccountManagerAccount account)
+        public static async Task<bool> ValidateAccountAsync(AccountManagerAccount account)
         {
             const string LOG_IDENT_VALIDATE = $"{LOG_IDENT}::ValidateAccount";
 
@@ -1245,7 +1236,7 @@ namespace Froststrap.Integrations
 
                     SaveAccounts();
 
-                    if (ActiveAccount is null && _accounts.Any())
+                    if (ActiveAccount is null && _accounts.Count > 0)
                     {
                         SetActiveAccount(_accounts.First().UserId);
                     }
@@ -1282,7 +1273,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        private async Task<string> GetCsrfToken(string cookie)
+        private static async Task<string> GetCsrfToken(string cookie)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/logout");
             request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
@@ -1291,7 +1282,7 @@ namespace Froststrap.Integrations
             return resp.Headers.TryGetValues("X-CSRF-TOKEN", out var tokens) ? tokens.First() : "";
         }
 
-        public async Task<string?> GetAuthTicket(string cookie, string csrf, long placeId)
+        public static async Task<string?> GetAuthTicket(string cookie, string csrf, long placeId)
         {
             using var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
             request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
@@ -1303,7 +1294,7 @@ namespace Froststrap.Integrations
             return resp.Headers.TryGetValues("rbx-authentication-ticket", out var vals) ? vals.First() : null;
         }
 
-        public async Task<string> JoinServer(AccountManagerAccount account, long placeId, string jobId = "", bool followUser = false, bool joinVip = false)
+        public static async Task<string> JoinServer(AccountManagerAccount account, long placeId, string jobId = "", bool followUser = false, bool joinVip = false)
         {
             string csrf = await GetCsrfToken(account.SecurityToken);
             string? ticket = await GetAuthTicket(account.SecurityToken, csrf, placeId);
@@ -1352,7 +1343,7 @@ namespace Froststrap.Integrations
             {
                 var batch = userIds.Skip(i).Take(batchSize).ToList();
                 string idsParam = string.Join(',', batch);
-                Uri url = new Uri($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
+                Uri url = new($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
 
                 try
                 {

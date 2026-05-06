@@ -1,4 +1,6 @@
 ﻿using Froststrap;
+using System.Net;
+using System.Text.Json;
 
 namespace Froststrap.RobloxInterfaces
 {
@@ -10,7 +12,7 @@ namespace Froststrap.RobloxInterfaces
 
         private const string VersionStudioHash = "version-012732894899482c";
 
-        public static EventHandler<string>? ChannelChanged;
+        public static event EventHandler<string>? ChannelChanged;
         private static string _channel = App.Settings.Prop.Channel;
         public static string Channel
         {
@@ -25,7 +27,7 @@ namespace Froststrap.RobloxInterfaces
             }
         }
 
-        public static string ChannelToken = string.Empty;
+        public static string ChannelToken { get; set; } = string.Empty;
 
         public static string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer";
 
@@ -37,14 +39,13 @@ namespace Froststrap.RobloxInterfaces
 
         public static string BaseUrl { get; private set; } = null!;
 
-        public static readonly List<HttpStatusCode?> BadChannelCodes = new()
-        {
+        public static readonly List<HttpStatusCode?> BadChannelCodes = [
             HttpStatusCode.Unauthorized,
             HttpStatusCode.Forbidden,
             HttpStatusCode.NotFound
-        };
+        ];
 
-        private static readonly Dictionary<string, ClientVersion> ClientVersionCache = new();
+        private static readonly Dictionary<string, ClientVersion> ClientVersionCache = [];
 
         // a list of roblox deployment locations that we check for, in case one of them don't work
         // these are all weighted based on their priority, so that we pick the most optimal one that we can. 0 = highest
@@ -108,7 +109,7 @@ namespace Froststrap.RobloxInterfaces
 
             App.Logger.WriteLine(LOG_IDENT, "Testing connectivity...");
 
-            while (tasks.Any() && String.IsNullOrEmpty(BaseUrl))
+            while (tasks.Count > 0 && String.IsNullOrEmpty(BaseUrl))
             {
                 var finishedTask = await Task.WhenAny(tasks);
 
@@ -125,7 +126,7 @@ namespace Froststrap.RobloxInterfaces
 
             if (string.IsNullOrEmpty(BaseUrl))
             {
-                if (exceptions.Any())
+                if (exceptions.Count > 0)
                     return exceptions[0];
 
                 // task cancellation exceptions don't get added to the list
@@ -257,10 +258,10 @@ namespace Froststrap.RobloxInterfaces
 
             ClientVersion clientVersion;
 
-            if (ClientVersionCache.ContainsKey(cacheKey))
+            if (ClientVersionCache.TryGetValue(cacheKey, out var value))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Deploy information is cached");
-                clientVersion = ClientVersionCache[cacheKey];
+                clientVersion = value;
             }
             else
             {

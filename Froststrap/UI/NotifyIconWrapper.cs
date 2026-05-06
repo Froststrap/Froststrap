@@ -15,7 +15,7 @@ namespace Froststrap.UI
         private readonly TrayIcon _trayIcon;
         private readonly MenuContainer _menuContainer;
         private readonly Watcher _watcher;
-        private ActivityWatcher? _activityWatcher => _watcher.ActivityWatcher;
+        private ActivityWatcher? ActivityWatcher => _watcher.ActivityWatcher;
 
         private DateTime _lastClickTime = DateTime.MinValue;
         private const int DoubleClickThresholdMs = 300;
@@ -38,9 +38,9 @@ namespace Froststrap.UI
 
             _trayIcon.Clicked += OnTrayIconClicked;
 
-            if (_activityWatcher is not null && (App.Settings.Prop.ShowServerDetails || App.Settings.Prop.ShowServerUptime))
+            if (ActivityWatcher is not null && (App.Settings.Prop.ShowServerDetails || App.Settings.Prop.ShowServerUptime))
             {
-                _activityWatcher.OnGameJoin += OnGameJoin;
+                ActivityWatcher.OnGameJoin += OnGameJoin;
             }
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
@@ -88,7 +88,7 @@ namespace Froststrap.UI
                         _ = Frontend.ShowMessageBox("Enable 'Game History' in settings to use this feature.", MessageBoxImage.Information);
                         return;
                     }
-                    var history = new ServerHistory(_activityWatcher!);
+                    var history = new ServerHistory(ActivityWatcher!);
                     history.Show();
                     break;
 
@@ -99,7 +99,7 @@ namespace Froststrap.UI
                         return;
                     }
 
-                    if (_activityWatcher?.InGame == true)
+                    if (ActivityWatcher?.InGame == true)
                         _menuContainer.ShowServerInformationWindow();
                     else
                         _ = Frontend.ShowMessageBox("Join a game first to view server information.", MessageBoxImage.Information);
@@ -109,14 +109,14 @@ namespace Froststrap.UI
 
         public async void OnGameJoin(object? sender, EventArgs e)
         {
-            if (_activityWatcher?.Data == null) return;
+            if (ActivityWatcher?.Data == null) return;
 
             Task<string?>? thumbnailTask = null;
             if (App.Settings.Prop.ShowJoinNotification)
             {
                 thumbnailTask = Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
                 {
-                    TargetId = (ulong)_activityWatcher.Data.UniverseId,
+                    TargetId = (ulong)ActivityWatcher.Data.UniverseId,
                     Type = ThumbnailType.GameIcon,
                     Size = "150x150",
                     Format = ThumbnailFormat.Png,
@@ -124,7 +124,7 @@ namespace Froststrap.UI
                 }, CancellationToken.None);
             }
 
-            string title = _activityWatcher.Data.ServerType switch
+            string title = ActivityWatcher.Data.ServerType switch
             {
                 ServerType.Public => Strings.ContextMenu_ServerInformation_Notification_Title_Public,
                 ServerType.Private => Strings.ContextMenu_ServerInformation_Notification_Title_Private,
@@ -137,12 +137,12 @@ namespace Froststrap.UI
 
             string? serverLocation = "";
             if (locationActive)
-                serverLocation = await _activityWatcher.Data.QueryServerLocation();
+                serverLocation = await ActivityWatcher.Data.QueryServerLocation();
 
             string? serverUptime = "";
             if (uptimeActive)
             {
-                DateTime? serverTime = await _activityWatcher.Data.QueryServerTime();
+                DateTime? serverTime = await ActivityWatcher.Data.QueryServerTime();
                 if (serverTime.HasValue)
                 {
                     TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;

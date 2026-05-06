@@ -20,14 +20,14 @@ namespace Froststrap
             }
         }
         public bool Loaded => Enabled && State == CookieState.Success;
-        private bool Enabled => App.Settings.Prop.AllowCookieAccess;
+        private static bool Enabled => App.Settings.Prop.AllowCookieAccess;
 
         private string AuthCookie = string.Empty;
         private const string AuthCookieName = ".ROBLOSECURITY";
         private const string SupportedVersion = "1";
         private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
 
-        private string CookiesPath => RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
+        private static string CookiesPath => RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
                     ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")
                     : Path.Combine(Paths.Roblox, "LocalStorage", Deployment.IsDefaultRobloxDomain ? "RobloxCookies.dat" : $"{Deployment.RobloxDomain}_RobloxCookies.dat");
 
@@ -35,8 +35,7 @@ namespace Froststrap
         {
             string? host = request.RequestUri?.Host;
 
-            if (host is null)
-                throw new ArgumentNullException("Host cannot be null");
+            ArgumentNullException.ThrowIfNull(host);
 
             if (
                 !host.Equals(Deployment.RobloxDomain, StringComparison.OrdinalIgnoreCase) &&
@@ -136,7 +135,7 @@ namespace Froststrap
         }
 
         [SupportedOSPlatform("windows")]
-        private async Task<string> LoadWindowsCookies()
+        private static async Task<string> LoadWindowsCookies()
         {
             string content = await File.ReadAllTextAsync(CookiesPath);
             var cookies = JsonSerializer.Deserialize<RobloxCookies>(content)!;
@@ -150,7 +149,7 @@ namespace Froststrap
             return authCookieMatch.Success ? authCookieMatch.Groups[1].Value : string.Empty;
         }
 
-        private async Task<string> LoadMacCookies(string logIdent)
+        private static async Task<string> LoadMacCookies(string logIdent)
         {
             byte[] fileBytes = await File.ReadAllBytesAsync(CookiesPath);
             string fileString = Encoding.Latin1.GetString(fileBytes);
@@ -162,7 +161,7 @@ namespace Froststrap
             return string.Empty;
         }
 
-        private async Task<string> LoadLinuxCookies(string logIdent)
+        private static async Task<string> LoadLinuxCookies(string logIdent)
         {
             // TODO: add actual cookie support, last time I checked Sober just uses plaintext in their COOKIES file.
             // Possibly add GNOME keyring/ KWallet support using Tmds.DBus.Protocol.

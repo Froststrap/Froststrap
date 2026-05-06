@@ -309,14 +309,14 @@ namespace Froststrap.UI.Elements.Dialogs
             this.Close();
         }
 
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
             string? ProfileName = LoadProfile.SelectedItem?.ToString();
 
             if (string.IsNullOrEmpty(ProfileName))
                 return;
 
-            App.FastFlags.DeleteProfile(ProfileName);
+            await FastFlagManager.DeleteProfile(ProfileName);
             LoadProfiles();
         }
 

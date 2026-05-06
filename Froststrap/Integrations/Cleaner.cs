@@ -4,7 +4,8 @@
     {
         private const int MaxFiles = 200;
 
-        public static Dictionary<string, string?> Directories = new Dictionary<string, string?> {
+        public static readonly IReadOnlyDictionary<string, string?> Directories = new Dictionary<string, string?>
+        {
             { "FroststrapLogs", Paths.Logs },
             { "FroststrapCache", Paths.Downloads },
             { "RobloxLogs", Paths.RobloxLogs },
@@ -17,7 +18,7 @@
 
             App.Logger.WriteLine(LOG_IDENT, "Cleaner has started");
 
-            var MaxFileAge = App.Settings.Prop.CleanerOptions switch
+            var maxFileAge = App.Settings.Prop.CleanerOptions switch
             {
                 CleanerOptions.OneDay => 1,
                 CleanerOptions.OneWeek => 7,
@@ -27,60 +28,56 @@
                 _ => int.MaxValue,
             };
 
-            var Threshold = DateTime.Now.AddHours(-MaxFileAge);
-            int DeletedItems = 0;
+            var threshold = DateTime.Now.AddHours(-maxFileAge);
 
             foreach (var directory in Directories)
             {
-                string? Folder = directory.Value;
-                string Type = directory.Key;
-                DeletedItems = 0;
+                string? folder = directory.Value;
+                string type = directory.Key;
 
-                if (!App.Settings.Prop.CleanerDirectories.Contains(Type))
+                int deletedItems = 0;
+
+                if (!App.Settings.Prop.CleanerDirectories.Contains(type))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Skipping {Type}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Skipping {type}");
                     continue;
                 }
 
-                if (String.IsNullOrEmpty(Folder) || !Directory.Exists(Folder))
+                if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
                     continue;
 
                 try
                 {
-                    string[] Files = RecursivlyGetFiles(Folder);
+                    string[] files = RecursivlyGetFiles(folder);
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Running cleaner in {directory}, {Files.Length} files found");
+                    App.Logger.WriteLine(LOG_IDENT, $"Running cleaner in {type}, {files.Length} files found");
 
-                    foreach (string file in Files)
+                    foreach (string file in files)
                     {
-                        // verify file
-                        if (!VerifyFile(file, Threshold))
+                        if (!VerifyFile(file, threshold))
                             continue;
 
-                        // file limit exceeded
-                        if (DeletedItems >= MaxFiles)
+                        if (deletedItems >= MaxFiles)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"Reached file threshold in {directory}, continuing to next directory");
+                            App.Logger.WriteLine(LOG_IDENT, $"Reached file threshold in {type}, continuing to next directory");
                             break;
                         }
 
-                        // attempt deletion
                         try
                         {
                             File.Delete(file);
-                            DeletedItems++;
+                            deletedItems++;
                         }
                         catch (Exception ex)
                         {
                             App.Logger.WriteLine(LOG_IDENT, $"Unable to delete {file}");
                             App.Logger.WriteException(LOG_IDENT, ex);
-                            continue;
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to clean up {Folder}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to clean up {folder}");
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
@@ -88,42 +85,29 @@
             App.Logger.WriteLine(LOG_IDENT, "Cleaner finished");
         }
 
-        private static bool VerifyFile(string file, DateTime Threshold)
+        private static bool VerifyFile(string file, DateTime threshold)
         {
-            // true = can be deleted
-            // false = silently cancel deletion for current file
-            // exception = deletion could be dangerous, cancels cleaner for current directory
-
             if (!File.Exists(file))
                 return false;
 
-            if (File.GetCreationTime(file) > Threshold)
+            if (File.GetCreationTime(file) > threshold)
                 return false;
 
-            // TODO add more safety checks?
             if (!file.Contains("Roblox") && !file.Contains(App.ProjectName) && !file.Contains(Paths.Base))
                 throw new Exception($"{file} was in disallowed directory");
 
             if (file.Contains("Windows"))
-                throw new Exception($"{file} was in Windows directory"); // we dont want any contact with windows directory
-                                                                         // this will cancel the cleaner process
+                throw new Exception($"{file} was in Windows directory");
+
             return true;
         }
 
-        private static string[] RecursivlyGetFiles(string Folder)
+        private static string[] RecursivlyGetFiles(string folder)
         {
-            List<string> filesList = new List<string>();
-
-            if (String.IsNullOrEmpty(Folder) || !Directory.Exists(Folder))
+            if (string.IsNullOrEmpty(folder) || !Directory.Exists(folder))
                 throw new Exception("Folder was not found");
 
-            foreach (string File in Directory.EnumerateFiles(Folder, "*.*", SearchOption.AllDirectories))
-            {
-                filesList.Add(File);
-            }
-
-            return filesList.ToArray();
+            return [.. Directory.EnumerateFiles(folder, "*.*", SearchOption.AllDirectories)];
         }
-
     }
 }

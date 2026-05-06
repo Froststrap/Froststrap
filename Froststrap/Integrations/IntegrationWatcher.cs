@@ -3,7 +3,7 @@
     public class IntegrationWatcher : IDisposable
     {
         private readonly ActivityWatcher _activityWatcher;
-        private readonly Dictionary<int, CustomIntegration> _activeIntegrations = new();
+        private readonly Dictionary<int, CustomIntegration> _activeIntegrations = [];
 
         public IntegrationWatcher(ActivityWatcher activityWatcher)
         {
@@ -68,7 +68,7 @@
             }
         }
 
-        private void TerminateProcess(int pid)
+        private static void TerminateProcess(int pid)
         {
             const string LOG_IDENT = "IntegrationWatcher::TerminateProcess";
 

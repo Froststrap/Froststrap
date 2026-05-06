@@ -23,7 +23,7 @@
         public LaunchFlag NsisFlag { get; } = new("nsis");
 
 #if DEBUG
-        public bool BypassUpdateCheck => true;
+        public static bool BypassUpdateCheck => true;
 #else
         public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || PostLaunchFlag.Active || NsisFlag.Active;
 #endif
@@ -47,7 +47,7 @@
 
             Args = args;
 
-            Dictionary<string, LaunchFlag> flagMap = new();
+            Dictionary<string, LaunchFlag> flagMap = [];
 
             // build flag map
             foreach (var prop in this.GetType().GetProperties())

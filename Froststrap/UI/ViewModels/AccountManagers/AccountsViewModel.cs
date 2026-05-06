@@ -113,7 +113,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             {
                 try
                 {
-                    var presenceData = await Manager.GetUserPresenceAsync(activeUserId.Value);
+                    var presenceData = await AccountManager.GetUserPresenceAsync(activeUserId.Value);
 
                     if (presenceData != null)
                     {
@@ -292,7 +292,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             try
             {
                 var infoTask = GetAccountInformationAsync(userId);
-                var presenceTask = Manager.GetUserPresenceAsync(userId);
+                var presenceTask = AccountManager.GetUserPresenceAsync(userId);
 
                 await Task.WhenAll(infoTask, presenceTask);
 

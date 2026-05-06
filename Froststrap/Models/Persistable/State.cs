@@ -14,7 +14,7 @@
 
         public WindowState SettingsWindow { get; set; } = new();
 
-        public List<ModConfig> Mods { get; set; } = new();
+        public List<ModConfig> Mods { get; set; } = [];
 
         public string? LastMigratedVersion { get; set; } = null;
     }

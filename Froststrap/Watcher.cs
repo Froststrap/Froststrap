@@ -80,7 +80,7 @@ namespace Froststrap
 
         public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);
 
-        public void CloseProcess(int pid, bool force = false)
+        public static void CloseProcess(int pid, bool force = false)
         {
             const string LOG_IDENT = "Watcher::CloseProcess";
 

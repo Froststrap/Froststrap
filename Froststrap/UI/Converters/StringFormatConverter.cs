@@ -1,26 +1,23 @@
-﻿using System;
-using System.Globalization;
-using Avalonia.Data;
+﻿using System.Globalization;
 using Avalonia.Data.Converters;
 
 namespace Froststrap.UI.Converters
 {
     public class StringFormatConverter : IValueConverter
     {
+        private static readonly char[] Separator = ['|'];
+
         public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
         {
-            string? valueStr = value as string;
-            string? parameterStr = parameter as string;
-
-            if (valueStr is null)
+            if (value is not string valueStr)
                 return string.Empty;
 
-            if (parameterStr is null)
+            if (parameter is not string parameterStr)
                 return valueStr;
 
-            string[] args = parameterStr.Split(new char[] { '|' });
+            string[] args = parameterStr.Split(Separator);
 
-            return string.Format(valueStr, args);
+            return string.Format(valueStr, (object[])args);
         }
 
         public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)

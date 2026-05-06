@@ -25,12 +25,9 @@ namespace Froststrap.UI
             if (App.LaunchSettings.QuietFlag.Active)
                 return;
 
-            string topLine = Strings.Dialog_PlayerError_FailedLaunch;
+            string topLine = crash ? Strings.Dialog_PlayerError_Crash : Strings.Dialog_PlayerError_FailedLaunch;
 
-            if (crash)
-                topLine = Strings.Dialog_PlayerError_Crash;
-
-            string info = String.Format(
+            string info = string.Format(
                 Strings.Dialog_PlayerError_HelpInformation,
                 $"https://github.com/{App.ProjectRepository}/wiki/Roblox-crashes-or-does-not-launch",
                 $"https://github.com/{App.ProjectRepository}/wiki/Switching-between-Roblox-and-Bloxstrap"
@@ -125,29 +122,16 @@ namespace Froststrap.UI
 
         public static async Task<IBootstrapperDialog> GetBootstrapperDialog(BootstrapperStyle style)
         {
-            switch (style)
+            return style switch
             {
-                case BootstrapperStyle.ClassicFluentDialog:
-                    return new ClassicFluentDialog();
-
-                case BootstrapperStyle.ByfronDialog:
-                    return new ByfronDialog();
-
-                case BootstrapperStyle.TwentyFiveDialog:
-                    return new TwentyFiveDialog();
-
-                case BootstrapperStyle.FluentDialog:
-                    return new FluentDialog(false);
-
-                case BootstrapperStyle.FluentAeroDialog:
-                    return new FluentDialog(true);
-
-                case BootstrapperStyle.CustomDialog:
-                    return await GetCustomBootstrapper();
-
-                default:
-                    return new FluentDialog(false);
-            }
+                BootstrapperStyle.ClassicFluentDialog => new ClassicFluentDialog(),
+                BootstrapperStyle.ByfronDialog => new ByfronDialog(),
+                BootstrapperStyle.TwentyFiveDialog => new TwentyFiveDialog(),
+                BootstrapperStyle.FluentDialog => new FluentDialog(false),
+                BootstrapperStyle.FluentAeroDialog => new FluentDialog(true),
+                BootstrapperStyle.CustomDialog => await GetCustomBootstrapper(),
+                _ => new FluentDialog(false)
+            };
         }
 
         private static async Task<MessageBoxResult> ShowFluentMessageBox(string message, MessageBoxImage icon, MessageBoxButton buttons)
@@ -178,7 +162,7 @@ namespace Froststrap.UI
             });
         }
 
-        public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5, Action? onClick = null)
+        public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5)
         {
             string imagePath = type switch
             {

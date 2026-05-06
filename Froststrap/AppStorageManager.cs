@@ -1,5 +1,6 @@
 ﻿namespace Froststrap
 {
+    //TODO: Rework this entirely
     public class AppStorageManager : JsonManager<AppStorageSettings>
     {
         public AppStorageManager() : base("AppStorage") { }
@@ -17,12 +18,9 @@
                 {
                     string contents = File.ReadAllText(FileLocation);
 
-                    AppStorageSettings? settings = JsonSerializer.Deserialize<AppStorageSettings>(contents);
+                    _prop = JsonSerializer.Deserialize<AppStorageSettings>(contents)
+                            ?? throw new Exception("Failed to deserialize appStorage.json");
 
-                    if (settings is null)
-                        throw new Exception("Failed to deserialize appStorage.json");
-
-                    _prop = settings;
                     Loaded = true;
 
                     App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");

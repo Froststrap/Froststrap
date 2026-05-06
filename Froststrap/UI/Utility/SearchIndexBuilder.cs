@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
 using Froststrap.UI.Elements.Controls;
@@ -9,17 +10,15 @@ namespace Froststrap.UI.Utility
     /// Scans majoirty of elements in search page (OptionControls, CardExpanders, CardActions, TextBlocks) etc.
     /// Should be fairly competent at doing its job.
     /// </summary>
-    public class SearchIndexBuilder
+    public partial class SearchIndexBuilder
     {
-        private readonly Dictionary<string, List<SearchBarItem>> _pageIndexCache = new();
+        private readonly Dictionary<string, List<SearchBarItem>> _pageIndexCache = [];
         private List<SearchBarItem>? _navigationItemsCache;
 
-        public List<SearchBarItem> BuildIndex(List<(string PageTag, string PageTitle, object PageViewModel)> pages)
+
+        public List<SearchBarItem> BuildIndex(List<(string PageTag, string PageTitle, object PageViewModel)> _)
         {
-            var searchIndex = new List<SearchBarItem>();
-
-            searchIndex.AddRange(GetNavigationItems());
-
+            List<SearchBarItem> searchIndex = [.. GetNavigationItems()];
             return searchIndex;
         }
 
@@ -32,18 +31,18 @@ namespace Froststrap.UI.Utility
 
             var navigationItems = new[]
             {
-                new { Display = Resources.Strings.Menu_Integrations_Title, Tag = "integrations", Action = (Action?)null },
-                new { Display = Resources.Strings.Menu_Behaviour_Title, Tag = "behaviour", Action = (Action?)null },
-                new { Display = "Preset Mods", Tag = "mods", Action = (Action?)null },
-                new { Display = Resources.Strings.Menu_FastFlags_Title, Tag = "fastflags", Action = (Action?)null },
-                new { Display = Resources.Strings.Menu_Appearance_Title, Tag = "appearance", Action = (Action?)null },
-                new { Display = Resources.Strings.Menu_RegionSelector_Title, Tag = "regionselector", Action = (Action?)null },
-                new { Display = Resources.Strings.Menu_GlobalSettings_Title, Tag = "globalsettings", Action = (Action?)null },
-                new { Display = Resources.Strings.Common_Shortcuts, Tag = "shortcuts", Action = (Action?)null },
-                new { Display = Resources.Strings.Common_Deployment, Tag = "channels", Action = (Action?)null }
+                new { Display = Resources.Strings.Menu_Integrations_Title, Tag = "integrations" },
+                new { Display = Resources.Strings.Menu_Behaviour_Title, Tag = "behaviour" },
+                new { Display = "Preset Mods", Tag = "mods" },
+                new { Display = Resources.Strings.Menu_FastFlags_Title, Tag = "fastflags" },
+                new { Display = Resources.Strings.Menu_Appearance_Title, Tag = "appearance" },
+                new { Display = Resources.Strings.Menu_RegionSelector_Title, Tag = "regionselector" },
+                new { Display = Resources.Strings.Menu_GlobalSettings_Title, Tag = "globalsettings" },
+                new { Display = Resources.Strings.Common_Shortcuts, Tag = "shortcuts" },
+                new { Display = Resources.Strings.Common_Deployment, Tag = "channels" }
             };
 
-            _navigationItemsCache = new List<SearchBarItem>();
+            _navigationItemsCache = [];
             foreach (var item in navigationItems)
             {
                 _navigationItemsCache.Add(new SearchBarItem
@@ -63,6 +62,7 @@ namespace Froststrap.UI.Utility
         {
             _pageIndexCache.Remove(pageTag);
         }
+
         public void ClearCache()
         {
             _pageIndexCache.Clear();
@@ -71,7 +71,7 @@ namespace Froststrap.UI.Utility
 
         public List<SearchBarItem> ScanRenderedPageForElements(Control pageView, string pageTag)
         {
-            var newItems = new List<SearchBarItem>();
+            List<SearchBarItem> newItems = [];
 
             try
             {
@@ -95,24 +95,18 @@ namespace Froststrap.UI.Utility
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("SearchIndexBuilder::ScanRenderedPageForElements", 
+                App.Logger.WriteLine("SearchIndexBuilder::ScanRenderedPageForElements",
                     $"Error scanning rendered page {pageTag}: {ex.Message}");
                 return newItems;
             }
         }
 
-        private Control? FindPageView(object pageViewModel)
-        {
-            // This would normally be called from a page instance
-            // For now, we return null and this will be called with actual view instances from code-behind
-            return null;
-        }
+        private static Control? FindPageView(object _) => null;
 
-        private void ScanForCardExpanders(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
+        private static void ScanForCardExpanders(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
         {
             var cardExpanders = pageView.GetVisualDescendants()
-                .OfType<CardExpander>()
-                .ToList();
+                .OfType<CardExpander>();
 
             foreach (var expander in cardExpanders)
             {
@@ -132,11 +126,10 @@ namespace Froststrap.UI.Utility
             }
         }
 
-        private void ScanForOptionControls(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
+        private static void ScanForOptionControls(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
         {
             var optionControls = pageView.GetVisualDescendants()
-                .OfType<OptionControl>()
-                .ToList();
+                .OfType<OptionControl>();
 
             foreach (var option in optionControls)
             {
@@ -160,11 +153,10 @@ namespace Froststrap.UI.Utility
             }
         }
 
-        private void ScanForCardActions(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
+        private static void ScanForCardActions(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
         {
             var cardActions = pageView.GetVisualDescendants()
-                .OfType<CardAction>()
-                .ToList();
+                .OfType<CardAction>();
 
             foreach (var action in cardActions)
             {
@@ -183,11 +175,10 @@ namespace Froststrap.UI.Utility
             }
         }
 
-        private void ScanForSquareCards(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
+        private static void ScanForSquareCards(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
         {
             var squareCards = pageView.GetVisualDescendants()
-                .OfType<SquareCard>()
-                .ToList();
+                .OfType<SquareCard>();
 
             foreach (var card in squareCards)
             {
@@ -207,21 +198,19 @@ namespace Froststrap.UI.Utility
             }
         }
 
-        private void ScanForTextLabels(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
+        private static void ScanForTextLabels(Control pageView, string pageTag, string pageTitle, List<SearchBarItem> searchIndex)
         {
             var textBlocks = pageView.GetVisualDescendants()
                 .OfType<TextBlock>()
-                .Where(tb => 
+                .Where(tb =>
                 {
                     var text = tb.Text;
-                    return !string.IsNullOrWhiteSpace(text) && 
-                           text.Length > 3 && 
-                           text.Length < 100 &&
-                           !text.Contains("\n") &&
+                    return !string.IsNullOrWhiteSpace(text) &&
+                           text.Length is > 3 and < 100 &&
+                           !text.Contains('\n') && // CA1847: Faster char-based lookup
                            tb.FontWeight == Avalonia.Media.FontWeight.Bold;
                 })
-                .DistinctBy(tb => tb.Text)
-                .ToList();
+                .DistinctBy(tb => tb.Text);
 
             foreach (var textBlock in textBlocks)
             {
@@ -244,7 +233,6 @@ namespace Froststrap.UI.Utility
 
         private static CardExpander? FindParentCardExpander(Control control)
         {
-            // Walk up the visual tree to find a parent CardExpander
             var parent = control.Parent;
             while (parent != null)
             {

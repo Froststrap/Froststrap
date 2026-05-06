@@ -4,21 +4,20 @@ namespace Froststrap
 {
     public class FastFlagManager : JsonManager<Dictionary<string, object>>
     {
-        private Dictionary<string, object> OriginalProp = new();
+        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+        private static readonly JsonSerializerOptions _jsonReadOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip };
+
+        private Dictionary<string, object> OriginalProp = [];
 
         public override string ClassName => nameof(FastFlagManager);
-
         public override string LOG_IDENT_CLASS => ClassName;
-
         public override string ProfilesLocation => Path.Combine(Paths.Base, "Profiles");
-
         public override string FileName => "ClientAppSettings.json";
-
         public override string FileLocation => Path.Combine(Paths.PresetModifications, "ClientSettings", FileName);
 
         public bool Changed => !OriginalProp.SequenceEqual(Prop);
 
-        public static IReadOnlyDictionary<string, string> PresetFlags = new Dictionary<string, string>
+        public static readonly IReadOnlyDictionary<string, string> PresetFlags = new Dictionary<string, string>
         {
             // Preset Flags
             { "Rendering.ManualFullscreen", "FFlagHandleAltEnterFullscreenManually" },
@@ -109,7 +108,6 @@ namespace Froststrap
 
         public bool suspendUndoSnapshot = false;
 
-        // to delete a flag, set the value as null
         public void SetValue(string key, object? value)
         {
             const string LOG_IDENT = "FastFlagManager::SetValue";
@@ -126,12 +124,12 @@ namespace Froststrap
             }
             else
             {
-                if (Prop.ContainsKey(key))
+                if (Prop.TryGetValue(key, out object? existingValue))
                 {
-                    if (key == Prop[key]!.ToString())
+                    if (string.Equals(value.ToString(), existingValue?.ToString(), StringComparison.Ordinal))
                         return;
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Changing of '{key}' from '{Prop[key]}' to '{value}' is pending");
+                    App.Logger.WriteLine(LOG_IDENT, $"Changing of '{key}' from '{existingValue}' to '{value}' is pending");
                 }
                 else
                 {
@@ -142,10 +140,8 @@ namespace Froststrap
             }
         }
 
-        // this returns null if the fflag doesn't exist
         public string? GetValue(string key)
         {
-            // check if we have an updated change for it pushed first
             if (Prop.TryGetValue(key, out object? value) && value is not null)
                 return value.ToString();
 
@@ -154,15 +150,15 @@ namespace Froststrap
 
         public void SetPreset(string prefix, object? value)
         {
-            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix)))
+            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)))
                 SetValue(pair.Value, value);
         }
 
         public void SetPresetEnum(string prefix, string target, object? value)
         {
-            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix)))
+            foreach (var pair in PresetFlags.Where(x => x.Key.StartsWith(prefix, StringComparison.Ordinal)))
             {
-                if (pair.Key.StartsWith($"{prefix}.{target}"))
+                if (pair.Key.StartsWith($"{prefix}.{target}", StringComparison.Ordinal))
                     SetValue(pair.Value, value);
                 else
                     SetValue(pair.Value, null);
@@ -171,14 +167,14 @@ namespace Froststrap
 
         public string? GetPreset(string name)
         {
-            if (!PresetFlags.ContainsKey(name))
+            if (!PresetFlags.TryGetValue(name, out string? flagName))
             {
                 App.Logger.WriteLine("FastFlagManager::GetPreset", $"Could not find preset {name}");
                 Debug.Assert(false, $"Could not find preset {name}");
                 return null;
             }
 
-            return GetValue(PresetFlags[name]);
+            return GetValue(flagName);
         }
 
         public T GetPresetEnum<T>(IReadOnlyDictionary<T, string> mapping, string prefix, string value) where T : Enum
@@ -195,14 +191,12 @@ namespace Froststrap
             return mapping.First().Key;
         }
 
-        public bool IsPreset(string Flag) => PresetFlags.Values.Any(v => v.ToLower() == Flag.ToLower());
+        public static bool IsPreset(string flag) => PresetFlags.Values.Any(v => string.Equals(v, flag, StringComparison.OrdinalIgnoreCase));
 
         public override void Save()
         {
-            // convert all flag values to strings before saving
-            // might not be a bad idea to add type inference here
-            foreach (var pair in Prop)
-                Prop[pair.Key] = pair.Value!.ToString()!;
+            foreach (var key in Prop.Keys.ToList())
+                Prop[key] = Prop[key].ToString()!;
 
             base.Save();
 
@@ -216,7 +210,6 @@ namespace Froststrap
         private void SyncToSoberConfig()
         {
             const string LOG_IDENT = "FastFlagManager::SyncToSoberConfig";
-
             string configPath = Paths.SoberConfig;
 
             if (string.IsNullOrEmpty(configPath))
@@ -229,14 +222,14 @@ namespace Froststrap
             {
                 string existingRaw = File.Exists(configPath) ? File.ReadAllText(configPath) : "{}";
 
-                var headerLines = new List<string>();
-                var jsonLines = new List<string>();
+                List<string> headerLines = [];
+                List<string> jsonLines = [];
                 bool inJson = false;
 
                 foreach (string line in existingRaw.Split('\n'))
                 {
                     string trimmed = line.TrimStart();
-                    if (!inJson && trimmed.StartsWith("//"))
+                    if (!inJson && trimmed.StartsWith("//", StringComparison.Ordinal))
                         headerLines.Add(line);
                     else
                     {
@@ -246,17 +239,14 @@ namespace Froststrap
                 }
 
                 string jsonBody = string.Join('\n', jsonLines);
+                Dictionary<string, JsonElement> soberConfig = [];
 
-                Dictionary<string, JsonElement> soberConfig = new();
                 if (!string.IsNullOrWhiteSpace(jsonBody))
                 {
-                    soberConfig = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
-                        jsonBody,
-                        new JsonSerializerOptions { ReadCommentHandling = JsonCommentHandling.Skip }
-                    ) ?? new Dictionary<string, JsonElement>();
+                    soberConfig = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonBody, _jsonReadOptions) ?? [];
                 }
 
-                var fflags = new Dictionary<string, object>();
+                Dictionary<string, object> fflags = [];
                 foreach (var kvp in Prop)
                 {
                     string val = kvp.Value?.ToString() ?? "";
@@ -265,15 +255,13 @@ namespace Froststrap
                         fflags[kvp.Key] = boolResult;
                     else if (long.TryParse(val, out long longResult))
                         fflags[kvp.Key] = longResult;
-                    else if (double.TryParse(val, System.Globalization.NumberStyles.Float,
-                                             System.Globalization.CultureInfo.InvariantCulture,
-                                             out double doubleResult))
+                    else if (double.TryParse(val, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double doubleResult))
                         fflags[kvp.Key] = doubleResult;
                     else
                         fflags[kvp.Key] = val;
                 }
 
-                var output = new Dictionary<string, object>();
+                Dictionary<string, object> output = [];
                 foreach (var kvp in soberConfig)
                 {
                     if (kvp.Key != "fflags")
@@ -281,9 +269,8 @@ namespace Froststrap
                 }
                 output["fflags"] = fflags;
 
-                string jsonOut = JsonSerializer.Serialize(output, new JsonSerializerOptions { WriteIndented = true });
+                string jsonOut = JsonSerializer.Serialize(output, _jsonOptions);
 
-                // Re-prepend Sober's comment header so it doesn't get stripped on save.
                 string finalContent = headerLines.Count > 0
                     ? string.Join('\n', headerLines) + '\n' + jsonOut
                     : jsonOut;
@@ -303,7 +290,6 @@ namespace Froststrap
         public override bool Load(bool alertFailure = true)
         {
             bool result = base.Load(alertFailure);
-
             OriginalProp = new(Prop);
 
             if (GetPreset("Rendering.ManualFullscreen") != "False")
@@ -312,7 +298,7 @@ namespace Froststrap
             return result;
         }
 
-        public async void DeleteProfile(string Profile)
+        public static async Task DeleteProfile(string profile)
         {
             try
             {
@@ -321,10 +307,10 @@ namespace Froststrap
                 if (!Directory.Exists(profilesDirectory))
                     Directory.CreateDirectory(profilesDirectory);
 
-                if (String.IsNullOrEmpty(Profile))
+                if (string.IsNullOrEmpty(profile))
                     return;
 
-                File.Delete(Path.Combine(profilesDirectory, Profile));
+                File.Delete(Path.Combine(profilesDirectory, profile));
             }
             catch (Exception ex)
             {
@@ -345,20 +331,19 @@ namespace Froststrap
             }
         }
 
-        private readonly Stack<Dictionary<string, object?>> undoStack = new();
-        private readonly Stack<Dictionary<string, object?>> redoStack = new();
+        private readonly Stack<Dictionary<string, object>> undoStack = [];
+        private readonly Stack<Dictionary<string, object>> redoStack = [];
 
         public void SaveUndoSnapshot()
         {
-            // Avoid pushing if last snapshot is identical (optional but nice)
-            if (undoStack.Count > 0 && DictionaryEquals(undoStack.Peek(), Prop!))
+            if (undoStack.Count > 0 && DictionaryEquals(undoStack.Peek(), Prop))
                 return;
 
-            undoStack.Push(new Dictionary<string, object?>(Prop!));
+            undoStack.Push(new Dictionary<string, object>(Prop));
             redoStack.Clear();
         }
 
-        private bool DictionaryEquals(Dictionary<string, object?> a, Dictionary<string, object?> b)
+        private static bool DictionaryEquals(Dictionary<string, object> a, Dictionary<string, object> b)
         {
             if (a.Count != b.Count)
                 return false;
@@ -380,13 +365,13 @@ namespace Froststrap
             if (undoStack.Count == 0)
                 return;
 
-            redoStack.Push(new Dictionary<string, object?>(Prop!));
+            redoStack.Push(new Dictionary<string, object>(Prop));
 
             var previous = undoStack.Pop();
 
             Prop.Clear();
             foreach (var kvp in previous)
-                Prop[kvp.Key] = kvp.Value!;
+                Prop[kvp.Key] = kvp.Value;
         }
 
         public void Redo()
@@ -394,13 +379,13 @@ namespace Froststrap
             if (redoStack.Count == 0)
                 return;
 
-            undoStack.Push(new Dictionary<string, object?>(Prop!));
+            undoStack.Push(new Dictionary<string, object>(Prop));
 
             var next = redoStack.Pop();
 
             Prop.Clear();
             foreach (var kvp in next)
-                Prop[kvp.Key] = kvp.Value!;
+                Prop[kvp.Key] = kvp.Value;
         }
     }
 }

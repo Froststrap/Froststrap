@@ -23,6 +23,10 @@ namespace Froststrap.Integrations
     {
         private const string LOG_IDENT = "ModGenerator";
 
+        private static readonly string[] CursorFiles = ["IBeamCursor.png", "ArrowCursor.png", "ArrowFarCursor.png"];
+        private static readonly string[] ShiftlockFiles = ["MouseLockedCursor.png"];
+        private static readonly string[] EmoteWheelFiles = ["SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png"];
+
         public static void RecolorAllPngs(string rootDir, Color solidColor, Dictionary<string, string[]> mappings, bool recolorCursors = false, bool recolorShiftlock = false, bool recolorEmoteWheel = false)
         {
             if (string.IsNullOrWhiteSpace(rootDir) || !Directory.Exists(rootDir))
@@ -41,18 +45,22 @@ namespace Froststrap.Integrations
                 }
             });
 
-            var optionalGroups = new List<(bool Enabled, string[] Files, string RelativeDir)>
-            {
-                (recolorCursors, new[] { "IBeamCursor.png", "ArrowCursor.png", "ArrowFarCursor.png" }, Path.Combine("content", "textures", "Cursors", "KeyboardMouse")),
-                (recolorShiftlock, new[] { "MouseLockedCursor.png" }, Path.Combine("content", "textures")),
-                (recolorEmoteWheel, new[] { "SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png" }, Path.Combine("content", "textures", "ui", "Emotes", "Large"))
-            };
+            List<(bool Enabled, string[] Files, string RelativeDir)> optionalGroups =
+            [
+                (recolorCursors, CursorFiles, Path.Combine("content", "textures", "Cursors", "KeyboardMouse")),
+                (recolorShiftlock, ShiftlockFiles, Path.Combine("content", "textures")),
+                (recolorEmoteWheel, EmoteWheelFiles, Path.Combine("content", "textures", "ui", "Emotes", "Large"))
+            ];
 
-            foreach (var group in optionalGroups.Where(g => g.Enabled))
+            foreach (var group in optionalGroups)
             {
-                foreach (var fileName in group.Files)
+                var (enabled, files, relativeDir) = group;
+
+                if (!enabled) continue;
+
+                foreach (var fileName in files)
                 {
-                    string targetPath = Path.Combine(rootDir, group.RelativeDir, fileName);
+                    string targetPath = Path.Combine(rootDir, relativeDir, fileName);
 
                     if (File.Exists(targetPath))
                     {
@@ -68,33 +76,32 @@ namespace Froststrap.Integrations
             {
                 byte[] imageBytes = File.ReadAllBytes(path);
 
-                using (var image = Image.Load<Rgba32>(imageBytes))
+                using var image = Image.Load<Rgba32>(imageBytes);
+
+                image.ProcessPixelRows(accessor =>
                 {
-                    image.ProcessPixelRows(accessor =>
+                    for (int y = 0; y < accessor.Height; y++)
                     {
-                        for (int y = 0; y < accessor.Height; y++)
+                        Span<Rgba32> pixelRow = accessor.GetRowSpan(y);
+                        for (int x = 0; x < pixelRow.Length; x++)
                         {
-                            Span<Rgba32> pixelRow = accessor.GetRowSpan(y);
-                            for (int x = 0; x < pixelRow.Length; x++)
-                            {
-                                ref Rgba32 pixel = ref pixelRow[x];
+                            ref Rgba32 pixel = ref pixelRow[x];
 
-                                pixel.R = color.R;
-                                pixel.G = color.G;
-                                pixel.B = color.B;
-                            }
+                            pixel.R = color.R;
+                            pixel.G = color.G;
+                            pixel.B = color.B;
                         }
-                    });
+                    }
+                });
 
-                    using var ms = new MemoryStream();
-                    image.SaveAsPng(ms, new PngEncoder
-                    {
-                        ColorType = PngColorType.RgbWithAlpha,
-                        BitDepth = PngBitDepth.Bit8
-                    });
+                using var ms = new MemoryStream();
+                image.SaveAsPng(ms, new PngEncoder
+                {
+                    ColorType = PngColorType.RgbWithAlpha,
+                    BitDepth = PngBitDepth.Bit8
+                });
 
-                    File.WriteAllBytes(path, ms.ToArray());
-                }
+                File.WriteAllBytes(path, ms.ToArray());
             }
             catch (Exception ex)
             {
@@ -204,9 +211,9 @@ namespace Froststrap.Integrations
         {
             var assembly = Assembly.GetExecutingAssembly();
             using var stream = assembly.GetManifestResourceStream("Froststrap.Resources.mappings.json");
-            if (stream == null) return new Dictionary<string, string[]>();
+            if (stream == null) return [];
 
-            return await JsonSerializer.DeserializeAsync<Dictionary<string, string[]>>(stream) ?? new();
+            return await JsonSerializer.DeserializeAsync<Dictionary<string, string[]>>(stream) ?? [];
         }
 
         private static async Task<(int ExitCode, string Output, string Errors)> ExecuteExeAsync(string exe, string args, string workingDir)

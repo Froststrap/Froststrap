@@ -5,8 +5,8 @@ namespace Froststrap.Utility
     public class InterProcessLock : IDisposable
     {
         private readonly string _lockName;
-        private Mutex? _windowsMutex;
-        private FileStream? _unixLockFile;
+        private readonly Mutex? _windowsMutex;
+        private readonly FileStream? _unixLockFile;
 
         public bool IsAcquired { get; private set; }
 

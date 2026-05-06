@@ -384,16 +384,16 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(LaunchMode.Player)
             {
-                MutexName = "Froststrap-BackgroundUpdater",
+                MutexName = "Bloxstrap-BackgroundUpdater",
                 QuitIfMutexExists = true
             };
 
-            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationTokenSource cts = new();
 
             Task.Run(() =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Started event waiter");
-                using (EventWaitHandle handle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
+                using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Bloxstrap-BackgroundUpdaterKillEvent"))
                     handle.WaitOne();
 
                 App.Logger.WriteLine(LOG_IDENT, "Received close event, killing it all!");

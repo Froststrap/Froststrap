@@ -56,7 +56,7 @@ namespace Froststrap.UI.Utility
         {
         }
 
-        private static Lazy<ITaskbarList3> _taskbarInstance = new Lazy<ITaskbarList3>(() => (ITaskbarList3)new TaskbarInstance());
+        private static readonly Lazy<ITaskbarList3> _taskbarInstance = new(() => (ITaskbarList3)new TaskbarInstance());
 
         private static TaskbarStates ConvertEnum(TaskbarItemProgressState state)
         {

@@ -22,7 +22,7 @@ namespace Froststrap.Integrations
         private List<string>? _regionList;
 
         private readonly string _serverCacheFilePath = Path.Combine(Paths.Cache, "server_cache.json");
-        private ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = new();
+        private readonly ConcurrentDictionary<long, ConcurrentDictionary<string, ServerInstance>> _serverCache = [];
 
         private const string DatacenterUrl = "https://apis.rovalra.com/v1/datacenters/list";
 
@@ -71,7 +71,7 @@ namespace Froststrap.Integrations
                     var content = await response.Content.ReadAsStringAsync();
                     var serverTimeRaw = JsonSerializer.Deserialize<RoValraTimeResponse>(content);
 
-                    if (serverTimeRaw?.Servers != null && serverTimeRaw.Servers.Count > 0)
+                    if (serverTimeRaw?.Servers is { Count: > 0 })
                     {
                         return serverTimeRaw.Servers[0].FirstSeen;
                     }
@@ -85,14 +85,14 @@ namespace Froststrap.Integrations
             return null;
         }
 
-        public async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> GetDatacentersAsync()
+        public async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> GetDatacentersAsync(CancellationToken cancellationToken = default)
         {
             if (_datacenterIdToRegion != null && _regionList != null)
                 return (_regionList, _datacenterIdToRegion);
 
             try
             {
-                var json = await _client.GetStringAsync(DatacenterUrl);
+                var json = await _client.GetStringAsync(DatacenterUrl, cancellationToken);
                 var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
 
                 if (datacenterEntries == null) return null;
@@ -114,7 +114,7 @@ namespace Froststrap.Integrations
                     }
                 }
 
-                _regionList = regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase).ToList();
+                _regionList = [.. regions.OrderBy(r => r, StringComparer.OrdinalIgnoreCase)];
                 _datacenterIdToRegion = map;
 
                 return (_regionList, _datacenterIdToRegion);
@@ -126,7 +126,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        private async Task<HttpResponseMessage> SendJoinRequestWithRetriesAsync(long placeId, string jobId, string roblosecurity)
+        private async Task<HttpResponseMessage> SendJoinRequestWithRetriesAsync(long placeId, string jobId, string roblosecurity, CancellationToken cancellationToken = default)
         {
             int attempt = 0;
             const int maxAttempts = 3;
@@ -149,14 +149,14 @@ namespace Froststrap.Integrations
 
                 try
                 {
-                    var resp = await _client.SendAsync(joinReq).ConfigureAwait(false);
+                    var resp = await _client.SendAsync(joinReq, cancellationToken).ConfigureAwait(false);
 
                     if (resp.StatusCode == HttpStatusCode.Unauthorized || resp.StatusCode == HttpStatusCode.Forbidden)
                         return resp;
 
                     if (((int)resp.StatusCode == 429 || (int)resp.StatusCode >= 500) && attempt < maxAttempts)
                     {
-                        await Task.Delay(500 * attempt).ConfigureAwait(false);
+                        await Task.Delay(500 * attempt, cancellationToken).ConfigureAwait(false);
                         continue;
                     }
 
@@ -164,12 +164,12 @@ namespace Froststrap.Integrations
                 }
                 catch (HttpRequestException) when (attempt < maxAttempts)
                 {
-                    await Task.Delay(250 * attempt).ConfigureAwait(false);
+                    await Task.Delay(250 * attempt, cancellationToken).ConfigureAwait(false);
                 }
             }
         }
 
-        private bool TryExtractDataCenterId(JsonElement elem, out int dcId)
+        private static bool TryExtractDataCenterId(JsonElement elem, out int dcId)
         {
             dcId = 0;
             if (elem.ValueKind != JsonValueKind.Object) return false;
@@ -229,7 +229,7 @@ namespace Froststrap.Integrations
             string nextCursor = jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cElem) ? cElem.GetString() ?? "" : "";
 
             var instances = new ConcurrentBag<ServerInstance>();
-            var placeCache = _serverCache.GetOrAdd(placeId, _ => new ConcurrentDictionary<string, ServerInstance>());
+            var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
 
             var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 8 };
             await Parallel.ForEachAsync(dataElement.EnumerateArray(), parallelOptions, async (serverElem, ct) =>
@@ -248,8 +248,8 @@ namespace Froststrap.Integrations
 
                 try
                 {
-                    var joinResp = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity);
-                    using var parsed = JsonDocument.Parse(await joinResp.Content.ReadAsStringAsync());
+                    var joinResp = await SendJoinRequestWithRetriesAsync(placeId, jobId, roblosecurity, ct);
+                    using var parsed = JsonDocument.Parse(await joinResp.Content.ReadAsStringAsync(ct));
 
                     int? dcId = null;
                     if (TryExtractDataCenterId(parsed.RootElement, out int extracted)) dcId = extracted;
@@ -275,7 +275,7 @@ namespace Froststrap.Integrations
 
             return new FetchResult
             {
-                Servers = instances.ToList(),
+                Servers = [.. instances],
                 NextCursor = nextCursor
             };
         }

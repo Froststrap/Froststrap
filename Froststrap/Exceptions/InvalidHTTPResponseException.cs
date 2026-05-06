@@ -1,7 +1,6 @@
 ﻿namespace Froststrap.Exceptions
 {
-    internal class InvalidHTTPResponseException : Exception
+    internal class InvalidHTTPResponseException(string message) : Exception(message)
     {
-        public InvalidHTTPResponseException(string message) : base(message) { }
     }
 }

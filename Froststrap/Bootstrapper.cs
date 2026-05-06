@@ -48,6 +48,7 @@ namespace Froststrap
         #region Properties
 
         private readonly FastZipEvents _fastZipEvents = new();
+        private static readonly JsonSerializerOptions _indentedJsonOptions = new() { WriteIndented = true };
         private readonly CancellationTokenSource _cancelTokenSource = new();
 
         private IAppData AppData = default!;
@@ -131,8 +132,7 @@ namespace Froststrap
         {
             message = message.Replace("{product}", AppData.ProductName);
 
-            if (Dialog is not null)
-                Dialog.Message = message;
+            Dialog?.Message = message;
         }
 
         private void UpdateProgressBar()
@@ -191,8 +191,7 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Running bootstrapper");
 
             // this is now always enabled as of v2.8.0
-            if (Dialog is not null)
-                Dialog.CancelEnabled = true;
+            Dialog?.CancelEnabled = true;
 
             SetStatus(Strings.Bootstrapper_Status_Connecting);
 
@@ -310,7 +309,7 @@ namespace Froststrap
             }
             else if (OperatingSystem.IsLinux())
             {
-                PackageDirectoryMap ??= new Dictionary<string, string>();
+                PackageDirectoryMap ??= [];
                 if (!_cancelTokenSource.IsCancellationRequested)
                     allModificationsApplied = await ApplyModifications();
             }
@@ -426,7 +425,7 @@ namespace Froststrap
                     case ChannelChangeMode.Prompt:
                         App.Logger.WriteLine(LOG_IDENT, "Prompting channel enrollment");
 
-                        if (!match.Success || match.Groups.Count != 2 || match.Groups[1].Value.ToLowerInvariant() == Deployment.Channel)
+                        if (!match.Success || match.Groups.Count != 2 || string.Equals(match.Groups[1].Value, Deployment.Channel, StringComparison.OrdinalIgnoreCase))
                         {
                             App.Logger.WriteLine(LOG_IDENT, "Channel is either equal or incorrectly formatted");
                             break;
@@ -679,7 +678,7 @@ namespace Froststrap
 
             var datacenters = await Http.GetJson<List<RoValraDatacenter>>(roValraDatacentersUrl);
 
-            if (datacenters == null || !datacenters.Any())
+            if (datacenters == null || datacenters.Count == 0)
                 throw new HttpRequestException("No datacenters in response.");
 
             string[] location = ipinfo.Loc.Split(",");
@@ -731,7 +730,7 @@ namespace Froststrap
             if (_launchMode == LaunchMode.Player)
             {
                 GameJoin gameJoin = new();
-                _joinData = gameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
+                _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
 
                 if (_joinData.JoinType == GameJoinType.Unknown)
                     App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
@@ -985,8 +984,7 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Cancelling launch...");
             _cancelTokenSource.Cancel();
 
-            if (Dialog is not null)
-                Dialog.CancelEnabled = false;
+            Dialog?.CancelEnabled = false;
 
             if (_isInstalling)
             {
@@ -1209,7 +1207,7 @@ namespace Froststrap
 
         private static bool TryDeleteRobloxInDirectory(string dir)
         {
-            string[] executables = { App.RobloxPlayerAppName, App.RobloxStudioAppName };
+            string[] executables = [App.RobloxPlayerAppName, App.RobloxStudioAppName];
 
             foreach (string exe in executables)
             {
@@ -1349,13 +1347,13 @@ namespace Froststrap
             string studioProcessName = OperatingSystem.IsMacOS() ? "RobloxStudio" : "RobloxStudioBeta";
             var studioProcesses = Process.GetProcessesByName(studioProcessName);
 
-            if (!studioProcesses.Any())
+            if (studioProcesses.Length == 0)
                 return;
 
             App.Logger.WriteLine(LOG_IDENT, "Waiting for Roblox Studio processes to exit...");
             SetStatus("Waiting for Roblox Studio...");
 
-            while (Process.GetProcessesByName(studioProcessName).Any())
+            while (Process.GetProcessesByName(studioProcessName).Length > 0)
             {
                 Thread.Sleep(1000);
 
@@ -1485,7 +1483,7 @@ namespace Froststrap
 
             if (OperatingSystem.IsMacOS())
             {
-                string[] appNames = { "RobloxPlayer.app", "RobloxStudio.app" };
+                string[] appNames = ["RobloxPlayer.app", "RobloxStudio.app"];
                 foreach (string appName in appNames)
                 {
                     string appPath = Path.Combine(_latestVersionDirectory, appName);
@@ -1652,8 +1650,7 @@ namespace Froststrap
             try
             {
                 using var checkProcess = Process.Start(flatpakCheck);
-                if (checkProcess is null)
-                    throw new InvalidOperationException("Failed to start flatpak process.");
+                _ = checkProcess ?? throw new InvalidOperationException("Failed to start flatpak process.");
 
                 await checkProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
 
@@ -1878,7 +1875,7 @@ namespace Froststrap
                     while (!_cancelTokenSource.IsCancellationRequested)
                     {
                         await Task.Delay(2500);
-                        if (!Process.GetProcessesByName("sober").Any())
+                        if (Process.GetProcessesByName("sober").Length == 0)
                             break;
                     }
                 });
@@ -1978,7 +1975,7 @@ namespace Froststrap
 
                 string rbxAssetPath = $"rbxasset://fonts/{activeFontFilename}";
                 string[] fontFamilyFiles =
-                {
+                [
                     "AccanthisADFStd.json", "AmaticSC.json", "Arimo.json", "Balthazar.json",
                     "Bangers.json", "BuilderExtended.json", "BuilderMono.json", "BuilderSans.json",
                     "ComicNeueAngular.json", "Creepster.json", "DenkOne.json", "Fondamento.json",
@@ -1990,7 +1987,7 @@ namespace Froststrap
                     "Roboto.json", "RobotoCondensed.json", "RobotoMono.json", "RomanAntique.json",
                     "Sarpanch.json", "SourceSansPro.json", "SpecialElite.json", "TitilliumWeb.json",
                     "Ubuntu.json", "Zekton.json"
-                };
+                ];
 
                 await Task.Run(() =>
                 {
@@ -2005,8 +2002,8 @@ namespace Froststrap
                         var fontFamilyData = new Models.FontFamily
                         {
                             Name = familyName,
-                            Faces = new[]
-                            {
+                            Faces =
+                            [
                                 new Models.FontFace { Name = "Thin", Weight = 100, Style = "normal", AssetId = rbxAssetPath },
                                 new Models.FontFace { Name = "Light", Weight = 300, Style = "normal", AssetId = rbxAssetPath },
                                 new Models.FontFace { Name = "Regular", Weight = 400, Style = "normal", AssetId = rbxAssetPath },
@@ -2014,10 +2011,10 @@ namespace Froststrap
                                 new Models.FontFace { Name = "Semi Bold", Weight = 600, Style = "normal", AssetId = rbxAssetPath },
                                 new Models.FontFace { Name = "Bold", Weight = 700, Style = "normal", AssetId = rbxAssetPath },
                                 new Models.FontFace { Name = "Extra Bold", Weight = 800, Style = "normal", AssetId = rbxAssetPath }
-                            }
+                            ]
                         };
 
-                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
+                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, _indentedJsonOptions));
                     });
                 });
 
@@ -2177,7 +2174,7 @@ namespace Froststrap
                 if (fileNameWithoutExt.EndsWith("_Delete"))
                 {
                     string directory = Path.GetDirectoryName(fileLocation) ?? "";
-                    string originalName = fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7);
+                    string originalName = fileNameWithoutExt[..^7];
                     targetFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
                 }
 
@@ -2192,9 +2189,9 @@ namespace Froststrap
                 }
 
                 if (!fileRestoreMap.ContainsKey(packageName))
-                    fileRestoreMap[packageName] = new();
+                    fileRestoreMap[packageName] = [];
 
-                string internalZipPath = targetFile.Substring(packageMapEntry.Value.Length).TrimStart(Path.DirectorySeparatorChar);
+                string internalZipPath = targetFile[packageMapEntry.Value.Length..].TrimStart(Path.DirectorySeparatorChar);
                 fileRestoreMap[packageName].Add(internalZipPath);
             }
 
@@ -2213,7 +2210,7 @@ namespace Froststrap
 
             if (App.LaunchSettings.BackgroundUpdaterFlag.Active || !AppData.DistributionStateManager.HasFileOnDiskChanged())
             {
-                AppData.DistributionState.ModManifest = currentModManifest.Keys.ToList();
+                AppData.DistributionState.ModManifest = [.. currentModManifest.Keys];
                 AppData.DistributionStateManager.Save();
             }
 
@@ -2221,11 +2218,11 @@ namespace Froststrap
             return success;
         }
 
-        private void ProcessModDirectory(string sourcePath, Dictionary<string, string> copyMap, HashSet<string> deleteSet)
+        private static void ProcessModDirectory(string sourcePath, Dictionary<string, string> copyMap, HashSet<string> deleteSet)
         {
             foreach (string file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
-                string relativeFile = file.Substring(sourcePath.Length).TrimStart(Path.DirectorySeparatorChar);
+                string relativeFile = file[sourcePath.Length..].TrimStart(Path.DirectorySeparatorChar);
 
                 if (relativeFile == "README.txt")
                 {
@@ -2242,7 +2239,7 @@ namespace Froststrap
                 {
                     string originalRelName = Path.Combine(
                         Path.GetDirectoryName(relativeFile) ?? "",
-                        fileNameWithoutExt.Substring(0, fileNameWithoutExt.Length - 7) + Path.GetExtension(relativeFile)
+                        string.Concat(fileNameWithoutExt.AsSpan(..^7), Path.GetExtension(relativeFile))
                     );
                     deleteSet.Add(originalRelName);
                     copyMap.Remove(originalRelName);

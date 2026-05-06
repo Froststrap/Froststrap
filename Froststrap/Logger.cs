@@ -5,7 +5,7 @@
         private readonly SemaphoreSlim _semaphore = new(1, 1);
         private StreamWriter? _writer;
 
-        public readonly List<string> History = new();
+        public readonly List<string> History = [];
         public bool Initialized = false;
         public bool NoWriteMode = false;
         public string? FileLocation;

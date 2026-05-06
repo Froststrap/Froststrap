@@ -69,7 +69,7 @@ namespace Froststrap
 
         public bool Loaded { get; set; } = false;
 
-        public string FileLocation => OperatingSystem.IsLinux()
+        public static string FileLocation => OperatingSystem.IsLinux()
             ? Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml")
             : Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
 
@@ -81,15 +81,16 @@ namespace Froststrap
 
         public string? GetPreset(string prefix)
         {
-            if (!PresetPaths.ContainsKey(prefix))
-                return null;
-
-            return GetValue(PresetPaths[prefix]);
+            if (PresetPaths.TryGetValue(prefix, out string? path))
+            {
+                return GetValue(path);
+            }
+            return null;
         }
 
         public void SetValue(string path, object? value)
         {
-            path = ResolvePath(path);
+            path = ResolvePath(path, RootPaths);
 
             XElement? element = Document?.XPathSelectElement(path);
             if (element is null)
@@ -100,8 +101,7 @@ namespace Froststrap
 
         public string? GetValue(string path)
         {
-            path = ResolvePath(path);
-
+            path = ResolvePath(path, RootPaths);
             return Document?.XPathSelectElement(path)?.Value;
         }
 
@@ -135,7 +135,7 @@ namespace Froststrap
             }
         }
 
-        public bool GetReadOnly()
+        public static bool GetReadOnly()
         {
             if (!File.Exists(FileLocation))
                 return false;
@@ -145,7 +145,7 @@ namespace Froststrap
 
         public void Load()
         {
-            string LOG_IDENT = "GBSEditor::Load";
+            const string LOG_IDENT = "GBSEditor::Load";
 
             App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
@@ -156,7 +156,6 @@ namespace Froststrap
             {
                 Document = XDocument.Load(FileLocation);
                 Loaded = true;
-
                 previousReadOnlyState = GetReadOnly();
             }
             catch (Exception ex)
@@ -168,7 +167,7 @@ namespace Froststrap
 
         public virtual void Save()
         {
-            string LOG_IDENT = "GBSEditor::Save";
+            const string LOG_IDENT = "GBSEditor::Save";
 
             App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
 
@@ -176,49 +175,48 @@ namespace Froststrap
             {
                 SetReadOnly(false, true);
                 Document?.Save(FileLocation);
-
                 SetReadOnly(previousReadOnlyState);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Failed to save");
                 App.Logger.WriteException(LOG_IDENT, ex);
-
                 return;
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Save complete!");
         }
 
-        private string ResolvePath(string rawPath)
+
+        private static string ResolvePath(string rawPath, Dictionary<string, string> rootPaths)
         {
             return Regex.Replace(rawPath, @"\{(.+?)\}", match =>
             {
                 string key = match.Groups[1].Value;
-                return RootPaths.TryGetValue(key, out var value) ? value : match.Value; ;
+                return rootPaths.TryGetValue(key, out var value) ? value : match.Value; ;
             });
         }
 
         public string GetVectorValue(string vectorName, string axis)
         {
-            string basePath = ResolvePath(PresetPaths[vectorName]);
+            string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
             XElement? vectorElement = Document?.XPathSelectElement(basePath);
             return vectorElement?.Element(axis)?.Value ?? "0";
         }
 
         public void SetVectorValue(string vectorName, string axis, string value)
         {
-            string basePath = ResolvePath(PresetPaths[vectorName]);
+            string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
             XElement? vectorElement = Document?.XPathSelectElement(basePath);
 
-            XElement? axisElement = vectorElement?.Element(axis);
-            if (axisElement != null)
+            // IDE0031: Simplified null check
+            if (vectorElement?.Element(axis) is XElement axisElement)
             {
                 axisElement.Value = value;
             }
         }
 
-        public bool ExportSettings(string exportPath)
+        public static bool ExportSettings(string exportPath)
         {
             try
             {

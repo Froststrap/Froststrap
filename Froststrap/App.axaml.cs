@@ -13,6 +13,7 @@ using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace Froststrap;
 
@@ -44,9 +45,9 @@ public partial class App : Application
     public const string ApisKey = $"Software\\{ProjectName}";
     public static LaunchSettings LaunchSettings { get; private set; } = null!;
 
-    public static BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly().GetCustomAttribute<BuildMetadataAttribute>()!;
+    public static readonly BuildMetadataAttribute BuildMetadata = Assembly.GetExecutingAssembly().GetCustomAttribute<BuildMetadataAttribute>()!;
 
-    public static string Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[..^2];
+    public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[..^2];
 
     public static Bootstrapper? Bootstrapper { get; set; } = null!;
 
@@ -72,7 +73,7 @@ public partial class App : Application
 
     public static readonly Logger Logger = new();
 
-    public static readonly Dictionary<string, BaseTask> PendingSettingTasks = new();
+    public static readonly Dictionary<string, BaseTask> PendingSettingTasks = [];
 
     // Disambiguate Settings so we use the persistable Settings (Bloxstrap.Models.Persistable.Settings),
     // not the auto-generated Properties.Settings which doesn't contain the clicker fields.
@@ -274,11 +275,11 @@ public partial class App : Application
         Logger.WriteLine("App::SoftTerminate", $"Terminating with exit code {exitCodeNum} ({exitCode})");
 
         Dispatcher.UIThread.Invoke(() =>
-            {
+        {
 
-                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                    desktop.Shutdown((int)exitCode);
-            });
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                desktop.Shutdown((int)exitCode);
+        });
     }
 
     async void GlobalExceptionHandler(object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -367,10 +368,10 @@ public partial class App : Application
                 {
                     window.TransparencyLevelHint = Settings.Prop.SelectedBackdrop switch
                     {
-                        WindowsBackdrops.Acrylic => new[] { WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None },
-                        WindowsBackdrops.Mica => new[] { WindowTransparencyLevel.Mica, WindowTransparencyLevel.None },
-                        WindowsBackdrops.Aero => new[] { WindowTransparencyLevel.Blur, WindowTransparencyLevel.None },
-                        _ => new[] { WindowTransparencyLevel.None }
+                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                        WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                        _ => [WindowTransparencyLevel.None]
                     };
 
                     window.Background = Brushes.Transparent;
@@ -461,7 +462,7 @@ public partial class App : Application
             Logger.WriteLine(LOG_IDENT, $"Loaded from {Paths.Process}");
 
             HttpClient.Timeout = TimeSpan.FromSeconds(60);
-            if (!HttpClient.DefaultRequestHeaders.UserAgent.Any())
+            if (HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
                 HttpClient.DefaultRequestHeaders.Add("User-Agent", userAgent.ToString());
 
             LaunchSettings = new LaunchSettings(Environment.GetCommandLineArgs());

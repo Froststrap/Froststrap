@@ -1,10 +1,13 @@
 ﻿using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 
 namespace Froststrap
 {
-    public class JsonManager<T> where T : class, new()
+    public class JsonManager<T>(string? className = null) where T : class, new()
     {
+        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+
         protected T _prop = new();
 
         public virtual T Prop
@@ -17,9 +20,9 @@ namespace Froststrap
 
         public bool Loaded { get; protected set; } = false;
 
-        public virtual string ClassName { get; }
+        public virtual string ClassName { get; } = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
 
-        public virtual string ProfilesLocation => Path.Combine(Paths.Base, $"Profiles.json");
+        public virtual string ProfilesLocation => Path.Combine(Paths.Base, "Profiles.json");
 
         public virtual string FileName => $"{ClassName}.json";
 
@@ -28,11 +31,6 @@ namespace Froststrap
         public bool IsSaved => File.Exists(FileLocation);
 
         public virtual string LOG_IDENT_CLASS => $"JsonManager<{ClassName}>";
-
-        public JsonManager(string? className = null)
-        {
-            ClassName = string.IsNullOrEmpty(className) ? typeof(T).Name : className;
-        }
 
         public virtual bool Load(bool alertFailure = true)
         {
@@ -46,10 +44,8 @@ namespace Froststrap
                 {
                     string contents = File.ReadAllText(FileLocation);
 
-                    T? settings = JsonSerializer.Deserialize<T>(contents);
-
-                    if (settings is null)
-                        throw new ArgumentNullException("Deserialization returned null");
+                    T settings = JsonSerializer.Deserialize<T>(contents)
+                        ?? throw new InvalidOperationException($"{ClassName} deserialization returned null.");
 
                     _prop = settings;
                     Loaded = true;
@@ -74,14 +70,14 @@ namespace Froststrap
 
                 if (alertFailure)
                 {
-                    string message = "";
+                    string message = ClassName switch
+                    {
+                        nameof(Settings) => Strings.JsonManager_SettingsLoadFailed,
+                        nameof(FastFlagManager) => Strings.JsonManager_FastFlagsLoadFailed,
+                        _ => string.Empty
+                    };
 
-                    if (ClassName == nameof(Settings))
-                        message = Strings.JsonManager_SettingsLoadFailed;
-                    else if (ClassName == nameof(FastFlagManager))
-                        message = Strings.JsonManager_FastFlagsLoadFailed;
-
-                    if (!String.IsNullOrEmpty(message))
+                    if (!string.IsNullOrEmpty(message))
                         _ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
 
                     try
@@ -113,7 +109,7 @@ namespace Froststrap
 
             try
             {
-                string contents = JsonSerializer.Serialize(Prop, new JsonSerializerOptions { WriteIndented = true });
+                string contents = JsonSerializer.Serialize(Prop, _jsonOptions);
 
                 File.WriteAllText(FileLocation, contents);
 
@@ -160,18 +156,17 @@ namespace Froststrap
             }
         }
 
-
         public async void SaveProfile(string name)
         {
-            string LOGGER_STRING = "SaveProfile::Profiles";
-
+            const string LOGGER_STRING = "SaveProfile::Profiles";
             string BaseDir = Paths.SavedFlagProfiles;
+
             try
             {
-                string FileDirectory = Path.Combine(BaseDir, name);
-
                 if (string.IsNullOrEmpty(name))
                     return;
+
+                string FileDirectory = Path.Combine(BaseDir, name);
 
                 if (!Directory.Exists(BaseDir))
                     Directory.CreateDirectory(BaseDir);
@@ -181,7 +176,7 @@ namespace Froststrap
                 if (!File.Exists(FileDirectory))
                     File.Create(FileDirectory).Dispose();
 
-                string FastFlagsJson = JsonSerializer.Serialize(Prop, new JsonSerializerOptions { WriteIndented = true });
+                string FastFlagsJson = JsonSerializer.Serialize(Prop, _jsonOptions);
 
                 File.WriteAllText(FileDirectory, FastFlagsJson);
             }
@@ -193,8 +188,7 @@ namespace Froststrap
 
         public async void LoadProfile(string? name, bool? clearFlags)
         {
-            string LOGGER_STRING = "LoadProfile::Profiles";
-
+            const string LOGGER_STRING = "LoadProfile::Profiles";
             string BaseDir = Paths.SavedFlagProfiles;
 
             if (string.IsNullOrEmpty(name))
@@ -206,26 +200,17 @@ namespace Froststrap
                     Directory.CreateDirectory(BaseDir);
 
                 string[] Files = Directory.GetFiles(BaseDir);
+                string FoundFile = Files.FirstOrDefault(f => Path.GetFileName(f) == name) ?? string.Empty;
 
-                string FoundFile = string.Empty;
-
-                foreach (var file in Files)
-                {
-                    if (Path.GetFileName(file) == name)
-                    {
-                        FoundFile = file;
-                        break;
-                    }
-                }
+                if (string.IsNullOrEmpty(FoundFile))
+                    return;
 
                 string SavedClientSettings = File.ReadAllText(FoundFile);
 
                 App.Logger.WriteLine(LOGGER_STRING, $"Loading {SavedClientSettings}");
 
-                T? settings = JsonSerializer.Deserialize<T>(SavedClientSettings);
-
-                if (settings is null)
-                    throw new ArgumentNullException("Deserialization returned null");
+                T settings = JsonSerializer.Deserialize<T>(SavedClientSettings)
+                    ?? throw new JsonException($"Failed to deserialize profile: {name}");
 
                 App.FastFlags.suspendUndoSnapshot = true;
                 App.FastFlags.SaveUndoSnapshot();
@@ -247,7 +232,6 @@ namespace Froststrap
                 }
 
                 App.FastFlags.suspendUndoSnapshot = false;
-
                 App.FastFlags.Save();
             }
             catch (Exception ex)
@@ -258,27 +242,25 @@ namespace Froststrap
 
         public async void LoadPresetProfile(string? name, bool? clearFlags)
         {
-            string LOGGER_STRING = "LoadProfile::Profiles";
+            const string LOGGER_STRING = "LoadProfile::Profiles";
 
             if (string.IsNullOrEmpty(name))
                 return;
 
             try
             {
-                string profileJson = null!;
+                string profileJson;
                 var assembly = Assembly.GetExecutingAssembly();
                 string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-
-                // Check if name matches an embedded resource profile
                 string resourceFullName = resourcePrefix + name;
+
                 string? foundResource = assembly.GetManifestResourceNames()
-                                               .FirstOrDefault(r => r.Equals(resourceFullName, StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(r => r.Equals(resourceFullName, StringComparison.OrdinalIgnoreCase));
 
                 if (foundResource != null)
                 {
-                    // Load from embedded resource
                     using Stream stream = assembly.GetManifestResourceStream(foundResource)!;
-                    using StreamReader reader = new StreamReader(stream);
+                    using StreamReader reader = new(stream);
                     profileJson = reader.ReadToEnd();
 
                     App.Logger.WriteLine(LOGGER_STRING, $"Loading embedded preset profile {name}");
@@ -303,10 +285,8 @@ namespace Froststrap
                 }
 
                 // Deserialize the profile JSON
-                T? settings = JsonSerializer.Deserialize<T>(profileJson);
-
-                if (settings is null)
-                    throw new ArgumentNullException("Deserialization returned null");
+                T settings = JsonSerializer.Deserialize<T>(profileJson)
+                    ?? throw new ArgumentNullException(nameof(name), "Deserialization returned null");
 
                 App.FastFlags.suspendUndoSnapshot = true;
                 App.FastFlags.SaveUndoSnapshot();
@@ -358,7 +338,7 @@ namespace Froststrap
     /// <see cref="JsonManager{T}"/> that will automatically load in the JSON if it has not been already
     /// </summary>
     /// <typeparam name="T">Class</typeparam>
-    public class LazyJsonManager<T> : JsonManager<T> where T : class, new()
+    public class LazyJsonManager<T>(string? className) : JsonManager<T>(className) where T : class, new()
     {
         public override T Prop
         {
@@ -374,11 +354,6 @@ namespace Froststrap
                 _prop = value;
                 Loaded = true;
             }
-        }
-
-        public LazyJsonManager(string? className)
-            : base(className)
-        {
         }
     }
 }

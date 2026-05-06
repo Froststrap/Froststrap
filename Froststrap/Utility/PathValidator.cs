@@ -10,8 +10,8 @@
             ReservedDirectoryName
         }
 
-        private static readonly string[] _reservedNames = new string[]
-        {
+        private static readonly string[] _reservedNames =
+        [
             "CON",
             "PRN",
             "AUX",
@@ -34,19 +34,19 @@
             "LPT7",
             "LPT8",
             "LPT9"
-        };
+        ];
 
-        private static readonly char[] _directorySeperatorDelimiters = new char[]
-        {
+        private static readonly char[] _directorySeperatorDelimiters =
+        [
             Path.DirectorySeparatorChar,
             Path.AltDirectorySeparatorChar
-        };
+        ];
 
         private static readonly char[] _invalidPathChars = GetInvalidPathChars();
 
         public static char[] GetInvalidPathChars()
         {
-            char[] invalids = new char[] { '/', '\\', ':', '*', '?', '"', '<', '>', '|' };
+            char[] invalids = ['/', '\\', ':', '*', '?', '"', '<', '>', '|'];
             char[] otherInvalids = Path.GetInvalidPathChars();
 
             char[] result = new char[invalids.Length + otherInvalids.Length];

@@ -70,8 +70,8 @@ namespace Froststrap.Models.Entities
 		public ICommand CopyServerIdCommand => new RelayCommand(CopyServerId);
 		public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
-		private SemaphoreSlim serverQuerySemaphore = new(1, 1);
-		private SemaphoreSlim serverTimeSemaphore = new(1, 1);
+		private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
+		private readonly SemaphoreSlim serverTimeSemaphore = new(1, 1);
 
 		public string GetInviteDeeplink(bool launchData = true)
 		{
@@ -115,7 +115,7 @@ namespace Froststrap.Models.Entities
                 var serverBody = new RoValraProcessServerBody
                 {
                     PlaceId = PlaceId,
-                    ServerIds = new() { JobId }
+                    ServerIds = [JobId]
                 };
 
                 string json = JsonSerializer.Serialize(serverBody);
@@ -256,7 +256,7 @@ namespace Froststrap.Models.Entities
 			}
 		}
 
-		public void CloseRobloxProcesses()
+		public static void CloseRobloxProcesses()
 		{
 			const string LOG_IDENT = "ActivityData::CloseProcess";
 

@@ -19,7 +19,7 @@ namespace Froststrap.Integrations
     {
         private readonly DiscordRpcClient _rpcClient = new("1454451301130960896");
         private readonly ActivityWatcher _activityWatcher;
-        private readonly Queue<StudioMessage> _messageQueue = new();
+        private readonly Queue<StudioMessage> _messageQueue = [];
 
         private DiscordRPC.RichPresence? _currentPresence;
         private DiscordRPC.RichPresence? _originalPresence;
@@ -55,7 +55,7 @@ namespace Froststrap.Integrations
         }
 
         // for future use
-        private void HandleStudioPlaceOpened()
+        private static void HandleStudioPlaceOpened()
         {
             const string LOG_IDENT = "StudioDiscordRichPresence::HandleStudioPlaceOpened";
             App.Logger.WriteLine(LOG_IDENT, "Studio place opened");
@@ -101,7 +101,7 @@ namespace Froststrap.Integrations
 
             _originalPresence = _currentPresence.Clone();
 
-            while (_messageQueue.Any())
+            while (_messageQueue.Count > 0)
             {
                 ProcessRPCMessage(_messageQueue.Dequeue(), false);
             }
@@ -188,7 +188,7 @@ namespace Froststrap.Integrations
             };
 
             if (App.Settings.Prop.StudioGameButton && presenceData.PlaceId > 0 && presenceData.IsPublic)
-                _currentPresence.Buttons = new Button[] { new Button { Label = "Open Roblox Game", Url = $"https://www.roblox.com/games/{presenceData.PlaceId}" } };
+                _currentPresence.Buttons = [new Button { Label = "Open Roblox Game", Url = $"https://www.roblox.com/games/{presenceData.PlaceId}" }];
             else
                 _currentPresence.Buttons = null;
 
@@ -221,8 +221,7 @@ namespace Froststrap.Integrations
                 return;
             }
 
-            if (_currentPresence.Assets is null)
-                _currentPresence.Assets = new Assets();
+            _currentPresence.Assets ??= new Assets();
 
             App.Logger.WriteLine(LOG_IDENT, $"Updating presence");
 

@@ -1,11 +1,11 @@
 ﻿using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models.APIs.Config
 {
-    public partial class CommunityMod : ObservableObject
+    public partial class CommunityMod : NotifyPropertyChangedViewModel
     {
+
         [JsonPropertyName("id")]
         public string Id { get; set; } = null!;
 
@@ -57,14 +57,30 @@ namespace Froststrap.Models.APIs.Config
             set => SetProperty(ref _hasThumbnailError, value);
         }
 
-        [ObservableProperty]
         private bool _isDownloading;
 
-        [ObservableProperty]
-        private double _downloadProgress;
+        [JsonIgnore]
+        public bool IsDownloading
+        {
+            get => _isDownloading;
+            set => SetProperty(ref _isDownloading, value);
+        }
 
-        [ObservableProperty]
-        private IAsyncRelayCommand? _downloadCommand;
+        private double _downloadProgress;
+        [JsonIgnore]
+        public double DownloadProgress
+        {
+            get => _downloadProgress;
+            set => SetProperty(ref _downloadProgress, value);
+        }
+
+        private object? _downloadCommand;
+        [JsonIgnore]
+        public object? DownloadCommand
+        {
+            get => _downloadCommand;
+            set => SetProperty(ref _downloadCommand, value);
+        }
 
         [JsonIgnore]
         public bool IsCustomTheme => ModType == ModType.CustomTheme;

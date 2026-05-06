@@ -1,4 +1,6 @@
-﻿using Avalonia.Data.Converters;
+﻿using System.Globalization;
+using Avalonia.Data.Converters;
+using Froststrap.Models.Attributes;
 
 namespace Froststrap.UI.Converters
 {
@@ -17,24 +19,19 @@ namespace Froststrap.UI.Converters
                 return stringVal;
 
             var memberInfo = type.GetMember(stringVal).FirstOrDefault();
-            if (memberInfo != null)
+
+            if (memberInfo?.GetCustomAttributes(typeof(EnumNameAttribute), false).FirstOrDefault() is EnumNameAttribute attribute)
             {
-                var attribute = memberInfo
-                    .GetCustomAttributes(typeof(EnumNameAttribute), false)
-                    .FirstOrDefault() as EnumNameAttribute;
+                if (!string.IsNullOrEmpty(attribute.StaticName))
+                    return attribute.StaticName;
 
-                if (attribute != null)
-                {
-                    if (!string.IsNullOrEmpty(attribute.StaticName))
-                        return attribute.StaticName;
-
-                    if (!string.IsNullOrEmpty(attribute.FromTranslation))
-                        return Strings.ResourceManager.GetStringSafe(attribute.FromTranslation);
-                }
+                if (!string.IsNullOrEmpty(attribute.FromTranslation))
+                    return Strings.ResourceManager.GetStringSafe(attribute.FromTranslation);
             }
 
             var dotIndex = typeName.IndexOf('.');
-            var trimmedTypeName = dotIndex >= 0 ? typeName.Substring(dotIndex + 1) : typeName;
+
+            var trimmedTypeName = dotIndex >= 0 ? typeName[(dotIndex + 1)..] : typeName;
 
             return Strings.ResourceManager.GetStringSafe($"{trimmedTypeName}.{stringVal}");
         }

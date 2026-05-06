@@ -5,7 +5,7 @@ namespace Froststrap.Models
     public class AccountManagerData
     {
         [JsonPropertyName("accounts")]
-        public List<AccountManagerAccount> Accounts { get; set; } = new();
+        public List<AccountManagerAccount> Accounts { get; set; } = [];
 
         [JsonPropertyName("activeAccountId")]
         public long? ActiveAccountId { get; set; }

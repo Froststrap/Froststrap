@@ -1,4 +1,4 @@
-﻿namespace Froststrap.Models
+﻿namespace Froststrap.Models.APIs
 {
     internal class ThumbnailCacheEntry
     {

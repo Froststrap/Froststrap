@@ -142,9 +142,9 @@ namespace Froststrap.UI.Utility
             if (!uri.StartsWith("theme://", StringComparison.OrdinalIgnoreCase))
                 return uri;
 
-            string resourcePath = uri.Substring("theme://".Length);
+            string resourcePath = uri["theme://".Length..];
 
-            if (resourcePath.StartsWith("#"))
+            if (resourcePath.StartsWith('#'))
                 return uri;
 
             string fullPath = Path.Combine(themeDirectory, resourcePath);

@@ -5,7 +5,7 @@ namespace Froststrap.Models.Entities
 {
     public class UserDetails
     {
-        private static List<UserDetails> _cache { get; set; } = new();
+        private static List<UserDetails> Cache { get; set; } = [];
 
         public GetUserResponse Data { get; set; } = null!;
 
@@ -16,15 +16,14 @@ namespace Froststrap.Models.Entities
             Uri userUrl = UrlBuilder.BuildApiUrl("users", "v1/users/" + id);
             Uri thumbnailsUrl = UrlBuilder.BuildApiUrl("thumbnails", $"v1/users/avatar-headshot?userIds={id}&size=180x180&format=Png&isCircular=false");
 
-            var cacheQuery = _cache.Where(x => x.Data?.Id == id);
+            var cacheQuery = Cache.Where(x => x.Data?.Id == id);
 
             if (cacheQuery.Any())
                 return cacheQuery.First();
 
             var userResponse = await Http.GetJson<GetUserResponse>(userUrl);
 
-            if (userResponse is null)
-                throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
+            _ = userResponse ?? throw new InvalidHTTPResponseException("Roblox API for User Details returned invalid data");
 
             // we can remove '-headshot' from the url if we want a full avatar picture
             var thumbnailResponse = await Http.GetJson<ApiArrayResponse<ThumbnailResponse>>(thumbnailsUrl);
@@ -38,7 +37,7 @@ namespace Froststrap.Models.Entities
                 Thumbnail = thumbnailResponse.Data.First()
             };
 
-            _cache.Add(details);
+            Cache.Add(details);
 
             return details;
         }

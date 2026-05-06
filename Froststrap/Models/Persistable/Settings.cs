@@ -26,14 +26,14 @@ namespace Froststrap.Models.Persistable
         public bool StudioWorkspaceInfo { get; set; } = false;
         public bool StudioShowTesting { get; set; } = false;
         public bool StudioGameButton { get; set; } = false;
-        public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = new();
+        public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = [];
 
         // Bootstrapper Page
         public bool ConfirmLaunches { get; set; } = true;
         public bool AllowCookieAccess { get; set; } = false;
         public bool AutoCloseCrashHandler { get; set; } = false;
         public CleanerOptions CleanerOptions { get; set; } = CleanerOptions.Never;
-        public List<string> CleanerDirectories { get; set; } = new List<string>();
+        public List<string> CleanerDirectories { get; set; } = [];
         public bool BackgroundUpdatesEnabled { get; set; } = false;
         public bool EnableBetterMatchmaking { get; set; } = false;
         public bool EnableBetterMatchmakingRandomization { get; set; } = false;
@@ -48,12 +48,12 @@ namespace Froststrap.Models.Persistable
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.None;
         public string Locale { get; set; } = "nil";
         public string? SelectedCustomTheme { get; set; } = null;
-        public List<GradientStops> CustomGradientStops { get; set; } = new()
-        {
+        public List<GradientStops> CustomGradientStops { get; set; } =
+        [
             new GradientStops { Offset = 0.0, Color = "#4D5560" },
             new GradientStops { Offset = 0.5, Color = "#383F47" },
             new GradientStops { Offset = 1.0, Color = "#252A30" }
-        };
+        ];
         public double GradientAngle { get; set; } = 0;
         public BackgroundMode BackgroundType { get; set; } = BackgroundMode.Gradient;
         public string? BackgroundImagePath { get; set; } = "";

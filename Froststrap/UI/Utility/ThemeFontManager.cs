@@ -10,7 +10,7 @@ namespace Froststrap.UI.Utility
     /// </summary>
     public static class ThemeFontManager
     {
-        private static readonly Dictionary<string, AvaloniaFontFamily> RegisteredFonts = new();
+        private static readonly Dictionary<string, AvaloniaFontFamily> RegisteredFonts = [];
 
         /// <summary>
         /// Registers fonts from a theme directory
@@ -82,7 +82,7 @@ namespace Froststrap.UI.Utility
             if (!uri.StartsWith("theme://#", StringComparison.OrdinalIgnoreCase))
                 return uri;
 
-            string fontName = uri.Substring("theme://#".Length);
+            string fontName = uri["theme://#".Length..];
 
             // First try registered fonts
             var font = GetFont(fontName);

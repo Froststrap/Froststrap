@@ -12,7 +12,7 @@ namespace Froststrap
 
         public static bool RightToLeft { get; private set; } = false;
 
-        private static readonly List<string> _rtlLocales = new() { "ar", "he", "fa" };
+        private static readonly List<string> _rtlLocales = ["ar", "he", "fa"];
 
         public static readonly Dictionary<string, string> SupportedLocales = new()
         {

@@ -45,7 +45,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async void ExportSettings()
         {
-            if (!File.Exists(App.GlobalSettings.FileLocation))
+            if (!File.Exists(GBSEditor.FileLocation))
             {
                 _ = Frontend.ShowMessageBox("No GBS settings file found to export.", MessageBoxImage.Warning);
                 return;
@@ -69,7 +69,7 @@ namespace Froststrap.UI.ViewModels.Settings
             if (file != null)
             {
                 string localPath = file.Path.LocalPath;
-                bool success = App.GlobalSettings.ExportSettings(localPath);
+                bool success = GBSEditor.ExportSettings(localPath);
 
                 if (success)
                 {
@@ -141,7 +141,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public bool ReadOnly
         {
-            get => App.GlobalSettings.GetReadOnly();
+            get => GBSEditor.GetReadOnly();
             set => App.GlobalSettings.SetReadOnly(value);
         }
 

@@ -2,10 +2,12 @@
 using Froststrap.AppData;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace Froststrap
 {
-    static class Utilities
+    static partial class Utilities
     {
         public static void ShellExecute(string path, bool select = false)
         {
@@ -51,7 +53,7 @@ namespace Froststrap
             if (version.StartsWith('v'))
                 version = version[1..];
 
-            int idx = version.IndexOf('+'); // commit info
+            int idx = version.IndexOf('+');
             if (idx != -1)
                 version = version[..idx];
 
@@ -225,7 +227,7 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Unable to fetch processes!");
                 App.Logger.WriteException(LOG_IDENT, ex);
-                return Array.Empty<Process>(); // can we retry?
+                return []; // can we retry?
             }
         }
 
@@ -256,7 +258,7 @@ namespace Froststrap
 
         public static void KillBackgroundUpdater()
         {
-            using EventWaitHandle handle = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
+            using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
             handle.Set();
         }
 
@@ -298,9 +300,9 @@ namespace Froststrap
 
         private static void StopFlashingNative(IntPtr hWnd)
         {
-            FLASHWINFO fi = new FLASHWINFO
+            FLASHWINFO fi = new()
             {
-                cbSize = (uint)Marshal.SizeOf(typeof(FLASHWINFO)),
+                cbSize = (uint)Marshal.SizeOf<FLASHWINFO>(),
                 hwnd = hWnd,
                 dwFlags = 0,
                 uCount = 0,

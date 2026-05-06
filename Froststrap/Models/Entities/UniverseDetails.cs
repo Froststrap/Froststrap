@@ -7,7 +7,7 @@ namespace Froststrap.Models.Entities
     /// </summary>
     public class UniverseDetails
     {
-        private static List<UniverseDetails> _cache { get; set; } = new();
+        private static List<UniverseDetails> Cache { get; set; } = [];
 
         public GameDetailResponse Data { get; set; } = null!;
 
@@ -18,7 +18,7 @@ namespace Froststrap.Models.Entities
 
         public static UniverseDetails? LoadFromCache(long id)
         {
-            return _cache.FirstOrDefault(x => x.Data?.Id == id);
+            return Cache.FirstOrDefault(x => x.Data?.Id == id);
         }
 
         public static Task FetchSingle(long id) => FetchBulk(id.ToString());
@@ -48,7 +48,7 @@ namespace Froststrap.Models.Entities
             {
                 long id = long.Parse(strId);
 
-                _cache.Add(new UniverseDetails
+                Cache.Add(new UniverseDetails
                 {
                     Data = gameDetailResponse.Data.FirstOrDefault(x => x.Id == id) ?? gameDetailResponse.Data.First(),
                     Thumbnail = universeThumbnailResponse.Data.FirstOrDefault(x => x.TargetId == id) ?? universeThumbnailResponse.Data.First(),

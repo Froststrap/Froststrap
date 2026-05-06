@@ -2,9 +2,9 @@
 {
     public class ShortcutTask : BoolBaseTask
     {
-        private string _shortcutPath;
+        private readonly string _shortcutPath;
 
-        private string _exeFlags;
+        private readonly string _exeFlags;
 
         public ShortcutTask(string name, string lnkFolder, string lnkName, string exeFlags = "") : base("Shortcut", name)
         {
