@@ -155,7 +155,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (App.Cookies.Loaded && isPrivate && string.IsNullOrEmpty(Deployment.ChannelToken))
                 {
-                    UserChannel? userChannel = await Deployment.GetUserChannel("WindowsPlayer");
+                    UserChannel? userChannel = await Deployment.GetUserChannel(OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer");
                     if (userChannel?.Token is not null)
                         Deployment.ChannelToken = userChannel.Token;
                 }
