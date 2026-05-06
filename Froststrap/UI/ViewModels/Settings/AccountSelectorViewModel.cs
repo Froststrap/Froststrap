@@ -11,7 +11,7 @@ namespace Froststrap.UI.ViewModels.Settings
     public partial class AccountSelectorViewModel : ObservableObject
     {
         private const string LOG_IDENT = "AccountSelectorViewModel";
-        private readonly AccountManager _accountManager;
+        private readonly AccountManager _accountManager = null!;
         private readonly Dictionary<long, string?> _accountAvatarUrls = new();
 
         [ObservableProperty]
