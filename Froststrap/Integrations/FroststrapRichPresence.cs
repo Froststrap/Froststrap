@@ -114,7 +114,7 @@ namespace Froststrap.Integrations
                     },
                     Buttons =
                     [
-                        new Button { Label = "GitHub", Url = "https://github.com/RealMeddsam/Froststrap" },
+                        new Button { Label = "GitHub", Url = "https://github.com/Froststrap/Froststrap" },
                         new Button { Label = "Discord", Url = "https://discord.gg/KdR9vpRcUN" }
                     ]
                 };
