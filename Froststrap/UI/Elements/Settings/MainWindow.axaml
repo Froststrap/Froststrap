@@ -5,6 +5,7 @@
 	xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
 	xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
 	xmlns:elements="clr-namespace:Froststrap.UI.Elements"
+	xmlns:gv="using:Froststrap.UI.ViewModels"
 	xmlns:ic="using:FluentIcons.Avalonia.Fluent"
 	xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
 	xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
@@ -77,7 +78,7 @@
 						<ic:SymbolIconSource Symbol="Flag" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem
+				<ui:NavigationViewItem IsVisible="{x:Static gv:GlobalViewModel.IsWindowsAndLinux}"
 					Name="gbs"
 					Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}"
 					Tag="globalsettings">

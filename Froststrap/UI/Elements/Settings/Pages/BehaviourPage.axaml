@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
@@ -38,7 +39,8 @@
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Description}">
+                Description="{x:Static resources:Strings.Menu_Behaviour_ProcessPriority_Description}"
+				IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <ComboBox
                     MinWidth="200"
                     ItemsSource="{Binding ProcessPriorityOptions}"

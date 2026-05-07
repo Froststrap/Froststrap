@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:resources="clr-namespace:Froststrap.Resources"
-             xmlns:models="using:Froststrap.Models"
+             xmlns:gv="using:Froststrap.UI.ViewModels"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
@@ -31,7 +31,7 @@
                                      Description="Opens your Preset Modification folder, Used like Bloxstrap."
                                      Command="{Binding OpenModsFolderCommand}"/>
 
-                <controls:CardAction Grid.Row="2" Grid.ColumnSpan="3"
+                <controls:CardAction Grid.Row="2" Grid.ColumnSpan="3" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                                      Header="{x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Title}"
                                      Icon="ShieldCheckmark" 
                                      Description="{Binding Source={x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"

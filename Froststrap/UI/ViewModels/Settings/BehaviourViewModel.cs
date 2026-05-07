@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Runtime.InteropServices;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -18,7 +18,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         // Ill move to global settings in the future, too lazy to do it now
-        public static bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme);
+        public static bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme) && RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
         public static bool ShowLaunchAtStartup => !string.IsNullOrEmpty(App.StorageSettings.Prop.LaunchAtStartup);
         public static bool ShowMinimizeToTray => !string.IsNullOrEmpty(App.StorageSettings.Prop.MinimizeToTray);
         public static bool ShowSystemTrayModal => !string.IsNullOrEmpty(App.StorageSettings.Prop.SystemTrayModalShown);
