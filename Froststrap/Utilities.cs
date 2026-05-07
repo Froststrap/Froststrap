@@ -279,6 +279,9 @@ namespace Froststrap
 
         public static void StopFlashing(IBootstrapperDialog? dialog)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             if (dialog is Window window)
             {
                 var platformHandle = window.TryGetPlatformHandle();
@@ -291,6 +294,9 @@ namespace Froststrap
 
         public static void StopFlashing(Window window)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             var platformHandle = window.TryGetPlatformHandle();
             if (platformHandle != null)
             {
@@ -300,6 +306,9 @@ namespace Froststrap
 
         private static void StopFlashingNative(IntPtr hWnd)
         {
+            if (!OperatingSystem.IsWindows())
+                return;
+
             FLASHWINFO fi = new()
             {
                 cbSize = (uint)Marshal.SizeOf<FLASHWINFO>(),
