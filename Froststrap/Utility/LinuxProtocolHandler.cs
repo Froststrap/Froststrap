@@ -11,7 +11,8 @@ namespace Froststrap.Utility
             ".local", "share", "applications"
         );
 
-        private static string DesktopFilePath => Path.Combine(DesktopFileDir, "froststrap-uri-handler.desktop");
+        private static string DesktopFilePath => Path.Combine(DesktopFileDir, "froststrap.desktop");
+        private const string DesktopFileName = "froststrap.desktop";
 
         public static void RegisterProtocols()
         {
@@ -28,44 +29,30 @@ namespace Froststrap.Utility
                 string desktopContent =
                    "[Desktop Entry]\n" +
                    "Type=Application\n" +
-                   "Name=Froststrap URI Handler\n" +
+                   "Name=Froststrap\n" +
+                   "Comment=Roblox bootstrapper and mod manager\n" +
                    $"Exec=\"{exePath}\" -player \"%u\"\n" +
-                   "NoDisplay=true\n" +
+                   "Icon=froststrap\n" +
+                   "Terminal=false\n" +
+                   "Categories=Game;\n" +
                    "MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;\n";
 
                 File.WriteAllText(DesktopFilePath, desktopContent);
 
-                var chmodInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "chmod",
-                    Arguments = $"+x \"{DesktopFilePath}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                System.Diagnostics.Process.Start(chmodInfo)?.WaitForExit();
+                RunCommand("chmod", $"+x \"{DesktopFilePath}\"");
 
                 foreach (string scheme in new[] { "x-scheme-handler/roblox", "x-scheme-handler/roblox-player" })
                 {
-                    var xdgMime = new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = "xdg-mime",
-                        Arguments = $"default froststrap-uri-handler.desktop {scheme}",
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-                    System.Diagnostics.Process.Start(xdgMime)?.WaitForExit();
+                    RunCommand("xdg-mime", $"default {DesktopFileName} {scheme}");
                 }
 
-                var updateDb = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "update-desktop-database",
-                    Arguments = DesktopFileDir,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                System.Diagnostics.Process.Start(updateDb)?.WaitForExit();
+                // Chromium and portal-based launchers may consult xdg-settings for scheme handlers.
+                RunCommand("xdg-settings", $"set default-url-scheme-handler roblox {DesktopFileName}");
+                RunCommand("xdg-settings", $"set default-url-scheme-handler roblox-player {DesktopFileName}");
 
-                App.Logger.WriteLine(LOG_IDENT, "Registered roblox:// and roblox-player:// URI handlers via xdg-mime.");
+                RunCommand("update-desktop-database", DesktopFileDir);
+
+                App.Logger.WriteLine(LOG_IDENT, "Registered roblox:// and roblox-player:// URI handlers via xdg-mime and xdg-settings.");
             }
             catch (Exception ex)
             {
@@ -83,22 +70,36 @@ namespace Froststrap.Utility
                 if (File.Exists(DesktopFilePath))
                 {
                     File.Delete(DesktopFilePath);
-                    App.Logger.WriteLine(LOG_IDENT, "Deleted froststrap-uri-handler.desktop");
+                    App.Logger.WriteLine(LOG_IDENT, "Deleted froststrap.desktop");
                 }
 
-                var updateDb = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "update-desktop-database",
-                    Arguments = DesktopFileDir,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                System.Diagnostics.Process.Start(updateDb)?.WaitForExit();
+                RunCommand("update-desktop-database", DesktopFileDir);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Failed to unregister Linux URI protocol handlers.");
                 App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        private static void RunCommand(string fileName, string arguments)
+        {
+            var startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = fileName,
+                Arguments = arguments,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            try
+            {
+                System.Diagnostics.Process.Start(startInfo)?.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("LinuxProtocolHandler::RunCommand", $"Failed to run '{fileName} {arguments}'");
+                App.Logger.WriteException("LinuxProtocolHandler::RunCommand", ex);
             }
         }
     }
