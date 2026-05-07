@@ -152,17 +152,31 @@ namespace Froststrap.UI
                 }
             }
 
-            if ((string.IsNullOrEmpty(serverLocation) && locationActive) ||
-                (string.IsNullOrEmpty(serverUptime) && uptimeActive))
-                return;
-
             string notifContent = Strings.Common_UnknownStatus;
+            bool hasLocation = !string.IsNullOrEmpty(serverLocation);
+            bool hasUptime = !string.IsNullOrEmpty(serverUptime);
+
             if (locationActive && !uptimeActive)
-                notifContent = String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation);
+            {
+                notifContent = hasLocation
+                    ? String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation)
+                    : Strings.Common_UnknownStatus;
+            }
             else if (!locationActive && uptimeActive)
-                notifContent = String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime);
+            {
+                notifContent = hasUptime
+                    ? String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime)
+                    : Strings.Common_UnknownStatus;
+            }
             else if (locationActive && uptimeActive)
-                notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
+            {
+                if (hasLocation && hasUptime)
+                    notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
+                else if (hasLocation)
+                    notifContent = String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation);
+                else if (hasUptime)
+                    notifContent = String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime);
+            }
 
             string? thumbnailUrl = null;
             if (thumbnailTask != null)

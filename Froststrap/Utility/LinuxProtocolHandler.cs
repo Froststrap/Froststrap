@@ -21,13 +21,15 @@ namespace Froststrap.Utility
             {
                 Directory.CreateDirectory(DesktopFileDir);
 
-                string exePath = Paths.Process;
+                string exePath = Environment.GetEnvironmentVariable("APPIMAGE") ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(exePath) || !File.Exists(exePath))
+                    exePath = Paths.Process;
 
                 string desktopContent =
                    "[Desktop Entry]\n" +
                    "Type=Application\n" +
                    "Name=Froststrap URI Handler\n" +
-                   $"Exec=\"{exePath}\" -player %u\n" +
+                   $"Exec=\"{exePath}\" -player \"%u\"\n" +
                    "NoDisplay=true\n" +
                    "MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;\n";
 

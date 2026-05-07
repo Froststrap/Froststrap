@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
@@ -10,6 +11,7 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FluentIcons.Common;
 using Froststrap.UI.Elements.Base;
+using System.Linq;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
@@ -34,14 +36,7 @@ namespace Froststrap.UI.Elements.Dialogs
         protected override void OnOpened(EventArgs e)
         {
             base.OnOpened(e);
-
-            var screen = Screens.Primary?.WorkingArea ?? new PixelRect(0, 0, 1920, 1080);
-            double scaling = Screens.Primary?.Scaling ?? 1.0;
-
-            Position = new PixelPoint(
-                screen.Right - (int)(Width * scaling) - 20,
-                screen.Bottom - (int)(Height * scaling) - 20
-            );
+            PositionNotification();
         }
 
         public NotificationDialog(string title, string message, string imagePath, int timeoutMs = 5000) : this()
@@ -111,13 +106,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             Opened += (s, e) =>
             {
-                var screen = Screens.Primary?.WorkingArea ?? new PixelRect(0, 0, 1920, 1080);
-                double scaling = Screens.Primary?.Scaling ?? 1.0;
-
-                Position = new PixelPoint(
-                    screen.Right - (int)(Width * scaling) - 20,
-                    screen.Bottom - (int)(Height * scaling) - 20
-                );
+                PositionNotification();
 
                 if (timeoutMs > 0) StartExpiryTimer(timeoutMs);
             };
@@ -154,6 +143,26 @@ namespace Froststrap.UI.Elements.Dialogs
                 await Dispatcher.UIThread.InvokeAsync(() => { if (IsVisible) Close(); }, DispatcherPriority.MaxValue);
             }
             catch (TaskCanceledException) { }
+        }
+
+        private void PositionNotification()
+        {
+            Screen? targetScreen = Screens.Primary;
+
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var referenceWindow = desktop.Windows.FirstOrDefault(x => x.IsActive) ?? desktop.MainWindow;
+                if (referenceWindow is not null)
+                    targetScreen = Screens.ScreenFromPoint(referenceWindow.Position) ?? targetScreen;
+            }
+
+            var screen = targetScreen?.WorkingArea ?? new PixelRect(0, 0, 1920, 1080);
+            double scaling = targetScreen?.Scaling ?? 1.0;
+
+            Position = new PixelPoint(
+                screen.Right - (int)(Width * scaling) - 20,
+                screen.Bottom - (int)(Height * scaling) - 20
+            );
         }
     }
 }

@@ -213,15 +213,9 @@
             else if (_logEntriesRead % 100 == 0)
                 App.Logger.WriteLine(LOG_IDENT, $"Read {_logEntriesRead} log entries");
 
-            // get the log message from the read line
-            int logMessageIdx = entry.IndexOf(' ');
-            if (logMessageIdx == -1)
-            {
-                // likely a log message that spanned multiple lines
+            string? logMessage = ExtractLogMessage(entry);
+            if (string.IsNullOrEmpty(logMessage))
                 return;
-            }
-
-            string logMessage = entry[(logMessageIdx + 1)..];
 
             if (InRobloxStudio || _launchMode == LaunchMode.Studio || _launchMode == LaunchMode.StudioAuth)
             {
@@ -231,6 +225,32 @@
             {
                 ProcessPlayerLogEntry(logMessage);
             }
+        }
+
+        private static string? ExtractLogMessage(string entry)
+        {
+            // Sober prefixes lines like:
+            // "info: Roblox: ... [FLog::Output] ..."
+            // so prefer trimming to the first structured Roblox log token.
+            int fLogIndex = entry.IndexOf("[FLog::", StringComparison.Ordinal);
+            int dfLogIndex = entry.IndexOf("[DFLog::", StringComparison.Ordinal);
+
+            int tokenIndex = -1;
+            if (fLogIndex >= 0 && dfLogIndex >= 0)
+                tokenIndex = Math.Min(fLogIndex, dfLogIndex);
+            else if (fLogIndex >= 0)
+                tokenIndex = fLogIndex;
+            else if (dfLogIndex >= 0)
+                tokenIndex = dfLogIndex;
+
+            if (tokenIndex >= 0)
+                return entry[tokenIndex..];
+
+            int logMessageIdx = entry.IndexOf(' ');
+            if (logMessageIdx == -1)
+                return null;
+
+            return entry[(logMessageIdx + 1)..];
         }
 
         private void ProcessStudioLogEntry(string logMessage)

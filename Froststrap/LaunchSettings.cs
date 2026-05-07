@@ -135,6 +135,26 @@
 
             if (GameShortcutFlag.Active && !string.IsNullOrEmpty(GameShortcutFlag.Data))
                 ParseGameShortcut(GameShortcutFlag.Data);
+
+            if (RobloxLaunchMode == LaunchMode.None)
+                InferRobloxLaunchFromAnyArgument();
+        }
+
+        private void InferRobloxLaunchFromAnyArgument()
+        {
+            const string LOG_IDENT = "LaunchSettings::InferRobloxLaunchFromAnyArgument";
+
+            foreach (string arg in Args)
+            {
+                if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
+                    || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Found Roblox player URI outside first argument");
+                    RobloxLaunchMode = LaunchMode.Player;
+                    RobloxLaunchArgs = arg;
+                    return;
+                }
+            }
         }
 
         private void ParsePlayer(string? data)
