@@ -9,7 +9,7 @@ namespace Froststrap.UI.Elements.Settings
     public partial class AccountSelectorView : UserControl
     {
         private const string LOG_IDENT = "AccountSelectorView";
-        private AccountSelectorViewModel? _viewModel;
+        private readonly AccountSelectorViewModel? _viewModel;
 
         public AccountSelectorView()
         {
@@ -23,10 +23,7 @@ namespace Froststrap.UI.Elements.Settings
         {
             base.OnInitialized();
 
-            if (_viewModel != null)
-            {
-                _viewModel.OnManualAddRequested += HandleManualAddRequested;
-            }
+            _viewModel?.OnManualAddRequested += HandleManualAddRequested;
         }
 
         protected override void OnLoaded(RoutedEventArgs e)
@@ -58,10 +55,7 @@ namespace Froststrap.UI.Elements.Settings
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Dialog returned account: {result.Username}");
 
-                        if (_viewModel != null)
-                        {
-                            _viewModel.AddAccountDirect(result);
-                        }
+                        _viewModel?.AddAccountDirect(result);
                     }
                 }
                 else
@@ -75,19 +69,13 @@ namespace Froststrap.UI.Elements.Settings
             }
             finally
             {
-                if (_viewModel != null)
-                {
-                    _viewModel.IsAddingAccount = false;
-                }
+                _viewModel?.IsAddingAccount = false;
             }
         }
 
         protected override void OnUnloaded(RoutedEventArgs e)
         {
-            if (_viewModel != null)
-            {
-                _viewModel.OnManualAddRequested -= HandleManualAddRequested;
-            }
+            _viewModel?.OnManualAddRequested -= HandleManualAddRequested;
             base.OnUnloaded(e);
         }
     }

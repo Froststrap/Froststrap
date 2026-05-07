@@ -12,13 +12,16 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
     public partial class FastFlagEditor : UserControl
     {
-        private readonly ObservableCollection<FastFlag> _fastFlagList = new();
+        private readonly ObservableCollection<FastFlag> _fastFlagList = [];
         private bool _showPresets = true;
         private string _searchFilter = string.Empty;
-        private string _lastSearch = string.Empty;
-        private DateTime _lastSearchTime = DateTime.MinValue;
-        private const int _debounceDelay = 70;
         private CancellationTokenSource? _searchCancellationTokenSource;
+
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true
+        };
 
         private DataGrid? _dataGrid;
         private TextBox? _searchTextBox;
@@ -64,16 +67,11 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 _fastFlagList.Add(entry);
             }
 
-            if (_dataGrid.ItemsSource is null)
-                _dataGrid.ItemsSource = _fastFlagList;
+            _dataGrid.ItemsSource ??= _fastFlagList;
 
-            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Any()))
-                EmptyTextBlock.IsVisible = true;
-            else
-                EmptyTextBlock.IsVisible = false;
+            EmptyTextBlock.IsVisible = _fastFlagList.Count == 0 && App.FastFlags.Prop.Count == 0;
 
-            if (DeleteSelectedButton != null)
-                DeleteSelectedButton.IsEnabled = false;
+            DeleteSelectedButton?.IsEnabled = false;
 
             UpdateTotalFlagsCount();
         }
@@ -225,19 +223,13 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!json.EndsWith('}'))
             {
                 int lastIndex = json.LastIndexOf('}');
-                json = lastIndex == -1 ? json + '}' : json.Substring(0, lastIndex + 1);
+                json = lastIndex == -1 ? json + '}' : json[..(lastIndex + 1)];
             }
 
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    ReadCommentHandling = JsonCommentHandling.Skip,
-                    AllowTrailingCommas = true
-                };
-
-                list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, options);
-                if (list is null) throw new Exception("JSON returned null");
+                list = JsonSerializer.Deserialize<Dictionary<string, object>>(json, _jsonOptions);
+                _ = list ?? throw new Exception("JSON returned null");
             }
             catch (Exception ex)
             {
@@ -256,7 +248,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             var conflictingFlags = App.FastFlags.Prop.Where(x => list.ContainsKey(x.Key)).Select(x => x.Key).ToList();
             bool overwriteConflicting = false;
 
-            if (conflictingFlags.Any())
+            if (conflictingFlags.Count > 0)
             {
                 string message = string.Format(
                     Strings.Menu_FastFlagEditor_ConflictingImport,
@@ -287,7 +279,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             var base64Flags = DecodeBase64Flags(remoteManager.Prop.AllowedFastFlags);
 
             var invalidFlags = list.Keys.Where(flag => !base64Flags.Contains(flag)).ToList();
-            if (invalidFlags.Any())
+            if (invalidFlags.Count > 0)
             {
                 var result = await Frontend.ShowMessageBox(
                     $"{invalidFlags.Count} imported flags are not in the allowlist and won't work.\n\nRemove them now?",
@@ -328,7 +320,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
         private async void DeleteAllButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Any()))
+            if (!(_fastFlagList.Any() || App.FastFlags.Prop.Count > 0))
             {
                 await Frontend.ShowMessageBox(
                     "There are no flags to delete.",
@@ -385,7 +377,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             SaveJSONToFile(json);
         }
 
-        private string BuildFormattedJSON()
+        private static string BuildFormattedJSON()
         {
             var flags = App.FastFlags.Prop;
 
@@ -443,11 +435,11 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     Title = "ESave JSON or TXT File",
                     SuggestedFileName = "FroststrapExport.json",
                     DefaultExtension = "json",
-                    FileTypeChoices = new[]
-                    {
-                        new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
-                        new FilePickerFileType("TXT Files") { Patterns = new[] { "*.txt" } }
-                    }
+                    FileTypeChoices =
+                    [
+                        new FilePickerFileType("JSON Files") { Patterns = ["*.json"] },
+                        new FilePickerFileType("TXT Files") { Patterns = ["*.txt"] }
+                    ]
                 });
 
                 if (file is not null)

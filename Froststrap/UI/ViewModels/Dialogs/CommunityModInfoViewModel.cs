@@ -1,47 +1,62 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Base;
-using Froststrap.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-
 using AvaFontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    public partial class CommunityModInfoViewModel : ObservableObject
+    public partial class CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window) : NotifyPropertyChangedViewModel
     {
         private static readonly string FontDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Fonts");
 
-        [ObservableProperty] private CommunityMod _mod;
-        [ObservableProperty] private bool _isLoadingGlyphs = false;
-        [ObservableProperty] private string _statusText = string.Empty;
-        [ObservableProperty] private ObservableCollection<GlyphItem> _glyphItems = new();
-
-        [ObservableProperty] private IBrush _previewBrush = Brushes.White;
-
-        private readonly AvaloniaWindow _window;
-
-        public CommunityModInfoViewModel(CommunityMod mod, AvaloniaWindow window)
+        private CommunityMod _mod = mod;
+        public CommunityMod Mod
         {
-            _mod = mod;
-            _window = window;
+            get => _mod;
+            set => SetProperty(ref _mod, value);
+        }
 
-            if (_mod.IsColorMod)
+        private bool _isLoadingGlyphs;
+        public bool IsLoadingGlyphs
+        {
+            get => _isLoadingGlyphs;
+            set => SetProperty(ref _isLoadingGlyphs, value);
+        }
+
+        private string _statusText = string.Empty;
+        public string StatusText
+        {
+            get => _statusText;
+            set => SetProperty(ref _statusText, value);
+        }
+
+        private ObservableCollection<GlyphItem> _glyphItems = [];
+        public ObservableCollection<GlyphItem> GlyphItems
+        {
+            get => _glyphItems;
+            set => SetProperty(ref _glyphItems, value);
+        }
+
+        private IBrush _previewBrush = Brushes.White;
+        public IBrush PreviewBrush
+        {
+            get => _previewBrush;
+            set => SetProperty(ref _previewBrush, value);
+        }
+
+        public void Initialize()
+        {
+            if (Mod.IsColorMod)
                 _ = InitializePreviewAsync();
         }
 
         [RelayCommand]
-        private void Close() => _window.Close();
+        private void Close() => window.Close();
 
         private async Task InitializePreviewAsync()
         {
@@ -77,7 +92,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 PreviewBrush = Brushes.White;
         }
 
-        private bool IsFileReady(string filename)
+        private static bool IsFileReady(string filename)
         {
             try
             {
@@ -95,7 +110,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
             if (!File.Exists(fontPath) || !IsFileReady(fontPath)) return;
 
             IsLoadingGlyphs = true;
-            var newItems = new ObservableCollection<GlyphItem>();
+            ObservableCollection<GlyphItem> newItems = [];
             UpdateGlyphColors();
 
             try
@@ -103,10 +118,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 string variantName = Path.GetFileNameWithoutExtension(fontPath);
                 AvaFontFamily? fontFamily = null;
 
-                if (Avalonia.Application.Current != null)
+                if (Application.Current != null)
                 {
                     string resourceKey = variantName.EndsWith("Filled") ? "BuilderIconsFilled" : "BuilderIconsRegular";
-                    if (Avalonia.Application.Current.Resources.TryGetResource(resourceKey, null, out object? res) && res is AvaFontFamily ff)
+                    if (Application.Current.Resources.TryGetResource(resourceKey, null, out object? res) && res is AvaFontFamily ff)
                     {
                         fontFamily = ff;
                     }
@@ -119,7 +134,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                 }
 
                 var typeface = new Typeface(fontFamily);
-                var characterCodes = Enumerable.Range(0xF101, 25).ToList();
+                var characterCodes = Enumerable.Range(0xF101, 25);
 
                 foreach (var characterCode in characterCodes)
                 {

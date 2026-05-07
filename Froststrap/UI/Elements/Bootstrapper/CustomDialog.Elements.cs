@@ -9,6 +9,7 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Styling;
+using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using System.Xml.Linq;
@@ -18,7 +19,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
     public partial class CustomDialog
     {
         #region Transformation
-        private static Transform HandleXmlElement_ScaleTransform(CustomDialog dialog, XElement xmlElement)
+        private static ScaleTransform HandleXmlElement_ScaleTransform(CustomDialog dialog, XElement xmlElement)
         {
             return new ScaleTransform
             {
@@ -27,7 +28,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             };
         }
 
-        private static Transform HandleXmlElement_SkewTransform(CustomDialog dialog, XElement xmlElement)
+        private static SkewTransform HandleXmlElement_SkewTransform(CustomDialog dialog, XElement xmlElement)
         {
             return new SkewTransform
             {
@@ -36,30 +37,28 @@ namespace Froststrap.UI.Elements.Bootstrapper
             };
         }
 
-        private static Transform HandleXmlElement_RotateTransform(CustomDialog dialog, XElement xmlElement)
+        private static RotateTransform HandleXmlElement_RotateTransform(CustomDialog dialog, XElement xmlElement)
         {
-            var rt = new RotateTransform();
-
-            rt.Angle = ParseXmlAttribute<double>(xmlElement, "Angle", 0);
-            rt.CenterX = ParseXmlAttribute<double>(xmlElement, "CenterX", 0);
-            rt.CenterY = ParseXmlAttribute<double>(xmlElement, "CenterY", 0);
-
-            return rt;
+            return new RotateTransform
+            {
+                Angle = ParseXmlAttribute<double>(xmlElement, "Angle", 0),
+                CenterX = ParseXmlAttribute<double>(xmlElement, "CenterX", 0),
+                CenterY = ParseXmlAttribute<double>(xmlElement, "CenterY", 0)
+            };
         }
 
-        private static Transform HandleXmlElement_TranslateTransform(CustomDialog dialog, XElement xmlElement)
+        private static TranslateTransform HandleXmlElement_TranslateTransform(CustomDialog dialog, XElement xmlElement)
         {
-            var tt = new TranslateTransform();
-
-            tt.X = ParseXmlAttribute<double>(xmlElement, "X", 0);
-            tt.Y = ParseXmlAttribute<double>(xmlElement, "Y", 0);
-
-            return tt;
+            return new TranslateTransform
+            {
+                X = ParseXmlAttribute<double>(xmlElement, "X", 0),
+                Y = ParseXmlAttribute<double>(xmlElement, "Y", 0)
+            };
         }
         #endregion
 
         #region Effects
-        private static object HandleXmlElement_DropShadowEffect(CustomDialog dialog, XElement xmlElement)
+        private static BoxShadows HandleXmlElement_DropShadowEffect(CustomDialog _, XElement xmlElement)
         {
             var color = ParseXmlAttribute<Color>(xmlElement, "Color", Colors.Black);
             double opacity = ParseXmlAttribute<double>(xmlElement, "Opacity", 1.0);
@@ -84,19 +83,18 @@ namespace Froststrap.UI.Elements.Bootstrapper
             brush.Opacity = ParseXmlAttribute<double>(xmlElement, "Opacity", 1.0);
         }
 
-        private static Brush HandleXmlElement_SolidColorBrush(CustomDialog dialog, XElement xmlElement)
+        private static SolidColorBrush HandleXmlElement_SolidColorBrush(CustomDialog dialog, XElement xmlElement)
         {
             var brush = new SolidColorBrush();
             HandleXml_Brush(brush, xmlElement);
 
-            object? color = GetColorFromXElement(xmlElement, "Color");
-            if (color is Color)
-                brush.Color = (Color)color;
+            if (GetColorFromXElement(xmlElement, "Color") is Color c)
+                brush.Color = c;
 
             return brush;
         }
 
-        private static Brush HandleXmlElement_ImageBrush(CustomDialog dialog, XElement xmlElement)
+        private static ImageBrush HandleXmlElement_ImageBrush(CustomDialog dialog, XElement xmlElement)
         {
             var imageBrush = new ImageBrush();
             HandleXml_Brush(imageBrush, xmlElement);
@@ -107,12 +105,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
             imageBrush.Stretch = ParseXmlAttribute<Stretch>(xmlElement, "Stretch", Stretch.Fill);
             imageBrush.TileMode = ParseXmlAttribute<TileMode>(xmlElement, "TileMode", TileMode.None);
 
-            var viewbox = GetRectFromXElement(xmlElement, "Viewbox");
-            if (viewbox is Rect vb)
+            if (GetRectFromXElement(xmlElement, "Viewbox") is Rect vb)
                 imageBrush.SourceRect = new RelativeRect(vb, RelativeUnit.Relative);
 
-            var viewport = GetRectFromXElement(xmlElement, "Viewport");
-            if (viewport is Rect vp)
+            if (GetRectFromXElement(xmlElement, "Viewport") is Rect vp)
                 imageBrush.DestinationRect = new RelativeRect(vp, RelativeUnit.Relative);
 
             var sourceData = GetImageSourceData(dialog, "ImageSource", xmlElement);
@@ -140,34 +136,30 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             var gs = new GradientStop();
 
-            object? color = GetColorFromXElement(xmlElement, "Color");
-            if (color is Color)
-                gs.Color = (Color)color;
+            if (GetColorFromXElement(xmlElement, "Color") is Color c)
+                gs.Color = c;
 
             gs.Offset = ParseXmlAttribute<double>(xmlElement, "Offset", 0.0);
 
             return gs;
         }
 
-        private static Brush HandleXmlElement_LinearGradientBrush(CustomDialog dialog, XElement xmlElement)
+        private static LinearGradientBrush HandleXmlElement_LinearGradientBrush(CustomDialog dialog, XElement xmlElement)
         {
             var brush = new LinearGradientBrush();
             HandleXml_Brush(brush, xmlElement);
 
-            var startPoint = GetPointFromXElement(xmlElement, "StartPoint");
-            if (startPoint is Point sp)
+            if (GetPointFromXElement(xmlElement, "StartPoint") is Point sp)
                 brush.StartPoint = new RelativePoint(sp, RelativeUnit.Relative);
 
-            var endPoint = GetPointFromXElement(xmlElement, "EndPoint");
-            if (endPoint is Point ep)
+            if (GetPointFromXElement(xmlElement, "EndPoint") is Point ep)
                 brush.EndPoint = new RelativePoint(ep, RelativeUnit.Relative);
 
             brush.SpreadMethod = ParseXmlAttribute<GradientSpreadMethod>(xmlElement, "SpreadMethod", GradientSpreadMethod.Pad);
 
             foreach (var child in xmlElement.Elements())
             {
-                var stop = HandleXml<GradientStop>(dialog, child);
-                if (stop != null)
+                if (HandleXml<GradientStop>(dialog, child) is GradientStop stop)
                     brush.GradientStops.Add(stop);
             }
 
@@ -193,11 +185,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (brushElement == null)
                 return;
 
-            var first = brushElement.FirstNode as XElement;
-            if (first == null)
-                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissingChild", xmlElement.Name.ToString(), name);
+            var customBrush = HandleXml<Brush>(dialog, brushElement.FirstNode as XElement
+                ?? throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissingChild", xmlElement.Name.ToString(), name));
 
-            var customBrush = HandleXml<Brush>(dialog, first);
             uiElement.SetValue(property, customBrush);
         }
         #endregion
@@ -223,7 +213,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
         {
             var ellipse = new Ellipse();
             HandleXmlElement_Shape(dialog, ellipse, xmlElement);
-
             return ellipse;
         }
 
@@ -353,7 +342,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             }
         }
 
-        private static Control HandleXmlElement_BloxstrapCustomBootstrapper(CustomDialog dialog, XElement xmlElement)
+        private static DummyControl HandleXmlElement_BloxstrapCustomBootstrapper(CustomDialog dialog, XElement xmlElement)
         {
             xmlElement.SetAttributeValue("IsVisible", "False");
             xmlElement.SetAttributeValue("IsEnabled", "True");
@@ -396,10 +385,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
             throw new CustomThemeException("CustomTheme.Errors.ElementInvalidChild", xmlElement.Parent!.Name.ToString(), xmlElement.Name.ToString());
         }
 
-        private static Control HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
+        private static TitleBar HandleXmlElement_TitleBar(CustomDialog dialog, XElement xmlElement)
         {
             var titleBar = new TitleBar();
-
             HandleXmlElement_Control(dialog, titleBar, xmlElement);
 
             titleBar.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -412,10 +400,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 titleBar.IsVisible = false;
                 titleBar.Height = 0;
             }
-            else
+            else if (double.IsNaN(titleBar.Height))
             {
-                if (double.IsNaN(titleBar.Height))
-                    titleBar.Height = 32;
+                titleBar.Height = 32;
             }
 
             titleBar.ZIndex = ParseXmlAttribute<int>(xmlElement, "Panel.ZIndex", 1001);
@@ -428,7 +415,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return titleBar;
         }
 
-        private static Control HandleXmlElement_Button(CustomDialog dialog, XElement xmlElement)
+        private static Button HandleXmlElement_Button(CustomDialog dialog, XElement xmlElement)
         {
             var button = new Button();
             HandleXmlElement_Control(dialog, button, xmlElement);
@@ -454,16 +441,14 @@ namespace Froststrap.UI.Elements.Bootstrapper
             rangeBase.Maximum = ParseXmlAttribute<double>(xmlElement, "Maximum", 100);
         }
 
-        private static Control HandleXmlElement_ProgressBar(CustomDialog dialog, XElement xmlElement)
+        private static ProgressBar HandleXmlElement_ProgressBar(CustomDialog dialog, XElement xmlElement)
         {
             var progressBar = new ProgressBar();
             HandleXmlElement_RangeBase(dialog, progressBar, xmlElement);
 
             var fgColorAttr = xmlElement.Attribute("Foreground")?.Value;
             if (!string.IsNullOrEmpty(fgColorAttr) && Color.TryParse(fgColorAttr, out var parsedColor))
-            {
                 progressBar.Foreground = new SolidColorBrush(parsedColor);
-            }
 
             progressBar.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
@@ -477,19 +462,15 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return progressBar;
         }
 
-        private static Control HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
+        private static ProgressRing HandleXmlElement_ProgressRing(CustomDialog dialog, XElement xmlElement)
         {
-            var progressRing = new ProgressBar();
-
+            var progressRing = new ProgressRing();
             progressRing.Classes.Add("Ring");
-
             HandleXmlElement_RangeBase(dialog, progressRing, xmlElement);
 
             var fgColorAttr = xmlElement.Attribute("Foreground")?.Value;
             if (!string.IsNullOrEmpty(fgColorAttr) && Color.TryParse(fgColorAttr, out var parsedColor))
-            {
                 progressRing.Foreground = new SolidColorBrush(parsedColor);
-            }
 
             progressRing.IsIndeterminate = ParseXmlAttribute<bool>(xmlElement, "IsIndeterminate", false);
 
@@ -536,7 +517,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 textBlock.Padding = p;
         }
 
-        private static Control HandleXmlElement_TextBlock(CustomDialog dialog, XElement xmlElement)
+        private static TextBlock HandleXmlElement_TextBlock(CustomDialog dialog, XElement xmlElement)
         {
             var textBlock = new TextBlock();
             HandleXmlElement_TextBlock_Base(dialog, textBlock, xmlElement);
@@ -551,7 +532,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return textBlock;
         }
 
-        private static Control HandleXmlElement_MarkdownTextBlock(CustomDialog dialog, XElement xmlElement)
+        private static MarkdownTextBlock HandleXmlElement_MarkdownTextBlock(CustomDialog dialog, XElement xmlElement)
         {
             var textBlock = new MarkdownTextBlock();
             HandleXmlElement_TextBlock_Base(dialog, textBlock, xmlElement);
@@ -563,7 +544,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return textBlock;
         }
 
-        private static Control HandleXmlElement_Image(CustomDialog dialog, XElement xmlElement)
+        private static Image HandleXmlElement_Image(CustomDialog dialog, XElement xmlElement)
         {
             var image = new Image();
             HandleXmlElement_FrameworkElement(dialog, image, xmlElement);
@@ -600,10 +581,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private static RowDefinition HandleXmlElement_RowDefinition(CustomDialog dialog, XElement xmlElement)
         {
             var rowDefinition = new RowDefinition();
-
-            var height = GetGridLengthFromXElement(xmlElement, "Height");
-            if (height != null)
-                rowDefinition.Height = (GridLength)height;
+            if (GetGridLengthFromXElement(xmlElement, "Height") is GridLength h)
+                rowDefinition.Height = h;
 
             rowDefinition.MinHeight = ParseXmlAttribute<double>(xmlElement, "MinHeight", 0);
             rowDefinition.MaxHeight = ParseXmlAttribute<double>(xmlElement, "MaxHeight", double.PositiveInfinity);
@@ -614,10 +593,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private static ColumnDefinition HandleXmlElement_ColumnDefinition(CustomDialog dialog, XElement xmlElement)
         {
             var columnDefinition = new ColumnDefinition();
-
-            var width = GetGridLengthFromXElement(xmlElement, "Width");
-            if (width != null)
-                columnDefinition.Width = (GridLength)width;
+            if (GetGridLengthFromXElement(xmlElement, "Width") is GridLength w)
+                columnDefinition.Width = w;
 
             columnDefinition.MinWidth = ParseXmlAttribute<double>(xmlElement, "MinWidth", 0);
             columnDefinition.MaxWidth = ParseXmlAttribute<double>(xmlElement, "MaxWidth", double.PositiveInfinity);
@@ -655,28 +632,19 @@ namespace Froststrap.UI.Elements.Bootstrapper
             {
                 if (element.Name == "Grid.RowDefinitions")
                 {
-                    if (rowsSet)
-                        throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMultipleDefinitions", "Grid", "RowDefinitions");
+                    if (rowsSet) throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMultipleDefinitions", "Grid", "RowDefinitions");
                     rowsSet = true;
-
                     HandleXmlElement_Grid_RowDefinitions(grid, dialog, element);
                 }
                 else if (element.Name == "Grid.ColumnDefinitions")
                 {
-                    if (columnsSet)
-                        throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMultipleDefinitions", "Grid", "ColumnDefinitions");
+                    if (columnsSet) throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMultipleDefinitions", "Grid", "ColumnDefinitions");
                     columnsSet = true;
-
                     HandleXmlElement_Grid_ColumnDefinitions(grid, dialog, element);
                 }
-                else if (element.Name.ToString().StartsWith("Grid."))
+                else if (!element.Name.ToString().StartsWith("Grid."))
                 {
-                    continue;
-                }
-                else
-                {
-                    var uiElement = HandleXml<Control>(dialog, element);
-                    if (uiElement != null)
+                    if (HandleXml<Control>(dialog, element) is Control uiElement)
                         grid.Children.Add(uiElement);
                 }
             }

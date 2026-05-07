@@ -20,8 +20,8 @@ namespace Froststrap.UI.Elements.Settings
     {
         public static MainWindow? Instance { get; private set; }
 
-        private Models.Persistable.WindowState _state => App.State.Prop.SettingsWindow;
-        private MainWindowViewModel? _viewModel;
+        private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
+        private readonly MainWindowViewModel? _viewModel;
 
         public MainWindow()
         {
@@ -48,18 +48,17 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
-            App.RemoteData.Subscribe((object? sender, EventArgs e) => {
-                Dispatcher.UIThread.Post(() => {
-                    RemoteDataBase Data = App.RemoteData.Prop;
+            App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
+            {
+                var data = App.RemoteData.Prop;
 
-                    if (AlertBar != null)
-                    {
-                        AlertBar.IsVisible = Data.AlertEnabled;
-                        AlertBar.Message = Data.AlertContent;
-                        AlertBar.Severity = Data.AlertSeverity;
-                    }
-                });
-            });
+                if (AlertBar is not null)
+                {
+                    AlertBar.IsVisible = data.AlertEnabled;
+                    AlertBar.Message = data.AlertContent;
+                    AlertBar.Severity = data.AlertSeverity;
+                }
+            }));
 
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
@@ -176,7 +175,7 @@ namespace Froststrap.UI.Elements.Settings
             var navView = this.FindControl<NavigationView>("NavView");
             if (navView == null) return;
 
-            foreach(var item in navView.MenuItems)
+            foreach (var item in navView.MenuItems)
             {
                 if (item is NavigationViewItem navItem && navItem.Tag is string tag)
                 {
@@ -187,7 +186,7 @@ namespace Froststrap.UI.Elements.Settings
                     }
                 }
             }
-            foreach(var item in navView.FooterMenuItems)
+            foreach (var item in navView.FooterMenuItems)
             {
                 if (item is NavigationViewItem navItem && navItem.Tag is string tag)
                 {
@@ -242,17 +241,17 @@ namespace Froststrap.UI.Elements.Settings
             var screen = Screens.Primary?.Bounds;
             if (screen != null)
             {
-                if (_state.Left > screen.Value.Width) _state.Left = 0;
-                if (_state.Top > screen.Value.Height) _state.Top = 0;
+                if (State.Left > screen.Value.Width) State.Left = 0;
+                if (State.Top > screen.Value.Height) State.Top = 0;
             }
 
-            if (_state.Width > 0) this.Width = _state.Width;
-            if (_state.Height > 0) this.Height = _state.Height;
+            if (State.Width > 0) this.Width = State.Width;
+            if (State.Height > 0) this.Height = State.Height;
 
-            if (_state.Left > 0 && _state.Top > 0)
+            if (State.Left > 0 && State.Top > 0)
             {
                 this.WindowStartupLocation = WindowStartupLocation.Manual;
-                this.Position = new PixelPoint((int)_state.Left, (int)_state.Top);
+                this.Position = new PixelPoint((int)State.Left, (int)State.Top);
             }
         }
 
@@ -384,10 +383,7 @@ namespace Froststrap.UI.Elements.Settings
         public void HideLoading()
         {
             var loadingOverlay = this.FindControl<Grid>("LoadingOverlay");
-            if (loadingOverlay != null)
-            {
-                loadingOverlay.IsVisible = false;
-            }
+            loadingOverlay?.IsVisible = false;
         }
 
         private void AttachTitleBarButtons()
@@ -397,21 +393,21 @@ namespace Froststrap.UI.Elements.Settings
             var closeButton = this.FindControl<IconButton>("PART_CloseButton");
 
             minimizeButton?.Click += (s, e) =>
-                {
-                    this.WindowState = Avalonia.Controls.WindowState.Minimized;
-                };
+            {
+                this.WindowState = Avalonia.Controls.WindowState.Minimized;
+            };
 
             maximizeButton?.Click += (s, e) =>
-                {
-                    this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized 
-                        ? Avalonia.Controls.WindowState.Normal 
-                        : Avalonia.Controls.WindowState.Maximized;
-                };
+            {
+                this.WindowState = this.WindowState == Avalonia.Controls.WindowState.Maximized
+                    ? Avalonia.Controls.WindowState.Normal
+                    : Avalonia.Controls.WindowState.Maximized;
+            };
 
             closeButton?.Click += (s, e) =>
-                {
-                    this.Close();
-                };
+            {
+                this.Close();
+            };
         }
 
         private SearchIndexBuilder? _searchIndexBuilder;
@@ -513,13 +509,13 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (addedItems.Count > 0)
                 {
-                var currentIndex = _viewModel.SearchBar.GetSearchIndex();
+                    var currentIndex = _viewModel.SearchBar.GetSearchIndex();
                     currentIndex.AddRange(addedItems);
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("MainWindow::IndexPage", 
+                App.Logger.WriteLine("MainWindow::IndexPage",
                     $"Error scanning page {pageTag}: {ex.Message}");
             }
         }
@@ -537,10 +533,7 @@ namespace Froststrap.UI.Elements.Settings
                         .OfType<CardExpander>()
                         .FirstOrDefault(ce => (ce.Header as string) == item.ParentSectionName);
 
-                    if (parentExpander != null)
-                    {
-                        parentExpander.IsExpanded = true;
-                    }
+                    parentExpander?.IsExpanded = true;
                 }
 
                 Control? targetControl = null;
@@ -572,14 +565,11 @@ namespace Froststrap.UI.Elements.Settings
                         break;
                 }
 
-                if (targetControl != null)
-                {
-                    targetControl.BringIntoView();
-                }
+                targetControl?.BringIntoView();
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("MainWindow::ScrollToSearchItem", 
+                App.Logger.WriteLine("MainWindow::ScrollToSearchItem",
                     $"Error scrolling to item: {ex.Message}");
             }
         }
@@ -588,10 +578,10 @@ namespace Froststrap.UI.Elements.Settings
 
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
-            _state.Width = this.Width;
-            _state.Height = this.Height;
-            _state.Left = this.Position.X;
-            _state.Top = this.Position.Y;
+            State.Width = this.Width;
+            State.Height = this.Height;
+            State.Left = this.Position.X;
+            State.Top = this.Position.Y;
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)

@@ -1,14 +1,24 @@
 using Avalonia.Controls;
-using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
-	public partial class CustomDialog : AvaloniaDialogBase
+    public partial class CustomDialog : AvaloniaDialogBase
     {
-		private readonly BootstrapperDialogViewModel _viewModel;
-        public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
+        private readonly BootstrapperDialogViewModel _viewModel;
+
+        public CustomDialog()
+        {
+            InitializeComponent();
+
+            _viewModel = new BootstrapperDialogViewModel(this);
+            DataContext = _viewModel;
+
+            SetupDialog();
+
+            Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
+        }
 
         #region UI Elements Overrides
         public override string Message
@@ -54,35 +64,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         public override bool ProgressIndeterminate
         {
-            get => _viewModel!.ProgressIndeterminate;
+            get => _viewModel.ProgressIndeterminate;
             set => RunOnUI(() =>
             {
-                _viewModel!.ProgressIndeterminate = value;
+                _viewModel.ProgressIndeterminate = value;
                 _viewModel.OnPropertyChanged(nameof(_viewModel.ProgressIndeterminate));
             });
         }
-        #endregion
-
-        public CustomDialog()
-		{
-			InitializeComponent();
-
-			_viewModel = new BootstrapperDialogViewModel(this);
-			DataContext = _viewModel;
-			Title = App.Settings.Prop.BootstrapperTitle;
-			Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
-		}
-
-		#region IBootstrapperDialog Methods
-		public new void ShowBootstrapper() => this.Show();
-
-        public override void CloseBootstrapper()
-		{
-			_isClosing = true;
-			Dispatcher.UIThread.Post(this.Close);
-		}
-
-        public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
         #endregion
     }
 }

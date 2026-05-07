@@ -8,7 +8,6 @@ using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Platform;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using AvaloniaEdit.CodeCompletion;
 using AvaloniaEdit.Document;
 using AvaloniaEdit.Editing;
@@ -16,10 +15,7 @@ using AvaloniaEdit.Highlighting;
 using AvaloniaEdit.Highlighting.Xshd;
 using FluentIcons.Common;
 using Froststrap.UI.Elements.Base;
-using Froststrap.UI.Elements.Settings;
 using Froststrap.UI.ViewModels.Editor;
-using Froststrap.UI.ViewModels.Settings;
-using System.ComponentModel;
 using System.Xml;
 
 namespace Froststrap.UI.Elements.Editor
@@ -30,15 +26,15 @@ namespace Froststrap.UI.Elements.Editor
         {
             private class Schema
             {
-                public Dictionary<string, Element> Elements { get; set; } = new Dictionary<string, Element>();
-                public Dictionary<string, Type> Types { get; set; } = new Dictionary<string, Type>();
+                public Dictionary<string, Element> Elements { get; set; } = [];
+                public Dictionary<string, Type> Types { get; set; } = [];
             }
 
             private class Element
             {
                 public string? SuperClass { get; set; } = null;
                 public bool IsCreatable { get; set; } = false;
-                public Dictionary<string, string> Attributes { get; set; } = new Dictionary<string, string>();
+                public Dictionary<string, string> Attributes { get; set; } = [];
             }
 
             public class Type
@@ -49,9 +45,9 @@ namespace Froststrap.UI.Elements.Editor
 
             private static Schema? _schema;
 
-            public static SortedDictionary<string, SortedDictionary<string, string>> ElementInfo { get; set; } = new();
-            public static Dictionary<string, List<string>> PropertyElements { get; set; } = new();
-            public static SortedDictionary<string, Type> Types { get; set; } = new();
+            public static SortedDictionary<string, SortedDictionary<string, string>> ElementInfo { get; set; } = [];
+            public static Dictionary<string, List<string>> PropertyElements { get; set; } = [];
+            public static SortedDictionary<string, Type> Types { get; set; } = [];
 
             public static void ParseSchema()
             {
@@ -60,9 +56,7 @@ namespace Froststrap.UI.Elements.Editor
                 try
                 {
                     string json = Resource.GetString("CustomBootstrapperSchema.json").GetAwaiter().GetResult();
-                    _schema = JsonSerializer.Deserialize<Schema>(json);
-
-                    if (_schema == null) throw new Exception("Schema deserialization failed.");
+                    _schema = JsonSerializer.Deserialize<Schema>(json) ?? throw new Exception("Schema deserialization failed.");
 
                     foreach (var type in _schema.Types)
                         Types.Add(type.Key, type.Value);
@@ -77,22 +71,25 @@ namespace Froststrap.UI.Elements.Editor
 
             private static (SortedDictionary<string, string>, List<string>) GetElementAttributes(string name, Element element)
             {
-                if (ElementInfo.ContainsKey(name))
-                    return (ElementInfo[name], PropertyElements[name]);
+                if (ElementInfo.TryGetValue(name, out var existingAttributes))
+                    return (existingAttributes, PropertyElements[name]);
 
-                List<string> properties = new List<string>();
-                SortedDictionary<string, string> attributes = new();
+                List<string> properties = [];
+                SortedDictionary<string, string> attributes = [];
 
                 foreach (var attribute in element.Attributes)
                 {
                     attributes.Add(attribute.Key, attribute.Value);
 
-                    if (!Types.ContainsKey(attribute.Value))
+                    if (Types.TryGetValue(attribute.Value, out var type))
+                    {
+                        if (type.CanHaveElement)
+                            properties.Add(attribute.Key);
+                    }
+                    else
+                    {
                         throw new Exception($"Schema for type {attribute.Value} is missing. Blame Matt!");
-
-                    Type type = Types[attribute.Value];
-                    if (type.CanHaveElement)
-                        properties.Add(attribute.Key);
+                    }
                 }
 
                 if (element.SuperClass != null)
@@ -116,7 +113,7 @@ namespace Froststrap.UI.Elements.Editor
 
             private static void PopulateElementInfo()
             {
-                List<string> toRemove = new List<string>();
+                List<string> toRemove = [];
 
                 foreach (var element in _schema!.Elements)
                 {
@@ -133,14 +130,13 @@ namespace Froststrap.UI.Elements.Editor
             }
         }
 
-        private BootstrapperEditorWindowViewModel _viewModel = null!;
+        private readonly BootstrapperEditorWindowViewModel _viewModel = null!;
         private CompletionWindow? _completionWindow = null;
-
         private bool _isInitialLoad = true;
 
         public BootstrapperEditorWindow()
-        { 
-            InitializeComponent(); 
+        {
+            InitializeComponent();
         }
 
         public BootstrapperEditorWindow(string name) : this()
@@ -150,11 +146,13 @@ namespace Froststrap.UI.Elements.Editor
             string directory = Path.Combine(Paths.CustomThemes, name);
             string themeContents = File.ReadAllText(Path.Combine(directory, "Theme.xml"));
 
-            _viewModel = new BootstrapperEditorWindowViewModel();
-            _viewModel.Directory = directory;
-            _viewModel.Name = name;
-            _viewModel.Code = ToCRLF(themeContents);
-            _viewModel.Title = string.Format(Strings.CustomTheme_Editor_Title, name);
+            _viewModel = new BootstrapperEditorWindowViewModel
+            {
+                Directory = directory,
+                Name = name,
+                Code = ToCRLF(themeContents),
+                Title = string.Format(Strings.CustomTheme_Editor_Title, name)
+            };
 
             DataContext = _viewModel;
 
@@ -166,15 +164,13 @@ namespace Froststrap.UI.Elements.Editor
             {
                 if (success)
                 {
-                    Dispatcher.UIThread.Post(() => ShowSaveNotice());
+                    Dispatcher.UIThread.Post(ShowSaveNotice);
                 }
                 else
                 {
                     Dispatcher.UIThread.Post(() => ShowNotification("Error", message, NotificationType.Error, 5000));
                 }
             };
-
-            DataContext = _viewModel;
 
             UIXML.TextChanged += OnCodeChanged;
             UIXML.TextArea.TextEntered += OnTextEntered;
@@ -213,18 +209,15 @@ namespace Froststrap.UI.Elements.Editor
             try
             {
                 string themeName = App.Settings.Prop.Theme.GetFinal().ToString();
-
                 var uri = new Uri($"avares://Froststrap/UI/AppThemes/EditorThemes/Editor-Theme-{themeName}.xshd");
 
-                using (Stream xmlStream = AssetLoader.Open(uri))
-                using (XmlReader reader = XmlReader.Create(xmlStream))
-                {
-                    UIXML.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
-                }
+                using var xmlStream = AssetLoader.Open(uri);
+                using var reader = XmlReader.Create(xmlStream);
+                UIXML.SyntaxHighlighting = HighlightingLoader.Load(reader, HighlightingManager.Instance);
             }
             catch (Exception)
             {
-                App.Logger.WriteLine("BootstrapperEditorWindow", $"Theme file not found, falling back to default XML.");
+                App.Logger.WriteLine("BootstrapperEditorWindow", "Theme file not found, falling back to default XML.");
                 UIXML.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
             }
         }
@@ -293,10 +286,10 @@ namespace Froststrap.UI.Elements.Editor
 
             notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("SolidBackgroundFillColorBase"));
 
-            notification.Transitions = new Transitions {
+            notification.Transitions = [
                 new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
                 new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
-            };
+            ];
 
             async void Dismiss()
             {
@@ -319,10 +312,7 @@ namespace Froststrap.UI.Elements.Editor
             });
         }
 
-        private static string ToCRLF(string text)
-        {
-            return text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
-        }
+        private static string ToCRLF(string text) => text.Replace("\r\n", "\n").Replace("\r", "\n").Replace("\n", "\r\n");
 
         private void OnCodeChanged(object? sender, EventArgs e)
         {
@@ -341,7 +331,7 @@ namespace Froststrap.UI.Elements.Editor
             if (!_viewModel.CodeChanged)
                 return;
 
-            e.Cancel = true; 
+            e.Cancel = true;
 
             var result = await Frontend.ShowMessageBox(
                 string.Format(Strings.CustomTheme_Editor_ConfirmSave, _viewModel.Name),
@@ -408,18 +398,22 @@ namespace Froststrap.UI.Elements.Editor
             return null;
         }
 
-        private string? GetElementAtCursorNoSpaces(string xml, int offset)
+        private string? GetElementAtCursorNoSpaces()
         {
             (string line, int pos) = GetLineAndPosAtCaretPosition();
+
             string curr = "";
-            while (pos >= 0 && pos < line.Length)
+            while (pos != -1)
             {
                 char c = line[pos];
-                if (c == ' ' || c == '\t') return null;
-                if (c == '<') return curr;
+                if (c == ' ' || c == '\t')
+                    return null;
+                if (c == '<')
+                    return curr;
                 curr = c + curr;
                 pos--;
             }
+
             return null;
         }
 
@@ -466,13 +460,14 @@ namespace Froststrap.UI.Elements.Editor
         private void OpenAttributeAutoComplete()
         {
             string? element = ShowAttributesForElementName();
-            if (element == null || !CustomBootstrapperSchema.ElementInfo.ContainsKey(element))
+
+            if (element == null || !CustomBootstrapperSchema.ElementInfo.TryGetValue(element, out var attributes))
             {
                 CloseCompletionWindow();
                 return;
             }
 
-            var data = CustomBootstrapperSchema.ElementInfo[element]
+            var data = attributes
                 .Select(a => new AttributeCompletionData(a.Key, () => OpenTypeValueAutoComplete(a.Value)))
                 .Cast<ICompletionData>().ToList();
             ShowCompletionWindow(data);
@@ -480,41 +475,42 @@ namespace Froststrap.UI.Elements.Editor
 
         private void OpenTypeValueAutoComplete(string typeName)
         {
-            var typeValues = CustomBootstrapperSchema.Types[typeName].Values;
-            if (typeValues == null) return;
+            if (!CustomBootstrapperSchema.Types.TryGetValue(typeName, out var type) || type.Values == null)
+                return;
 
-            var data = typeValues.Select(v => new TypeValueCompletionData(v))
+            var data = type.Values.Select(v => new TypeValueCompletionData(v))
                 .Cast<ICompletionData>().ToList();
             ShowCompletionWindow(data);
         }
 
         private void OpenPropertyElementAutoComplete()
         {
-            string? element = GetElementAtCursorNoSpaces(UIXML.Text, UIXML.CaretOffset);
-            if (element == null || !CustomBootstrapperSchema.PropertyElements.ContainsKey(element))
+            string? element = GetElementAtCursorNoSpaces();
+
+            if (element == null || !CustomBootstrapperSchema.PropertyElements.TryGetValue(element, out var properties))
             {
                 CloseCompletionWindow();
                 return;
             }
 
-            var data = CustomBootstrapperSchema.PropertyElements[element]
-                .Select(p => new TypeValueCompletionData(p)).Cast<ICompletionData>().ToList();
+            var data = properties
+                .Select(p => new TypeValueCompletionData(p))
+                .Cast<ICompletionData>()
+                .ToList();
+
             ShowCompletionWindow(data);
         }
 
         private void CloseCompletionWindow()
         {
-            if (_completionWindow != null)
-            {
-                _completionWindow.Close();
+                _completionWindow?.Close();
                 _completionWindow = null;
-            }
         }
 
         private void ShowCompletionWindow(List<ICompletionData> completionData)
         {
             CloseCompletionWindow();
-            if (!completionData.Any()) return;
+            if (completionData.Count == 0) return;
 
             _completionWindow = new CompletionWindow(UIXML.TextArea);
             foreach (var c in completionData)
@@ -530,11 +526,10 @@ namespace Froststrap.UI.Elements.Editor
         }
     }
 
-    public class ElementCompletionData : ICompletionData
+    public class ElementCompletionData(string text) : ICompletionData
     {
-        public ElementCompletionData(string text) => Text = text;
         public IImage? Image => null;
-        public string Text { get; }
+        public string Text { get; } = text;
         public object Content => Text;
         public object? Description => null;
         public double Priority => 0;
@@ -542,16 +537,10 @@ namespace Froststrap.UI.Elements.Editor
             => textArea.Document.Replace(completionSegment, this.Text);
     }
 
-    public class AttributeCompletionData : ICompletionData
+    public class AttributeCompletionData(string text, Action openValueAction) : ICompletionData
     {
-        private Action _openValueAction;
-        public AttributeCompletionData(string text, Action openValueAction)
-        {
-            Text = text;
-            _openValueAction = openValueAction;
-        }
         public IImage? Image => null;
-        public string Text { get; }
+        public string Text { get; } = text;
         public object Content => Text;
         public object? Description => null;
         public double Priority => 0;
@@ -559,15 +548,14 @@ namespace Froststrap.UI.Elements.Editor
         {
             textArea.Document.Replace(completionSegment, this.Text + "=\"\"");
             textArea.Caret.Offset -= 1;
-            Dispatcher.UIThread.Post(_openValueAction);
+            Dispatcher.UIThread.Post(openValueAction);
         }
     }
 
-    public class TypeValueCompletionData : ICompletionData
+    public class TypeValueCompletionData(string text) : ICompletionData
     {
-        public TypeValueCompletionData(string text) => Text = text;
         public IImage? Image => null;
-        public string Text { get; }
+        public string Text { get; } = text;
         public object Content => Text;
         public object? Description => null;
         public double Priority => 0;

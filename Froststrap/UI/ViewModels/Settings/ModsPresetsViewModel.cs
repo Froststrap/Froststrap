@@ -40,9 +40,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static readonly Dictionary<string, byte[]> FontHeaders = new()
         {
-            { "ttf", new byte[] { 0x00, 0x01, 0x00, 0x00 } },
-            { "otf", new byte[] { 0x4F, 0x54, 0x54, 0x4F } },
-            { "ttc", new byte[] { 0x74, 0x74, 0x63, 0x66 } }
+            { "ttf", [0x00, 0x01, 0x00, 0x00] },
+            { "otf", "OTTO"u8.ToArray() },
+            { "ttc", "ttcf"u8.ToArray() }
         };
 
         public ModsPresetsViewModel()
@@ -91,17 +91,11 @@ namespace Froststrap.UI.ViewModels.Settings
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Select Custom Font",
-                FileTypeFilter = new[]
-                {
-                    new FilePickerFileType("Font Files")
-                    {
-                        Patterns = new[] { "*.ttf", "*.otf", "*.ttc" }
-                    }
-                },
+                FileTypeFilter = [new FilePickerFileType("Font Files") { Patterns = ["*.ttf", "*.otf", "*.ttc"] }],
                 AllowMultiple = false
             });
 
-            if (files == null || files.Count == 0) return;
+            if (files is not { Count: > 0 }) return;
 
             string? filePath = files[0].TryGetLocalPath();
             if (string.IsNullOrEmpty(filePath)) return;
@@ -109,8 +103,12 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 string extension = Path.GetExtension(filePath).TrimStart('.').ToLowerInvariant();
-                byte[] fileHeader = await File.ReadAllBytesAsync(filePath);
-                byte[] headerSnippet = fileHeader.Take(4).ToArray();
+
+                byte[] headerSnippet = new byte[4];
+
+                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true);
+
+                await fs.ReadExactlyAsync(headerSnippet.AsMemory(0, 4));
 
                 if (!FontHeaders.TryGetValue(extension, out var expectedHeader) ||
                     !expectedHeader.SequenceEqual(headerSnippet))
@@ -207,13 +205,13 @@ namespace Froststrap.UI.ViewModels.Settings
         private static string ShiftlockPath => Path.Combine(Paths.PresetModifications, "Content", "textures");
         private static string SoundPath => Path.Combine(Paths.PresetModifications, "Content", "sounds");
 
-        private static readonly string[] CursorFiles = { "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" };
-        private static readonly string[] ShiftlockFiles = { "MouseLockedCursor.png" };
-        private static readonly string[] SoundFiles = { "oof.ogg" };
+        private static readonly string[] CursorFiles = [ "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" ];
+        private static readonly string[] ShiftlockFiles = [ "MouseLockedCursor.png" ];
+        private static readonly string[] SoundFiles = [ "oof.ogg" ];
 
-        public bool HasCustomCursors => CursorFiles.Any(f => File.Exists(Path.Combine(CursorPath, f)));
-        public bool HasCustomShiftlock => ShiftlockFiles.Any(f => File.Exists(Path.Combine(ShiftlockPath, f)));
-        public bool HasCustomDeathSound => SoundFiles.Any(f => File.Exists(Path.Combine(SoundPath, f)));
+        public static bool HasCustomCursors => CursorFiles.Any(f => File.Exists(Path.Combine(CursorPath, f)));
+        public static bool HasCustomShiftlock => ShiftlockFiles.Any(f => File.Exists(Path.Combine(ShiftlockPath, f)));
+        public static bool HasCustomDeathSound => SoundFiles.Any(f => File.Exists(Path.Combine(SoundPath, f)));
 
         private void RefreshStates()
         {
@@ -224,15 +222,15 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public async Task AddCustomCursorMod() =>
             await AddCustomFileAsync(CursorFiles, CursorPath, "Select Cursor",
-                new[] { FilePickerFileTypes.ImagePng }, "cursors", RefreshStates);
+                [FilePickerFileTypes.ImagePng], "cursors", RefreshStates);
 
         public async Task AddCustomShiftlockMod() =>
             await AddCustomFileAsync(ShiftlockFiles, ShiftlockPath, "Select Shiftlock",
-                new[] { FilePickerFileTypes.ImagePng }, "shiftlock", RefreshStates);
+                [FilePickerFileTypes.ImagePng], "shiftlock", RefreshStates);
 
         public async Task AddCustomDeathSound() =>
             await AddCustomFileAsync(SoundFiles, SoundPath, "Select Death Sound",
-                new[] { new FilePickerFileType("Audio") { Patterns = new[] { "*.ogg" } } }, "death sound", RefreshStates);
+                [ new FilePickerFileType("Audio") { Patterns = ["*.ogg"] } ], "death sound", RefreshStates);
 
         public void RemoveCustomCursorMod() =>
             RemoveCustomFile(CursorFiles, CursorPath, "No custom cursors found.", RefreshStates);
@@ -243,7 +241,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public void RemoveCustomDeathSound() =>
             RemoveCustomFile(SoundFiles, SoundPath, "No death sound found.", RefreshStates);
 
-        private static TopLevel? GetDialogTopLevel()
+        private static Window? GetDialogTopLevel()
         {
             if (Avalonia.Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
                 return null;
@@ -251,7 +249,7 @@ namespace Froststrap.UI.ViewModels.Settings
             return desktop.Windows.FirstOrDefault(w => w.IsActive) ?? desktop.MainWindow;
         }
 
-        private async Task AddCustomFileAsync(string[] targetFiles, string targetDir, string dialogTitle, FilePickerFileType[] filters, string failureText, Action? postAction)
+        private static async Task AddCustomFileAsync(string[] targetFiles, string targetDir, string dialogTitle, FilePickerFileType[] filters, string failureText, Action? postAction)
         {
             var topLevel = GetDialogTopLevel();
 
@@ -288,7 +286,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void RemoveCustomFile(string[] targetFiles, string targetDir, string notFoundMessage, Action postAction)
+        private static void RemoveCustomFile(string[] targetFiles, string targetDir, string notFoundMessage, Action postAction)
         {
             bool anyDeleted = false;
 
@@ -318,7 +316,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         #region Custom Cursor Set
-        public ObservableCollection<CustomCursorSet> CustomCursorSets { get; } = new();
+        public ObservableCollection<CustomCursorSet> CustomCursorSets { get; } = [];
 
         private int _selectedCustomCursorSetIndex = -1;
         public int SelectedCustomCursorSetIndex
@@ -439,14 +437,13 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            string sourceDir = SelectedCustomCursorSet.FolderPath;
             string targetDir = Path.Combine(Paths.PresetModifications, "content", "textures");
             string targetKB = Path.Combine(targetDir, "Cursors", "KeyboardMouse");
 
             try
             {
                 Directory.CreateDirectory(targetKB);
-                string[] targets = { Path.Combine(targetDir, "MouseLockedCursor.png"), Path.Combine(targetKB, "ArrowCursor.png"), Path.Combine(targetKB, "ArrowFarCursor.png"), Path.Combine(targetKB, "IBeamCursor.png") };
+                string[] targets = [ Path.Combine(targetDir, "MouseLockedCursor.png"), Path.Combine(targetKB, "ArrowCursor.png"), Path.Combine(targetKB, "ArrowFarCursor.png"), Path.Combine(targetKB, "IBeamCursor.png") ];
                 foreach (var t in targets) if (File.Exists(t)) File.Delete(t);
 
                 foreach (string file in Directory.GetFiles(SelectedCustomCursorSet.FolderPath, "*.png", SearchOption.AllDirectories))
@@ -472,7 +469,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 Title = "Export Cursor Set",
                 SuggestedFileName = $"{SelectedCustomCursorSet.Name}.zip",
-                FileTypeChoices = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } }
+                FileTypeChoices = [new FilePickerFileType("Zip Archive") { Patterns = ["*.zip"] }]
             });
 
             if (file is null) return;
@@ -504,7 +501,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Import Cursor Set",
-                FileTypeFilter = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } },
+                FileTypeFilter = [new FilePickerFileType("Zip Archive") { Patterns = ["*.zip"] }],
                 AllowMultiple = false
             });
 
@@ -550,7 +547,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Select Cursor Image",
-                FileTypeFilter = new[] { FilePickerFileTypes.ImagePng },
+                FileTypeFilter = [FilePickerFileTypes.ImagePng],
                 AllowMultiple = false
             });
 
@@ -636,12 +633,6 @@ namespace Froststrap.UI.ViewModels.Settings
             NotifyCursorStates();
         }
 
-        private TopLevel? GetTopLevel()
-        {
-            var lifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-            return TopLevel.GetTopLevel(lifetime?.MainWindow);
-        }
-
         private void DeleteCursorImage(string? fileName)
         {
             if (fileName is null) return;
@@ -695,10 +686,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
             try
             {
-                using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    return new Bitmap(stream);
-                }
+                using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+                return new Bitmap(stream);
             }
             catch (Exception)
             {

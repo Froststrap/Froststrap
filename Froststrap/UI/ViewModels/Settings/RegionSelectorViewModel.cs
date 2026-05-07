@@ -10,11 +10,12 @@
 
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.UI.ViewModels.AccountManagers;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Text.Json;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -24,46 +25,188 @@ namespace Froststrap.UI.ViewModels.Settings
         public int Tag { get; set; }
     }
 
-    public partial class RegionSelectorViewModel : ObservableObject
+    public class RegionSelectorViewModel : NotifyPropertyChangedViewModel
     {
         private const string LOG_IDENT = "RegionSelectorViewModel";
-        private readonly HashSet<string> _displayedServerIds = new();
+        private readonly HashSet<string> _displayedServerIds = [];
         private RobloxServerFetcher? _fetcher;
         private Dictionary<int, string>? _dcMap;
         private CancellationTokenSource? _searchDebounceCts;
 
-        [ObservableProperty] private bool _hasSearched;
-        [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SearchCommand))] private string _placeId = "";
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ServerListMessage), nameof(IsServerListEmptyAndNotLoading), nameof(ShowLoadingIndicator))]
-        [NotifyCanExecuteChangedFor(nameof(SearchCommand), nameof(LoadMoreCommand), nameof(SearchGamesCommand))] private bool _isLoading;
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ShowLoadingIndicator))]
-        [NotifyCanExecuteChangedFor(nameof(SearchGamesCommand))] private bool _isGameSearchLoading;
-        [ObservableProperty] private string _loadingMessage = "";
-        [ObservableProperty] private string _nextCursor = "";
-        [ObservableProperty] private string? _roblosecurity;
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(ServerListMessage))]
-        [NotifyCanExecuteChangedFor(nameof(SearchCommand), nameof(SearchGamesCommand))] private bool _hasValidCookies;
-        [ObservableProperty][NotifyCanExecuteChangedFor(nameof(SearchGamesCommand))] private string _searchQuery = "";
-        [ObservableProperty] private OmniSearchContent? _selectedSearchResult;
-        [ObservableProperty] private int _selectedSortOrder = 2;
-        [ObservableProperty] private SortOrderComboBoxItem? _selectedSortOrderItem;
-        [ObservableProperty] private int _lastFetchProcessedCount;
-        [ObservableProperty] private string? _thumbnailUrl;
-        [ObservableProperty] private string? _selectedRegionInput;
-        [ObservableProperty] private bool _isSearchFlyoutOpen;
+        #region Fields
+        private bool _hasSearched;
+        private string _placeId = "";
+        private bool _isLoading;
+        private bool _isGameSearchLoading;
+        private string _loadingMessage = "";
+        private string _nextCursor = "";
+        private string? _roblosecurity;
+        private bool _hasValidCookies;
+        private string _searchQuery = "";
+        private OmniSearchContent? _selectedSearchResult;
+        private int _selectedSortOrder = 2;
+        private SortOrderComboBoxItem? _selectedSortOrderItem;
+        private int _lastFetchProcessedCount;
+        private string? _thumbnailUrl;
+        private string? _selectedRegionInput;
+        private bool _isSearchFlyoutOpen;
+        #endregion
 
-        public ObservableCollection<string> Regions { get; } = new();
-        public ObservableCollection<ServerEntry> Servers { get; } = new();
-        public ObservableCollection<OmniSearchContent> SearchResults { get; } = new();
-
-        public List<SortOrderComboBoxItem> SortOrderOptions { get; } = new()
+        #region Properties
+        public bool HasSearched
         {
+            get => _hasSearched;
+            set => SetProperty(ref _hasSearched, value);
+        }
+
+        public string PlaceId
+        {
+            get => _placeId;
+            set
+            {
+                if (SetProperty(ref _placeId, value))
+                    SearchCommand.NotifyCanExecuteChanged();
+            }
+        }
+
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                if (SetProperty(ref _isLoading, value))
+                {
+                    OnPropertyChanged(nameof(ServerListMessage));
+                    OnPropertyChanged(nameof(IsServerListEmptyAndNotLoading));
+                    OnPropertyChanged(nameof(ShowLoadingIndicator));
+                    SearchCommand.NotifyCanExecuteChanged();
+                    LoadMoreCommand.NotifyCanExecuteChanged();
+                    SearchGamesCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        public bool IsGameSearchLoading
+        {
+            get => _isGameSearchLoading;
+            set
+            {
+                if (SetProperty(ref _isGameSearchLoading, value))
+                {
+                    OnPropertyChanged(nameof(ShowLoadingIndicator));
+                    SearchGamesCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        public string LoadingMessage
+        {
+            get => _loadingMessage;
+            set => SetProperty(ref _loadingMessage, value);
+        }
+
+        public string NextCursor
+        {
+            get => _nextCursor;
+            set
+            {
+                if (SetProperty(ref _nextCursor, value))
+                    LoadMoreCommand.NotifyCanExecuteChanged();
+            }
+        }
+
+        public string? Roblosecurity
+        {
+            get => _roblosecurity;
+            set => SetProperty(ref _roblosecurity, value);
+        }
+
+        public bool HasValidCookies
+        {
+            get => _hasValidCookies;
+            set
+            {
+                if (SetProperty(ref _hasValidCookies, value))
+                {
+                    OnPropertyChanged(nameof(ServerListMessage));
+                    SearchCommand.NotifyCanExecuteChanged();
+                    SearchGamesCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        public string SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                if (SetProperty(ref _searchQuery, value))
+                {
+                    OnSearchQueryChanged(value);
+                    SearchGamesCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        public OmniSearchContent? SelectedSearchResult
+        {
+            get => _selectedSearchResult;
+            set
+            {
+                if (SetProperty(ref _selectedSearchResult, value))
+                    OnSelectedSearchResultChanged(value);
+            }
+        }
+
+        public int SelectedSortOrder
+        {
+            get => _selectedSortOrder;
+            set => SetProperty(ref _selectedSortOrder, value);
+        }
+
+        public SortOrderComboBoxItem? SelectedSortOrderItem
+        {
+            get => _selectedSortOrderItem;
+            set
+            {
+                if (SetProperty(ref _selectedSortOrderItem, value))
+                    OnSelectedSortOrderItemChanged(value);
+            }
+        }
+
+        public int LastFetchProcessedCount
+        {
+            get => _lastFetchProcessedCount;
+            set => SetProperty(ref _lastFetchProcessedCount, value);
+        }
+
+        public string? ThumbnailUrl
+        {
+            get => _thumbnailUrl;
+            set => SetProperty(ref _thumbnailUrl, value);
+        }
+
+        public string? SelectedRegionInput
+        {
+            get => _selectedRegionInput;
+            set => SetProperty(ref _selectedRegionInput, value);
+        }
+
+        public bool IsSearchFlyoutOpen
+        {
+            get => _isSearchFlyoutOpen;
+            set => SetProperty(ref _isSearchFlyoutOpen, value);
+        }
+
+        public ObservableCollection<string> Regions { get; } = [];
+        public ObservableCollection<ServerEntry> Servers { get; } = [];
+        public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
+
+        public List<SortOrderComboBoxItem> SortOrderOptions { get; } =
+        [
             new() { Content = "Large Servers", Tag = 2 },
             new() { Content = "Small Servers", Tag = 1 }
-        };
+        ];
 
         public bool IsServerListEmpty => Servers.Count == 0;
         public bool IsServerListEmptyAndNotLoading => IsServerListEmpty && !IsLoading;
@@ -77,6 +220,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public IAsyncRelayCommand SearchCommand { get; }
         public IAsyncRelayCommand LoadMoreCommand { get; }
         public IAsyncRelayCommand SearchGamesCommand { get; }
+        #endregion
 
         public RegionSelectorViewModel()
         {
@@ -93,7 +237,7 @@ namespace Froststrap.UI.ViewModels.Settings
             SelectedSortOrderItem = SortOrderOptions.FirstOrDefault(x => x.Tag == 2);
         }
 
-        partial void OnSearchQueryChanged(string value)
+        private void OnSearchQueryChanged(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -112,17 +256,16 @@ namespace Froststrap.UI.ViewModels.Settings
             _ = DebouncedSearchTriggerAsync(_searchDebounceCts.Token);
         }
 
-        partial void OnSelectedSearchResultChanged(OmniSearchContent? value)
+        private void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
             if (value == null) return;
 
             PlaceId = value.RootPlaceId.ToString();
             SearchQuery = value.RootPlaceId.ToString();
-
             IsSearchFlyoutOpen = false;
         }
 
-        partial void OnSelectedSortOrderItemChanged(SortOrderComboBoxItem? value)
+        private void OnSelectedSortOrderItemChanged(SortOrderComboBoxItem? value)
         {
             if (value != null)
             {
@@ -279,9 +422,9 @@ namespace Froststrap.UI.ViewModels.Settings
             catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
         }
 
-        private string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
+        private static string GetCachePath() => Path.Combine(Paths.Cache, "DataCentersCache.json");
 
-        private async Task SaveDatacentersToCacheAsync((List<string> regions, Dictionary<int, string> datacenterMap) data)
+        private static async Task SaveDatacentersToCacheAsync((List<string> regions, Dictionary<int, string> datacenterMap) data)
         {
             try
             {
@@ -292,7 +435,7 @@ namespace Froststrap.UI.ViewModels.Settings
             catch { /* Ignore cache save errors */ }
         }
 
-        private async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync()
+        private static async Task<(List<string> regions, Dictionary<int, string> datacenterMap)?> LoadDatacentersFromCacheAsync()
         {
             try
             {
@@ -312,7 +455,7 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
-                if (token.IsCancellationRequested || results == null || !results.Any()) return;
+                if (token.IsCancellationRequested || results == null || results.Count == 0) return;
 
                 var thumbRequests = results.Select(r => new ThumbnailRequest
                 {
@@ -352,7 +495,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private async Task LoadMoreServersAsync()
         {
             IsLoading = true;
-            int initial = Servers.Count;
+            _ = Servers.Count;
             for (int i = 0; i < 5 && !string.IsNullOrWhiteSpace(NextCursor); i++)
                 await LoadServersAsync();
             IsLoading = false;

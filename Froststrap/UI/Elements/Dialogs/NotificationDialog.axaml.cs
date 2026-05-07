@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
@@ -11,7 +10,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FluentIcons.Common;
 using Froststrap.UI.Elements.Base;
-using System.Linq;
 
 namespace Froststrap.UI.Elements.Dialogs
 {

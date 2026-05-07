@@ -14,8 +14,8 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
         public FluentDialogViewModel(IBootstrapperDialog dialog, bool aero, string version) : base(dialog)
         {
             WindowBackdropType = aero
-                ? new List<WindowTransparencyLevel> { WindowTransparencyLevel.AcrylicBlur }
-                : new List<WindowTransparencyLevel> { WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur };
+                ? [WindowTransparencyLevel.AcrylicBlur]
+                : [WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur];
 
             if (aero)
             {

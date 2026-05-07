@@ -36,19 +36,17 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public SearchBarViewModel SearchBar { get; }
 
-        private ObservableCollection<BreadcrumbItemModel> _breadcrumbItems = new();
+        private ObservableCollection<BreadcrumbItemModel> _breadcrumbItems = [];
         public ObservableCollection<BreadcrumbItemModel> BreadcrumbItems
         {
             get => _breadcrumbItems;
             set
             {
-                if (_breadcrumbItems != null)
-                    _breadcrumbItems.CollectionChanged -= OnBreadcrumbsChanged;
+                    _breadcrumbItems?.CollectionChanged -= OnBreadcrumbsChanged;
 
                 SetProperty(ref _breadcrumbItems, value);
 
-                if (_breadcrumbItems != null)
-                    _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
+                    _breadcrumbItems?.CollectionChanged += OnBreadcrumbsChanged;
 
                 UpdateBreadcrumbVisibility();
             }
@@ -102,7 +100,7 @@ namespace Froststrap.UI.ViewModels.Settings
             RestartAppCommand = new RelayCommand(RestartApp);
             CloseWindowCommand = new RelayCommand(CloseWindow);
             BreadcrumbItemClickedCommand = new RelayCommand<BreadcrumbItemModel>(HandleBreadcrumbItemClicked);
-            SearchBar = new SearchBarViewModel();
+            SearchBar = new();
 
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", "Integrations", Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", "Behaviour", Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
@@ -116,50 +114,45 @@ namespace Froststrap.UI.ViewModels.Settings
 
             NavigateToGlobalSettingsEditorCommand = new RelayCommand(() =>
             {
-                var crumbs = new ObservableCollection<BreadcrumbItemModel>
-                {
-                    new BreadcrumbItemModel { Content = "Global Settings", Tag = "globalsettings" },
-                    new BreadcrumbItemModel { Content = "Editor", Tag = null, IsLast = true }
-                };
+                ObservableCollection<BreadcrumbItemModel> crumbs = [
+                    new() { Content = "Global Settings", Tag = "globalsettings" },
+                    new() { Content = "Editor", Tag = null, IsLast = true }
+                ];
                 Navigate("globalsettingseditor", "Editor", null!, new GlobalSettingsEditorViewModel(this), crumbs);
             });
 
             NavigateToFastFlagEditorCommand = new RelayCommand(() =>
             {
-                var crumbs = new ObservableCollection<BreadcrumbItemModel>
-                {
-                    new BreadcrumbItemModel { Content = "Fast Flags", Tag = "fastflags" },
-                    new BreadcrumbItemModel { Content = "Editor", Tag = null, IsLast = true }
-                };
+                ObservableCollection<BreadcrumbItemModel> crumbs = [
+                    new() { Content = "Fast Flags", Tag = "fastflags" },
+                    new() { Content = "Editor", Tag = null, IsLast = true }
+                ];
                 Navigate("fastflageditor", "Editor", Strings.Menu_FastFlagEditor_Description, new FastFlagEditorViewModel(this), crumbs);
             });
 
             NavigateToCommunityModsCommand = new RelayCommand(() =>
             {
-                var crumbs = new ObservableCollection<BreadcrumbItemModel>
-                {
-                    new BreadcrumbItemModel { Content = "Preset Mods", Tag = "mods" },
-                    new BreadcrumbItemModel { Content = "Community Mods", Tag = null, IsLast = true }
-                };
+                ObservableCollection<BreadcrumbItemModel> crumbs = [
+                    new() { Content = "Preset Mods", Tag = "mods" },
+                    new() { Content = "Community Mods", Tag = null, IsLast = true }
+                ];
                 Navigate("communitymods", "Community Mods", "Explore user-created mods.", new CommunityModsViewModel(), crumbs);
             });
 
             NavigateToModGeneratorCommand = new RelayCommand(() =>
             {
-                Navigate("modgenerator", "Mod Generator", "Generate mods easily with a single click.", new ModGeneratorViewModel(), new ObservableCollection<BreadcrumbItemModel>
-                {
-                    new BreadcrumbItemModel { Content = "Preset Mods", Tag = "mods" },
+                Navigate("modgenerator", "Mod Generator", "Generate mods easily with a single click.", new ModGeneratorViewModel(), [
+                    new() { Content = "Preset Mods", Tag = "mods" },
                     new() { Content = "Mod Generator", Tag = null, IsLast = true }
-                });
+                ]);
             });
 
             NavigateToMyModsCommand = new RelayCommand(() =>
             {
-                var crumbs = new ObservableCollection<BreadcrumbItemModel>
-                {
-                    new BreadcrumbItemModel { Content = "Preset Mods", Tag = "mods" },
-                    new BreadcrumbItemModel { Content = "My Mods", Tag = null, IsLast = true }
-                };
+                ObservableCollection<BreadcrumbItemModel> crumbs = [
+                    new() { Content = "Preset Mods", Tag = "mods" },
+                    new() { Content = "My Mods", Tag = null, IsLast = true }
+                ];
                 Navigate("custommods", "My Mods", Strings.Menu_Mods_Description, new ModsViewModel(), crumbs);
             });
 
@@ -177,7 +170,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 SelectedPage = pageId;
                 CurrentPageTitle = title;
                 CurrentPageDescription = description;
-                BreadcrumbItems = customBreadcrumbs ?? new ObservableCollection<BreadcrumbItemModel>();
+                BreadcrumbItems = customBreadcrumbs ?? [];
                 CurrentPage = viewModel;
                 SearchBar.Clear();
             }

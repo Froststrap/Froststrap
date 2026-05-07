@@ -60,15 +60,15 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 Title = "Import Flags",
                 AllowMultiple = false,
-                FileTypeFilter = new[]
-                { 
+                FileTypeFilter =
+                [
                     new FilePickerFileType("Configuration Files")
                     {
-                        Patterns = new[] { "*.json", "*.txt" }
+                        Patterns = ["*.json", "*.txt"]
                     },
-                    new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } },
-                    new FilePickerFileType("Text Files") { Patterns = new[] { "*.txt" } }
-                }
+                    new FilePickerFileType("JSON Files") { Patterns = ["*.json"] },
+                    new FilePickerFileType("Text Files") { Patterns = ["*.txt"] }
+                ]
             };
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(options);

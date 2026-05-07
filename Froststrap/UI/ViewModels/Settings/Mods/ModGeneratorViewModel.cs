@@ -11,9 +11,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
-    public partial class ModGeneratorViewModel : ObservableObject
+    public partial class ModGeneratorViewModel : NotifyPropertyChangedViewModel
     {
         private Color _solidColor = Colors.White;
+
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
+            WriteIndented = true
+        };
 
         public ModGeneratorViewModel()
         {
@@ -38,43 +43,101 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         #region Observable Properties
 
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(GenerateModCommand))]
         private string _solidColorHex = "#FFFFFF";
+        public string SolidColorHex
+        {
+            get => _solidColorHex;
+            set
+            {
+                if (SetProperty(ref _solidColorHex, value))
+                {
+                    GenerateModCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
 
-        [ObservableProperty]
         private double _progress = 0;
+        public double Progress
+        {
+            get => _progress;
+            set => SetProperty(ref _progress, value);
+        }
 
-        [ObservableProperty]
         private bool _isProgressVisible = false;
+        public bool IsProgressVisible
+        {
+            get => _isProgressVisible;
+            set => SetProperty(ref _isProgressVisible, value);
+        }
 
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(GenerateModCommand))]
         private bool _isNotGeneratingMod = true;
+        public bool IsNotGeneratingMod
+        {
+            get => _isNotGeneratingMod;
+            set
+            {
+                if (SetProperty(ref _isNotGeneratingMod, value))
+                {
+                    GenerateModCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
 
-        [ObservableProperty]
         private string _statusText = "";
+        public string StatusText
+        {
+            get => _statusText;
+            set => SetProperty(ref _statusText, value);
+        }
 
-        [ObservableProperty]
         private bool _colorCursors = false;
+        public bool ColorCursors
+        {
+            get => _colorCursors;
+            set => SetProperty(ref _colorCursors, value);
+        }
 
-        [ObservableProperty]
         private bool _colorShiftlock = false;
+        public bool ColorShiftlock
+        {
+            get => _colorShiftlock;
+            set => SetProperty(ref _colorShiftlock, value);
+        }
 
-        [ObservableProperty]
         private bool _colorEmoteWheel = false;
+        public bool ColorEmoteWheel
+        {
+            get => _colorEmoteWheel;
+            set => SetProperty(ref _colorEmoteWheel, value);
+        }
 
-        [ObservableProperty]
         private bool _includeModifications = true;
+        public bool IncludeModifications
+        {
+            get => _includeModifications;
+            set => SetProperty(ref _includeModifications, value);
+        }
 
-        [ObservableProperty]
         private SolidColorBrush _previewBrush = new(Colors.White);
+        public SolidColorBrush PreviewBrush
+        {
+            get => _previewBrush;
+            set => SetProperty(ref _previewBrush, value);
+        }
 
-        [ObservableProperty]
-        private ObservableCollection<string> _fontDisplayNames = new();
+        private ObservableCollection<string> _fontDisplayNames = [];
+        public ObservableCollection<string> FontDisplayNames
+        {
+            get => _fontDisplayNames;
+            set => SetProperty(ref _fontDisplayNames, value);
+        }
 
-        [ObservableProperty]
-        private ObservableCollection<GlyphItem> _glyphItems = new();
+        private ObservableCollection<GlyphItem> _glyphItems = [];
+        public ObservableCollection<GlyphItem> GlyphItems
+        {
+            get => _glyphItems;
+            set => SetProperty(ref _glyphItems, value);
+        }
 
         private string? _selectedFontDisplayName;
         public string? SelectedFontDisplayName
@@ -104,21 +167,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                 UpdateGlyphColors();
                 StatusText = "Ready to generate mod.";
-            }
-        }
-
-        partial void OnSolidColorHexChanged(string value)
-        {
-            if (IsValidHexColor(value))
-            {
-                UpdateSolidColorFromHex(value);
-                UpdateGlyphColors();
-                OnPropertyChanged(nameof(SelectedMediaColor));
-                StatusText = "Ready to generate mod.";
-            }
-            else
-            {
-                StatusText = "Enter a valid hex color (e.g., #FF0000)";
             }
         }
 
@@ -154,7 +202,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (string.IsNullOrEmpty(SelectedFontDisplayName) || !IsValidHexColor(SolidColorHex))
             {
-                GlyphItems = new();
+                GlyphItems = [];
                 return;
             }
 
@@ -299,7 +347,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (ColorEmoteWheel)
                     {
                         string emotesDir = Path.Combine(TempRoot, "content", "textures", "ui", "Emotes", "Large");
-                        string[] emoteFiles = { "SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png" };
+                        string[] emoteFiles = [ "SelectedGradient.png", "SelectedGradient@2x.png", "SelectedGradient@3x.png", "SelectedLine.png", "SelectedLine@2x.png", "SelectedLine@3x.png" ];
                         foreach (var e in emoteFiles)
                             preservePaths.Add(Path.GetFullPath(Path.Combine(emotesDir, e)));
                     }
@@ -334,7 +382,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         RobloxVersionHash = vHash,
                         ColorsUsed = new { SolidColor = SolidColorHex }
                     };
-                    await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, new JsonSerializerOptions { WriteIndented = true }));
+                    await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, _jsonOptions));
 
                     StatusText = "Packaging...";
                     Progress = 90;
@@ -391,7 +439,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                                 Title = "Save Froststrap Mod",
                                 SuggestedFileName = $"FroststrapMod_{SolidColorHex}.zip",
                                 DefaultExtension = ".zip",
-                                FileTypeChoices = new[] { new FilePickerFileType("Zip Archive") { Patterns = new[] { "*.zip" } } }
+                                FileTypeChoices = [ new FilePickerFileType("Zip Archive") { Patterns = ["*.zip"] } ]
                             });
 
                             if (file != null)
@@ -422,7 +470,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
-        private void SafeExtract(string zipPath, string targetDir)
+        private static void SafeExtract(string zipPath, string targetDir)
         {
             if (string.IsNullOrEmpty(zipPath) || !File.Exists(zipPath)) return;
             if (Directory.Exists(targetDir)) Directory.Delete(targetDir, true);
@@ -450,8 +498,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     continue;
 
                 bool isDirectory = string.IsNullOrEmpty(entry.Name)
-                    || entry.FullName.EndsWith("/")
-                    || entry.FullName.EndsWith("\\");
+                    || entry.FullName.EndsWith('/')
+                    || entry.FullName.EndsWith('\\');
 
                 if (isDirectory)
                 {
@@ -467,14 +515,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
-        private bool IsValidHexColor(string hex) =>
+        private static bool IsValidHexColor(string hex) =>
             !string.IsNullOrWhiteSpace(hex) && Regex.IsMatch(hex, "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$");
-
-        private void UpdateSolidColorFromHex(string hex)
-        {
-            try { _solidColor = Color.Parse(hex); }
-            catch { _solidColor = Colors.White; }
-        }
 
         private void UpdateGlyphColors()
         {

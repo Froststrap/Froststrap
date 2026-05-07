@@ -12,6 +12,8 @@ namespace Froststrap.UI.Elements.Dialogs
     {
         public MessageBoxResult Result = MessageBoxResult.Cancel;
 
+        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true  };
+
         public FlagProfilesDialog()
         {
             InitializeComponent();
@@ -210,17 +212,13 @@ namespace Froststrap.UI.Elements.Dialogs
             try
             {
                 var currentFlags = App.FastFlags.Prop;
-
                 if (currentFlags == null)
                 {
                     _ = Frontend.ShowMessageBox("Failed to get current FastFlags.", MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
 
-                string json = JsonSerializer.Serialize(currentFlags, new JsonSerializerOptions
-                {
-                    WriteIndented = true
-                });
+                string json = JsonSerializer.Serialize(currentFlags, _jsonOptions);
 
                 string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
                 string profilePath = Path.Combine(profilesDirectory, selectedProfile);
@@ -242,17 +240,15 @@ namespace Froststrap.UI.Elements.Dialogs
 
             var assembly = Assembly.GetExecutingAssembly();
             string resourcePrefix = "Froststrap.Resources.PresetFlags.";
-
             var resourceNames = assembly.GetManifestResourceNames();
-
             var profiles = resourceNames.Where(r => r.StartsWith(resourcePrefix));
 
             foreach (var resourceName in profiles)
             {
-                string profileName = resourceName.Substring(resourcePrefix.Length);
+                string profileName = resourceName[resourcePrefix.Length..];
                 LoadPresetProfile.Items.Add(profileName);
             }
-        } 
+        }
 
         private void UpdateUiState()
         {

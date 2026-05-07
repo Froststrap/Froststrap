@@ -1,14 +1,25 @@
-﻿using System.Collections.ObjectModel;
-using Avalonia.Media.Imaging;
+﻿/*
+*  Froststrap
+*  Copyright (c) Froststrap Team
+*
+*  This file is part of Froststrap and is distributed under the terms of the
+*  GNU Affero General Public License, version 3 or later.
+*
+*  SPDX-License-Identifier: AGPL-3.0-or-later
+*/
+
+using System.Collections.ObjectModel;
 using System.Security.Cryptography;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
+using Avalonia.Media.Imaging;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public partial class ShortcutsViewModel : ObservableObject
+    public class ShortcutsViewModel : NotifyPropertyChangedViewModel
     {
+        private readonly string LOG_IDENT = "ShortcutsViewModel";
+
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{App.ProjectName}.lnk");
         public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRoblox}.lnk", "-player");
         public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", "-studio");
@@ -16,26 +27,110 @@ namespace Froststrap.UI.ViewModels.Settings
         public ShortcutTask AccountManagerIconTask { get; } = new("AccountManager", Paths.Desktop, "Account Manager.lnk", "-accountmanager");
         public ExtractIconsTask ExtractIconsTask { get; } = new();
 
-        [ObservableProperty] private string _searchQuery = "";
-        [ObservableProperty] private bool _isGameSearchLoading;
-        [ObservableProperty] private string _placeId = "";
-        [ObservableProperty] private string _jobId = "";
-        [ObservableProperty] private string _accessCode = "";
-
-        [ObservableProperty] private string _previewName = "No Game Selected";
-        [ObservableProperty] private string _previewId = "ID: 0";
-        [ObservableProperty] private Bitmap? _previewIcon;
-        [ObservableProperty] private string _shortcutStatus = "Ready";
-        [ObservableProperty] private bool _isSearchFlyoutOpen;
-
-        [ObservableProperty] private OmniSearchContent? _selectedSearchResult;
-        public ObservableCollection<OmniSearchContent> SearchResults { get; } = new();
-
+        #region Fields
+        private string _searchQuery = "";
+        private bool _isGameSearchLoading;
+        private string _placeId = "";
+        private string _jobId = "";
+        private string _accessCode = "";
+        private string _previewName = "No Game Selected";
+        private string _previewId = "ID: 0";
+        private Bitmap? _previewIcon;
+        private string _shortcutStatus = "Ready";
+        private bool _isSearchFlyoutOpen;
+        private OmniSearchContent? _selectedSearchResult;
         private CancellationTokenSource? _searchDebounceCts;
         private bool _isProcessingSelection = false;
+        #endregion
 
-        [RelayCommand]
-        public async Task CreateGameShortcut()
+        #region Properties
+        public string SearchQuery
+        {
+            get => _searchQuery;
+            set
+            {
+                if (SetProperty(ref _searchQuery, value))
+                    OnSearchQueryChanged(value);
+            }
+        }
+
+        public bool IsGameSearchLoading
+        {
+            get => _isGameSearchLoading;
+            set => SetProperty(ref _isGameSearchLoading, value);
+        }
+
+        public string PlaceId
+        {
+            get => _placeId;
+            set => SetProperty(ref _placeId, value);
+        }
+
+        public string JobId
+        {
+            get => _jobId;
+            set => SetProperty(ref _jobId, value);
+        }
+
+        public string AccessCode
+        {
+            get => _accessCode;
+            set => SetProperty(ref _accessCode, value);
+        }
+
+        public string PreviewName
+        {
+            get => _previewName;
+            set => SetProperty(ref _previewName, value);
+        }
+
+        public string PreviewId
+        {
+            get => _previewId;
+            set => SetProperty(ref _previewId, value);
+        }
+
+        public Bitmap? PreviewIcon
+        {
+            get => _previewIcon;
+            set => SetProperty(ref _previewIcon, value);
+        }
+
+        public string ShortcutStatus
+        {
+            get => _shortcutStatus;
+            set => SetProperty(ref _shortcutStatus, value);
+        }
+
+        public bool IsSearchFlyoutOpen
+        {
+            get => _isSearchFlyoutOpen;
+            set => SetProperty(ref _isSearchFlyoutOpen, value);
+        }
+
+        public OmniSearchContent? SelectedSearchResult
+        {
+            get => _selectedSearchResult;
+            set
+            {
+                if (SetProperty(ref _selectedSearchResult, value))
+                    OnSelectedSearchResultChanged(value);
+            }
+        }
+
+        public ObservableCollection<OmniSearchContent> SearchResults { get; } = [];
+
+        public IAsyncRelayCommand CreateGameShortcutCommand { get; }
+        public IAsyncRelayCommand SearchGamesCommand { get; }
+        #endregion
+
+        public ShortcutsViewModel()
+        {
+            CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
+            SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync);
+        }
+
+        private async Task CreateGameShortcut()
         {
             if (string.IsNullOrEmpty(PlaceId) || PreviewName == "No Game Selected")
             {
@@ -81,23 +176,22 @@ namespace Froststrap.UI.ViewModels.Settings
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine("ShortcutsViewModel", $"Icon processing failed: {ex.Message}");
+                        App.Logger.WriteLine(LOG_IDENT, $"Icon processing failed: {ex.Message}");
                     }
                 }
 
                 ShortcutStatus = "Creating...";
                 Shortcut.Create(Paths.Application, $"-gameshortcut \"{argData}\"", lnkPath, finalIconPath);
-
                 ShortcutStatus = "Shortcut created!";
             }
             catch (Exception ex)
             {
                 ShortcutStatus = "Error creating shortcut.";
-                App.Logger.WriteLine("ShortcutsViewModel", $"Error: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Error: {ex.Message}");
             }
         }
 
-        partial void OnSearchQueryChanged(string value)
+        private void OnSearchQueryChanged(string value)
         {
             if (_isProcessingSelection) return;
 
@@ -139,12 +233,12 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ShortcutsViewModel", $"Failed to load preview bitmap: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to load preview bitmap: {ex.Message}");
                 return null;
             }
         }
 
-        partial void OnSelectedSearchResultChanged(OmniSearchContent? value)
+        private void OnSelectedSearchResultChanged(OmniSearchContent? value)
         {
             if (value is null) return;
 
@@ -152,12 +246,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
             PlaceId = value.RootPlaceId.ToString();
             SearchQuery = PlaceId;
-
             PreviewName = value.Name!;
             PreviewId = $"ID: {value.RootPlaceId}";
-
             PreviewIcon = value.ThumbnailBitmap;
-
             ShortcutStatus = "Ready to create";
 
             _isProcessingSelection = false;
@@ -193,7 +284,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        [RelayCommand]
         private async Task SearchGamesAsync()
         {
             if (string.IsNullOrWhiteSpace(SearchQuery) || SearchQuery.Length < 3)
@@ -207,7 +297,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 var results = await GameSearching.GetGameSearchResultsAsync(SearchQuery);
 
-                if (results.Any())
+                if (results != null && results.Count > 0)
                 {
                     var thumbRequests = results.Select(x => new ThumbnailRequest
                     {
@@ -238,13 +328,16 @@ namespace Froststrap.UI.ViewModels.Settings
                 Dispatcher.UIThread.Post(() =>
                 {
                     SearchResults.Clear();
-                    foreach (var res in results) SearchResults.Add(res);
+                    if (results != null)
+                    {
+                        foreach (var res in results) SearchResults.Add(res);
+                    }
                     IsSearchFlyoutOpen = SearchResults.Count > 0 && !string.IsNullOrWhiteSpace(SearchQuery);
                 }, DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("ShortcutsViewModel", $"Search error: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Search error: {ex.Message}");
             }
             finally
             {
@@ -259,7 +352,6 @@ namespace Froststrap.UI.ViewModels.Settings
             ms.Position = 0;
 
             using var resized = Bitmap.DecodeToWidth(ms, 64);
-
             using var pngStream = new MemoryStream();
             resized.Save(pngStream);
             byte[] pngBytes = pngStream.ToArray();
@@ -268,14 +360,12 @@ namespace Froststrap.UI.ViewModels.Settings
             writer.Write((short)0);
             writer.Write((short)1);
             writer.Write((short)1);
-
             writer.Write((byte)64);
             writer.Write((byte)64);
             writer.Write((byte)0);
             writer.Write((byte)0);
             writer.Write((short)1);
             writer.Write((short)32);
-
             writer.Write(pngBytes.Length);
             writer.Write(22);
             writer.Write(pngBytes);
@@ -290,9 +380,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private static string ComputeHash(byte[] data)
         {
-            using var sha256 = SHA256.Create();
-            byte[] hash = sha256.ComputeHash(data);
-            return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            byte[] hash = SHA256.HashData(data);
+            return Convert.ToHexStringLower(hash);
         }
     }
 }

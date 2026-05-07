@@ -17,7 +17,7 @@ namespace Froststrap.UI.ViewModels.Settings
             Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
         }
 
-        public IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues(typeof(UpdateCheck)).Cast<UpdateCheck>();
+        public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
 
         public bool AutomaticUpdatesEnabled
         {
@@ -66,14 +66,14 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private bool ValidateDomain(string domain)
+        private static bool ValidateDomain(string domain)
         {
             const string domainPattern = @"^([a-zA-Z0-9.-]+)\.([a-zA-Z0-9]+)$";
 
             return Regex.IsMatch(domain, domainPattern);
         }
 
-        public string RobloxDomain
+        public static string RobloxDomain
         {
             get => App.Settings.Prop.RobloxDomain;
             set
@@ -128,7 +128,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled;
+        public static bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled;
 
         private async Task LoadChannelDeployInfo(string channel)
         {
@@ -209,7 +209,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 _ = LoadChannelDeployInfo(value);
 
-                if (value.ToLower() == "live" || value.ToLower() == "zlive")
+                if (value.Equals("live", StringComparison.OrdinalIgnoreCase) ||
+                    value.Equals("zlive", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Settings.Prop.Channel = Deployment.DefaultChannel;
                 }
@@ -222,13 +223,13 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool UpdateRoblox
+        public static bool UpdateRoblox
         {
             get => App.Settings.Prop.UpdateRoblox && !IsRobloxInstallationMissing;
             set => App.Settings.Prop.UpdateRoblox = value;
         }
 
-        public bool StaticDirectory
+        public static bool StaticDirectory
         {
             get => App.Settings.Prop.StaticDirectory;
             set => App.Settings.Prop.StaticDirectory = value;
@@ -321,20 +322,20 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(IsRobloxInstallationMissing));
         }
 
-        public IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
+        public static IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
         {
             { Strings.Menu_Channel_ChangeAction_Automatic, ChannelChangeMode.Automatic },
             { Strings.Menu_Channel_ChangeAction_Prompt, ChannelChangeMode.Prompt },
             { Strings.Menu_Channel_ChangeAction_Ignore, ChannelChangeMode.Ignore },
         };
 
-        public string SelectedChannelChangeMode
+        public static string SelectedChannelChangeMode
         {
             get => ChannelChangeModes.FirstOrDefault(x => x.Value == App.Settings.Prop.ChannelChangeMode).Key;
             set => App.Settings.Prop.ChannelChangeMode = ChannelChangeModes[value];
         }
 
-        public bool ForceRobloxReinstallation
+        public static bool ForceRobloxReinstallation
         {
             get => App.State.Prop.ForceReinstall || IsRobloxInstallationMissing;
             set => App.State.Prop.ForceReinstall = value;

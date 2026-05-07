@@ -21,7 +21,7 @@ using FluentAvalonia.UI.Controls;
 
 namespace Froststrap.UI.ViewModels
 {
-    public partial class SearchBarViewModel : ObservableObject
+    public partial class SearchBarViewModel : NotifyPropertyChangedViewModel
     {
         private string _searchQuery = string.Empty;
         public string SearchQuery
@@ -37,14 +37,38 @@ namespace Froststrap.UI.ViewModels
             }
         }
 
-        [ObservableProperty]
         private ObservableCollection<OmniSearchContent> _gameSearchResults = [];
+        public ObservableCollection<OmniSearchContent> GameSearchResults
+        {
+            get => _gameSearchResults;
+            set => SetProperty(ref _gameSearchResults, value);
+        }
 
-        [ObservableProperty]
-        private bool _isGameSearchLoading = false;
+        private bool _isGameSearchLoading;
+        public bool IsGameSearchLoading
+        {
+            get => _isGameSearchLoading;
+            set
+            {
+                if (SetProperty(ref _isGameSearchLoading, value))
+                {
+                    OnPropertyChanged(nameof(CanLoadMore));
+                }
+            }
+        }
 
-        [ObservableProperty]
         private string _nextPageCursor = "";
+        public string NextPageCursor
+        {
+            get => _nextPageCursor;
+            set
+            {
+                if (SetProperty(ref _nextPageCursor, value))
+                {
+                    OnPropertyChanged(nameof(CanLoadMore));
+                }
+            }
+        }
 
         public bool CanLoadMore => !string.IsNullOrEmpty(NextPageCursor) && !IsGameSearchLoading;
 

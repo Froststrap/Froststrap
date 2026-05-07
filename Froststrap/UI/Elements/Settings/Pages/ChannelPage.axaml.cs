@@ -22,8 +22,8 @@ public partial class ChannelPage : UserControl
         App.FrostRPC?.SetDialog("Channel List");
 
         var dialog = new ChannelListsDialog();
-        var window = TopLevel.GetTopLevel(this) as Window;
-        if (window != null)
+
+        if (TopLevel.GetTopLevel(this) is Window window)
         {
             dialog.ShowDialog(window);
         }

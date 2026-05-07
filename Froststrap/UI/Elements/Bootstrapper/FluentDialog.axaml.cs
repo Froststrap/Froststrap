@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
 
@@ -9,7 +8,6 @@ namespace Froststrap.UI.Elements.Bootstrapper
     public partial class FluentDialog : AvaloniaDialogBase
     {
         private readonly FluentDialogViewModel? _viewModel;
-        public new Froststrap.Bootstrapper? Bootstrapper { get; set; }
 
         public FluentDialog()
         {
@@ -22,22 +20,12 @@ namespace Froststrap.UI.Elements.Bootstrapper
             _viewModel = new FluentDialogViewModel(this, aero, version);
             DataContext = _viewModel;
 
-            Title = App.Settings.Prop.BootstrapperTitle;
+            SetupDialog();
 
             var iconImage = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
             if (iconImage is Bitmap bitmap)
                 Icon = new WindowIcon(bitmap);
         }
-
-        public new void ShowBootstrapper() => this.Show();
-
-        public override void CloseBootstrapper()
-        {
-            _isClosing = true;
-            Dispatcher.UIThread.Post(this.Close);
-        }
-
-        public override void ShowSuccess(string message, Action? callback) => BaseFunctions.ShowSuccess(message, callback);
 
         #region UI Elements Overrides
         public override string Message

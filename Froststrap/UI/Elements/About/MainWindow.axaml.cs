@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.About
 {
     public partial class MainWindow : Base.AvaloniaWindow
     {
-        private MainWindowViewModel? _viewModel;
+        private readonly MainWindowViewModel? _viewModel;
 
         public MainWindow()
         {

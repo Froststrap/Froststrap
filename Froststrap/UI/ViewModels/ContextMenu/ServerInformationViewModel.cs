@@ -18,8 +18,8 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         public string ServerUptime { get; private set; } = Strings.Common_Loading;
 
-        public bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
-        public bool ServerUptimeVisibility => App.Settings.Prop.ShowServerUptime;
+        public static bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
+        public static bool ServerUptimeVisibility => App.Settings.Prop.ShowServerUptime;
 
         public ICommand CopyInstanceIdCommand => new RelayCommand(CopyInstanceId);
 
@@ -61,7 +61,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         }
 
         private void CopyInstanceId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(InstanceId);
-        public ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
+        public static ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
 
     }
 }

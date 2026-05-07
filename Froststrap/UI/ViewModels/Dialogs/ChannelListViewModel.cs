@@ -11,7 +11,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         private static readonly string CacheFilePath = Path.Combine(Paths.Cache, "ChannelsCache.json");
         private CancellationTokenSource? _cts;
 
-        public ObservableCollection<DeployInfoDisplay> Channels { get; } = new();
+        public ObservableCollection<DeployInfoDisplay> Channels { get; } = [];
         public IAsyncRelayCommand RefreshCommand { get; }
 
         private bool _isLoading;
@@ -132,10 +132,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
             });
         }
 
-        private async Task SaveCacheAsync(Dictionary<string, ChannelEntry> data)
+        private static async Task SaveCacheAsync(Dictionary<string, ChannelEntry> data)
             => await File.WriteAllTextAsync(CacheFilePath, JsonSerializer.Serialize(data));
 
-        private async Task<Dictionary<string, ChannelEntry>?> LoadCacheAsync()
+        private static async Task<Dictionary<string, ChannelEntry>?> LoadCacheAsync()
         {
             if (!File.Exists(CacheFilePath)) return null;
             try

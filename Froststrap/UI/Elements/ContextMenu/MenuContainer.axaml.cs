@@ -8,13 +8,13 @@ namespace Froststrap.UI.Elements.ContextMenu
     public partial class MenuContainer : Base.AvaloniaWindow
     {
         private readonly Watcher? _watcher;
-        private ActivityWatcher? _activityWatcher => _watcher?.ActivityWatcher;
+        private ActivityWatcher? ActivityWatcher => _watcher?.ActivityWatcher;
 
         private ServerInformation? _serverInformationWindow;
         private ServerHistory? _gameHistoryWindow;
 
-        private Stopwatch _totalPlaytimeStopwatch = new Stopwatch();
-        private TimeSpan _accumulatedTotalPlaytime = TimeSpan.Zero;
+        private readonly Stopwatch _totalPlaytimeStopwatch = new();
+        private readonly TimeSpan _accumulatedTotalPlaytime = TimeSpan.Zero;
 
         private DispatcherTimer? _playtimeTimer;
         private DateTime? _studioPlaceJoinTime = null;
@@ -63,26 +63,26 @@ namespace Froststrap.UI.Elements.ContextMenu
         {
             _watcher = watcher;
 
-            if (_activityWatcher is not null)
+            if (ActivityWatcher is not null)
             {
-                _activityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
-                _activityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
-                _activityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
-                _activityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
+                ActivityWatcher.OnGameJoin += ActivityWatcher_OnGameJoin;
+                ActivityWatcher.OnGameLeave += ActivityWatcher_OnGameLeave;
+                ActivityWatcher.OnStudioPlaceOpened += ActivityWatcher_OnStudioPlaceOpened;
+                ActivityWatcher.OnStudioPlaceClosed += ActivityWatcher_OnStudioPlaceClosed;
 
                 Dispatcher.UIThread.Post(() => {
-                    if (_activityWatcher.InRobloxStudio)
+                    if (ActivityWatcher.InRobloxStudio)
                     {
-                        if (InviteDeeplinkMenuItem != null) InviteDeeplinkMenuItem.IsVisible = false;
-                        if (ServerDetailsMenuItem != null) ServerDetailsMenuItem.IsVisible = false;
-                        if (GameHistoryMenuItem != null) GameHistoryMenuItem.IsVisible = false;
-                        if (AutoJoinRegionMenuItem != null) AutoJoinRegionMenuItem.IsVisible = false;
+                        InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
 
                         if (App.Settings.Prop.PlaytimeCounter)
                         {
                             StartTotalPlaytimeTimer();
-                            if (PlaytimeMenuItem != null) PlaytimeMenuItem.IsVisible = true;
-                            if (_activityWatcher.InStudioPlace) _studioPlaceJoinTime = DateTime.Now;
+                            PlaytimeMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
+                            if (ActivityWatcher.InStudioPlace) _studioPlaceJoinTime = DateTime.Now;
                         }
                     }
                     else
@@ -91,8 +91,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                         UpdateRegionJoinUI();
 
-                        if (GameHistoryMenuItem != null)
-                            GameHistoryMenuItem.IsVisible = App.Settings.Prop.ShowGameHistoryMenu;
+                        GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
                     }
 
                     if (RichPresenceMenuItem != null)
@@ -103,8 +102,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         _watcher?.StudioRichPresence?.SetVisibility(RichPresenceMenuItem.IsChecked);
                     }
 
-                    if (VersionMenuItem != null)
-                        VersionMenuItem.Header = $"{App.ProjectName} v{App.Version}";
+                    VersionMenuItem?.SetValue(NativeMenuItem.HeaderProperty, $"{App.ProjectName} v{App.Version}");
                 });
             }
         }
@@ -119,13 +117,13 @@ namespace Froststrap.UI.Elements.ContextMenu
         private void PlaytimeTimer_Tick(object? sender, EventArgs e)
         {
             TimeSpan total = _accumulatedTotalPlaytime + _totalPlaytimeStopwatch.Elapsed;
-            if (_activityWatcher == null || PlaytimeMenuItem == null) return;
+            if (ActivityWatcher == null || PlaytimeMenuItem == null) return;
 
             string statusText;
-            if (_activityWatcher.InStudioPlace && _studioPlaceJoinTime.HasValue)
+            if (ActivityWatcher.InStudioPlace && _studioPlaceJoinTime.HasValue)
                 statusText = $"Total: {FormatTimeSpan(total)} | Studio: {FormatTimeSpan(DateTime.Now - _studioPlaceJoinTime.Value)}";
-            else if (_activityWatcher.InGame)
-                statusText = $"Total: {FormatTimeSpan(total)} | Game: {FormatTimeSpan(DateTime.Now - _activityWatcher.Data.TimeJoined)}";
+            else if (ActivityWatcher.InGame)
+                statusText = $"Total: {FormatTimeSpan(total)} | Game: {FormatTimeSpan(DateTime.Now - ActivityWatcher.Data.TimeJoined)}";
             else
                 statusText = $"Total: {FormatTimeSpan(total)}";
 
@@ -149,16 +147,16 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void ActivityWatcher_OnGameJoin(object? sender, EventArgs e) =>
             Dispatcher.UIThread.Invoke(() => {
-                if (_activityWatcher?.Data.ServerType == ServerType.Public && InviteDeeplinkMenuItem != null)
+                if (ActivityWatcher?.Data.ServerType == ServerType.Public && InviteDeeplinkMenuItem != null)
                     InviteDeeplinkMenuItem.IsVisible = true;
-                if (ServerDetailsMenuItem != null) ServerDetailsMenuItem.IsVisible = true;
+                ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
                 UpdateRegionJoinUI();
             });
 
         private void ActivityWatcher_OnGameLeave(object? sender, EventArgs e) =>
             Dispatcher.UIThread.Invoke(() => {
-                if (InviteDeeplinkMenuItem != null) InviteDeeplinkMenuItem.IsVisible = false;
-                if (ServerDetailsMenuItem != null) ServerDetailsMenuItem.IsVisible = false;
+                InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 UpdateRegionJoinUI();
                 _serverInformationWindow?.Close();
             });
@@ -181,7 +179,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {
-            string deeplink = _activityWatcher?.Data?.GetInviteDeeplink() ?? "No activity data available";
+            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink() ?? "No activity data available";
             TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(deeplink);
         }
 
@@ -190,10 +188,10 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void JoinLastServerMenuItem_Click(object? sender, EventArgs e)
         {
-            if (_activityWatcher is null) return;
+            if (ActivityWatcher is null) return;
             if (_gameHistoryWindow is null)
             {
-                _gameHistoryWindow = new(_activityWatcher);
+                _gameHistoryWindow = new(ActivityWatcher);
                 _gameHistoryWindow.Closed += (_, _) => _gameHistoryWindow = null;
             }
             if (!_gameHistoryWindow.IsVisible) _gameHistoryWindow.Show();
@@ -207,7 +205,7 @@ namespace Froststrap.UI.Elements.ContextMenu
             string region = App.Settings.Prop.SelectedRegion;
             bool hasRegion = !string.IsNullOrEmpty(region);
 
-            bool inGame = _activityWatcher?.InGame ?? false;
+            bool inGame = ActivityWatcher?.InGame ?? false;
             AutoJoinRegionMenuItem.IsVisible = hasRegion && inGame;
 
             AutoJoinRegionMenuItem.Header = hasRegion ? $"Join {region}" : "No Region Selected";
@@ -216,14 +214,14 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private async void AutoJoinRegionMenuItem_Click(object? sender, EventArgs e)
         {
-            if (_activityWatcher?.InGame != true || _activityWatcher?.Data == null)
+            if (ActivityWatcher?.InGame != true || ActivityWatcher?.Data == null)
             {
                 _ = Frontend.ShowMessageBox("You need to be in a game to use this feature.", MessageBoxImage.Warning);
                 return;
             }
             string selectedRegion = App.Settings.Prop.SelectedRegion;
             if (string.IsNullOrEmpty(selectedRegion)) return;
-            await FindAndJoinServerInRegion(_activityWatcher.Data.PlaceId, selectedRegion);
+            await FindAndJoinServerInRegion(ActivityWatcher.Data.PlaceId, selectedRegion);
         }
 
         private async Task FindAndJoinServerInRegion(long placeId, string selectedRegion)

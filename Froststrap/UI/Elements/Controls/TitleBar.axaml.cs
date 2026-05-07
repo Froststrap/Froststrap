@@ -59,53 +59,42 @@ namespace Froststrap.UI.Elements.Controls
                 if (ev.Property.Name == nameof(Window.WindowState))
                 {
                     var maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
-                    if (maxBtn != null)
-                    {
-                        maxBtn.Icon = window.WindowState == WindowState.Maximized 
-                            ? Symbol.FullScreenMinimize 
-                            : Symbol.FullScreenMaximize;
-                    }
+                    maxBtn?.Icon = window.WindowState == WindowState.Maximized
+                        ? Symbol.FullScreenMinimize
+                        : Symbol.FullScreenMaximize;
                     SetValue(WindowStateProperty, window.WindowState);
                 }
             };
 
             var dragLayer = e.NameScope.Find<Control>("PART_DragLayer");
-            if (dragLayer != null)
+            dragLayer?.PointerPressed += (s, ev) =>
             {
-                dragLayer.PointerPressed += (s, ev) =>
+                if (ev.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
                 {
-                    if (ev.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+                    if (ev.ClickCount == 2 && ShowMaximize)
                     {
-                        if (ev.ClickCount == 2 && ShowMaximize)
-                        {
-                            window.WindowState = window.WindowState == WindowState.Maximized
-                                ? WindowState.Normal
-                                : WindowState.Maximized;
-                        }
-                        else
-                        {
-                            window.BeginMoveDrag(ev);
-                        }
+                        window.WindowState = window.WindowState == WindowState.Maximized
+                            ? WindowState.Normal
+                            : WindowState.Maximized;
                     }
-                };
-            }
+                    else
+                    {
+                        window.BeginMoveDrag(ev);
+                    }
+                }
+            };
 
             var minBtn = e.NameScope.Find<IconButton>("PART_MinimizeButton");
-            if (minBtn != null)
-                minBtn.Click += (s, ev) => window.WindowState = WindowState.Minimized;
+            minBtn?.Click += (s, ev) => window.WindowState = WindowState.Minimized;
 
             var maxBtn = e.NameScope.Find<IconButton>("PART_MaximizeButton");
-            if (maxBtn != null)
-            {
-                maxBtn.Click += (s, ev) =>
-                    window.WindowState = window.WindowState == WindowState.Maximized
-                        ? WindowState.Normal
-                        : WindowState.Maximized;
-            }
+            maxBtn?.Click += (s, ev) =>
+                window.WindowState = window.WindowState == WindowState.Maximized
+                    ? WindowState.Normal
+                    : WindowState.Maximized;
 
             var closeBtn = e.NameScope.Find<IconButton>("PART_CloseButton");
-            if (closeBtn != null)
-                closeBtn.Click += (s, ev) => window.Close();
+            closeBtn?.Click += (s, ev) => window.Close();
         }
     }
 }

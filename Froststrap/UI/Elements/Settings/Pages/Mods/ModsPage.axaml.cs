@@ -14,31 +14,26 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
     /// <summary>
     /// Implementation of IModsDialogService for Mods navigation
     /// </summary>
-    internal class ModsDialogService : IModsDialogService
+    internal class ModsDialogService(MainWindowViewModel mainVm) : IModsDialogService
     {
-        private readonly MainWindowViewModel _mainVm;
+        private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
-        public ModsDialogService(MainWindowViewModel mainVm)
-        {
-            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
-        }
-
-        public async Task OpenCommunityModsAsync()
+        public Task OpenCommunityModsAsync()
         {
             _mainVm.NavigateToCommunityModsCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task OpenPresetModsAsync()
+        public Task OpenPresetModsAsync()
         {
             _mainVm.NavigateToPresetModsCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task OpenModGeneratorAsync()
+        public Task OpenModGeneratorAsync()
         {
             _mainVm.NavigateToModGeneratorCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 

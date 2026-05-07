@@ -27,7 +27,7 @@ namespace Froststrap.UI.ViewModels.Editor
             const string LOG_IDENT = "BootstrapperEditorWindowViewModel::Preview";
             try
             {
-                CustomDialog dialog = new CustomDialog();
+                CustomDialog dialog = new();
                 dialog.ApplyCustomTheme(Name, Code);
 
                 _dialog?.CloseBootstrapper();

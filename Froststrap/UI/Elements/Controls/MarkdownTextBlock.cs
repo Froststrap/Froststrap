@@ -48,7 +48,7 @@ namespace Froststrap.UI.Elements.Controls
             Inlines.AddRange(result);
         }
 
-        private List<Avalonia.Controls.Documents.Inline> ConvertMarkdownToInlines(MarkdownDocument document)
+        private static List<Avalonia.Controls.Documents.Inline> ConvertMarkdownToInlines(MarkdownDocument document)
         {
             var inlines = new List<Avalonia.Controls.Documents.Inline>();
 
@@ -72,7 +72,7 @@ namespace Froststrap.UI.Elements.Controls
             return inlines;
         }
 
-        private IEnumerable<Avalonia.Controls.Documents.Inline> GetAvaloniaInlinesFromMarkdownInline(Markdig.Syntax.Inlines.Inline? inline)
+        private static IEnumerable<Avalonia.Controls.Documents.Inline> GetAvaloniaInlinesFromMarkdownInline(Markdig.Syntax.Inlines.Inline? inline)
         {
             if (inline == null) yield break;
 

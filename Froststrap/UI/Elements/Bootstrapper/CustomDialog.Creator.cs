@@ -14,7 +14,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         delegate object HandleXmlElementDelegate(CustomDialog dialog, XElement xmlElement);
 
-        private static Dictionary<string, HandleXmlElementDelegate> _elementHandlerMap = new Dictionary<string, HandleXmlElementDelegate>()
+        private readonly static Dictionary<string, HandleXmlElementDelegate> _elementHandlerMap = new()
         {
             ["BloxstrapCustomBootstrapper"] = HandleXmlElement_BloxstrapCustomBootstrapper_Fake,
             ["TitleBar"] = HandleXmlElement_TitleBar,
@@ -35,7 +35,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             ["SkewTransform"] = HandleXmlElement_SkewTransform,
             ["RotateTransform"] = HandleXmlElement_RotateTransform,
             ["TranslateTransform"] = HandleXmlElement_TranslateTransform,
-            ["DropShadowEffect"] = HandleXmlElement_DropShadowEffect,
+            ["DropShadowEffect"] = (dialog, xml) => HandleXmlElement_DropShadowEffect(dialog, xml),
             ["Ellipse"] = HandleXmlElement_Ellipse,
             ["Line"] = HandleXmlElement_Line,
             ["Rectangle"] = HandleXmlElement_Rectangle,
