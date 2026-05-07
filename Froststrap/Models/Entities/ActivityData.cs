@@ -73,20 +73,42 @@ namespace Froststrap.Models.Entities
 		private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
 		private readonly SemaphoreSlim serverTimeSemaphore = new(1, 1);
 
-		public string GetInviteDeeplink(bool launchData = true)
-		{
-			string deeplink = $"http://froststrap.github.io/invite?placeId={PlaceId}";
+        //Too lazy to make it in a diffrent file: TODO: Move to a new file in Enums
+        public enum DeeplinkType
+        {
+            Froststrap,
+            RobloxProtocol,
+            RobloxWeb
+        }
 
-			if (ServerType == ServerType.Private) // thats not going to work
-				deeplink += "&accessCode=" + AccessCode;
-			else
-				deeplink += "&gameInstanceId=" + JobId;
+        public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
+        {
+            string baseUrl = type switch
+            {
+                DeeplinkType.RobloxProtocol => "roblox://experiences/start",
+                DeeplinkType.RobloxWeb => "https://www.roblox.com/games/start",
+                _ => "http://froststrap.github.io/invite"
+            };
 
-			if (launchData && !string.IsNullOrEmpty(RPCLaunchData))
-				deeplink += "&launchData=" + HttpUtility.UrlEncode(RPCLaunchData);
+            string deeplink = $"{baseUrl}?placeId={PlaceId}";
 
-			return deeplink;
-		}
+            if (ServerType == ServerType.Private)
+            {
+                deeplink += "&accessCode=" + AccessCode;
+            }
+            else
+            {
+                deeplink += "&gameInstanceId=" + JobId;
+            }
+
+            // Handle launch data
+            if (launchData && !string.IsNullOrEmpty(RPCLaunchData))
+            {
+                deeplink += "&launchData=" + HttpUtility.UrlEncode(RPCLaunchData);
+            }
+
+            return deeplink;
+        }
 
         public async Task<DateTime?> QueryServerTime()
         {
@@ -288,7 +310,8 @@ namespace Froststrap.Models.Entities
 			}
 		}
 
-		private void CopyDeeplink() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(GetInviteDeeplink());
+        //Froststrap deeplink type when it works, for now use roblox one
+		private void CopyDeeplink() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(GetInviteDeeplink(true, DeeplinkType.RobloxWeb));
 		private void CopyServerId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(JobId);
 
 		private void DeleteHistory()

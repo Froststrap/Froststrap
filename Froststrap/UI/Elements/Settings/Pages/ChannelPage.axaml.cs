@@ -14,7 +14,7 @@ public partial class ChannelPage : UserControl
     {
         InitializeComponent();
 
-        App.FrostRPC?.SetPage("Settings");
+        App.FrostRPC?.SetPage("Deployment");
     }
 
     private void OpenChannelListDialog_Click(object? sender, RoutedEventArgs e)
