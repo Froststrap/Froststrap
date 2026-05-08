@@ -15,7 +15,7 @@
 
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="3">
-                            
+
                             <WrapPanel Orientation="Horizontal">
                                 <TextBlock Text="{TemplateBinding Header}"
                                            FontSize="14"
@@ -24,13 +24,13 @@
                                            TextWrapping="Wrap"
                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
 
-                                <controls:Hyperlink
+                                <controls:Hyperlink Url="{TemplateBinding HelpLink}"
                                                     IsVisible="{TemplateBinding HelpLink, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                                                     VerticalAlignment="Center"
                                                     Margin="6,0,0,0">
                                     <ic:SymbolIcon Symbol="QuestionCircle"
-                                                         Width="14" Height="14"
-                                                         Foreground="{DynamicResource SystemAccentColor}" />
+                                                   Width="14" Height="14"
+                                                   Foreground="{DynamicResource SystemAccentColor}" />
                                 </controls:Hyperlink>
                             </WrapPanel>
 

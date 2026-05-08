@@ -108,12 +108,13 @@ namespace Froststrap.UI.Elements.Controls
 
                 var hyperlinkControl = new Hyperlink()
                 {
-                    Content = linkText
+                    Content = linkText,
+                    Url = url
                 };
 
                 yield return new InlineUIContainer(hyperlinkControl)
                 {
-                    BaselineAlignment = BaselineAlignment.Bottom
+                    BaselineAlignment = BaselineAlignment.Center
                 };
             }
             else if (inline is LineBreakInline)

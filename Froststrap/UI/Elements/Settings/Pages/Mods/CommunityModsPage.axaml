@@ -36,7 +36,7 @@
                                      Command="{Binding OpenModGeneratorCommand}"/>
             </Grid>
 
-            <Separator Margin="0,16,0,8" />
+            <Separator Margin="0,8" />
 
             <Grid IsVisible="{Binding !IsLoading}" RowDefinitions="Auto, Auto, *">
                 

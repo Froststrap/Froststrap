@@ -27,7 +27,7 @@
                                      Command="{Binding OpenModGeneratorCommand}"/>
             </Grid>
 
-            <Border Height="1" Background="{DynamicResource DividerStrokeColorDefaultBrush}" Margin="0,8" />
+			<Separator Margin="0,8" />
 
             <ui:InfoBar Title="Important"
                         Message="You can drag and drop your mod to auto add it here"
