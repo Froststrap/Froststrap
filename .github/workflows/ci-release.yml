@@ -83,6 +83,11 @@ jobs:
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
           path: release
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
+          path: release
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -91,5 +96,6 @@ jobs:
           files: |
             release/Froststrap-Setup.exe
             release/Froststrap-macOS.dmg
+            release/Froststrap-linux-x64.AppImage
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
