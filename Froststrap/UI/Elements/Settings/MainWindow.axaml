@@ -78,7 +78,7 @@
 						<ic:SymbolIconSource Symbol="Flag" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
-				<ui:NavigationViewItem IsVisible="{x:Static gv:GlobalViewModel.IsWindowsAndLinux}"
+				<ui:NavigationViewItem IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
 					Name="gbs"
 					Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}"
 					Tag="globalsettings">

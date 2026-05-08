@@ -7,7 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
-	xmlns:gv="using:Froststrap.UI.ViewModels"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="900"
     d:DesignWidth="800"
@@ -42,185 +42,185 @@
                 FontWeight="Bold"
                 Text="Froststrap" />
 
-                <controls:CardExpander
-                    Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                    IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}">
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
+                IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}">
 
-                    <controls:CardExpander.HeaderContent>
-                        <ToggleSwitch
-                            IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
-                            OffContent=""
-                            OnContent="" />
-                    </controls:CardExpander.HeaderContent>
-
-                    <controls:OptionControl
-                        Header="Update to Pre Releases">
-                        <ToggleSwitch
-                            IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"
-                            OffContent=""
-                            OnContent="" />
-                    </controls:OptionControl>
-                </controls:CardExpander>
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch
+                        IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
+                        OffContent=""
+                        OnContent="" />
+                </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_TestMode}">
+                    Header="Update to Pre Releases">
                     <ToggleSwitch
-                        IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
+                        IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"
                         OffContent=""
                         OnContent="" />
                 </controls:OptionControl>
+            </controls:CardExpander>
 
-                <Separator Margin="0,8,0,4" />
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_TestMode}">
+                <ToggleSwitch
+                    IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
+                    OffContent=""
+                    OnContent="" />
+            </controls:OptionControl>
 
-                <TextBlock
-                    Margin="0,8,0,0"
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="Roblox" />
+            <Separator Margin="0,8,0,4" />
 
-                <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
-                    Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
-                    IsEnabled="{Binding !IsRobloxInstallationMissing}">
-                    <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <TextBlock
+                Margin="0,8,0,0"
+                FontSize="20"
+                FontWeight="Bold"
+                Text="Roblox" />
 
-                <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
-                    Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
-                    IsEnabled="{Binding !IsRobloxInstallationMissing}">
-                    <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
+                IsEnabled="{Binding !IsRobloxInstallationMissing}">
+                <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
-                    Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
-                    <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
+                Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
+                IsEnabled="{Binding !IsRobloxInstallationMissing}">
+                <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:CardExpander
-                    Header="{x:Static resources:Strings.Common_Channel}"
-                    Description="{x:Static resources:Strings.Menu_ChannelChanger_Description}"
-					IsVisible="{x:Static gv:GlobalViewModel.IsWindowsAndMacOS}"
-                    IsExpanded="True">
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
+                Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
+                <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                    <controls:CardExpander.HeaderContent>
-                        <TextBox
-                            Width="200"
-                            Margin="8,0,0,0"
-                            Padding="10,5"
-                            Text="{Binding ViewChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    </controls:CardExpander.HeaderContent>
+            <controls:CardExpander
+                Header="{x:Static resources:Strings.Common_Channel}"
+                Description="{x:Static resources:Strings.Menu_ChannelChanger_Description}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                IsExpanded="True">
 
-                    <StackPanel Spacing="8">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
-                            <!-- Version Row -->
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="0"
-                                Margin="0,0,16,8"
-                                VerticalAlignment="Center"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="{x:Static resources:Strings.Common_Version}" />
-                            <TextBlock
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="{Binding ChannelDeployInfo.Version, Mode=OneWay}" />
-
-                            <!-- Version GUID Row -->
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                Margin="0,0,16,8"
-                                VerticalAlignment="Center"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="{x:Static resources:Strings.Common_VersionGuid}" />
-                            <TextBlock
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="{Binding ChannelDeployInfo.VersionGuid, Mode=OneWay}" />
-
-                            <!-- Timestamp Row -->
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="0"
-                                Margin="0,0,16,8"
-                                VerticalAlignment="Center"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="{x:Static resources:Strings.Common_Timestamp}" />
-                            <TextBlock
-                                Grid.Row="2"
-                                Grid.Column="1"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="{Binding ChannelDeployInfo.Timestamp, Mode=OneWay}" />
-
-                            <!-- Available Channels Button -->
-                            <Button
-                                Grid.Row="0"
-                                Grid.Column="2"
-                                Margin="16,0,0,0"
-                                HorizontalAlignment="Right"
-                                Click="OpenChannelListDialog_Click"
-                                Content="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels}" />
-
-                            <!-- Out of Date Warning -->
-                            <StackPanel
-                                Grid.Row="3"
-                                Grid.ColumnSpan="3"
-                                Margin="0,8,0,0"
-                                Orientation="Horizontal"
-                                IsVisible="{Binding ShowChannelWarning, Mode=OneWay}">
-                                <Image Source="avares://Froststrap/Resources/MessageBox/Warning.png"
-                                    RenderOptions.BitmapInterpolationMode="HighQuality"
-                                    Width="24"
-                                    Height="24"/>
-                                <TextBlock
-                                    Margin="8,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Text="{x:Static resources:Strings.Menu_Deployment_Channel_OutOfDate}" />
-                            </StackPanel>
-                        </Grid>
-
-                        <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
-                            <ui:ProgressRing
-                                Grid.Column="0"
-                                Width="64"
-                                Height="64"
-                                Margin="12"
-                                IsIndeterminate="True"
-                                IsVisible="{Binding !ShowLoadingError, Mode=OneWay}" />
-
-                            <Image Source="avares://Froststrap/Resources/MessageBox/FullQuality/Error.png"
-                                   Grid.Column="0"
-                                   RenderOptions.BitmapInterpolationMode="HighQuality"
-                                   Margin="6"
-                                   Width="60"
-                                   Height="60"
-                                   IsVisible="{Binding ShowLoadingError, Mode=OneWay}"/>
-
-                            <TextBlock
-                                Grid.Column="1"
-                                Margin="16"
-                                VerticalAlignment="Center"
-                                Text="{Binding ChannelInfoLoadingText, Mode=OneWay}"
-                                TextWrapping="Wrap" />
-                        </Grid>
-                    </StackPanel>
-                </controls:CardExpander>
-
-                <!-- Channel Change Action Option -->
-                <controls:OptionControl
-                    Header="{x:Static resources:Strings.Menu_Channel_ChangeAction_Title}"
-                    Description="{x:Static resources:Strings.Menu_Channel_ChangeAction_Description}">
-                    <ComboBox
+                <controls:CardExpander.HeaderContent>
+                    <TextBox
                         Width="200"
-                        Margin="5,0,0,0"
-                        Padding="10,5,10,5"
-                        ItemsSource="{Binding ChannelChangeModes.Keys, Mode=OneTime}"
-                        SelectedItem="{Binding SelectedChannelChangeMode, Mode=TwoWay}" />
-                </controls:OptionControl>
+                        Margin="8,0,0,0"
+                        Padding="10,5"
+                        Text="{Binding ViewChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Spacing="8">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <!-- Version Row -->
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,16,8"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Common_Version}" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="{Binding ChannelDeployInfo.Version, Mode=OneWay}" />
+
+                        <!-- Version GUID Row -->
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,16,8"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Common_VersionGuid}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="{Binding ChannelDeployInfo.VersionGuid, Mode=OneWay}" />
+
+                        <!-- Timestamp Row -->
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="0,0,16,8"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Common_Timestamp}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="{Binding ChannelDeployInfo.Timestamp, Mode=OneWay}" />
+
+                        <!-- Available Channels Button -->
+                        <Button
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            Margin="16,0,0,0"
+                            HorizontalAlignment="Right"
+                            Click="OpenChannelListDialog_Click"
+                            Content="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels}" />
+
+                        <!-- Out of Date Warning -->
+                        <StackPanel
+                            Grid.Row="3"
+                            Grid.ColumnSpan="3"
+                            Margin="0,8,0,0"
+                            Orientation="Horizontal"
+                            IsVisible="{Binding ShowChannelWarning, Mode=OneWay}">
+                            <Image Source="avares://Froststrap/Resources/MessageBox/Warning.png"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                                   Width="24"
+                                   Height="24"/>
+                            <TextBlock
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{x:Static resources:Strings.Menu_Deployment_Channel_OutOfDate}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
+                        <ui:ProgressRing
+                            Grid.Column="0"
+                            Width="64"
+                            Height="64"
+                            Margin="12"
+                            IsIndeterminate="True"
+                            IsVisible="{Binding !ShowLoadingError, Mode=OneWay}" />
+
+                        <Image Source="avares://Froststrap/Resources/MessageBox/FullQuality/Error.png"
+                               Grid.Column="0"
+                               RenderOptions.BitmapInterpolationMode="HighQuality"
+                               Margin="6"
+                               Width="60"
+                               Height="60"
+                               IsVisible="{Binding ShowLoadingError, Mode=OneWay}"/>
+
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="16"
+                            VerticalAlignment="Center"
+                            Text="{Binding ChannelInfoLoadingText, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <!-- Channel Change Action Option -->
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Channel_ChangeAction_Title}"
+                Description="{x:Static resources:Strings.Menu_Channel_ChangeAction_Description}">
+                <ComboBox
+                    Width="200"
+                    Margin="5,0,0,0"
+                    Padding="10,5,10,5"
+                    ItemsSource="{Binding ChannelChangeModes.Keys, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedChannelChangeMode, Mode=TwoWay}" />
+            </controls:OptionControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
