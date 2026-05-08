@@ -97,11 +97,7 @@ namespace Froststrap
             // exceptions don't get thrown if we define events without actually binding to the failure events. probably a bug. ¯\_(ツ)_/¯
             _fastZipEvents.FileFailure += (_, e) =>
             {
-                // only give a pass to font files (no idea whats wrong with them)
-                if (!e.Name.EndsWith(".ttf"))
-                    throw e.Exception;
-
-                App.Logger.WriteLine("FastZipEvents::OnFileFailure", $"Failed to extract {e.Name}");
+                App.Logger.WriteLine("FastZipEvents::OnFileFailure", $"Failed to extract {e.Name}: {e.Exception.Message}");
                 _packageExtractionSuccess = false;
             };
             _fastZipEvents.DirectoryFailure += (_, e) => throw e.Exception;
@@ -1404,8 +1400,6 @@ namespace Froststrap
                 _taskbarProgressIncrement = totalPackedSize > 0 ? _taskbarProgressMaximum / (double)totalPackedSize : 0;
             }
 
-            var extractionTasks = new List<Task>();
-
             foreach (var package in _versionPackageManifest)
             {
                 if (_cancelTokenSource.IsCancellationRequested)
@@ -1418,8 +1412,7 @@ namespace Froststrap
                 if (package.Name == "WebView2RuntimeInstaller.zip")
                     continue;
 
-                // extract the package async immediately after download
-                extractionTasks.Add(Task.Run(() => ExtractPackage(package), _cancelTokenSource.Token));
+                await ExtractPackage(package);
             }
 
             if (_cancelTokenSource.IsCancellationRequested)
@@ -1431,8 +1424,6 @@ namespace Froststrap
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
                 SetStatus(Strings.Bootstrapper_Status_Configuring);
             }
-
-            await Task.WhenAll(extractionTasks);
 
             if (_cancelTokenSource.IsCancellationRequested)
                 return;
@@ -1498,7 +1489,7 @@ namespace Froststrap
                         }
 
                         string baseDirectory = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
-                        ExtractPackage(package);
+                        await ExtractPackage(package);
                         SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
 
                         var webview2StartInfo = new ProcessStartInfo()
@@ -2222,7 +2213,7 @@ namespace Froststrap
                     if (package is not null)
                     {
                         await DownloadPackage(package);
-                        ExtractPackage(package, entry.Value);
+                        await ExtractPackage(package, entry.Value);
                     }
                 }
             }
@@ -2410,48 +2401,93 @@ namespace Froststrap
             }
         }
 
-        private void ExtractPackage(Package package, List<string>? files = null)
+        private async Task ExtractPackage(Package package, List<string>? files = null)
         {
             const string LOG_IDENT = "Bootstrapper::ExtractPackage";
+            int attempts = 0;
+            const int maxAttempts = 3;
 
-            string packageFolder = _latestVersionDirectory;
-            if (!OperatingSystem.IsMacOS())
+            while (attempts < maxAttempts)
             {
-                string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-
-                if (packageDir is null)
+                try
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                    return;
+                    attempts++;
+                    _packageExtractionSuccess = true;
+
+                    string packageFolder = _latestVersionDirectory;
+                    if (!OperatingSystem.IsMacOS())
+                    {
+                        string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
+
+                        if (packageDir is null)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
+                            return;
+                        }
+
+                        packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
+                    }
+
+                    string? fileFilter = null;
+
+                    if (files is not null)
+                    {
+                        var regexList = new List<string>();
+                        foreach (string file in files)
+                            regexList.Add("^" + file.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)") + "$");
+
+                        fileFilter = String.Join(';', regexList);
+                    }
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
+
+                    var fastZip = new FastZip(_fastZipEvents)
+                    {
+                        RestoreDateTimeOnExtract = false,
+                        RestoreAttributesOnExtract = false
+                    };
+
+                    fastZip.ExtractZip(package.DownloadPath, packageFolder, fileFilter);
+
+                    if (_packageExtractionSuccess)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
+                        return;
+                    }
+                    else
+                    {
+                        throw new Exception("Extraction failed according to success flag.");
+                    }
                 }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Extraction failed on attempt {attempts}: {ex.Message}");
 
-                packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
+                    if (ex.Message.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Ignoring non-critical extraction failure for font file: {ex.Message}");
+                        _packageExtractionSuccess = true;
+                        return;
+                    }
+
+                    if (File.Exists(package.DownloadPath))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Deleting corrupted package for retry...");
+                        File.Delete(package.DownloadPath);
+                    }
+
+                    if (attempts >= maxAttempts)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Raising error.");
+                        throw;
+                    }
+
+                    App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
+                    await Task.Delay(1000);
+                    await DownloadPackage(package);
+                }
             }
-
-            string? fileFilter = null;
-
-            if (files is not null)
-            {
-                var regexList = new List<string>();
-                foreach (string file in files)
-                    regexList.Add("^" + file.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)") + "$");
-
-                fileFilter = String.Join(';', regexList);
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name}...");
-
-            var fastZip = new FastZip(_fastZipEvents)
-            {
-                RestoreDateTimeOnExtract = false,
-                RestoreAttributesOnExtract = false
-            };
-
-            fastZip.ExtractZip(package.DownloadPath, packageFolder, fileFilter);
-
-            App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
         }
-
         #endregion
     }
 }
