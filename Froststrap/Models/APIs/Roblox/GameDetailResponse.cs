@@ -43,6 +43,10 @@
         [JsonPropertyName("sourceDescription")]
         public string SourceDescription { get; set; } = null!;
 
+
+        /// <summary>
+        /// The game creator username.
+        /// </summary>
         [JsonPropertyName("creator")]
         public GameCreator Creator { get; set; } = null!;
 

@@ -1,18 +1,98 @@
-<UserControl
-    x:Class="Froststrap.UI.Elements.Settings.Pages.QuickPlayPage"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:resources="using:Froststrap.Resources"
-    xmlns:ui="using:FluentAvalonia.UI.Controls"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
-    x:DataType="vm:ShortcutsViewModel">
+<UserControl x:Class="Froststrap.UI.Elements.Settings.Pages.QuickPlayPage"
+             xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+             xmlns:conv="clr-namespace:Froststrap.UI.Converters"
+             xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+             x:Name="RootPage"
+             x:DataType="vm:QuickPlayViewModel">
 
     <ScrollViewer>
         <StackPanel Margin="14">
+            <ItemsControl ItemsSource="{Binding RecentGames}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Background="Transparent"
+                                BorderThickness="0"
+                                Padding="0"
+                                Margin="5"
+                                ClickMode="Press">
+
+                            <Button.Styles>
+                                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                                <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
+                                    <Setter Property="Background" Value="Transparent" />
+                                </Style>
+                            </Button.Styles>
+
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <ContentPresenter Name="PART_ContentPresenter"
+                                                      Background="{TemplateBinding Background}"
+                                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                                      CornerRadius="{TemplateBinding CornerRadius}"
+                                                      Content="{TemplateBinding Content}"
+                                                      Padding="{TemplateBinding Padding}" />
+                                </ControlTemplate>
+                            </Button.Template>
+
+                            <Button.Flyout>
+                                <MenuFlyout Placement="Pointer">
+                                    <MenuItem Header="Join Game"
+                                              Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}"
+                                              CommandParameter="{Binding}"/>
+                                    <MenuItem Header="Rejoin Last Server"
+                                              Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}"
+                                              CommandParameter="{Binding}"/>
+                                    <Separator />
+                                    <MenuItem Header="Visit Game Page"
+                                              Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}"
+                                              CommandParameter="{Binding}"/>
+                                </MenuFlyout>
+                            </Button.Flyout>
+
+                            <controls:Card Width="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
+                                <StackPanel>
+                                    <Border CornerRadius="12,12,0,0" ClipToBounds="True">
+                                        <Image Source="{Binding UniverseDetails.Thumbnail.ImageUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                               Height="190" Width="190" Stretch="UniformToFill"/>
+                                    </Border>
+
+                                    <StackPanel Spacing="2" Margin="8">
+                                        <TextBlock Text="{Binding UniverseDetails.Data.Name}"
+                                                   FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding UniverseDetails.Data.Creator.Name, StringFormat='by {0}'}"
+                                                   FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0" Spacing="4">
+                                            <TextBlock Text="{Binding UniverseDetails.Data.Playing, Converter={StaticResource NumberAbbreviationConverter}}"
+                                                       FontSize="10" FontWeight="Bold"/>
+                                            <TextBlock Text="Active" FontSize="10" Opacity="0.5"/>
+                                            <TextBlock Text="{Binding UniverseDetails.Data.Visits, Converter={StaticResource NumberAbbreviationConverter}}"
+                                                       FontSize="10" FontWeight="Bold" Margin="6,0,0,0"/>
+                                            <TextBlock Text="Visits" FontSize="10" Opacity="0.5"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </StackPanel>
+                            </controls:Card>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsLoading}"
+                         VerticalAlignment="Center"
+                         Margin="0,20,0,0"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

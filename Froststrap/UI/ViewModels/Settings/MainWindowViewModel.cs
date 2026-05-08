@@ -111,7 +111,7 @@ namespace Froststrap.UI.ViewModels.Settings
             NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", "Region Selector", null!, new RegionSelectorViewModel()));
             NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", "Global Settings", Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
             NavigateToShortcutsCommand = new RelayCommand(() => Navigate("shortcuts", "Shortcuts", Strings.Menu_Shortcuts_Description, new ShortcutsViewModel()));
-            NavigateToQuickPlayCommand = new RelayCommand(() => Navigate("quickplay", "Quick Play", null!, new QuickPlayViewModel()));
+            NavigateToQuickPlayCommand = new RelayCommand(() => Navigate("quickplay", "Quick Play", "Jump back into your recent games.", new QuickPlayViewModel()));
             NavigateToChannelsCommand = new RelayCommand(() => Navigate("channels", "Deployment", Strings.Menu_Channel_Description, new ChannelViewModel()));
 
             NavigateToGlobalSettingsEditorCommand = new RelayCommand(() =>
