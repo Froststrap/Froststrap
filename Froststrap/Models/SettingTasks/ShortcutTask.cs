@@ -10,16 +10,16 @@
         {
             _shortcutPath = Path.Combine(lnkFolder, lnkName);
             _exeFlags = exeFlags;
-
-            OriginalState = File.Exists(_shortcutPath);
+            
+            OriginalState = File.Exists(Shortcut.ResolvePath(_shortcutPath));
         }
 
         public override void Execute()
         {
             if (NewState)
                 Shortcut.Create(Paths.Application, _exeFlags, _shortcutPath);
-            else if (File.Exists(_shortcutPath))
-                File.Delete(_shortcutPath);
+            else
+                Shortcut.Delete(_shortcutPath);
 
             OriginalState = NewState;
         }

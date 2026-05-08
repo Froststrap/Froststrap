@@ -9,7 +9,6 @@
 */
 
 using System.Collections.ObjectModel;
-using System.Security.Cryptography;
 using CommunityToolkit.Mvvm.Input;
 using Avalonia.Threading;
 using Avalonia.Media.Imaging;
@@ -20,6 +19,8 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         private readonly string LOG_IDENT = "ShortcutsViewModel";
 
+        // Use .lnk as the canonical name.
+        // Shortcut.cs resolves the correct filename internally
         public ShortcutTask DesktopIconTask { get; } = new("Desktop", Paths.Desktop, $"{App.ProjectName}.lnk");
         public ShortcutTask PlayerIconTask { get; } = new("RobloxPlayer", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRoblox}.lnk", "-player");
         public ShortcutTask StudioIconTask { get; } = new("RobloxStudio", Paths.Desktop, $"{Strings.LaunchMenu_LaunchRobloxStudio}.lnk", "-studio");
@@ -142,46 +143,16 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 ShortcutStatus = "Processing...";
 
-                string argData = PlaceId;
-                if (!string.IsNullOrEmpty(JobId)) argData += $";{JobId}";
-                if (!string.IsNullOrEmpty(AccessCode)) argData += $";{AccessCode}";
+                await Shortcut.CreateGameShortcut(
+                    appPath: Paths.Application,
+                    displayName: PreviewName,
+                    placeId: PlaceId,
+                    jobId: JobId,
+                    accessCode: AccessCode,
+                    icon: PreviewIcon,
+                    onStatus: status => ShortcutStatus = status
+                );
 
-                string safeName = SanitizeFileName(PreviewName);
-                string lnkPath = Path.Combine(Paths.Desktop, $"{safeName}.lnk");
-
-                string shortcutsIconDir = Path.Combine(Paths.Cache, "Game Shortcuts");
-                Directory.CreateDirectory(shortcutsIconDir);
-
-                string? finalIconPath = null;
-
-                if (PreviewIcon != null)
-                {
-                    try
-                    {
-                        ShortcutStatus = "Saving icon...";
-                        using var ms = new MemoryStream();
-                        PreviewIcon.Save(ms);
-                        byte[] imageBytes = ms.ToArray();
-
-                        string hash = ComputeHash(imageBytes);
-                        string icoPath = Path.Combine(shortcutsIconDir, $"{hash}.ico");
-
-                        if (!File.Exists(icoPath))
-                        {
-                            ShortcutStatus = "Converting icon...";
-                            using var icoFile = File.Create(icoPath);
-                            SaveBitmapAsIcon(PreviewIcon, icoFile);
-                        }
-                        finalIconPath = icoPath;
-                    }
-                    catch (Exception ex)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Icon processing failed: {ex.Message}");
-                    }
-                }
-
-                ShortcutStatus = "Creating...";
-                Shortcut.Create(Paths.Application, $"-gameshortcut \"{argData}\"", lnkPath, finalIconPath);
                 ShortcutStatus = "Shortcut created!";
             }
             catch (Exception ex)
@@ -343,45 +314,6 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 IsGameSearchLoading = false;
             }
-        }
-
-        private static void SaveBitmapAsIcon(Bitmap bitmap, Stream output)
-        {
-            using var ms = new MemoryStream();
-            bitmap.Save(ms);
-            ms.Position = 0;
-
-            using var resized = Bitmap.DecodeToWidth(ms, 64);
-            using var pngStream = new MemoryStream();
-            resized.Save(pngStream);
-            byte[] pngBytes = pngStream.ToArray();
-
-            using var writer = new BinaryWriter(output);
-            writer.Write((short)0);
-            writer.Write((short)1);
-            writer.Write((short)1);
-            writer.Write((byte)64);
-            writer.Write((byte)64);
-            writer.Write((byte)0);
-            writer.Write((byte)0);
-            writer.Write((short)1);
-            writer.Write((short)32);
-            writer.Write(pngBytes.Length);
-            writer.Write(22);
-            writer.Write(pngBytes);
-        }
-
-        private static string SanitizeFileName(string name)
-        {
-            foreach (char c in Path.GetInvalidFileNameChars())
-                name = name.Replace(c, '_');
-            return name.Trim();
-        }
-
-        private static string ComputeHash(byte[] data)
-        {
-            byte[] hash = SHA256.HashData(data);
-            return Convert.ToHexStringLower(hash);
         }
     }
 }
