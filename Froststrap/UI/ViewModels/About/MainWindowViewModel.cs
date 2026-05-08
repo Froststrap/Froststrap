@@ -47,6 +47,7 @@ namespace Froststrap.UI.ViewModels.About
             try
             {
                 SelectedPage = "licenses";
+                CurrentPage = new LicensesViewModel();
             }
             catch (Exception ex)
             {
