@@ -44,44 +44,44 @@
             <ItemsControl ItemsSource="{Binding Modifications}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type models:ModConfig}">
-                        <controls:Card Margin="0,0,0,8">
-								<Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto">
-                                
-                                    <controls:IconButton Grid.Column="0" 
-                                                     Icon="Delete" 
+                        <controls:Card Margin="0,0,0,8" Padding="12,8">
+                            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto,Auto,Auto" VerticalAlignment="Center">
+
+                                <controls:IconButton Grid.Column="0"
+                                                     Icon="Delete"
                                                      Classes="Danger"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).DeleteModCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 
-                                    <TextBox Grid.Column="1" Width="300" Margin="8,0"
+                                <TextBox Grid.Column="1" Width="300" Margin="12,0"
                                          Text="{Binding FolderName}"
                                          Watermark="Mod Name"
-                                         GotFocus="ModName_GotFocus"
-                                         LostFocus="ModName_LostFocus" />
+                                         VerticalAlignment="Center" />
 
-                                    <ComboBox Grid.Column="3" MinWidth="150" Margin="0,0,8,0"
-                                          SelectedItem="{Binding Target}">
-                                                <x:String>Both</x:String>
-                                                <x:String>Player</x:String>
-                                                <x:String>Studio</x:String>
-                                                <x:String>Disabled</x:String>
-                                    </ComboBox>
+                                <ComboBox Grid.Column="3" MinWidth="120" Margin="8,0"
+                                          SelectedItem="{Binding Target}"
+                                          VerticalAlignment="Center">
+                                    <x:String>Both</x:String>
+                                    <x:String>Player</x:String>
+                                    <x:String>Studio</x:String>
+                                    <x:String>Disabled</x:String>
+                                </ComboBox>
 
-                                    <controls:IconButton Grid.Column="4" 
+                                <controls:IconButton Grid.Column="4"
                                                      Icon="Folder"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).OpenModFolderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 
-                                    <controls:IconButton Grid.Column="5" Margin="4,0,0,0"
+                                <controls:IconButton Grid.Column="5" Margin="4,0,0,0"
                                                      Icon="ArrowUp"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).MoveUpCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
 
-                                    <controls:IconButton Grid.Column="6" Margin="4,0,0,0"
+                                <controls:IconButton Grid.Column="6" Margin="4,0,0,0"
                                                      Icon="ArrowDown"
                                                      Command="{Binding ((vm:ModsViewModel)DataContext).MoveDownCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                      CommandParameter="{Binding}" />
-                                </Grid>
+                            </Grid>
                         </controls:Card>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
