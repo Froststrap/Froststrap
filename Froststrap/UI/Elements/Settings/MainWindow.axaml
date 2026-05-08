@@ -49,11 +49,19 @@
 						<ic:SymbolIconSource Symbol="Link" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
+				
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Play" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
+				
+				<ui:NavigationViewItem Content="Quick Play" Tag="quickplay">
+					<ui:NavigationViewItem.IconSource>
+						<ic:SymbolIconSource Symbol="Play" />
+					</ui:NavigationViewItem.IconSource>
+				</ui:NavigationViewItem>
+				
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Deployment}" Tag="channels">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="CloudArrowUp" />
@@ -78,6 +86,7 @@
 						<ic:SymbolIconSource Symbol="Flag" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
+				
 				<ui:NavigationViewItem IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
 					Name="gbs"
 					Content="{x:Static resources:Strings.Menu_GlobalSettings_Title}"
@@ -93,11 +102,13 @@
 						<ic:SymbolIconSource Symbol="Earth" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
+				
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Common_Shortcuts}" Tag="shortcuts">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Link" />
 					</ui:NavigationViewItem.IconSource>
 				</ui:NavigationViewItem>
+				
 				<ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_About_Title}" Tag="about">
 					<ui:NavigationViewItem.IconSource>
 						<ic:SymbolIconSource Symbol="Info" />

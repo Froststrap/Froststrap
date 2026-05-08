@@ -121,6 +121,7 @@ namespace Froststrap.UI.Elements.Settings
                 "regionselector" => () => _viewModel?.NavigateToRegionSelectorCommand.Execute(null),
                 "globalsettings" => () => _viewModel?.NavigateToGlobalSettingsCommand.Execute(null),
                 "shortcuts" => () => _viewModel?.NavigateToShortcutsCommand.Execute(null),
+                "quickplay" => () => _viewModel?.NavigateToQuickPlayCommand.Execute(null),
                 "channels" => () => _viewModel?.NavigateToChannelsCommand.Execute(null),
                 _ => null
             };
@@ -428,6 +429,7 @@ namespace Froststrap.UI.Elements.Settings
                 ("regionselector", "Region Selector", new RegionSelectorViewModel()),
                 ("globalsettings", "Global Settings", new GlobalSettingsViewModel()),
                 ("shortcuts", "Shortcuts", new ShortcutsViewModel()),
+                ("quickplay", "Quick Play", new QuickPlayViewModel()),
                 ("channels", "Channels", new ChannelViewModel()),
             };
 
@@ -443,6 +445,7 @@ namespace Froststrap.UI.Elements.Settings
                 { "regionselector", () => _viewModel.NavigateToRegionSelectorCommand.Execute(null) },
                 { "globalsettings", () => _viewModel.NavigateToGlobalSettingsCommand.Execute(null) },
                 { "shortcuts", () => _viewModel.NavigateToShortcutsCommand.Execute(null) },
+                { "quickplay", () => _viewModel.NavigateToQuickPlayCommand.Execute(null) },
                 { "channels", () => _viewModel.NavigateToChannelsCommand.Execute(null) },
             };
 
