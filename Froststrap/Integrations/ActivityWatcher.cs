@@ -660,44 +660,41 @@
                 }
 
                 string json = File.ReadAllText(GameHistoryCachePath);
-
-                var gameHistory = JsonSerializer.Deserialize<List<GameHistoryData>>(json, _loadOptions);
+                var gameHistory = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json, _loadOptions);
 
                 if (gameHistory != null)
                 {
-                    History = [];
+                    var loadedHistory = new List<ActivityData>();
 
-                    foreach (var history in gameHistory)
+                    foreach (var entry in gameHistory)
                     {
-                        var serverType = (ServerType)history.ServerType;
+                        if (entry.UniverseId == 0 || entry.PlaceId == 0) continue;
 
-                        if (serverType is ServerType.Private or ServerType.Reserved)
-                            continue;
-
-                        if (history.UniverseId == 0 || history.PlaceId == 0 || history.TimeJoined == default)
-                            continue;
-
-                        var activity = new ActivityData
+                        foreach (var server in entry.Servers)
                         {
-                            UniverseId = history.UniverseId,
-                            PlaceId = history.PlaceId,
-                            JobId = history.JobId,
-                            UserId = history.UserId,
-                            ServerType = serverType,
-                            TimeJoined = history.TimeJoined,
-                            TimeLeft = history.TimeLeft,
-                        };
+                            if (server.JoinedAt == default) continue;
 
-                        activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
-                        History.Add(activity);
+                            var activity = new ActivityData
+                            {
+                                UniverseId = entry.UniverseId,
+                                PlaceId = entry.PlaceId,
+                                JobId = server.JobId,
+                                ServerType = server.ServerType,
+                                TimeJoined = server.JoinedAt,
+                                TimeLeft = server.TimeLeft,
+                                Region = server.Region
+                            };
+
+                            activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
+                            loadedHistory.Add(activity);
+                        }
                     }
 
-                    History = [.. History
-                        .GroupBy(x => x.UniverseId)
-                        .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
-                        .OrderByDescending(x => x.TimeJoined)];
+                    History = [.. loadedHistory
+                        .OrderByDescending(x => x.TimeJoined)
+                        .Take(300)];
 
-                    App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", $"Loaded {History.Count} game history entries from cache");
+                    App.Logger.WriteLine("ActivityWatcher::LoadGameHistory", $"Loaded {History.Count} sessions from cache");
                 }
                 else
                 {
@@ -711,58 +708,14 @@
             }
         }
 
-        public void SaveGameHistory()
+        private async void AddToHistory(ActivityData activity)
         {
-            try
+            if (activity.ServerType is ServerType.Private or ServerType.Reserved) return;
+            if (activity.UniverseId == 0 || activity.PlaceId == 0 || activity.TimeJoined == default) return;
+
+            if (activity.MachineAddressValid && string.IsNullOrEmpty(activity.Region))
             {
-                Directory.CreateDirectory(Paths.Cache);
-
-                var gameHistory = History
-                    .Where(activity =>
-                        activity.ServerType != ServerType.Private &&
-                        activity.ServerType != ServerType.Reserved &&
-                        activity.UniverseId != 0 &&
-                        activity.PlaceId != 0 &&
-                        activity.TimeJoined != default)
-                    .GroupBy(x => x.UniverseId)
-                    .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
-                    .Select(activity => new GameHistoryData
-                    {
-                        UniverseId = activity.UniverseId,
-                        PlaceId = activity.PlaceId,
-                        JobId = activity.JobId,
-                        UserId = activity.UserId,
-                        ServerType = (int)activity.ServerType,
-                        TimeJoined = activity.TimeJoined,
-                        TimeLeft = activity.TimeLeft,
-                    }).ToList();
-
-                string json = JsonSerializer.Serialize(gameHistory, _saveOptions);
-                File.WriteAllText(GameHistoryCachePath, json);
-
-                App.Logger.WriteLine("ActivityWatcher::SaveGameHistory",
-                    $"Saved {gameHistory.Count} game history entries to cache");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException("ActivityWatcher::SaveGameHistory", ex);
-            }
-        }
-
-        private void AddToHistory(ActivityData activity)
-        {
-            if (activity.ServerType is ServerType.Private or ServerType.Reserved)
-            {
-                App.Logger.WriteLine("ActivityWatcher::AddToHistory",
-                    $"Skipping {activity.ServerType} server from history");
-                return;
-            }
-
-            if (activity.UniverseId == 0 || activity.PlaceId == 0 || activity.TimeJoined == default)
-            {
-                App.Logger.WriteLine("ActivityWatcher::AddToHistory",
-                    "Skipping incomplete activity from history");
-                return;
+                activity.Region = await activity.QueryServerLocation() ?? "Unknown";
             }
 
             if (!string.IsNullOrEmpty(activity.JobId))
@@ -772,21 +725,51 @@
 
             History.Insert(0, activity);
 
-            History = [.. History
-                .GroupBy(x => x.UniverseId)
-                .SelectMany(g => g.OrderByDescending(x => x.TimeJoined).Take(3))
-                .OrderByDescending(x => x.TimeJoined)];
-
-            if (History.Count > 125)
+            if (History.Count > 300)
             {
-                History = [.. History.Take(125)];
+                History = [.. History.OrderByDescending(x => x.TimeJoined).Take(300)];
             }
 
             SaveGameHistory();
             OnHistoryUpdated?.Invoke(this, EventArgs.Empty);
+        }
 
-            App.Logger.WriteLine("ActivityWatcher::AddToHistory",
-                $"Added history entry for universe {activity.UniverseId}. Total entries: {History.Count}");
+        public void SaveGameHistory()
+        {
+            try
+            {
+                Directory.CreateDirectory(Paths.Cache);
+
+                List<GameHistoryEntry> gameHistory = [.. History
+                    .Where(a => a.UniverseId != 0 && a.PlaceId != 0)
+                    .GroupBy(a => new { a.UniverseId, a.PlaceId })
+                    .OrderByDescending(g => g.Max(s => s.TimeJoined))
+                    .Take(30)
+                    .Select(g => new GameHistoryEntry
+                    {
+                        UniverseId = g.Key.UniverseId,
+                        PlaceId = g.Key.PlaceId,
+                        Servers = [.. g.OrderByDescending(s => s.TimeJoined)
+                                   .Take(10)
+                                   .Select(s => new ServerInfo
+                                   {
+                                       JobId = s.JobId,
+                                       JoinedAt = s.TimeJoined,
+                                       TimeLeft = s.TimeLeft,
+                                       ServerType = s.ServerType,
+                                       Region = s.Region
+                                   })]
+                    })];
+
+                string json = JsonSerializer.Serialize(gameHistory, _saveOptions);
+                File.WriteAllText(GameHistoryCachePath, json);
+
+                App.Logger.WriteLine("ActivityWatcher::SaveGameHistory", $"Saved {gameHistory.Count} games (max 10 servers each) to cache");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("ActivityWatcher::SaveGameHistory", ex);
+            }
         }
 
         public void Dispose()

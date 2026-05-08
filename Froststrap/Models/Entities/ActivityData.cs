@@ -30,10 +30,12 @@ namespace Froststrap.Models.Entities
 
 		public string JobId { get; set; } = string.Empty;
 
-		/// <summary>
-		/// This will be empty unless the server joined is a private server
-		/// </summary>
-		public string AccessCode { get; set; } = string.Empty;
+        public string Region { get; set; } = string.Empty;
+
+        /// <summary>
+        /// This will be empty unless the server joined is a private server
+        /// </summary>
+        public string AccessCode { get; set; } = string.Empty;
 
 		public long UserId { get; set; } = 0;
 

@@ -137,7 +137,16 @@ namespace Froststrap.UI
 
             string? serverLocation = "";
             if (locationActive)
+            {
                 serverLocation = await ActivityWatcher.Data.QueryServerLocation();
+
+                if (!string.IsNullOrEmpty(serverLocation))
+                {
+                    ActivityWatcher.Data.Region = serverLocation;
+
+                    ActivityWatcher.SaveGameHistory();
+                }
+            }
 
             string? serverUptime = "";
             if (uptimeActive)
