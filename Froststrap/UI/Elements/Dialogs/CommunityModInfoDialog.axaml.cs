@@ -1,5 +1,4 @@
-﻿using Avalonia.Controls;
-using Froststrap.UI.Elements.Base;
+﻿using Froststrap.UI.Elements.Base;
 using Froststrap.UI.ViewModels.Dialogs;
 
 namespace Froststrap.UI.Elements.Dialogs
@@ -17,6 +16,8 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             ViewModel = new CommunityModInfoViewModel(mod, this);
             DataContext = ViewModel;
+
+            ViewModel.Initialize();
         }
     }
 }

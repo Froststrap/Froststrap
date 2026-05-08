@@ -1,10 +1,9 @@
-﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Avalonia.Media;
+﻿using Avalonia.Media;
+using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {
-    public class GlyphItem : INotifyPropertyChanged
+    public class GlyphItem : NotifyPropertyChangedViewModel
     {
         private Geometry? _data;
         private SolidColorBrush? _colorBrush;
@@ -29,13 +28,6 @@ namespace Froststrap.Models
                 _colorBrush = value;
                 OnPropertyChanged();
             }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
