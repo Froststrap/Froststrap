@@ -2,8 +2,7 @@
 using Froststrap.AppData;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Diagnostics;
-using System.Globalization;
+using Froststrap.Utility;
 
 namespace Froststrap
 {
@@ -263,20 +262,6 @@ namespace Froststrap
         }
 
         // To stop app from flashing orange in taskbar when opening
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct FLASHWINFO
-        {
-            public uint cbSize;
-            public IntPtr hwnd;
-            public uint dwFlags;
-            public uint uCount;
-            public uint dwTimeout;
-        }
-
         public static void StopFlashing(IBootstrapperDialog? dialog)
         {
             if (!OperatingSystem.IsWindows())
@@ -306,18 +291,17 @@ namespace Froststrap
 
         private static void StopFlashingNative(IntPtr hWnd)
         {
-            if (!OperatingSystem.IsWindows())
-                return;
-
-            FLASHWINFO fi = new()
+#if WINDOWS
+            var fi = new WindowsMethods.FLASHWINFO
             {
-                cbSize = (uint)Marshal.SizeOf<FLASHWINFO>(),
+                cbSize = (uint)Marshal.SizeOf<WindowsMethods.FLASHWINFO>(),
                 hwnd = hWnd,
                 dwFlags = 0,
                 uCount = 0,
                 dwTimeout = 0
             };
-            FlashWindowEx(ref fi);
+            WindowsMethods.FlashWindowEx(ref fi);
+#endif
         }
     }
 }

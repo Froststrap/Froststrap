@@ -8,7 +8,6 @@ using Avalonia.Styling;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
-using Froststrap.Utility;
 using Microsoft.Win32;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -562,10 +561,6 @@ public partial class App : Application
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 WindowsRegistry.RegisterApis();
-
-            // Register roblox:// and roblox-player:// URI scheme handlers via xdg-mime / .desktop file.
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                LinuxProtocolHandler.RegisterProtocols();
 
             LaunchHandler.ProcessLaunchArgs();
         }

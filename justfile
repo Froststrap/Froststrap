@@ -104,7 +104,7 @@ publish-linux:
         chmod +x ./{{ build_dir }}/appimagetool.AppImage && \
         APPIMAGE_TOOL=./{{ build_dir }}/appimagetool.AppImage; \
     fi; \
-    ARCH=x86_64 "$APPIMAGE_TOOL" --appimage-extract-and-run \
+    env -u SOURCE_DATE_EPOCH ARCH=x86_64 "$APPIMAGE_TOOL" --appimage-extract-and-run \
         ./{{ build_dir }}/AppDir \
         ./{{ build_dir }}/Froststrap-linux-x64.AppImage
 

@@ -61,20 +61,6 @@ namespace Froststrap
             if (OperatingSystem.IsWindows())
                 RestoreRobloxRegistryHandlers();
 
-            // Remove the .desktop URI handler file and refresh xdg-mime on uninstall.
-            if (OperatingSystem.IsLinux())
-            {
-                LinuxProtocolHandler.UnregisterProtocols();
-
-                // Remove the Sober symlink from ~/.var/app so Sober reverts to its default data location.
-                string flatpakDataPath = Path.Combine(Paths.UserProfile, ".var", "app", "org.vinegarhq.Sober");
-                if (File.GetAttributes(flatpakDataPath).HasFlag(FileAttributes.ReparsePoint))
-                {
-                    Directory.Delete(flatpakDataPath);
-                    App.Logger.WriteLine(LOG_IDENT, "Removed Sober symlink from ~/.var/app");
-                }
-            }
-
             // When invoked by NSIS (-nsis flag), stop here.
             if (App.LaunchSettings.NsisFlag.Active)
                 return;
