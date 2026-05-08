@@ -17,10 +17,7 @@ namespace Froststrap.UI.ViewModels.Settings.GlobalSettings
 
             BackCommand = new RelayCommand(() =>
             {
-                if (_mainWindowViewModel != null)
-                {
-                    _mainWindowViewModel.NavigateToGlobalSettingsCommand.Execute(null);
-                }
+                _mainWindowViewModel?.NavigateToGlobalSettingsCommand.Execute(null);
             });
         }
     }

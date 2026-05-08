@@ -13,7 +13,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
         public static readonly IValueConverter DimIfTrue = new FuncValueConverter<bool, double>(x => x ? 0.3 : 1.0);
         public static readonly IValueConverter DimIfFalse = new FuncValueConverter<bool, double>(x => x ? 1.0 : 0.3);
 
-        private readonly ObservableCollection<GlobalSetting> _globalSettingsList = new();
+        private readonly ObservableCollection<GlobalSetting> _globalSettingsList = [];
         private string _searchFilter = string.Empty;
         private CancellationTokenSource? _searchCancellationTokenSource;
 

@@ -17,10 +17,7 @@ namespace Froststrap.UI.ViewModels.Settings.FastFlags
 
             BackCommand = new RelayCommand(() =>
             {
-                if (_mainWindowViewModel != null)
-                {
-                    _mainWindowViewModel.NavigateToFastFlagsCommand.Execute(null);
-                }
+                _mainWindowViewModel?.NavigateToFastFlagsCommand.Execute(null);
             });
         }
     }

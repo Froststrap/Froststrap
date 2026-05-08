@@ -170,8 +170,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMultipleChildren", xmlElement.Name.ToString(), "Content");
 
             var first = children.FirstOrDefault();
-            if (first == null)
-                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissingChild", xmlElement.Name.ToString(), "Content");
+            _ = first ?? throw new CustomThemeException("CustomTheme.Errors.ElementAttributeMissingChild", xmlElement.Name.ToString(), "Content");
 
             return HandleXml<Control>(dialog, first);
         }

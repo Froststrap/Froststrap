@@ -7,19 +7,14 @@ namespace Froststrap.UI.Elements.Settings.Pages
     /// <summary>
     /// Implementation of IDialogService for FastFlags editing
     /// </summary>
-    internal class FastFlagsDialogService : IDialogService
+    internal class FastFlagsDialogService(MainWindowViewModel mainVm) : IDialogService
     {
-        private readonly MainWindowViewModel _mainVm;
+        private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
-        public FastFlagsDialogService(MainWindowViewModel mainVm)
-        {
-            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
-        }
-
-        public async Task OpenFastFlagEditorAsync()
+        public Task OpenFastFlagEditorAsync()
         {
             _mainVm.NavigateToFastFlagEditorCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
 

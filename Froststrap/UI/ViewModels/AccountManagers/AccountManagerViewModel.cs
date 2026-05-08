@@ -2,47 +2,40 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 
-namespace Froststrap.UI.ViewModels.AccountManagers
+namespace Froststrap.UI.ViewModels.AccountManagers;
+
+public partial class AccountManagerViewModel
 {
-    public partial class AccountManagerViewModel : ObservableObject
+    public object? CurrentPage { get; set; }
+
+    public string SelectedPage { get; set; } = "accounts";
+
+    public string CurrentPageTitle { get; set; } = "Accounts";
+
+    public IRelayCommand NavigateToAccountsCommand { get; }
+
+    public AccountManagerViewModel()
     {
-        [ObservableProperty]
-        private object? _currentPage;
+        NavigateToAccountsCommand = new RelayCommand(() =>
+            Navigate("accounts", "Accounts", () => new AccountsViewModel()));
+        NavigateToAccountsCommand.Execute(null);
+    }
 
-        [ObservableProperty]
-        private string _selectedPage = "accounts";
-
-        [ObservableProperty]
-        private string _currentPageTitle = "Accounts";
-
-        public IRelayCommand NavigateToAccountsCommand { get; }
-        // FIXME: I shouldn't be using a init to null.
-        public IRelayCommand NavigateToFriendsCommand { get; } = null!;
-        // FIXME: I shouldn't be using a init to null.
-        public IRelayCommand NavigateToGamesCommand { get; } = null!;
-
-        public AccountManagerViewModel()
+    private void Navigate(string pageKey, string title, Func<object> viewModelFactory)
+    {
+        try
         {
-            NavigateToAccountsCommand = new RelayCommand(() =>
-                Navigate("accounts", "Accounts", () => new AccountsViewModel()));
+            SelectedPage = pageKey;
+            CurrentPageTitle = title;
+
+            App.State.Prop.LastPage = pageKey;
+            App.State.Save();
+
+            CurrentPage = viewModelFactory();
         }
-
-        private void Navigate(string pageKey, string title, Func<object> viewModelFactory)
+        catch (Exception ex)
         {
-            try
-            {
-                SelectedPage = pageKey;
-                CurrentPageTitle = title;
-
-                App.State.Prop.LastPage = pageKey;
-                App.State.Save();
-
-                CurrentPage = viewModelFactory();
-            }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException($"AccountManagerViewModel::NavigateTo{title}", ex);
-            }
+            App.Logger?.WriteException($"AccountManagerViewModel::NavigateTo{title}", ex);
         }
     }
 }

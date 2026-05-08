@@ -1,43 +1,62 @@
 using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.Models;
+using System.Text.Json;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    public partial class AccountSelectorViewModel : ObservableObject
+    public partial class AccountSelectorViewModel : NotifyPropertyChangedViewModel, IDisposable
     {
         private const string LOG_IDENT = "AccountSelectorViewModel";
         private readonly AccountManager _accountManager = null!;
-        private readonly Dictionary<long, string?> _accountAvatarUrls = new();
+        private readonly Dictionary<long, string?> _accountAvatarUrls = [];
 
-        [ObservableProperty]
-        private AccountManagerAccount? currentAccount;
-
-        [ObservableProperty]
-        private string? currentAccountAvatarUrl;
-
-        [ObservableProperty]
-        private ObservableCollection<AccountWithAvatar> accounts = new();
-
-        [ObservableProperty]
-        private string selectedAddMethod = "Quick Sign In";
-
-        [ObservableProperty]
-        private bool isDropdownOpen = false;
-
-        [ObservableProperty]
-        private bool isAddingAccount = false;
-
-        public List<string> AddMethods { get; } = new()
+        private AccountManagerAccount? _currentAccount;
+        public AccountManagerAccount? CurrentAccount
         {
-            "Quick Sign In",
-            "Browser",
-            "Manual"
-        };
+            get => _currentAccount;
+            set => SetProperty(ref _currentAccount, value);
+        }
+
+        private string? _currentAccountAvatarUrl;
+        public string? CurrentAccountAvatarUrl
+        {
+            get => _currentAccountAvatarUrl;
+            set => SetProperty(ref _currentAccountAvatarUrl, value);
+        }
+
+        private ObservableCollection<AccountWithAvatar> _accounts = [];
+        public ObservableCollection<AccountWithAvatar> Accounts
+        {
+            get => _accounts;
+            set => SetProperty(ref _accounts, value);
+        }
+
+        private string _selectedAddMethod = "Quick Sign In";
+        public string SelectedAddMethod
+        {
+            get => _selectedAddMethod;
+            set => SetProperty(ref _selectedAddMethod, value);
+        }
+
+        private bool _isDropdownOpen;
+        public bool IsDropdownOpen
+        {
+            get => _isDropdownOpen;
+            set => SetProperty(ref _isDropdownOpen, value);
+        }
+
+        private bool _isAddingAccount;
+        public bool IsAddingAccount
+        {
+            get => _isAddingAccount;
+            set => SetProperty(ref _isAddingAccount, value);
+        }
+
+        public List<string> AddMethods { get; } = ["Quick Sign In", "Browser", "Manual"];
 
         public AccountSelectorViewModel()
         {
@@ -111,14 +130,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private void OnActiveAccountChanged(AccountManagerAccount? account)
         {
             CurrentAccount = account;
-            if (account != null)
-            {
-                CurrentAccountAvatarUrl = GetAccountAvatarUrl(account.UserId);
-            }
-            else
-            {
-                CurrentAccountAvatarUrl = null;
-            }
+            CurrentAccountAvatarUrl = account != null ? GetAccountAvatarUrl(account.UserId) : null;
         }
 
         [RelayCommand]
@@ -129,10 +141,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         [RelayCommand]
-        private void ToggleDropdown()
-        {
-            IsDropdownOpen = !IsDropdownOpen;
-        }
+        private void ToggleDropdown() => IsDropdownOpen = !IsDropdownOpen;
 
         [RelayCommand]
         private void DeleteAccount(AccountWithAvatar item)
@@ -163,11 +172,10 @@ namespace Froststrap.UI.ViewModels.Settings
                         return;
                 }
 
-                if (newAccount != null && !Accounts.Any(a => a.UserId == newAccount.UserId))
+                if (newAccount != null && Accounts.All(a => a.UserId != newAccount.UserId))
                 {
-                    // Fetch avatar for the new account
-                    var avatarUrl = await _accountManager.GetAvatarUrlsBulkAsync(new List<long> { newAccount.UserId });
-                    var url = avatarUrl.GetValueOrDefault(newAccount.UserId);
+                    var avatarUrlMap = await _accountManager.GetAvatarUrlsBulkAsync([newAccount.UserId]);
+                    var url = avatarUrlMap.GetValueOrDefault(newAccount.UserId);
                     _accountAvatarUrls[newAccount.UserId] = url;
 
                     Accounts.Add(new AccountWithAvatar(newAccount, url));
@@ -177,7 +185,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("AccountSelectorViewModel", $"Error adding account: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Error adding account: {ex.Message}");
             }
             finally
             {
@@ -189,7 +197,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public void AddAccountDirect(AccountManagerAccount account)
         {
-            if (!Accounts.Any(a => a.UserId == account.UserId))
+            if (Accounts.All(a => a.UserId != account.UserId))
             {
                 var avatarUrl = GetAccountAvatarUrl(account.UserId);
                 Accounts.Add(new AccountWithAvatar(account, avatarUrl));
@@ -198,16 +206,10 @@ namespace Froststrap.UI.ViewModels.Settings
             IsDropdownOpen = false;
         }
 
-        public class AccountWithAvatar
+        public class AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
         {
-            public AccountManagerAccount Account { get; }
-            public string? AvatarUrl { get; }
-
-            public AccountWithAvatar(AccountManagerAccount account, string? avatarUrl)
-            {
-                Account = account;
-                AvatarUrl = avatarUrl;
-            }
+            public AccountManagerAccount Account { get; } = account;
+            public string? AvatarUrl { get; } = avatarUrl;
 
             public string Username => Account.Username;
             public string DisplayName => Account.DisplayName;
@@ -216,16 +218,15 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public string? GetAccountAvatarUrl(long userId)
         {
-            if (_accountAvatarUrls.TryGetValue(userId, out var url))
-            {
-                return url;
-            }
-            return _accountManager.GetCachedAvatarUrl(userId);
+            return _accountAvatarUrls.TryGetValue(userId, out var url)
+                ? url
+                : _accountManager.GetCachedAvatarUrl(userId);
         }
 
         public void Dispose()
         {
             _accountManager.ActiveAccountChanged -= OnActiveAccountChanged;
+            GC.SuppressFinalize(this);
         }
     }
 }

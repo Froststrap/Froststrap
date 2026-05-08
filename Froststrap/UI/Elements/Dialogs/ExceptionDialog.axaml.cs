@@ -93,7 +93,7 @@ namespace Froststrap.UI.Elements.Dialogs
             ErrorTextBox.Text = sb.ToString();
         }
 
-        private void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
+        private static void AddExceptionToBuilder(Exception exception, StringBuilder sb, bool inner = false)
         {
             if (inner)
                 sb.AppendLine($"[Inner Exception]\n{exception.GetType()}: {exception.Message}");

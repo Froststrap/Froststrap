@@ -16,62 +16,115 @@ using Froststrap.Integrations;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace Froststrap.UI.ViewModels.AccountManagers
 {
     public record Account(long Id, string DisplayName, string Username, string? AvatarUrl);
     public record AccountPresence(int UserPresenceType, string LastLocation, string StatusColor, string ToolTipText);
 
-    public partial class AccountsViewModel : ObservableObject
+    public partial class AccountsViewModel : NotifyPropertyChangedViewModel
     {
         private const string LOG_IDENT = "AccountsViewModel";
 
-        [ObservableProperty]
+        #region Observable Properties (Manual Implementation)
+
         private string _currentUserDisplayName = "Not Logged In";
+        public string CurrentUserDisplayName
+        {
+            get => _currentUserDisplayName;
+            set => SetProperty(ref _currentUserDisplayName, value);
+        }
 
-        [ObservableProperty]
         private string _currentUserUsername = "";
+        public string CurrentUserUsername
+        {
+            get => _currentUserUsername;
+            set => SetProperty(ref _currentUserUsername, value);
+        }
 
-        [ObservableProperty]
         private string _currentUserAvatarUrl = null!;
+        public string CurrentUserAvatarUrl
+        {
+            get => _currentUserAvatarUrl;
+            set => SetProperty(ref _currentUserAvatarUrl, value);
+        }
 
-        [ObservableProperty]
-        private ObservableCollection<Account> _accounts = new();
+        private ObservableCollection<Account> _accounts = [];
+        public ObservableCollection<Account> Accounts
+        {
+            get => _accounts;
+            set => SetProperty(ref _accounts, value);
+        }
 
-        [ObservableProperty]
         private Account? _selectedAccount;
+        public Account? SelectedAccount
+        {
+            get => _selectedAccount;
+            set => SetProperty(ref _selectedAccount, value);
+        }
 
-        [ObservableProperty]
-        private Account? _draggedAccount;
-
-        [ObservableProperty]
         private AccountPresence? _currentUserPresence;
+        public AccountPresence? CurrentUserPresence
+        {
+            get => _currentUserPresence;
+            set => SetProperty(ref _currentUserPresence, value);
+        }
 
-        [ObservableProperty]
         private bool _isAccountInformationVisible;
+        public bool IsAccountInformationVisible
+        {
+            get => _isAccountInformationVisible;
+            set => SetProperty(ref _isAccountInformationVisible, value);
+        }
 
-        [ObservableProperty]
         private int _friendsCount;
+        public int FriendsCount
+        {
+            get => _friendsCount;
+            set => SetProperty(ref _friendsCount, value);
+        }
 
-        [ObservableProperty]
         private int _followersCount;
+        public int FollowersCount
+        {
+            get => _followersCount;
+            set => SetProperty(ref _followersCount, value);
+        }
 
-        [ObservableProperty]
         private int _followingCount;
+        public int FollowingCount
+        {
+            get => _followingCount;
+            set => SetProperty(ref _followingCount, value);
+        }
 
-        [ObservableProperty]
-        private ObservableCollection<string> _addMethods = new(new[] { "Quick Sign-In", "Browser", "Manual" });
-
-        [ObservableProperty]
         private string _selectedAddMethod = "Quick Sign-In";
+        public string SelectedAddMethod
+        {
+            get => _selectedAddMethod;
+            set => SetProperty(ref _selectedAddMethod, value);
+        }
 
-        [ObservableProperty]
         private bool _isInstallingChromium = false;
+        public bool IsInstallingChromium
+        {
+            get => _isInstallingChromium;
+            set => SetProperty(ref _isInstallingChromium, value);
+        }
 
-        [ObservableProperty]
         private bool _isAccountLoggedIn = false;
+        public bool IsAccountLoggedIn
+        {
+            get => _isAccountLoggedIn;
+            set => SetProperty(ref _isAccountLoggedIn, value);
+        }
 
-        private AccountManager Manager => AccountManager.Shared;
+        public static ObservableCollection<string> AddMethods { get; } = new(new[] { "Quick Sign-In", "Browser", "Manual" });
+
+        #endregion
+
+        private static AccountManager Manager => AccountManager.Shared;
         private readonly DispatcherTimer? _presenceTimer;
 
         public static long? GetActiveUserId()
@@ -134,10 +187,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
         public void Cleanup()
         {
-            if (_presenceTimer != null)
-            {
-                _presenceTimer.Stop();
-            }
+                _presenceTimer?.Stop();
 
             App.Logger.WriteLine($"{LOG_IDENT}::Cleanup", "Presence timer stopped.");
         }
@@ -201,7 +251,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             }
         }
 
-        private async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)
+        private static async Task<Dictionary<long, string?>> GetAvatarUrlsBulkAsync(List<long> userIds)
         {
             var result = new Dictionary<long, string?>();
             if (userIds == null || userIds.Count == 0)
@@ -248,7 +298,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             return result;
         }
 
-        private async Task<(int friends, int followers, int following)> GetAccountInformationAsync(long userId)
+        private static async Task<(int friends, int followers, int following)> GetAccountInformationAsync(long userId)
         {
             if (userId == 0)
                 return (0, 0, 0);
@@ -265,7 +315,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
                 await Task.WhenAll(friendsTask, followersTask, followingTask);
 
-                int GetCount(JsonElement element) => element.TryGetProperty("count", out var p) ? p.GetInt32() : 0;
+                static int GetCount(JsonElement element) => element.TryGetProperty("count", out var p) ? p.GetInt32() : 0;
 
                 return (
                     GetCount(await friendsTask),
@@ -331,7 +381,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             CurrentUserDisplayName = account.DisplayName;
             CurrentUserUsername = $"@{account.Username}";
 
-            var avatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { account.UserId });
+            var avatarUrls = await GetAvatarUrlsBulkAsync([account.UserId]);
             CurrentUserAvatarUrl = avatarUrls.GetValueOrDefault(account.UserId) ?? "";
 
             await UpdateAccountInformationAsync(account.UserId);
@@ -458,7 +508,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
 
             if (!Accounts.Any(a => a.Id == existingBackendAccount.UserId))
             {
-                var avatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { existingBackendAccount.UserId });
+                var avatarUrls = await GetAvatarUrlsBulkAsync([existingBackendAccount.UserId]);
                 string? avatarUrl = avatarUrls.GetValueOrDefault(existingBackendAccount.UserId);
 
                 var account = new Account(existingBackendAccount.UserId, existingBackendAccount.DisplayName,
@@ -472,7 +522,7 @@ namespace Froststrap.UI.ViewModels.AccountManagers
             CurrentUserDisplayName = existingBackendAccount.DisplayName;
             CurrentUserUsername = $"@{existingBackendAccount.Username}";
 
-            var currentAvatarUrls = await GetAvatarUrlsBulkAsync(new List<long> { existingBackendAccount.UserId });
+            var currentAvatarUrls = await GetAvatarUrlsBulkAsync([existingBackendAccount.UserId]);
             CurrentUserAvatarUrl = currentAvatarUrls.GetValueOrDefault(existingBackendAccount.UserId) ?? "";
 
             SelectedAccount = Accounts.FirstOrDefault(a => a.Id == existingBackendAccount.UserId);

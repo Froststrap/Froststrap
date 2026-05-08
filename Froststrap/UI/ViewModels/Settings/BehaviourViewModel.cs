@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Runtime.InteropServices;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -6,56 +6,56 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         public BehaviourViewModel()
         {
-            App.Cookies.StateChanged += (object? _, CookieState state) => CookieLoadingFailed = state != CookieState.Success && state != CookieState.Unknown;
+            App.Cookies.StateChanged += (_, state) =>
+                CookieLoadingFailed = state is not (CookieState.Success or CookieState.Unknown);
         }
 
-        public ObservableCollection<ProcessPriorityOption> ProcessPriorityOptions { get; } = new ObservableCollection<ProcessPriorityOption>(Enum.GetValues(typeof(ProcessPriorityOption)).Cast<ProcessPriorityOption>());
-
-        public ProcessPriorityOption SelectedPriority
+        public static IEnumerable<ProcessPriorityOption> ProcessPriorityOptions => Enum.GetValues<ProcessPriorityOption>();
+        public static ProcessPriorityOption SelectedPriority
         {
             get => App.Settings.Prop.SelectedProcessPriority;
             set => App.Settings.Prop.SelectedProcessPriority = value;
         }
 
         // Ill move to global settings in the future, too lazy to do it now
-        public bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme);
-        public bool ShowLaunchAtStartup => !string.IsNullOrEmpty(App.StorageSettings.Prop.LaunchAtStartup);
-        public bool ShowMinimizeToTray => !string.IsNullOrEmpty(App.StorageSettings.Prop.MinimizeToTray);
-        public bool ShowSystemTrayModal => !string.IsNullOrEmpty(App.StorageSettings.Prop.SystemTrayModalShown);
-        public bool ShowTheme => !string.IsNullOrEmpty(App.StorageSettings.Prop.DeviceLevelTheme);
+        public static bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme) && RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static bool ShowLaunchAtStartup => !string.IsNullOrEmpty(App.StorageSettings.Prop.LaunchAtStartup);
+        public static bool ShowMinimizeToTray => !string.IsNullOrEmpty(App.StorageSettings.Prop.MinimizeToTray);
+        public static bool ShowSystemTrayModal => !string.IsNullOrEmpty(App.StorageSettings.Prop.SystemTrayModalShown);
+        public static bool ShowTheme => !string.IsNullOrEmpty(App.StorageSettings.Prop.DeviceLevelTheme);
 
-        public bool LaunchAtStartup
+        public static bool LaunchAtStartup
         {
             get => App.StorageSettings.Prop.LaunchAtStartup?.ToLower() == "true";
             set => App.StorageSettings.Prop.LaunchAtStartup = value.ToString().ToLower();
         }
 
-        public bool SystemTrayModalShown
+        public static bool SystemTrayModalShown
         {
             get => App.StorageSettings.Prop.SystemTrayModalShown?.ToLower() == "true";
             set => App.StorageSettings.Prop.SystemTrayModalShown = value.ToString().ToLower();
         }
 
-        public bool MinimizeToTray
+        public static bool MinimizeToTray
         {
             get => App.StorageSettings.Prop.MinimizeToTray?.ToLower() == "true";
             set => App.StorageSettings.Prop.MinimizeToTray = value.ToString().ToLower();
         }
 
-        public IEnumerable<AppStorageSettingTheme> AppThemeOptions => Enum.GetValues(typeof(AppStorageSettingTheme)).Cast<AppStorageSettingTheme>();
+        public static IEnumerable<AppStorageSettingTheme> AppThemeOptions => Enum.GetValues<AppStorageSettingTheme>();
 
-        public AppStorageSettingTheme SelectedTheme
+        public static AppStorageSettingTheme SelectedTheme
         {
             get
             {
-		var json = App.StorageSettings.Prop.DeviceLevelTheme;
-        	return (!string.IsNullOrEmpty(json) && json.Contains("dark")) ? AppStorageSettingTheme.Dark : AppStorageSettingTheme.Light;
+                var json = App.StorageSettings.Prop.DeviceLevelTheme;
+                return (!string.IsNullOrEmpty(json) && json.Contains("dark")) ? AppStorageSettingTheme.Dark : AppStorageSettingTheme.Light;
             }
             set
             {
-		    string themeStr = (value == AppStorageSettingTheme.Dark) ? "dark" : "light";
-        	string userId = App.StorageSettings.Prop.UserId ?? "0";
-        	App.StorageSettings.Prop.DeviceLevelTheme = $"{{\"{userId}\":\"{themeStr}\"}}";
+                string themeStr = (value == AppStorageSettingTheme.Dark) ? "dark" : "light";
+                string userId = App.StorageSettings.Prop.UserId ?? "0";
+                App.StorageSettings.Prop.DeviceLevelTheme = $"{{\"{userId}\":\"{themeStr}\"}}";
             }
         }
 
@@ -66,25 +66,25 @@ namespace Froststrap.UI.ViewModels.Settings
             Dark
         }
 
-        public bool BackgroundUpdates
+        public static bool BackgroundUpdates
         {
             get => App.Settings.Prop.BackgroundUpdatesEnabled;
             set => App.Settings.Prop.BackgroundUpdatesEnabled = value;
         }
 
-        public bool CloseCrashHandler
+        public static bool CloseCrashHandler
         {
             get => App.Settings.Prop.AutoCloseCrashHandler;
             set => App.Settings.Prop.AutoCloseCrashHandler = value;
         }
 
-        public bool ConfirmLaunches
+        public static bool ConfirmLaunches
         {
             get => App.Settings.Prop.ConfirmLaunches;
             set => App.Settings.Prop.ConfirmLaunches = value;
         }
 
-        public bool CookieLoadingFinished => true;
+        public static bool CookieLoadingFinished => true;
 
         public bool CookieAccess
         {
@@ -110,19 +110,19 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool EnableBetterMatchmaking
+        public static bool EnableBetterMatchmaking
         {
             get => App.Settings.Prop.EnableBetterMatchmaking;
             set => App.Settings.Prop.EnableBetterMatchmaking = value;
         }
 
-        public bool EnableBetterMatchmakingRandomization
+        public static bool EnableBetterMatchmakingRandomization
         {
             get => App.Settings.Prop.EnableBetterMatchmakingRandomization;
             set => App.Settings.Prop.EnableBetterMatchmakingRandomization = value;
         }
 
-        public CleanerOptions SelectedCleanUpMode
+        public static CleanerOptions SelectedCleanUpMode
         {
             get => App.Settings.Prop.CleanerOptions;
             set => App.Settings.Prop.CleanerOptions = value;
@@ -130,7 +130,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public IEnumerable<CleanerOptions> CleanerOptions { get; } = CleanerOptionsEx.Selections;
 
-        public CleanerOptions CleanerOption
+        public static CleanerOptions CleanerOption
         {
             get => App.Settings.Prop.CleanerOptions;
             set
@@ -139,7 +139,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private List<string> CleanerItems = App.Settings.Prop.CleanerDirectories;
+        private readonly List<string> CleanerItems = App.Settings.Prop.CleanerDirectories;
 
         public bool CleanerLogs
         {

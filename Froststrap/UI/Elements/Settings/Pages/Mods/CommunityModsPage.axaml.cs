@@ -5,29 +5,15 @@ using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
-    internal class CommunityModsDialogService
+    internal class CommunityModsDialogService(MainWindowViewModel mainVm)
     {
-        private readonly MainWindowViewModel _mainVm;
+        private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
-        public CommunityModsDialogService(MainWindowViewModel mainVm)
-        {
-            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
-        }
+        public void OpenPresetMods() => _mainVm.NavigateToPresetModsCommand.Execute(null);
 
-        public void OpenPresetMods()
-        {
-            _mainVm.NavigateToPresetModsCommand.Execute(null);
-        }
+        public void OpenMods() => _mainVm.NavigateToMyModsCommand.Execute(null);
 
-        public void OpenMods()
-        {
-            _mainVm.NavigateToMyModsCommand.Execute(null);
-        }
-
-        public void OpenModGenerator()
-        {
-            _mainVm.NavigateToModGeneratorCommand.Execute(null);
-        }
+        public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
     public partial class CommunityModsPage : UserControl

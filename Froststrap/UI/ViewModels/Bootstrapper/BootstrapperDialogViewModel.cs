@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.Input;
 
@@ -11,7 +10,7 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
 
         public ICommand CancelInstallCommand => new RelayCommand(CancelInstall);
 
-        public string Title => App.Settings.Prop.BootstrapperTitle;
+        public static string Title => App.Settings.Prop.BootstrapperTitle;
         public IImage Icon { get; set; } = App.Settings.Prop.BootstrapperIcon.GetIcon().GetImageSource();
         public string Message { get; set; } = "Please wait...";
         public bool ProgressIndeterminate { get; set; } = true;

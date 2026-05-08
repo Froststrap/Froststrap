@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
+	xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
     d:DesignHeight="900"
     d:DesignWidth="800"
@@ -100,6 +101,7 @@
                 <controls:CardExpander
                     Header="{x:Static resources:Strings.Common_Channel}"
                     Description="{x:Static resources:Strings.Menu_ChannelChanger_Description}"
+					IsVisible="{x:Static gv:GlobalViewModel.IsWindowsAndMacOS}"
                     IsExpanded="True">
 
                     <controls:CardExpander.HeaderContent>

@@ -1,34 +1,18 @@
-using System;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal class PresetModsDialogService
+    internal class PresetModsDialogService(MainWindowViewModel mainVm)
     {
-        private readonly MainWindowViewModel _mainVm;
+        private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
-        public PresetModsDialogService(MainWindowViewModel mainVm)
-        {
-            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
-        }
+        public void OpenCommunityMods() => _mainVm.NavigateToCommunityModsCommand.Execute(null);
 
-        public void OpenCommunityMods()
-        {
-            _mainVm.NavigateToCommunityModsCommand.Execute(null);
-        }
+        public void OpenMods() => _mainVm.NavigateToMyModsCommand.Execute(null);
 
-        public void OpenMods()
-        {
-            _mainVm.NavigateToMyModsCommand.Execute(null);
-        }
-
-        public void OpenModGenerator()
-        {
-            _mainVm.NavigateToModGeneratorCommand.Execute(null);
-        }
+        public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
     public partial class ModsPresetsPage : UserControl

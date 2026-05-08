@@ -19,7 +19,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
     {
         private readonly IModsDialogService _dialogService;
 
-        public ObservableCollection<ModConfig> Modifications { get; set; } = new();
+        public ObservableCollection<ModConfig> Modifications { get; set; } = [];
 
         public ICommand MoveUpCommand => new RelayCommand<ModConfig>(MoveUp);
         public ICommand MoveDownCommand => new RelayCommand<ModConfig>(MoveDown);
@@ -103,7 +103,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             });
         }
 
-        private void SyncDiskWithState()
+        private static void SyncDiskWithState()
         {
             if (!Directory.Exists(Paths.Modifications))
             {
@@ -204,7 +204,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 Modifications[i].Priority = i;
             }
 
-            App.State.Prop.Mods = Modifications.ToList();
+            App.State.Prop.Mods = [.. Modifications];
         }
 
         private void MoveUp(ModConfig? mod)

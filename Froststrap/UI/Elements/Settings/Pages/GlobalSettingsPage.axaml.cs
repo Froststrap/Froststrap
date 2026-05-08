@@ -5,21 +5,17 @@ using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
 {
-    internal class GlobalSettingsDialogService : IDialogServiceGlobal
+    internal class GlobalSettingsDialogService(MainWindowViewModel mainVm) : IDialogServiceGlobal
     {
-        private readonly MainWindowViewModel _mainVm;
+        private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
-        public GlobalSettingsDialogService(MainWindowViewModel mainVm)
-        {
-            _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
-        }
-
-        public async Task OpenGlobalSettingsEditorAsync()
+        public Task OpenGlobalSettingsEditorAsync()
         {
             _mainVm.NavigateToGlobalSettingsEditorCommand.Execute(null);
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
     }
+
     public partial class GlobalSettingsPage : UserControl
     {
         public GlobalSettingsPage()

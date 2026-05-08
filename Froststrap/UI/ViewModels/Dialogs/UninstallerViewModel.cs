@@ -5,7 +5,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 {
     public class UninstallerViewModel : NotifyPropertyChangedViewModel
     {
-        public string Text => String.Format(
+        public static string Text => String.Format(
             Strings.Uninstaller_Text, 
             "https://github.com/bloxstraplabs/bloxstrap/wiki/Roblox-crashes-or-does-not-launch",
             Paths.Base

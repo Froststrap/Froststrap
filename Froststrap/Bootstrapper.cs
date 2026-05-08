@@ -729,7 +729,6 @@ namespace Froststrap
 
             if (_launchMode == LaunchMode.Player)
             {
-                GameJoin gameJoin = new();
                 _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
 
                 if (_joinData.JoinType == GameJoinType.Unknown)
@@ -781,7 +780,7 @@ namespace Froststrap
                     return;
 
                 SetStatus("Starting Sober...");
-                await LaunchViaSober(new List<int>());
+                await LaunchViaSober([]);
                 return;
             }
 

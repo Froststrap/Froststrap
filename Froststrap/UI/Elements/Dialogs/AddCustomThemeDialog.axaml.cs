@@ -7,43 +7,42 @@ using ICSharpCode.SharpZipLib.Zip;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
-    /// <summary>
-    /// Interaction logic for AddCustomThemeDialog.axaml
-    /// </summary>
     public partial class AddCustomThemeDialog : Base.AvaloniaWindow
     {
         private const int CreateNewTabId = 0;
         private readonly AddCustomThemeViewModel _viewModel;
 
-        public bool Created { get; private set; } = false;
+        private static readonly FilePickerFileType ZipFileType = new(Strings.FileTypes_ZipArchive)
+        {
+            Patterns = ["*.zip"]
+        };
+
+        public bool Created { get; private set; }
         public string ThemeName { get; private set; } = "";
-        public bool OpenEditor { get; private set; } = false;
+        public bool OpenEditor { get; private set; }
 
         public AddCustomThemeDialog()
         {
             InitializeComponent();
 
-            _viewModel = new AddCustomThemeViewModel();
-            _viewModel.Name = GenerateRandomName();
+            _viewModel = new AddCustomThemeViewModel
+            {
+                Name = GenerateRandomName()
+            };
 
             DataContext = _viewModel;
         }
 
-        private static string GetThemePath(string name)
-        {
-            return Path.Combine(Paths.CustomThemes, name, "Theme.xml");
-        }
+        private static string GetThemePath(string name) => Path.Combine(Paths.CustomThemes, name, "Theme.xml");
 
         private static string GenerateRandomName()
         {
             int count = Directory.GetDirectories(Paths.CustomThemes).Length;
-
             int i = count + 1;
             string name = string.Format(Strings.CustomTheme_DefaultName, i);
 
-            // TODO: this sucks
             if (File.Exists(GetThemePath(name)))
-                name = string.Format(Strings.CustomTheme_DefaultName, $"{i}-{Random.Shared.Next(1, 100000)}"); // easy
+                name = string.Format(Strings.CustomTheme_DefaultName, $"{i}-{Random.Shared.Next(1, 100000)}");
 
             return name;
         }
@@ -62,11 +61,10 @@ namespace Froststrap.UI.Elements.Dialogs
                     return newName;
             }
 
-            // last resort
             return $"{name}_{Random.Shared.Next(maxTries + 1, 1_000_000)}";
         }
 
-        private async Task CreateCustomTheme(string name, CustomThemeTemplate template)
+        private static async Task CreateCustomTheme(string name, CustomThemeTemplate template)
         {
             string dir = Path.Combine(Paths.CustomThemes, name);
 
@@ -76,7 +74,6 @@ namespace Froststrap.UI.Elements.Dialogs
             Directory.CreateDirectory(dir);
 
             string themeFilePath = Path.Combine(dir, "Theme.xml");
-
             string templateContent = await template.GetFileContents();
 
             await File.WriteAllTextAsync(themeFilePath, templateContent);
@@ -85,7 +82,6 @@ namespace Froststrap.UI.Elements.Dialogs
         private bool ValidateCreateNew()
         {
             const string LOG_IDENT = "AddCustomThemeDialog::ValidateCreateNew";
-
             _viewModel.NameError = "";
 
             if (string.IsNullOrEmpty(_viewModel.Name))
@@ -96,7 +92,6 @@ namespace Froststrap.UI.Elements.Dialogs
             }
 
             var validationResult = PathValidator.IsFileNameValid(_viewModel.Name);
-
             if (validationResult != PathValidator.ValidationResult.Ok)
             {
                 _viewModel.NameError = validationResult switch
@@ -119,25 +114,25 @@ namespace Froststrap.UI.Elements.Dialogs
             return true;
         }
 
-        private bool ValidateImport()
+        private static bool ValidateImport(AddCustomThemeViewModel viewModel)
         {
-            _viewModel.FileError = "";
+            viewModel.FileError = "";
 
-            if (string.IsNullOrEmpty(_viewModel.FilePath) || !_viewModel.FilePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(viewModel.FilePath) || !viewModel.FilePath.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
             {
-                _viewModel.FileError = Strings.CustomTheme_Add_Errors_FileNotZip;
+                viewModel.FileError = Strings.CustomTheme_Add_Errors_FileNotZip;
                 return false;
             }
 
             try
             {
-                using var zipFile = System.IO.Compression.ZipFile.OpenRead(_viewModel.FilePath);
+                using var zipFile = System.IO.Compression.ZipFile.OpenRead(viewModel.FilePath);
                 bool foundThemeFile = zipFile.Entries.Any(entry =>
                     Path.GetFileName(entry.FullName).Equals("Theme.xml", StringComparison.OrdinalIgnoreCase));
 
                 if (!foundThemeFile)
                 {
-                    _viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipMissingThemeFile;
+                    viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipMissingThemeFile;
                     return false;
                 }
 
@@ -146,7 +141,7 @@ namespace Froststrap.UI.Elements.Dialogs
             catch (Exception ex)
             {
                 App.Logger.WriteException("AddCustomThemeDialog::ValidateImport", ex);
-                _viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipInvalidData;
+                viewModel.FileError = Strings.CustomTheme_Add_Errors_ZipInvalidData;
                 return false;
             }
         }
@@ -166,7 +161,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             else
             {
-                if (!ValidateImport()) return;
+                if (!ValidateImport(_viewModel)) return;
                 await Import();
             }
         }
@@ -233,7 +228,7 @@ namespace Froststrap.UI.Elements.Dialogs
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = Strings.Common_ImportFromFile,
-                FileTypeFilter = new[] { new FilePickerFileType(Strings.FileTypes_ZipArchive) { Patterns = new[] { "*.zip" } } },
+                FileTypeFilter = [ZipFileType],
                 AllowMultiple = false
             });
 
@@ -243,9 +238,6 @@ namespace Froststrap.UI.Elements.Dialogs
             }
         }
 
-        private void OnCancelButtonClicked(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        private void OnCancelButtonClicked(object sender, RoutedEventArgs e) => Close();
     }
 }

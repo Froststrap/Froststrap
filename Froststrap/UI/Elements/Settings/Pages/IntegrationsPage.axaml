@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:ic="using:IconPacks.Avalonia.Material"
     d:DesignHeight="2500"
     d:DesignWidth="1200"
@@ -91,6 +92,7 @@
             <controls:OptionControl 
                 Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}" 
                 Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
+				IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ComboBox
                     MinWidth="200"
@@ -116,11 +118,15 @@
                         <ToggleSwitch IsChecked="{Binding DisableAppPatchEnabled, Mode=TwoWay}" />
                     </controls:OptionControl>
 
-                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}" Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}">
+                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}" 
+											Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}"
+											IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                         <ToggleSwitch IsChecked="{Binding DisableRobloxRecording, Mode=TwoWay}" />
                     </controls:OptionControl>
 
-                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}" Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}">
+                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}" 
+											Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}"
+											IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                         <ToggleSwitch IsChecked="{Binding DisableRobloxScreenshots, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>
