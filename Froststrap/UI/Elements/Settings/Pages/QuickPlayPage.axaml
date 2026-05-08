@@ -2,97 +2,136 @@
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
-             xmlns:conv="clr-namespace:Froststrap.UI.Converters"
+             xmlns:models="clr-namespace:Froststrap.Models"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              x:Name="RootPage"
              x:DataType="vm:QuickPlayViewModel">
+    <Grid>
+        <ScrollViewer IsEnabled="{Binding !IsOverlayVisible}">
+            <StackPanel Margin="14">
+                <ItemsControl ItemsSource="{Binding RecentGames}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:QuickPlayGameItem">
+                            <Button Background="Transparent" BorderThickness="0" Padding="0" Margin="5" ClickMode="Press">
+                                <Button.Styles>
+                                    <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+                                        <Setter Property="Background" Value="Transparent" />
+                                    </Style>
+                                </Button.Styles>
+                                <Button.Flyout>
+                                    <MenuFlyout Placement="Pointer">
+                                        <MenuItem Header="Join Game" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
+                                            <MenuItem.Icon><PathIcon Data="M10,16.5V7.5L16,12L10,16.5M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/></MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Rejoin Last" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
+                                            <MenuItem.Icon><PathIcon Data="M12,18A6,6 0 1,0 6,12C6,14.65 7.73,16.9 10.13,17.66L10.5,16.33C8.68,15.75 7.33,14.03 7.33,12C7.33,9.42 9.42,7.33 12,7.33C14.58,7.33 16.67,9.42 16.67,12H14L17.5,15.5L21,12H18.33A6.33,6.33 0 0,0 12,5.67V18Z"/></MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="{Binding ServerCount, StringFormat='View Servers ({0})'}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}" CommandParameter="{Binding}">
+                                            <MenuItem.Icon><PathIcon Data="M4,4H20V9H4V4M4,15H20V20H4V15M9,7H11V6H9V7M9,18H11V17H9V18M13,7H15V6H13V7M13,18H15V17H13V18Z"/></MenuItem.Icon>
+                                        </MenuItem>
+                                        <Separator />
+                                        <MenuItem Header="Visit Page" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
+                                            <MenuItem.Icon><PathIcon Data="M14,3V5H17.59L7.76,14.83L9.17,16.24L19,6.41V10H21V3M19,19H5V5H12V3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V12H19V19Z"/></MenuItem.Icon>
+                                        </MenuItem>
+                                    </MenuFlyout>
+                                </Button.Flyout>
 
-    <ScrollViewer>
-        <StackPanel Margin="14">
-            <ItemsControl ItemsSource="{Binding RecentGames}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Background="Transparent"
-                                BorderThickness="0"
-                                Padding="0"
-                                Margin="5"
-                                ClickMode="Press">
-
-                            <Button.Styles>
-                                <Style Selector="Button:pointerover /template/ ContentPresenter#PART_ContentPresenter">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Style>
-                                <Style Selector="Button:pressed /template/ ContentPresenter#PART_ContentPresenter">
-                                    <Setter Property="Background" Value="Transparent" />
-                                </Style>
-                            </Button.Styles>
-
-                            <Button.Template>
-                                <ControlTemplate>
-                                    <ContentPresenter Name="PART_ContentPresenter"
-                                                      Background="{TemplateBinding Background}"
-                                                      BorderBrush="{TemplateBinding BorderBrush}"
-                                                      BorderThickness="{TemplateBinding BorderThickness}"
-                                                      CornerRadius="{TemplateBinding CornerRadius}"
-                                                      Content="{TemplateBinding Content}"
-                                                      Padding="{TemplateBinding Padding}" />
-                                </ControlTemplate>
-                            </Button.Template>
-
-                            <Button.Flyout>
-                                <MenuFlyout Placement="Pointer">
-                                    <MenuItem Header="Join Game"
-                                              Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}"
-                                              CommandParameter="{Binding}"/>
-                                    <MenuItem Header="Rejoin Last Server"
-                                              Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}"
-                                              CommandParameter="{Binding}"/>
-                                    <Separator />
-                                    <MenuItem Header="Visit Game Page"
-                                              Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}"
-                                              CommandParameter="{Binding}"/>
-                                </MenuFlyout>
-                            </Button.Flyout>
-
-                            <controls:Card Width="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
-                                <StackPanel>
-                                    <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                                        <Image Source="{Binding UniverseDetails.Thumbnail.ImageUrl, Converter={StaticResource UrlToBitmapConverter}}"
-                                               Height="190" Width="190" Stretch="UniformToFill"/>
-                                    </Border>
-
-                                    <StackPanel Spacing="2" Margin="8">
-                                        <TextBlock Text="{Binding UniverseDetails.Data.Name}"
-                                                   FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                        <TextBlock Text="{Binding UniverseDetails.Data.Creator.Name, StringFormat='by {0}'}"
-                                                   FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
-
-                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0" Spacing="4">
-                                            <TextBlock Text="{Binding UniverseDetails.Data.Playing, Converter={StaticResource NumberAbbreviationConverter}}"
-                                                       FontSize="10" FontWeight="Bold"/>
-                                            <TextBlock Text="Active" FontSize="10" Opacity="0.5"/>
-                                            <TextBlock Text="{Binding UniverseDetails.Data.Visits, Converter={StaticResource NumberAbbreviationConverter}}"
-                                                       FontSize="10" FontWeight="Bold" Margin="6,0,0,0"/>
-                                            <TextBlock Text="Visits" FontSize="10" Opacity="0.5"/>
+                                <controls:Card Width="190" CornerRadius="12,12,4,4" Padding="0" ClipToBounds="True">
+                                    <Panel>
+                                        <StackPanel>
+                                            <Border CornerRadius="12,12,0,0" ClipToBounds="True">
+                                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}" Height="190" Width="190" Stretch="UniformToFill" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                                            </Border>
+                                            <StackPanel Spacing="2" Margin="8">
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Creator, StringFormat='by {0}'}" FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
+                                                <Grid ColumnDefinitions="*, *" Margin="0,5,0,0">
+                                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                                        <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
+                                                        <TextBlock Text="Active" FontSize="10" Opacity="0.5"/>
+                                                    </StackPanel>
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                                                        <TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
+                                                        <TextBlock Text="Visits" FontSize="10" Opacity="0.5"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </StackPanel>
                                         </StackPanel>
-                                    </StackPanel>
-                                </StackPanel>
-                            </controls:Card>
-                        </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                                        <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="#CC000000">
+                                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                                <PathIcon Data="M4,4H20V9H4V4M4,15H20V20H4V15M9,7H11V6H9V7M9,18H11V17H9V18M13,7H15V6H13V7M13,18H15V17H13V18Z" Width="10" Height="10"/>
+                                                <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Panel>
+                                </controls:Card>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" VerticalAlignment="Center" Margin="0,20,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
 
-            <ProgressBar IsIndeterminate="True"
-                         IsVisible="{Binding IsLoading}"
-                         VerticalAlignment="Center"
-                         Margin="0,20,0,0"/>
-        </StackPanel>
-    </ScrollViewer>
+        <Border Background="#99000000" IsVisible="{Binding IsOverlayVisible}" ZIndex="100">
+            <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="450" MaxWidth="550" Padding="0" CornerRadius="12" ClipToBounds="True">
+                <StackPanel>
+                    <Border Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}" Padding="16">
+                        <Grid ColumnDefinitions="Auto, *, Auto">
+                            <Border CornerRadius="8" ClipToBounds="True" Width="40" Height="40">
+                                <Image Source="{Binding SelectedUniverseDetails.Thumbnail.ImageUrl, Converter={StaticResource UrlToBitmapConverter}}" Stretch="UniformToFill" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding SelectedUniverseDetails.Data.Name}" FontWeight="Bold" FontSize="16" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="Session History" FontSize="12" Opacity="0.6"/>
+                            </StackPanel>
+                            <Button Grid.Column="2" Content="✕" Width="32" Height="32" Padding="0" Command="{Binding CloseOverlayCommand}" Background="Transparent" BorderThickness="0"/>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Height="350">
+                        <ItemsControl ItemsSource="{Binding SelectedGameServers}" Padding="10">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:ServerInfo">
+                                    <Border Padding="12" Margin="0,2" Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8">
+                                        <Grid ColumnDefinitions="*, Auto">
+                                            <StackPanel Spacing="4">
+                                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                                    <PathIcon Data="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M11,19.93C7.05,19.44 4,16.08 4,12C4,11.38 4.08,10.78 4.21,10.21L9,15V16A2,2 0 0,0 11,18V19.93M17.9,17.39C17.64,16.58 16.9,16 16,16H15V13A1,1 0 0,0 14,12H8V10H10A1,1 0 0,0 11,9V7H13A2,2 0 0,0 15,5V4.59C17.93,5.77 20,8.64 20,12C20,14.08 19.2,15.97 17.9,17.39Z" Width="14"/>
+                                                    <TextBlock Text="{Binding Region}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+
+                                                    <Border Margin="4,0,0,0" Padding="5,1" CornerRadius="4" Background="{DynamicResource AccentButtonBackground}" IsVisible="{Binding IsLatest}">
+                                                        <TextBlock Text="Latest" FontSize="8" FontWeight="Medium"/>
+                                                    </Border>
+                                                </StackPanel>
+
+                                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                                        <PathIcon Data="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z" Width="12" Opacity="0.5"/>
+                                                        <TextBlock Margin ="0,0,0,4" Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding JoinedAt, StringFormat='{}{0:MM/dd HH:mm}'}" FontSize="11" Opacity="0.4"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <controls:IconButton Grid.Column="1" Classes="Primary" VerticalAlignment="Center"
+                                                                 Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}"
+                                                                 CommandParameter="{Binding}"
+                                                                 Content="Join"
+                                                                 Icon="Play"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
 </UserControl>

@@ -1,10 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using Froststrap.Models.APIs.Roblox;
-using Froststrap.Models.Entities;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Text.Json;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -12,9 +7,25 @@ namespace Froststrap.UI.ViewModels.Settings
     public class QuickPlayViewModel : NotifyPropertyChangedViewModel
     {
         private bool _isLoading;
+        private bool _isOverlayVisible;
+        private UniverseDetails? _selectedUniverseDetails;
         private readonly string _cachePath = Path.Combine(Paths.Cache, "GameHistory.json");
+        private List<GameHistoryEntry> _allHistory = [];
 
-        public ObservableCollection<ActivityData> RecentGames { get; } = [];
+        public ObservableCollection<QuickPlayGameItem> RecentGames { get; } = [];
+        public ObservableCollection<ServerInfo> SelectedGameServers { get; } = [];
+
+        public UniverseDetails? SelectedUniverseDetails
+        {
+            get => _selectedUniverseDetails;
+            set => SetProperty(ref _selectedUniverseDetails, value);
+        }
+
+        public bool IsOverlayVisible
+        {
+            get => _isOverlayVisible;
+            set => SetProperty(ref _isOverlayVisible, value);
+        }
 
         public bool IsLoading
         {
@@ -24,15 +35,54 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ICommand JoinGameCommand { get; }
         public ICommand RejoinLastServerCommand { get; }
+        public ICommand ViewServersCommand { get; }
+        public ICommand CloseOverlayCommand { get; }
         public ICommand VisitPageCommand { get; }
 
         public QuickPlayViewModel()
         {
-            JoinGameCommand = new RelayCommand<ActivityData>(g => { if (g != null) LaunchRoblox(g.PlaceId); });
-            RejoinLastServerCommand = new RelayCommand<ActivityData>(g => { if (g != null) LaunchRoblox(g.PlaceId, g.JobId); });
-            VisitPageCommand = new RelayCommand<ActivityData>(g =>
+            JoinGameCommand = new RelayCommand<QuickPlayGameItem>(item =>
             {
-                if (g != null) Process.Start(new ProcessStartInfo($"https://www.roblox.com/games/{g.PlaceId}") { UseShellExecute = true });
+                if (item != null) LaunchRoblox(item.PlaceId);
+            });
+
+            RejoinLastServerCommand = new RelayCommand<object>(param =>
+            {
+                if (param is QuickPlayGameItem item)
+                {
+                    LaunchRoblox(item.PlaceId, item.LastJobId);
+                }
+                else if (param is ServerInfo server)
+                {
+                    var entry = _allHistory.FirstOrDefault(x => x.UniverseId == SelectedUniverseDetails?.Data?.Id);
+                    if (entry != null) LaunchRoblox(entry.PlaceId, server.JobId);
+                }
+            });
+
+            ViewServersCommand = new RelayCommand<QuickPlayGameItem>(item =>
+            {
+                if (item == null) return;
+
+                var entry = _allHistory.FirstOrDefault(x => x.UniverseId == item.UniverseId);
+                if (entry == null) return;
+
+                var sortedServers = entry.Servers.OrderByDescending(x => x.JoinedAt).ToList();
+
+                foreach (var s in sortedServers) s.IsLatest = false;
+                if (sortedServers.Count > 0) sortedServers[0].IsLatest = true;
+
+                SelectedGameServers.Clear();
+                foreach (var s in sortedServers) SelectedGameServers.Add(s);
+
+                SelectedUniverseDetails = item.OriginalDetails;
+                IsOverlayVisible = true;
+            });
+
+            CloseOverlayCommand = new RelayCommand(() => IsOverlayVisible = false);
+
+            VisitPageCommand = new RelayCommand<QuickPlayGameItem>(item =>
+            {
+                if (item != null) Process.Start(new ProcessStartInfo($"https://www.roblox.com/games/{item.PlaceId}") { UseShellExecute = true });
             });
 
             _ = Initialize();
@@ -41,32 +91,40 @@ namespace Froststrap.UI.ViewModels.Settings
         private async Task Initialize()
         {
             IsLoading = true;
+            _allHistory = LoadLocalHistory();
 
-            var history = LoadLocalHistory();
-            if (history.Count == 0)
+            if (_allHistory.Count == 0)
             {
                 IsLoading = false;
                 return;
             }
 
-            var uniqueGames = history
-                .GroupBy(x => x.UniverseId)
-                .Select(g => g.First())
-                .ToList();
+            var universeIds = _allHistory.Select(x => x.UniverseId.ToString()).Distinct().ToList();
+            await UniverseDetails.FetchBulk(string.Join(",", universeIds));
 
-            var idsToFetch = uniqueGames
-                .Where(g => UniverseDetails.LoadFromCache(g.UniverseId) == null)
-                .Select(g => g.UniverseId.ToString())
-                .ToList();
-
-            if (idsToFetch.Count != 0)
+            var uiItems = new List<QuickPlayGameItem>();
+            foreach (var entry in _allHistory)
             {
-                await UniverseDetails.FetchBulk(string.Join(",", idsToFetch));
+                var details = UniverseDetails.LoadFromCache(entry.UniverseId);
+                var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
+
+                uiItems.Add(new QuickPlayGameItem
+                {
+                    UniverseId = entry.UniverseId,
+                    PlaceId = entry.PlaceId,
+                    Name = details?.Data?.Name ?? "Unknown Game",
+                    Creator = details?.Data?.Creator?.Name ?? "Unknown",
+                    Playing = details?.Data?.Playing ?? 0,
+                    Visits = details?.Data?.Visits ?? 0,
+                    ServerCount = entry.Servers.Count,
+                    LastJobId = lastSession?.JobId,
+                    OriginalDetails = details
+                });
             }
 
-            var thumbRequests = uniqueGames.Select(g => new ThumbnailRequest
+            var thumbRequests = uiItems.Select(item => new ThumbnailRequest
             {
-                TargetId = (ulong)g.UniverseId,
+                TargetId = (ulong)item.UniverseId,
                 Type = ThumbnailType.GameIcon,
                 Size = "150x150",
                 Format = ThumbnailFormat.Png
@@ -75,80 +133,39 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-
-                for (int i = 0; i < uniqueGames.Count; i++)
+                for (int i = 0; i < uiItems.Count; i++)
                 {
-                    var game = uniqueGames[i];
-                    game.UniverseDetails ??= UniverseDetails.LoadFromCache(game.UniverseId);
-
-                    if (game.UniverseDetails != null && urls[i] != null)
-                    {
-                        game.UniverseDetails.Thumbnail.ImageUrl = urls[i];
-                    }
+                    string? thumbUrl = urls.ElementAtOrDefault(i);
+                    if (string.IsNullOrEmpty(thumbUrl)) continue;
+                    uiItems[i].ThumbnailUrl = thumbUrl;
+                    if (uiItems[i].OriginalDetails?.Thumbnail != null)
+                        uiItems[i].OriginalDetails!.Thumbnail.ImageUrl = thumbUrl;
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Thumbnail fetch failed: {ex.Message}");
-            }
+            catch (Exception ex) { Debug.WriteLine($"Thumbnail fetch failed: {ex.Message}"); }
 
             RecentGames.Clear();
-            foreach (var game in uniqueGames)
-            {
-                RecentGames.Add(game);
-            }
-
+            foreach (var item in uiItems) RecentGames.Add(item);
             IsLoading = false;
         }
 
-        private List<ActivityData> LoadLocalHistory()
+        private List<GameHistoryEntry> LoadLocalHistory()
         {
             try
             {
                 if (!File.Exists(_cachePath)) return [];
-
                 string json = File.ReadAllText(_cachePath);
-                var gameHistory = JsonSerializer.Deserialize<List<GameHistoryEntry>>(json);
-
-                if (gameHistory == null) return [];
-
-                var loadedHistory = new List<ActivityData>();
-
-                foreach (var entry in gameHistory)
-                {
-                    if (entry.UniverseId == 0 || entry.PlaceId == 0) continue;
-
-                    foreach (var server in entry.Servers)
-                    {
-                        if (server.JoinedAt == default) continue;
-
-                        loadedHistory.Add(new ActivityData
-                        {
-                            UniverseId = entry.UniverseId,
-                            PlaceId = entry.PlaceId,
-                            JobId = server.JobId,
-                            ServerType = server.ServerType,
-                            TimeJoined = server.JoinedAt,
-                            TimeLeft = server.TimeLeft,
-                            Region = server.Region
-                        });
-                    }
-                }
-
-                return [.. loadedHistory.OrderByDescending(x => x.TimeJoined)];
+                return JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
             }
-            catch
-            {
-                return [];
-            }
+            catch { return []; }
         }
 
         private static void LaunchRoblox(long placeId, string? jobId = null)
         {
+            if (placeId == 0) return;
             string url = string.IsNullOrEmpty(jobId)
                 ? $"roblox://experiences/start?placeId={placeId}"
                 : $"roblox://experiences/start?placeId={placeId}&gameInstanceId={jobId}";
-
             Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
         }
     }
