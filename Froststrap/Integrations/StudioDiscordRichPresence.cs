@@ -12,6 +12,7 @@
  */
 
 using DiscordRPC;
+using System.Net.Sockets;
 
 namespace Froststrap.Integrations
 {
@@ -26,19 +27,23 @@ namespace Froststrap.Integrations
 
         private bool _visible = true;
         private bool _rpcEnabled = true;
+        private bool _disposed = false;
 
         public StudioDiscordRichPresence(ActivityWatcher activityWatcher)
         {
             const string LOG_IDENT = "StudioDiscordRichPresence";
-
             _activityWatcher = activityWatcher;
 
+            // 1. Hook up events
             _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
             _activityWatcher.OnStudioPlaceOpened += (_, _) => HandleStudioPlaceOpened();
             _activityWatcher.OnStudioPlaceClosed += (_, _) => HandleStudioPlaceClosed();
 
             _rpcClient.OnReady += (_, e) =>
+            {
                 App.Logger.WriteLine(LOG_IDENT, $"Received ready from user {e.User} ({e.User.ID})");
+                if (!_disposed) InitializeStudioPresence();
+            };
 
             _rpcClient.OnConnectionEstablished += (_, e) =>
                 App.Logger.WriteLine(LOG_IDENT, "Established connection with Discord RPC");
@@ -49,9 +54,14 @@ namespace Froststrap.Integrations
             _rpcClient.OnError += (_, e) =>
                 App.Logger.WriteLine(LOG_IDENT, $"An RPC error occurred - {e.Message}");
 
-            _rpcClient.Initialize();
-
-            InitializeStudioPresence();
+            try
+            {
+                _rpcClient.Initialize();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to init RPC: {ex.Message}");
+            }
         }
 
         // for future use
@@ -214,26 +224,42 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT = "StudioDiscordRichPresence::UpdatePresence";
 
-            if (_currentPresence is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Presence is empty, clearing");
-                _rpcClient.ClearPresence();
+            if (_disposed || _currentPresence is null || !_rpcClient.IsInitialized)
                 return;
+
+            try
+            {
+                if (_visible)
+                    _rpcClient.SetPresence(_currentPresence);
             }
-
-            _currentPresence.Assets ??= new Assets();
-
-            App.Logger.WriteLine(LOG_IDENT, $"Updating presence");
-
-            if (_visible)
-                _rpcClient.SetPresence(_currentPresence);
+            catch (IOException ex) when (ex.InnerException is SocketException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Socket interrupted on macOS. Suppressed.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
         }
 
         public void Dispose()
         {
+            if (_disposed) return;
+            _disposed = true;
+
             App.Logger.WriteLine("StudioDiscordRichPresence::Dispose", "Cleaning up Discord RPC");
-            _rpcClient.ClearPresence();
-            _rpcClient.Dispose();
+
+            try
+            {
+                if (_rpcClient.IsInitialized)
+                {
+                    try { _rpcClient.ClearPresence(); } catch (IOException) { }
+                }
+                _rpcClient.Dispose();
+            }
+            catch (IOException ex) when (ex.InnerException is SocketException) { }
+            catch (Exception ex) { App.Logger.WriteException("StudioDiscordRichPresence::Dispose", ex); }
+
             GC.SuppressFinalize(this);
         }
     }

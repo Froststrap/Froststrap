@@ -1,5 +1,6 @@
-using Froststrap.Models.APIs;
 using DiscordRPC;
+using Froststrap.Models.APIs;
+using System.Net.Sockets;
 
 namespace Froststrap.Integrations
 {
@@ -19,6 +20,7 @@ namespace Froststrap.Integrations
         private CancellationTokenSource? _fetchThumbnailsToken;
 
         private bool _visible = true;
+        private bool _disposed = false;
 
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
@@ -30,8 +32,7 @@ namespace Froststrap.Integrations
             _activityWatcher.OnGameLeave += (_, _) => Task.Run(() => SetCurrentGame());
             _activityWatcher.OnRPCMessage += (_, message) => ProcessRPCMessage(message);
 
-            _rpcClient.OnReady += (_, e) =>
-                App.Logger.WriteLine(LOG_IDENT, $"Received ready from user {e.User} ({e.User.ID})");
+            _rpcClient.OnReady += (_, e) => App.Logger.WriteLine(LOG_IDENT, $"Received ready from user {e.User} ({e.User.ID})");
 
             _rpcClient.OnPresenceUpdate += (_, e) =>
                 App.Logger.WriteLine(LOG_IDENT, "Presence updated");
@@ -42,14 +43,17 @@ namespace Froststrap.Integrations
             _rpcClient.OnConnectionEstablished += (_, e) =>
                 App.Logger.WriteLine(LOG_IDENT, "Established connection with Discord RPC");
 
-            //spams log as it tries to connect every ~15 sec when discord is closed so not now
-            //_rpcClient.OnConnectionFailed += (_, e) =>
-            //    App.Logger.WriteLine(LOG_IDENT, "Failed to establish connection with Discord RPC");
-
             _rpcClient.OnClose += (_, e) =>
                 App.Logger.WriteLine(LOG_IDENT, $"Lost connection to Discord RPC - {e.Reason} ({e.Code})");
 
-            _rpcClient.Initialize();
+            try
+            {
+                _rpcClient.Initialize();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to init RPC: {ex.Message}");
+            }
         }
 
         public void ProcessRPCMessage(Message message, bool implicitUpdate = true)
@@ -65,8 +69,6 @@ namespace Froststrap.Integrations
                 _messageQueue.Enqueue(message);
                 return;
             }
-
-            // a lot of repeated code here, could this somehow be cleaned up?
 
             if (message.Command == "SetLaunchData")
             {
@@ -436,26 +438,54 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT = "DiscordRichPresence::UpdatePresence";
 
-            if (_currentPresence is null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Presence is empty, clearing");
-                _rpcClient.ClearPresence();
+            if (_disposed || _currentPresence is null || !_rpcClient.IsInitialized)
                 return;
-            }
 
             _currentPresence.Assets ??= new Assets();
 
             App.Logger.WriteLine(LOG_IDENT, $"Updating presence");
 
-            if (_visible)
-                _rpcClient.SetPresence(_currentPresence);
+            try
+            {
+                if (_visible)
+                    _rpcClient.SetPresence(_currentPresence);
+            }
+            catch (IOException ex) when (ex.InnerException is SocketException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Socket interrupted (Operation Canceled). This is expected on macOS.");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
         }
 
         public void Dispose()
         {
-            App.Logger.WriteLine("DiscordRichPresence::Dispose", "Cleaning up Discord RPC and Presence");
-            _rpcClient.ClearPresence();
-            _rpcClient.Dispose();
+            if (_disposed) return;
+            _disposed = true;
+
+            const string LOG_IDENT = "DiscordRichPresence::Dispose";
+            App.Logger.WriteLine(LOG_IDENT, "Cleaning up Discord RPC and Presence");
+
+            try
+            {
+                _fetchThumbnailsToken?.Cancel();
+                _fetchThumbnailsToken?.Dispose();
+
+                if (_rpcClient.IsInitialized)
+                {
+                    try { _rpcClient.ClearPresence(); } catch (IOException) { }
+                }
+
+                _rpcClient.Dispose();
+            }
+            catch (IOException ex) when (ex.InnerException is SocketException) { }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+
             GC.SuppressFinalize(this);
         }
     }
