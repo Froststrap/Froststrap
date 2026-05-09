@@ -201,9 +201,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OpenModsFolder() => Utilities.ShellExecute(Paths.PresetModifications, true);
 
-        private static string CursorPath => Path.Combine(Paths.PresetModifications, "Content", "textures", "Cursors", "KeyboardMouse");
-        private static string ShiftlockPath => Path.Combine(Paths.PresetModifications, "Content", "textures");
-        private static string SoundPath => Path.Combine(Paths.PresetModifications, "Content", "sounds");
+        private static string CursorPath => Path.Combine(Paths.PresetModifications, "content", "textures", "Cursors", "KeyboardMouse");
+        private static string ShiftlockPath => Path.Combine(Paths.PresetModifications, "content", "textures");
+        private static string SoundPath => Path.Combine(Paths.PresetModifications, "content", "sounds");
 
         private static readonly string[] CursorFiles = [ "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" ];
         private static readonly string[] ShiftlockFiles = [ "MouseLockedCursor.png" ];
