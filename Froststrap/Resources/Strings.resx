@@ -2310,4 +2310,7 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
     <value>Level 3 (Highest)</value>
   </data>
+  <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
+    <value>BetterMatchmaking will be disabled for this session.</value>
+  </data>
 </root>

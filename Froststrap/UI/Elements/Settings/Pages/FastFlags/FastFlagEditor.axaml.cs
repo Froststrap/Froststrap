@@ -60,8 +60,8 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 var entry = new FastFlag
                 {
                     Name = pair.Key,
-                    Value = pair.Value?.ToString() ?? string.Empty,
-                    Preset = presetFlags.Contains(pair.Key) ? FluentIcons.Common.Symbol.CheckmarkCircle : FluentIcons.Common.Symbol.CircleOff
+                    Value = pair.Value?.ToString() ?? "",
+                    Preset = presetFlags.Contains(pair.Key) ? Symbol.CheckmarkCircle : Symbol.CircleOff
                 };
 
                 _fastFlagList.Add(entry);
