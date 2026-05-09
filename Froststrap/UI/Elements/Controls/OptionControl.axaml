@@ -29,7 +29,8 @@
                                                     VerticalAlignment="Center"
                                                     Margin="6,0,0,0">
                                     <ic:SymbolIcon Symbol="QuestionCircle"
-                                                   Width="14" Height="14"
+                                                   FontSize="14"
+                                                   Width="16" Height="16"
                                                    Foreground="{DynamicResource SystemAccentColor}" />
                                 </controls:Hyperlink>
                             </WrapPanel>
