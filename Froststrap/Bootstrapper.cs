@@ -1340,11 +1340,13 @@ namespace Froststrap
 
                 if (!Directory.Exists(_latestVersionDirectory))
                 {
-                    await Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
+                }
+                else 
+                {
+                    await Task.Delay(2000);
                     return;
                 }
-                await Task.Delay(2000);
-                return;
             }
 
             SetStatus(string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
