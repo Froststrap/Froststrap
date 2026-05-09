@@ -78,12 +78,6 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.Locale = Locale.GetIdentifierFromName(value);
         }
 
-        public static string DownloadingStatus
-        {
-            get => App.Settings.Prop.DownloadingStringFormat;
-            set => App.Settings.Prop.DownloadingStringFormat = value;
-        }
-
         public ObservableCollection<BootstrapperIconEntry> Icons { get; set; } = [];
 
         public static BootstrapperIcon Icon
