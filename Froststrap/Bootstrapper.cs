@@ -1329,6 +1329,7 @@ namespace Froststrap
         private async Task UpgradeRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::UpgradeRoblox";
+            const int THREAD_LIMIT = 4;
 
             bool cancelUpgrade = !App.Settings.Prop.UpdateRoblox;
 
@@ -1336,20 +1337,17 @@ namespace Froststrap
             {
                 SetStatus(Strings.Bootstrapper_Status_CancelUpgrade);
                 App.Logger.WriteLine(LOG_IDENT, "Upgrading disabled, cancelling the upgrade.");
+
+                if (!Directory.Exists(_latestVersionDirectory))
+                {
+                    await Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
+                    return;
+                }
                 await Task.Delay(2000);
-            }
-
-            if (cancelUpgrade && !Directory.Exists(_latestVersionDirectory))
-            {
-                await Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
-                return;
-            }
-            else if (cancelUpgrade)
-            {
                 return;
             }
 
-            SetStatus(String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+            SetStatus(string.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
                 ? Strings.Bootstrapper_Status_Installing
                 : Strings.Bootstrapper_Status_Upgrading);
 
@@ -1359,34 +1357,32 @@ namespace Froststrap
 
             _isInstalling = true;
 
-            // make sure nothing is running before continuing upgrade
             if (!App.LaunchSettings.BackgroundUpdaterFlag.Active)
                 KillRobloxPlayers();
 
-            // get a fully clean install
             if (!App.LaunchSettings.BackgroundUpdaterFlag.Active && Directory.Exists(_latestVersionDirectory))
             {
-                try
-                {
-                    Directory.Delete(_latestVersionDirectory, true);
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Failed to delete the latest version directory");
-                    App.Logger.WriteException(LOG_IDENT, ex);
-                }
+                try { Directory.Delete(_latestVersionDirectory, true); }
+                catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
             }
 
             Directory.CreateDirectory(_latestVersionDirectory);
 
-            var cachedPackageHashes = Directory.GetFiles(Paths.Downloads).Select(x => Path.GetFileName(x));
+            var packages = _versionPackageManifest
+                    .OrderByDescending(p => p.PackedSize)
+                    .ToList();
 
-            // package manifest states packed size and uncompressed size in exact bytes
-            int totalSizeRequired = 0;
+            var downloadedPackages = new List<Package>();
 
-            // packed size only matters if we don't already have the package cached on disk
-            totalSizeRequired += _versionPackageManifest.Where(x => !cachedPackageHashes.Contains(x.Signature)).Sum(x => x.PackedSize);
-            totalSizeRequired += _versionPackageManifest.Sum(x => x.Size);
+            var cachedPackageHashes = Directory.GetFiles(Paths.Downloads)
+                .Select(Path.GetFileName)
+                .Where(name => name != null)
+                .Select(name => name!)
+                .ToHashSet();
+
+            int totalSizeRequired = packages
+                .Where(x => x.Signature != null && !cachedPackageHashes.Contains(x.Signature))
+                .Sum(x => x.PackedSize) + packages.Sum(x => x.Size);
 
             if (Filesystem.GetFreeDiskSpace(Paths.Base) < totalSizeRequired)
             {
@@ -1401,29 +1397,59 @@ namespace Froststrap
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
                 Dialog.ProgressMaximum = ProgressBarMaximum;
 
-                int totalPackedSize = _versionPackageManifest.Sum(package => package.PackedSize);
+                int totalPackedSize = packages.Sum(package => package.PackedSize);
                 _progressIncrement = totalPackedSize > 0 ? (double)ProgressBarMaximum / totalPackedSize : 0;
                 _taskbarProgressMaximum = TaskbarProgressMaximum;
                 _taskbarProgressIncrement = totalPackedSize > 0 ? _taskbarProgressMaximum / (double)totalPackedSize : 0;
             }
 
-            foreach (var package in _versionPackageManifest)
+            var packageTasks = new List<Task>();
+            using SemaphoreSlim downloadSemaphore = new(THREAD_LIMIT);
+
+            foreach (var package in packages)
             {
-                if (_cancelTokenSource.IsCancellationRequested)
-                    return;
+                if (_cancelTokenSource.IsCancellationRequested) break;
 
-                // download all the packages synchronously
-                await DownloadPackage(package);
+                await downloadSemaphore.WaitAsync(_cancelTokenSource.Token);
 
-                // we'll extract the runtime installer later if we need to
-                if (package.Name == "WebView2RuntimeInstaller.zip")
-                    continue;
+                var task = Task.Run(async () =>
+                {
+                    try
+                    {
+                        int remaining;
+                        lock (downloadedPackages)
+                        {
+                            remaining = packages.Count - downloadedPackages.Count;
+                        }
 
-                await ExtractPackage(package);
+                        SetStatus($"{Strings.Bootstrapper_Status_Downloading} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}");
+
+                        await DownloadPackage(package);
+
+                        if (package.Name != "WebView2RuntimeInstaller.zip")
+                        {
+                            SetStatus($"{Strings.Bootstrapper_Status_Extracting} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}");
+
+                            await ExtractPackage(package);
+                        }
+
+                        lock (downloadedPackages)
+                        {
+                            downloadedPackages.Add(package);
+                        }
+                    }
+                    finally
+                    {
+                        downloadSemaphore.Release();
+                    }
+                }, _cancelTokenSource.Token);
+
+                packageTasks.Add(task);
             }
 
-            if (_cancelTokenSource.IsCancellationRequested)
-                return;
+            await Task.WhenAll(packageTasks);
+
+            if (_cancelTokenSource.IsCancellationRequested) return;
 
             if (Dialog is not null)
             {
@@ -1432,8 +1458,12 @@ namespace Froststrap
                 SetStatus(Strings.Bootstrapper_Status_Configuring);
             }
 
-            if (_cancelTokenSource.IsCancellationRequested)
-                return;
+            if (Dialog is not null)
+            {
+                Dialog.ProgressIndeterminate = true;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+                SetStatus(Strings.Bootstrapper_Status_Configuring);
+            }
 
             if (OperatingSystem.IsMacOS())
             {
@@ -1452,71 +1482,35 @@ namespace Froststrap
                             fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
                         }
                     }
-
-                    App.Logger.WriteLine(LOG_IDENT, $"Removing quarantine from {appName}...");
-                    using var xattr = Process.Start(new ProcessStartInfo
-                    {
-                        FileName = "xattr",
-                        ArgumentList = { "-dr", "com.apple.quarantine", appPath },
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    });
-                    xattr?.WaitForExit();
+                    Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"")?.WaitForExit();
                 }
             }
 
             if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
             {
-                using var hklmKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
-                using var hkcuKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
+                using var hklmKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
+                using var hkcuKey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}");
 
-                if (hklmKey is not null || hkcuKey is not null)
+                if (hklmKey == null && hkcuKey == null)
                 {
-                    // reset prompt state if the user has it installed
-                    App.State.Prop.PromptWebView2Install = true;
-                }
-                else
-                {
-                    var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo, MessageBoxResult.Yes);
-
-                    if (result != MessageBoxResult.Yes)
+                    var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo);
+                    if (result == MessageBoxResult.Yes)
                     {
-                        App.State.Prop.PromptWebView2Install = false;
-                    }
-                    else
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Installing WebView2 runtime...");
-
                         var package = _versionPackageManifest.Find(x => x.Name == "WebView2RuntimeInstaller.zip");
-
-                        if (package is null)
+                        if (package != null)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, "Aborted runtime install because package does not exist, has WebView2 been added in this Roblox version yet?");
-                            return;
+                            string baseDir = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
+                            await ExtractPackage(package);
+                            SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
+                            await Process.Start(new ProcessStartInfo { FileName = Path.Combine(baseDir, "MicrosoftEdgeWebview2Setup.exe"), Arguments = "/silent /install", WorkingDirectory = baseDir })!.WaitForExitAsync();
+                            Directory.Delete(baseDir, true);
                         }
-
-                        string baseDirectory = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
-                        await ExtractPackage(package);
-                        SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
-
-                        var webview2StartInfo = new ProcessStartInfo()
-                        {
-                            WorkingDirectory = baseDirectory,
-                            FileName = Path.Combine(baseDirectory, "MicrosoftEdgeWebview2Setup.exe"),
-                            Arguments = "/silent /install"
-                        };
-
-                        await Process.Start(webview2StartInfo)!.WaitForExitAsync();
-                        App.Logger.WriteLine(LOG_IDENT, "Finished installing runtime");
-                        Directory.Delete(baseDirectory, true);
                     }
+                    else { App.State.Prop.PromptWebView2Install = false; }
                 }
             }
 
-            // finishing and cleanup
-
             MigrateCompatibilityFlags();
-
             AppData.DistributionState.VersionGuid = _latestVersionGuid;
             AppData.DistributionState.PackageHashes.Clear();
 
@@ -1525,38 +1519,24 @@ namespace Froststrap
 
             CleanupVersionsFolder();
 
-            var allPackageHashes = new List<string>();
-            allPackageHashes.AddRange(App.PlayerState.Prop.PackageHashes.Values);
-            allPackageHashes.AddRange(App.StudioState.Prop.PackageHashes.Values);
-
             if (!App.Settings.Prop.DebugDisableVersionPackageCleanup)
             {
+                var activeHashes = App.PlayerState.Prop.PackageHashes.Values
+                    .Concat(App.StudioState.Prop.PackageHashes.Values)
+                    .Where(h => h != null)
+                    .ToHashSet();
+
                 foreach (string hash in cachedPackageHashes)
                 {
-                    if (!allPackageHashes.Contains(hash))
+                    if (!activeHashes.Contains(hash))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Deleting unused package {hash}");
-
-                        try
-                        {
-                            File.Delete(Path.Combine(Paths.Downloads, hash));
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Failed to delete {hash}!");
-                            App.Logger.WriteException(LOG_IDENT, ex);
-                        }
+                        try { File.Delete(Path.Combine(Paths.Downloads, hash)); }
+                        catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                     }
                 }
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Registering approximate program size...");
-
-            int distributionSize = _versionPackageManifest.Sum(x => x.Size + x.PackedSize) / 1024;
-            AppData.DistributionState.Size = distributionSize;
-
             int totalSize = App.PlayerState.Prop.Size + App.StudioState.Prop.Size;
-
             if (OperatingSystem.IsWindows())
             {
                 using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
@@ -1564,12 +1544,9 @@ namespace Froststrap
                 WindowsRegistry.RegisterClientLocation(IsStudioLaunch, _latestVersionDirectory);
             }
 
-            App.Logger.WriteLine(LOG_IDENT, $"Registered as {totalSize} KB");
-
             App.State.Prop.ForceReinstall = false;
             App.State.Save();
             AppData.DistributionStateManager.Save();
-
             _isInstalling = false;
         }
 
@@ -2356,10 +2333,7 @@ namespace Froststrap
                         await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), _cancelTokenSource.Token);
 
                         _totalDownloadedBytes += bytesRead;
-                        SetStatus(String.Format(App.Settings.Prop.DownloadingStringFormat,
-                            package.Name,
-                            totalBytesRead / 1048576,
-                            package.Size / 1048576));
+
                         UpdateProgressBar();
                     }
 
@@ -2490,6 +2464,9 @@ namespace Froststrap
                     }
 
                     App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
+
+                    SetStatus($"Retrying {package.Name}...");
+
                     await Task.Delay(1000);
                     await DownloadPackage(package);
                 }

@@ -2313,4 +2313,10 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
     <value>BetterMatchmaking will be disabled for this session.</value>
   </data>
+  <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
+    <value>Extracting</value>
+  </data>
+  <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
+    <value>left</value>
+  </data>
 </root>

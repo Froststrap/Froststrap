@@ -394,6 +394,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extracting.
+        /// </summary>
+        public static string Bootstrapper_Status_Extracting {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Status.Extracting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installing {product}....
         /// </summary>
         public static string Bootstrapper_Status_Installing {
@@ -408,6 +417,15 @@ namespace Froststrap.Resources {
         public static string Bootstrapper_Status_InstallingWebView2 {
             get {
                 return ResourceManager.GetString("Bootstrapper.Status.InstallingWebView2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to left.
+        /// </summary>
+        public static string Bootstrapper_Status_PackagesLeft {
+            get {
+                return ResourceManager.GetString("Bootstrapper.Status.PackagesLeft", resourceCulture);
             }
         }
         
