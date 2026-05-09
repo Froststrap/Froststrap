@@ -63,6 +63,7 @@ namespace Froststrap
         private GameJoinData _joinData = null!;
 
         public static bool StaticDirectory => App.Settings.Prop.StaticDirectory;
+        private static int MaxThreadDownload => App.Settings.Prop.MaxThreadDownload;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
             || App.State.Prop.ForceReinstall
             || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
@@ -1329,7 +1330,6 @@ namespace Froststrap
         private async Task UpgradeRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::UpgradeRoblox";
-            const int THREAD_LIMIT = 4;
 
             bool cancelUpgrade = !App.Settings.Prop.UpdateRoblox;
 
@@ -1404,7 +1404,7 @@ namespace Froststrap
             }
 
             var packageTasks = new List<Task>();
-            using SemaphoreSlim downloadSemaphore = new(THREAD_LIMIT);
+            using SemaphoreSlim downloadSemaphore = new(MaxThreadDownload);
 
             foreach (var package in packages)
             {

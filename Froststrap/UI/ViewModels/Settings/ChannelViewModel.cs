@@ -85,7 +85,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        // TODO: Fix test mode
         public bool TestModeEnabled
         {
             get => App.LaunchSettings.TestModeFlag.Active;
@@ -227,6 +226,12 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => App.Settings.Prop.UpdateRoblox && !IsRobloxInstallationMissing;
             set => App.Settings.Prop.UpdateRoblox = value;
+        }
+
+        public static int MaxThreadDownload
+        {
+            get => App.Settings.Prop.MaxThreadDownload;
+            set => App.Settings.Prop.MaxThreadDownload = value;
         }
 
         public static bool StaticDirectory
