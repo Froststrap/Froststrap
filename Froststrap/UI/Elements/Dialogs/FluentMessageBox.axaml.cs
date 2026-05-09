@@ -1,12 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using System;
-using System.Diagnostics;
-using System.Media;
-using Froststrap.Resources;
-using Froststrap.UI.Elements.Controls;
 
 namespace Froststrap.UI.Elements.Dialogs
 {
@@ -101,6 +97,11 @@ namespace Froststrap.UI.Elements.Dialogs
                 Width = MaxWidth;
             else if (textWidth > Width)
                 Width = textWidth;
+
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            }
 
             Loaded += (s, e) =>
             {
