@@ -49,48 +49,32 @@ namespace Froststrap.RobloxInterfaces
 
         // a list of roblox deployment locations that we check for, in case one of them don't work
         // these are all weighted based on their priority, so that we pick the most optimal one that we can. 0 = highest
-        private static readonly Dictionary<string, int> BaseUrls = new()
+        private static readonly List<string> BaseUrls =
+        [
+            "https://setup.rbxcdn.com",
+            "https://setup-ak.rbxcdn.com",
+            "https://setup-aws.rbxcdn.com",
+            "https://setup-cfly.rbxcdn.com",
+            "https://s3.amazonaws.com/setup.roblox.com"
+        ];
+
+        // This checks the latency of the servers to see which one is best for the user
+        private static async Task<(string url, long latency)> GetLatency(string url, CancellationToken token)
         {
-            { "https://setup.rbxcdn.com", 0 },
-            { "https://setup-aws.rbxcdn.com", 2 },
-            { "https://setup-ak.rbxcdn.com", 2 },
-            { "https://roblox-setup.cachefly.net", 2 },
-            { "https://s3.amazonaws.com/setup.roblox.com", 4 }
-        };
-
-        private static async Task<string?> TestConnection(string url, int priority, CancellationToken token)
-        {
-            string LOG_IDENT = $"Deployment::TestConnection<{url}>";
-
-            await Task.Delay(priority * 1000, token);
-
-            App.Logger.WriteLine(LOG_IDENT, "Connecting...");
-
+            var stopwatch = Stopwatch.StartNew();
             try
             {
-                var response = await App.HttpClient.GetAsync($"{url}/versionStudio", token);
+                using var request = new HttpRequestMessage(HttpMethod.Head, $"{url}/versionStudio");
+                using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
 
                 response.EnsureSuccessStatusCode();
-
-                // versionStudio is the version hash for the last MFC studio to be deployed.
-                // the response body should always be "version-012732894899482c".
-                string content = await response.Content.ReadAsStringAsync(token);
-
-                if (content != VersionStudioHash)
-                    throw new InvalidHTTPResponseException($"versionStudio response does not match (expected \"{VersionStudioHash}\", got \"{content}\")");
+                stopwatch.Stop();
+                return (url, stopwatch.ElapsedMilliseconds);
             }
-            catch (TaskCanceledException)
+            catch
             {
-                App.Logger.WriteLine(LOG_IDENT, "Connectivity test cancelled.");
-                throw;
+                return (url, long.MaxValue);
             }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
-                throw;
-            }
-
-            return url;
         }
 
         /// <summary>
@@ -101,41 +85,40 @@ namespace Froststrap.RobloxInterfaces
         public static async Task<Exception?> InitializeConnectivity()
         {
             const string LOG_IDENT = "Deployment::InitializeConnectivity";
-
+            const string FALLBACK_URL = "https://setup.rbxcdn.com";
             var tokenSource = new CancellationTokenSource();
 
-            var exceptions = new List<Exception>();
-            var tasks = (from entry in BaseUrls select TestConnection(entry.Key, entry.Value, tokenSource.Token)).ToList();
+            var tasks = BaseUrls.Select(url => GetLatency(url, tokenSource.Token)).ToList();
 
-            App.Logger.WriteLine(LOG_IDENT, "Testing connectivity...");
+            App.Logger.WriteLine(LOG_IDENT, "Testing for best regional download mirror...");
 
-            while (tasks.Count > 0 && String.IsNullOrEmpty(BaseUrl))
+            try
             {
-                var finishedTask = await Task.WhenAny(tasks);
+                var results = await Task.WhenAll(tasks);
 
-                tasks.Remove(finishedTask);
+                var (url, latency) = results
+                    .Where(r => r.latency != long.MaxValue)
+                    .OrderBy(r => r.latency)
+                    .FirstOrDefault();
 
-                if (finishedTask.IsFaulted)
-                    exceptions.Add(finishedTask.Exception!.InnerException!);
-                else if (!finishedTask.IsCanceled)
-                    BaseUrl = finishedTask.Result;
+                if (url != null)
+                {
+                    BaseUrl = url;
+                    App.Logger.WriteLine(LOG_IDENT, $"Optimal BaseUrl: {BaseUrl} ({latency}ms)");
+                    tokenSource.Cancel();
+                    return null;
+                }
+
+                BaseUrl = FALLBACK_URL;
+                App.Logger.WriteLine(LOG_IDENT, $"No mirrors responded. Falling back to default: {BaseUrl}");
+                return new Exception("No regional mirrors were responsive.");
             }
-
-            // stop other running connectivity tests
-            tokenSource.Cancel();
-
-            if (string.IsNullOrEmpty(BaseUrl))
+            catch (Exception ex)
             {
-                if (exceptions.Count > 0)
-                    return exceptions[0];
-
-                // task cancellation exceptions don't get added to the list
-                return new TaskCanceledException("All connection attempts timed out.");
+                BaseUrl = FALLBACK_URL;
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return ex;
             }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Got {BaseUrl} as the optimal base URL");
-
-            return null;
         }
 
         public static string GetLocation(string resource)
@@ -185,7 +168,7 @@ namespace Froststrap.RobloxInterfaces
             try
             {
 
-                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", "v2/client-version/{BinaryType}/channel/" + channel);
+                Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", $"v2/client-version/{BinaryType}/channel/{channel}");
                 var response = await App.HttpClient.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
             }
