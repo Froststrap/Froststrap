@@ -8,6 +8,9 @@ namespace Froststrap.UI.ViewModels.Settings
     {
         private bool _isLoading;
         private bool _isOverlayVisible;
+        private bool _isSubplacesOverlayVisible;
+        private bool _isLoadingSubplaces;
+        private readonly ObservableCollection<PlaceInfo> _subplaces = [];
         private UniverseDetails? _selectedUniverseDetails;
         private readonly string _cachePath = Path.Combine(Paths.Cache, "GameHistory.json");
         private List<GameHistoryEntry> _allHistory = [];
@@ -33,11 +36,28 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _isLoading, value);
         }
 
+        public bool IsSubplacesOverlayVisible
+        {
+            get => _isSubplacesOverlayVisible;
+            set => SetProperty(ref _isSubplacesOverlayVisible, value);
+        }
+
+        public bool IsLoadingSubplaces
+        {
+            get => _isLoadingSubplaces;
+            set => SetProperty(ref _isLoadingSubplaces, value);
+        }
+
+        public ObservableCollection<PlaceInfo> Subplaces => _subplaces;
+
         public ICommand JoinGameCommand { get; }
         public ICommand RejoinLastServerCommand { get; }
         public ICommand ViewServersCommand { get; }
         public ICommand CloseOverlayCommand { get; }
+        public ICommand CloseSubplacesCommand { get; }
         public ICommand VisitPageCommand { get; }
+        public ICommand ViewSubplacesCommand { get; }
+        public ICommand JoinSubplaceCommand { get; }
 
         public QuickPlayViewModel()
         {
@@ -57,6 +77,20 @@ namespace Froststrap.UI.ViewModels.Settings
                     var entry = _allHistory.FirstOrDefault(x => x.UniverseId == SelectedUniverseDetails?.Data?.Id);
                     if (entry != null) LaunchRoblox(entry.PlaceId, server.JobId);
                 }
+            });
+
+            ViewSubplacesCommand = new RelayCommand<QuickPlayGameItem>(async item =>
+            {
+                if (item == null || item.UniverseId == 0) return;
+
+                SelectedUniverseDetails = item.OriginalDetails;
+                IsSubplacesOverlayVisible = true;
+                await FetchSubplacesAsync(item.UniverseId);
+            });
+
+            JoinSubplaceCommand = new RelayCommand<PlaceInfo>(subplace =>
+            {
+                if (subplace != null) LaunchRoblox(subplace.Id);
             });
 
             ViewServersCommand = new RelayCommand<QuickPlayGameItem>(item =>
@@ -79,6 +113,7 @@ namespace Froststrap.UI.ViewModels.Settings
             });
 
             CloseOverlayCommand = new RelayCommand(() => IsOverlayVisible = false);
+            CloseSubplacesCommand = new RelayCommand(() => IsSubplacesOverlayVisible = false);
 
             VisitPageCommand = new RelayCommand<QuickPlayGameItem>(item =>
             {
@@ -158,6 +193,54 @@ namespace Froststrap.UI.ViewModels.Settings
                 return JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
             }
             catch { return []; }
+        }
+
+        private async Task FetchSubplacesAsync(long universeId)
+        {
+            try
+            {
+                IsLoadingSubplaces = true;
+                Subplaces.Clear();
+
+                using var client = new HttpClient();
+                string url = $"https://develop.roblox.com/v1/universes/{universeId}/places?isUniverseCreation=false&limit=100&sortOrder=Asc";
+
+                var response = await client.GetAsync(url);
+                if (!response.IsSuccessStatusCode) return;
+
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var subplacesResponse = JsonSerializer.Deserialize<SubplacesResponse>(responseContent);
+
+                if (subplacesResponse?.Data != null && subplacesResponse.Data.Count > 0)
+                {
+                    var tempSubplaces = subplacesResponse.Data.Select(place => new PlaceInfo(place.Id, place.UniverseId, place.Name, "")).ToList();
+
+                    var thumbRequests = tempSubplaces.Select(p => new ThumbnailRequest
+                    {
+                        TargetId = (ulong)p.Id,
+                        Type = ThumbnailType.PlaceIcon,
+                        Size = "150x150",
+                        Format = ThumbnailFormat.Png
+                    }).ToList();
+
+                    try
+                    {
+                        var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
+                        for (int i = 0; i < tempSubplaces.Count; i++)
+                        {
+                            tempSubplaces[i].ThumbnailUrl = urls.ElementAtOrDefault(i) ?? "";
+                        }
+                    }
+                    catch (Exception ex) { Debug.WriteLine($"Subplace thumbnail fetch failed: {ex.Message}"); }
+
+                    foreach (var p in tempSubplaces) Subplaces.Add(p);
+                }
+            }
+            catch (Exception ex) { Debug.WriteLine($"Subplace fetch failed: {ex.Message}"); }
+            finally
+            {
+                IsLoadingSubplaces = false;
+            }
         }
 
         private static void LaunchRoblox(long placeId, string? jobId = null)

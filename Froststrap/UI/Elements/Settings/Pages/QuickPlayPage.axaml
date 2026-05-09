@@ -31,6 +31,11 @@
                                         <MenuItem Header="Rejoin Last" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon><PathIcon Data="M12,18A6,6 0 1,0 6,12C6,14.65 7.73,16.9 10.13,17.66L10.5,16.33C8.68,15.75 7.33,14.03 7.33,12C7.33,9.42 9.42,7.33 12,7.33C14.58,7.33 16.67,9.42 16.67,12H14L17.5,15.5L21,12H18.33A6.33,6.33 0 0,0 12,5.67V18Z"/></MenuItem.Icon>
                                         </MenuItem>
+                                        <MenuItem Header="View Subplaces" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <PathIcon Data="M15,5V7H11V9H15V11H17V5H15M7,13V19H13V17H9V13H7M15,13V15H17V13H15M7,5V11H13V9H9V7H13V5H7Z"/>
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                         <MenuItem Header="{Binding ServerCount, StringFormat='View Servers ({0})'}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon><PathIcon Data="M4,4H20V9H4V4M4,15H20V20H4V15M9,7H11V6H9V7M9,18H11V17H9V18M13,7H15V6H13V7M13,18H15V17H13V18Z"/></MenuItem.Icon>
                                         </MenuItem>
@@ -62,10 +67,10 @@
                                                 </Grid>
                                             </StackPanel>
                                         </StackPanel>
-                                        <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="#CC000000">
+                                        <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="Black">
                                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <PathIcon Data="M4,4H20V9H4V4M4,15H20V20H4V15M9,7H11V6H9V7M9,18H11V17H9V18M13,7H15V6H13V7M13,18H15V17H13V18Z" Width="10" Height="10"/>
-                                                <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold"/>
+                                                <PathIcon Data="M4,4H20V9H4V4M4,15H20V20H4V15M9,7H11V6H9V7M9,18H11V17H9V18M13,7H15V6H13V7M13,18H15V17H13V18Z" Width="10" Height="10" Foreground="White"/>
+                                                <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold" Foreground="White"/>
                                             </StackPanel>
                                         </Border>
                                     </Panel>
@@ -79,7 +84,16 @@
         </ScrollViewer>
 
         <Border Background="#99000000" IsVisible="{Binding IsOverlayVisible}" ZIndex="100">
-            <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}" Background="{DynamicResource CardBackgroundFillColorDefaultBrush}" BorderThickness="1" VerticalAlignment="Center" HorizontalAlignment="Center" MinWidth="450" MaxWidth="550" Padding="0" CornerRadius="12" ClipToBounds="True">
+            <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                    BorderThickness="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    MinWidth="450"
+                    MaxWidth="550"
+                    Padding="0"
+                    CornerRadius="12"
+                    ClipToBounds="True">
                 <StackPanel>
                     <Border Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}" Padding="16">
                         <Grid ColumnDefinitions="Auto, *, Auto">
@@ -126,6 +140,64 @@
                                                                  Icon="Play"/>
                                         </Grid>
                                     </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <Border Background="#99000000" IsVisible="{Binding IsSubplacesOverlayVisible}" ZIndex="101">
+            <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                    Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                    BorderThickness="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    MinWidth="650"
+                    MaxWidth="800"
+                    CornerRadius="12"
+                    ClipToBounds="True">
+                <StackPanel>
+                    <Border Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}" Padding="16">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <PathIcon Data="M15,5V7H11V9H15V11H17V5H15M7,13V19H13V17H9V13H7M15,13V15H17V13H15M7,5V11H13V9H9V7H13V5H7Z" Width="18" Height="18"/>
+                                <TextBlock Text="Available Subplaces" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Content="✕" Command="{Binding CloseSubplacesCommand}" Background="Transparent" BorderThickness="0"/>
+                        </Grid>
+                    </Border>
+
+                    <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoadingSubplaces}" Margin="0"/>
+
+                    <ScrollViewer Height="450">
+                        <ItemsControl ItemsSource="{Binding Subplaces}" Padding="10">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models:PlaceInfo">
+                                    <controls:Card Width="150" Margin="5" Padding="0" CornerRadius="8" ClipToBounds="True">
+                                        <StackPanel>
+                                            <Border CornerRadius="12,12,0,0" ClipToBounds="True">
+                                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                                       Height="150" Width="150" Stretch="UniformToFill"
+                                                       RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                                            </Border>
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="Medium" Margin="0,4,0,0"
+                                                           TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"/>
+                                                <controls:IconButton Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinSubplaceCommand}"
+                                                                     CommandParameter="{Binding}"
+                                                                     VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                                                                     Margin="4,0,4,4"
+                                                                     Classes="Primary" Icon="Play"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </controls:Card>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
