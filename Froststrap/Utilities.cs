@@ -257,51 +257,8 @@ namespace Froststrap
 
         public static void KillBackgroundUpdater()
         {
-            using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
+            using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Bloxstrap-BackgroundUpdaterKillEvent");
             handle.Set();
-        }
-
-        // To stop app from flashing orange in taskbar when opening
-        public static void StopFlashing(IBootstrapperDialog? dialog)
-        {
-            if (!OperatingSystem.IsWindows())
-                return;
-
-            if (dialog is Window window)
-            {
-                var platformHandle = window.TryGetPlatformHandle();
-                if (platformHandle != null)
-                {
-                    StopFlashingNative(platformHandle.Handle);
-                }
-            }
-        }
-
-        public static void StopFlashing(Window window)
-        {
-            if (!OperatingSystem.IsWindows())
-                return;
-
-            var platformHandle = window.TryGetPlatformHandle();
-            if (platformHandle != null)
-            {
-                StopFlashingNative(platformHandle.Handle);
-            }
-        }
-
-        private static void StopFlashingNative(IntPtr hWnd)
-        {
-#if WINDOWS
-            var fi = new WindowsMethods.FLASHWINFO
-            {
-                cbSize = (uint)Marshal.SizeOf<WindowsMethods.FLASHWINFO>(),
-                hwnd = hWnd,
-                dwFlags = 0,
-                uCount = 0,
-                dwTimeout = 0
-            };
-            WindowsMethods.FlashWindowEx(ref fi);
-#endif
         }
     }
 }

@@ -864,15 +864,6 @@ namespace Froststrap
 
                     LaunchIntegration(integration, autoclosePids, LOG_IDENT);
                 }
-
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = Paths.Process,
-                    Arguments = $"-postlaunch {_appPid}",
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                });
             }
 
             await LaunchWatcherIfNeededAsync(autoclosePids);

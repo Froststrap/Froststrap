@@ -18,14 +18,13 @@
         public LaunchFlag ChannelFlag { get; } = new("channel");
         public LaunchFlag ForceFlag { get; } = new("force");
         public LaunchFlag BloxshadeFlag { get; } = new("bloxshade");
-        public LaunchFlag PostLaunchFlag { get; } = new("postlaunch");
         public LaunchFlag GameShortcutFlag { get; } = new("gameshortcut");
         public LaunchFlag NsisFlag { get; } = new("nsis");
 
 #if DEBUG
         public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || PostLaunchFlag.Active || NsisFlag.Active;
+        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || NsisFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
