@@ -9,7 +9,7 @@
         // they only get printed depending on their configured FLog level, which could change at any time
         // while levels being changed is fairly rare, please limit the number of varying number of FLog types you have to use, if possible
 
-        private const string GameTeleportingEntry = "[FLog::GameJoinUtil] GameJoinUtil::initiateTeleportToPlace";
+        private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
         private const string GameJoiningPrivateServerEntry = "[FLog::GameJoinUtil] GameJoinUtil::joinGamePostPrivateServer";
         private const string GameJoiningReservedServerEntry = "[FLog::GameJoinUtil] GameJoinUtil::initiateTeleportToReservedServer";
         private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
@@ -742,13 +742,13 @@
 
                 List<GameHistoryEntry> gameHistory = [.. History
                     .Where(a => a.UniverseId != 0 && a.PlaceId != 0)
-                    .GroupBy(a => new { a.UniverseId, a.PlaceId })
+                    .GroupBy(a => a.UniverseId)
                     .OrderByDescending(g => g.Max(s => s.TimeJoined))
                     .Take(30)
                     .Select(g => new GameHistoryEntry
                     {
-                        UniverseId = g.Key.UniverseId,
-                        PlaceId = g.Key.PlaceId,
+                        UniverseId = g.Key,
+                        PlaceId = g.OrderByDescending(s => s.TimeJoined).First().PlaceId,
                         Servers = [.. g.OrderByDescending(s => s.TimeJoined)
                                    .Take(10)
                                    .Select(s => new ServerInfo
