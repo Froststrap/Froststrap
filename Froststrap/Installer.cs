@@ -188,11 +188,6 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Running migrations: {existingVer} -> {currentVer}");
 
-            if (Utilities.CompareVersions(existingVer, "1.2.5.0") == VersionComparison.LessThan)
-            {
-                App.Settings.Prop.ShowServerUptime = false;
-            }
-
             if (Utilities.CompareVersions(existingVer, "1.4.0.0") == VersionComparison.LessThan)
             {
                 JsonManager<RobloxState> legacyRobloxState = new();

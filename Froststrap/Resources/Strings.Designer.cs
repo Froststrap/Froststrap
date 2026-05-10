@@ -1357,6 +1357,16 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location: {0}
+        ///Uptime: {1}.
+        /// </summary>
+        public static string ContextMenu_ServerDetails_Notification_Text {
+            get {
+                return ResourceManager.GetString("ContextMenu.ServerDetails.Notification.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Instance ID.
         /// </summary>
         public static string ContextMenu_ServerInformation_CopyInstanceId {
@@ -1380,15 +1390,6 @@ namespace Froststrap.Resources {
         public static string ContextMenu_ServerInformation_Location {
             get {
                 return ResourceManager.GetString("ContextMenu.ServerInformation.Location", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Not tracked.
-        /// </summary>
-        public static string ContextMenu_ServerInformation_Notification_ServerNotTracked {
-            get {
-                return ResourceManager.GetString("ContextMenu.ServerInformation.Notification.ServerNotTracked", resourceCulture);
             }
         }
         
@@ -1448,31 +1449,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Estimated uptime.
+        ///   Looks up a localized string similar to Uptime.
         /// </summary>
         public static string ContextMenu_ServerInformation_Uptime {
             get {
                 return ResourceManager.GetString("ContextMenu.ServerInformation.Uptime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Estimated uptime: {0}
-        ///Click for more information.
-        /// </summary>
-        public static string ContextMenu_ServerInformationUptime_Notification_Text {
-            get {
-                return ResourceManager.GetString("ContextMenu.ServerInformationUptime.Notification.Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Location: {0}
-        ///Estimated uptime: {1}.
-        /// </summary>
-        public static string ContextMenu_ServerInformationUptimeAndLocation_Notification_Text {
-            get {
-                return ResourceManager.GetString("ContextMenu.ServerInformationUptimeAndLocation.Notification.Text", resourceCulture);
             }
         }
         
@@ -5376,24 +5357,6 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_QueryServerLocation_Title {
             get {
                 return ResourceManager.GetString("Menu.Integrations.QueryServerLocation.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays the server’s estimated uptime using [RoValra&apos;s APIs]({0}), [RoValra&apos;s privacy policy]({0}/privacy) applies, Feature developed by Fishstrap..
-        /// </summary>
-        public static string Menu_Integrations_QueryServerUptime_Description {
-            get {
-                return ResourceManager.GetString("Menu.Integrations.QueryServerUptime.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Query Server Uptime.
-        /// </summary>
-        public static string Menu_Integrations_QueryServerUptime_Title {
-            get {
-                return ResourceManager.GetString("Menu.Integrations.QueryServerUptime.Title", resourceCulture);
             }
         }
         

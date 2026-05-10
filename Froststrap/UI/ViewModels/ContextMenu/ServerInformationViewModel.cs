@@ -21,7 +21,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         public string ServerUptime { get; private set; } = Strings.Common_Loading;
 
         public static bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
-        public static bool ServerUptimeVisibility => App.Settings.Prop.ShowServerUptime;
+        public static bool ServerUptimeVisibility => App.Settings.Prop.ShowServerDetails;
 
         public ICommand CopyInstanceIdCommand => new RelayCommand<Visual>(CopyInstanceId);
 
@@ -50,14 +50,12 @@ namespace Froststrap.UI.ViewModels.ContextMenu
 
         public async void QueryServerUptime()
         {
-            DateTime? serverTime = await _activityWatcher.Data.QueryServerTime();
-            TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
+            DateTime? serverTime = _activityWatcher.Data.StartTime;
+            TimeSpan _serverUptime = TimeSpan.Zero;
+            if (serverTime is not null)
+                _serverUptime = DateTime.UtcNow - serverTime.Value;
 
-            string? serverUptime = Strings.ContextMenu_ServerInformation_Notification_ServerNotTracked;
-            if (_serverUptime.TotalSeconds > 60)
-                serverUptime = Time.FormatTimeSpan(_serverUptime);
-
-            ServerUptime = serverUptime;
+            ServerUptime = Time.FormatTimeSpan(_serverUptime);
 
             OnPropertyChanged(nameof(ServerUptime));
         }

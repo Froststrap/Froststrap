@@ -38,13 +38,6 @@
             </controls:OptionControl>
 
             <controls:OptionControl
-                Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_QueryServerUptime_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://www.rovalra.com'}"
-                Header="{x:Static resources:Strings.Menu_Integrations_QueryServerUptime_Title}"
-                IsEnabled="{Binding ActivityTrackingEnabled}">
-                <ToggleSwitch IsChecked="{Binding ShowServerUptimeEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl
                 Description="When joinning a game, it will display a notification of server region and uptime if enabled, This will kick you out of exclusive full screen, Requires Server Uptime or Server Location to be on."
                 Header="Show Join Notification"
                 IsEnabled="{Binding CanShowJoinNotification}">

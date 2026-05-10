@@ -52,12 +52,14 @@ namespace Froststrap.Models.Entities
 
 		public DateTime? TimeLeft { get; set; }
 
-		// everything below here is optional strictly for bloxstraprpc, discord rich presence, or game history
+        public DateTime? StartTime { get; set; }
 
-		/// <summary>
-		/// This is intended only for other people to use, i.e. context menu invite link, rich presence joining
-		/// </summary>
-		public string RPCLaunchData { get; set; } = string.Empty;
+        // everything below here is optional strictly for bloxstraprpc, discord rich presence, or game history
+
+        /// <summary>
+        /// This is intended only for other people to use, i.e. context menu invite link, rich presence joining
+        /// </summary>
+        public string RPCLaunchData { get; set; } = string.Empty;
 
 		public UniverseDetails? UniverseDetails { get; set; }
 
@@ -74,7 +76,6 @@ namespace Froststrap.Models.Entities
         public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
 		private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
-		private readonly SemaphoreSlim serverTimeSemaphore = new(1, 1);
 
         public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
         {
@@ -103,72 +104,6 @@ namespace Froststrap.Models.Entities
             }
 
             return deeplink;
-        }
-
-        public async Task<DateTime?> QueryServerTime()
-        {
-            const string LOG_IDENT = "ActivityData::QueryServerTime";
-
-            if (string.IsNullOrEmpty(JobId))
-                throw new InvalidOperationException("JobId is null");
-
-            if (PlaceId == 0)
-                throw new InvalidOperationException("PlaceId is null");
-
-            await serverTimeSemaphore.WaitAsync();
-
-            if (GlobalCache.ServerTime.TryGetValue(JobId, out DateTime? time))
-            {
-                serverTimeSemaphore.Release();
-                return time;
-            }
-
-            DateTime? firstSeen = DateTime.UtcNow;
-            try
-            {
-                Uri serverDetailsUrl = new($"https://apis.rovalra.com/v1/server_details?place_id={PlaceId}&server_ids={JobId}");
-                var serverTimeRaw = await Http.GetJson<RoValraTimeResponse>(serverDetailsUrl);
-
-                var serverBody = new RoValraProcessServerBody
-                {
-                    PlaceId = PlaceId,
-                    ServerIds = [JobId]
-                };
-
-                string json = JsonSerializer.Serialize(serverBody);
-                HttpContent postContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-                Uri processServersUrl = new("https://apis.rovalra.com/process_servers");
-                _ = App.HttpClient.PostAsync(processServersUrl, postContent);
-
-                RoValrasServer? server = null;
-
-                if (serverTimeRaw?.Servers != null && serverTimeRaw.Servers.Count > 0)
-                    server = serverTimeRaw.Servers[0];
-
-                if (server?.FirstSeen != null)
-                    firstSeen = server.FirstSeen;
-
-                GlobalCache.ServerTime[JobId] = firstSeen;
-                serverTimeSemaphore.Release();
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to get server time for {PlaceId}/{JobId}");
-                App.Logger.WriteException(LOG_IDENT, ex);
-
-                GlobalCache.ServerTime[JobId] = firstSeen;
-                serverTimeSemaphore.Release();
-
-                _ = Frontend.ShowConnectivityDialog(
-                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                    Strings.ActivityWatcher_LocationQueryFailed,
-                    MessageBoxImage.Warning,
-                    ex
-                );
-            }
-
-            return firstSeen;
         }
 
         public async Task<string?> QueryServerLocation()

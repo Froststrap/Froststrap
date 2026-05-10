@@ -311,19 +311,15 @@
     <value>Location</value>
   </data>
   <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
-    <value>Estimated uptime</value>
+    <value>Uptime</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
     <value>Location: {0}
 Click for more information</value>
   </data>
-  <data name="ContextMenu.ServerInformationUptimeAndLocation.Notification.Text" xml:space="preserve">
+  <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>Location: {0}
-Estimated uptime: {1}</value>
-  </data>
-  <data name="ContextMenu.ServerInformationUptime.Notification.Text" xml:space="preserve">
-    <value>Estimated uptime: {0}
-Click for more information</value>
+Uptime: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
     <value>Connected to public server</value>
@@ -1902,20 +1898,11 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Waiting for data...</value>
   </data>
-  <data name="Menu.Integrations.QueryServerUptime.Description" xml:space="preserve">
-    <value>Displays the server’s estimated uptime using [RoValra's APIs]({0}), [RoValra's privacy policy]({0}/privacy) applies, Feature developed by Fishstrap.</value>
-  </data>
   <data name="Menu.RegionSelector.Description" xml:space="preserve">
     <value>Easily join servers near you using the selected account in Account Manager. Uses [RoValra's APIs]({0}), [RoValra's privacy policy applies.]({0}/privacy)</value>
   </data>
-  <data name="Menu.Integrations.QueryServerUptime.Title" xml:space="preserve">
-    <value>Query Server Uptime</value>
-  </data>
   <data name="Common.UnknownStatus" xml:space="preserve">
     <value>Unknown status</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.ServerNotTracked" xml:space="preserve">
-    <value>Not tracked</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Change in-game settings from a convenient menu.</value>

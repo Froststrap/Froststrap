@@ -38,10 +38,8 @@ namespace Froststrap.UI
 
             _trayIcon.Clicked += OnTrayIconClicked;
 
-            if (ActivityWatcher is not null && (App.Settings.Prop.ShowServerDetails || App.Settings.Prop.ShowServerUptime))
-            {
-                ActivityWatcher.OnGameJoin += OnGameJoin;
-            }
+            if (ActivityWatcher is not null && App.Settings.Prop.ShowServerDetails)
+                ActivityWatcher.ShowNotif += ShowNotif;
 
             TrayIcon.GetIcons(Application.Current!)?.Add(_trayIcon);
 
@@ -107,7 +105,7 @@ namespace Froststrap.UI
             }
         }
 
-        public async void OnGameJoin(object? sender, EventArgs e)
+        public async void ShowNotif(object? sender, EventArgs e)
         {
             if (ActivityWatcher?.Data == null) return;
 
@@ -132,59 +130,22 @@ namespace Froststrap.UI
                 _ => ""
             };
 
-            bool locationActive = App.Settings.Prop.ShowServerDetails;
-            bool uptimeActive = App.Settings.Prop.ShowServerUptime;
+            string? serverLocation = await ActivityWatcher.Data.QueryServerLocation();
+            string? serverUptime;
+            DateTime? serverTime = ActivityWatcher.Data.StartTime;
 
-            string? serverLocation = "";
-            if (locationActive)
+            if (serverTime is not null)
             {
-                serverLocation = await ActivityWatcher.Data.QueryServerLocation();
+                TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
 
-                if (!string.IsNullOrEmpty(serverLocation))
-                {
-                    ActivityWatcher.Data.Region = serverLocation;
-
-                    ActivityWatcher.SaveGameHistory();
-                }
+                if (_serverUptime.TotalMinutes < 1)
+                    serverUptime = "0 minutes";
+                else
+                    serverUptime = Time.FormatTimeSpan(_serverUptime);
             }
-
-            string? serverUptime = "";
-            if (uptimeActive)
+            else
             {
-                DateTime? serverTime = await ActivityWatcher.Data.QueryServerTime();
-                if (serverTime.HasValue)
-                {
-                    TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
-                    serverUptime = _serverUptime.TotalSeconds > 60
-                        ? Time.FormatTimeSpan(_serverUptime)
-                        : Strings.ContextMenu_ServerInformation_Notification_ServerNotTracked;
-                }
-            }
-
-            string notifContent = Strings.Common_UnknownStatus;
-            bool hasLocation = !string.IsNullOrEmpty(serverLocation);
-            bool hasUptime = !string.IsNullOrEmpty(serverUptime);
-
-            if (locationActive && !uptimeActive)
-            {
-                notifContent = hasLocation
-                    ? String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation)
-                    : Strings.Common_UnknownStatus;
-            }
-            else if (!locationActive && uptimeActive)
-            {
-                notifContent = hasUptime
-                    ? String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime)
-                    : Strings.Common_UnknownStatus;
-            }
-            else if (locationActive && uptimeActive)
-            {
-                if (hasLocation && hasUptime)
-                    notifContent = String.Format(Strings.ContextMenu_ServerInformationUptimeAndLocation_Notification_Text, serverLocation, serverUptime);
-                else if (hasLocation)
-                    notifContent = String.Format(Strings.ContextMenu_ServerInformation_Notification_Text, serverLocation);
-                else if (hasUptime)
-                    notifContent = String.Format(Strings.ContextMenu_ServerInformationUptime_Notification_Text, serverUptime);
+                serverUptime = "0 minutes";
             }
 
             string? thumbnailUrl = null;
@@ -196,7 +157,10 @@ namespace Froststrap.UI
             thumbnailUrl ??= "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png";
 
             if (App.Settings.Prop.ShowJoinNotification)
-                ShowAlertWithImage(title, notifContent, thumbnailUrl);
+                ShowAlertWithImage(
+                    title,
+                    String.Format( Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime),
+                    thumbnailUrl);
         }
 
         public void ShowAlertWithImage(string title, string message, string imagePath)

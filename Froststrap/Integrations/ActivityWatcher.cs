@@ -18,6 +18,7 @@
         private const string GameDisconnectedEntry = "[FLog::Network] Time to disconnect replication data:";
         private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
         private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
+        private const string GameServerUptimeEntry = "[FLog::Output] Server Prefix: ";
 
         private const string StudioPlaceOpenEntry = "[FLog::PlaceManager] Start to open place";
         private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
@@ -28,6 +29,7 @@
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
         private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
+        private const string GameServerUptimePattern = @"Server Prefix:.+_(\d{8}T\d{6}Z)_RCC_[0-9a-z]+";
 
         private int _logEntriesRead = 0;
         private bool _teleportMarker = false;
@@ -42,6 +44,7 @@
         public event EventHandler? OnHistoryUpdated;
 
         public event EventHandler<string>? OnLogEntry;
+        public event EventHandler? ShowNotif;
         public event EventHandler? OnGameJoin;
         public event EventHandler? OnGameLeave;
         public event EventHandler? OnStudioPlaceOpened;
@@ -349,12 +352,6 @@
                     Data.JobId = match.Groups[1].Value;
                     Data.MachineAddress = match.Groups[3].Value;
 
-                    if (App.Settings.Prop.ShowServerDetails && Data.MachineAddressValid)
-                        _ = Data.QueryServerLocation();
-
-                    if (App.Settings.Prop.ShowServerUptime && Data.JobId != null)
-                        _ = Data.QueryServerTime();
-
                     if (_teleportMarker)
                     {
                         Data.IsTeleport = true;
@@ -561,6 +558,28 @@
                     OnRPCMessage?.Invoke(this, message);
 
                     LastRPCRequest = DateTime.Now;
+                }
+                else if (logMessage.StartsWith(GameServerUptimeEntry))
+                {
+                    Match match = Regex.Match(logMessage, GameServerUptimePattern);
+
+                    if (!match.Success && match.Groups.Count == 2)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for server uptime entry");
+                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        return;
+                    }
+
+                    string startTime = match.Groups[1].Value;
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Server started at {startTime}");
+
+                    Data.StartTime = DateTime.ParseExact(startTime, "yyyyMMdd'T'HHmmss'Z'", CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+
+                    if (App.Settings.Prop.ShowServerDetails && Data.MachineAddressValid)
+                        _ = Data.QueryServerLocation();
+
+                    ShowNotif?.Invoke(this, null!);
                 }
             }
         }
