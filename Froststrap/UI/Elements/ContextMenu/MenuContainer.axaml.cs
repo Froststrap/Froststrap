@@ -179,7 +179,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {
-            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink() ?? "No activity data available";
+            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxWeb) ?? "No activity data available";
             TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(deeplink);
         }
 

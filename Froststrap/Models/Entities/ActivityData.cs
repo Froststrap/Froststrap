@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input.Platform;
 using Avalonia.Media.Imaging;
@@ -68,20 +69,12 @@ namespace Froststrap.Models.Entities
         public event EventHandler<string>? OnDeleteRequested;
 
 		public ICommand RejoinServerCommand => new RelayCommand(() => RejoinServer(true));
-		public ICommand CopyDeeplinkCommand => new RelayCommand(CopyDeeplink);
-		public ICommand CopyServerIdCommand => new RelayCommand(CopyServerId);
-		public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
+        public ICommand CopyDeeplinkCommand => new RelayCommand<Visual>(CopyDeeplink);
+        public ICommand CopyServerIdCommand => new RelayCommand<Visual>(CopyServerId);
+        public ICommand DeleteHistoryCommand => new RelayCommand(DeleteHistory);
 
 		private readonly SemaphoreSlim serverQuerySemaphore = new(1, 1);
 		private readonly SemaphoreSlim serverTimeSemaphore = new(1, 1);
-
-        //Too lazy to make it in a diffrent file: TODO: Move to a new file in Enums
-        public enum DeeplinkType
-        {
-            Froststrap,
-            RobloxProtocol,
-            RobloxWeb
-        }
 
         public string GetInviteDeeplink(bool launchData = true, DeeplinkType type = DeeplinkType.RobloxProtocol)
         {
@@ -313,10 +306,25 @@ namespace Froststrap.Models.Entities
 		}
 
         //Froststrap deeplink type when it works, for now use roblox one
-		private void CopyDeeplink() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(GetInviteDeeplink(true, DeeplinkType.RobloxWeb));
-		private void CopyServerId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(JobId);
+        private async void CopyDeeplink(Visual? visual)
+        {
+            var topLevel = TopLevel.GetTopLevel(visual);
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(GetInviteDeeplink(true, DeeplinkType.RobloxWeb));
+            }
+        }
 
-		private void DeleteHistory()
+        private async void CopyServerId(Visual? visual)
+        {
+            var topLevel = TopLevel.GetTopLevel(visual);
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(JobId);
+            }
+        }
+
+        private void DeleteHistory()
 		{
 			string jobIdToDelete = !string.IsNullOrEmpty(RootJobId) ? RootJobId : JobId;
 

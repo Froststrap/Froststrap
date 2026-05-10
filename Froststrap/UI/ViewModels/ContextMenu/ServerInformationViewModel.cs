@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Windows;
@@ -21,7 +23,7 @@ namespace Froststrap.UI.ViewModels.ContextMenu
         public static bool ServerLocationVisibility => App.Settings.Prop.ShowServerDetails;
         public static bool ServerUptimeVisibility => App.Settings.Prop.ShowServerUptime;
 
-        public ICommand CopyInstanceIdCommand => new RelayCommand(CopyInstanceId);
+        public ICommand CopyInstanceIdCommand => new RelayCommand<Visual>(CopyInstanceId);
 
         public ServerInformationViewModel(Watcher watcher)
         {
@@ -60,7 +62,16 @@ namespace Froststrap.UI.ViewModels.ContextMenu
             OnPropertyChanged(nameof(ServerUptime));
         }
 
-        private void CopyInstanceId() => TopLevel.GetTopLevel(null)?.Clipboard?.SetTextAsync(InstanceId);
+        private async void CopyInstanceId(Visual? visual)
+        {
+            var topLevel = TopLevel.GetTopLevel(visual);
+
+            if (topLevel?.Clipboard != null)
+            {
+                await topLevel.Clipboard.SetTextAsync(InstanceId);
+            }
+        }
+
         public static ICommand CloseCommand => new RelayCommand<Window>(window => window?.Close());
 
     }
