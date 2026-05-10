@@ -9,11 +9,10 @@
         // they only get printed depending on their configured FLog level, which could change at any time
         // while levels being changed is fairly rare, please limit the number of varying number of FLog types you have to use, if possible
 
-        // Find alternatives for GameJoinUtil log entires
         private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
         private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
         private const string GameJoiningUDMUXEntry = "[FLog::Network] UDMUX Address = ";
-        private const string GameJoinedEntry = "[FLog::Network] Replicator created: ";
+        private const string GameJoinedEntry = "[FLog::Network] serverId:";
         private const string GameDisconnectedEntry = "[FLog::Network] Time to disconnect replication data:";
         private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
         private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
@@ -27,6 +26,7 @@
         private const string GameJoinReferralPattern = @"referral_page:([^,]+)";
         private const string GameTeleportJoinTypePattern = @"JoinTypeId""%3a(\d+)%2c";
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
+        private const string GameJoinedEntryPattern = @"serverId: ([0-9\.]+)\|[0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
         private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
         private const string GameServerUptimePattern = @"Server Prefix:.+_(\d{8}T\d{6}Z)_RCC_[0-9a-z]+";
@@ -416,13 +416,19 @@
 
                     Data.MachineAddress = match.Groups[1].Value;
 
-                    if (App.Settings.Prop.ShowServerDetails)
-                        _ = Data.QueryServerLocation();
-
                     App.Logger.WriteLine(LOG_IDENT, $"Server is UDMUX protected ({Data})");
                 }
                 else if (logMessage.StartsWith(GameJoinedEntry))
                 {
+                    Match match = Regex.Match(logMessage, GameJoinedEntryPattern);
+
+                    if (match.Groups.Count != 2 || match.Groups[1].Value != Data.MachineAddress)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to assert format for game joined entry");
+                        App.Logger.WriteLine(LOG_IDENT, logMessage);
+                        return;
+                    }
+
                     App.Logger.WriteLine(LOG_IDENT, $"Joined Game ({Data})");
 
                     InGame = true;
