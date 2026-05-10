@@ -193,6 +193,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
         #endregion
 
         #region Shapes
+        // TODO: Fix shapes not working
         private static void HandleXmlElement_Shape(CustomDialog dialog, Shape shape, XElement xmlElement)
         {
             HandleXmlElement_Control(dialog, shape, xmlElement);
@@ -669,6 +670,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             return stackPanel;
         }
 
+        // TODO: Fix borders not working
         private static Border HandleXmlElement_Border(CustomDialog dialog, XElement xmlElement)
         {
             var border = new Border();

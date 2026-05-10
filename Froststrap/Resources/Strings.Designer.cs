@@ -1404,7 +1404,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connected to private server.
+        ///   Looks up a localized string similar to Connected to a Private server.
         /// </summary>
         public static string ContextMenu_ServerInformation_Notification_Title_Private {
             get {
@@ -1413,7 +1413,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connected to public server.
+        ///   Looks up a localized string similar to Connected to a Public server.
         /// </summary>
         public static string ContextMenu_ServerInformation_Notification_Title_Public {
             get {
@@ -1422,7 +1422,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connected to reserved server.
+        ///   Looks up a localized string similar to Connected to a Reserved server.
         /// </summary>
         public static string ContextMenu_ServerInformation_Notification_Title_Reserved {
             get {

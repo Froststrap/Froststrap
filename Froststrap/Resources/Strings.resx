@@ -322,7 +322,7 @@ Click for more information</value>
 Uptime: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
-    <value>Connected to public server</value>
+    <value>Connected to a Public server</value>
   </data>
   <data name="ContextMenu.ServerInformation.Title" xml:space="preserve">
     <value>Server information</value>
@@ -1413,10 +1413,10 @@ If not, then please report this exception to the maintainers of this fork. Do NO
     <value>Create shortcuts for quick access to specific functions. These will all be placed on the Desktop.</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
-    <value>Connected to private server</value>
+    <value>Connected to a Private server</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
-    <value>Connected to reserved server</value>
+    <value>Connected to a Reserved server</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
     <value>The emoji mod can not be applied at this time.</value>

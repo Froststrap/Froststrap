@@ -364,8 +364,8 @@ namespace Froststrap.Integrations
 
             string status = activity.ServerType switch
             {
-                ServerType.Private => "In a private server",
-                ServerType.Reserved => "In a reserved server",
+                ServerType.Private => "In a Private server",
+                ServerType.Reserved => "In a Reserved server",
                 _ => $"by {universeDetails.Data.Creator.Name}" + (universeDetails.Data.Creator.HasVerifiedBadge ? " ☑️" : ""),
             };
 
