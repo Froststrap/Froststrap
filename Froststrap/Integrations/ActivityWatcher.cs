@@ -9,8 +9,8 @@
         // they only get printed depending on their configured FLog level, which could change at any time
         // while levels being changed is fairly rare, please limit the number of varying number of FLog types you have to use, if possible
 
+        // Find alternatives for GameJoinUtil log entires
         private const string GameTeleportingEntry = "[FLog::UgcExperienceController] UgcExperienceController: doTeleport: joinScriptUrl";
-        private const string GameJoiningPrivateServerEntry = "[FLog::GameJoinUtil] GameJoinUtil::joinGamePostPrivateServer";
         private const string GameJoiningReservedServerEntry = "[FLog::GameJoinUtil] GameJoinUtil::initiateTeleportToReservedServer";
         private const string GameJoiningUniverseEntry = "[FLog::GameJoinLoadTime] Report game_join_loadtime:";
         private const string GameJoiningUDMUXEntry = "[FLog::Network] UDMUX Address = ";
@@ -23,8 +23,8 @@
         private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
 
         private const string GameJoiningEntryPattern = @"! Joining game '([0-9a-f\-]{36})' place ([0-9]+) at ([0-9\.]+)";
-        private const string GameJoiningPrivateServerPattern = @"""accessCode"":""([0-9a-f\-]{36})""";
         private const string GameJoiningUniversePattern = @"universeid:([0-9]+).*userid:([0-9]+)";
+        private const string GameJoinReferralPattern = @"referral_page:([^,]+)";
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
         private const string GameMessageEntryPattern = @"\[BloxstrapRPC\] (.*)";
         private const string GameDisconnectReasonPattern = @"Sending disconnect with reason: (\d+)";
@@ -333,24 +333,7 @@
             {
                 // We are not in a game, nor are in the process of joining one
 
-                if (logMessage.StartsWith(GameJoiningPrivateServerEntry))
-                {
-                    // we only expect to be joining a private server if we're not already in a game
-
-                    Data.ServerType = ServerType.Private;
-
-                    var match = Regex.Match(logMessage, GameJoiningPrivateServerPattern);
-
-                    if (match.Groups.Count != 2)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to assert format for game join private server entry");
-                        App.Logger.WriteLine(LOG_IDENT, logMessage);
-                        return;
-                    }
-
-                    Data.AccessCode = match.Groups[1].Value;
-                }
-                else if (logMessage.StartsWith(GameJoiningEntry))
+                if (logMessage.StartsWith(GameJoiningEntry))
                 {
                     Match match = Regex.Match(logMessage, GameJoiningEntryPattern);
 
@@ -404,6 +387,22 @@
 
                     Data.UniverseId = Int64.Parse(match.Groups[1].Value);
                     Data.UserId = Int64.Parse(match.Groups[2].Value);
+
+                    var loadTimeMatch = Regex.Match(logMessage, GameJoinReferralPattern);
+
+                    if (loadTimeMatch.Groups.Count == 2)
+                    {
+                        string referral = loadTimeMatch.Groups[1].Value;
+
+                        if (referral.Contains("RequestPrivateGame", StringComparison.OrdinalIgnoreCase) || referral.Contains("GameDetailPageJSHybridEvent", StringComparison.OrdinalIgnoreCase))
+                        {
+                            Data.ServerType = ServerType.Private;
+                        }
+                        else
+                        {
+                            Data.ServerType = ServerType.Public;
+                        }
+                    }
 
                     if (History.Count > 0)
                     {
