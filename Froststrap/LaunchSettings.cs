@@ -4,7 +4,7 @@
     {
         public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
         public LaunchFlag WatcherFlag { get; } = new("watcher");
-        public LaunchFlag MultiInstanceWatcherFlag { get; } = new("multiinstancewatcher"); // keep this part for now ig
+        public LaunchFlag MultiInstanceWatcherFlag { get; } = new("multiinstancewatcher");
         public LaunchFlag AccountManagerFlag { get; } = new("accountmanager");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
         public LaunchFlag QuietFlag { get; } = new("quiet"); // need to update this

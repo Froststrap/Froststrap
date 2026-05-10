@@ -49,7 +49,7 @@ namespace Froststrap
         public async Task LoadData()
         {
             const string LOG_IDENT = $"{nameof(RemoteDataManager)}::LoadData";
-            if (App.Settings.Prop.ForceLocalData || App.LaunchSettings.WatcherFlag.Active)
+            if (App.Settings.Prop.ForceLocalData || (App.LaunchSettings.WatcherFlag.Active || App.LaunchSettings.MultiInstanceWatcherFlag.Active))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Force loading local data");
                 this.Load(false);

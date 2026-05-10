@@ -59,6 +59,11 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Opening background updater");
                 LaunchBackgroundUpdater();
             }
+            else if (App.LaunchSettings.MultiInstanceWatcherFlag.Active)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Opening multi-instance watcher");
+                LaunchMultiInstanceWatcher();
+            }
             else if (App.LaunchSettings.RobloxLaunchMode != LaunchMode.None)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Opening bootstrapper ({App.LaunchSettings.RobloxLaunchMode})");
@@ -161,7 +166,7 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Found an already existing menu window");
 
-                using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
+                using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-ActivateSettingsEvent");
                 activateEvent.Set();
 
                 App.Terminate();
@@ -204,7 +209,7 @@ namespace Froststrap
                 App.Terminate(ErrorCode.ERROR_FILE_NOT_FOUND);
             }
 
-            if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && launchMode != LaunchMode.Studio)
+            if (App.Settings.Prop.ConfirmLaunches && Utilities.IsRobloxRunning() && !App.Settings.Prop.MultiInstanceLaunching && launchMode != LaunchMode.Studio)
             {
                 var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_ConfirmLaunch, MessageBoxImage.Warning, MessageBoxButton.YesNo);
 
@@ -287,6 +292,28 @@ namespace Froststrap
                 // Shouldn't this be done after client closes?
                 if (App.Settings.Prop.CleanerOptions != CleanerOptions.Never)
                     Cleaner.DoCleaning();
+
+                App.Terminate();
+            });
+        }
+
+        public static void LaunchMultiInstanceWatcher()
+        {
+            const string LOG_IDENT = "LaunchHandler::LaunchMultiInstanceWatcher";
+
+            App.Logger.WriteLine(LOG_IDENT, "Starting multi-instance watcher");
+
+            Task.Run(MultiInstanceWatcher.Run).ContinueWith(async t =>
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Multi instance watcher task has finished");
+
+                if (t.IsFaulted)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the multi-instance watcher");
+
+                    if (t.Exception is not null)
+                        await App.FinalizeExceptionHandling(t.Exception);
+                }
 
                 App.Terminate();
             });

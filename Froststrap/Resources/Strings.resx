@@ -2306,4 +2306,7 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>left</value>
   </data>
+  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
+    <value>Multi-Instancing is prone to breaking. We will not provide support for issues with Multi-Instancing, since Roblox is actively adding measures to make sure it doesn't work. We cannot and won't attempt to bypass these measures.</value>
+  </data>
 </root>

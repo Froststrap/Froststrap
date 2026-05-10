@@ -66,6 +66,46 @@ namespace Froststrap.UI.ViewModels.Settings
             Dark
         }
 
+        public bool MultiInstances
+        {
+            get => App.Settings.Prop.MultiInstanceLaunching;
+            set => HandleMultiInstanceChange(value);
+        }
+
+        private async void HandleMultiInstanceChange(bool value)
+        {
+            if (value && !App.Settings.Prop.MultiInstanceLaunching)
+            {
+                var result = await Frontend.ShowMessageBox(
+                    "Roblox stated that multi-instance launching is considered an exploit, but it isn't bannable.\n\n" +
+                    "Are you sure you want to enable multi-instance launching?",
+                    MessageBoxImage.Warning,
+                    MessageBoxButton.YesNo
+                );
+
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            App.Settings.Prop.MultiInstanceLaunching = value;
+
+            if (!value)
+            {
+                Error773Fix = false;
+                OnPropertyChanged(nameof(Error773Fix));
+            }
+
+            OnPropertyChanged(nameof(MultiInstances));
+        }
+
+        public static bool Error773Fix
+        {
+            get => App.Settings.Prop.Error773Fix;
+            set => App.Settings.Prop.Error773Fix = value;
+        }
+
         public static bool BackgroundUpdates
         {
             get => App.Settings.Prop.BackgroundUpdatesEnabled;
