@@ -93,17 +93,21 @@ namespace Froststrap
 
             if (identifier == "nil")
             {
-                CurrentCulture = Thread.CurrentThread.CurrentUICulture;
+                CurrentCulture = CultureInfo.CurrentUICulture;
             }
             else
             {
                 CurrentCulture = new CultureInfo(identifier);
-
-                CultureInfo.DefaultThreadCurrentUICulture = CurrentCulture;
-                Thread.CurrentThread.CurrentUICulture = CurrentCulture;
             }
 
-            RightToLeft = _rtlLocales.Any(CurrentCulture.Name.StartsWith);
+            Thread.CurrentThread.CurrentCulture = CurrentCulture;
+            Thread.CurrentThread.CurrentUICulture = CurrentCulture;
+            CultureInfo.DefaultThreadCurrentCulture = CurrentCulture;
+            CultureInfo.DefaultThreadCurrentUICulture = CurrentCulture;
+
+            Strings.Culture = CurrentCulture;
+
+            RightToLeft = _rtlLocales.Any(l => CurrentCulture.Name.StartsWith(l, StringComparison.OrdinalIgnoreCase));
         }
 
         public static void Initialize()
