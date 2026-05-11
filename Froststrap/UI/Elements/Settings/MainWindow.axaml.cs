@@ -67,6 +67,8 @@ namespace Froststrap.UI.Elements.Settings
 
             App.WindowsBackdrop();
 
+            LaunchButton.Content = App.IsPlayerInstalled ? Strings.Menu_SaveAndLaunch : Strings.Menu_InstallRoblox;
+
             UpdatePageView(_viewModel.CurrentPage);
 
             Dispatcher.UIThread.Post(() =>

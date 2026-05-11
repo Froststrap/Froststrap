@@ -4992,6 +4992,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install Roblox.
+        /// </summary>
+        public static string Menu_InstallRoblox {
+            get {
+                return ResourceManager.GetString("Menu.InstallRoblox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Activity Tracking.
         /// </summary>
         public static string Menu_Integrations_ActivityTracking {

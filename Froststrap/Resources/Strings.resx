@@ -1715,6 +1715,9 @@ Please close any applications that may be using Roblox's files, and relaunch.</v
   <data name="Menu.SaveAndLaunch" xml:space="preserve">
     <value>Save and Launch</value>
   </data>
+  <data name="Menu.InstallRoblox" xml:space="preserve">
+    <value>Install Roblox</value>
+  </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
     <value>Upgrades were disabled with missing client.
 	To prevent issues upgrading will continue.</value>
