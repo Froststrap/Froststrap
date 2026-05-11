@@ -70,31 +70,31 @@
                     OnContent="" />
             </controls:OptionControl>
 
-            <Separator Margin="0,8,0,4" />
+            <Separator Margin="0,8,0,4"  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"/>
 
-            <TextBlock
-                Margin="0,8,0,0"
-                FontSize="20"
-                FontWeight="Bold"
-                Text="Roblox" />
+            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                       Margin="0,8,0,0"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Text="Roblox" />
 
-            <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
-                IsEnabled="{Binding !IsRobloxInstallationMissing}">
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                                    Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
+                                    IsEnabled="{Binding !IsRobloxInstallationMissing}">
                 <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
-                Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
-                IsEnabled="{Binding !IsRobloxInstallationMissing}">
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                                    Header="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades}"
+                                    Description="{x:Static resources:Strings.Menu_Channel_RobloxUpgrades_Description}"
+                                    IsEnabled="{Binding !IsRobloxInstallationMissing}">
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl
-                Header="Max Download Thread"
-                Description="Specify the amount of threads used to download a roblox update.">
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                                    Header="Max Download Thread"
+                                    Description="Specify the amount of threads used to download a roblox update.">
                 <TextBox
                     Width="200"
                     Margin="8,0,0,0"
@@ -102,9 +102,9 @@
                     Text="{Binding MaxThreadDownload, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </controls:OptionControl>
 
-            <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
-                Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                                    Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
                 <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
             </controls:OptionControl>
 
@@ -221,9 +221,9 @@
             </controls:CardExpander>
 
             <!-- Channel Change Action Option -->
-            <controls:OptionControl
-                Header="{x:Static resources:Strings.Menu_Channel_ChangeAction_Title}"
-                Description="{x:Static resources:Strings.Menu_Channel_ChangeAction_Description}">
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                                    Header="{x:Static resources:Strings.Menu_Channel_ChangeAction_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Channel_ChangeAction_Description}">
                 <ComboBox
                     Width="200"
                     Margin="5,0,0,0"
