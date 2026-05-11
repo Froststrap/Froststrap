@@ -134,8 +134,21 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            var universeIds = _allHistory.Select(x => x.UniverseId.ToString()).Distinct().ToList();
-            await UniverseDetails.FetchBulk(string.Join(",", universeIds));
+            var universeIds = _allHistory
+                .Select(x => x.UniverseId)
+                .Where(id => id > 0)
+                .Distinct()
+                .Select(id => id.ToString())
+                .ToList();
+
+            if (universeIds.Count > 0)
+            {
+                await UniverseDetails.FetchBulk(string.Join(",", universeIds));
+            }
+            else
+            {
+                App.Logger.WriteLine("QuickPlayViewModel", "No valid Universe IDs found in history.");
+            }
 
             var uiItems = new List<QuickPlayGameItem>();
             foreach (var entry in _allHistory)

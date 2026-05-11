@@ -32,7 +32,7 @@
                 <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <ui:InfoBar Margin="0,8,0,0" Padding="0" IsOpen="True" Severity="Warning" Message="{x:Static resources:Strings.Menu_Integrations_MultiInstanceLaunching_Warning}" />
+            <ui:InfoBar IsOpen="True" Severity="Warning" Message="{x:Static resources:Strings.Menu_Integrations_MultiInstanceLaunching_Warning}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Title}"
