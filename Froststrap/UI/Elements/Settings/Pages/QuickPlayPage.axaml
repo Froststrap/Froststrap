@@ -5,6 +5,7 @@
              xmlns:models="clr-namespace:Froststrap.Models"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:Name="RootPage"
              x:DataType="vm:QuickPlayViewModel">
     <Grid>
@@ -78,8 +79,8 @@
                                         </StackPanel>
                                         <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="Black">
                                             <StackPanel Orientation="Horizontal" Spacing="4">
-                                                <ic:SymbolIcon Symbol="Server" FontSize="10" Foreground="White"/>
-                                                <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                <ic:SymbolIcon Symbol="Server" FontSize="10"/>
+                                                <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold"/>
                                             </StackPanel>
                                         </Border>
                                     </Panel>
@@ -88,9 +89,28 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" VerticalAlignment="Center" Margin="0,20,0,0"/>
             </StackPanel>
         </ScrollViewer>
+
+        <Grid IsVisible="{Binding IsLoading}" ZIndex="200" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel Spacing="16" HorizontalAlignment="Center">
+                <TextBlock Text="Loading recent games..."
+                           HorizontalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Opacity="0.9"/>
+
+                <ui:ProgressRing IsActive="{Binding IsLoading}"
+                                 Width="48"
+                                 Height="48"
+                                 Foreground="{DynamicResource SystemAccentColor}"/>
+
+                <TextBlock Text="Fetching game information"
+                           HorizontalAlignment="Center"
+                           FontSize="12"
+                           Opacity="0.6"/>
+            </StackPanel>
+        </Grid>
 
         <Border Background="#99000000" IsVisible="{Binding IsOverlayVisible}" ZIndex="100">
             <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
@@ -158,61 +178,77 @@
         </Border>
 
         <Border Background="#99000000" IsVisible="{Binding IsSubplacesOverlayVisible}" ZIndex="101">
-            <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
-                    Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
-                    BorderThickness="1"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    MinWidth="650"
-                    MaxWidth="800"
-                    CornerRadius="12"
-                    ClipToBounds="True">
-                <StackPanel>
-                    <Border Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}" Padding="16">
-                        <Grid ColumnDefinitions="*, Auto">
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <ic:SymbolIcon Symbol="Layer" FontSize="18" />
-                                <TextBlock Text="Available Subplaces" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+            <Grid>
+                <Border BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        Background="{DynamicResource SolidBackgroundFillColorBaseBrush}"
+                        BorderThickness="1"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        MinWidth="650"
+                        MaxWidth="800"
+                        CornerRadius="12"
+                        ClipToBounds="True">
+                    <StackPanel>
+                        <Border Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}" Padding="16">
+                            <Grid ColumnDefinitions="*, Auto">
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <ic:SymbolIcon Symbol="Layer" FontSize="18" />
+                                    <TextBlock Text="Available Subplaces" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Command="{Binding CloseSubplacesCommand}" Background="Transparent" BorderThickness="0">
+                                    <ic:SymbolIcon Symbol="Dismiss" FontSize="16" />
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <Grid IsVisible="{Binding IsLoadingSubplaces}" Height="450">
+                            <StackPanel Spacing="16"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                <ui:ProgressRing IsActive="{Binding IsLoadingSubplaces}"
+                                                 Width="40"
+                                                 Height="40"
+                                                 Foreground="{DynamicResource SystemAccentColor}"/>
+                                <TextBlock Text="Loading subplaces..."
+                                           FontSize="12"
+                                           Opacity="0.7"/>
                             </StackPanel>
-                            <Button Grid.Column="1" Command="{Binding CloseSubplacesCommand}" Background="Transparent" BorderThickness="0">
-                                <ic:SymbolIcon Symbol="Dismiss" FontSize="16" />
-                            </Button>
                         </Grid>
-                    </Border>
-                    <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoadingSubplaces}" Margin="0"/>
-                    <ScrollViewer Height="450">
-                        <ItemsControl ItemsSource="{Binding Subplaces}" Padding="10">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="models:PlaceInfo">
-                                    <controls:Card Width="150" Margin="5" Padding="0" CornerRadius="8" ClipToBounds="True">
-                                        <StackPanel>
-                                            <Border CornerRadius="12,12,0,0" ClipToBounds="True">
-                                                <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
-                                                       Height="150" Width="150" Stretch="UniformToFill"
-                                                       RenderOptions.BitmapInterpolationMode="HighQuality"/>
-                                            </Border>
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="Medium" Margin="0,4,0,0"
-                                                           TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"/>
-                                                <controls:IconButton Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinSubplaceCommand}"
-                                                                     CommandParameter="{Binding}"
-                                                                     VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-                                                                     Margin="4,0,4,4"
-                                                                     Classes="Primary" Icon="Play"/>
+
+                        <ScrollViewer Height="450" IsVisible="{Binding !IsLoadingSubplaces}">
+                            <ItemsControl ItemsSource="{Binding Subplaces}" Padding="10">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:PlaceInfo">
+                                        <controls:Card Width="150" Margin="5" Padding="0" CornerRadius="8" ClipToBounds="True">
+                                            <StackPanel>
+                                                <Border CornerRadius="12,12,0,0" ClipToBounds="True">
+                                                    <Image Source="{Binding ThumbnailUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                                           Height="150" Width="150" Stretch="UniformToFill"
+                                                           RenderOptions.BitmapInterpolationMode="HighQuality"/>
+                                                </Border>
+                                                <StackPanel Spacing="4">
+                                                    <TextBlock Text="{Binding Name}" FontSize="12" FontWeight="Medium" Margin="0,4,0,0"
+                                                               TextTrimming="CharacterEllipsis" HorizontalAlignment="Center"/>
+                                                    <controls:IconButton Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinSubplaceCommand}"
+                                                                         CommandParameter="{Binding}"
+                                                                         VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                                                                         Margin="4,0,4,4"
+                                                                         Classes="Primary" Icon="Play"/>
+                                                </StackPanel>
                                             </StackPanel>
-                                        </StackPanel>
-                                    </controls:Card>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </StackPanel>
-            </Border>
+                                        </controls:Card>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

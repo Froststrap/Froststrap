@@ -29,7 +29,7 @@ namespace Froststrap.UI.Elements.Settings
 
             if (Locale.RightToLeft)
             {
-                this.FlowDirection = Avalonia.Media.FlowDirection.RightToLeft;
+                this.FlowDirection = FlowDirection.RightToLeft;
             }
         }
 

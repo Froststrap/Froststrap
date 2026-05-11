@@ -121,6 +121,8 @@
                     <Border
                         Grid.Row="0"
                         Padding="24,24,24,16"
+                        BorderThickness="0,0,0,1"
+                        Background="{DynamicResource ControlFillColorDefaultBrush}"
                         BorderBrush="{DynamicResource ControlStrokeColorDefault}">
                         <StackPanel>
                             <ItemsControl
