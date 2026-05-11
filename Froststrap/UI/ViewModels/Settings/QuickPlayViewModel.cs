@@ -215,18 +215,18 @@ namespace Froststrap.UI.ViewModels.Settings
                 IsLoadingSubplaces = true;
                 Subplaces.Clear();
 
-                using var client = new HttpClient();
-                string url = $"https://develop.roblox.com/v1/universes/{universeId}/places?isUniverseCreation=false&limit=100&sortOrder=Asc";
+                Uri url = UrlBuilder.BuildApiUrl(
+                    "develop",
+                    $"v1/universes/{universeId}/places?isUniverseCreation=false&limit=100&sortOrder=Asc"
+                );
 
-                var response = await client.GetAsync(url);
-                if (!response.IsSuccessStatusCode) return;
-
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var subplacesResponse = JsonSerializer.Deserialize<SubplacesResponse>(responseContent);
+                var subplacesResponse = await Http.GetJson<SubplacesResponse>(url);
 
                 if (subplacesResponse?.Data != null && subplacesResponse.Data.Count > 0)
                 {
-                    var tempSubplaces = subplacesResponse.Data.Select(place => new PlaceInfo(place.Id, place.UniverseId, place.Name, "")).ToList();
+                    var tempSubplaces = subplacesResponse.Data
+                        .Select(place => new PlaceInfo(place.Id, place.UniverseId, place.Name, ""))
+                        .ToList();
 
                     var thumbRequests = tempSubplaces.Select(p => new ThumbnailRequest
                     {
@@ -244,12 +244,18 @@ namespace Froststrap.UI.ViewModels.Settings
                             tempSubplaces[i].ThumbnailUrl = urls.ElementAtOrDefault(i) ?? "";
                         }
                     }
-                    catch (Exception ex) { Debug.WriteLine($"Subplace thumbnail fetch failed: {ex.Message}"); }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine("QuickPlayViewModel", $"Subplace thumbnail fetch failed: {ex.Message}");
+                    }
 
                     foreach (var p in tempSubplaces) Subplaces.Add(p);
                 }
             }
-            catch (Exception ex) { Debug.WriteLine($"Subplace fetch failed: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("QuickPlayViewModel", $"Subplace fetch failed: {ex.Message}");
+            }
             finally
             {
                 IsLoadingSubplaces = false;
