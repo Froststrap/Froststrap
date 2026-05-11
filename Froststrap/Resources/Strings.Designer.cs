@@ -230,7 +230,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Let Fishstrap decide which servers you join. Prioritizes the server with the shortest distance to you..
+        ///   Looks up a localized string similar to Let Froststrap decide which servers you join. Prioritizes the server with the shortest distance to you..
         /// </summary>
         public static string Bootstrapper_Experimental_BetterMatchmaking_Description {
             get {
@@ -3896,7 +3896,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set what domain Roblox and Fishstrap will use. Enter only trusted domains..
+        ///   Looks up a localized string similar to Set what domain Roblox and Froststrap will use. Enter only trusted domains..
         /// </summary>
         public static string Menu_Channel_RobloxDomain_Description {
             get {
