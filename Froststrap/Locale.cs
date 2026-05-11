@@ -6,7 +6,7 @@ using Froststrap.UI.Elements.Base;
 
 namespace Froststrap
 {
-    internal static class Locale
+    public static class Locale
     {
         public static CultureInfo CurrentCulture { get; private set; } = CultureInfo.InvariantCulture;
 

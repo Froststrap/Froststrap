@@ -8,7 +8,6 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using FluentAvalonia.UI.Controls;
-using FluentIcons.Common;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
@@ -16,7 +15,7 @@ using System.ComponentModel;
 
 namespace Froststrap.UI.Elements.Settings
 {
-    public partial class MainWindow : Base.AvaloniaWindow
+    public partial class MainWindow : Locale.LocaleAwareWindow
     {
         public static MainWindow? Instance { get; private set; }
 
@@ -27,6 +26,11 @@ namespace Froststrap.UI.Elements.Settings
         {
             Instance = this;
             InitializeComponent();
+
+            if (Locale.RightToLeft)
+            {
+                this.FlowDirection = Avalonia.Media.FlowDirection.RightToLeft;
+            }
         }
 
         public MainWindow(bool showAlreadyRunningWarning) : this()
