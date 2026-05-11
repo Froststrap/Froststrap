@@ -11,6 +11,8 @@
 
         public string Directory => App.Settings.Prop.StaticDirectory ? StaticDirectory : DynamicDirectory;
 
+        public bool IsInstalled => DistributionStateManager.IsSaved && !string.IsNullOrEmpty(DistributionState.VersionGuid) && System.IO.Directory.Exists(Directory);
+
         public string ExecutablePath => Path.Combine(Directory, ExecutableName);
 
         public virtual JsonManager<DistributionState> DistributionStateManager { get; } = null!;

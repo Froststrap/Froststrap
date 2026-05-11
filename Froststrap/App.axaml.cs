@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
+using Froststrap.AppData;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Base;
 using Microsoft.Win32;
@@ -64,9 +65,13 @@ public partial class App : Application
 
     public static string GetUpdateCheckVersion() => MockCurrentVersion ?? Version;
 
-    public static bool IsPlayerInstalled => PlayerState.IsSaved && !String.IsNullOrEmpty(PlayerState.Prop.VersionGuid);
+    public static bool IsPlayerInstalled => PlayerData.IsInstalled;
 
-    public static bool IsStudioInstalled => StudioState.IsSaved && !String.IsNullOrEmpty(StudioState.Prop.VersionGuid);
+    public static bool IsStudioInstalled => StudioData.IsInstalled;
+
+    public static readonly RobloxPlayerData PlayerData = new();
+
+    public static readonly RobloxStudioData StudioData = new();
 
     public static readonly MD5 MD5Provider = MD5.Create();
 
