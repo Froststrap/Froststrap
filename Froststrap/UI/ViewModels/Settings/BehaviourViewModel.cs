@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using static Froststrap.AppStorageManager;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -18,7 +19,7 @@ namespace Froststrap.UI.ViewModels.Settings
         }
 
         // Ill move to global settings in the future, too lazy to do it now
-        public static bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme) && RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        public static bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme);
         public static bool ShowLaunchAtStartup => !string.IsNullOrEmpty(App.StorageSettings.Prop.LaunchAtStartup);
         public static bool ShowMinimizeToTray => !string.IsNullOrEmpty(App.StorageSettings.Prop.MinimizeToTray);
         public static bool ShowSystemTrayModal => !string.IsNullOrEmpty(App.StorageSettings.Prop.SystemTrayModalShown);
@@ -26,44 +27,28 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static bool LaunchAtStartup
         {
-            get => App.StorageSettings.Prop.LaunchAtStartup?.ToLower() == "true";
-            set => App.StorageSettings.Prop.LaunchAtStartup = value.ToString().ToLower();
-        }
-
-        public static bool SystemTrayModalShown
-        {
-            get => App.StorageSettings.Prop.SystemTrayModalShown?.ToLower() == "true";
-            set => App.StorageSettings.Prop.SystemTrayModalShown = value.ToString().ToLower();
+            get => AppStorageManager.GetBoolValue("LaunchAtStartup");
+            set => AppStorageManager.SetBoolValue("LaunchAtStartup", value);
         }
 
         public static bool MinimizeToTray
         {
-            get => App.StorageSettings.Prop.MinimizeToTray?.ToLower() == "true";
-            set => App.StorageSettings.Prop.MinimizeToTray = value.ToString().ToLower();
+            get => AppStorageManager.GetBoolValue("MinimizeToTray");
+            set => AppStorageManager.SetBoolValue("MinimizeToTray", value);
         }
 
-        public static IEnumerable<AppStorageSettingTheme> AppThemeOptions => Enum.GetValues<AppStorageSettingTheme>();
-
-        public static AppStorageSettingTheme SelectedTheme
+        public static bool SystemTrayModalShown
         {
-            get
-            {
-                var json = App.StorageSettings.Prop.DeviceLevelTheme;
-                return (!string.IsNullOrEmpty(json) && json.Contains("dark")) ? AppStorageSettingTheme.Dark : AppStorageSettingTheme.Light;
-            }
-            set
-            {
-                string themeStr = (value == AppStorageSettingTheme.Dark) ? "dark" : "light";
-                string userId = App.StorageSettings.Prop.UserId ?? "0";
-                App.StorageSettings.Prop.DeviceLevelTheme = $"{{\"{userId}\":\"{themeStr}\"}}";
-            }
+            get => AppStorageManager.GetBoolValue("SystemTrayModalShown");
+            set => AppStorageManager.SetBoolValue("SystemTrayModalShown", value);
         }
 
-        // too lazy to make new folder and place it there
-        public enum AppStorageSettingTheme
+        public static IEnumerable<AppStorageManager.AppStorageSettingTheme> AppThemeOptions => Enum.GetValues<AppStorageManager.AppStorageSettingTheme>();
+
+        public static AppStorageManager.AppStorageSettingTheme SelectedTheme
         {
-            Light,
-            Dark
+            get => AppStorageManager.GetTheme();
+            set => AppStorageManager.SetTheme(value);
         }
 
         public bool MultiInstances
