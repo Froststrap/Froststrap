@@ -5,6 +5,8 @@ PROJECT_FILE=${1:-"Froststrap/Froststrap.csproj"}
 BUILD_DIR=${2:-"build"}
 CONFIG="Release"
 APP_DIR="$BUILD_DIR/AppDir"
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
 
 # Clean and Publish .NET
 rm -rf "$BUILD_DIR" && mkdir -p "$BUILD_DIR"
@@ -29,6 +31,7 @@ rm -rf "$BUILD_DIR/linux-temp"
 
 # Version
 VERSION=$(echo "$(git describe --tags --always --dirty 2>/dev/null || echo "1.0.0")" | sed 's/^v//; s/-/~/g')
+RPM_VERSION=$(echo "$VERSION" | sed 's/+/_/g')
 
 # Create Desktop Entry
 cat > "$APP_DIR/Froststrap.desktop" <<EOF
@@ -60,6 +63,17 @@ fi
 
 env -u SOURCE_DATE_EPOCH ARCH=x86_64 "$APPIMAGE_TOOL" --appimage-extract-and-run "$APP_DIR" "$BUILD_DIR/Froststrap-linux-x64.AppImage"
 
+RPM_TOPDIR="$REPO_ROOT/$BUILD_DIR/rpmbuild"
+mkdir -p "$RPM_TOPDIR/BUILD" "$RPM_TOPDIR/BUILDROOT" "$RPM_TOPDIR/RPMS" "$RPM_TOPDIR/SOURCES" "$RPM_TOPDIR/SPECS" "$RPM_TOPDIR/SRPMS"
+
+rpmbuild -bb "$REPO_ROOT/Scripts/fedora/froststrap-rpm.spec" \
+    --define "_topdir $RPM_TOPDIR" \
+    --define "_froststrap_appdir $REPO_ROOT/$APP_DIR" \
+    --define "froststrap_version $RPM_VERSION"
+
+RPM_OUTPUT=$(find "$RPM_TOPDIR/RPMS" -type f -name "*.rpm" | head -n 1)
+cp "$RPM_OUTPUT" "$BUILD_DIR/Froststrap-linux-x64.rpm"
+
 # Build Debian Package
 # Remove the global desktop file from the deb
 rm -f "$APP_DIR/usr/share/applications/Froststrap.desktop"
@@ -75,5 +89,6 @@ dpkg-deb --build "$APP_DIR" "$BUILD_DIR/Froststrap-linux-x64.deb"
 # Cleanup
 rm -rf "$APP_DIR"
 rm -rf "$BUILD_DIR/appimagetool.AppImage"
+rm -rf "$RPM_TOPDIR"
 
 echo "Linux builds complete"
