@@ -1,4 +1,6 @@
-﻿namespace Froststrap.Integrations
+﻿using System.Runtime.InteropServices;
+
+namespace Froststrap.Integrations
 {
     public class ActivityWatcher : IDisposable
     {
@@ -22,7 +24,8 @@
         private const string StudioPlaceCloseEntry = "[FLog::PlaceManager] PlaceManager::closeCurrentPlayDoc";
 
         private const string GameJoiningEntryPattern = @"! Joining game '([0-9a-f\-]{36})' place ([0-9]+) at ([0-9\.]+)";
-        private const string GameJoiningUniversePattern = @"universeid:([0-9]+).*userid:([0-9]+)";
+        private const string GameJoiningUniversePattern = @"universeid:([0-9]+)";
+        private const string GameJoiningUniverseUserIDPattern = @"userid:([0-9]+)";
         private const string GameJoinReferralPattern = @"referral_page:([^,]+)";
         private const string GameTeleportJoinTypePattern = @"JoinTypeId""%3a(\d+)%2c";
         private const string GameJoiningUDMUXPattern = @"UDMUX Address = ([0-9\.]+), Port = [0-9]+ \| RCC Server Address = ([0-9\.]+), Port = [0-9]+";
@@ -371,36 +374,46 @@
             {
                 // We are not confirmed to be in a game, but we are in the process of joining one
 
-                if (logMessage.StartsWith(GameJoiningUniverseEntry))
+                if (logMessage.Contains(GameJoiningUniverseEntry))
                 {
-                    var match = Regex.Match(logMessage, GameJoiningUniversePattern);
-
-                    if (match.Groups.Count != 3)
+                    // on linux the log goes referalpage, userid then universe id, on windows its diffrent, thats why we split all these
+                    var universeMatch = Regex.Match(logMessage, GameJoiningUniversePattern, RegexOptions.IgnoreCase);
+                    if (universeMatch.Success)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Failed to assert format for game join universe entry");
+                        Data.UniverseId = Int64.Parse(universeMatch.Groups[1].Value);
+                    }
+
+                    var userMatch = Regex.Match(logMessage, GameJoiningUniverseUserIDPattern, RegexOptions.IgnoreCase);
+                    if (userMatch.Success)
+                    {
+                        Data.UserId = Int64.Parse(userMatch.Groups[1].Value);
+                    }
+
+                    if (Data.UniverseId == 0)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Failed to extract UniverseId from game join entry");
                         App.Logger.WriteLine(LOG_IDENT, logMessage);
                         return;
                     }
 
-                    Data.UniverseId = Int64.Parse(match.Groups[1].Value);
-                    Data.UserId = Int64.Parse(match.Groups[2].Value);
-
-                    var loadTimeMatch = Regex.Match(logMessage, GameJoinReferralPattern);
-
-                    if (loadTimeMatch.Groups.Count == 2)
+                    var referralMatch = Regex.Match(logMessage, GameJoinReferralPattern, RegexOptions.IgnoreCase);
+                    if (referralMatch.Groups.Count == 2)
                     {
-                        string referral = loadTimeMatch.Groups[1].Value;
-
-                        if (referral.Contains("RequestPrivateGame", StringComparison.OrdinalIgnoreCase) || referral.Contains("GameDetailPageJSHybridEvent", StringComparison.OrdinalIgnoreCase))
+                        string referral = referralMatch.Groups[1].Value;
+                        if (referral.Contains("RequestPrivateGame", StringComparison.OrdinalIgnoreCase) ||
+                            referral.Contains("GameDetailPageJSHybridEvent", StringComparison.OrdinalIgnoreCase))
+                        {
                             Data.ServerType = ServerType.Private;
+                        }
                     }
 
                     if (History.Count > 0)
                     {
                         var lastActivity = History.First();
-
                         if (Data.UniverseId == lastActivity.UniverseId && Data.IsTeleport)
+                        {
                             Data.RootActivity = lastActivity.RootActivity ?? lastActivity;
+                        }
                     }
                 }
                 else if (logMessage.StartsWith(GameJoiningUDMUXEntry))
