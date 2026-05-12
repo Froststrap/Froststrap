@@ -5,6 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Froststrap.UI.ViewModels.Bootstrapper"
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+    xmlns:gv="using:Froststrap.UI.ViewModels"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     mc:Ignorable="d"
     x:Class="Froststrap.UI.Elements.Bootstrapper.FluentDialog"
@@ -19,9 +20,9 @@
     ExtendClientAreaToDecorationsHint="True"
     TransparencyLevelHint="{Binding WindowBackdropType}"
     Background="{Binding BackgroundColourBrush}"
->
+    >
 
-	<Grid>
+    <Grid>
         <controls:TitleBar
             VerticalAlignment="Top"
             Title=""
@@ -29,29 +30,31 @@
             ShowClose="False"
             ShowMaximize="False"
             ShowMinimize="False"
-        />
-		<TextBlock
+            />
+        <TextBlock
             Margin="10,4,0,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Left"
             FontSize="11"
             FontFamily="{StaticResource Rubik}"
+            IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
             Text="{Binding VersionText}"
             Opacity="0.6"
-        />
+            />
 
-		<TextBlock
+        <TextBlock
             Margin="0,4,10,0"
             VerticalAlignment="Top"
             HorizontalAlignment="Right"
             FontSize="11"
             FontFamily="{StaticResource Rubik}"
             Text="{Binding ChannelText}"
+            IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
             Opacity="0.6"
-        />
+            />
 
-		<Grid Margin="32,16" RowDefinitions="*,Auto,Auto,Auto">
-			<Image
+        <Grid Margin="32,16" RowDefinitions="*,Auto,Auto,Auto">
+            <Image
                 Grid.Row="0"
                 Width="80"
                 Height="80"
@@ -60,9 +63,9 @@
                 VerticalAlignment="Top"
                 Source="{Binding Icon}"
                 RenderOptions.BitmapInterpolationMode="HighQuality"
-            />
+                />
 
-			<TextBlock
+            <TextBlock
                 Grid.Row="1"
                 Margin="0,0,0,8"
                 HorizontalAlignment="Center"
@@ -70,17 +73,17 @@
                 FontSize="18"
                 TextWrapping="Wrap"
                 Text="{Binding Message}"
-            />
+                />
 
-			<ProgressBar
+            <ProgressBar
                 Grid.Row="2"
                 Margin="0,0,0,16"
                 IsIndeterminate="{Binding ProgressIndeterminate}"
                 Maximum="{Binding ProgressMaximum}"
                 Value="{Binding ProgressValue}"
-            />
+                />
 
-			<Button
+            <Button
                 Grid.Row="3"
                 Width="120"
                 HorizontalAlignment="Center"
@@ -88,7 +91,7 @@
                 Content="Cancel"
                 FontSize="14"
                 IsEnabled="{Binding CancelEnabled}"
-            />
-		</Grid>
-	</Grid>
+                />
+        </Grid>
+    </Grid>
 </Window>

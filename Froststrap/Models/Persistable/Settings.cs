@@ -62,7 +62,7 @@ namespace Froststrap.Models.Persistable
         public double BackgroundOpacity { get; set; } = 1.0;
         public string BootstrapperTitle { get; set; } = App.ProjectName;
         public string BootstrapperIconCustomLocation { get; set; } = "";
-        public int MaxThreadDownload { get; set; } = 4;
+        public int MaxThreadDownload { get; set; } = 3;
         public Theme Theme { get; set; } = Theme.Default;
 
         // Settings Page

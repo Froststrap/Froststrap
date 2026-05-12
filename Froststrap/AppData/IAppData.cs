@@ -18,6 +18,8 @@
 
         string Directory { get; }
 
+        bool IsInstalled { get; }
+
         string ExecutablePath { get; }
 
         JsonManager<DistributionState> DistributionStateManager { get; }

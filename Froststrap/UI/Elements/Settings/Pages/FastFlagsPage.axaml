@@ -160,7 +160,7 @@
                 </ComboBox>
             </controls:OptionControl>
 
-            <controls:OptionControl 
+            <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Title}"
                 Description="{x:Static resources:Strings.Menu_FastFlags_Presets_TextureQuality_Description}">
                 <ComboBox Width="200" Margin="5,0,0,0" Padding="10,5,10,5" ItemsSource="{Binding TextureQualities.Keys, Mode=OneTime}" SelectedItem="{Binding SelectedTextureQuality, Mode=TwoWay}">

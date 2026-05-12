@@ -248,11 +248,11 @@ namespace Froststrap
                 App.Terminate();
             });
 
-            if (OperatingSystem.IsLinux() && !App.LaunchSettings.QuietFlag.Active)
+            if ((OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()) && !App.LaunchSettings.QuietFlag.Active)
             {
                 if (Avalonia.Application.Current?.ApplicationLifetime is
                     Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
-                    desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnExplicitShutdown;
+                    desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             }
 
             dialog?.ShowBootstrapper();

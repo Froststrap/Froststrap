@@ -1,16 +1,10 @@
-﻿using Froststrap;
-using System.Net;
-using System.Text.Json;
-
-namespace Froststrap.RobloxInterfaces
+﻿namespace Froststrap.RobloxInterfaces
 {
     public static class Deployment
     {
         public const string DefaultRobloxDomain = "roblox.com";
 
         public const string DefaultChannel = "production";
-
-        private const string VersionStudioHash = "version-012732894899482c";
 
         public static event EventHandler<string>? ChannelChanged;
         private static string _channel = App.Settings.Prop.Channel;

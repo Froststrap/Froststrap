@@ -29,7 +29,7 @@ namespace Froststrap.UI.Elements.Settings
 
             if (Locale.RightToLeft)
             {
-                this.FlowDirection = Avalonia.Media.FlowDirection.RightToLeft;
+                this.FlowDirection = FlowDirection.RightToLeft;
             }
         }
 
@@ -71,7 +71,7 @@ namespace Froststrap.UI.Elements.Settings
 
             App.WindowsBackdrop();
 
-            LaunchButton.Content = App.IsPlayerInstalled ? Strings.Menu_SaveAndLaunch : Strings.Menu_InstallRoblox;
+            LaunchButton.Content = App.IsPlayerInstalled ? Strings.Menu_SaveAndLaunch : Strings.Menu_SaveAndInstall;
 
             UpdatePageView(_viewModel.CurrentPage);
 

@@ -97,5 +97,6 @@ jobs:
             release/Froststrap-Setup.exe
             release/Froststrap-macOS.dmg
             release/Froststrap-linux-x64.AppImage
+            release/Froststrap-linux-x64.deb
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true

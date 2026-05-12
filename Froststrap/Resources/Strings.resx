@@ -1715,8 +1715,8 @@ Please close any applications that may be using Roblox's files, and relaunch.</v
   <data name="Menu.SaveAndLaunch" xml:space="preserve">
     <value>Save and Launch</value>
   </data>
-  <data name="Menu.InstallRoblox" xml:space="preserve">
-    <value>Install Roblox</value>
+  <data name="Menu.SaveAndInstall" xml:space="preserve">
+    <value>Save and Install</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
     <value>Upgrades were disabled with missing client.
@@ -2265,7 +2265,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Enable BetterMatchmaking</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
-    <value>Let Fishstrap decide which servers you join. Prioritizes the server with the shortest distance to you.</value>
+    <value>Let Froststrap decide which servers you join. Prioritizes the server with the shortest distance to you.</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
     <value>Randomize BetterMatchmaking server</value>
@@ -2280,7 +2280,7 @@ You can no longer use Bloxshade with Froststrap.</value>
 	<value>Roblox domain</value>
   </data>
   <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-	<value>Set what domain Roblox and Fishstrap will use. Enter only trusted domains.</value>
+	<value>Set what domain Roblox and Froststrap will use. Enter only trusted domains.</value>
   </data>
   <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
     <value>Texture Quality</value>
@@ -2308,8 +2308,5 @@ You can no longer use Bloxshade with Froststrap.</value>
   </data>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>left</value>
-  </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Multi-Instancing is prone to breaking. We will not provide support for issues with Multi-Instancing, since Roblox is actively adding measures to make sure it doesn't work. We cannot and won't attempt to bypass these measures.</value>
   </data>
 </root>

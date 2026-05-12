@@ -22,7 +22,7 @@ namespace Froststrap
 
             var processes = new List<Process>();
 
-            if (!string.IsNullOrEmpty(App.PlayerState.Prop.VersionGuid))
+            if (App.IsPlayerInstalled)
                 processes.AddRange(Process.GetProcessesByName(App.RobloxPlayerAppName));
 
             if (App.IsStudioInstalled)

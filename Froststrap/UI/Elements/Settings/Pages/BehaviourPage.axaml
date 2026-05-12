@@ -14,10 +14,6 @@
     d:DesignWidth="1200"
     x:DataType="vm:BehaviourViewModel"
     mc:Ignorable="d">
-
-    <UserControl.Resources>
-    </UserControl.Resources>
-
     <ScrollViewer>
         <StackPanel Margin="14">
             <controls:OptionControl
