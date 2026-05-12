@@ -163,6 +163,18 @@ namespace Froststrap
                 while (!_cancellationTokenSource.Token.IsCancellationRequested)
                 {
                     var processExists = Utilities.GetProcessesSafe().Any(x => x.Id == _watcherData.ProcessId);
+
+                    if (!processExists && _watcherData.LaunchMode == LaunchMode.Player)
+                    {
+                        if (OperatingSystem.IsLinux())
+                            processExists = Utilities.GetProcessesSafe().Any(x => x.ProcessName == "sober");
+                        else if (OperatingSystem.IsMacOS())
+                            processExists = Utilities.GetProcessesSafe().Any(x => x.ProcessName == "RobloxPlayer");
+                    }
+
+                    if (!processExists && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth) && OperatingSystem.IsMacOS())
+                        processExists = Utilities.GetProcessesSafe().Any(x => x.ProcessName == "RobloxStudio");
+
                     if (!processExists) break;
 
                     await Task.Delay(1000, _cancellationTokenSource.Token);

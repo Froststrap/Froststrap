@@ -158,6 +158,7 @@ namespace Froststrap
                 window.Closed += (s, e) =>
                 {
                     App.FrostRPC?.Dispose();
+                    App.FrostRPC = null;
                 };
 
                 window.Show();
@@ -186,6 +187,7 @@ namespace Froststrap
             dialog.Closed += (sender, e) =>
             {
                 App.FrostRPC?.Dispose();
+                App.FrostRPC = null;
                 ProcessNextAction(dialog.CloseAction);
             };
 

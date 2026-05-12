@@ -279,6 +279,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             Process.Start(startInfo);
             App.FrostRPC?.Dispose();
+            App.FrostRPC = null;
             CloseWindow();
         }
 
