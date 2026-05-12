@@ -518,11 +518,17 @@ public partial class App : Application
                     return;
                 }
 
-                Logger.Initialize(true);
+                Paths.Initialize(installLocation);
+
+                Logger.Initialize(LaunchSettings.UninstallFlag.Active);
+
                 Logger.WriteLine(LOG_IDENT, $"Not installed, running in portable mode from '{installLocation}'");
             }
-
-            Paths.Initialize(installLocation);
+            else
+            {
+                Paths.Initialize(installLocation);
+                Logger.Initialize(LaunchSettings.UninstallFlag.Active);
+            }
 
             if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
                 File.Copy(Paths.Process, Paths.Application);
