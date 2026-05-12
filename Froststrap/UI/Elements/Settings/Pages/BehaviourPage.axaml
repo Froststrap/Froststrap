@@ -50,7 +50,8 @@
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}">
+                Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <ToggleSwitch IsChecked="{Binding BackgroundUpdates, Mode=TwoWay}" />
             </controls:OptionControl>
 
