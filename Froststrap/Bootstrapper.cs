@@ -711,7 +711,7 @@ namespace Froststrap
                 }
             }
 
-            using EventWaitHandle initEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-MultiInstanceWatcherInitialisationFinished");
+            using EventWaitHandle initEventHandle = new(false, EventResetMode.AutoReset, "Bloxstrap-MultiInstanceWatcherInitialisationFinished");
             Process.Start(Paths.Process, "-multiinstancewatcher");
 
             await Task.Run(() => initEventHandle.WaitOne(TimeSpan.FromSeconds(2)));

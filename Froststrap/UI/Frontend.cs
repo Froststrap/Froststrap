@@ -5,6 +5,7 @@ using Avalonia.Controls.Notifications;
 using Avalonia.Threading;
 using Froststrap.UI.Elements.Bootstrapper;
 using Froststrap.UI.Elements.Dialogs;
+using Avalonia.Labs.Notifications;
 
 namespace Froststrap.UI
 {
@@ -162,20 +163,37 @@ namespace Froststrap.UI
             });
         }
 
-        public static void ShowBalloonTip(string title, string message, NotificationType type = NotificationType.Information, int timeoutSeconds = 5)
+        public static void ShowBalloonTip(string title, string message, NotificationType category = NotificationType.Information, int timeoutSeconds = 5)
         {
-            string imagePath = type switch
+            var manager = NativeNotificationManager.Current;
+
+            if (manager == null)
             {
-                NotificationType.Warning => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Warning.png",
-                NotificationType.Error => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Error.png",
-                _ => "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png"
+                App.Logger.WriteLine("Frontend::ShowBalloonTip", "NativeNotificationManager is null.");
+                return;
+            }
+
+            string categoryString = category switch
+            {
+                NotificationType.Success => "success",
+                NotificationType.Warning => "warning",
+                NotificationType.Error => "error",
+                _ => "info"
             };
 
-            Dispatcher.UIThread.Post(() =>
+            var notification = manager.CreateNotification(categoryString);
+
+            if (notification != null)
             {
-                var notification = new NotificationDialog(title, message, imagePath, timeoutSeconds * 1000);
-                notification.Show();
-            });
+                notification.Title = title;
+                notification.Message = message;
+                notification.Expiration = TimeSpan.FromSeconds(timeoutSeconds);
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    notification.Show();
+                });
+            }
         }
     }
 }

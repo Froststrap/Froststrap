@@ -38,13 +38,6 @@
             </controls:OptionControl>
 
             <controls:OptionControl
-                Description="When joinning a game, it will display a notification of server region and uptime if enabled, This will kick you out of exclusive full screen, Requires Server Uptime or Server Location to be on."
-                Header="Show Join Notification"
-                IsEnabled="{Binding CanShowJoinNotification}">
-                <ToggleSwitch IsChecked="{Binding ShowJoinNotification, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl
                 Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
                 Header="Auto Rejoin"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
@@ -61,8 +54,8 @@
             <controls:CardExpander
                 IsEnabled="{Binding ActivityTrackingEnabled}"
                 IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
-                Classes="NoUserExpansion" 
-                Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" 
+                Classes="NoUserExpansion"
+                Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
                 Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
@@ -82,10 +75,10 @@
                 </StackPanel>
             </controls:CardExpander>
 
-            <controls:OptionControl 
-                Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}" 
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
-				IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ComboBox
                     MinWidth="200"
@@ -111,15 +104,15 @@
                         <ToggleSwitch IsChecked="{Binding DisableAppPatchEnabled, Mode=TwoWay}" />
                     </controls:OptionControl>
 
-                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}" 
-											Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}"
-											IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Description}"
+                                            Header="{x:Static resources:Strings.Menu_Integrations_BlockVideoRecording_Title}"
+                                            IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                         <ToggleSwitch IsChecked="{Binding DisableRobloxRecording, Mode=TwoWay}" />
                     </controls:OptionControl>
 
-                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}" 
-											Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}"
-											IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
+                    <controls:OptionControl Description="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Description}"
+                                            Header="{x:Static resources:Strings.Menu_Integrations_BlockScreenShots_Title}"
+                                            IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                         <ToggleSwitch IsChecked="{Binding DisableRobloxScreenshots, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>
@@ -131,14 +124,14 @@
                 FontSize="20"
                 FontWeight="Bold"
                 Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
-            
+
             <controls:MarkdownTextBlock
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
                 TextWrapping="Wrap" />
 
-            <controls:OptionControl 
-                Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}" 
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Title}">
                 <ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
             </controls:OptionControl>
@@ -279,15 +272,15 @@
                     Grid.Column="1"
                     Margin="4,0,0,0"
                     IsVisible="{Binding IsCustomIntegrationSelected}">
-                    
+
                     <TextBlock Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{x:Static resources:Strings.Common_Name}" />
                     <TextBox Margin="0,4,0,0" Text="{Binding SelectedCustomIntegration.Name, UpdateSourceTrigger=PropertyChanged}" />
-                    
+
                     <TextBlock
                         Margin="0,8,0,0"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         Text="{x:Static resources:Strings.Menu_Integrations_Custom_AppLocation}" />
-                    
+
                     <Grid Margin="0,4,0,0" ColumnDefinitions="*, Auto">
                         <TextBox
                             Grid.Column="0"
@@ -306,7 +299,7 @@
                     <Grid Margin="0,8,0,0" ColumnDefinitions="Auto, 1*, Auto, 2*">
                         <TextBlock Grid.Column="0" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="Launch Delay" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <TextBox Grid.Column="1" Margin="0,0,16,0" Watermark="200" Text="{Binding SelectedCustomIntegration.Delay}" />
-                        
+
                         <TextBlock Grid.Column="2" FontSize="14" VerticalAlignment="Center" Margin="0,0,4,0" Text="{x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                         <TextBox Grid.Column="3" Watermark="{Binding Source='/k echo {0}', Converter={StaticResource StringFormatConverter}, ConverterParameter={x:Static resources:Strings.Menu_Integrations_Custom_LaunchArgs_Placeholder}}" Text="{Binding SelectedCustomIntegration.LaunchArgs}" />
                     </Grid>

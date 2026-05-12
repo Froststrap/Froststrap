@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Documents;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -533,8 +532,6 @@ public partial class App : Application
             if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
                 File.Copy(Paths.Process, Paths.Application);
 
-            Logger.Initialize(LaunchSettings.UninstallFlag.Active);
-
             if (!Logger.Initialized && !Logger.NoWriteMode)
             {
                 Logger.WriteLine(LOG_IDENT, "Possible duplicate launch detected, terminating.");
@@ -571,7 +568,26 @@ public partial class App : Application
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
                 WindowsRegistry.RegisterApis();
+
+                try
+                {
+                    var appUserModelId = "Froststrap.Froststrap";
+
+                    using (var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(@"Software\Classes\AppUserModelId\" + appUserModelId))
+                    {
+                        key.SetValue("DisplayName", "Froststrap");
+                        key.SetValue("IconUri", "avares://Froststrap/Froststrap.ico");
+                    }
+
+                    Logger.WriteLine("App::OnFrameworkInitializationCompleted", "Registered app for notifications");
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine("App::OnFrameworkInitializationCompleted", $"Failed to register app: {ex.Message}");
+                }
+            }
 
             LaunchHandler.ProcessLaunchArgs();
         }

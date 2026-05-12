@@ -8,9 +8,11 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<Version>2.0.0</Version>
 		<FileVersion>2.0.0</FileVersion>
-        <AssemblyName>Froststrap</AssemblyName>
+		<Company>Froststrap</Company>
 		<Product>$(AssemblyName)</Product>
-        <RootNamespace>Froststrap</RootNamespace>
+		<AssemblyName>Froststrap</AssemblyName>
+		<RootNamespace>Froststrap</RootNamespace>
+		<Description>Froststrap - A Bloxstrap/Fishstrap fork</Description>
 		<ApplicationIcon>Froststrap.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
@@ -70,6 +72,7 @@
 		<PackageReference Include="Avalonia" Version="11.3.13" />
 		<PackageReference Include="Avalonia.AvaloniaEdit" Version="11.4.1" />
 		<PackageReference Include="Avalonia.Desktop" Version="11.3.13" />
+		<PackageReference Include="Avalonia.Labs.Notifications" Version="11.2.0" />
 		<PackageReference Include="FluentAvaloniaUI" Version="2.5.1" />
 		<PackageReference Include="FluentIcons.Avalonia.Fluent" Version="2.0.323" />
         	<PackageReference Include="Avalonia.Diagnostics" Version="11.3.13">
@@ -78,14 +81,14 @@
         	</PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 	    <PackageReference Include="DiscordRichPresence" Version="1.5.0.51" />
-	    <PackageReference Include="Markdig" Version="1.1.2" />
+	    <PackageReference Include="Markdig" Version="1.2.0" />
         <PackageReference Include="SharpZipLib" Version="1.4.2" />
-		<PackageReference Include="PuppeteerSharp" Version="24.40.0" />
+		<PackageReference Include="PuppeteerSharp" Version="24.42.0" />
 		<PackageReference Include="PuppeteerExtraSharp" Version="3.1.1" />
 		<PackageReference Include="securifybv.ShellLink" Version="0.1.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
-		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.5" />
-		<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.8" />
+		<PackageReference Include="Tmds.DBus.Protocol" Version="0.93.0" />
     </ItemGroup>
 
 	<ItemGroup>

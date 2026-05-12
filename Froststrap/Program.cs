@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Labs.Notifications;
 
 namespace Froststrap;
 
@@ -16,5 +17,14 @@ sealed class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .WithAppNotifications(new AppNotificationOptions
+            {
+#if WINDOWS
+            AppName = "Froststrap",
+            AppIcon = "avares://Froststrap/Froststrap.ico",
+            AppUserModelId = "Froststrap.Froststrap",
+            DisableComServer = true
+#endif
+            })
             .LogToTrace();
 }

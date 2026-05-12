@@ -96,7 +96,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     ShowServerDetailsEnabled = false;
                     ShowGameHistoryEnabled = false;
-                    ShowJoinNotification = false;
                     AutoRejoinEnabled = false;
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
@@ -106,7 +105,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
                     OnPropertyChanged(nameof(ShowServerDetailsEnabled));
                     OnPropertyChanged(nameof(ShowGameHistoryEnabled));
-                    OnPropertyChanged(nameof(ShowJoinNotification));
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
@@ -128,19 +126,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 OnPropertyChanged(nameof(ShowServerDetailsEnabled));
             }
         }
-
-        public bool ShowJoinNotification
-        {
-            get => App.Settings.Prop.ShowJoinNotification;
-            set
-            {
-                App.Settings.Prop.ShowJoinNotification = value;
-                OnPropertyChanged(nameof(ShowJoinNotification));
-            }
-        }
-
-        public bool CanShowJoinNotification => ActivityTrackingEnabled && ShowServerDetailsEnabled;
-
 
         public static bool PlaytimeCounterEnabled
         {

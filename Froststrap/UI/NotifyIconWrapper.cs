@@ -1,11 +1,11 @@
-﻿using Avalonia;
+﻿using Avalonia.Controls.Notifications;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
+using Avalonia.Labs.Notifications;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.ContextMenu;
-using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI
 {
@@ -109,19 +109,6 @@ namespace Froststrap.UI
         {
             if (ActivityWatcher?.Data == null) return;
 
-            Task<string?>? thumbnailTask = null;
-            if (App.Settings.Prop.ShowJoinNotification)
-            {
-                thumbnailTask = Thumbnails.GetThumbnailUrlAsync(new ThumbnailRequest
-                {
-                    TargetId = (ulong)ActivityWatcher.Data.UniverseId,
-                    Type = ThumbnailType.GameIcon,
-                    Size = "150x150",
-                    Format = ThumbnailFormat.Png,
-                    IsCircular = false
-                }, CancellationToken.None);
-            }
-
             string title = ActivityWatcher.Data.ServerType switch
             {
                 ServerType.Public => Strings.ContextMenu_ServerInformation_Notification_Title_Public,
@@ -148,33 +135,42 @@ namespace Froststrap.UI
                 serverUptime = "0 minutes";
             }
 
-            string? thumbnailUrl = null;
-            if (thumbnailTask != null)
-            {
-                try { thumbnailUrl = await thumbnailTask; } catch { /* Fallback handled below */ }
-            }
-
-            thumbnailUrl ??= "avares://Froststrap/Froststrap/Resources/MessageBox/FullQuality/Information.png";
-
-            if (App.Settings.Prop.ShowJoinNotification)
-                ShowAlertWithImage(
-                    title,
-                    String.Format( Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime),
-                    thumbnailUrl);
+            ShowAlert(
+                title,
+                string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
         }
 
-        public void ShowAlertWithImage(string title, string message, string imagePath)
+        public void ShowAlert(string title, string message, NotificationType category = NotificationType.Information)
         {
             if (_isDisposed) return;
 
-            Dispatcher.UIThread.InvokeAsync(() =>
+            var manager = NativeNotificationManager.Current;
+            if (manager == null)
+            {
+                App.Logger.WriteLine("NotifyIconWrapper::ShowAlert", "NativeNotificationManager is null.");
+                return;
+            }
+
+            string categoryString = category switch
+            {
+                NotificationType.Success => "success",
+                NotificationType.Warning => "warning",
+                NotificationType.Error => "error",
+                _ => "info"
+            };
+
+            var notification = manager.CreateNotification(categoryString);
+
+            if (notification == null) return;
+
+            notification.Title = title;
+            notification.Message = message;
+            notification.Expiration = TimeSpan.FromSeconds(5);
+
+            Dispatcher.UIThread.Post(() =>
             {
                 if (_isDisposed) return;
-
-                var notification = new NotificationDialog(title, message, imagePath, timeoutMs: 7000);
-
                 notification.Show();
-
             }, DispatcherPriority.Background);
         }
 
