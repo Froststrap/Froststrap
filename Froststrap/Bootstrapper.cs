@@ -1874,6 +1874,8 @@ namespace Froststrap
             {
                 string rbxLogDir = Paths.RobloxLogs;
 
+                await Task.Delay(500, _cancelTokenSource.Token);
+
                 for (int i = 0; i < 60; i++)
                 {
                     if (Directory.Exists(rbxLogDir))
