@@ -20,6 +20,7 @@ debug-linux:
 
 [windows]
 publish-windows:
+    #!powershell
     pwsh ./Scripts/package/publish-windows.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
 
 [unix]
