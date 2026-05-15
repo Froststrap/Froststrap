@@ -127,7 +127,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled;
+        public static bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled && !OperatingSystem.IsLinux();
 
         private async Task LoadChannelDeployInfo(string channel)
         {
