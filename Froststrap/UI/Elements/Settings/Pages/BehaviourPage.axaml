@@ -24,7 +24,8 @@
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Description}">
+                Description="{x:Static resources:Strings.Menu_Behaviour_CloseCrashHandler_Description}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}">
                 <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
             </controls:OptionControl>
 
