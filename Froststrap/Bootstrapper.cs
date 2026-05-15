@@ -1906,7 +1906,7 @@ namespace Froststrap
                     {
                         logFileName = Directory.GetFiles(rbxLogDir, "*.log")
                             .Select(f => new FileInfo(f))
-                            .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddMinutes(-5))
+                            .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddSeconds(-5))
                             .OrderByDescending(f => f.CreationTimeUtc)
                             .FirstOrDefault()?.FullName;
                     }
