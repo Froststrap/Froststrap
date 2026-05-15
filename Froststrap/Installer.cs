@@ -374,10 +374,13 @@ namespace Froststrap
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]
         private static bool IsSymlink(string path)
         {
+            if (!Path.Exists(path))
+                return false;
+
             try
             {
-                return new FileInfo(path).Attributes.HasFlag(FileAttributes.ReparsePoint)
-                    || new DirectoryInfo(path).Attributes.HasFlag(FileAttributes.ReparsePoint);
+                var attributes = File.GetAttributes(path);
+                return attributes.HasFlag(FileAttributes.ReparsePoint);
             }
             catch { return false; }
         }
@@ -385,9 +388,15 @@ namespace Froststrap
         [System.Runtime.Versioning.SupportedOSPlatform("linux")]
         private static bool IsSymlinkPointingAt(string path, string expectedTarget)
         {
-            if (!IsSymlink(path)) return false;
-            string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
-            return actual == expectedTarget;
+          if (!IsSymlink(path)) 
+                return false;
+
+          try
+          {
+               string? actual = Directory.ResolveLinkTarget(path, returnFinalTarget: false)?.FullName;
+              return actual == expectedTarget;
+           }
+           catch { return false; }
         }
 
         private static void TryDelete(string path)
