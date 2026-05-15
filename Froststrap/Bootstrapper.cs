@@ -196,7 +196,6 @@ namespace Froststrap
             SetStatus(Strings.Bootstrapper_Status_Connecting);
 
             // Skip the Roblox deployment API connectivity check entirely.
-            // Sending "LinuxPlayer" as binaryType will return an error, ROBLOX PLEASE JUST MAKE A LINUX PORT
             if (OperatingSystem.IsLinux())
             {
                 _noConnection = true;
@@ -309,6 +308,33 @@ namespace Froststrap
             }
             else if (OperatingSystem.IsLinux())
             {
+                if (App.State.Prop.ForceReinstall)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Linux: Force reinstall enabled.");
+
+                    string clientPackagePath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+
+                    try
+                    {
+                        if (Directory.Exists(clientPackagePath))
+                        {
+                            DirectoryInfo di = new DirectoryInfo(clientPackagePath);
+
+                            foreach (FileInfo file in di.GetFiles())
+                                file.Delete();
+
+                            foreach (DirectoryInfo dir in di.GetDirectories())
+                                dir.Delete(true);
+
+                            App.Logger.WriteLine(LOG_IDENT, $"Successfully cleared contents of {clientPackagePath}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to purge packages: {ex.Message}");
+                    }
+                }
+
                 PackageDirectoryMap ??= [];
                 if (!_cancelTokenSource.IsCancellationRequested)
                     allModificationsApplied = await ApplyModifications();

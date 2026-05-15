@@ -70,16 +70,14 @@
                     OnContent="" />
             </controls:OptionControl>
 
-            <Separator Margin="0,8,0,4"  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"/>
+            <Separator Margin="0,8,0,4"/>
 
-            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                       Margin="0,8,0,0"
+            <TextBlock Margin="0,8,0,0"
                        FontSize="20"
                        FontWeight="Bold"
                        Text="Roblox" />
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
+            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
                                     Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
                                     IsEnabled="{Binding !IsRobloxInstallationMissing}">
                 <ToggleSwitch IsChecked="{Binding ForceRobloxReinstallation, Mode=TwoWay}" />

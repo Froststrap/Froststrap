@@ -4,10 +4,7 @@
     {
         public string ProductName => "Roblox";
 
-        // LinuxPlayer has no meaning, just skips Roblox CDN download and delegates to Sober
-        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer"
-            : OperatingSystem.IsLinux() ? "LinuxPlayer"
-            : "WindowsPlayer";
+        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer";
 
         public string RegistryName => "RobloxPlayer";
 
