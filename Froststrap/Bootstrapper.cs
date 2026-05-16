@@ -1078,6 +1078,112 @@ namespace Froststrap
             await Task.Delay(1000);
         }
 
+        private async Task LaunchWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null)
+        {
+            if (!(App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Count > 0))
+                return;
+
+            Process? robloxProcess = null;
+            try
+            {
+                robloxProcess = Process.GetProcessById(_appPid);
+            }
+            catch
+            {
+                await CleanUpAndShowError(autoclosePids, null);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(logFileName))
+            {
+                string rbxLogDir = Paths.RobloxLogs;
+
+                for (int i = 0; i < 60; i++)
+                {
+                    robloxProcess.Refresh();
+                    if (robloxProcess.HasExited)
+                    {
+                        App.Logger.WriteLine("Bootstrapper::LaunchWatcherIfNeededAsync", "Roblox process exited before log file creation.");
+                        await CleanUpAndShowError(autoclosePids, robloxProcess);
+                        return;
+                    }
+
+                    if (Directory.Exists(rbxLogDir))
+                    {
+                        logFileName = Directory.GetFiles(rbxLogDir, "*.log")
+                            .Select(f => new FileInfo(f))
+                            .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddSeconds(-5))
+                            .OrderByDescending(f => f.CreationTimeUtc)
+                            .FirstOrDefault()?.FullName;
+                    }
+
+                    if (logFileName != null)
+                        break;
+
+                    await Task.Delay(500, _cancelTokenSource.Token);
+                }
+            }
+
+            if (string.IsNullOrEmpty(logFileName))
+            {
+                App.Logger.WriteLine("Bootstrapper::LaunchWatcherIfNeededAsync", "Unable to identify log file within watcher loop (Timeout reached)");
+                await CleanUpAndShowError(autoclosePids, robloxProcess);
+                return;
+            }
+
+            using var ipl = new InterProcessLock("WatcherLaunch", TimeSpan.FromSeconds(5));
+            if (!ipl.IsAcquired)
+                return;
+
+            var watcherData = new WatcherData
+            {
+                ProcessId = _appPid,
+                LogFile = logFileName,
+                AutoclosePids = autoclosePids,
+                LaunchMode = _launchMode
+            };
+
+            string watcherDataArg = Convert.ToBase64String(
+                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
+
+            string args = $"-watcher \"{watcherDataArg}\"";
+
+            if (App.LaunchSettings.TestModeFlag.Active)
+                args += " -testmode";
+
+            Process.Start(Paths.Process, args);
+        }
+
+        private static async Task CleanUpAndShowError(List<int> autoclosePids, Process? robloxProcess)
+        {
+            try
+            {
+                if (robloxProcess != null && !robloxProcess.HasExited)
+                {
+                    robloxProcess.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("Bootstrapper::CleanUpAndShowError", $"Failed to kill lingering Roblox process: {ex.Message}");
+            }
+
+            foreach (var pid in autoclosePids)
+            {
+                try
+                {
+                    using var proc = Process.GetProcessById(pid);
+                    if (!proc.HasExited)
+                        proc.Kill();
+                }
+                catch
+                {
+                }
+            }
+
+            await Frontend.ShowPlayerErrorDialog();
+        }
+
         private static void LaunchIntegration(CustomIntegration integration, List<int> autoclosePids, string logIdent)
         {
             App.Logger.WriteLine(logIdent, $"Launching custom integration '{integration.Name}' ({integration.Location} {integration.LaunchArgs} - autoclose is {integration.AutoClose})");
@@ -1909,65 +2015,6 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Sober installation complete.");
             SetStatus("Starting Sober...");
             return true;
-        }
-
-        private async Task LaunchWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null)
-        {
-            if (!(App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Count > 0))
-                return;
-
-            try
-            {
-                _ = Process.GetProcessById(_appPid);
-            }
-            catch
-            {
-                return;
-            }
-
-            if (string.IsNullOrEmpty(logFileName))
-            {
-                string rbxLogDir = Paths.RobloxLogs;
-
-                for (int i = 0; i < 60; i++)
-                {
-                    if (Directory.Exists(rbxLogDir))
-                    {
-                        logFileName = Directory.GetFiles(rbxLogDir, "*.log")
-                            .Select(f => new FileInfo(f))
-                            .Where(f => f.CreationTimeUtc > DateTime.UtcNow.AddSeconds(-5))
-                            .OrderByDescending(f => f.CreationTimeUtc)
-                            .FirstOrDefault()?.FullName;
-                    }
-
-                    if (logFileName != null)
-                        break;
-
-                    await Task.Delay(500, _cancelTokenSource.Token);
-                }
-            }
-
-            using var ipl = new InterProcessLock("WatcherLaunch", TimeSpan.FromSeconds(5));
-            if (!ipl.IsAcquired)
-                return;
-
-            var watcherData = new WatcherData
-            {
-                ProcessId = _appPid,
-                LogFile = logFileName,
-                AutoclosePids = autoclosePids,
-                LaunchMode = _launchMode
-            };
-
-            string watcherDataArg = Convert.ToBase64String(
-                Encoding.UTF8.GetBytes(JsonSerializer.Serialize(watcherData)));
-
-            string args = $"-watcher \"{watcherDataArg}\"";
-
-            if (App.LaunchSettings.TestModeFlag.Active)
-                args += " -testmode";
-
-            Process.Start(Paths.Process, args);
         }
 
         private async Task LaunchViaSober(List<int> autoclosePids)
