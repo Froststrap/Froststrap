@@ -6,7 +6,11 @@ namespace Froststrap
 {
     public class JsonManager<T>(string? className = null) where T : class, new()
     {
-        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+	private static readonly JsonSerializerOptions _jsonOptions = new() 
+        { 
+            WriteIndented = true,
+            ReadCommentHandling = JsonCommentHandling.Skip 
+        };
 
         protected T _prop = new();
 
@@ -46,7 +50,7 @@ namespace Froststrap
                 {
                     string contents = File.ReadAllText(FileLocation);
 
-                    T settings = JsonSerializer.Deserialize<T>(contents)
+                    T settings = JsonSerializer.Deserialize<T>(contents, _jsonOptions)
                         ?? throw new InvalidOperationException($"{ClassName} deserialization returned null.");
 
                     _prop = settings;
