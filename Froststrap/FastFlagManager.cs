@@ -210,79 +210,45 @@ namespace Froststrap
         private void SyncToSoberConfig()
         {
             const string LOG_IDENT = "FastFlagManager::SyncToSoberConfig";
-            string configPath = Paths.SoberConfig;
-
-            if (string.IsNullOrEmpty(configPath))
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Paths.SoberConfig is empty — skipping sync.");
-                return;
-            }
 
             try
             {
-                string existingRaw = File.Exists(configPath) ? File.ReadAllText(configPath) : "{}";
-
-                List<string> headerLines = [];
-                List<string> jsonLines = [];
-                bool inJson = false;
-
-                foreach (string line in existingRaw.Split('\n'))
+                if (!App.SoberSettings.Loaded)
                 {
-                    string trimmed = line.TrimStart();
-                    if (!inJson && trimmed.StartsWith("//", StringComparison.Ordinal))
-                        headerLines.Add(line);
-                    else
-                    {
-                        inJson = true;
-                        jsonLines.Add(line);
-                    }
+                    App.SoberSettings.Load(alertFailure: false);
                 }
 
-                string jsonBody = string.Join('\n', jsonLines);
-                Dictionary<string, JsonElement> soberConfig = [];
+                App.SoberSettings.Prop.FFlags ??= [];
 
-                if (!string.IsNullOrWhiteSpace(jsonBody))
-                {
-                    soberConfig = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonBody, _jsonReadOptions) ?? [];
-                }
-
-                Dictionary<string, object> fflags = [];
                 foreach (var kvp in Prop)
                 {
                     string val = kvp.Value?.ToString() ?? "";
 
                     if (bool.TryParse(val, out bool boolResult))
-                        fflags[kvp.Key] = boolResult;
+                   {
+                       App.SoberSettings.Prop.FFlags[kvp.Key] = boolResult;
+                    }
                     else if (long.TryParse(val, out long longResult))
-                        fflags[kvp.Key] = longResult;
+                    {
+                        App.SoberSettings.Prop.FFlags[kvp.Key] = longResult;
+                    }
                     else if (double.TryParse(val, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double doubleResult))
-                        fflags[kvp.Key] = doubleResult;
+                    {
+                        App.SoberSettings.Prop.FFlags[kvp.Key] = doubleResult;
+                    }
                     else
-                        fflags[kvp.Key] = val;
+                    {
+                        App.SoberSettings.Prop.FFlags[kvp.Key] = val;
+                    }
                 }
 
-                Dictionary<string, object> output = [];
-                foreach (var kvp in soberConfig)
-                {
-                    if (kvp.Key != "fflags")
-                        output[kvp.Key] = kvp.Value;
-                }
-                output["fflags"] = fflags;
+                App.SoberSettings.Save();
 
-                string jsonOut = JsonSerializer.Serialize(output, _jsonOptions);
-
-                string finalContent = headerLines.Count > 0
-                    ? string.Join('\n', headerLines) + '\n' + jsonOut
-                    : jsonOut;
-
-                Directory.CreateDirectory(Path.GetDirectoryName(configPath)!);
-                File.WriteAllText(configPath, finalContent);
-
-                App.Logger.WriteLine(LOG_IDENT, $"Synced {fflags.Count} fflags to {configPath}");
+                App.Logger.WriteLine(LOG_IDENT, $"Successfully synchronized and saved {App.SoberSettings.Prop.FFlags.Count} fflags to SoberSettings.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to sync fflags to Sober config.json");
+                App.Logger.WriteLine(LOG_IDENT, "Failed to sync fflags into App.SoberSettings configuration.");
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
         }
