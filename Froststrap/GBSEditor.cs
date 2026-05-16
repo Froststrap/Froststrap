@@ -69,9 +69,11 @@ namespace Froststrap
 
         public bool Loaded { get; set; } = false;
 
-        public static string FileLocation => OperatingSystem.IsLinux()
-                ? Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml")
-                : Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
+        public static string FileLocation => OperatingSystem.IsLinux() ? 
+                Path.Combine(Paths.Roblox, "data", "sober", "appData", "GlobalBasicSettings_13.xml") : 
+                    OperatingSystem.IsMacOS() ? 
+                        Path.Combine(Paths.UserProfile, "Library", "Roblox", "GlobalBasicSettings_13.xml") :
+                            Path.Combine(Paths.Roblox, "GlobalBasicSettings_13.xml");
 
         public void SetPreset(string prefix, object? value)
         {
