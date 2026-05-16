@@ -66,8 +66,10 @@ namespace Froststrap
         private static int MaxThreadDownload => App.Settings.Prop.MaxThreadDownload;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
             || App.State.Prop.ForceReinstall
-            || String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
-            || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath));
+            || (!OperatingSystem.IsLinux() && (
+                String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+                || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))
+            ));
 
         private bool _isInstalling = false;
         private double _progressIncrement;
@@ -223,26 +225,46 @@ namespace Froststrap
             // ensure only one instance of the bootstrapper is running at the time
             // so that we don't have stuff like two updates happening simultaneously
 
-            bool mutexExists = Utilities.DoesMutexExist(MutexName);
+            bool mutexExists;
+
+            if (OperatingSystem.IsWindows())
+            {
+                mutexExists = Utilities.DoesMutexExist(MutexName);
+            }
+            else
+            {
+                mutexExists = Utilities.IsInstanceRunningFileLock(MutexName);
+            }
 
             if (mutexExists)
             {
                 if (!QuitIfMutexExists)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} mutex exists, waiting...");
+                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, waiting...");
                     SetStatus(Strings.Bootstrapper_Status_WaitingOtherInstances);
+
+                    if (!OperatingSystem.IsWindows())
+                    {
+                        while (Utilities.IsInstanceRunningFileLock(MutexName) && !_cancelTokenSource.Token.IsCancellationRequested)
+                        {
+                            await Task.Delay(500, _cancelTokenSource.Token);
+                        }
+                    }
                 }
                 else
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} mutex exists, exiting!");
+                    App.Logger.WriteLine(LOG_IDENT, $"{MutexName} instance exists, exiting!");
                     return;
                 }
             }
 
             // wait for mutex to be released if it's not yet
-            await using var mutex = new AsyncMutex(false, MutexName);
-            await mutex.AcquireAsync(_cancelTokenSource.Token);
-            _mutex = mutex;
+            if (OperatingSystem.IsWindows())
+            {
+                var winMutex = new AsyncMutex(false, MutexName);
+                await winMutex.AcquireAsync(_cancelTokenSource.Token);
+                _mutex = winMutex;
+            }
 
             if (mutexExists)
             {
@@ -308,7 +330,7 @@ namespace Froststrap
             }
             else if (OperatingSystem.IsLinux())
             {
-                if (App.State.Prop.ForceReinstall)
+                if (MustUpgrade)
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Linux: Force reinstall enabled.");
 
@@ -318,7 +340,7 @@ namespace Froststrap
                     {
                         if (Directory.Exists(clientPackagePath))
                         {
-                            DirectoryInfo di = new DirectoryInfo(clientPackagePath);
+                            DirectoryInfo di = new(clientPackagePath);
 
                             foreach (FileInfo file in di.GetFiles())
                                 file.Delete();
@@ -326,7 +348,7 @@ namespace Froststrap
                             foreach (DirectoryInfo dir in di.GetDirectories())
                                 dir.Delete(true);
 
-			    App.State.Prop.ForceReinstall = false;
+			            App.State.Prop.ForceReinstall = false;
 
                             App.Logger.WriteLine(LOG_IDENT, $"Successfully cleared contents of {clientPackagePath}");
                         }
@@ -369,7 +391,10 @@ namespace Froststrap
             }
 
             if (_launchMode != LaunchMode.Player)
-                await mutex.ReleaseAsync();
+            {
+                if (OperatingSystem.IsWindows() && _mutex is not null) await _mutex.ReleaseAsync();
+                else Utilities._lockFileStream?.Dispose();
+            }
 
             if (_launchMode == LaunchMode.Player && App.Settings.Prop.MultiInstanceLaunching)
                 await LaunchMultiInstanceWatcher();
@@ -388,7 +413,9 @@ namespace Froststrap
                 await StartRoblox();
             }
 
-            await mutex.ReleaseAsync();
+            if (OperatingSystem.IsWindows() && _mutex is not null) await _mutex.ReleaseAsync();
+            else Utilities._lockFileStream?.Dispose();
+
             Dialog?.CloseBootstrapper();
         }
 
