@@ -241,6 +241,9 @@ namespace Froststrap.UI.ViewModels.Settings
             App.GlobalSettings.Save();
             App.StorageSettings.Save();
 
+            if (OperatingSystem.IsLinux())
+                App.SoberSettings.Save();
+
             foreach (var pair in App.PendingSettingTasks)
             {
                 var task = pair.Value;

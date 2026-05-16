@@ -86,6 +86,8 @@ public partial class App : Application
 
     public static readonly AppStorageManager StorageSettings = new();
 
+    public static readonly JsonManager<SoberSettings> SoberSettings = new();
+
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 
     public static readonly LazyJsonManager<DistributionState> StudioState = new(nameof(StudioState));
@@ -545,6 +547,9 @@ public partial class App : Application
             FastFlags.Load();
             StorageSettings.Load();
             GlobalSettings.Load();
+
+            if (OperatingSystem.IsLinux())
+                SoberSettings.Load();
 
             if (Settings.Prop.Theme > Theme.Custom)
             {

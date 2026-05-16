@@ -323,16 +323,46 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StudioGameButton = value;
         }
 
+        public static bool SoberAllowGamepadPermission
+        {
+            get => App.SoberSettings.Prop.AllowGamepadPermission;
+            set => App.SoberSettings.Prop.AllowGamepadPermission = value;
+        }
+
+        public static bool SoberEnableGamemode
+        {
+            get => App.SoberSettings.Prop.EnableGamemode;
+            set => App.SoberSettings.Prop.EnableGamemode = value;
+        }
+
+        public static bool SoberEnableHiDpi
+        {
+            get => App.SoberSettings.Prop.EnableHiDpi;
+            set => App.SoberSettings.Prop.EnableHiDpi = value;
+        }
+
+        public static bool SoberUseConsoleExperience
+        {
+            get => App.SoberSettings.Prop.UseConsoleExperience;
+            set => App.SoberSettings.Prop.UseConsoleExperience = value;
+        }
+
+        public static bool SoberUseOpengl
+        {
+            get => App.SoberSettings.Prop.UseOpengl;
+            set => App.SoberSettings.Prop.UseOpengl = value;
+        }
+
         public static bool DisableRobloxRecording
         {
             get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"));
-            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
+            set =>BlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyVideos), "Roblox"), value);
         }
 
         public static bool DisableRobloxScreenshots
         {
             get => IsBlocked(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"));
-            set => SetBlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"), value);
+            set => BlockState(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Roblox"), value);
         }
 
         public static ObservableCollection<CustomIntegration> CustomIntegrations
@@ -376,7 +406,7 @@ namespace Froststrap.UI.ViewModels.Settings
             return false;
         }
 
-        private static void SetBlockState(string targetPath, bool block)
+        private static void BlockState(string targetPath, bool block)
         {
             const string LOG_IDENT = "Watcher::SetBlockState";
             string backupPath = targetPath + " (Before Blocking)";
