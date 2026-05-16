@@ -622,6 +622,17 @@ public partial class App : Application
                 }
             }
 
+            if (PlatformSettings is not null)
+            {
+                PlatformSettings.ColorValuesChanged += (sender, args) =>
+                {
+                    Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        AvaloniaWindow.ApplyTheme();
+                    });
+                };
+            }
+
             LaunchHandler.ProcessLaunchArgs();
         }
 
