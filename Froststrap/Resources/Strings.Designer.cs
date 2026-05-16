@@ -3347,7 +3347,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Launcher.
+        ///   Looks up a localized string similar to Bootstrapper Style.
         /// </summary>
         public static string Menu_Appearance_Launcher_Title {
             get {

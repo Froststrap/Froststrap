@@ -154,6 +154,75 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static bool CustomThemesExpanded => App.Settings.Prop.BootstrapperStyle == BootstrapperStyle.CustomDialog;
 
+        public bool IsThemeCyclingEnabled
+        {
+            get => App.Settings.Prop.CycleEnabled;
+            set
+            {
+                App.Settings.Prop.CycleEnabled = value;
+                OnPropertyChanged(nameof(IsThemeCyclingEnabled));
+            }
+        }
+
+        public static IEnumerable<CycleFrequency> CycleFrequencies => Enum.GetValues<CycleFrequency>();
+
+        public CycleFrequency SelectedCycleFrequency
+        {
+            get => App.Settings.Prop.CycleFrequency;
+            set
+            {
+                App.Settings.Prop.CycleFrequency = value;
+                OnPropertyChanged(nameof(SelectedCycleFrequency));
+                OnPropertyChanged(nameof(IsIntervalValueVisible));
+            }
+        }
+
+        public int CycleIntervalValue
+        {
+            get => App.Settings.Prop.CycleIntervalValue;
+            set
+            {
+                App.Settings.Prop.CycleIntervalValue = value;
+                OnPropertyChanged(nameof(CycleIntervalValue));
+            }
+        }
+
+        public bool IsIntervalValueVisible => SelectedCycleFrequency != CycleFrequency.EveryLaunch;
+
+        public ObservableCollection<CustomThemeCycleSelectionWrapper> CustomThemeSelections { get; set; } = [];
+
+        public void InitializeCustomThemeSelections()
+        {
+            CustomThemeSelections.Clear();
+            var savedList = App.Settings.Prop.CycleEnabledCustomThemes;
+
+            foreach (var themeName in CustomThemes)
+            {
+                var selection = new CustomThemeCycleSelectionWrapper
+                {
+                    ThemeName = themeName,
+                    IsSelected = savedList.Contains(themeName)
+                };
+
+                selection.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(CustomThemeCycleSelectionWrapper.IsSelected))
+                    {
+                        if (selection.IsSelected)
+                        {
+                            if (!savedList.Contains(selection.ThemeName))
+                                savedList.Add(selection.ThemeName);
+                        }
+                        else
+                        {
+                            savedList.Remove(selection.ThemeName);
+                        }
+                    }
+                };
+                CustomThemeSelections.Add(selection);
+            }
+        }
+
         private static void DeleteCustomThemeStructure(string name)
         {
             string dir = Path.Combine(Paths.CustomThemes, name);
@@ -361,6 +430,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(SelectedCustomThemeName));
                 }
             }
+
+            InitializeCustomThemeSelections();
         }
 
         public string? SelectedCustomTheme
@@ -372,6 +443,11 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     App.Settings.Prop.SelectedCustomTheme = value;
                     SelectedCustomThemeName = value ?? string.Empty;
+
+                    if (value != null && App.Settings.Prop.CycleEnabledCustomThemes.Contains(value))
+                    {
+                        App.Settings.Prop.CycleCurrentIndex = App.Settings.Prop.CycleEnabledCustomThemes.IndexOf(value);
+                    }
 
                     OnPropertyChanged(nameof(SelectedCustomTheme));
                     OnPropertyChanged(nameof(SelectedCustomThemeName));
@@ -691,5 +767,21 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
         #endregion
+    }
+
+    public class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
+    {
+        private bool _isSelected;
+        public string ThemeName { get; set; } = string.Empty;
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged(nameof(IsSelected));
+            }
+        }
     }
 }

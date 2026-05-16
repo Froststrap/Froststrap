@@ -44,10 +44,16 @@ namespace Froststrap.Models.Persistable
 
         // Appearance Page
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;
+        public string? SelectedCustomTheme { get; set; } = null;
+        public bool CycleEnabled { get; set; }
+        public CycleFrequency CycleFrequency { get; set; } = CycleFrequency.EveryLaunch;
+        public int CycleIntervalValue { get; set; } = 1;
+        public List<string> CycleEnabledCustomThemes { get; set; } = [];
+        public int CycleCurrentIndex { get; set; }
+        public DateTime CycleLastCycleTime { get; set; } = DateTime.MinValue;
         public BootstrapperIcon BootstrapperIcon { get; set; } = BootstrapperIcon.IconFroststrap;
         public WindowsBackdrops SelectedBackdrop { get; set; } = WindowsBackdrops.None;
         public string Locale { get; set; } = "nil";
-        public string? SelectedCustomTheme { get; set; } = null;
         public List<GradientStops> CustomGradientStops { get; set; } =
         [
             new GradientStops { Offset = 0.0, Color = "#4D5560" },
