@@ -6,10 +6,10 @@ namespace Froststrap
 {
     public class JsonManager<T>(string? className = null) where T : class, new()
     {
-	private static readonly JsonSerializerOptions _jsonOptions = new() 
-        { 
+        private static readonly JsonSerializerOptions _jsonOptions = new()
+        {
             WriteIndented = true,
-            ReadCommentHandling = JsonCommentHandling.Skip 
+            ReadCommentHandling = JsonCommentHandling.Skip
         };
 
         protected T _prop = new();

@@ -225,8 +225,8 @@ namespace Froststrap
                     string val = kvp.Value?.ToString() ?? "";
 
                     if (bool.TryParse(val, out bool boolResult))
-                   {
-                       App.SoberSettings.Prop.FFlags[kvp.Key] = boolResult;
+                    {
+                        App.SoberSettings.Prop.FFlags[kvp.Key] = boolResult;
                     }
                     else if (long.TryParse(val, out long longResult))
                     {

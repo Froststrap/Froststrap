@@ -348,7 +348,7 @@ namespace Froststrap
                             foreach (DirectoryInfo dir in di.GetDirectories())
                                 dir.Delete(true);
 
-			            App.State.Prop.ForceReinstall = false;
+                            App.State.Prop.ForceReinstall = false;
 
                             App.Logger.WriteLine(LOG_IDENT, $"Successfully cleared contents of {clientPackagePath}");
                         }
@@ -1539,7 +1539,7 @@ namespace Froststrap
                 {
                     _ = Frontend.ShowMessageBox(Strings.Bootstrapper_Dialog_NoUpgradeWithoutClient, MessageBoxImage.Warning, MessageBoxButton.OK);
                 }
-                else 
+                else
                 {
                     await Task.Delay(2000);
                     return;

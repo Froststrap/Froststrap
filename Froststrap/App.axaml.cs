@@ -336,9 +336,37 @@ public partial class App : Application
             Bootstrapper.Dialog.TaskbarProgressState = TaskbarItemProgressState.Error;
         }
 
-        await Frontend.ShowExceptionDialog(ex);
+        if (IsNetworkException(ex))
+        {
+            await Frontend.ShowConnectivityDialog(
+                Strings.Dialog_Connectivity_UnableToConnect,
+                "Internet",
+                MessageBoxImage.Error,
+                ex
+            );
+        }
+        else
+        {
+            await Frontend.ShowExceptionDialog(ex);
+        }
 
         Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+    }
+
+    private static bool IsNetworkException(Exception? ex)
+    {
+        while (ex is not null)
+        {
+            if (ex is HttpRequestException ||
+                ex is System.Net.Sockets.SocketException ||
+                ex is WebException ||
+                ex is TaskCanceledException)
+            {
+                return true;
+            }
+            ex = ex.InnerException;
+        }
+        return false;
     }
 
     public override void Initialize()
