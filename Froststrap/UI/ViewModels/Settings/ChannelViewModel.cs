@@ -127,7 +127,22 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool IsRobloxInstallationMissing => !App.IsPlayerInstalled && !App.IsStudioInstalled && !OperatingSystem.IsLinux();
+        public static bool IsRobloxInstallationMissing
+        {
+            get
+           {
+              if (OperatingSystem.IsLinux())
+              {
+                 var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                    bool isLinuxPlayerInstalled = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+            
+                    return !isLinuxPlayerInstalled;
+                }
+
+               return !App.IsPlayerInstalled && !App.IsStudioInstalled;
+           }
+        }
+
 
         private async Task LoadChannelDeployInfo(string channel)
         {
