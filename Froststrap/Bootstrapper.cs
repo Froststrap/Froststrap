@@ -1090,14 +1090,12 @@ namespace Froststrap
             if (!(App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Count > 0))
                 return;
 
-            Process? robloxProcess = null;
             try
             {
-                robloxProcess = Process.GetProcessById(_appPid);
+                _ = Process.GetProcessById(_appPid);
             }
             catch
             {
-                await CleanUpAndShowError(autoclosePids, null);
                 return;
             }
 
@@ -1107,14 +1105,6 @@ namespace Froststrap
 
                 for (int i = 0; i < 60; i++)
                 {
-                    robloxProcess.Refresh();
-                    if (robloxProcess.HasExited)
-                    {
-                        App.Logger.WriteLine("Bootstrapper::LaunchWatcherIfNeededAsync", "Roblox process exited before log file creation.");
-                        await CleanUpAndShowError(autoclosePids, robloxProcess);
-                        return;
-                    }
-
                     if (Directory.Exists(rbxLogDir))
                     {
                         logFileName = Directory.GetFiles(rbxLogDir, "*.log")
@@ -1129,13 +1119,6 @@ namespace Froststrap
 
                     await Task.Delay(500, _cancelTokenSource.Token);
                 }
-            }
-
-            if (string.IsNullOrEmpty(logFileName))
-            {
-                App.Logger.WriteLine("Bootstrapper::LaunchWatcherIfNeededAsync", "Unable to identify log file within watcher loop (Timeout reached)");
-                await CleanUpAndShowError(autoclosePids, robloxProcess);
-                return;
             }
 
             using var ipl = new InterProcessLock("WatcherLaunch", TimeSpan.FromSeconds(5));
@@ -1159,36 +1142,6 @@ namespace Froststrap
                 args += " -testmode";
 
             Process.Start(Paths.Process, args);
-        }
-
-        private static async Task CleanUpAndShowError(List<int> autoclosePids, Process? robloxProcess)
-        {
-            try
-            {
-                if (robloxProcess != null && !robloxProcess.HasExited)
-                {
-                    robloxProcess.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("Bootstrapper::CleanUpAndShowError", $"Failed to kill lingering Roblox process: {ex.Message}");
-            }
-
-            foreach (var pid in autoclosePids)
-            {
-                try
-                {
-                    using var proc = Process.GetProcessById(pid);
-                    if (!proc.HasExited)
-                        proc.Kill();
-                }
-                catch
-                {
-                }
-            }
-
-            await Frontend.ShowPlayerErrorDialog();
         }
 
         private static void LaunchIntegration(CustomIntegration integration, List<int> autoclosePids, string logIdent)
