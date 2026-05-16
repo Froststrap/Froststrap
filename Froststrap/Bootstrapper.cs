@@ -518,7 +518,14 @@ namespace Froststrap
                 }
             }
 
-            if (!App.LaunchSettings.VersionFlag.Active || string.IsNullOrEmpty(App.LaunchSettings.VersionFlag.Data))
+            if (IsStudioLaunch
+                && App.Settings.Prop.StudioVersionOverrideEnabled
+                && !string.IsNullOrEmpty(App.Settings.Prop.StudioVersionOverrideHash))
+            {
+                _latestVersionGuid = App.Settings.Prop.StudioVersionOverrideHash.Trim();
+                App.Logger.WriteLine(LOG_IDENT, $"Studio version override active: pinned to {_latestVersionGuid}");
+            }
+            else if (!App.LaunchSettings.VersionFlag.Active || string.IsNullOrEmpty(App.LaunchSettings.VersionFlag.Data))
             {
                 ClientVersion clientVersion;
 

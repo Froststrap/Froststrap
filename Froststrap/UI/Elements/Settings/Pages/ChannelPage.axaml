@@ -229,6 +229,80 @@
                     ItemsSource="{Binding ChannelChangeModes.Keys, Mode=OneTime}"
                     SelectedItem="{Binding SelectedChannelChangeMode, Mode=TwoWay}" />
             </controls:OptionControl>
+
+            <Separator Margin="0,8,0,4" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}" />
+
+            <TextBlock Margin="0,8,0,0"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                       Text="Studio Version Downgrader" />
+
+            <controls:CardExpander
+                Header="Override Studio Version"
+                Description="Force Roblox Studio to install and use a specific version hash instead of the latest."
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
+                IsExpanded="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"
+                Classes="NoUserExpansion">
+
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch
+                        IsChecked="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"
+                        OffContent=""
+                        OnContent="" />
+                </controls:CardExpander.HeaderContent>
+
+                <controls:OptionControl
+                    Header="Version Hash"
+                    Description="Enter the Roblox Studio version GUID (e.g. version-xxxxxxxxxxxxxxxx). Only applies to Studio launches.">
+                    <StackPanel Spacing="6">
+                        <TextBox
+                            Width="280"
+                            Margin="8,0,0,0"
+                            Padding="10,5"
+                            IsEnabled="{Binding StudioVersionOverrideEnabled}"
+                            Watermark="version-xxxxxxxxxxxxxxxx"
+                            Text="{Binding StudioVersionOverrideHash, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Margin="8,0,0,0"
+                            IsVisible="{Binding !IsHashIdle}">
+
+                            <ui:ProgressRing
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,8,0"
+                                IsIndeterminate="True"
+                                IsVisible="{Binding IsHashChecking}" />
+
+                            <Image
+                                Source="avares://Froststrap/Resources/MessageBox/Information.png"
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,8,0"
+                                RenderOptions.BitmapInterpolationMode="HighQuality"
+                                IsVisible="{Binding IsHashValid}" />
+
+                            <Image
+                                Source="avares://Froststrap/Resources/MessageBox/Error.png"
+                                Width="18"
+                                Height="18"
+                                Margin="0,0,8,0"
+                                RenderOptions.BitmapInterpolationMode="HighQuality"
+                                IsVisible="{Binding IsHashInvalid}" />
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                TextWrapping="Wrap"
+                                Text="{Binding HashValidationMessage}"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                        </StackPanel>
+                    </StackPanel>
+                </controls:OptionControl>
+
+            </controls:CardExpander>
         </StackPanel>
     </ScrollViewer>
 </UserControl>
