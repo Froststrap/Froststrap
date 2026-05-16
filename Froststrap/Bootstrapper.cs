@@ -326,6 +326,8 @@ namespace Froststrap
                             foreach (DirectoryInfo dir in di.GetDirectories())
                                 dir.Delete(true);
 
+			    App.State.Prop.ForceReinstall = false;
+
                             App.Logger.WriteLine(LOG_IDENT, $"Successfully cleared contents of {clientPackagePath}");
                         }
                     }

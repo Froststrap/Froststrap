@@ -29,12 +29,13 @@
                 <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <ui:InfoBar IsOpen="True" Severity="Warning" Message="{x:Static resources:Strings.Menu_Integrations_MultiInstanceLaunching_Warning}" />
+            <ui:InfoBar IsVisible="{x:Static gv:GlobalViewModel.IsWindows}" IsOpen="True" Severity="Warning" Message="{x:Static resources:Strings.Menu_Integrations_MultiInstanceLaunching_Warning}" />
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Description}"
                 IsExpanded="{Binding MultiInstances, Mode=OneWay}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 Classes="NoUserExpansion">
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding MultiInstances, Mode=TwoWay}" />
