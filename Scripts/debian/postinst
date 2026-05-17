@@ -1,26 +1,12 @@
 #!/bin/bash
-USER=${SUDO_USER:-$USER}
-USER_HOME=$(getent passwd "$USER" | cut -d: -f6)
+set -e
 
-APP_NAME="Froststrap"
-BINARY_PATH="/usr/bin/Froststrap"
-ICON_PATH="/usr/share/icons/hicolor/512x512/apps/froststrap.png"
-DESKTOP_DIR="$USER_HOME/.local/share/applications"
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database -q /usr/share/applications || :
+fi
 
-mkdir -p "$DESKTOP_DIR"
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -q /usr/share/icons/hicolor || :
+fi
 
-cat <<EOF > "$DESKTOP_DIR/$APP_NAME.desktop"
-[Desktop Entry]
-Version=2.0.0
-Type=Application
-Name=Froststrap
-Comment=A fork of Fishstrap, focused on performance and customization
-Exec=$BINARY_PATH %u
-Icon=$ICON_PATH
-Terminal=false
-Categories=Game;
-MimeType=x-scheme-handler/roblox;x-scheme-handler/roblox-player;
-EOF
-
-chown "$USER:$USER" "$DESKTOP_DIR/$APP_NAME.desktop"
-chmod 644 "$DESKTOP_DIR/$APP_NAME.desktop"
+/usr/bin/Froststrap --register-mime-types 2>/dev/null || :

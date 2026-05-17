@@ -75,9 +75,6 @@ RPM_OUTPUT=$(find "$RPM_TOPDIR/RPMS" -type f -name "*.rpm" | head -n 1)
 cp "$RPM_OUTPUT" "$BUILD_DIR/Froststrap-linux-x64.rpm"
 
 # Build Debian Package
-# Remove the global desktop file from the deb
-rm -f "$APP_DIR/usr/share/applications/Froststrap.desktop"
-
 mkdir -p "$APP_DIR/DEBIAN"
 printf 'Package: froststrap\nVersion: %s\nArchitecture: amd64\nMaintainer: Froststrap-Dev\nDepends: libicu-dev\nDescription: Roblox bootstrapper and mod manager\n' "$VERSION" > "$APP_DIR/DEBIAN/control"
 
