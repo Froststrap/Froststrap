@@ -17,6 +17,8 @@ namespace Froststrap.Integrations
         private const string GameJoinedEntry = "[FLog::Network] serverId:";
         private const string GameDisconnectedEntry = "[FLog::Network] Time to disconnect replication data:";
         private const string GameLeavingEntry = "[FLog::SingleSurfaceApp] leaveUGCGameInternal";
+        private const string GameLeavingEntrySober = "app_interface$json: {\"type\":\"game_left\"}";
+        private const string AppCloseEntrySober = "app: lifecycle: will_do_clean_exit";
         private const string GameDisconnectReasonEntry = "[FLog::Network] Sending disconnect with reason:";
         private const string GameServerUptimeEntry = "[FLog::Output] Server Prefix: ";
 
@@ -296,7 +298,7 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT = "ActivityWatcher::ProcessPlayerLogEntry";
 
-            if (logMessage.StartsWith(GameLeavingEntry))
+            if (logMessage.StartsWith(GameLeavingEntry) || logMessage.StartsWith(GameLeavingEntrySober) || logMessage.StartsWith(AppCloseEntrySober))
             {
                 App.Logger.WriteLine(LOG_IDENT, "User is back into the desktop app");
 
