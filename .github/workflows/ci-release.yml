@@ -41,7 +41,7 @@ jobs:
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
-          path: build/Froststrap-macOS.dmg
+          path: build/*
 
   build-linux:
     runs-on: ubuntu-latest
