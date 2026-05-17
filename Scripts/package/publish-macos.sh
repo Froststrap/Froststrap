@@ -33,10 +33,7 @@ lipo -create \
 cp ./macos/Info.plist "./$BUILD_DIR/Froststrap.app/Contents/Info.plist"
 chmod +x "./$BUILD_DIR/Froststrap.app/Contents/MacOS/Froststrap"
 
-# Ad-hoc sign
-codesign --force --deep --sign - "./$BUILD_DIR/Froststrap.app"
-
-# Package DMG
+# Package DMG (We build it FIRST, then sign inside it)
 create-dmg \
   --volname "Froststrap Installer" \
   --window-size 500 300 \
@@ -46,8 +43,29 @@ create-dmg \
   "./$BUILD_DIR/Froststrap-macOS.dmg" \
   "./$BUILD_DIR/Froststrap.app"
 
-# Ad-hoc sign the final DMG container to prevent "damaged" errors
-echo "Ad-hoc signing the final DMG container..."
+echo "Mounting DMG to sign the app bundle inside its final layout..."
+# Convert DMG to a read/write shadow image so we can sign inside it safely
+hdiutil convert "./$BUILD_DIR/Froststrap-macOS.dmg" -format UDRW -o "./$BUILD_DIR/Froststrap-writable.dmg"
+rm "./$BUILD_DIR/Froststrap-macOS.dmg"
+
+# Mount the temporary writable disk image
+MOUNT_DIR=$(mktemp -d /tmp/froststrap-mount.XXXXXX)
+hdiutil attach "./$BUILD_DIR/Froststrap-writable.dmg" -mountpoint "$MOUNT_DIR" -nobrowse
+
+# Ad-hoc sign the app bundle inside the mounted DMG container
+echo "Ad-hoc signing Froststrap.app inside the DMG..."
+codesign --force --deep --sign - "$MOUNT_DIR/Froststrap.app"
+
+# Unmount the disk image safely
+hdiutil detach "$MOUNT_DIR"
+rm -rf "$MOUNT_DIR"
+
+# Convert it back to a highly compressed, production-ready read-only DMG asset
+hdiutil convert "./$BUILD_DIR/Froststrap-writable.dmg" -format UDZO -o "./$BUILD_DIR/Froststrap-macOS.dmg"
+rm "./$BUILD_DIR/Froststrap-writable.dmg"
+
+# Ad-hoc sign the final compressed DMG wrapper package container asset
+echo "Ad-hoc signing the final output DMG wrapper container asset..."
 codesign --force --sign - "./$BUILD_DIR/Froststrap-macOS.dmg"
 
 # Cleanup

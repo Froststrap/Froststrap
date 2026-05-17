@@ -35,6 +35,9 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v14
       - name: Build and package
         run: nix develop -c just ci-publish-macos
+      - name: Remove quarantine from artifacts
+        run: |
+          xattr -rd com.apple.quarantine build/Froststrap-macOS.dmg 2>/dev/null || true
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-release-macos-universal-${{ env.SHORT_SHA }}
@@ -91,10 +94,10 @@ jobs:
           prerelease: ${{ contains(github.ref_name, '-') }}
           draft: true
           files: |
-            **/Froststrap-Setup.exe
-            **/Froststrap-macOS.dmg
-            **/Froststrap-linux-x64.AppImage
-            **/Froststrap-linux-x64.deb
-            **/Froststrap-linux-x64.rpm
+            release/Froststrap-Setup.exe
+            release/Froststrap-macOS.dmg
+            release/Froststrap-linux-x64.AppImage
+            release/Froststrap-linux-x64.deb
+            release/Froststrap-linux-x64.rpm
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
