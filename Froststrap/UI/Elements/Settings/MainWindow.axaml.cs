@@ -475,7 +475,7 @@ namespace Froststrap.UI.Elements.Settings
                 }
             }
 
-            _viewModel.SearchBar.SetSearchIndex(searchIndex);
+            _viewModel.SearchBar.SetSearchIndex([]);
 
             PreIndexPages(pages);
         }
@@ -530,8 +530,27 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (addedItems.Count > 0)
                 {
-                    var currentIndex = _viewModel.SearchBar.GetSearchIndex();
-                    currentIndex.AddRange(addedItems);
+                    var hiddenControlHeaders = pageView.GetVisualDescendants()
+                        .Where(c => !c.IsVisible)
+                        .Select(c => {
+                            if (c is OptionControl oc) return oc.Header?.ToString();
+                            if (c is CardExpander ce) return ce.Header?.ToString();
+                            if (c is CardAction ca) return ca.Header?.ToString();
+                            if (c is TextBlock tb) return tb.Text;
+                            return null;
+                        })
+                        .Where(name => !string.IsNullOrEmpty(name))
+                        .ToHashSet();
+
+                    var filteredItems = addedItems
+                        .Where(item => !hiddenControlHeaders.Contains(item.DisplayName))
+                        .ToList();
+
+                    if (filteredItems.Count > 0)
+                    {
+                        var currentIndex = _viewModel.SearchBar.GetSearchIndex();
+                        currentIndex.AddRange(filteredItems);
+                    }
                 }
             }
             catch (Exception ex)

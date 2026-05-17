@@ -10,8 +10,8 @@ namespace Froststrap.UI.ViewModels
         public static bool IsMacOS => RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
         public static bool IsLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
-        public static bool IsWindowsOrLinux => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        public static bool IsWindowsOrMacOS => RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+        public static bool IsWindowsOrLinux => IsWindows || IsLinux;
+        public static bool IsWindowsOrMacOS => IsWindows || IsMacOS;
 
         public static ICommand OpenWebpageCommand => new RelayCommand<string>(OpenWebpage);
 
