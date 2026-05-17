@@ -212,6 +212,17 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 OnPropertyChanged(nameof(ChannelInfoLoadingText));
             }
+            catch (Exception ex)
+            {
+                if (token.IsCancellationRequested) return;
+
+                ShowLoadingError = true;
+                OnPropertyChanged(nameof(ShowLoadingError));
+                ChannelInfoLoadingText = "Failed to load channel deployment data info.";
+                OnPropertyChanged(nameof(ChannelInfoLoadingText));
+
+                App.Logger.WriteException("ChannelViewModel::LoadChannelDeployInfo", ex);
+            }
         }
 
         public bool ShowLoadingError { get; set; } = false;

@@ -193,7 +193,8 @@
                 if (response.Content.Headers.TryGetValues(header, out var values))
                 {
                     string lastModified = values.First();
-                    DateTime dateTime = DateTime.Parse(lastModified);
+
+                    DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
 
                     return dateTime;
                 }
