@@ -46,6 +46,10 @@ create-dmg \
   "./$BUILD_DIR/Froststrap-macOS.dmg" \
   "./$BUILD_DIR/Froststrap.app"
 
+# Ad-hoc sign the final DMG container to prevent "damaged" errors
+echo "Ad-hoc signing the final DMG container..."
+codesign --force --sign - "./$BUILD_DIR/Froststrap-macOS.dmg"
+
 # Cleanup
 rm -rf "./$BUILD_DIR/temp"
 rm -rf "./$BUILD_DIR/Froststrap.app"
