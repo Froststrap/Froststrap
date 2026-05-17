@@ -78,6 +78,8 @@ namespace Froststrap.Models.Persistable
         public bool StaticDirectory { get; set; } = false;
         public string Channel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
+        public bool StudioVersionOverrideEnabled { get; set; } = false;
+        public string StudioVersionOverrideHash { get; set; } = string.Empty;
 
         // Misc Stuff
         public string SelectedRegion { get; set; } = string.Empty;

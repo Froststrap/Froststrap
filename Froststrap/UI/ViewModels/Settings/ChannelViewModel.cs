@@ -347,6 +347,9 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(TestModeEnabled));
             OnPropertyChanged(nameof(ViewChannel));
             OnPropertyChanged(nameof(IsRobloxInstallationMissing));
+            OnPropertyChanged(nameof(StudioVersionOverrideEnabled));
+            OnPropertyChanged(nameof(StudioVersionOverrideHash));
+            SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
         }
 
         public static IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
@@ -366,6 +369,141 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => App.State.Prop.ForceReinstall || IsRobloxInstallationMissing;
             set => App.State.Prop.ForceReinstall = value;
+        }
+
+        public bool StudioVersionOverrideEnabled
+        {
+            get => App.Settings.Prop.StudioVersionOverrideEnabled;
+            set
+            {
+                App.Settings.Prop.StudioVersionOverrideEnabled = value;
+                OnPropertyChanged(nameof(StudioVersionOverrideEnabled));
+
+                if (value && !string.IsNullOrWhiteSpace(App.Settings.Prop.StudioVersionOverrideHash))
+                    _ = ValidateStudioVersionHashAsync(App.Settings.Prop.StudioVersionOverrideHash);
+                else if (!value)
+                    SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+            }
+        }
+
+        public string StudioVersionOverrideHash
+        {
+            get => App.Settings.Prop.StudioVersionOverrideHash;
+            set
+            {
+                value = value?.Trim() ?? string.Empty;
+                App.Settings.Prop.StudioVersionOverrideHash = value;
+                OnPropertyChanged(nameof(StudioVersionOverrideHash));
+
+                if (App.Settings.Prop.StudioVersionOverrideEnabled)
+                    _ = ValidateStudioVersionHashAsync(value);
+                else
+                    SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+            }
+        }
+
+        public enum StudioHashValidationState { Idle, Checking, Valid, Invalid }
+
+        private StudioHashValidationState _hashValidationState = StudioHashValidationState.Idle;
+        private string _hashValidationMessage = string.Empty;
+        private CancellationTokenSource? _hashValidationCts;
+
+        public StudioHashValidationState HashValidationState
+        {
+            get => _hashValidationState;
+            private set
+            {
+                _hashValidationState = value;
+                OnPropertyChanged(nameof(HashValidationState));
+                OnPropertyChanged(nameof(IsHashIdle));
+                OnPropertyChanged(nameof(IsHashChecking));
+                OnPropertyChanged(nameof(IsHashValid));
+                OnPropertyChanged(nameof(IsHashInvalid));
+            }
+        }
+
+        public string HashValidationMessage
+        {
+            get => _hashValidationMessage;
+            private set
+            {
+                _hashValidationMessage = value;
+                OnPropertyChanged(nameof(HashValidationMessage));
+            }
+        }
+
+        public bool IsHashIdle => HashValidationState == StudioHashValidationState.Idle;
+        public bool IsHashChecking => HashValidationState == StudioHashValidationState.Checking;
+        public bool IsHashValid => HashValidationState == StudioHashValidationState.Valid;
+        public bool IsHashInvalid => HashValidationState == StudioHashValidationState.Invalid;
+
+        private void SetHashValidationState(StudioHashValidationState state, string message)
+        {
+            HashValidationState = state;
+            HashValidationMessage = message;
+        }
+
+        private async Task ValidateStudioVersionHashAsync(string hash)
+        {
+            _hashValidationCts?.Cancel();
+            _hashValidationCts = new CancellationTokenSource();
+            var token = _hashValidationCts.Token;
+
+            if (string.IsNullOrWhiteSpace(hash))
+            {
+                SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+                return;
+            }
+
+            if (!Regex.IsMatch(hash, @"^version-[0-9a-f]{16}$", RegexOptions.IgnoreCase))
+            {
+                SetHashValidationState(StudioHashValidationState.Invalid, "Invalid format. Expected: version-xxxxxxxxxxxxxxxx");
+                return;
+            }
+
+            SetHashValidationState(StudioHashValidationState.Checking, "Checking version...");
+
+            try { await Task.Delay(500, token); }
+            catch (OperationCanceledException) { return; }
+
+            if (token.IsCancellationRequested)
+                return;
+
+            try
+            {
+                string baseUrl = string.IsNullOrEmpty(Deployment.BaseUrl)
+                    ? "https://setup.rbxcdn.com"
+                    : Deployment.BaseUrl;
+
+                string manifestUrl = $"{baseUrl}/{hash}-rbxPkgManifest.txt";
+
+                using var request = new HttpRequestMessage(HttpMethod.Head, manifestUrl);
+                using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
+
+                if (token.IsCancellationRequested)
+                    return;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    SetHashValidationState(StudioHashValidationState.Valid, "Version found.");
+                }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    SetHashValidationState(StudioHashValidationState.Invalid, "Version not found on Roblox servers.");
+                }
+                else
+                {
+                    SetHashValidationState(StudioHashValidationState.Invalid, $"Unexpected response: {(int)response.StatusCode} {response.StatusCode}");
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                if (!token.IsCancellationRequested)
+                    SetHashValidationState(StudioHashValidationState.Invalid, $"Network error: {ex.Message}");
+            }
         }
     }
 }
