@@ -212,7 +212,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool IsServerListEmptyAndNotLoading => IsServerListEmpty && !IsLoading;
         public bool ShowLoadingIndicator => IsLoading && !IsGameSearchLoading;
 
-        public string ServerListMessage => !HasValidCookies ? "Dummy not found, Please notify us in our discord server." :
+        public string ServerListMessage => !HasValidCookies ? "Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use." :
             IsLoading ? "" :
             !HasSearched ? "Enter a Place ID and click Search to view servers." :
             IsServerListEmpty ? (LastFetchProcessedCount == 0 ? "No public servers found." : "No servers found for specified region.") : "";
@@ -302,16 +302,13 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             try
             {
-                await App.RemoteData.WaitUntilDataFetched();
-                Roblosecurity = App.RemoteData.Prop.Dummy;
+                _fetcher = new RobloxServerFetcher();
+                Roblosecurity = await _fetcher.ResolveCookieAsync();
 
-                if (!string.IsNullOrWhiteSpace(Roblosecurity))
-                {
-                    _fetcher = new RobloxServerFetcher();
-                    HasValidCookies = await _fetcher.ValidateCookieAsync(Roblosecurity);
-                }
+                HasValidCookies = !string.IsNullOrWhiteSpace(Roblosecurity);
 
-                if (HasValidCookies) await LoadRegionsAsync();
+                if (HasValidCookies)
+                    await LoadRegionsAsync();
             }
             catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
         }
@@ -382,7 +379,7 @@ namespace Froststrap.UI.ViewModels.Settings
             if (resetCursor) NextCursor = "";
             if (!long.TryParse(PlaceId, out var placeIdLong)) return;
 
-            var result = await _fetcher!.FetchServerInstancesAsync(placeIdLong, Roblosecurity, NextCursor, SelectedSortOrder);
+            var result = await _fetcher!.FetchServerInstancesAsync(placeIdLong, NextCursor, SelectedSortOrder, Roblosecurity);
             if (result == null) return;
 
             int number = Servers.Count + 1;

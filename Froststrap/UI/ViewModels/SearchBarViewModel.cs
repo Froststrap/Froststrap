@@ -18,6 +18,7 @@ using Froststrap.UI.Elements.Settings;
 using FluentIcons.Common;
 using Avalonia.Controls.Notifications;
 using FluentAvalonia.UI.Controls;
+using System.Text.Json;
 
 namespace Froststrap.UI.ViewModels
 {
@@ -107,6 +108,13 @@ namespace Froststrap.UI.ViewModels
         {
             get => _isSearchFlyoutOpen;
             set => SetProperty(ref _isSearchFlyoutOpen, value);
+        }
+
+        private string? _roblosecurity;
+        public string? Roblosecurity
+        {
+            get => _roblosecurity;
+            set => SetProperty(ref _roblosecurity, value);
         }
 
         public bool CanLoadMore => !string.IsNullOrEmpty(NextPageCursor) && !IsGameSearchLoading;
@@ -419,11 +427,21 @@ namespace Froststrap.UI.ViewModels
         private async Task PlayGame(OmniSearchContent content)
         {
             if (content == null) return;
-            var account = AccountManager.Shared.ActiveAccount;
-            if (account == null) return;
-
             Clear();
-            await AccountManager.Shared.LaunchAccountAsync(account, content.RootPlaceId);
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = $"roblox://experiences/start?placeId={content.RootPlaceId}",
+                UseShellExecute = true
+            });
+
+            MainWindow.ShowGlobalNotification(
+            "Joining Game",
+            $"Joinning {content.Name} using quick play.",
+            InfoBarSeverity.Success,
+            5000,
+            FluentIcons.Common.Symbol.Globe
+            );
         }
 
         [RelayCommand]
@@ -431,17 +449,8 @@ namespace Froststrap.UI.ViewModels
         {
             if (content == null) return;
 
-            var account = AccountManager.Shared.ActiveAccount;
-            if (account == null)
-            {
-                return;
-            }
-
             string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
-            if (string.IsNullOrWhiteSpace(selectedRegion))
-            {
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(selectedRegion)) return;
 
             Clear();
 
@@ -465,13 +474,23 @@ namespace Froststrap.UI.ViewModels
 
                 var (regions, dcMap) = datacentersResult.Value;
 
-                string? cookie = AccountManager.Shared.GetRoblosecurityForUser(account.UserId);
-                if (string.IsNullOrWhiteSpace(cookie)) return;
+                Roblosecurity = await fetcher.ResolveCookieAsync();
+                if (string.IsNullOrWhiteSpace(Roblosecurity))
+                {
+                    MainWindow.ShowGlobalNotification(
+                    "No Valid Cookie Found",
+                    $"Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use.",
+                    InfoBarSeverity.Error,
+                    5000,
+                    FluentIcons.Common.Symbol.AccessibilityError
+                    );
+                    return;
+                }
 
                 while (attemptCount < maxAttempts)
                 {
                     attemptCount++;
-                    var result = await fetcher.FetchServerInstancesAsync(content.RootPlaceId, cookie, nextCursor, 2);
+                    var result = await fetcher.FetchServerInstancesAsync(content.RootPlaceId, nextCursor, 2, Roblosecurity);
 
                     if (result?.Servers == null || result.Servers.Count == 0)
                     {
@@ -480,9 +499,13 @@ namespace Froststrap.UI.ViewModels
                     }
 
                     var matchingServer = result.Servers.FirstOrDefault(server =>
-                        server.DataCenterId.HasValue &&
-                        dcMap.TryGetValue(server.DataCenterId.Value, out var mappedRegion) &&
-                        mappedRegion == selectedRegion);
+                    {
+                        if (server.DataCenterId.HasValue && dcMap.TryGetValue(server.DataCenterId.Value, out var mappedRegion))
+                        {
+                            return mappedRegion == selectedRegion;
+                        }
+                        return false;
+                    });
 
                     if (matchingServer != null)
                     {
@@ -493,7 +516,12 @@ namespace Froststrap.UI.ViewModels
                             5000,
                             FluentIcons.Common.Symbol.Checkmark
                         );
-                        await AccountManager.Shared.LaunchAccountAsync(account, content.RootPlaceId, matchingServer.Id);
+
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = $"roblox://experiences/start?placeId={content.RootPlaceId}&gameInstanceId={matchingServer.Id}",
+                            UseShellExecute = true
+                        });
                         return;
                     }
 
@@ -510,7 +538,7 @@ namespace Froststrap.UI.ViewModels
                             5000,
                             FluentIcons.Common.Symbol.Warning
                         );
-                        return; // Searched all servers
+                        return;
                     }
 
                     await Task.Delay(500);

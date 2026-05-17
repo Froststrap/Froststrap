@@ -27,6 +27,8 @@ namespace Froststrap
         private const string SupportedVersion = "1";
         private const string AuthPattern = $@"\t{AuthCookieName}\t(.+?)(;|$)";
 
+        public string GetAuthCookie() => AuthCookie;
+
         private static string CookiesPath => RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
 
             ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "HTTPStorages", "com.roblox.RobloxPlayer.binarycookies")

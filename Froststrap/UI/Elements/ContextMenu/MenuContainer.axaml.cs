@@ -227,28 +227,42 @@ namespace Froststrap.UI.Elements.ContextMenu
         private async Task FindAndJoinServerInRegion(long placeId, string selectedRegion)
         {
             var fetcher = new RobloxServerFetcher();
-            await App.RemoteData.WaitUntilDataFetched();
-            string cookie = App.RemoteData.Prop.Dummy;
 
-            if (!await fetcher.ValidateCookieAsync(cookie))
+            string? resolvedCookie = await fetcher.ResolveCookieAsync();
+            if (string.IsNullOrWhiteSpace(resolvedCookie))
             {
-                _ = Frontend.ShowMessageBox("Authentication failed. Please check your connection.", MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox("No valid cookie found, Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use.", MessageBoxImage.Error);
                 return;
             }
+
+            var datacentersResult = await fetcher.GetDatacentersAsync();
+            if (datacentersResult == null) return;
+            var (_, dcMap) = datacentersResult.Value;
 
             string? nextCursor = "";
             for (int i = 0; i < 20; i++)
             {
-                var result = await fetcher.FetchServerInstancesAsync(placeId, cookie, nextCursor);
-                var match = result.Servers.FirstOrDefault(s => s.Region == selectedRegion && s.Playing < s.MaxPlayers);
+                var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, 2, resolvedCookie);
+
+                if (result?.Servers == null || result.Servers.Count == 0)
+                {
+                    await Task.Delay(1000);
+                    continue;
+                }
+
+                var match = result.Servers.FirstOrDefault(s =>
+                    s.DataCenterId.HasValue &&
+                    dcMap.TryGetValue(s.DataCenterId.Value, out var mappedRegion) &&
+                    mappedRegion == selectedRegion &&
+                    s.Playing < s.MaxPlayers);
 
                 if (match != null)
                 {
                     MessageBoxResult confirmResult = await Frontend.ShowMessageBox(
-                            $"Found server in {selectedRegion} with {match.Playing}/{match.MaxPlayers} players.\nDo you want to join?",
-                            MessageBoxImage.Question,
-                            MessageBoxButton.YesNo
-                        );
+                        $"Found server in {selectedRegion} with {match.Playing}/{match.MaxPlayers} players.\nDo you want to join?",
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
 
                     if (confirmResult == MessageBoxResult.Yes)
                     {
@@ -267,7 +281,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                 if (string.IsNullOrEmpty(result.NextCursor)) break;
                 nextCursor = result.NextCursor;
-                await Task.Delay(200);
+                await Task.Delay(500);
             }
 
             _ = Frontend.ShowMessageBox($"No available {selectedRegion} servers found.", MessageBoxImage.Information);

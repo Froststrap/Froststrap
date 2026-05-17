@@ -10,7 +10,10 @@
  */
 
 using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace Froststrap.Integrations
 {
@@ -209,8 +212,86 @@ namespace Froststrap.Integrations
             }
         }
 
-        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string roblosecurity, string cursor = "", int sortOrder = 2)
+        private static async Task<string?> GetCookieFromAccountManagerAsync()
         {
+            try
+            {
+                if (AccountManager.Shared?.ActiveAccount != null)
+                {
+                    return AccountManager.Shared.ActiveAccount.SecurityToken;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException($"{LOG_IDENT}::GetCookieFromAccountManager", ex);
+            }
+            return null;
+        }
+
+        private static async Task<string?> GetCookieFromCookiesManagerAsync()
+        {
+            try
+            {
+                if (App.Cookies != null)
+                {
+                    var field = typeof(CookiesManager).GetField("AuthCookie", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    if (field != null)
+                    {
+                        return field.GetValue(App.Cookies) as string;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException($"{LOG_IDENT}::GetCookieFromCookiesManager", ex);
+            }
+            return null;
+        }
+
+        private static async Task<string?> GetCookieFromRemoteDataAsync()
+        {
+            try
+            {
+                if (App.RemoteData != null)
+                {
+                    await App.RemoteData.WaitUntilDataFetched();
+                    return App.RemoteData.Prop?.Dummy;
+                }
+            }
+            catch (Exception ex) { App.Logger.WriteException($"{LOG_IDENT}::GetCookieFromRemoteData", ex); }
+            return null;
+        }
+
+        public async Task<string?> ResolveCookieAsync()
+        {
+            var accountManagerCookie = await GetCookieFromAccountManagerAsync();
+            if (!string.IsNullOrWhiteSpace(accountManagerCookie) && await ValidateCookieAsync(accountManagerCookie))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Using valid cookie from Account Manager.");
+                return accountManagerCookie;
+            }
+
+            var cookiesManagerCookie = await GetCookieFromCookiesManagerAsync();
+            if (!string.IsNullOrWhiteSpace(cookiesManagerCookie) && await ValidateCookieAsync(cookiesManagerCookie))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Account Manager cookie failed or missing. Using valid cookie from Cookies Manager.");
+                return cookiesManagerCookie;
+            }
+
+            var remoteDataCookie = await GetCookieFromRemoteDataAsync();
+            if (!string.IsNullOrWhiteSpace(remoteDataCookie) && await ValidateCookieAsync(remoteDataCookie))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Cookies Manager cookie failed or missing. Using valid cookie from Remote Data.");
+                return remoteDataCookie;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Failed to resolve any valid .ROBLOSECURITY cookie.");
+            return null;
+        }
+
+        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", int sortOrder = 2, string? optionalCookie = null)
+        {
+            string? roblosecurity = !string.IsNullOrWhiteSpace(optionalCookie) ? optionalCookie : await ResolveCookieAsync();
             if (string.IsNullOrWhiteSpace(roblosecurity)) return new FetchResult();
 
             if (_datacenterIdToRegion == null) await GetDatacentersAsync();
