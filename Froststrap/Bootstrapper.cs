@@ -2031,7 +2031,7 @@ namespace Froststrap
             var updateStartInfo = new ProcessStartInfo
             {
                 FileName = "flatpak",
-                Arguments = $"update {SoberFlatpakId}",
+                Arguments = $"update {SoberFlatpakId} --assumeyes",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
