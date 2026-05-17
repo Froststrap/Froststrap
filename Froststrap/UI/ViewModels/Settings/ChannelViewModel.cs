@@ -102,6 +102,12 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        public static bool DisabeGameSearch
+        {
+            get => App.Settings.Prop.DisableGameSearch;
+            set => App.Settings.Prop.DisableGameSearch = value;
+        }
+
         private async Task HandleTestModeConfirmation()
         {
             var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);

@@ -44,30 +44,29 @@
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
-                IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}">
+                IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
+                Classes="NoUserExpansion">
 
                 <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch
-                        IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
-                        OffContent=""
-                        OnContent="" />
+                    <ToggleSwitch IsChecked="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"/>
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
                     Header="Update to Pre Releases">
-                    <ToggleSwitch
-                        IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"
-                        OffContent=""
-                        OnContent="" />
+                    <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"/>
                 </controls:OptionControl>
             </controls:CardExpander>
 
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_TestMode}">
                 <ToggleSwitch
-                    IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"
-                    OffContent=""
-                    OnContent="" />
+                    IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"/>
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Header="Disable Game Search"
+                Description="Stops the top search bar for searching for games.">
+                <ToggleSwitch IsChecked="{Binding DisabeGameSearch, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <Separator Margin="0,8,0,4"/>
@@ -97,8 +96,8 @@
             </controls:OptionControl>
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="Max Download Thread"
-                                    Description="Specify the amount of threads used to download a roblox update.">
+                                    Header="Multi Thread Download"
+                                    Description="Specify the thread amount used for downloading.">
                 <TextBox
                     Width="200"
                     Margin="8,0,0,0"

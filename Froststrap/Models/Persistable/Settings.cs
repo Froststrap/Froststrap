@@ -83,6 +83,7 @@ namespace Froststrap.Models.Persistable
 
         // Misc Stuff
         public string SelectedRegion { get; set; } = string.Empty;
+        public bool DisableGameSearch { get; set; } = false;
         public bool ForceLocalData { get; set; } = false;
         public bool DebugDisableVersionPackageCleanup { get; set; } = false;
     }

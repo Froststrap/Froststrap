@@ -32,7 +32,39 @@ namespace Froststrap.UI.ViewModels
                 if (SetProperty(ref _searchQuery, value))
                 {
                     FilterSearchResults();
-                    TriggerGameSearch(value);
+
+                    if (!DisableGameSearch)
+                    {
+                        TriggerGameSearch(value);
+                    }
+                    else
+                    {
+                        GameSearchResults.Clear();
+                        IsGameSearchLoading = false;
+                    }
+                }
+            }
+        }
+
+        public bool DisableGameSearch
+        {
+            get => App.Settings.Prop.DisableGameSearch;
+            set
+            {
+                if (App.Settings.Prop.DisableGameSearch != value)
+                {
+                    App.Settings.Prop.DisableGameSearch = value;
+                    OnPropertyChanged(nameof(DisableGameSearch));
+
+                    if (value)
+                    {
+                        GameSearchResults.Clear();
+                        IsGameSearchLoading = false;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(SearchQuery))
+                    {
+                        TriggerGameSearch(SearchQuery);
+                    }
                 }
             }
         }
