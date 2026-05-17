@@ -77,6 +77,12 @@
                        FontWeight="Bold"
                        Text="Roblox" />
 
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Automatically update Sober">
+                <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateSober, Mode=TwoWay}" />
+            </controls:OptionControl>
+
             <controls:OptionControl Header="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Title}"
                                     Description="{x:Static resources:Strings.Menu_Behaviour_ForceRobloxReinstall_Description}"
                                     IsEnabled="{Binding !IsRobloxInstallationMissing}">

@@ -73,6 +73,7 @@ namespace Froststrap.Models.Persistable
         // Settings Page
         public UpdateCheck UpdateChecks { get; set; } = UpdateCheck.Stable;
         public bool UpdateRoblox { get; set; } = true;
+        public bool AutomaticallyUpdateSober { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; } = false;
         public string Channel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;

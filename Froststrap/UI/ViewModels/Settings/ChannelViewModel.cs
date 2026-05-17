@@ -243,6 +243,12 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.UpdateRoblox = value;
         }
 
+        public static bool AutomaticallyUpdateSober
+        {
+            get => App.Settings.Prop.AutomaticallyUpdateSober;
+            set => App.Settings.Prop.AutomaticallyUpdateSober = value;
+        }
+
         public static int MaxThreadDownload
         {
             get => App.Settings.Prop.MaxThreadDownload;
@@ -336,6 +342,7 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(SelectedUpdateCheck));
             OnPropertyChanged(nameof(ForceRobloxReinstallation));
             OnPropertyChanged(nameof(UpdateRoblox));
+            OnPropertyChanged(nameof(AutomaticallyUpdateSober));
             OnPropertyChanged(nameof(StaticDirectory));
             OnPropertyChanged(nameof(TestModeEnabled));
             OnPropertyChanged(nameof(ViewChannel));

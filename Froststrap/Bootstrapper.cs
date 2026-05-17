@@ -64,6 +64,7 @@ namespace Froststrap
 
         public static bool StaticDirectory => App.Settings.Prop.StaticDirectory;
         private static int MaxThreadDownload => App.Settings.Prop.MaxThreadDownload;
+        private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
             || App.State.Prop.ForceReinstall
             || (!OperatingSystem.IsLinux() && (
@@ -194,6 +195,9 @@ namespace Froststrap
 
             // this is now always enabled as of v2.8.0
             Dialog?.CancelEnabled = true;
+
+            if (AutomaticallyUpdateSober)
+                await UpdateSoberFlatpakAsync();
 
             SetStatus(Strings.Bootstrapper_Status_Connecting);
 
@@ -2017,10 +2021,93 @@ namespace Froststrap
             return true;
         }
 
+        private async Task UpdateSoberFlatpakAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::UpdateSoberFlatpak";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Running 'flatpak update {SoberFlatpakId}'.");
+            SetStatus("Updating Sober...");
+
+            var updateStartInfo = new ProcessStartInfo
+            {
+                FileName = "flatpak",
+                Arguments = $"update {SoberFlatpakId}",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+
+            Process? updateProcess = null;
+            try
+            {
+                using var process = Process.Start(updateStartInfo);
+                updateProcess = process;
+                if (updateProcess is null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to start flatpak update process.");
+                    return;
+                }
+
+                List<string> lines = [];
+                object lineLock = new();
+
+                async Task ReadUpdateStream(StreamReader reader)
+                {
+                    while (true)
+                    {
+                        string? line = await reader.ReadLineAsync();
+                        if (line is null)
+                            break;
+
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            lock (lineLock)
+                            {
+                                lines.Add(line.Trim());
+                            }
+
+                            App.Logger.WriteLine(LOG_IDENT, $"[flatpak] {line}");
+                        }
+                    }
+                }
+
+                await Task.WhenAll(
+                    ReadUpdateStream(updateProcess.StandardOutput),
+                    ReadUpdateStream(updateProcess.StandardError),
+                    updateProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromMinutes(3))
+                );
+
+                if (updateProcess.ExitCode != 0)
+                {
+                    string details = string.Join('\n', lines.TakeLast(8));
+                    App.Logger.WriteLine(LOG_IDENT, $"flatpak update exited with code {updateProcess.ExitCode}. {details}");
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Sober update check finished successfully.");
+                }
+            }
+            catch (TimeoutException ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Timed out while updating Sober.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+
+                if (updateProcess is not null && !updateProcess.HasExited)
+                    updateProcess.Kill(true);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to update Sober.");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
         private async Task LaunchViaSober(List<int> autoclosePids)
         {
             const string LOG_IDENT = "Bootstrapper::LaunchViaSober";
 
+            // TODO: add vinegar support for Roblox Studio on Linux
             if (IsStudioLaunch)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Roblox Studio is not supported on Linux via Sober. Aborting.");
