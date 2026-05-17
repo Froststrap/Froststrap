@@ -123,32 +123,6 @@ namespace Froststrap.Models.Entities
 
             try
             {
-                try
-                {
-                    Uri roValraGeoUrl = new($"https://apis.rovalra.com/v1/geolocation?ip={MachineAddress}");
-                    var response = await Http.GetJson<RoValraGeolocation>(roValraGeoUrl);
-                    var geolocation = response.Location;
-
-                    if (geolocation is not null)
-                    {
-                        if (geolocation.City == geolocation.Region && geolocation.City == geolocation.Country)
-                            location = geolocation.Country;
-                        else if (geolocation.City == geolocation.Region)
-                            location = $"{geolocation.Region}, {geolocation.Country}";
-                        else
-                            location = $"{geolocation.City}, {geolocation.Region}, {geolocation.Country}";
-
-                        App.Logger.WriteLine(LOG_IDENT, $"Got location from RoValra: {location}");
-                        GlobalCache.ServerLocation[MachineAddress] = location;
-                        serverQuerySemaphore.Release();
-                        return location;
-                    }
-                }
-                catch (Exception rovalraEx)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"RoValra API failed, falling back to ipinfo.io: {rovalraEx.Message}");
-                }
-
                 Uri ipInfoUrl = new($"https://ipinfo.io/{MachineAddress}/json");
                 var ipInfo = await Http.GetJson<IPInfoResponse>(ipInfoUrl);
 
@@ -160,10 +134,8 @@ namespace Froststrap.Models.Entities
                 else
                     location = $"{ipInfo.City}, {ipInfo.Region}, {ipInfo.Country}";
 
-                App.Logger.WriteLine(LOG_IDENT, $"Got location from ipinfo.io: {location}");
                 GlobalCache.ServerLocation[MachineAddress] = location;
                 serverQuerySemaphore.Release();
-                return location;
             }
             catch (Exception ex)
             {
@@ -173,15 +145,15 @@ namespace Froststrap.Models.Entities
                 GlobalCache.ServerLocation[MachineAddress] = location;
                 serverQuerySemaphore.Release();
 
-                _ = Frontend.ShowConnectivityDialog(
-                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com/ipinfo.io"),
+                /*Frontend.ShowConnectivityDialog(
+                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
                     MessageBoxImage.Warning,
                     ex
-                );
-
-                return location;
+                );*/
             }
+
+            return location;
         }
 
         public void RejoinServer(bool CloseRoblox = true)

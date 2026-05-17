@@ -5343,7 +5343,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When in-game, you&apos;ll be able to see where your server is located via [ipinfo.io](https://ipinfo.io) and [RoValra](https://apis.rovalra.com)..
+        ///   Looks up a localized string similar to When in-game, you&apos;ll be able to see where your server is located via [ipinfo.io](https://ipinfo.io)..
         /// </summary>
         public static string Menu_Integrations_QueryServerLocation_Description {
             get {

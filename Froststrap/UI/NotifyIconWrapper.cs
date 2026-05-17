@@ -118,13 +118,23 @@ namespace Froststrap.UI
             };
 
             string? serverLocation = await ActivityWatcher.Data.QueryServerLocation();
+            if (string.IsNullOrEmpty(serverLocation))
+            {
+                ShowAlert(
+                    string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
+                    Strings.ActivityWatcher_LocationQueryFailed,
+                    NotificationType.Warning
+                );
+
+                return;
+            }
             string? serverUptime;
             DateTime? serverTime = ActivityWatcher.Data.StartTime;
 
             if (serverTime is not null)
             {
                 TimeSpan _serverUptime = DateTime.UtcNow - serverTime.Value;
-
+                
                 if (_serverUptime.TotalMinutes < 1)
                     serverUptime = "0 minutes";
                 else
