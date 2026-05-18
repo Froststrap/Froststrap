@@ -1,8 +1,18 @@
-﻿using Windows.Win32;
+﻿using System.IO;
+using System.Net.Http;
+using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+using Froststrap.Utility;
+using Froststrap.Enums;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Froststrap.Integrations
 {
+    [SupportedOSPlatform("windows")]
     public class IntegrationWatcher : IDisposable
     {
         private readonly ActivityWatcher _activityWatcher;
@@ -11,6 +21,15 @@ namespace Froststrap.Integrations
         private HWND _robloxWindowHandle = default;
         private readonly uint _robloxPID;
         private readonly int _robloxProcessId;
+
+        private HICON _customGameIconHandle = default;
+
+        private const uint WM_SETICON = 0x0080;
+        private const int ICON_SMALL = 0;
+        private const int ICON_BIG = 1;
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr CreateIconFromResourceEx(byte[] pbIconBits, uint cbIconBits, bool fIcon, uint dwVersion, int cxDesired, int cyDesired, uint uFlags);
 
         public IntegrationWatcher(ActivityWatcher activityWatcher, int robloxProcessId)
         {
@@ -47,10 +66,20 @@ namespace Froststrap.Integrations
             if (!_activityWatcher.InGame)
                 return;
 
-            if (App.Settings.Prop.AutoChangeTitle)
+            Task.Run(async () =>
             {
-                Task.Run(() => UpdateTitleToGameName());
-            }
+                EnsureWindowHandleCached();
+
+                if (App.Settings.Prop.AutoChangeIcon)
+                {
+                    await UpdateIconToGameIcon();
+                }
+
+                if (App.Settings.Prop.AutoChangeTitle)
+                {
+                    await UpdateTitleToGameName();
+                }
+            });
 
             long currentGameId = _activityWatcher.Data.PlaceId;
 
@@ -67,16 +96,33 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT = "IntegrationWatcher::OnGameLeave";
 
-            if (App.Settings.Prop.AutoChangeTitle && _robloxWindowHandle.Value != IntPtr.Zero)
+            if (_robloxWindowHandle.Value != IntPtr.Zero)
             {
                 try
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Resetting window title back to 'Roblox'");
-                    PInvoke.SetWindowText(_robloxWindowHandle, "Roblox");
+                    if (App.Settings.Prop.AutoChangeTitle)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Resetting window title back to 'Roblox'");
+                        PInvoke.SetWindowText(_robloxWindowHandle, "Roblox");
+                    }
+
+                    if (App.Settings.Prop.AutoChangeIcon)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Resetting window icons back to default");
+
+                        PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, IntPtr.Zero);
+                        PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, IntPtr.Zero);
+
+                        if (_customGameIconHandle.Value != IntPtr.Zero)
+                        {
+                            PInvoke.DestroyIcon(_customGameIconHandle);
+                            _customGameIconHandle = default;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to reset title: {ex.Message}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to reset window modifications: {ex.Message}");
                 }
             }
 
@@ -91,9 +137,97 @@ namespace Froststrap.Integrations
             }
         }
 
+        private void EnsureWindowHandleCached()
+        {
+            if (_robloxWindowHandle.Value != IntPtr.Zero) return;
+
+            IntPtr nativeHandle = IntPtr.Zero;
+            try
+            {
+                Process? processById = Watcher.ProcessId != null ? Process.GetProcessById((int)Watcher.ProcessId) : null;
+                if (processById != null)
+                    nativeHandle = processById.MainWindowHandle;
+            }
+            catch { }
+
+            if (nativeHandle == IntPtr.Zero)
+            {
+                foreach (Process proc in Process.GetProcesses())
+                {
+                    if (proc.MainWindowTitle == "Roblox")
+                    {
+                        nativeHandle = proc.MainWindowHandle;
+                        break;
+                    }
+                }
+            }
+
+            _robloxWindowHandle = (HWND)nativeHandle;
+        }
+
+        private async Task UpdateIconToGameIcon()
+        {
+            const string LOG_IDENT = "IntegrationWatcher::UpdateIconToGameIcon";
+
+            if (_robloxWindowHandle.Value == IntPtr.Zero) return;
+
+            try
+            {
+                var activity = _activityWatcher.Data;
+                if (activity == null || activity.UniverseId == 0) return;
+
+                App.Logger.WriteLine(LOG_IDENT, $"Fetching icon layout for Universe ID: {activity.UniverseId}");
+
+                var request = new ThumbnailRequest
+                {
+                    TargetId = (ulong)activity.UniverseId,
+                    Size = "150x150",
+                    Type = ThumbnailType.GameIcon,
+                    Format = ThumbnailFormat.Png
+                };
+
+                string? iconUrl = await Thumbnails.GetThumbnailUrlAsync(request, CancellationToken.None);
+
+                if (string.IsNullOrEmpty(iconUrl))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to resolve valid asset thumbnail address.");
+                    return;
+                }
+
+                using var response = await App.HttpClient.GetAsync(iconUrl);
+                response.EnsureSuccessStatusCode();
+
+                using var stream = await response.Content.ReadAsStreamAsync();
+
+                using var image = await Image.LoadAsync<Bgra32>(stream);
+                using var ms = new MemoryStream();
+                await image.SaveAsPngAsync(ms);
+                byte[] pngBytes = ms.ToArray();
+
+                IntPtr hIconRaw = CreateIconFromResourceEx(pngBytes, (uint)pngBytes.Length, true, 0x00030000, image.Width, image.Height, 0);
+                HICON copiedHIcon = PInvoke.CopyIcon((HICON)hIconRaw);
+
+                if (copiedHIcon.Value != IntPtr.Zero)
+                {
+                    _customGameIconHandle = copiedHIcon;
+
+                    PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _customGameIconHandle.Value);
+                    PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _customGameIconHandle.Value);
+
+                    App.Logger.WriteLine(LOG_IDENT, "Game icon transformation injected successfully via ImageSharp compressed png bits.");
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to process game icon adjustment: {ex.Message}");
+            }
+        }
+
         private async Task UpdateTitleToGameName()
         {
             const string LOG_IDENT = "IntegrationWatcher::UpdateTitleToGameName";
+
+            if (_robloxWindowHandle.Value == IntPtr.Zero) return;
 
             try
             {
@@ -117,33 +251,7 @@ namespace Froststrap.Integrations
 
                 string gameName = activity.UniverseDetails.Data.Name;
 
-                if (_robloxWindowHandle.Value == IntPtr.Zero)
-                {
-                    IntPtr nativeHandle = IntPtr.Zero;
-                    try
-                    {
-                        Process? processById = Watcher.ProcessId != null ? Process.GetProcessById((int)Watcher.ProcessId) : null;
-                        if (processById != null)
-                            nativeHandle = processById.MainWindowHandle;
-                    }
-                    catch { }
-
-                    if (nativeHandle == IntPtr.Zero)
-                    {
-                        foreach (Process proc in Process.GetProcesses())
-                        {
-                            if (proc.MainWindowTitle == "Roblox")
-                            {
-                                nativeHandle = proc.MainWindowHandle;
-                                break;
-                            }
-                        }
-                    }
-
-                    _robloxWindowHandle = (HWND)nativeHandle;
-                }
-
-                if (_robloxWindowHandle.Value != IntPtr.Zero && !string.IsNullOrEmpty(gameName))
+                if (!string.IsNullOrEmpty(gameName))
                 {
                     PInvoke.SetWindowText(_robloxWindowHandle, gameName);
                 }
@@ -205,6 +313,13 @@ namespace Froststrap.Integrations
             }
 
             _activeIntegrations.Clear();
+
+            if (_customGameIconHandle.Value != IntPtr.Zero)
+            {
+                PInvoke.DestroyIcon(_customGameIconHandle);
+                _customGameIconHandle = default;
+            }
+
             _activityWatcher.Dispose();
             GC.SuppressFinalize(this);
         }
