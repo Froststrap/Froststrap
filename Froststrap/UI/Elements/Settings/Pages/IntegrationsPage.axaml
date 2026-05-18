@@ -94,6 +94,121 @@
                 </ComboBox>
             </controls:OptionControl>
 
+
+            <controls:CardExpander Header="{x:Static resources:Strings.Common_WindowMovement}" Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTrackingNoDiscord}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}" IsExpanded="False">
+                <StackPanel>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_WindowControl_Title}"
+                        Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_WindowControl_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='ms-settings:gaming-gamemode'}"
+                        IsEnabled="{Binding ActivityTrackingEnabled}"
+                        x:Name="WindowControlOption">
+                        <ToggleSwitch IsChecked="{Binding WindowControlEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_MoveWindowControl_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_MoveWindowControl_Description}"
+                        IsEnabled="{Binding WindowControlEnabled}">
+                        <ToggleSwitch IsChecked="{Binding MoveWindowControlEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_TitleWindowControl_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_TitleWindowControl_Description}"
+                        IsEnabled="{Binding WindowControlEnabled}">
+                        <ToggleSwitch IsChecked="{Binding TitleControlEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_TransWindowControl_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_TransWindowControl_Description}"
+                        IsEnabled="{Binding WindowControlEnabled}">
+                        <ToggleSwitch IsChecked="{Binding TransparencyControlEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_WinColorControl_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_WinColorControl_Description}"
+                        IsEnabled="{Binding WindowControlEnabled}">
+                        <ToggleSwitch IsChecked="{Binding WinColorControlEnabled, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <!-- Integrated now in the description because it looks off -->
+                    <!-- <controls:MarkdownTextBlock MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_CanRequireNoFSOptimization}}" TextWrapping="Wrap" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                    -->
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_WindowMonitorStyle_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_WindowMonitorStyle_Description}">
+                        <ComboBox Width="200" Padding="10,5,10,5" ItemsSource="{Binding WindowMonitorStyles, Mode=OneTime}" SelectedItem="{Binding MonitorStyle, Mode=TwoWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Path=., Converter={StaticResource EnumNameConverter}}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_WindowFPSLogRead_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_WindowFPSLogRead_Description}"
+                        IsEnabled="{Binding WindowControlEnabled}">
+                        <TextBox Margin="5,0,0,0" Padding="10,5,10,5" Width="150" Text="{Binding WindowReadFPSInterval, Mode=TwoWay}" TextInput="ValidateInt32" />
+                    </controls:OptionControl>
+
+                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_WindowUniversesList_Title}" FontSize="16" FontWeight="Medium" Margin="0,16,0,0" />
+                    <TextBlock Text="{x:Static resources:Strings.Menu_Integrations_WindowUniversesList_Description}" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+
+                    <controls:OptionControl
+                        Header="{x:Static resources:Strings.Menu_Integrations_WindowAllowAll_Title}"
+                        Description="{x:Static resources:Strings.Menu_Integrations_WindowAllowAll_Description}"
+                        IsEnabled="{Binding WindowControlEnabled}">
+                        <ToggleSwitch IsChecked="{Binding WindowAllowAllOption, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <Grid Margin="0,8,0,0" MinHeight="125">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <ListBox x:Name="WindowUniversesListBox" Grid.Row="0" Grid.Column="0" Margin="0,0,4,0" ItemsSource="{Binding CurrentDisplayedUniverses, Mode=OneWay}" SelectionChanged="DisplayedUniverseSelection" SelectedIndex="{Binding SelectedUniverseIndex, Mode=TwoWay}" />
+                        <Grid Grid.Row="1" Grid.Column="0" Margin="0,8,4,0" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <controls:IconButton Grid.Column="0" Margin="0,0,4,0" Icon="ArrowSwap" Content="{Binding SelectedUniverseListName}" HorizontalAlignment="Stretch" Command="{Binding SwapDisplayedUniversesCommand, Mode=OneTime}" />
+                            <controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="Delete" Content="{x:Static resources:Strings.Common_Delete}" HorizontalAlignment="Stretch" Classes="Danger" IsEnabled="{Binding IsUniverseSelected, Mode=OneWay}" Command="{Binding DeleteUniverseCommand, Mode=OneTime}" />
+                        </Grid>
+                        <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Margin="4,0,0,0" IsVisible="{Binding IsUniverseSelected}" VerticalAlignment="Top">
+                            <Grid Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Height="{Binding Bounds.Height, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                        Width="{Binding Height, RelativeSource={RelativeSource Self}}" CornerRadius="4" MinHeight="125" VerticalAlignment="Stretch">
+
+                                    <Border.Background>
+                                        <ImageBrush Source="{Binding SelectedUniverseDetails.Thumbnail.ImageUrl}" Stretch="UniformToFill" />
+                                    </Border.Background>
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="12,0,0,8" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding SelectedUniverseDetails.Data.Name, UpdateSourceTrigger=PropertyChanged}" FontSize="24" Foreground="{DynamicResource TextFillColorSecondaryBrush}" FontWeight="Medium" HorizontalAlignment="Left" Margin="0,0,0,0" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{Binding SelectedUniverseDetails.Data.Creator, UpdateSourceTrigger=PropertyChanged}" FontSize="18" Foreground="{DynamicResource TextFillColorSecondaryBrush}" HorizontalAlignment="Left" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                        <TextBlock Grid.Row="0" Grid.RowSpan="2" IsVisible="{Binding !IsUniverseSelected}" Grid.Column="1" Text="{x:Static resources:Strings.Menu_Integrations_WindowUniversesList_NoneSelected}" TextWrapping="Wrap" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </Grid>
+                </StackPanel>
+            </controls:CardExpander>
+
             <controls:CardExpander Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}" IsExpanded="True">
                 <StackPanel>
                     <controls:OptionControl

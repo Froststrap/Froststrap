@@ -22,6 +22,8 @@ namespace Froststrap.Integrations
         private bool _visible = true;
         private bool _disposed = false;
 
+        private DateTime LastRPCRequest;
+
         public PlayerDiscordRichPresence(ActivityWatcher activityWatcher)
         {
             const string LOG_IDENT = "PlayerDiscordRichPresence";
@@ -63,12 +65,20 @@ namespace Froststrap.Integrations
             if (message.Command != "SetRichPresence" && message.Command != "SetLaunchData")
                 return;
 
+            if ((DateTime.Now - LastRPCRequest).TotalSeconds <= 1)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Dropping message as ratelimit has been hit");
+                return;
+            }
+
             if (_currentPresence is null || _originalPresence is null)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Presence is not set, enqueuing message");
                 _messageQueue.Enqueue(message);
                 return;
             }
+
+            LastRPCRequest = DateTime.Now;
 
             if (message.Command == "SetLaunchData")
             {

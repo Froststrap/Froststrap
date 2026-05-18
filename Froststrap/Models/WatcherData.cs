@@ -8,6 +8,8 @@
 
         public List<int>? AutoclosePids { get; set; }
 
+        public string? RobloxDirectory { get; set; }
+
         public LaunchMode LaunchMode { get; set; } = LaunchMode.Player;
     }
 }

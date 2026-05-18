@@ -24,6 +24,19 @@ namespace Froststrap.Models.Persistable
         public bool StudioWorkspaceInfo { get; set; } = false;
         public bool StudioShowTesting { get; set; } = false;
         public bool StudioGameButton { get; set; } = false;
+        
+        // Windows control settings
+        public bool UseWindowControl { get; set; } = false;
+        public bool MoveWindowAllowed { get; set; } = false;
+        public bool TitleControlAllowed { get; set; } = false;
+        public bool WindowTransparencyAllowed { get; set; } = false;
+        public bool CanGameChangeColor { get; set; } = false;
+        public WindowMonitorStyle WindowMonitorStyle { get; set; } = WindowMonitorStyle.Single;
+        public int WindowReadFPS { get; set; } = 60;
+        public bool WindowAllowAll { get; set; } = false;
+        public ObservableCollection<long> WindowAllowedUniverses { get; set; } = [];
+        public ObservableCollection<long> WindowBlacklistedUniverses { get; set; } = [];
+
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = [];
 
         // Bootstrapper Page

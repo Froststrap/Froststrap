@@ -1,0 +1,89 @@
+<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.WindowControlPermission"
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:local="clr-namespace:Froststrap.UI.Elements.Dialogs"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:converters="clr-namespace:Froststrap.UI.Converters"
+                     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+                     xmlns:enums="clr-namespace:Froststrap.Enums"
+                     mc:Ignorable="d"
+                     Title="Window Controller"
+                     Width="420"
+                     Height="350"
+                     x:DataType="vm:WindowControlPermissionViewModel"
+                     CanResize="False"
+                     ExtendClientAreaToDecorationsHint="True"
+                     WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <controls:TitleBar Grid.Row="0"
+                           Padding="8"
+                           x:Name="RootTitleBar"
+                           Title="Window Controller"
+                           ShowMinimize="False"
+                           ShowMaximize="False"
+                           KeyboardNavigation.TabNavigation="None" />
+
+        <TextBlock Grid.Row="1"
+                   Margin="16,8,16,0"
+                   Text="{x:Static resources:Strings.WindowController_PermissionPopup_Description}"
+                   TextWrapping="Wrap"/>
+
+        <ListBox Grid.Row="2"
+                 ItemsSource="{Binding GameHistory, Mode=OneWay}"
+                 Margin="8">
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Focusable" Value="False" />
+                </Style>
+            </ListBox.Styles>
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <controls:Card Padding="0">
+                        <Grid VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Width="107" Height="107" CornerRadius="4" ClipToBounds="True">
+                                <Image Source="{Binding UniverseDetails.Thumbnail.ImageUrl}" Stretch="UniformToFill"/>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" Margin="16,12,12,12" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding UniverseDetails.Data.Name}" FontSize="18" FontWeight="Medium" />
+                                <TextBlock Text="{Binding UniverseDetails.Data.Creator.Name}" FontSize="12" FontWeight="Medium" />
+                            </StackPanel>
+                        </Grid>
+                    </controls:Card>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <CheckBox Grid.Row="3"
+                  Margin="16,0,0,0"
+                  Content="{x:Static resources:Strings.WindowController_PermissionPopup_Blacklist}"
+                  IsChecked="{Binding BlacklistFromAsking}"
+                  VerticalAlignment="Center" />
+
+        <Border Grid.Row="4" Margin="0,12,0,0" Padding="15" Background="{DynamicResource SolidBackgroundFillColorSecondaryBrush}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button MinWidth="100" Content="{x:Static resources:Strings.WindowController_PermissionPopup_Allow}" Click="OKButton_Click" />
+                <Button MinWidth="100" Margin="12,0,0,0" Content="{x:Static resources:Strings.WindowController_PermissionPopup_Deny}" Click="CancelButton_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</base:AvaloniaWindow>

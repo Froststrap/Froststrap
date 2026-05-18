@@ -153,7 +153,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             try
             {
-                var activityWatcher = new ActivityWatcher();
+                var activityWatcher = new ActivityWatcher(null!);
 
                 var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
                 serverHistoryWindow.Show();
@@ -352,6 +352,209 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.SoberSettings.Prop.UseOpengl;
             set => App.SoberSettings.Prop.UseOpengl = value;
         }
+
+        public bool WindowControlEnabled
+        {
+            get => App.Settings.Prop.UseWindowControl;
+            set
+            {
+                App.Settings.Prop.UseWindowControl = value;
+                OnPropertyChanged(nameof(WindowControlEnabled));
+
+                if (!value)
+                {
+                    MoveWindowControlEnabled = value;
+                    TitleControlEnabled = value;
+                    TransparencyControlEnabled = value;
+                    WinColorControlEnabled = value;
+                    WindowAllowAllOption = value;
+                    WindowReadFPSInterval = 60;
+                    MonitorStyle = WindowMonitorStyle.Single;
+                    OnPropertyChanged(nameof(MoveWindowControlEnabled));
+                    OnPropertyChanged(nameof(TitleControlEnabled));
+                    OnPropertyChanged(nameof(TransparencyControlEnabled));
+                    OnPropertyChanged(nameof(WinColorControlEnabled));
+                    OnPropertyChanged(nameof(WindowAllowAllOption));
+                    OnPropertyChanged(nameof(WindowReadFPSInterval));
+                    OnPropertyChanged(nameof(MonitorStyle));
+                }
+            }
+        }
+
+        public static bool MoveWindowControlEnabled
+        {
+            get => App.Settings.Prop.MoveWindowAllowed;
+            set => App.Settings.Prop.MoveWindowAllowed = value;
+        }
+
+        public static bool TitleControlEnabled
+        {
+            get => App.Settings.Prop.TitleControlAllowed;
+            set => App.Settings.Prop.TitleControlAllowed = value;
+        }
+
+        public static bool TransparencyControlEnabled
+        {
+            get => App.Settings.Prop.WindowTransparencyAllowed;
+            set => App.Settings.Prop.WindowTransparencyAllowed = value;
+        }
+
+        public static bool WinColorControlEnabled
+        {
+            get => App.Settings.Prop.CanGameChangeColor;
+            set => App.Settings.Prop.CanGameChangeColor = value;
+        }
+
+        public static bool WindowAllowAllOption
+        {
+            get => App.Settings.Prop.WindowAllowAll;
+            set => App.Settings.Prop.WindowAllowAll = value;
+        }
+
+        public static int WindowReadFPSInterval
+        {
+            get => App.Settings.Prop.WindowReadFPS;
+            set => App.Settings.Prop.WindowReadFPS = value;
+        }
+
+        public IEnumerable<WindowMonitorStyle> WindowMonitorStyles { get; } = Enum.GetValues<WindowMonitorStyle>();
+
+        public static WindowMonitorStyle MonitorStyle
+        {
+            get => App.Settings.Prop.WindowMonitorStyle;
+            set => App.Settings.Prop.WindowMonitorStyle = value;
+        }
+
+        // universe stuff
+        public ICommand DeleteUniverseCommand => new RelayCommand(DeleteUniverse);
+        public ICommand SwapDisplayedUniversesCommand => new RelayCommand(SwapDisplayedUniverses);
+
+        private void DeleteUniverse()
+        {
+            if (SelectedUniverse is null)
+                return;
+
+            CurrentDisplayedUniverses.Remove((long)SelectedUniverse);
+
+            if (CurrentDisplayedUniverses.Count > 0)
+            {
+                SelectedUniverseIndex = CurrentDisplayedUniverses.Count - 1;
+                OnPropertyChanged(nameof(SelectedUniverseIndex));
+            }
+
+            OnPropertyChanged(nameof(IsUniverseSelected));
+        }
+
+        private void SwapDisplayedUniverses()
+        {
+            displayBlacklist = !displayBlacklist;
+            SelectedUniverseIndex = 0;
+            SelectedUniverse = CurrentDisplayedUniverses.Count > 0 ? CurrentDisplayedUniverses[SelectedUniverseIndex] : null;
+
+            SelectedUniverseListName = displayBlacklist ? Strings.Menu_Integrations_WindowUniversesList_Blacklisted : Strings.Menu_Integrations_WindowUniversesList_Allowed;
+
+            OnPropertyChanged(nameof(SelectedUniverseListName));
+            OnPropertyChanged(nameof(IsUniverseSelected));
+            OnPropertyChanged(nameof(SelectedUniverse));
+            OnPropertyChanged(nameof(SelectedUniverseIndex));
+            OnPropertyChanged(nameof(CurrentDisplayedUniverses));
+        }
+
+        public bool displayBlacklist = false;
+
+        public string SelectedUniverseListName { get; set; } = Strings.Menu_Integrations_WindowUniversesList_Allowed;
+
+        public ObservableCollection<long> CurrentDisplayedUniverses
+        {
+            get
+            {
+                return displayBlacklist ? WindowBlacklistedUniverses : WindowAllowedUniverses;
+            }
+            set
+            {
+                if (displayBlacklist)
+                    WindowBlacklistedUniverses = value;
+                else
+                    WindowAllowedUniverses = value;
+            }
+        }
+
+        public static ObservableCollection<long> WindowAllowedUniverses
+        {
+            get => App.Settings.Prop.WindowAllowedUniverses;
+            set => App.Settings.Prop.WindowAllowedUniverses = value;
+        }
+
+        public static ObservableCollection<long> WindowBlacklistedUniverses
+        {
+            get => App.Settings.Prop.WindowBlacklistedUniverses;
+            set => App.Settings.Prop.WindowBlacklistedUniverses = value;
+        }
+
+        private readonly UniverseDetails PlaceholderUniverseDetails = new()
+        {
+            Thumbnail = new()
+            {
+                ImageUrl = "/Froststrap.ico" // bloxstrap logo lol
+            },
+            Data = new()
+            {
+                Name = Strings.Menu_Integrations_WindowUniversesList_LoadingUniverse,
+                Id = -1,
+            },
+        };
+
+        private readonly UniverseDetails FailedUniverseDetails = new()
+        {
+            Thumbnail = new()
+            {
+                ImageUrl = "/Froststrap.ico" // bloxstrap logo lol
+            },
+            Data = new()
+            {
+                Name = Strings.Menu_Integrations_WindowUniversesList_FailedUniverseLoad,
+                Id = -1,
+            },
+        };
+
+        public UniverseDetails? SelectedUniverseDetails { get; set; }
+
+        private long? _selectedUniverse;
+        public long? SelectedUniverse
+        {
+            get => _selectedUniverse;
+            set
+            {
+                _selectedUniverse = value;
+
+                if (value is null)
+                    return;
+
+                Task.Run(async () =>
+                {
+                    long universeID = (long)value;
+                    UniverseDetails? universe = UniverseDetails.LoadFromCache(universeID);
+                    if (universe == null)
+                    {
+                        SelectedUniverseDetails = PlaceholderUniverseDetails;
+                        OnPropertyChanged(nameof(SelectedUniverseDetails));
+                        await UniverseDetails.FetchSingle(universeID);
+                    }
+                    if (value == _selectedUniverse)
+                    {
+                        SelectedUniverseDetails = UniverseDetails.LoadFromCache(universeID);
+                    }
+                    else
+                    {
+                        SelectedUniverseDetails = FailedUniverseDetails;
+                    }
+
+                    OnPropertyChanged(nameof(SelectedUniverseDetails));
+                });
+            }
+        }
+        public int SelectedUniverseIndex { get; set; }
+        public bool IsUniverseSelected => _selectedUniverse is not null;
 
         public static bool DisableRobloxRecording
         {

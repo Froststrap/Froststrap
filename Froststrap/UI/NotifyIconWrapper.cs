@@ -13,7 +13,7 @@ namespace Froststrap.UI
     {
         private bool _isDisposed = false;
         private readonly TrayIcon _trayIcon;
-        private readonly MenuContainer _menuContainer;
+        public readonly MenuContainer _menuContainer;
         private readonly Watcher _watcher;
         private ActivityWatcher? ActivityWatcher => _watcher.ActivityWatcher;
 
@@ -123,6 +123,7 @@ namespace Froststrap.UI
                 ShowAlert(
                     string.Format(Strings.Dialog_Connectivity_UnableToConnect, "ipinfo.io"),
                     Strings.ActivityWatcher_LocationQueryFailed,
+                    5,
                     NotificationType.Warning
                 );
 
@@ -150,7 +151,7 @@ namespace Froststrap.UI
                 string.Format(Strings.ContextMenu_ServerDetails_Notification_Text, serverLocation, serverUptime));
         }
 
-        public void ShowAlert(string title, string message, NotificationType category = NotificationType.Information)
+        public void ShowAlert(string title, string message, int duration = 5, NotificationType category = NotificationType.Information)
         {
             if (_isDisposed) return;
 
@@ -175,7 +176,8 @@ namespace Froststrap.UI
 
             notification.Title = title;
             notification.Message = message;
-            notification.Expiration = TimeSpan.FromSeconds(5);
+
+            notification.Expiration = TimeSpan.FromSeconds(duration);
 
             Dispatcher.UIThread.Post(() =>
             {
