@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace Froststrap.Integrations
 {
@@ -7,14 +8,35 @@ namespace Froststrap.Integrations
         private readonly ActivityWatcher _activityWatcher;
         private readonly Dictionary<int, CustomIntegration> _activeIntegrations = [];
 
-        private const uint WM_SETTEXT = 0x000C;
+        private HWND _robloxWindowHandle = default;
+        private readonly uint _robloxPID;
+        private readonly int _robloxProcessId;
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, string lParam);
-
-        public IntegrationWatcher(ActivityWatcher activityWatcher)
+        public IntegrationWatcher(ActivityWatcher activityWatcher, int robloxProcessId)
         {
             _activityWatcher = activityWatcher;
+
+#if DEBUG
+            var robloxProcesses = Process.GetProcessesByName("RobloxPlayerBeta");
+            if (robloxProcesses.Length == 0)
+            {
+                robloxProcesses = [.. Process.GetProcesses().Where(p => p.ProcessName.Contains("Roblox", StringComparison.OrdinalIgnoreCase))];
+            }
+
+            if (robloxProcesses.Length > 0)
+            {
+                _robloxProcessId = robloxProcesses[0].Id;
+                _robloxPID = (uint)_robloxProcessId;
+            }
+            else
+            {
+                _robloxProcessId = robloxProcessId;
+                _robloxPID = (uint)robloxProcessId;
+            }
+#else
+            _robloxProcessId = robloxProcessId;
+            _robloxPID = (uint)robloxProcessId;
+#endif
 
             _activityWatcher.OnGameJoin += OnGameJoin;
             _activityWatcher.OnGameLeave += OnGameLeave;
@@ -43,6 +65,21 @@ namespace Froststrap.Integrations
 
         private void OnGameLeave(object? sender, EventArgs e)
         {
+            const string LOG_IDENT = "IntegrationWatcher::OnGameLeave";
+
+            if (App.Settings.Prop.AutoChangeTitle && _robloxWindowHandle.Value != IntPtr.Zero)
+            {
+                try
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Resetting window title back to 'Roblox'");
+                    PInvoke.SetWindowText(_robloxWindowHandle, "Roblox");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to reset title: {ex.Message}");
+                }
+            }
+
             foreach (var pid in _activeIntegrations.Keys.ToList())
             {
                 var integration = _activeIntegrations[pid];
@@ -79,31 +116,36 @@ namespace Froststrap.Integrations
                 if (activity.UniverseDetails?.Data == null) return;
 
                 string gameName = activity.UniverseDetails.Data.Name;
-                IntPtr windowHandle = IntPtr.Zero;
 
-                try
+                if (_robloxWindowHandle.Value == IntPtr.Zero)
                 {
-                    Process? processById = Watcher.ProcessId != null ? Process.GetProcessById((int)Watcher.ProcessId) : null;
-                    if (processById != null)
-                        windowHandle = processById.MainWindowHandle;
-                }
-                catch { }
-
-                if (windowHandle == IntPtr.Zero)
-                {
-                    foreach (Process proc in Process.GetProcesses())
+                    IntPtr nativeHandle = IntPtr.Zero;
+                    try
                     {
-                        if (proc.MainWindowTitle == "Roblox")
+                        Process? processById = Watcher.ProcessId != null ? Process.GetProcessById((int)Watcher.ProcessId) : null;
+                        if (processById != null)
+                            nativeHandle = processById.MainWindowHandle;
+                    }
+                    catch { }
+
+                    if (nativeHandle == IntPtr.Zero)
+                    {
+                        foreach (Process proc in Process.GetProcesses())
                         {
-                            windowHandle = proc.MainWindowHandle;
-                            break;
+                            if (proc.MainWindowTitle == "Roblox")
+                            {
+                                nativeHandle = proc.MainWindowHandle;
+                                break;
+                            }
                         }
                     }
+
+                    _robloxWindowHandle = (HWND)nativeHandle;
                 }
 
-                if (windowHandle != IntPtr.Zero && !string.IsNullOrEmpty(gameName))
+                if (_robloxWindowHandle.Value != IntPtr.Zero && !string.IsNullOrEmpty(gameName))
                 {
-                    SendMessage(windowHandle, WM_SETTEXT, IntPtr.Zero, gameName);
+                    PInvoke.SetWindowText(_robloxWindowHandle, gameName);
                 }
             }
             catch (Exception ex)
