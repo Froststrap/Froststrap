@@ -10,9 +10,15 @@ REPO_DIR="$FLATPAK_DIR/repo"
 STATE_DIR="$FLATPAK_DIR/.flatpak-builder"
 FLATPAK_FILE="$FLATPAK_DIR/Froststrap-linux-x64.flatpak"
 
-echo "Is flatpak and flatpak-builder installed? If not cancel and install it"
-echo "There will now be a 10sec wait"
-sleep 10
+if ! command -v flatpak >/dev/null 2>&1; then
+  echo "Error: flatpak is required but was not found in PATH." >&2
+  exit 1
+fi
+
+if ! command -v flatpak-builder >/dev/null 2>&1; then
+  echo "Error: flatpak-builder is required but was not found in PATH." >&2
+  exit 1
+fi
 
 echo "Building Flatpak..."
 
