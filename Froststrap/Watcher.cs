@@ -86,6 +86,8 @@ namespace Froststrap
                 if (App.Settings.Prop.UseWindowControl)
                     WindowController = new(ActivityWatcher);
 
+                IntegrationWatcher = new IntegrationWatcher(ActivityWatcher);
+
                 _notifyIcon = new(this);
             }
 

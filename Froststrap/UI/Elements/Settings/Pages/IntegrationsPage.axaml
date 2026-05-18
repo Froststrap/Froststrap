@@ -45,6 +45,14 @@
             </controls:OptionControl>
 
             <controls:OptionControl
+                Description="Changes Roblox titlebar title to the game name."
+                Header="Title Change"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding AutoChangeTitle, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
                 Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Description}"
                 Header="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Title}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">

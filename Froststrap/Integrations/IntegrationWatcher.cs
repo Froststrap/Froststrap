@@ -1,9 +1,16 @@
-﻿namespace Froststrap.Integrations
+﻿using System.Runtime.InteropServices;
+
+namespace Froststrap.Integrations
 {
     public class IntegrationWatcher : IDisposable
     {
         private readonly ActivityWatcher _activityWatcher;
         private readonly Dictionary<int, CustomIntegration> _activeIntegrations = [];
+
+        private const uint WM_SETTEXT = 0x000C;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, string lParam);
 
         public IntegrationWatcher(ActivityWatcher activityWatcher)
         {
@@ -17,6 +24,11 @@
         {
             if (!_activityWatcher.InGame)
                 return;
+
+            if (App.Settings.Prop.AutoChangeTitle)
+            {
+                Task.Run(() => UpdateTitleToGameName());
+            }
 
             long currentGameId = _activityWatcher.Data.PlaceId;
 
@@ -39,6 +51,64 @@
                     TerminateProcess(pid);
                     _activeIntegrations.Remove(pid);
                 }
+            }
+        }
+
+        private async Task UpdateTitleToGameName()
+        {
+            const string LOG_IDENT = "IntegrationWatcher::UpdateTitleToGameName";
+
+            try
+            {
+                var activity = _activityWatcher.Data;
+                if (activity == null) return;
+
+                if (activity.UniverseDetails is null)
+                {
+                    try
+                    {
+                        await UniverseDetails.FetchSingle(activity.UniverseId);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteException(LOG_IDENT, ex);
+                    }
+                    activity.UniverseDetails = UniverseDetails.LoadFromCache(activity.UniverseId);
+                }
+
+                if (activity.UniverseDetails?.Data == null) return;
+
+                string gameName = activity.UniverseDetails.Data.Name;
+                IntPtr windowHandle = IntPtr.Zero;
+
+                try
+                {
+                    Process? processById = Watcher.ProcessId != null ? Process.GetProcessById((int)Watcher.ProcessId) : null;
+                    if (processById != null)
+                        windowHandle = processById.MainWindowHandle;
+                }
+                catch { }
+
+                if (windowHandle == IntPtr.Zero)
+                {
+                    foreach (Process proc in Process.GetProcesses())
+                    {
+                        if (proc.MainWindowTitle == "Roblox")
+                        {
+                            windowHandle = proc.MainWindowHandle;
+                            break;
+                        }
+                    }
+                }
+
+                if (windowHandle != IntPtr.Zero && !string.IsNullOrEmpty(gameName))
+                {
+                    SendMessage(windowHandle, WM_SETTEXT, IntPtr.Zero, gameName);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to update title: {ex.Message}");
             }
         }
 

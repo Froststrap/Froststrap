@@ -99,6 +99,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     AutoRejoinEnabled = false;
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
+                    AutoChangeTitle = false;
+                    WindowControlEnabled = false;
                     DiscordActivityEnabled = false;
                     DiscordActivityJoinEnabled = false;
                     StudioRPCEnabled = false;
@@ -107,7 +109,9 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(ShowGameHistoryEnabled));
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
+                    OnPropertyChanged(nameof(AutoChangeTitle));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
+                    OnPropertyChanged(nameof(WindowControlEnabled));
                     OnPropertyChanged(nameof(DiscordActivityEnabled));
                     OnPropertyChanged(nameof(DiscordActivityJoinEnabled));
                     OnPropertyChanged(nameof(StudioRPCEnabled));
@@ -120,11 +124,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool ShowServerDetailsEnabled
         {
             get => App.Settings.Prop.ShowServerDetails;
-            set
-            {
-                App.Settings.Prop.ShowServerDetails = value;
-                OnPropertyChanged(nameof(ShowServerDetailsEnabled));
-            }
+            set => App.Settings.Prop.ShowServerDetails = value;
         }
 
         public static bool PlaytimeCounterEnabled
@@ -147,6 +147,12 @@ namespace Froststrap.UI.ViewModels.Settings
                 App.Settings.Prop.ShowGameHistoryMenu = value;
                 OnPropertyChanged(nameof(ShowGameHistoryEnabled));
             }
+        }
+
+        public bool AutoChangeTitle
+        {
+            get => App.Settings.Prop.AutoChangeTitle;
+            set => App.Settings.Prop.AutoChangeTitle = value;
         }
 
         private async void OpenGameHistory()
