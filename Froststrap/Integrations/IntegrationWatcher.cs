@@ -1,12 +1,8 @@
-﻿using System.IO;
-using System.Net.Http;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Froststrap.Utility;
-using Froststrap.Enums;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -23,6 +19,7 @@ namespace Froststrap.Integrations
         private readonly int _robloxProcessId;
 
         private HICON _customGameIconHandle = default;
+        private HICON _defaultRobloxIconHandle = default;
 
         private const uint WM_SETICON = 0x0080;
         private const int ICON_SMALL = 0;
@@ -59,6 +56,29 @@ namespace Froststrap.Integrations
 
             _activityWatcher.OnGameJoin += OnGameJoin;
             _activityWatcher.OnGameLeave += OnGameLeave;
+
+            LoadDefaultIcon();
+        }
+
+        private void LoadDefaultIcon()
+        {
+            try
+            {
+                using var stream = Resource.GetStream("Icon2025.png");
+                if (stream == null) return;
+
+                using var image = Image.Load<Bgra32>(stream);
+                using var ms = new MemoryStream();
+                image.SaveAsPng(ms);
+                byte[] pngBytes = ms.ToArray();
+
+                IntPtr hIconRaw = CreateIconFromResourceEx(pngBytes, (uint)pngBytes.Length, true, 0x00030000, image.Width, image.Height, 0);
+                _defaultRobloxIconHandle = PInvoke.CopyIcon((HICON)hIconRaw);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("IntegrationWatcher::LoadDefaultIcon", $"Failed to load default embedded asset icon: {ex.Message}");
+            }
         }
 
         private void OnGameJoin(object? sender, EventArgs e)
@@ -100,24 +120,32 @@ namespace Froststrap.Integrations
             {
                 try
                 {
-                    if (App.Settings.Prop.AutoChangeTitle)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Resetting window title back to 'Roblox'");
-                        PInvoke.SetWindowText(_robloxWindowHandle, "Roblox");
-                    }
-
                     if (App.Settings.Prop.AutoChangeIcon)
                     {
                         App.Logger.WriteLine(LOG_IDENT, "Resetting window icons back to default");
 
-                        PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, IntPtr.Zero);
-                        PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, IntPtr.Zero);
+                        if (_defaultRobloxIconHandle.Value != IntPtr.Zero)
+                        {
+                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _defaultRobloxIconHandle.Value);
+                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _defaultRobloxIconHandle.Value);
+                        }
+                        else
+                        {
+                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, IntPtr.Zero);
+                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, IntPtr.Zero);
+                        }
 
                         if (_customGameIconHandle.Value != IntPtr.Zero)
                         {
                             PInvoke.DestroyIcon(_customGameIconHandle);
                             _customGameIconHandle = default;
                         }
+                    }
+
+                    if (App.Settings.Prop.AutoChangeTitle)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Resetting window title back to 'Roblox'");
+                        PInvoke.SetWindowText(_robloxWindowHandle, "Roblox");
                     }
                 }
                 catch (Exception ex)
@@ -318,6 +346,12 @@ namespace Froststrap.Integrations
             {
                 PInvoke.DestroyIcon(_customGameIconHandle);
                 _customGameIconHandle = default;
+            }
+
+            if (_defaultRobloxIconHandle.Value != IntPtr.Zero)
+            {
+                PInvoke.DestroyIcon(_defaultRobloxIconHandle);
+                _defaultRobloxIconHandle = default;
             }
 
             _activityWatcher.Dispose();
