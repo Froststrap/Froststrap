@@ -71,7 +71,7 @@ jobs:
         with:
           manifest-path: flatpak/org.froststrap.Froststrap.yml
           bundle: Froststrap-linux-x64.flatpak
-          cache-key: flatpak-builder-${{ github.sha }}
+          cache-key: flatpak-builder-${{ hashFiles('flatpak/org.froststrap.Froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
       - uses: actions/upload-artifact@v6
         with:
           name: froststrap-debug-flatpak-x64-${{ env.SHORT_SHA }}
