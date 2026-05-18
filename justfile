@@ -33,6 +33,11 @@ publish-linux:
     chmod +x ./Scripts/package/publish-linux.sh
     ./Scripts/package/publish-linux.sh "{{ project_file }}" "{{ build_dir }}"
 
+[unix]
+publish-flatpak:
+    chmod +x ./Scripts/package/publish-flatpak.sh
+    ./Scripts/package/publish-flatpak.sh
+
 # CI Aliases
 ci-publish-windows:
     @just publish-windows
@@ -42,3 +47,6 @@ ci-publish-macos:
 
 ci-publish-linux:
     @just publish-linux
+
+ci-publish-flatpak:
+    @just publish-flatpak

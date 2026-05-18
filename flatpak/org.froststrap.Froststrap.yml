@@ -1,0 +1,62 @@
+app-id: org.froststrap.Froststrap
+runtime: org.freedesktop.Platform
+runtime-version: '24.08'
+sdk: org.freedesktop.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.dotnet10
+command: Froststrap
+finish-args:
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --device=dri
+  - --filesystem=home:rw
+  - --filesystem=~/.local/share/Froststrap:create
+build-options:
+  append-path: /usr/lib/sdk/dotnet10/bin
+  env:
+    DOTNET_ROOT: /usr/lib/sdk/dotnet10
+  build-args:
+    - --share=network
+modules:
+  - name: Froststrap
+    buildsystem: simple
+    build-options:
+      env:
+        DOTNET_ROOT: /usr/lib/sdk/dotnet10
+    build-commands:
+      - |
+        # Restore dependencies
+        dotnet restore Froststrap/Froststrap.csproj
+
+        # Publish the application
+        dotnet publish Froststrap/Froststrap.csproj \
+          -r linux-x64 \
+          -c Release \
+          --self-contained true \
+          -p:PublishSingleFile=true \
+          --output /app/froststrap-bin
+
+        # Install binary
+        install -Dm755 /app/froststrap-bin/Froststrap /app/bin/Froststrap
+
+        # Install shared libraries and .NET files
+        cp -r /app/froststrap-bin/* /app/bin/
+
+        # Install desktop entry
+        install -Dm644 flatpak/org.froststrap.Froststrap.desktop /app/share/applications/org.froststrap.Froststrap.desktop
+
+        # Install icon
+        mkdir -p /app/share/icons/hicolor/512x512/apps
+        cp flatpak/org.froststrap.Froststrap.png /app/share/icons/hicolor/512x512/apps/org.froststrap.Froststrap.png
+
+        # Install metainfo
+        install -Dm644 flatpak/org.froststrap.Froststrap.metainfo.xml /app/share/metainfo/org.froststrap.Froststrap.metainfo.xml
+
+        # Clean up temp
+        rm -rf /app/froststrap-bin
+    sources:
+      - type: dir
+        path: ..

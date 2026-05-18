@@ -54,3 +54,25 @@ jobs:
         with:
           name: froststrap-debug-linux-x64-${{ env.SHORT_SHA }}
           path: Froststrap/bin/Debug/net10.0/linux-x64/publish/*
+
+  build-flatpak:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          manifest-path: flatpak/org.froststrap.Froststrap.yml
+          bundle: Froststrap-linux-x64.flatpak
+          cache-key: flatpak-builder-${{ github.sha }}
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-debug-flatpak-x64-${{ env.SHORT_SHA }}
+          path: Froststrap-linux-x64.flatpak
