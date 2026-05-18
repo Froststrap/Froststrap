@@ -121,7 +121,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool ShowServerDetailsEnabled
+        public static bool ShowServerDetailsEnabled
         {
             get => App.Settings.Prop.ShowServerDetails;
             set => App.Settings.Prop.ShowServerDetails = value;
@@ -149,7 +149,7 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public bool AutoChangeTitle
+        public static bool AutoChangeTitle
         {
             get => App.Settings.Prop.AutoChangeTitle;
             set => App.Settings.Prop.AutoChangeTitle = value;

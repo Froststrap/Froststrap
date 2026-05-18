@@ -52,57 +52,6 @@
                 <ToggleSwitch IsChecked="{Binding AutoChangeTitle, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl
-                Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Description}"
-                Header="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Title}"
-                IsEnabled="{Binding ActivityTrackingEnabled}">
-                <ToggleSwitch IsChecked="{Binding PlaytimeCounterEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:CardExpander
-                IsEnabled="{Binding ActivityTrackingEnabled}"
-                IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
-                Classes="NoUserExpansion"
-                Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
-                Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
-                <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
-                </controls:CardExpander.HeaderContent>
-
-                <StackPanel Margin="0,8,0,0">
-                    <controls:OptionControl
-                        Description="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Description}"
-                        Header="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Title}"
-                        IsEnabled="{Binding ActivityTrackingEnabled}">
-                        <Button
-                            Margin="0,8,0,0"
-                            HorizontalAlignment="Left"
-                            Command="{Binding OpenGameHistoryCommand}"
-                            Content="View Game History"/>
-                    </controls:OptionControl>
-                </StackPanel>
-            </controls:CardExpander>
-
-            <controls:OptionControl
-                Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}"
-                Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
-                IsEnabled="{Binding ActivityTrackingEnabled}">
-                <ComboBox
-                    MinWidth="200"
-                    Margin="5,0,0,0"
-                    Padding="10,5,10,5"
-                    ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
-                    SelectedItem="{Binding SelectedDoubleClickAction, Mode=TwoWay}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </controls:OptionControl>
-
-
             <controls:CardExpander Header="{x:Static resources:Strings.Common_WindowMovement}" Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTrackingNoDiscord}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}" IsExpanded="False">
                 <StackPanel>
 
@@ -216,6 +165,56 @@
                     </Grid>
                 </StackPanel>
             </controls:CardExpander>
+
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_PlaytimeCounter_Title}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding PlaytimeCounterEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:CardExpander
+                IsEnabled="{Binding ActivityTrackingEnabled}"
+                IsExpanded="{Binding ShowGameHistoryEnabled, Mode=OneWay}"
+                Classes="NoUserExpansion"
+                Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}"
+                Description="{x:Static resources:Strings.Menu_Integrations_GameHistory_Description}">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch Grid.Column="1" IsChecked="{Binding ShowGameHistoryEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Margin="0,8,0,0">
+                    <controls:OptionControl
+                        Description="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Description}"
+                        Header="{x:Static resources:Strings.Menu_Integrations_GameHistoryMenu_Title}"
+                        IsEnabled="{Binding ActivityTrackingEnabled}">
+                        <Button
+                            Margin="0,8,0,0"
+                            HorizontalAlignment="Left"
+                            Command="{Binding OpenGameHistoryCommand}"
+                            Content="View Game History"/>
+                    </controls:OptionControl>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <controls:OptionControl
+                Description="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_DoubleClickAction_Title}"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ComboBox
+                    MinWidth="200"
+                    Margin="5,0,0,0"
+                    Padding="10,5,10,5"
+                    ItemsSource="{Binding TrayDoubleClickActions, Mode=OneTime}"
+                    SelectedItem="{Binding SelectedDoubleClickAction, Mode=TwoWay}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource EnumNameConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </controls:OptionControl>
 
             <controls:CardExpander Header="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Title}" Description="{x:Static resources:Strings.Menu_Integrations_BlockCardExpander_Description}" IsExpanded="True">
                 <StackPanel>
