@@ -12,8 +12,8 @@ finish-args:
   - --socket=pulseaudio
   - --share=network
   - --device=dri
-  - --filesystem=home:rw
-  - --filesystem=~/.local/share/Froststrap:create
+  - --filesystem=host
+  - --talk-name=org.freedesktop.Flatpak
 build-options:
   append-path: /usr/lib/sdk/dotnet10/bin
   env:
@@ -54,6 +54,11 @@ modules:
 
         # Install metainfo
         install -Dm644 flatpak/org.froststrap.Froststrap.metainfo.xml /app/share/metainfo/org.froststrap.Froststrap.metainfo.xml
+
+        # Install flatpak-spawn wrapper to allow Froststrap to run flatpak from the host
+        echo '#!/bin/sh' > /app/bin/flatpak
+        echo 'exec flatpak-spawn --host flatpak "$@"' >> /app/bin/flatpak
+        chmod +x /app/bin/flatpak
 
         # Clean up temp
         rm -rf /app/froststrap-bin
