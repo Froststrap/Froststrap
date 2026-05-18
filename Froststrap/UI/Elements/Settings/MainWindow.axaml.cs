@@ -133,6 +133,7 @@ namespace Froststrap.UI.Elements.Settings
             {
                 "integrations" => () => _viewModel?.NavigateToIntegrationsCommand.Execute(null),
                 "behaviour" => () => _viewModel?.NavigateToBehaviourCommand.Execute(null),
+                "sobersettings" => () => _viewModel?.NavigateToSoberSettingsCommand.Execute(null),
                 "mods" => () => _viewModel?.NavigateToPresetModsCommand.Execute(null),
                 "fastflags" => () => _viewModel?.NavigateToFastFlagsCommand.Execute(null),
                 "appearance" => () => _viewModel?.NavigateToAppearanceCommand.Execute(null),
@@ -441,6 +442,7 @@ namespace Froststrap.UI.Elements.Settings
             {
                 ("integrations", "Integrations", new IntegrationsViewModel()),
                 ("behaviour", "Behaviour", new BehaviourViewModel()),
+                ("sobersettings", "Sober Settings", new SoberSettingsViewModel()),
                 ("mods", "Preset Mods", new ModsPresetsViewModel()),
                 ("fastflags", "Fast Flags", new FastFlagsViewModel()),
                 ("appearance", "Appearance", new AppearanceViewModel()),
@@ -457,6 +459,7 @@ namespace Froststrap.UI.Elements.Settings
             {
                 { "integrations", () => _viewModel.NavigateToIntegrationsCommand.Execute(null) },
                 { "behaviour", () => _viewModel.NavigateToBehaviourCommand.Execute(null) },
+                { "sobersettings", () => _viewModel.NavigateToSoberSettingsCommand.Execute(null) },
                 { "mods", () => _viewModel.NavigateToPresetModsCommand.Execute(null) },
                 { "fastflags", () => _viewModel.NavigateToFastFlagsCommand.Execute(null) },
                 { "appearance", () => _viewModel.NavigateToAppearanceCommand.Execute(null) },

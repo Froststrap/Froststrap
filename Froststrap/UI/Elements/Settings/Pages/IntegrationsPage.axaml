@@ -238,42 +238,6 @@
             <TextBlock
                 FontSize="20"
                 FontWeight="Bold"
-                IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                Text="Sober" />
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Allow Gamepad Permission"
-                                    Description="Allows Sober to request and capture controller inputs via Steam Deck or similar controllers.">
-                <ToggleSwitch IsChecked="{Binding SoberAllowGamepadPermission, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Enable GameMode"
-                                    Description="Signals Feral Interactive's GameMode optimization daemon hooks during game launch pipelines.">
-                <ToggleSwitch IsChecked="{Binding SoberEnableGamemode, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="HiDPI Display Scaling Support"
-                                    Description="Forces native high DPI platform scaling options when rendering interface elements.">
-                <ToggleSwitch IsChecked="{Binding SoberEnableHiDpi, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Use Console Experience"
-                                    Description="Forces the modern TV/Console client layout dashboard system over the desktop interface context.">
-                <ToggleSwitch IsChecked="{Binding SoberUseConsoleExperience, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Force Legacy OpenGL Rendering"
-                                    Description="Overrides native Vulkan subsystems to fall back to the legacy OpenGL layout pipeline instead.">
-                <ToggleSwitch IsChecked="{Binding SoberUseOpengl, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <TextBlock
-                FontSize="20"
-                FontWeight="Bold"
                 Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
 
             <controls:MarkdownTextBlock

@@ -323,36 +323,6 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StudioGameButton = value;
         }
 
-        public static bool SoberAllowGamepadPermission
-        {
-            get => App.SoberSettings.Prop.AllowGamepadPermission;
-            set => App.SoberSettings.Prop.AllowGamepadPermission = value;
-        }
-
-        public static bool SoberEnableGamemode
-        {
-            get => App.SoberSettings.Prop.EnableGamemode;
-            set => App.SoberSettings.Prop.EnableGamemode = value;
-        }
-
-        public static bool SoberEnableHiDpi
-        {
-            get => App.SoberSettings.Prop.EnableHiDpi;
-            set => App.SoberSettings.Prop.EnableHiDpi = value;
-        }
-
-        public static bool SoberUseConsoleExperience
-        {
-            get => App.SoberSettings.Prop.UseConsoleExperience;
-            set => App.SoberSettings.Prop.UseConsoleExperience = value;
-        }
-
-        public static bool SoberUseOpengl
-        {
-            get => App.SoberSettings.Prop.UseOpengl;
-            set => App.SoberSettings.Prop.UseOpengl = value;
-        }
-
         public bool WindowControlEnabled
         {
             get => App.Settings.Prop.UseWindowControl;
