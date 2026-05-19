@@ -4,7 +4,7 @@ runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.dotnet10
-command: froststrap
+command: Froststrap
 finish-args:
   - --share=ipc
   - --socket=x11
