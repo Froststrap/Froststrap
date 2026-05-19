@@ -1222,6 +1222,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Window Control.
+        /// </summary>
+        public static string Common_WindowMovement {
+            get {
+                return ResourceManager.GetString("Common.WindowMovement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
         public static string Common_Yes {
@@ -1454,6 +1463,25 @@ namespace Froststrap.Resources {
         public static string ContextMenu_ServerInformation_Uptime {
             get {
                 return ResourceManager.GetString("ContextMenu.ServerInformation.Uptime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} wants to use window control
+        ///Click to Accept or Deny.
+        /// </summary>
+        public static string ContextMenu_WindowPermission_Notification_Text {
+            get {
+                return ResourceManager.GetString("ContextMenu.WindowPermission.Notification.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window Control Permission.
+        /// </summary>
+        public static string ContextMenu_WindowPermission_Notification_Title {
+            get {
+                return ResourceManager.GetString("ContextMenu.WindowPermission.Notification.Title", resourceCulture);
             }
         }
         
@@ -2617,6 +2645,24 @@ namespace Froststrap.Resources {
         public static string Enums_Theme_Purple {
             get {
                 return ResourceManager.GetString("Enums.Theme.Purple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string Enums_WindowMonitorStyle_All {
+            get {
+                return ResourceManager.GetString("Enums.WindowMonitorStyle.All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Single.
+        /// </summary>
+        public static string Enums_WindowMonitorStyle_Single {
+            get {
+                return ResourceManager.GetString("Enums.WindowMonitorStyle.Single", resourceCulture);
             }
         }
         
@@ -5298,6 +5344,24 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allows the window to be moved and resized across the screen..
+        /// </summary>
+        public static string Menu_Integrations_MoveWindowControl_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.MoveWindowControl.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window movement.
+        /// </summary>
+        public static string Menu_Integrations_MoveWindowControl_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.MoveWindowControl.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Multi-Instancing is prone to breaking. We will not provide support for issues with Multi-Instancing, since Roblox is actively adding measures to make sure it doesn&apos;t work. We cannot and won&apos;t attempt to bypass these measures..
         /// </summary>
         public static string Menu_Integrations_MultiInstanceLaunching_Warning {
@@ -5370,6 +5434,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This feature requires activity tracking to be enabled, Note: Made by Funkstrap.
+        /// </summary>
+        public static string Menu_Integrations_RequiresActivityTrackingNoDiscord {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.RequiresActivityTrackingNoDiscord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Shows the Roblox account you&apos;re playing with on your Discord profile..
         /// </summary>
         public static string Menu_Integrations_ShowAccountOnProfile_Description {
@@ -5411,6 +5484,195 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_Title {
             get {
                 return ResourceManager.GetString("Menu.Integrations.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows the window title to be changed. Games can change it even if they don&apos;t have permission, just like how RPC works (May change).
+        /// </summary>
+        public static string Menu_Integrations_TitleWindowControl_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.TitleWindowControl.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window title control.
+        /// </summary>
+        public static string Menu_Integrations_TitleWindowControl_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.TitleWindowControl.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows the window to make itself transparent and show the content behind it. Note: May require to disable Fullscreen Optimizations on some PCs, change it in the mods tab..
+        /// </summary>
+        public static string Menu_Integrations_TransWindowControl_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.TransWindowControl.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window transparency control.
+        /// </summary>
+        public static string Menu_Integrations_TransWindowControl_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.TransWindowControl.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows the selected game to change the window border and caption color (Only on Windows 11).
+        /// </summary>
+        public static string Menu_Integrations_WinColorControl_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WinColorControl.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Window Color Change.
+        /// </summary>
+        public static string Menu_Integrations_WinColorControl_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WinColorControl.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows every game to use window control features, even if it&apos;s not in the whitelist or it&apos;s blacklisted.
+        /// </summary>
+        public static string Menu_Integrations_WindowAllowAll_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowAllowAll.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow all games.
+        /// </summary>
+        public static string Menu_Integrations_WindowAllowAll_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowAllowAll.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allows games that you give permission to control the Roblox window. Note: Makes the game aware that you are using Funkstrap. We recommend enabling the [Windows Game Mode]({0}) in order to not drop inputs.
+        /// </summary>
+        public static string Menu_Integrations_WindowControl_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowControl.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow window control.
+        /// </summary>
+        public static string Menu_Integrations_WindowControl_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowControl.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [Not window FPS] The FPS rate Funkstrap will check for window updates sent from the game, it&apos;s recommended to be set to your monitor&apos;s refresh rate (Higher = More lag)..
+        /// </summary>
+        public static string Menu_Integrations_WindowFPSLogRead_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowFPSLogRead.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to FPS check rate.
+        /// </summary>
+        public static string Menu_Integrations_WindowFPSLogRead_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowFPSLogRead.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose if the window should move in a single monitor or through all of them..
+        /// </summary>
+        public static string Menu_Integrations_WindowMonitorStyle_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowMonitorStyle.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor style.
+        /// </summary>
+        public static string Menu_Integrations_WindowMonitorStyle_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowMonitorStyle.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed.
+        /// </summary>
+        public static string Menu_Integrations_WindowUniversesList_Allowed {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowUniversesList.Allowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blacklisted.
+        /// </summary>
+        public static string Menu_Integrations_WindowUniversesList_Blacklisted {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowUniversesList.Blacklisted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage between which games can manipulate the window and which ones are blacklisted from doing so..
+        /// </summary>
+        public static string Menu_Integrations_WindowUniversesList_Description {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowUniversesList.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ❌ Couldn&apos;t get universe data.
+        /// </summary>
+        public static string Menu_Integrations_WindowUniversesList_FailedUniverseLoad {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowUniversesList.FailedUniverseLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading....
+        /// </summary>
+        public static string Menu_Integrations_WindowUniversesList_LoadingUniverse {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowUniversesList.LoadingUniverse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No game selected, please select one to delete or view info about it..
+        /// </summary>
+        public static string Menu_Integrations_WindowUniversesList_NoneSelected {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowUniversesList.NoneSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Games.
+        /// </summary>
+        public static string Menu_Integrations_WindowUniversesList_Title {
+            get {
+                return ResourceManager.GetString("Menu.Integrations.WindowUniversesList.Title", resourceCulture);
             }
         }
         
@@ -6339,6 +6601,42 @@ namespace Froststrap.Resources {
         public static string Uninstaller_Uninstall {
             get {
                 return ResourceManager.GetString("Uninstaller.Uninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow.
+        /// </summary>
+        public static string WindowController_PermissionPopup_Allow {
+            get {
+                return ResourceManager.GetString("WindowController.PermissionPopup.Allow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t ask again.
+        /// </summary>
+        public static string WindowController_PermissionPopup_Blacklist {
+            get {
+                return ResourceManager.GetString("WindowController.PermissionPopup.Blacklist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deny.
+        /// </summary>
+        public static string WindowController_PermissionPopup_Deny {
+            get {
+                return ResourceManager.GetString("WindowController.PermissionPopup.Deny", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grant permission to this universe to control your window?.
+        /// </summary>
+        public static string WindowController_PermissionPopup_Description {
+            get {
+                return ResourceManager.GetString("WindowController.PermissionPopup.Description", resourceCulture);
             }
         }
     }

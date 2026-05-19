@@ -65,6 +65,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public IRelayCommand NavigateToIntegrationsCommand { get; }
         public IRelayCommand NavigateToBehaviourCommand { get; }
+        public IRelayCommand NavigateToSoberSettingsCommand { get; }
         public IRelayCommand NavigateToMyModsCommand { get; }
         public IRelayCommand NavigateToFastFlagsCommand { get; }
         public IRelayCommand NavigateToFastFlagEditorCommand { get; }
@@ -105,6 +106,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", "Integrations", Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", "Behaviour", Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
+            NavigateToSoberSettingsCommand = new RelayCommand(() => Navigate("sobersettings", "Sober Settings", null!, new SoberSettingsViewModel()));
             NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", "Preset Mods", "Official built-in mods.", new ModsPresetsViewModel()));
             NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", "Fast Flags", Strings.Menu_FastFlags_Description, new FastFlagsViewModel()));
             NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
@@ -190,6 +192,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     NavigateToIntegrationsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.BehaviourViewModel":
                     NavigateToBehaviourCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.SoberSettingsViewModel":
+                    NavigateToSoberSettingsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.ModsViewModel":
                     NavigateToMyModsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel":

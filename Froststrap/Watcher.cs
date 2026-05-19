@@ -9,7 +9,11 @@ namespace Froststrap
 
         private readonly WatcherData? _watcherData;
 
-        private readonly NotifyIconWrapper? _notifyIcon;
+        public readonly NotifyIconWrapper? _notifyIcon;
+
+        public static string? RobloxPath { get; private set; }
+
+        public static int? ProcessId { get; private set; }
 
         public readonly ActivityWatcher? ActivityWatcher;
 
@@ -17,6 +21,8 @@ namespace Froststrap
 
         public readonly PlayerDiscordRichPresence? PlayerRichPresence;
         public readonly StudioDiscordRichPresence? StudioRichPresence;
+
+        public readonly WindowController? WindowController;
 
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed = false;
@@ -55,9 +61,12 @@ namespace Froststrap
             if (_watcherData is null)
                 throw new Exception("Watcher data is invalid");
 
+            RobloxPath = _watcherData.RobloxDirectory;
+            ProcessId = _watcherData.ProcessId;
+
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
+                ActivityWatcher = new(this, _watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
@@ -73,6 +82,11 @@ namespace Froststrap
                     StudioRichPresence = new(ActivityWatcher);
                 else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                     PlayerRichPresence = new(ActivityWatcher);
+
+                if (App.Settings.Prop.UseWindowControl)
+                    WindowController = new(ActivityWatcher);
+
+                IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, _watcherData.ProcessId);
 
                 _notifyIcon = new(this);
             }
@@ -213,6 +227,7 @@ namespace Froststrap
             StudioRichPresence?.Dispose();
             ActivityWatcher?.Dispose();
             _cancellationTokenSource.Dispose();
+            WindowController?.Dispose();
 
             _isDisposed = true;
             GC.SuppressFinalize(this);

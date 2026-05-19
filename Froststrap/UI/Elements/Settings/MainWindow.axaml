@@ -52,13 +52,13 @@
 
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Behaviour_Title}" Tag="behaviour">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Play" />
+                        <ic:SymbolIconSource Symbol="PlaySettings" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem Content="Quick Play" Tag="quickplay">
                     <ui:NavigationViewItem.IconSource>
-                        <ic:SymbolIconSource Symbol="Play" />
+                        <ic:SymbolIconSource Symbol="Replay" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
@@ -69,11 +69,13 @@
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItemSeparator />
+
                 <ui:NavigationViewItem Content="Preset Mods" Tag="mods">
                     <ui:NavigationViewItem.IconSource>
                         <ic:SymbolIconSource Symbol="PuzzlePiece" />
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
+
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_Appearance_Title}" Tag="appearance">
                     <ui:NavigationViewItem.IconSource>
                         <ic:SymbolIconSource Symbol="Color" />
@@ -81,6 +83,7 @@
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItemSeparator />
+
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_FastFlags_Title}" Tag="fastflags">
                     <ui:NavigationViewItem.IconSource>
                         <ic:SymbolIconSource Symbol="Flag" />
@@ -96,7 +99,14 @@
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
+                <ui:NavigationViewItem Content="Sober Settings" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Tag="sobersettings">
+                    <ui:NavigationViewItem.IconSource>
+                        <ic:SymbolIconSource Symbol="Settings" />
+                    </ui:NavigationViewItem.IconSource>
+                </ui:NavigationViewItem>
+
                 <ui:NavigationViewItemSeparator />
+
                 <ui:NavigationViewItem Content="{x:Static resources:Strings.Menu_RegionSelector_Title}" Tag="regionselector">
                     <ui:NavigationViewItem.IconSource>
                         <ic:SymbolIconSource Symbol="Earth" />

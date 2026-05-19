@@ -10,15 +10,11 @@
 
 using Avalonia.Threading;
 using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using System.Collections.ObjectModel;
 using Froststrap.UI.Elements.Settings;
-using FluentIcons.Common;
-using Avalonia.Controls.Notifications;
 using FluentAvalonia.UI.Controls;
-using System.Text.Json;
 
 namespace Froststrap.UI.ViewModels
 {

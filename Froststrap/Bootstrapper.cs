@@ -19,6 +19,8 @@ using Froststrap.Models.APIs;
 using Froststrap.RobloxInterfaces;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.ComponentModel;
 using System.Data;
 using System.Web;
@@ -1026,6 +1028,9 @@ namespace Froststrap
                 WorkingDirectory = AppData.Directory
             };
 
+            if (OperatingSystem.IsWindows())
+                WindowsRegistry.DisableFullscreenOptimizations(AppData.ExecutablePath);
+
             if (OperatingSystem.IsMacOS())
                 startInfo.UseShellExecute = true;
 
@@ -1134,6 +1139,7 @@ namespace Froststrap
                 ProcessId = _appPid,
                 LogFile = logFileName,
                 AutoclosePids = autoclosePids,
+                RobloxDirectory = _latestVersionDirectory,
                 LaunchMode = _launchMode
             };
 
@@ -1500,6 +1506,9 @@ namespace Froststrap
                 // we dont want to accidentally delete the files of a running roblox instance
                 if (!TryDeleteRobloxInDirectory(dir))
                     continue;
+
+                if (OperatingSystem.IsWindows())
+                    WindowsRegistry.EnableFullscreenOptimizations(Path.Join(dir, "RobloxPlayerBeta.exe"));
 
                 try
                 {
@@ -2079,6 +2088,18 @@ namespace Froststrap
                 return;
             }
 
+            if (App.Settings.Prop.ShowServerDetails)
+                App.SoberSettings.Prop.ServerLocationIndicatorEnabled = false;
+
+            if (App.Settings.Prop.UseDiscordRichPresence)
+            {
+                App.SoberSettings.Prop.DiscordRpcEnabled = false;
+                App.SoberSettings.Prop.DiscordRpcShowJoinButton = false;
+            }
+
+            if (App.Settings.Prop.UseDisableAppPatch)
+                App.SoberSettings.Prop.CloseOnLeave = false;
+
             App.Logger.WriteLine(LOG_IDENT, $"Launching Sober via flatpak with args: {_launchCommandLine}");
 
             var startInfo = new ProcessStartInfo
@@ -2096,7 +2117,7 @@ namespace Froststrap
                 using var process = Process.Start(startInfo)!;
                 _appPid = process.Id;
                 App.Logger.WriteLine(LOG_IDENT, $"Sober launched with PID {_appPid}");
-                App.Logger.WriteLine(LOG_IDENT, $"Started Roblox (PID {_appPid}). Launching Watcher...");
+                App.Logger.WriteLine(LOG_IDENT, "Launching Watcher...");
                 _mutex?.ReleaseAsync();
                 await LaunchWatcherIfNeededAsync(autoclosePids);
 
@@ -2447,6 +2468,24 @@ namespace Froststrap
                     catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                 }
             }
+
+            if (App.Settings.Prop.EnableActivityTracking && App.Settings.Prop.UseWindowControl)
+            {
+                var idsPath = Path.Combine(_latestVersionDirectory, "content\\bloxstrap");
+
+                Directory.CreateDirectory(idsPath);
+
+                var directory = new DirectoryInfo(idsPath);
+
+                foreach (FileInfo file in directory.GetFiles()) file.Delete();
+                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+
+                using Image<Rgba32> enabledBitmap = new(1, 1);
+                enabledBitmap[0, 0] = Color.White;
+
+                enabledBitmap.Save(Path.Combine(idsPath, "enabled.png"));
+            }
+
 
             var fileRestoreMap = new Dictionary<string, List<string>>();
 
