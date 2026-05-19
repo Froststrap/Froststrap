@@ -13,3 +13,9 @@ GetSystemMetrics
 SYSTEM_METRICS_INDEX
 LookupIconIdFromDirectoryEx
 CreateIconFromResourceEx
+MoveWindow
+GetWindowRect
+SetLayeredWindowAttributes
+DwmSetWindowAttribute
+UpdateWindow
+RECT

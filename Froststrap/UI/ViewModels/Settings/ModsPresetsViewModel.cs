@@ -10,22 +10,11 @@ using System.Collections.ObjectModel;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
-    internal static class NativeMethods
-    {
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern bool SHObjectProperties(IntPtr hwnd, uint shopObjectType, string pszObjectName, string pszPropertyPage);
-
-        private const uint SHOP_FILEPATH = 0x00000002;
-
-        public static void ShowFileProperties(string filePath, string tabName)
-        {
-            SHObjectProperties(IntPtr.Zero, SHOP_FILEPATH, filePath, tabName);
-        }
-    }
-
     public class ModsPresetsViewModel : NotifyPropertyChangedViewModel
     {
         public event EventHandler? OpenModsEvent;
@@ -185,13 +174,25 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public FontModPresetTask TextFontTask { get; } = new();
 
+        private const uint SHOP_FILEPATH = 0x00000002;
+
+        public static void ShowFileProperties(string filePath, string tabName)
+        {
+            _ = PInvoke.SHObjectProperties(
+                HWND.Null,
+                (Windows.Win32.UI.Shell.SHOP_TYPE)SHOP_FILEPATH,
+                filePath,
+                tabName
+            );
+        }
+
         private void OpenCompatSettings()
         {
             string path = new RobloxPlayerData().ExecutablePath;
 
             if (File.Exists(path))
             {
-                NativeMethods.ShowFileProperties(path, "Compatibility");
+                ShowFileProperties(path, "Compatibility");
             }
             else
             {

@@ -23,9 +23,11 @@ namespace Froststrap.UI.Elements.Settings.Pages
 
         public void DisplayedUniverseSelection(object sender, SelectionChangedEventArgs e)
         {
-            IntegrationsViewModel viewModel = (IntegrationsViewModel)DataContext;
-            viewModel.SelectedUniverse = (long?)((ListBox)sender).SelectedItem;
-            viewModel.OnPropertyChanged(nameof(viewModel.SelectedUniverse));
+            if (DataContext is IntegrationsViewModel viewModel && sender is ListBox listBox)
+            {
+                viewModel.SelectedUniverse = listBox.SelectedItem as long?;
+                viewModel.OnPropertyChanged(nameof(viewModel.SelectedUniverse));
+            }
         }
 
         private void ValidateInt32(object sender, TextInputEventArgs e) => e.Handled = !Int32.TryParse(e.Text, out int _);

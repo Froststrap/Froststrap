@@ -1,44 +1,39 @@
-﻿using System.Runtime.InteropServices;
-using Message = Froststrap.Models.BloxstrapRPC.Message;
-
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Avalonia.Threading;
+using Windows.Win32.Foundation;
+using Message = Froststrap.Models.BloxstrapRPC.Message;
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
+using Windows.Win32.Graphics.Dwm;
 
 namespace Froststrap.Integrations
 {
-    public struct WindowRect
-    {
-        public int Left { get; set; }
-        public int Top { get; set; }
-        public int Right { get; set; }
-        public int Bottom { get; set; }
-    }
-
-    public partial class WindowController : IDisposable
+    public class WindowController : IDisposable
     {
         private readonly ActivityWatcher _activityWatcher;
         private UI.Elements.ContextMenu.MenuContainer? _menuContainer;
-
         private IntPtr _currentWindow;
-        private long _windowLong;
-        private bool _foundWindow;
-        private bool _enabled;
+        private int _windowLong = 0x00000000;
+        private bool _foundWindow = false;
+        private bool enabled = false;
 
         public const uint WM_SETTEXT = 0x000C;
         public const int GWL_EXSTYLE = -20;
-        public const long WS_EX_LAYERED = 0x00080000L;
-        public const long WS_EX_TRANSPARENT = 0x00000020L;
+        public const int WS_EX_LAYERED = 0x00080000;
+        public const int WS_EX_TRANSPARENT = 0x00000020;
         public const uint LWA_COLORKEY = 0x00000001;
         public const uint LWA_ALPHA = 0x00000002;
-        public const long WS_BORDER = 0x00800000L;
-        public const long WS_CAPTION = 0x00C00000L;
+        public const int WS_BORDER = 0x00800000;
+        public const int WS_CAPTION = 0x00C00000;
         private const int GWL_STYLE = -16;
-        private const long WS_THICKFRAME = 0x00040000L;
-        private const long WS_SYSMENU = 0x00080000L;
-        private const int GWL_EXSTYLE_32 = -20;
-        private const long WS_MINIMIZEBOX = 0x00020000L;
-        private const long WS_MAXIMIZEBOX = 0x00010000L;
+        private const int WS_THICKFRAME = 0x00040000;
+        private const int WS_SYSMENU = 0x00080000;
+        private const int WS_MINIMIZEBOX = 0x00020000;
+        private const int WS_MAXIMIZEBOX = 0x00010000;
         private const uint SWP_NOMOVE = 0x0002;
         private const uint SWP_NOSIZE = 0x0001;
         private const uint SWP_NOZORDER = 0x0004;
@@ -51,7 +46,7 @@ namespace Froststrap.Integrations
         {
             if (_currentWindow == IntPtr.Zero) return;
 
-            long style = GetWindowLong(_currentWindow, GWL_STYLE);
+            int style = PInvoke.GetWindowLong((HWND)_currentWindow, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 
             if (borderless)
             {
@@ -71,43 +66,43 @@ namespace Froststrap.Integrations
                 style |= WS_MAXIMIZEBOX;
             }
 
-            _ = SetWindowLong(_currentWindow, GWL_STYLE, style);
-            _ = SetWindowPos(_currentWindow, IntPtr.Zero, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+            _ = PInvoke.SetWindowLong((HWND)_currentWindow, WINDOW_LONG_PTR_INDEX.GWL_STYLE, style);
+            _ = PInvoke.SetWindowPos((HWND)_currentWindow, HWND.Null, 0, 0, 0, 0, (SET_WINDOW_POS_FLAGS)(SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED));
         }
 
         private const int defaultScreenWidth = 1280;
         private const int defaultScreenHeight = 720;
 
-        public int monitorX;
-        public int monitorY;
+        public int monitorX = 0;
+        public int monitorY = 0;
 
         public float widthMult = 1;
         public float heightMult = 1;
 
-        private int screenWidth;
-        private int screenHeight;
+        private int screenWidth = 0;
+        private int screenHeight = 0;
 
-        private bool changedWindow;
+        private bool changedWindow = false;
 
-        private int _lastX;
-        private int _lastY;
-        private int _lastWidth;
-        private int _lastHeight;
-        private int _lastSCWidth;
-        private int _lastSCHeight;
+        private int _lastX = 0;
+        private int _lastY = 0;
+        private int _lastWidth = 0;
+        private int _lastHeight = 0;
+        private int _lastSCWidth = 0;
+        private int _lastSCHeight = 0;
         private byte _lastTransparency = 1;
-        private uint _lastWindowColor;
-        private uint _lastWindowCaptionColor;
-        private uint _lastWindowBorderColor;
+        private uint _lastWindowColor = 0x000000;
+        private uint _lastWindowCaptionColor = 0x000000;
+        private uint _lastWindowBorderColor = 0x000000;
         private uint _lastTransparencyMode = 0x00000001;
 
-        private int _startingX;
-        private int _startingY;
-        private int _startingWidth;
-        private int _startingHeight;
+        private int _startingX = 0;
+        private int _startingY = 0;
+        private int _startingWidth = 0;
+        private int _startingHeight = 0;
 
-        private bool curUniverseAllowed;
-        private long prevUniverse;
+        private bool curUniverseAllowed = false;
+        private long prevUniverse = 0;
 
         private Theme appTheme = Theme.Default;
         private const int S_OK = 0;
@@ -142,7 +137,7 @@ namespace Froststrap.Integrations
 
             if (_menuContainer != null)
             {
-                Dispatcher.UIThread.Invoke(delegate
+                _ = Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     _menuContainer.ShowWindowPermissionWindow();
                 });
@@ -157,21 +152,28 @@ namespace Froststrap.Integrations
             if (Directory.Exists(idsPath))
             {
                 var directory = new DirectoryInfo(idsPath);
-                foreach (FileInfo file in directory.GetFiles()) if (file.Name != "enabled.png") file.Delete();
+                foreach (FileInfo file in directory.GetFiles())
+                {
+                    if (file.Name != "enabled.png") file.Delete();
+                }
             }
-            else { Directory.CreateDirectory(idsPath); }
+            else
+            {
+                _ = Directory.CreateDirectory(idsPath);
+            }
 
             var currentUniverse = _activityWatcher.Data.UniverseId;
 
             curUniverseAllowed = App.Settings.Prop.WindowAllowAll || IsGameAllowed(currentUniverse);
             if (!curUniverseAllowed) { return; }
 
-            using Image<Rgba32> bitmap = new(3, 1);
-            bitmap[0, 0] = App.Settings.Prop.MoveWindowAllowed ? Color.White : Color.Transparent;
-            bitmap[1, 0] = App.Settings.Prop.TitleControlAllowed ? Color.White : Color.Transparent;
-            bitmap[2, 0] = App.Settings.Prop.WindowTransparencyAllowed ? Color.White : Color.Transparent;
+            using var image = new Image<L8>(3, 1);
+            image[0, 0] = new L8(App.Settings.Prop.MoveWindowAllowed ? (byte)255 : (byte)0);
+            image[1, 0] = new L8(App.Settings.Prop.TitleControlAllowed ? (byte)255 : (byte)0);
+            image[2, 0] = new L8(App.Settings.Prop.WindowTransparencyAllowed ? (byte)255 : (byte)0);
 
-            bitmap.Save(Path.Combine(idsPath, $"{currentUniverse}.png"));
+            string outputPath = Path.Combine(idsPath, $"{currentUniverse}.png");
+            image.SaveAsPng(outputPath);
         }
 
         public bool IsGameAllowed(long universeId = -1)
@@ -182,8 +184,8 @@ namespace Froststrap.Integrations
 
         public void UpdateState(bool state)
         {
-            _enabled = state;
-            if (!_enabled)
+            enabled = state;
+            if (!enabled)
             {
                 StopWindow();
             }
@@ -191,66 +193,80 @@ namespace Froststrap.Integrations
 
         public void UpdateWinMonitor()
         {
-            if (App.Settings.Prop.WindowMonitorStyle == WindowMonitorStyle.All)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime classicDesktop)
             {
-                screenWidth = GetSystemMetrics(78);
-                screenHeight = GetSystemMetrics(79);
-                monitorX = GetSystemMetrics(76);
-                monitorY = GetSystemMetrics(77);
+                Dispatcher.UIThread.Post(() =>
+                {
+                    var screens = classicDesktop.MainWindow?.Screens ?? new Window().Screens;
 
-                int primaryWidth = GetSystemMetrics(0);
-                int primaryHeight = GetSystemMetrics(1);
+                    if (App.Settings.Prop.WindowMonitorStyle == WindowMonitorStyle.All)
+                    {
+                        var allScreens = screens.All;
+                        if (allScreens is { Count: > 0 })
+                        {
+                            int minX = int.MaxValue, minY = int.MaxValue;
+                            int maxX = int.MinValue, maxY = int.MinValue;
 
-                widthMult = primaryWidth / ((float)screenWidth);
-                heightMult = primaryHeight / ((float)screenHeight);
-                return;
-            }
+                            foreach (var screen in allScreens)
+                            {
+                                var b = screen.Bounds;
+                                if (b.X < minX) minX = b.X;
+                                if (b.Y < minY) minY = b.Y;
+                                if (b.X + b.Width > maxX) maxX = b.X + b.Width;
+                                if (b.Y + b.Height > maxY) maxY = b.Y + b.Height;
+                            }
 
-            IntPtr hMonitor = MonitorFromWindow(_currentWindow, 2);
-            MonitorInfo mi = new()
-            {
-                cbSize = Marshal.SizeOf<MonitorInfo>()
-            };
+                            monitorX = minX;
+                            monitorY = minY;
+                            screenWidth = maxX - minX;
+                            screenHeight = maxY - minY;
+                        }
 
-            if (GetMonitorInfo(hMonitor, ref mi))
-            {
-                screenWidth = mi.rcMonitor.Right - mi.rcMonitor.Left;
-                screenHeight = mi.rcMonitor.Bottom - mi.rcMonitor.Top;
-                monitorX = mi.rcMonitor.Left;
-                monitorY = mi.rcMonitor.Top;
-            }
-            else
-            {
-                screenWidth = defaultScreenWidth;
-                screenHeight = defaultScreenHeight;
-                monitorX = 0;
-                monitorY = 0;
+                        var primaryScreen = screens.Primary;
+                        if (primaryScreen != null)
+                        {
+                            widthMult = primaryScreen.Bounds.Width / ((float)screenWidth);
+                            heightMult = primaryScreen.Bounds.Height / ((float)screenHeight);
+                        }
+                        return;
+                    }
+
+                    var windowBounds = new PixelRect(_lastX, _lastY, _lastWidth, _lastHeight);
+                    var curScreen = screens.ScreenFromBounds(windowBounds) ?? screens.Primary;
+
+                    if (curScreen != null)
+                    {
+                        screenWidth = curScreen.Bounds.Width;
+                        screenHeight = curScreen.Bounds.Height;
+                        monitorX = curScreen.Bounds.X;
+                        monitorY = curScreen.Bounds.Y;
+                    }
+                });
             }
         }
 
         public void OnWindowFound()
         {
-            const string LOG_IDENT = "WindowController::OnWindowFound";
+            const string LOG_IDENT = "WindowController::onWindowFound";
 
             SaveWindow();
 
-            _windowLong = GetWindowLong(_currentWindow, GWL_EXSTYLE);
+            _windowLong = PInvoke.GetWindowLong((HWND)_currentWindow, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
 
             App.Logger.WriteLine(LOG_IDENT, $"Monitor X:{monitorX} Y:{monitorY} W:{screenWidth} H:{screenHeight}");
             App.Logger.WriteLine(LOG_IDENT, $"Window X:{_lastX} Y:{_lastY} W:{_lastWidth} H:{_lastHeight}");
-
-            if (App.Settings.Prop.WindowAllowAll || IsGameAllowed())
-            {
-                _enabled = true;
-                _activityWatcher.delay = _activityWatcher.windowLogDelay;
-            }
 
             appTheme = ThemeEx.GetFinal(App.Settings.Prop.Theme);
             if (App.Settings.Prop.CanGameChangeColor && appTheme == Theme.Dark)
             {
                 DisableWindowDarkMode();
                 _lastWindowCaptionColor = Convert.ToUInt32("1F1F1F", 16);
-                _ = DwmSetWindowAttribute(_currentWindow, 35, ref _lastWindowCaptionColor, sizeof(uint));
+
+                unsafe
+                {
+                    uint colorAttr = _lastWindowCaptionColor;
+                    _ = PInvoke.DwmSetWindowAttribute((HWND)_currentWindow, (DWMWINDOWATTRIBUTE)35, &colorAttr, sizeof(uint));
+                }
             }
         }
 
@@ -262,13 +278,12 @@ namespace Froststrap.Integrations
 
         public void SaveWindow()
         {
-            WindowRect winRect = new();
-            _ = GetWindowRect(_currentWindow, ref winRect);
+            _ = PInvoke.GetWindowRect((HWND)_currentWindow, out RECT winRect);
 
-            _lastX = winRect.Left;
-            _lastY = winRect.Top;
-            _lastWidth = winRect.Right - winRect.Left;
-            _lastHeight = winRect.Bottom - winRect.Top;
+            _lastX = winRect.left;
+            _lastY = winRect.top;
+            _lastWidth = winRect.right - winRect.left;
+            _lastHeight = winRect.bottom - winRect.top;
 
             _startingX = _lastX;
             _startingY = _lastY;
@@ -291,35 +306,49 @@ namespace Froststrap.Integrations
                 _lastWindowColor = 0x000000;
                 _lastTransparencyMode = LWA_COLORKEY;
 
-                _ = MoveWindow(_currentWindow, _startingX, _startingY, _startingWidth, _startingHeight, false);
-                _ = SetWindowLong(_currentWindow, GWL_EXSTYLE, _windowLong);
+                _ = PInvoke.MoveWindow((HWND)_currentWindow, _startingX, _startingY, _startingWidth, _startingHeight, false);
+                _ = PInvoke.SetWindowLong((HWND)_currentWindow, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, _windowLong);
                 SetBorderless(false);
 
                 changedWindow = false;
             }
 
-            _ = SendMessage(_currentWindow, WM_SETTEXT, IntPtr.Zero, "Roblox");
+            unsafe
+            {
+                fixed (char* pTitle = "Roblox")
+                {
+                    _ = PInvoke.SendMessage((HWND)_currentWindow, WM_SETTEXT, default, new LPARAM((nint)pTitle));
+                }
+            }
 
             if (App.Settings.Prop.CanGameChangeColor)
             {
                 DisableWindowDarkMode();
                 _lastWindowCaptionColor = Convert.ToUInt32(appTheme == Theme.Dark ? "1F1F1F" : "FFFFFF", 16);
-                _ = DwmSetWindowAttribute(_currentWindow, 35, ref _lastWindowCaptionColor, sizeof(uint));
 
-                _lastWindowBorderColor = Convert.ToUInt32("1F1F1F", 16);
-                _ = DwmSetWindowAttribute(_currentWindow, 34, ref _lastWindowBorderColor, sizeof(uint));
+                unsafe
+                {
+                    uint captionColor = _lastWindowCaptionColor;
+                    _ = PInvoke.DwmSetWindowAttribute((HWND)_currentWindow, (DWMWINDOWATTRIBUTE)35, &captionColor, sizeof(uint));
+
+                    _lastWindowBorderColor = Convert.ToUInt32("1F1F1F", 16);
+                    uint borderColor = _lastWindowBorderColor;
+                    _ = PInvoke.DwmSetWindowAttribute((HWND)_currentWindow, (DWMWINDOWATTRIBUTE)34, &borderColor, sizeof(uint));
+                }
             }
         }
 
-        private void DisableWindowDarkMode()
+        void DisableWindowDarkMode()
         {
             uint disableDarkMode = 0;
-            int cbAttribute = sizeof(uint);
-            if (S_OK != DwmSetWindowAttribute(_currentWindow, DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, ref disableDarkMode, cbAttribute))
+            unsafe
             {
-                _ = DwmSetWindowAttribute(_currentWindow, DWMWA_USE_IMMERSIVE_DARK_MODE, ref disableDarkMode, cbAttribute);
+                if (S_OK != PInvoke.DwmSetWindowAttribute((HWND)_currentWindow, (DWMWINDOWATTRIBUTE)DWMWA_USE_IMMERSIVE_DARK_MODE_OLD, &disableDarkMode, sizeof(uint)))
+                {
+                    _ = PInvoke.DwmSetWindowAttribute((HWND)_currentWindow, (DWMWINDOWATTRIBUTE)DWMWA_USE_IMMERSIVE_DARK_MODE, &disableDarkMode, sizeof(uint));
+                }
             }
-            _ = UpdateWindow(_currentWindow);
+            _ = PInvoke.UpdateWindow((HWND)_currentWindow);
         }
 
         public void OnMessage(Message message)
@@ -336,8 +365,8 @@ namespace Froststrap.Integrations
 
             if (_currentWindow == IntPtr.Zero) { return; }
 
-            if (!curUniverseAllowed && message.Command != "RequestWindowPermission" && message.Command != "StartWindow" && message.Command != "SetWindowTitle") { return; }
-            if (!_enabled && message.Command != "RequestWindowPermission" && message.Command != "SetWindowTitle" && message.Command != "StartWindow") { return; }
+            if (!curUniverseAllowed && (message.Command != "RequestWindowPermission" || prevUniverse == _activityWatcher.Data.UniverseId) && message.Command != "SetWindowTitle") { return; }
+            if (!enabled && message.Command != "RequestWindowPermission" && message.Command != "SetWindowTitle" && message.Command != "StartWindow") { return; }
 
             switch (message.Command)
             {
@@ -348,7 +377,7 @@ namespace Froststrap.Integrations
                     }
                 case "StartWindow":
                     {
-                        if (_enabled) { return; }
+                        if (enabled) { return; }
 
                         UpdateState(true);
                         _activityWatcher.delay = _activityWatcher.windowLogDelay;
@@ -357,7 +386,7 @@ namespace Froststrap.Integrations
                     }
                 case "StopWindow":
                     {
-                        if (!_enabled) { return; }
+                        if (!enabled) { return; }
 
                         UpdateState(false);
                         break;
@@ -368,7 +397,7 @@ namespace Froststrap.Integrations
                     _lastWidth = _startingWidth;
                     _lastHeight = _startingHeight;
 
-                    _ = MoveWindow(_currentWindow, _startingX, _startingY, _startingWidth, _startingHeight, false);
+                    _ = PInvoke.MoveWindow((HWND)_currentWindow, _startingX, _startingY, _startingWidth, _startingHeight, false);
                     break;
                 case "SetWindow":
                     {
@@ -416,16 +445,24 @@ namespace Froststrap.Integrations
                         }
 
                         changedWindow = true;
-                        _ = MoveWindow(_currentWindow, _lastX + monitorX, _lastY + monitorY, (int)(_lastWidth * widthMult), (int)(_lastHeight * heightMult), false);
+                        _ = PInvoke.MoveWindow((HWND)_currentWindow, _lastX + monitorX, _lastY + monitorY, (int)(_lastWidth * widthMult), (int)(_lastHeight * heightMult), false);
                         break;
                     }
                 case "SetWindowTitle":
                     {
                         if (!App.Settings.Prop.TitleControlAllowed) { return; }
 
-                        string? title = Deserialize<string>(message) ?? "Roblox";
+                        string? title = Deserialize<string>(message);
 
-                        _ = SendMessage(_currentWindow, WM_SETTEXT, IntPtr.Zero, title);
+                        title ??= "Roblox";
+
+                        unsafe
+                        {
+                            fixed (char* pTitle = title)
+                            {
+                                _ = PInvoke.SendMessage((HWND)_currentWindow, WM_SETTEXT, default, new LPARAM((nint)pTitle));
+                            }
+                        }
                         break;
                     }
                 case "SetWindowTransparency":
@@ -451,11 +488,11 @@ namespace Froststrap.Integrations
                         changedWindow = true;
 
                         if (_lastTransparency == 255)
-                            _ = SetWindowLong(_currentWindow, GWL_EXSTYLE, _windowLong);
+                            _ = PInvoke.SetWindowLong((HWND)_currentWindow, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, _windowLong);
                         else
                         {
-                            _ = SetWindowLong(_currentWindow, GWL_EXSTYLE, (_windowLong | WS_EX_LAYERED) & ~WS_EX_TRANSPARENT);
-                            _ = SetLayeredWindowAttributes(_currentWindow, _lastWindowColor, _lastTransparency, _lastTransparencyMode);
+                            _ = PInvoke.SetWindowLong((HWND)_currentWindow, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, (_windowLong | WS_EX_LAYERED) & ~WS_EX_TRANSPARENT);
+                            _ = PInvoke.SetLayeredWindowAttributes((HWND)_currentWindow, new COLORREF(_lastWindowColor), _lastTransparency, (LAYERED_WINDOW_ATTRIBUTES_FLAGS)_lastTransparencyMode);
                         }
 
                         break;
@@ -486,7 +523,7 @@ namespace Froststrap.Integrations
                             return;
                         }
 
-                        _activityWatcher.watcher._notifyIcon?.ShowAlert(notifData.Title ?? "[[MISSING TITLE]]", notifData.Caption ?? "[[MISSING CAPTION]]", notifData.Duration ?? 5);
+                        _activityWatcher.watcher._notifyIcon?.ShowAlert(notifData.Title ?? "[[MISSING TITLE]]", notifData.Caption ?? "[[MISSING CAPTION]]", notifData.Duration ?? 5, Avalonia.Controls.Notifications.NotificationType.Information);
                         break;
                     }
                 case "SetWindowColor":
@@ -509,24 +546,27 @@ namespace Froststrap.Integrations
 
                         DisableWindowDarkMode();
 
-                        if (windowData.Caption is not null)
+                        unsafe
                         {
-                            _lastWindowCaptionColor = Convert.ToUInt32(windowData.Caption, 16);
-                            _ = DwmSetWindowAttribute(_currentWindow, 35, ref _lastWindowCaptionColor, sizeof(uint));
-                        }
+                            if (windowData.Caption is not null)
+                            {
+                                _lastWindowCaptionColor = Convert.ToUInt32(windowData.Caption, 16);
+                                uint captionColor = _lastWindowCaptionColor;
+                                _ = PInvoke.DwmSetWindowAttribute((HWND)_currentWindow, (DWMWINDOWATTRIBUTE)35, &captionColor, sizeof(uint));
+                            }
 
-                        if (windowData.Border is not null)
-                        {
-                            _lastWindowBorderColor = Convert.ToUInt32(windowData.Border, 16);
-                            _ = DwmSetWindowAttribute(_currentWindow, 34, ref _lastWindowBorderColor, sizeof(uint));
+                            if (windowData.Border is not null)
+                            {
+                                _lastWindowBorderColor = Convert.ToUInt32(windowData.Border, 16);
+                                uint borderColor = _lastWindowBorderColor;
+                                _ = PInvoke.DwmSetWindowAttribute((HWND)_currentWindow, (DWMWINDOWATTRIBUTE)34, &borderColor, sizeof(uint));
+                            }
                         }
 
                         break;
                     }
                 default:
-                    {
-                        return;
-                    }
+                    return;
             }
         }
 
@@ -558,8 +598,10 @@ namespace Froststrap.Integrations
 
             Process[] tempProcesses = Process.GetProcesses();
             foreach (Process proc in tempProcesses)
+            {
                 if (proc.MainWindowTitle == title)
                     return proc.MainWindowHandle;
+            }
 
             return IntPtr.Zero;
         }
@@ -574,51 +616,6 @@ namespace Froststrap.Integrations
             {
                 return default;
             }
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, string lParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool GetWindowRect(IntPtr hwnd, ref WindowRect rectangle);
-
-        [DllImport("user32.dll")]
-        static extern int SetWindowLong(IntPtr hWnd, int nIndex, long dwNewLong);
-
-        [DllImport("user32.dll")]
-        static extern long GetWindowLong(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
-
-        [DllImport("user32.dll")]
-        static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-
-        [DllImport("dwmapi.dll")]
-        private static extern int DwmSetWindowAttribute(IntPtr hWnd, int dwAttribute, ref uint pvAttribute, int cbAttribute);
-
-        [DllImport("user32.dll")]
-        private static extern bool UpdateWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern int GetSystemMetrics(int nIndex);
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
-
-        [DllImport("user32.dll")]
-        private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct MonitorInfo
-        {
-            public int cbSize;
-            public WindowRect rcMonitor;
-            public WindowRect rcWork;
-            public uint dwFlags;
         }
     }
 }
