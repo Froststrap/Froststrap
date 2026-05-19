@@ -38,18 +38,26 @@
             </controls:OptionControl>
 
             <controls:OptionControl
-                Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
-                Header="Auto Rejoin"
-                IsEnabled="{Binding ActivityTrackingEnabled}">
-                <ToggleSwitch IsChecked="{Binding AutoRejoinEnabled, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl
                 Description="Changes Roblox titlebar title to the game name."
                 Header="Title Change"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding AutoChangeTitle, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="Auto change the roblox game titlebar icon to the current game icon."
+                Header="Icon Change"
+                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding AutoChangeIcon, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl
+                Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
+                Header="Auto Rejoin"
+                IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding AutoRejoinEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl

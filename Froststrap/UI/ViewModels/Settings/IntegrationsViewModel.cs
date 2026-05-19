@@ -100,6 +100,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     PlaytimeCounterEnabled = false;
                     DisableAppPatchEnabled = false;
                     AutoChangeTitle = false;
+                    AutoChangeIcon = false;
                     WindowControlEnabled = false;
                     DiscordActivityEnabled = false;
                     DiscordActivityJoinEnabled = false;
@@ -110,6 +111,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     OnPropertyChanged(nameof(AutoRejoinEnabled));
                     OnPropertyChanged(nameof(PlaytimeCounterEnabled));
                     OnPropertyChanged(nameof(AutoChangeTitle));
+                    OnPropertyChanged(nameof(AutoChangeIcon));
                     OnPropertyChanged(nameof(DisableAppPatchEnabled));
                     OnPropertyChanged(nameof(WindowControlEnabled));
                     OnPropertyChanged(nameof(DiscordActivityEnabled));
@@ -153,6 +155,12 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => App.Settings.Prop.AutoChangeTitle;
             set => App.Settings.Prop.AutoChangeTitle = value;
+        }
+
+        public static bool AutoChangeIcon
+        {
+            get => App.Settings.Prop.AutoChangeIcon;
+            set => App.Settings.Prop.AutoChangeIcon = value;
         }
 
         private async void OpenGameHistory()
