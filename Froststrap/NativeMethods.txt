@@ -9,3 +9,7 @@ SetWindowText
 SetWinEventHook
 SendMessage
 SHObjectProperties
+GetSystemMetrics
+SYSTEM_METRICS_INDEX
+LookupIconIdFromDirectoryEx
+CreateIconFromResourceEx

@@ -1,10 +1,7 @@
-﻿using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
+﻿using System.Runtime.Versioning;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Froststrap.Integrations
 {
@@ -15,18 +12,15 @@ namespace Froststrap.Integrations
         private readonly Dictionary<int, CustomIntegration> _activeIntegrations = [];
 
         private HWND _robloxWindowHandle = default;
-        private readonly uint _robloxPID;
-        private readonly int _robloxProcessId;
 
-        private HICON _customGameIconHandle = default;
-        private HICON _defaultRobloxIconHandle = default;
+        private DestroyIconSafeHandle? _customGameIconSmallHandle;
+        private DestroyIconSafeHandle? _customGameIconBigHandle;
+        private DestroyIconSafeHandle? _defaultRobloxIconSmallHandle;
+        private DestroyIconSafeHandle? _defaultRobloxIconBigHandle;
 
         private const uint WM_SETICON = 0x0080;
         private const int ICON_SMALL = 0;
         private const int ICON_BIG = 1;
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern IntPtr CreateIconFromResourceEx(byte[] pbIconBits, uint cbIconBits, bool fIcon, uint dwVersion, int cxDesired, int cyDesired, uint uFlags);
 
         public IntegrationWatcher(ActivityWatcher activityWatcher, int robloxProcessId)
         {
@@ -36,22 +30,14 @@ namespace Froststrap.Integrations
             var robloxProcesses = Process.GetProcessesByName("RobloxPlayerBeta");
             if (robloxProcesses.Length == 0)
             {
-                robloxProcesses = [.. Process.GetProcesses().Where(p => p.ProcessName.Contains("Roblox", StringComparison.OrdinalIgnoreCase))];
+                robloxProcesses = [.. Process.GetProcesses()
+                    .Where(p => p.ProcessName.Contains("Roblox", StringComparison.OrdinalIgnoreCase))];
             }
 
             if (robloxProcesses.Length > 0)
             {
-                _robloxProcessId = robloxProcesses[0].Id;
-                _robloxPID = (uint)_robloxProcessId;
+                _ = robloxProcesses[0].Id;
             }
-            else
-            {
-                _robloxProcessId = robloxProcessId;
-                _robloxPID = (uint)robloxProcessId;
-            }
-#else
-            _robloxProcessId = robloxProcessId;
-            _robloxPID = (uint)robloxProcessId;
 #endif
 
             _activityWatcher.OnGameJoin += OnGameJoin;
@@ -64,20 +50,45 @@ namespace Froststrap.Integrations
         {
             try
             {
-                using var stream = Resource.GetStream("Icon2025.png");
+                using var stream = Resource.GetStream("Icon2025.ico");
                 if (stream == null) return;
 
-                using var image = Image.Load<Bgra32>(stream);
                 using var ms = new MemoryStream();
-                image.SaveAsPng(ms);
-                byte[] pngBytes = ms.ToArray();
+                stream.CopyTo(ms);
+                byte[] icoBytes = ms.ToArray();
 
-                IntPtr hIconRaw = CreateIconFromResourceEx(pngBytes, (uint)pngBytes.Length, true, 0x00030000, image.Width, image.Height, 0);
-                _defaultRobloxIconHandle = PInvoke.CopyIcon((HICON)hIconRaw);
+                int smallWidth = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXSMICON);
+                int smallHeight = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYSMICON);
+                int bigWidth = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXICON);
+                int bigHeight = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYICON);
+
+                unsafe
+                {
+                    fixed (byte* pBytes = icoBytes)
+                    {
+                        int smallOffset = PInvoke.LookupIconIdFromDirectoryEx(pBytes, true, smallWidth, smallHeight, 0);
+                        if (smallOffset > 0)
+                        {
+                            byte[] smallBits = new byte[icoBytes.Length - smallOffset];
+                            Buffer.BlockCopy(icoBytes, smallOffset, smallBits, 0, smallBits.Length);
+
+                            _defaultRobloxIconSmallHandle = PInvoke.CreateIconFromResourceEx(smallBits, true, 0x00030000, smallWidth, smallHeight, IMAGE_FLAGS.LR_DEFAULTCOLOR);
+                        }
+
+                        int bigOffset = PInvoke.LookupIconIdFromDirectoryEx(pBytes, true, bigWidth, bigHeight, 0);
+                        if (bigOffset > 0)
+                        {
+                            byte[] bigBits = new byte[icoBytes.Length - bigOffset];
+                            Buffer.BlockCopy(icoBytes, bigOffset, bigBits, 0, bigBits.Length);
+
+                            _defaultRobloxIconBigHandle = PInvoke.CreateIconFromResourceEx(bigBits, true, 0x00030000, bigWidth, bigHeight, IMAGE_FLAGS.LR_DEFAULTCOLOR);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("IntegrationWatcher::LoadDefaultIcon", $"Failed to load default embedded asset icon: {ex.Message}");
+                App.Logger.WriteLine("IntegrationWatcher::LoadDefaultIcon", $"Failed to load multi-size default asset icon: {ex.Message}");
             }
         }
 
@@ -124,10 +135,11 @@ namespace Froststrap.Integrations
                     {
                         App.Logger.WriteLine(LOG_IDENT, "Resetting window icons back to default");
 
-                        if (_defaultRobloxIconHandle.Value != IntPtr.Zero)
+                        if (_defaultRobloxIconSmallHandle != null && !_defaultRobloxIconSmallHandle.IsInvalid &&
+                            _defaultRobloxIconBigHandle != null && !_defaultRobloxIconBigHandle.IsInvalid)
                         {
-                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _defaultRobloxIconHandle.Value);
-                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _defaultRobloxIconHandle.Value);
+                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _defaultRobloxIconSmallHandle.DangerousGetHandle());
+                            PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _defaultRobloxIconBigHandle.DangerousGetHandle());
                         }
                         else
                         {
@@ -135,11 +147,11 @@ namespace Froststrap.Integrations
                             PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, IntPtr.Zero);
                         }
 
-                        if (_customGameIconHandle.Value != IntPtr.Zero)
-                        {
-                            PInvoke.DestroyIcon(_customGameIconHandle);
-                            _customGameIconHandle = default;
-                        }
+                        _customGameIconSmallHandle?.Dispose();
+                        _customGameIconSmallHandle = null;
+
+                        _customGameIconBigHandle?.Dispose();
+                        _customGameIconBigHandle = null;
                     }
 
                     if (App.Settings.Prop.AutoChangeTitle)
@@ -226,23 +238,25 @@ namespace Froststrap.Integrations
                 response.EnsureSuccessStatusCode();
 
                 using var stream = await response.Content.ReadAsStreamAsync();
-
-                using var image = await Image.LoadAsync<Bgra32>(stream);
                 using var ms = new MemoryStream();
-                await image.SaveAsPngAsync(ms);
+                await stream.CopyToAsync(ms);
                 byte[] pngBytes = ms.ToArray();
 
-                IntPtr hIconRaw = CreateIconFromResourceEx(pngBytes, (uint)pngBytes.Length, true, 0x00030000, image.Width, image.Height, 0);
-                HICON copiedHIcon = PInvoke.CopyIcon((HICON)hIconRaw);
+                int smallWidth = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXSMICON);
+                int smallHeight = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYSMICON);
+                int bigWidth = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CXICON);
+                int bigHeight = PInvoke.GetSystemMetrics(SYSTEM_METRICS_INDEX.SM_CYICON);
 
-                if (copiedHIcon.Value != IntPtr.Zero)
+                _customGameIconSmallHandle = PInvoke.CreateIconFromResourceEx(pngBytes, true, 0x00030000, smallWidth, smallHeight, IMAGE_FLAGS.LR_DEFAULTCOLOR);
+                _customGameIconBigHandle = PInvoke.CreateIconFromResourceEx(pngBytes, true, 0x00030000, bigWidth, bigHeight, IMAGE_FLAGS.LR_DEFAULTCOLOR);
+
+                if (_customGameIconSmallHandle != null && !_customGameIconSmallHandle.IsInvalid &&
+                    _customGameIconBigHandle != null && !_customGameIconBigHandle.IsInvalid)
                 {
-                    _customGameIconHandle = copiedHIcon;
+                    PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _customGameIconSmallHandle.DangerousGetHandle());
+                    PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _customGameIconBigHandle.DangerousGetHandle());
 
-                    PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_SMALL, _customGameIconHandle.Value);
-                    PInvoke.SendMessage(_robloxWindowHandle, WM_SETICON, (WPARAM)ICON_BIG, _customGameIconHandle.Value);
-
-                    App.Logger.WriteLine(LOG_IDENT, "Game icon transformation injected successfully via ImageSharp compressed png bits.");
+                    App.Logger.WriteLine(LOG_IDENT, "Game icon transformation injected successfully across both small and large sizing frames.");
                 }
             }
             catch (Exception ex)
@@ -342,17 +356,10 @@ namespace Froststrap.Integrations
 
             _activeIntegrations.Clear();
 
-            if (_customGameIconHandle.Value != IntPtr.Zero)
-            {
-                PInvoke.DestroyIcon(_customGameIconHandle);
-                _customGameIconHandle = default;
-            }
-
-            if (_defaultRobloxIconHandle.Value != IntPtr.Zero)
-            {
-                PInvoke.DestroyIcon(_defaultRobloxIconHandle);
-                _defaultRobloxIconHandle = default;
-            }
+            _customGameIconSmallHandle?.Dispose();
+            _customGameIconBigHandle?.Dispose();
+            _defaultRobloxIconSmallHandle?.Dispose();
+            _defaultRobloxIconBigHandle?.Dispose();
 
             _activityWatcher.Dispose();
             GC.SuppressFinalize(this);
