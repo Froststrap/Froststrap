@@ -1,4 +1,4 @@
-app-id: org.froststrap.Froststrap
+app-id: io.github.froststrap
 runtime: org.freedesktop.Platform
 runtime-version: '24.08'
 sdk: org.freedesktop.Sdk
@@ -46,14 +46,14 @@ modules:
         cp -r /app/froststrap-bin/* /app/bin/
 
         # Install desktop entry
-        install -Dm644 flatpak/org.froststrap.Froststrap.desktop /app/share/applications/org.froststrap.Froststrap.desktop
+        install -Dm644 flatpak/io.github.froststrap.desktop /app/share/applications/io.github.froststrap.desktop
 
         # Install icon
         mkdir -p /app/share/icons/hicolor/512x512/apps
-        cp flatpak/org.froststrap.Froststrap.png /app/share/icons/hicolor/512x512/apps/org.froststrap.Froststrap.png
+        cp flatpak/io.github.froststrap.png /app/share/icons/hicolor/512x512/apps/io.github.froststrap.png
 
         # Install metainfo
-        install -Dm644 flatpak/org.froststrap.Froststrap.metainfo.xml /app/share/metainfo/org.froststrap.Froststrap.metainfo.xml
+        install -Dm644 flatpak/io.github.froststrap.metainfo.xml /app/share/metainfo/io.github.froststrap.metainfo.xml
 
         # Install flatpak-spawn wrapper to allow Froststrap to run flatpak from the host
         echo '#!/bin/sh' > /app/bin/flatpak

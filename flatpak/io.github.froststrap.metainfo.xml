@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>org.froststrap.Froststrap</id>
+  <id>io.github.froststrap</id>
   <name>Froststrap</name>
   <summary>A fork of Fishstrap, focused on performance and customization</summary>
   <metadata_license>CC0-1.0</metadata_license>
@@ -24,7 +24,7 @@
       <li>Playtime counter (total and session)</li>
     </ul>
   </description>
-  <launchable type="desktop-id">org.froststrap.Froststrap.desktop</launchable>
+  <launchable type="desktop-id">io.github.froststrap.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <image>https://raw.githubusercontent.com/Froststrap/Froststrap/main/.resources/froststrap.png</image>
