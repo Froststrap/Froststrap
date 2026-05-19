@@ -64,8 +64,29 @@ jobs:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: build/*
 
+  build-flatpak:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:freedesktop-24.08
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          fetch-depth: 0
+      - name: Set short SHA
+        run: echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          manifest-path: flatpak/io.github.froststrap.yml
+          cache-key: flatpak-builder-${{ hashFiles('flatpak/io.github.froststrap.yml', '**/*.csproj', '**/packages.lock.json') }}
+      - uses: actions/upload-artifact@v6
+        with:
+          name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
+          path: Froststrap-linux-x64.flatpak
+
   release:
-    needs: [build-windows, build-macos, build-linux]
+    needs: [build-windows, build-macos, build-linux, build-flatpak]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
@@ -88,6 +109,11 @@ jobs:
         with:
           name: froststrap-release-linux-x64-${{ env.SHORT_SHA }}
           path: release
+      - name: Download Flatpak artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: froststrap-flatpak-x64-${{ env.SHORT_SHA }}
+          path: release
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -99,5 +125,6 @@ jobs:
             release/Froststrap-linux-x64.AppImage
             release/Froststrap-linux-x64.deb
             release/Froststrap-linux-x64.rpm
+            release/Froststrap-linux-x64.flatpak
           name: Froststrap ${{ github.ref_name }}
           fail_on_unmatched_files: true
