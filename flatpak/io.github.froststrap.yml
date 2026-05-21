@@ -14,6 +14,8 @@ finish-args:
   - --device=dri
   - --filesystem=home
   - --talk-name=org.freedesktop.Flatpak
+  - --filesystem=xdg-run/app/com.discordapp.Discord:create
+  - --filesystem=xdg-run/discord-ipc-0
 build-options:
   append-path: /usr/lib/sdk/dotnet10/bin
   env:
