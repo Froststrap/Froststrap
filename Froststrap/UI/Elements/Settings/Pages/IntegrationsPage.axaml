@@ -46,8 +46,8 @@
             </controls:OptionControl>
 
             <controls:OptionControl
-                Description="Auto change the roblox game titlebar icon to the current game icon."
                 Header="Icon Change"
+                Description="Auto change the roblox game titlebar and taskbar icon to the current game icon."
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding AutoChangeIcon, Mode=TwoWay}" />
