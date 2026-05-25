@@ -83,56 +83,60 @@ namespace Froststrap
                 else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                     PlayerRichPresence = new(ActivityWatcher);
 
-                if (App.Settings.Prop.UseWindowControl)
+                if (App.Settings.Prop.UseWindowControl && _watcherData.LaunchMode == LaunchMode.Player)
                     WindowController = new(ActivityWatcher);
 
-                IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, _watcherData.ProcessId);
+                if (_watcherData.LaunchMode == LaunchMode.Player)
+                    IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, _watcherData.ProcessId);
 
                 _notifyIcon = new(this);
             }
 
-            _ = Task.Run(async () =>
+            if (_watcherData.LaunchMode == LaunchMode.Player)
             {
-                await Task.Delay(20000);
-
-                try
+                _ = Task.Run(async () =>
                 {
-                    var processes = Process.GetProcessesByName("RobloxPlayerBeta");
+                    await Task.Delay(20000);
 
-                    foreach (var proc in processes)
+                    try
                     {
-                        if (proc.HasExited) continue;
+                        var processes = Process.GetProcessesByName("RobloxPlayerBeta");
 
-                        if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
+                        foreach (var proc in processes)
                         {
-                            ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
+                            if (proc.HasExited) continue;
+
+                            if (App.Settings.Prop.SelectedProcessPriority != ProcessPriorityOption.Normal)
                             {
-                                ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
-                                ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
-                                ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
-                                ProcessPriorityOption.High => ProcessPriorityClass.High,
-                                ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
-                                _ => ProcessPriorityClass.Normal
-                            };
+                                ProcessPriorityClass priorityClass = App.Settings.Prop.SelectedProcessPriority switch
+                                {
+                                    ProcessPriorityOption.Low => ProcessPriorityClass.Idle,
+                                    ProcessPriorityOption.BelowNormal => ProcessPriorityClass.BelowNormal,
+                                    ProcessPriorityOption.AboveNormal => ProcessPriorityClass.AboveNormal,
+                                    ProcessPriorityOption.High => ProcessPriorityClass.High,
+                                    ProcessPriorityOption.RealTime => ProcessPriorityClass.RealTime,
+                                    _ => ProcessPriorityClass.Normal
+                                };
 
-                            proc.PriorityClass = priorityClass;
-                            App.Logger.WriteLine(LOG_IDENT, $"Set priority for {proc.Id} to {priorityClass}");
+                                proc.PriorityClass = priorityClass;
+                                App.Logger.WriteLine(LOG_IDENT, $"Set priority for {proc.Id} to {priorityClass}");
+                            }
                         }
-                    }
 
-                    if (App.Settings.Prop.AutoCloseCrashHandler)
-                    {
-                        foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
+                        if (App.Settings.Prop.AutoCloseCrashHandler)
                         {
-                            try { crashProc.Kill(); } catch { }
+                            foreach (var crashProc in Process.GetProcessesByName("RobloxCrashHandler"))
+                            {
+                                try { crashProc.Kill(); } catch { }
+                            }
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Post-launch task error: {ex.Message}");
-                }
-            });
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Post-launch task error: {ex.Message}");
+                    }
+                });
+            }
         }
 
         public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);

@@ -29,6 +29,7 @@ namespace Froststrap.UI.Elements.ContextMenu
         private NativeMenuItem? AutoJoinRegionMenuItem;
         private NativeMenuItem? ServerDetailsMenuItem;
         private NativeMenuItem? GameHistoryMenuItem;
+        private NativeMenuItem? CloseRobloxMenuItem;
 
         public MenuContainer()
         {
@@ -60,6 +61,7 @@ namespace Froststrap.UI.Elements.ContextMenu
             AutoJoinRegionMenuItem = items.ElementAtOrDefault(5);
             ServerDetailsMenuItem = items.ElementAtOrDefault(6);
             GameHistoryMenuItem = items.ElementAtOrDefault(7);
+            CloseRobloxMenuItem = items.ElementAtOrDefault(9);
         }
 
         public MenuContainer(Watcher watcher) : this()
@@ -80,6 +82,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
+                        CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, "Close Studio");
 
                         if (App.Settings.Prop.PlaytimeCounter)
                         {
