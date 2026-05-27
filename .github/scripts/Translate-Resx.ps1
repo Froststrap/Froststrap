@@ -8,23 +8,10 @@ param(
     )
 )
 
-Add-Type -AssemblyName System.Resources.Reader
-Add-Type -AssemblyName System.Resources.Writer
-
 function Invoke-LibreTranslate {
-    param(
-        [string]$Text,
-        [string]$TargetLang
-    )
+    param([string]$Text, [string]$TargetLang)
     if ([string]::IsNullOrWhiteSpace($Text)) { return $Text }
-
-    $body = @{
-        q      = $Text
-        source = "en"
-        target = $TargetLang
-        format = "text"
-    } | ConvertTo-Json
-
+    $body = @{ q = $Text; source = "en"; target = $TargetLang; format = "text" } | ConvertTo-Json
     try {
         Start-Sleep -Milliseconds 3000
         $response = Invoke-RestMethod -Uri $ApiEndpoint -Method Post -Body $body -ContentType "application/json"
@@ -35,41 +22,73 @@ function Invoke-LibreTranslate {
     }
 }
 
-Write-Host "Reading source file: $SourceFile"
-$sourceReader = [System.Resources.ResXResourceReader]::new($SourceFile)
-$sourceReader.UseResXDataNodes = $true
-$strings = @{}
-foreach ($entry in $sourceReader) {
-    $node = $entry.Value -as [System.Resources.ResXDataNode]
-    if ($node -and $node.FileRef -eq $null) {
-        $value = $node.GetValue(([System.ComponentModel.Design.ITypeResolutionService]$null)) -as [string]
-        $strings[$node.Name] = $value
+function Read-Resx {
+    param([string]$Path)
+    $xml = New-Object System.Xml.XmlDocument
+    $xml.Load($Path)
+    $strings = @{}
+    foreach ($data in $xml.SelectNodes("//data")) {
+        $name = $data.GetAttribute("name")
+        $valueNode = $data.SelectSingleNode("value")
+        if ($valueNode -ne $null) {
+            $strings[$name] = $valueNode.InnerText
+        }
     }
+    return $strings
 }
-$sourceReader.Close()
+
+function Write-Resx {
+    param([string]$Path, [hashtable]$Strings)
+    $xml = New-Object System.Xml.XmlDocument
+    $root = $xml.CreateElement("root")
+    $xml.AppendChild($root) | Out-Null
+    $resheader = @(
+        @{ name = "resmimetype"; value = "text/microsoft-resx" },
+        @{ name = "version"; value = "2.0" },
+        @{ name = "reader"; value = "System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" },
+        @{ name = "writer"; value = "System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" }
+    )
+    foreach ($h in $resheader) {
+        $header = $xml.CreateElement("resheader")
+        $header.SetAttribute("name", $h.name)
+        $value = $xml.CreateElement("value")
+        $value.InnerText = $h.value
+        $header.AppendChild($value) | Out-Null
+        $root.AppendChild($header) | Out-Null
+    }
+    foreach ($name in $Strings.Keys) {
+        $data = $xml.CreateElement("data")
+        $data.SetAttribute("name", $name)
+        $data.SetAttribute("xml:space", "preserve")
+        $value = $xml.CreateElement("value")
+        $value.InnerText = $Strings[$name]
+        $data.AppendChild($value) | Out-Null
+        $root.AppendChild($data) | Out-Null
+    }
+    $xml.Save($Path)
+}
+
+Write-Host "Reading source file: $SourceFile"
+$strings = Read-Resx -Path $SourceFile
 Write-Host "Loaded $($strings.Count) string entries."
 
 foreach ($locale in $TargetLocales) {
     $targetFile = "Froststrap/Resources/Strings.$locale.resx"
     Write-Host "Translating to '$locale' -> $targetFile"
-
-    $writer = [System.Resources.ResXResourceWriter]::new($targetFile)
-    $translatedCount = 0
-    $failedCount = 0
-
+    $translated = @{}
+    $failed = 0
     foreach ($name in $strings.Keys) {
         $original = $strings[$name]
         if ($original) {
-            $translated = Invoke-LibreTranslate -Text $original -TargetLang $locale
-            if ($translated -eq $original) { $failedCount++ }
-            $writer.AddResource($name, $translated)
-            $translatedCount++
+            $translatedText = Invoke-LibreTranslate -Text $original -TargetLang $locale
+            if ($translatedText -eq $original) { $failed++ }
+            $translated[$name] = $translatedText
         } else {
-            $writer.AddResource($name, "")
+            $translated[$name] = ""
         }
     }
-    $writer.Close()
-    Write-Host "Saved $targetFile (Translated: $translatedCount, Failed: $failedCount)"
+    Write-Resx -Path $targetFile -Strings $translated
+    Write-Host "Saved $targetFile (Failed: $failed)"
 }
 
 Write-Host "All translations completed."

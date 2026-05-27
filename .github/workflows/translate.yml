@@ -5,6 +5,7 @@ on:
     branches: [ feat/linux-studio-support ]
     paths:
       - 'Froststrap/Resources/Strings.resx'
+  workflow_dispatch:
 
 jobs:
   translate:
