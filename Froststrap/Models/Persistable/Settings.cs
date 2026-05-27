@@ -96,6 +96,7 @@ namespace Froststrap.Models.Persistable
         public bool StudioVersionOverrideEnabled { get; set; } = false;
         public string StudioVersionOverrideHash { get; set; } = string.Empty;
         public bool StudioGameMode { get; set; } = false;
+        public bool StudioDebug { get; set; } = false;
 
         // Misc Stuff
         public string SelectedRegion { get; set; } = string.Empty;

@@ -3076,14 +3076,20 @@ Windows Registry Editor Version 5.00
             env["DXVK_ASYNC"] = "1";
             env["DXVK_HUD"] = "0";
             env["WINEDLLOVERRIDES"] = "d3d10core,d3d11,dxgi=n,b;d3d9=b;mscoree,mshtml=";
+            env["XR_LOADER_DEBUG"] = "none";
+
             if (File.Exists(Path.Combine(_latestVersionDirectory, "d3d11.dll")))
             {
-                env["DXVK_LOG_LEVEL"] = "warn";
+                if (!App.Settings.Prop.StudioDebug)
+                {
+                    env["DXVK_LOG_LEVEL"] = "warn";
+                }
                 env["DXVK_LOG_PATH"] = "none";
                 env["DXVK_STATE_CACHE_PATH"] = Paths.Cache;
             }
             env["ROBLOX_CRASH_HANDLER"] = "0";
             env["RobloxTelemetryEnabled"] = "false";
+
             string angle = "gl";
             if (File.Exists(Path.Combine(_latestVersionDirectory, "d3d11.dll")))
                 angle = "vulkan";
@@ -3091,13 +3097,31 @@ Windows Registry Editor Version 5.00
             env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = $"--disable-gpu-compositing --use-angle={angle}";
             env["WINE_LARGE_ADDRESS_AWARE"] = "1";
             env["STAGING_SHARED_MEMORY"] = "1";
-            env["WINEDEBUG"] = "warn+seh,fixme-all,err-kerberos,err-ntlm,err-combase";
+
+            if (App.Settings.Prop.StudioDebug)
+            {
+                env["WINEDEBUG"] = "warn+seh";
+            }
+            else
+            {
+                env["WINEDEBUG"] = "warn+seh,fixme-all,err-kerberos,err-ntlm,err-combase";
+            }
+
             env["MESA_GL_VERSION_OVERRIDE"] = "4.5";
             env["MESA_GLSL_VERSION_OVERRIDE"] = "450";
 
             env.TryGetValue("PATH", out string? currentPath);
             currentPath ??= "";
             env["PATH"] = _latestVersionDirectory + ":" + currentPath;
+
+            if (App.Settings.Prop.StudioDebug)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Studio Debug enabled - Environment variables:");
+                foreach (var kvp in env)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"{kvp.Key}={kvp.Value}");
+                }
+            }
 
             string? dll;
             string fastPath = Path.Combine(_latestVersionDirectory, "Plugins", "Qt5", "platforms", "qwindows.dll");
