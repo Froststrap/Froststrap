@@ -3519,7 +3519,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap will automatically check and update itself when launching Roblox..
+        ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a stable version when launching Roblox..
         /// </summary>
         public static string Menu_Behaviour_AutoUpdate_Description {
             get {

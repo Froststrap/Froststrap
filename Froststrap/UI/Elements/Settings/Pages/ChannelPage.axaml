@@ -16,24 +16,27 @@
 
     <ScrollViewer>
         <StackPanel Margin="14">
-            <StackPanel Orientation="Horizontal" Spacing="6">
-                <controls:IconButton
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+                <controls:CardAction
+                    Grid.Column="0"
                     Icon="ArrowImport"
-                    Content="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
+                    Header="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
-                <controls:IconButton
+                <controls:CardAction
+                    Grid.Column="1"
                     Icon="ArrowExport"
-                    Content="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
+                    Header="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
-                <controls:IconButton
+                <controls:CardAction
+                    Grid.Column="2"
                     Icon="ArrowReset"
-                    Content="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
+                    Header="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
                     Command="{Binding ResetSettingsToDefaultCommand}" />
-            </StackPanel>
+            </Grid>
 
             <Separator Margin="0,12,0,12" />
 
@@ -44,6 +47,7 @@
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}"
                 IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion">
 
@@ -52,12 +56,14 @@
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
+                    Description="Froststrap will automatically check and update itself to a test version when launching Roblox."
                     Header="Update to Pre Releases">
                     <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"/>
                 </controls:OptionControl>
             </controls:CardExpander>
 
             <controls:OptionControl
+                Description="Automatically hide the settings window when launching Roblox and restore it when Roblox closes."
                 Header="{x:Static resources:Strings.Menu_TestMode}">
                 <ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"/>
             </controls:OptionControl>
@@ -386,6 +392,59 @@
                     </Grid>
                 </StackPanel>
             </controls:CardExpander>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Graphics Renderer"
+                                    Description="Select the rendering backend for Studio under Wine.">
+                <ComboBox Width="200"
+                          ItemsSource="{Binding StudioRendererOptions, Mode=OneTime}"
+                          SelectedItem="{Binding SelectedStudioRenderer, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Game Mode"
+                                    Description="Apply system optimizations if available (requires gamemoded).">
+                <ToggleSwitch IsChecked="{Binding StudioGameMode, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Debug Mode"
+                                    Description="Enable verbose Wine/DXVK logging and console output.">
+                <ToggleSwitch IsChecked="{Binding StudioDebug, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Environment Variables"
+                                    Description="Additional environment variables passed to Wine.">
+                <StackPanel Spacing="8">
+                    <ItemsControl ItemsSource="{Binding StudioEnvEntries}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2">
+                                    <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
+                                             Width="150"
+                                             Watermark="Variable"
+                                             Padding="8,5" />
+                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                             Width="200"
+                                             Watermark="Value"
+                                             Padding="8,5" />
+                                    <controls:IconButton Icon="Delete"
+                                                         Classes="Danger"
+                                                         Command="{Binding RemoveCommand}"
+                                                         Width="30"
+                                                         Padding="0"
+                                                         ToolTip.Tip="Remove" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Content="+ Add Variable"
+                            Command="{Binding AddStudioEnvCommand}"
+                            HorizontalAlignment="Left"
+                            Margin="0,4,0,0" />
+                </StackPanel>
+            </controls:OptionControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

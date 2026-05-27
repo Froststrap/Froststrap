@@ -4,7 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.RobloxInterfaces;
-using Froststrap.UI.Elements.Dialogs;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
@@ -18,6 +18,16 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
             _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
+
+            StudioEnvEntries = [];
+            foreach (var kv in App.Settings.Prop.StudioEnvironmentVariables)
+                StudioEnvEntries.Add(new EnvEntry(kv.Key, kv.Value, RemoveEnvEntry));
+
+            AddStudioEnvCommand = new RelayCommand(() =>
+            {
+                var newEntry = new EnvEntry("", "", RemoveEnvEntry);
+                StudioEnvEntries.Add(newEntry);
+            });
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -337,6 +347,95 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StaticDirectory = value;
         }
 
+        public IEnumerable<StudioRenderer> StudioRendererOptions { get; } = Enum.GetValues<StudioRenderer>();
+
+        public static StudioRenderer SelectedStudioRenderer
+        {
+            get => App.Settings.Prop.StudioRenderer;
+            set => App.Settings.Prop.StudioRenderer = value;
+        }
+
+        public static bool StudioGameMode
+        {
+            get => App.Settings.Prop.StudioGameMode;
+            set => App.Settings.Prop.StudioGameMode = value;
+        }
+
+        public static bool StudioDebug
+        {
+            get => App.Settings.Prop.StudioDebug;
+            set => App.Settings.Prop.StudioDebug = value;
+        }
+
+        public ObservableCollection<EnvEntry> StudioEnvEntries { get; set; }
+        public ICommand AddStudioEnvCommand { get; }
+
+        public class EnvEntry : NotifyPropertyChangedViewModel
+        {
+            private string _key;
+            private string _value;
+            private string _originalKey;
+            private readonly Action<EnvEntry> _removeAction;
+
+            public string Key
+            {
+                get => _key;
+                set
+                {
+                    if (_key == value) return;
+                    var oldKey = _key;
+                    _key = value;
+                    OnPropertyChanged();
+                    UpdateDictionary(oldKey);
+                }
+            }
+
+            public string Value
+            {
+                get => _value;
+                set
+                {
+                    if (_value == value) return;
+                    _value = value;
+                    OnPropertyChanged();
+                    UpdateDictionary(_key);
+                }
+            }
+
+            public ICommand RemoveCommand { get; }
+
+            public EnvEntry(string key, string value, Action<EnvEntry> removeAction)
+            {
+                _key = key;
+                _originalKey = key;
+                _value = value;
+                _removeAction = removeAction;
+                RemoveCommand = new RelayCommand(() => _removeAction(this));
+            }
+
+            private void UpdateDictionary(string currentKey)
+            {
+                var dict = App.Settings.Prop.StudioEnvironmentVariables;
+
+                if (!string.IsNullOrEmpty(_originalKey) && _originalKey != currentKey)
+                    dict.Remove(_originalKey);
+
+                if (!string.IsNullOrWhiteSpace(currentKey))
+                    dict[currentKey] = Value;
+                else
+                    dict.Remove(currentKey);
+
+                _originalKey = currentKey;
+                App.Settings.Save();
+            }
+        }
+
+        private void RemoveEnvEntry(EnvEntry entry)
+        {
+            App.Settings.Prop.StudioEnvironmentVariables.Remove(entry.Key);
+            StudioEnvEntries.Remove(entry);
+        }
+
         private async Task ImportSettingsAsync(object? parameter)
         {
             var topLevel = parameter as Control != null ? TopLevel.GetTopLevel(parameter as Control) : GetMainWindow();
@@ -421,6 +520,9 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(PlayerChannel));
             OnPropertyChanged(nameof(StudioChannel));
             SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+            OnPropertyChanged(nameof(SelectedStudioRenderer));
+            OnPropertyChanged(nameof(StudioGameMode));
+            OnPropertyChanged(nameof(StudioDebug));
         }
 
         public static IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
