@@ -29,7 +29,6 @@ using System.Data;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
-using System.Security.Cryptography;
 
 namespace Froststrap
 {

@@ -95,6 +95,7 @@ namespace Froststrap.Models.Persistable
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
         public bool StudioVersionOverrideEnabled { get; set; } = false;
         public string StudioVersionOverrideHash { get; set; } = string.Empty;
+        public bool StudioGameMode { get; set; } = false;
 
         // Misc Stuff
         public string SelectedRegion { get; set; } = string.Empty;
