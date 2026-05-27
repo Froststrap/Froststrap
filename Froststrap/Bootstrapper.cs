@@ -3154,6 +3154,12 @@ Windows Registry Editor Version 5.00
             currentPath ??= "";
             env["PATH"] = _latestVersionDirectory + ":" + currentPath;
 
+            foreach (var userEnv in App.Settings.Prop.StudioEnvironmentVariables)
+            {
+                env[userEnv.Key] = userEnv.Value;
+                App.Logger.WriteLine(LOG_IDENT, $"Applied user env: {userEnv.Key}={userEnv.Value}");
+            }
+
             if (App.Settings.Prop.StudioDebug)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Studio Debug enabled - Environment variables:");

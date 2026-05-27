@@ -98,6 +98,7 @@ namespace Froststrap.Models.Persistable
         public string StudioVersionOverrideHash { get; set; } = string.Empty;
         public bool StudioGameMode { get; set; } = false;
         public bool StudioDebug { get; set; } = false;
+        public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];
 
         // Misc Stuff
         public string SelectedRegion { get; set; } = string.Empty;
