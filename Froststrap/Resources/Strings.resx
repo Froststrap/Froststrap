@@ -2244,7 +2244,7 @@ You can no longer use Bloxshade with Froststrap.</value>
     <value>Static directory</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
-    <value>Switch from version-xxx to BinaryType based install directories.</value>
+    <value>Switch from version-xxx to BinaryType based install directories, only affects studio on linux.</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Timestamp</value>
@@ -2408,8 +2408,5 @@ Click to Accept or Deny</value>
   </data>
   <data name="Menu.Integrations.WinColorControl.Description" xml:space="preserve">
     <value>Allows the selected game to change the window border and caption color (Only on Windows 11)</value>
-  </data>
-  <data name="TestingPurposes.ForWorkflow.Translation" xml:space="preserve">
-    <value>This is a test for the translation workflow to see if it works correctly. (maybe this will motivate me to add strings instead of hardcoded)</value>
   </data>
 </root>

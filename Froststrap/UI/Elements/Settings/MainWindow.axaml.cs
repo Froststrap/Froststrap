@@ -50,6 +50,9 @@ namespace Froststrap.UI.Elements.Settings
             gbs.Opacity = _viewModel.GBSEnabled ? 1 : 0.5;
             gbs.IsEnabled = _viewModel.GBSEnabled; // binding doesnt work as expected so we are setting it in here instead
 
+            sober.Opacity = _viewModel.SoberEnabled ? 1 : 0.5;
+            sober.IsEnabled = _viewModel.SoberEnabled; // binding doesnt work as expected so we are setting it in here instead
+
             LoadState();
 
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>

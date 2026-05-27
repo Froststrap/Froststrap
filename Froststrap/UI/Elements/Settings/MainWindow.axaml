@@ -99,7 +99,7 @@
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Content="Sober Settings" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Tag="sobersettings">
+                <ui:NavigationViewItem Name="sober" Content="Sober Settings" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Tag="sobersettings">
                     <ui:NavigationViewItem.IconSource>
                         <ic:SymbolIconSource Symbol="Settings" />
                     </ui:NavigationViewItem.IconSource>

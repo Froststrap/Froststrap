@@ -163,6 +163,10 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
             _fastZipEvents.ProcessFile += (_, e) => e.ContinueRunning = !_cancelTokenSource.IsCancellationRequested;
 
             SetupAppData();
+
+            Deployment.Channel = IsStudioLaunch ? App.Settings.Prop.StudioChannel : App.Settings.Prop.PlayerChannel;
+
+            App.Logger.WriteLine("Bootstrapper::Run", $"Using {(IsStudioLaunch ? "Studio" : "Player")} channel: {Deployment.Channel}");
         }
 
         private void SetupAppData()
@@ -570,7 +574,7 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                             : Deployment.DefaultChannel;
 
                         var promptResult = await Frontend.ShowMessageBox(
-                            String.Format(Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, App.Settings.Prop.Channel),
+                            String.Format(Strings.Bootstrapper_Bootstrapper_Dialog_PromptChannelChange, displayChannel, Deployment.Channel),
                             MessageBoxImage.Question,
                             MessageBoxButton.YesNo
                         );
@@ -611,18 +615,15 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                 }
                 catch (InvalidChannelException ex)
                 {
-                    // copied from v2.5.4
-                    // we are keeping similar logic just updated for newer apis
-
                     // If channel does not exist
                     if (ex.StatusCode == HttpStatusCode.NotFound)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because a WindowsPlayer build does not exist for {App.Settings.Prop.Channel}");
+                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because a WindowsPlayer build does not exist for {Deployment.Channel}");
                     }
                     // If channel is not available to the user (private/internal release channel)
                     else if (ex.StatusCode == HttpStatusCode.Unauthorized)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because {App.Settings.Prop.Channel} is restricted for public use.");
+                        App.Logger.WriteLine(LOG_IDENT, $"Reverting enrolled channel to {Deployment.DefaultChannel} because {Deployment.Channel} is restricted for public use.");
 
                         // Only prompt if user has channel switching mode set to something other than Automatic.
                         if (App.Settings.Prop.ChannelChangeMode != ChannelChangeMode.Automatic)
@@ -656,7 +657,7 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
 
                     if (action == MessageBoxResult.Yes)
                     {
-                        App.Logger.WriteLine("Bootstrapper::CheckLatestVersion", $"Changed Roblox channel from {App.Settings.Prop.Channel} to {Deployment.DefaultChannel}");
+                        App.Logger.WriteLine("Bootstrapper::CheckLatestVersion", $"Changed Roblox channel from {Deployment.Channel} to {Deployment.DefaultChannel}");
 
                         RevertChannel();
                         clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel);
@@ -2836,6 +2837,13 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
         private async Task ApplyWineRegistryTweaksAsync()
         {
             const string LOG_IDENT = "Bootstrapper::ApplyRegistryTweaks";
+
+            if (string.IsNullOrEmpty(_winePrefixPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Wine prefix path is null or empty, skipping registry tweaks.");
+                return;
+            }
+
             try
             {
                 string localAppData = Path.Combine(_winePrefixPath, "drive_c", "users", "froststrap", "AppData", "Local");

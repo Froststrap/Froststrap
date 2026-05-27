@@ -3978,7 +3978,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Switch from version-xxx to BinaryType based install directories..
+        ///   Looks up a localized string similar to Switch from version-xxx to BinaryType based install directories, only affects studio on linux..
         /// </summary>
         public static string Menu_Channel_StaticDirectory_Description {
             get {
@@ -6550,15 +6550,6 @@ namespace Froststrap.Resources {
         public static string Paths_Icons {
             get {
                 return ResourceManager.GetString("Paths.Icons", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This is a test for the translation workflow to see if it works correctly. (maybe this will motivate me to add strings instead of hardcoded).
-        /// </summary>
-        public static string TestingPurposes_ForWorkflow_Translation {
-            get {
-                return ResourceManager.GetString("TestingPurposes.ForWorkflow.Translation", resourceCulture);
             }
         }
         

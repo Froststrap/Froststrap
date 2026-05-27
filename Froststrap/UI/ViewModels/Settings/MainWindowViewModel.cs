@@ -91,6 +91,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public EventHandler? RequestCloseWindowEvent;
         public event EventHandler? SettingsSaved;
         public bool GBSEnabled = App.GlobalSettings.Loaded;
+        public bool SoberEnabled = App.SoberSettings.Loaded;
 
         public MainWindowViewModel()
         {

@@ -91,7 +91,8 @@ namespace Froststrap.Models.Persistable
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; } = false;
-        public string Channel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
+        public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
+        public string StudioChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
         public StudioRenderer StudioRenderer { get; set; } = StudioRenderer.DXVK;
         public bool StudioVersionOverrideEnabled { get; set; } = false;
