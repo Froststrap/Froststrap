@@ -46,6 +46,8 @@ namespace Froststrap
         private const string KombuchaRepoOwner = "vinegarhq";
         private const string KombuchaRepoName = "kombucha";
         private const string DxvkVersion = "2.7.1";
+        private const string DxvkSarekVersion = "1.11.0-async";
+        private const string DxvkSarekUrl = "https://github.com/Fartopblu/DXVK-Sarek/releases/download/1.11.0-async/dxvk-sarek-1.11.0-async.tar.gz";
         private const string StudioChannelRegPath = @"HKCU\Software\ROBLOX Corporation\Environments\RobloxStudio\Channel";
 
         private const string MicrosoftRootPem = @"-----BEGIN CERTIFICATE-----
@@ -2921,25 +2923,37 @@ Windows Registry Editor Version 5.00
         private async Task<bool> SetupDxvkAsync()
         {
             const string LOG_IDENT = "Bootstrapper::SetupDxvk";
-            string marker = Path.Combine(_latestVersionDirectory, ".dxvk_installed");
-            if (File.Exists(marker) && File.ReadAllText(marker).Trim() == DxvkVersion)
+
+            var renderer = App.Settings.Prop.StudioRenderer;
+            bool useSarek = (renderer == StudioRenderer.DXVKSarek);
+
+            if (!useSarek && renderer != StudioRenderer.DXVK)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"DXVK {DxvkVersion} already installed.");
+                App.Logger.WriteLine(LOG_IDENT, "DXVK not required for the selected renderer, skipping.");
+                return true;
+            }
+
+            string version = useSarek ? DxvkSarekVersion : DxvkVersion;
+            string marker = Path.Combine(_latestVersionDirectory, useSarek ? ".dxvk_sarek_installed" : ".dxvk_installed");
+
+            if (File.Exists(marker) && File.ReadAllText(marker).Trim() == version)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"{version} already installed.");
                 return true;
             }
 
             string cacheDir = Path.Combine(Paths.Cache, "dxvk");
-            string archivePath = Path.Combine(cacheDir, $"dxvk-{DxvkVersion}.tar.gz");
             Directory.CreateDirectory(cacheDir);
+            string archivePath = Path.Combine(cacheDir, useSarek ? $"dxvk-sarek-{version}.tar.gz" : $"dxvk-{version}.tar.gz");
 
             if (!File.Exists(archivePath))
             {
-                SetStatus("Downloading DXVK...");
-                string url = $"https://github.com/doitsujin/dxvk/releases/download/v{DxvkVersion}/dxvk-{DxvkVersion}.tar.gz";
+                SetStatus(useSarek ? "Downloading DXVK-Sarek..." : "Downloading DXVK...");
+                string url = useSarek ? DxvkSarekUrl : $"https://github.com/doitsujin/dxvk/releases/download/v{version}/dxvk-{version}.tar.gz";
                 await DownloadFileWithProgressAsync(url, archivePath);
             }
 
-            SetStatus("Extracting DXVK...");
+            SetStatus(useSarek ? "Extracting DXVK-Sarek..." : "Extracting DXVK...");
 
             bool success = await Task.Run(() =>
             {
@@ -2965,7 +2979,7 @@ Windows Registry Editor Version 5.00
                 }
                 catch (Exception ex)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"DXVK extraction failed: {ex.Message}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Extraction failed: {ex.Message}");
                     return false;
                 }
             });
@@ -2973,8 +2987,8 @@ Windows Registry Editor Version 5.00
             if (!success)
                 return false;
 
-            await File.WriteAllTextAsync(marker, DxvkVersion);
-            App.Logger.WriteLine(LOG_IDENT, "DXVK installed successfully.");
+            await File.WriteAllTextAsync(marker, version);
+            App.Logger.WriteLine(LOG_IDENT, $"{version} installed successfully.");
             return true;
         }
 
@@ -3078,7 +3092,9 @@ Windows Registry Editor Version 5.00
             env["WINEDLLOVERRIDES"] = "d3d10core,d3d11,dxgi=n,b;d3d9=b;mscoree,mshtml=";
             env["XR_LOADER_DEBUG"] = "none";
 
-            if (File.Exists(Path.Combine(_latestVersionDirectory, "d3d11.dll")))
+            bool hasDxvk = File.Exists(Path.Combine(_latestVersionDirectory, "d3d11.dll"));
+
+            if (hasDxvk)
             {
                 if (!App.Settings.Prop.StudioDebug)
                 {
@@ -3087,26 +3103,50 @@ Windows Registry Editor Version 5.00
                 env["DXVK_LOG_PATH"] = "none";
                 env["DXVK_STATE_CACHE_PATH"] = Paths.Cache;
             }
+
             env["ROBLOX_CRASH_HANDLER"] = "0";
             env["RobloxTelemetryEnabled"] = "false";
 
+            string wineDebug = "warn+seh";
+            if (!App.Settings.Prop.StudioDebug)
+            {
+                wineDebug += ",fixme-all,err-kerberos,err-ntlm,err-combase";
+            }
+            env["WINEDEBUG"] = wineDebug;
+
+            var renderer = App.Settings.Prop.StudioRenderer;
             string angle = "gl";
-            if (File.Exists(Path.Combine(_latestVersionDirectory, "d3d11.dll")))
+
+            App.Logger.WriteLine(LOG_IDENT, $"Using renderer: {renderer}");
+
+            switch (renderer)
+            {
+                case StudioRenderer.D3D11:
+                case StudioRenderer.D3D11FL10:
+                case StudioRenderer.OpenGL:
+                    angle = "gl";
+                    env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--disable-gpu-compositing --use-angle=gl";
+                    break;
+                case StudioRenderer.DXVK:
+                case StudioRenderer.DXVKSarek:
+                    env["WINE_D3D_CONFIG"] = "renderer=vulkan";
+                    env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--disable-gpu-compositing --use-angle=vulkan";
+                    angle = "vulkan";
+                    break;
+                case StudioRenderer.Vulkan:
+                    env["VK_LOADER_LAYERS_ENABLE"] = "VK_LAYER_VINEGAR_VinegarLayer";
+                    env["WINE_D3D_CONFIG"] = "renderer=vulkan";
+                    env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--disable-gpu-compositing --use-angle=d3d11";
+                    angle = "d3d11";
+                    break;
+            }
+
+            if (hasDxvk && angle == "gl")
                 angle = "vulkan";
 
-            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = $"--disable-gpu-compositing --use-angle={angle}";
+            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] ??= $"--disable-gpu-compositing --use-angle={angle}";
             env["WINE_LARGE_ADDRESS_AWARE"] = "1";
             env["STAGING_SHARED_MEMORY"] = "1";
-
-            if (App.Settings.Prop.StudioDebug)
-            {
-                env["WINEDEBUG"] = "warn+seh";
-            }
-            else
-            {
-                env["WINEDEBUG"] = "warn+seh,fixme-all,err-kerberos,err-ntlm,err-combase";
-            }
-
             env["MESA_GL_VERSION_OVERRIDE"] = "4.5";
             env["MESA_GLSL_VERSION_OVERRIDE"] = "450";
 
@@ -3119,7 +3159,7 @@ Windows Registry Editor Version 5.00
                 App.Logger.WriteLine(LOG_IDENT, "Studio Debug enabled - Environment variables:");
                 foreach (var kvp in env)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"{kvp.Key}={kvp.Value}");
+                    App.Logger.WriteLine(LOG_IDENT, $"  {kvp.Key}={kvp.Value}");
                 }
             }
 
