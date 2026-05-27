@@ -1,6 +1,7 @@
 param(
     [string]$SourceFile = "Froststrap/Resources/Strings.resx",
-    [string]$ApiEndpoint = "https://libretranslate.com/translate",
+    [string]$ApiEndpoint = "https://libretranslatelibretranslate-production-4abc.up.railway.app/translate",
+    [string]$ApiKey = $env:LT_API_KEY,
     [string[]]$TargetLocales = @(
         "ar", "bg", "cs", "de", "es-ES", "fa", "fi", "fil", "fr",
         "hr", "hu", "id", "it", "ja", "ko", "lt", "ms", "nl", "pl",
@@ -11,7 +12,13 @@ param(
 function Invoke-LibreTranslate {
     param([string]$Text, [string]$TargetLang)
     if ([string]::IsNullOrWhiteSpace($Text)) { return $Text }
-    $body = @{ q = $Text; source = "en"; target = $TargetLang; format = "text" } | ConvertTo-Json
+    $body = @{
+        q = $Text
+        source = "en"
+        target = $TargetLang
+        format = "text"
+        api_key = $ApiKey
+    } | ConvertTo-Json
     try {
         Start-Sleep -Milliseconds 3000
         $response = Invoke-RestMethod -Uri $ApiEndpoint -Method Post -Body $body -ContentType "application/json"

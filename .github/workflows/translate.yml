@@ -23,6 +23,8 @@ jobs:
 
       - name: Run translation script
         shell: pwsh
+        env:
+          LT_API_KEY: ${{ secrets.LT_API_KEY }}
         run: ./.github/scripts/Translate-Resx.ps1
 
       - name: Create Pull Request
@@ -33,7 +35,7 @@ jobs:
           title: "Translations from LibreTranslate"
           body: |
             This PR adds/updates translations for the changed English strings.
-            Translations are provided by LibreTranslate.
+            Translations are provided by a self-hosted LibreTranslate instance.
             Please review and merge if everything looks correct.
           branch: "auto-translate"
           delete-branch: true
