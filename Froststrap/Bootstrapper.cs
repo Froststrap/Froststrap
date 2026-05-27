@@ -26,7 +26,10 @@ using SixLabors.ImageSharp.PixelFormats;
 using System.Collections;
 using System.ComponentModel;
 using System.Data;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Security.Cryptography;
 
 namespace Froststrap
 {
@@ -44,7 +47,42 @@ namespace Froststrap
         private const string KombuchaRepoOwner = "vinegarhq";
         private const string KombuchaRepoName = "kombucha";
         private const string DxvkVersion = "2.7.1";
-        private const string WebView2Version = "144.0.3719.92";
+        private const string StudioChannelRegPath = @"HKCU\Software\ROBLOX Corporation\Environments\RobloxStudio\Channel";
+
+        private const string MicrosoftRootPem = @"-----BEGIN CERTIFICATE-----
+MIIF7TCCA9WgAwIBAgIQP4vItfyfspZDtWnWbELhRDANBgkqhkiG9w0BAQsFADCB
+iDELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1Jl
+ZG1vbmQxHjAcBgNVBAoTFU1pY3Jvc29mdCBDb3Jwb3JhdGlvbjEyMDAGA1UEAxMp
+TWljcm9zb2Z0IFJvb3QgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IDIwMTEwHhcNMTEw
+MzIyMjIwNTI4WhcNMzYwMzIyMjIxMzA0WjCBiDELMAkGA1UEBhMCVVMxEzARBgNV
+BAgTCldhc2hpbmd0b24xEDAOBgNVBAcTB1JlZG1vbmQxHjAcBgNVBAoTFU1pY3Jv
+c29mdCBDb3Jwb3JhdGlvbjEyMDAGA1UEAxMpTWljcm9zb2Z0IFJvb3QgQ2VydGlm
+aWNhdGUgQXV0aG9yaXR5IDIwMTEwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK
+AoICAQCygEGqNThNE3IyaCJNuLLx/9VSvGzH9dJKjDbu0cJcfoyKrq8TKG/Ac+M6
+ztAlqFo6be+ouFmrEyNozQwph9FvgFyPRH9dkAFSWKxRxV8qh9zc2AodwQO5e7BW
+6KPeZGHCnvjzfLnsDbVU/ky2ZU+I8JxImQxCCwl8MVkXeQZ4KI2JOkwDJb5xalwL
+54RgpJki49KvhKSn+9GY7Qyp3pSJ4Q6g3MDOmT3qCFK7VnnkH4S6Hri0xElcTzFL
+h93dBWcmmYDgcRGjuKVB4qRTufcyKYMME782XgSzS0NHL2vikR7TmE/dQgfI6B0S
+/Jmpaz6SfsjWaTr8ZL22CZ3K/QwLopt3YEsDlKQwaRLWQi3BQUzK3Kr9j1uDRprZ
+/LHR47PJf0h6zSTwQY9cdNCssBAgBkm3xy0hyFfj0IbzA2j70M5xwYmZSmQBbP3s
+MJHPQTySx+W6hh1hhMdfgzlirrSSL0fzC/hV66AfWdC7dJse0Hbm8ukG1xDo+mTe
+acY1logC8Ea4PyeZb8txiSk190gWAjWP1Xl8TQLPX+uKg09FcYj5qQ1OcunCnAfP
+SRtOBA5jUYxe2ADBVSy2xuDCZU7JNDn1nLPEfuhhbhNfFcRf2X7tHc7uROzLLoax
+7Dj2cO2rXBPB2Q8Nx4CyVe0096yb5MPa50c8prWPMd/FS6/r8QIDAQABo1EwTzAL
+BgNVHQ8EBAMCAYYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUci06AjGQQ7kU
+BU7h6qfHMdEjiTQwEAYJKwYBBAGCNxUBBAMCAQAwDQYJKoZIhvcNAQELBQADggIB
+AH9yzw+3xRXbm8BJyiZb/p4T5tPw0tuXX/JLP02zrhmu7deXoKzvqTqjwkGw5biR
+nhOBJAPmCf0/V0A5ISRW0RAvS0CpNoZLtFNXmvvxfomPEf4YbFGq6O0JlbXlccmh
+6Yd1phV/yX43VF50k8XDZ8wNT2uoFwxtCJJ+i92Bqi1wIcM9BhS7vyRep4TXPw8h
+Ir1LAAbblxzYXtTFC1yHblCk6MM4pPvLLMWSZpuFXst6bJN8gClYW1e1QGm6CHmm
+ZGIVnYeWRbVmIyADixxzoNOieTPgUFmG2y/lAiXqcyqfABTINseSO+lOAOzYVgm5
+M0kS0lQLAausR7aRKX1MtHWAUgHoyoL2n8ysnI8X6i8msKtyrAv+nlEex0NVZ09R
+s1fWtuzuUrc66U7h14GIvE+OdbtLqPA1qibUZ2dJsnBMO5PcHd94kIZysjik0dyS
+TclY6ysSXNQ7roxrsIPlAT/4CTL2kzU0Iq/dNw13CYArzUgA8YyZGUcFAenRv9FO
+0OYoQzeZpApKCNmacXPSqs0xE2N2oTdvkjgefRI8ZjLny23h/FKJ3crWZgWalmG+
+oijHHKOnNlA8OqTfSm7mhzvO6/DggTedEzxSjr25HTTGHdUKaj2YKXCMiSrRq4IQ
+SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
+-----END CERTIFICATE-----";
 
         private const string AppSettings =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
@@ -77,12 +115,11 @@ namespace Froststrap
         private static bool AutomaticallyUpdateSober => OperatingSystem.IsLinux() && App.Settings.Prop.AutomaticallyUpdateSober;
         private bool MustUpgrade => App.LaunchSettings.ForceFlag.Active
             || App.State.Prop.ForceReinstall
-            || (!OperatingSystem.IsLinux() && ( String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
+            || (!OperatingSystem.IsLinux() && (String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
             || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))))
             || (OperatingSystem.IsLinux() && IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName)));
 
         private string? _winePrefixPath;
-        private string _wineRootPath = "";
         private string _wineBinaryPath = "wine";
 
         private bool _isInstalling = false;
@@ -155,6 +192,16 @@ namespace Froststrap
             }
         }
 
+        private async Task SetStudioChannelInWine()
+        {
+            string channel = Deployment.Channel;
+            if (string.IsNullOrEmpty(channel) || channel == "LIVE" || channel == "production")
+                return;
+
+            string args = $"add \"{StudioChannelRegPath}\" /v \"www.roblox.com\" /t REG_SZ /d \"{channel}\" /f";
+            await RunWineProcessAsync("reg", args, timeoutMinutes: 1);
+        }
+
         private void SetStatus(string message)
         {
             message = message.Replace("{product}", AppData.ProductName);
@@ -220,7 +267,7 @@ namespace Froststrap
             // this is now always enabled as of v2.8.0
             Dialog?.CancelEnabled = true;
 
-            if (AutomaticallyUpdateSober)
+            if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
                 await UpdateSoberFlatpakAsync();
 
             SetStatus(Strings.Bootstrapper_Status_Connecting);
@@ -1026,7 +1073,9 @@ namespace Froststrap
                     if (!await EnsureWineAndDependenciesAsync())
                         return;
 
-                    string studioExe = Path.Combine(_latestVersionDirectory, "RobloxStudioBeta.exe");
+                    await SetStudioChannelInWine();
+
+                    string studioExe = Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName);
                     if (!File.Exists(studioExe))
                     {
                         App.Logger.WriteLine(LOG_IDENT, "RobloxStudioBeta.exe missing, triggering upgrade...");
@@ -1141,7 +1190,7 @@ namespace Froststrap
             await Task.Delay(1000);
         }
 
-        private async Task LaunchWatcherIfNeededAsync( List<int> autoclosePids, string? logFileName = null, string? logDirectory = null)
+        private async Task LaunchWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null, string? logDirectory = null)
         {
             if (!(App.Settings.Prop.EnableActivityTracking
                 || App.LaunchSettings.TestModeFlag.Active
@@ -1890,12 +1939,117 @@ namespace Froststrap
             _isInstalling = false;
         }
 
+        private static HttpClient? _msEdgeApiClient;
+
+        private static HttpClient GetMsEdgeApiClient()
+        {
+            if (_msEdgeApiClient != null)
+                return _msEdgeApiClient;
+
+            var microsoftRoot = X509CertificateLoader.LoadCertificate(Encoding.ASCII.GetBytes(MicrosoftRootPem));
+
+            var handler = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.None,
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
+                {
+                    if (errors == SslPolicyErrors.None)
+                        return true;
+
+                    if (errors != SslPolicyErrors.RemoteCertificateChainErrors)
+                        return false;
+
+                    if (cert is null)
+                        return false;
+
+                    try
+                    {
+                        using var customChain = new X509Chain();
+                        customChain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck;
+                        customChain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+                        customChain.ChainPolicy.ExtraStore.Add(microsoftRoot);
+                        customChain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
+
+                        if (!customChain.Build(cert))
+                            return false;
+
+                        var root = customChain.ChainElements[^1].Certificate;
+                        return root != null && root.Thumbprint == microsoftRoot.Thumbprint;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+            };
+
+            _msEdgeApiClient = new HttpClient(handler);
+            return _msEdgeApiClient;
+        }
+
+        private static async Task<(string version, string url)> GetLatestWebView2RuntimeAsync(string arch = "x64")
+        {
+            const string LOG_IDENT = "Bootstrapper::GetLatestWebView2Runtime";
+            const string baseUrl = "https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names";
+            string channel = "msedge-stable-win";
+
+            var client = GetMsEdgeApiClient();
+
+            client.Timeout = TimeSpan.FromSeconds(30);
+
+            string latestVersionUrl = $"{baseUrl}/{channel}-{arch}/versions/latest?action=select";
+            var request = new HttpRequestMessage(HttpMethod.Post, latestVersionUrl)
+            {
+                Content = new StringContent(
+                    "{\"targetingAttributes\":{\"Updater\":\"MicrosoftEdgeUpdate\"}}",
+                    Encoding.UTF8,
+                    "application/json")
+            };
+
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("User-Agent", "Froststrap/1.0");
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var latestJson = await response.Content.ReadAsStringAsync();
+            var latestData = JsonSerializer.Deserialize<LatestVersionResponse>(latestJson);
+            string version = latestData?.ContentId?.Version
+                ?? throw new InvalidOperationException("Failed to retrieve latest WebView2 version.");
+
+            App.Logger.WriteLine(LOG_IDENT, $"Latest WebView2 version: {version}");
+
+            string filesUrl = $"{baseUrl}/{channel}-{arch}/versions/{version}/files?action=GenerateDownloadInfo";
+            var filesRequest = new HttpRequestMessage(HttpMethod.Post, filesUrl)
+            {
+                Content = new StringContent("", Encoding.UTF8, "application/json")
+            };
+            filesRequest.Headers.Add("Accept", "application/json");
+            filesRequest.Headers.Add("User-Agent", "Froststrap/1.0");
+
+            response = await client.SendAsync(filesRequest);
+            response.EnsureSuccessStatusCode();
+            var filesJson = await response.Content.ReadAsStringAsync();
+            var files = JsonSerializer.Deserialize<List<DownloadFile>>(filesJson);
+
+            foreach (var file in files ?? Enumerable.Empty<DownloadFile>())
+            {
+                if (string.IsNullOrEmpty(file.FileId))
+                    continue;
+
+                var parts = Path.GetFileNameWithoutExtension(file.FileId).Split('_');
+                if (parts.Length == 3 && !string.IsNullOrEmpty(file.Url))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Found runtime installer: {file.Url}");
+                    return (version, file.Url);
+                }
+            }
+
+            throw new InvalidOperationException($"No runtime installer found for version {version}.");
+        }
+
         private async Task EnsureWebView2ViaWineAsync()
         {
             const string LOG_IDENT = "Bootstrapper::EnsureWebView2ViaWine";
-
-            if (!App.State.Prop.PromptWebView2Install)
-                return;
 
             if (string.IsNullOrEmpty(_winePrefixPath) || !Directory.Exists(_winePrefixPath))
             {
@@ -1903,106 +2057,173 @@ namespace Froststrap
                 return;
             }
 
-            bool webView2Found = false;
+            string markerPath = Path.Combine(_winePrefixPath, ".webview2_version");
+
+            if (File.Exists(markerPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "WebView2 marker found, assuming installed.");
+                return;
+            }
+
+            string? latestVersion = null;
+            string? installerUrl = null;
+
             try
             {
-                const string webView2Key = "F3017226-FE2A-4295-8BDF-00C3A9A7E4C5";
-                foreach (string regFile in new[] {
-                    Path.Combine(_winePrefixPath, "system.reg"),
-                    Path.Combine(_winePrefixPath, "user.reg")
-                })
+                (latestVersion, installerUrl) = await GetLatestWebView2RuntimeAsync();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to get WebView2 URL: {ex.Message}");
+
+                try
                 {
-                    if (!File.Exists(regFile)) continue;
-                    string content = await File.ReadAllTextAsync(regFile);
-                    if (content.Contains(webView2Key, StringComparison.OrdinalIgnoreCase))
+                    App.Logger.WriteLine(LOG_IDENT, "Trying fallback download from Microsoft CDN...");
+                    installerUrl = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
+                    latestVersion = "fallback";
+                }
+                catch
+                {
+                    await Frontend.ShowMessageBox(
+                        "Could not retrieve the WebView2 installer URL. Studio may not render correctly.\n\nYou can manually install WebView2 from: https://developer.microsoft.com/en-us/microsoft-edge/webview2/",
+                        MessageBoxImage.Warning);
+                    return;
+                }
+            }
+
+            if (string.IsNullOrEmpty(latestVersion) || string.IsNullOrEmpty(installerUrl))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Latest version or installer URL is null or empty.");
+                return;
+            }
+
+            string downloadPath = Path.Combine(Paths.Downloads, $"WebView2Standalone.exe");
+            if (!File.Exists(downloadPath))
+            {
+                SetStatus("Downloading WebView2...");
+
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = false;
+                    Dialog.ProgressMaximum = ProgressBarMaximum;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+                }
+
+                try
+                {
+                    await DownloadFileWithProgressAsync(installerUrl, downloadPath);
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to download WebView2: {ex.Message}");
+                    await Frontend.ShowMessageBox(
+                        "Failed to download WebView2. Studio may not render correctly.\n\nYou can manually install WebView2 from: https://developer.microsoft.com/en-us/microsoft-edge/webview2/",
+                        MessageBoxImage.Warning);
+                    return;
+                }
+            }
+
+            if (Dialog != null)
+            {
+                Dialog.ProgressIndeterminate = true;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+            }
+
+            try
+            {
+                string overrideKey = @"HKCU\Software\Wine\AppDefaults\msedgewebview2.exe";
+                using var checkProc = Process.Start(new ProcessStartInfo(_wineBinaryPath, $"reg query \"{overrideKey}\" /v Version")
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+                if (checkProc != null)
+                {
+                    checkProc.StartInfo.Environment["WINEPREFIX"] = _winePrefixPath;
+                    checkProc.StartInfo.Environment["WINEARCH"] = "win64";
+                    await checkProc.WaitForExitAsync();
+                    if (checkProc.ExitCode != 0)
                     {
-                        webView2Found = true;
-                        break;
+                        App.Logger.WriteLine(LOG_IDENT, "Setting msedgewebview2.exe Windows version to win7");
+                        using var setProc = Process.Start(new ProcessStartInfo(_wineBinaryPath, $"reg add \"{overrideKey}\" /v Version /t REG_SZ /d win7 /f")
+                        {
+                            UseShellExecute = false,
+                            CreateNoWindow = true
+                        });
+                        if (setProc != null)
+                        {
+                            setProc.StartInfo.Environment["WINEPREFIX"] = _winePrefixPath;
+                            setProc.StartInfo.Environment["WINEARCH"] = "win64";
+                            await setProc.WaitForExitAsync();
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to read Wine registry: {ex.Message}");
+                App.Logger.WriteLine(LOG_IDENT, $"Could not set version override: {ex.Message}");
             }
 
-            if (webView2Found)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "WebView2 already installed in Wine prefix.");
-                return;
-            }
+            SetStatus("Installing WebView2...");
+            App.Logger.WriteLine(LOG_IDENT, "Running WebView2 installer");
 
-            App.Logger.WriteLine(LOG_IDENT, "WebView2 not found in Wine prefix.");
-            var result = await Frontend.ShowMessageBox(Strings.Bootstrapper_WebView2NotFound, MessageBoxImage.Warning, MessageBoxButton.YesNo);
-
-            if (result != MessageBoxResult.Yes)
-            {
-                App.State.Prop.PromptWebView2Install = false;
-                App.State.Save();
-                return;
-            }
-
-            var package = _versionPackageManifest.Find(x => x.Name == "WebView2RuntimeInstaller.zip");
-            if (package == null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "WebView2RuntimeInstaller.zip not found in manifest.");
-                return;
-            }
-
-            SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
-            await ExtractPackage(package);
-
-            string baseDir = Path.Combine(_latestVersionDirectory, PackageDirectoryMap[package.Name]);
-            string setupExe = Path.Combine(baseDir, "MicrosoftEdgeWebview2Setup.exe");
-
-            if (!File.Exists(setupExe))
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Setup executable not found at: {setupExe}");
-                return;
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Running WebView2 installer via Wine: {setupExe}");
-
-            var psi = new ProcessStartInfo(_wineBinaryPath, $"\"{setupExe}\" /silent /install")
+            string installerArgs = "--msedgewebview --do-not-launch-msedge --system-level";
+            var psi = new ProcessStartInfo(_wineBinaryPath, $"\"{downloadPath}\" {installerArgs}")
             {
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 CreateNoWindow = true,
-                WorkingDirectory = baseDir
+                WorkingDirectory = Paths.Downloads
             };
             psi.Environment["WINEPREFIX"] = _winePrefixPath;
             psi.Environment["WINEARCH"] = "win64";
 
-            try
+            using var proc = Process.Start(psi);
+            if (proc == null)
             {
-                using var proc = Process.Start(psi);
+                App.Logger.WriteLine(LOG_IDENT, "Failed to start WebView2 installer.");
+                return;
+            }
 
-                _ = Task.Run(async () => {
-                    try { string? l; while ((l = await proc.StandardOutput.ReadLineAsync()) != null) App.Logger.WriteLine(LOG_IDENT, $"[webview2-out] {l}"); } catch { }
-                });
-                _ = Task.Run(async () => {
-                    try { string? l; while ((l = await proc.StandardError.ReadLineAsync()) != null) App.Logger.WriteLine(LOG_IDENT, $"[webview2-err] {l}"); } catch { }
-                });
+            _ = Task.Run(async () =>
+            {
+                try { while (await proc.StandardOutput.ReadLineAsync() is { } line) App.Logger.WriteLine(LOG_IDENT, $"[webview2-out] {line}"); } catch { }
+            });
+            _ = Task.Run(async () =>
+            {
+                try { while (await proc.StandardError.ReadLineAsync() is { } line) App.Logger.WriteLine(LOG_IDENT, $"[webview2-err] {line}"); } catch { }
+            });
 
-                using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
-                await proc.WaitForExitAsync(cts.Token);
+            using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+            await proc.WaitForExitAsync(cts.Token);
 
+            if (Dialog != null)
+            {
+                Dialog.ProgressIndeterminate = false;
+                Dialog.ProgressValue = ProgressBarMaximum;
+                Dialog.TaskbarProgressValue = 1.0;
+            }
+
+            if (proc.ExitCode != 0)
+            {
                 App.Logger.WriteLine(LOG_IDENT, $"WebView2 installer exited with code {proc.ExitCode}");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"WebView2 installation failed: {ex.Message}");
                 await Frontend.ShowMessageBox(
-                    "WebView2 installation failed. Studio may not render correctly.\n\n" + ex.Message,
-                    MessageBoxImage.Warning
-                );
+                    "WebView2 installation failed. Studio may not display in‑app pages correctly.\n\nYou can manually install WebView2 from: https://developer.microsoft.com/en-us/microsoft-edge/webview2/",
+                    MessageBoxImage.Warning);
             }
-            finally
+            else
             {
-                try { Directory.Delete(baseDir, true); } catch { }
+                await File.WriteAllTextAsync(markerPath, latestVersion);
+                App.Logger.WriteLine(LOG_IDENT, "WebView2 installed successfully.");
             }
         }
+
+        //TODO: Move to new folder in apis called WebView2
+        private class ContentId { public string? Version { get; set; } }
+        private class LatestVersionResponse { public ContentId? ContentId { get; set; } }
+        private class DownloadFile { public string? Url { get; set; } public string? FileId { get; set; } }
 
         private static string? ParseFlatpakInstallStep(string line)
         {
@@ -2405,46 +2626,42 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::EnsureWineAndDependencies";
 
-            string kombuchaLink = Path.Combine(Paths.Base, "kombucha");
-            if (!File.Exists(Path.Combine(kombuchaLink, "bin", "wine")))
+            string wineInstallDir = Path.Combine(Paths.Base, "wine");
+
+            if (!File.Exists(Path.Combine(wineInstallDir, "bin", "wine")))
             {
-                SetStatus("Downloading Wine build...");
                 if (Dialog != null)
                 {
                     Dialog.ProgressIndeterminate = false;
                     Dialog.ProgressMaximum = ProgressBarMaximum;
                     Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
                 }
-                bool downloaded = await DownloadKombuchaAsync();
-                if (Dialog != null)
-                {
-                    Dialog.ProgressIndeterminate = true;
-                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
-                }
+
+                bool downloaded = await DownloadAndExtractWineAsync(wineInstallDir);
                 if (!downloaded)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Kombucha download failed, falling back to system Wine.");
-                    _wineRootPath = "";
+                    App.Logger.WriteLine(LOG_IDENT, "Wine download failed, falling back to system Wine.");
                     _wineBinaryPath = "wine";
                 }
                 else
                 {
-                    _wineRootPath = kombuchaLink;
-                    _wineBinaryPath = Path.Combine(_wineRootPath, "bin", "wine");
+                    _wineBinaryPath = Path.Combine(wineInstallDir, "bin", "wine");
                 }
             }
             else
             {
-                _wineRootPath = kombuchaLink;
-                _wineBinaryPath = Path.Combine(_wineRootPath, "bin", "wine");
+                _wineBinaryPath = Path.Combine(wineInstallDir, "bin", "wine");
             }
 
-            if (!string.IsNullOrEmpty(_wineRootPath))
+            if (_wineBinaryPath != "wine")
             {
-                var kombuchaBin = Path.Combine(_wineRootPath, "bin");
-                var currentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
-                if (!currentPath.StartsWith(kombuchaBin + ":"))
-                    Environment.SetEnvironmentVariable("PATH", kombuchaBin + ":" + currentPath);
+                var wineBinDir = Path.GetDirectoryName(_wineBinaryPath);
+                if (!string.IsNullOrEmpty(wineBinDir))
+                {
+                    var currentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
+                    if (!currentPath.StartsWith(wineBinDir + ":"))
+                        Environment.SetEnvironmentVariable("PATH", wineBinDir + ":" + currentPath);
+                }
             }
 
             try
@@ -2455,7 +2672,8 @@ namespace Froststrap
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-                using var p = Process.Start(psi);
+                using var p = Process.Start(psi) ?? throw new Exception("Failed to start Wine process.");
+
                 await p.WaitForExitAsync();
                 if (p.ExitCode != 0) throw new Exception("Wine returned error.");
             }
@@ -2518,9 +2736,9 @@ namespace Froststrap
             return true;
         }
 
-        private async Task<bool> DownloadKombuchaAsync()
+        private async Task<bool> DownloadAndExtractWineAsync(string installDir)
         {
-            const string LOG_IDENT = "Bootstrapper::DownloadKombucha";
+            const string LOG_IDENT = "Bootstrapper::DownloadAndExtractWine";
 
             try
             {
@@ -2530,51 +2748,58 @@ namespace Froststrap
                 if (release?.Assets == null || release.Assets.Count == 0)
                     throw new Exception("No assets found");
 
-                string tag = release.TagName;
-                string extractDir = Path.Combine(Paths.Base, $"kombucha-{tag}");
-                string symlink = Path.Combine(Paths.Base, "kombucha");
+                string tag = release.TagName ?? throw new Exception("Tag name is null");
 
-                if (Directory.Exists(extractDir) && File.Exists(Path.Combine(extractDir, "bin", "wine")))
+                string cacheDir = Path.Combine(Paths.Cache, "kombucha");
+                Directory.CreateDirectory(cacheDir);
+                string cachedArchive = Path.Combine(cacheDir, $"{tag}.tar.xz");
+
+                var asset = release.Assets.FirstOrDefault(a => a.Name != null && a.Name.EndsWith(".tar.xz"));
+                if (asset == null || string.IsNullOrEmpty(asset.Name) || string.IsNullOrEmpty(asset.BrowserDownloadUrl))
+                    throw new Exception("No valid tar.xz asset found");
+
+                if (!File.Exists(cachedArchive))
                 {
-                    if (!Directory.Exists(symlink))
-                    {
-                        try { Directory.CreateSymbolicLink(symlink, extractDir); } catch { }
-                    }
-                    CleanupOldKombuchaDirs(tag);
-                    return true;
+                    SetStatus("Downloading Wine...");
+                    await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, cachedArchive, 0.5);
                 }
 
-                var asset = release.Assets.FirstOrDefault(a => a.Name.EndsWith(".tar.xz"));
+                SetStatus("Extracting Wine...");
 
-                string downloadPath = Path.Combine(Paths.Downloads, asset.Name);
-                Directory.CreateDirectory(Paths.Downloads);
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = true;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+                }
 
-                await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, downloadPath);
+                if (Directory.Exists(installDir))
+                {
+                    try { Directory.Delete(installDir, true); }
+                    catch (Exception ex) { App.Logger.WriteLine(LOG_IDENT, $"Failed to delete old Wine directory: {ex.Message}"); }
+                }
 
-                SetStatus("Extracting Wine build...");
-                Directory.CreateDirectory(extractDir);
+                Directory.CreateDirectory(installDir);
 
-                var extractPsi = new ProcessStartInfo("tar", $"-xJf \"{downloadPath}\" -C \"{extractDir}\" --strip-components=1")
+                var extractPsi = new ProcessStartInfo("tar", $"-xJf \"{cachedArchive}\" -C \"{installDir}\" --strip-components=1")
                 {
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
-                using var extractProc = Process.Start(extractPsi);
+                using var extractProc = Process.Start(extractPsi) ?? throw new Exception("Failed to start tar extraction process.");
+
                 await extractProc.WaitForExitAsync();
                 if (extractProc.ExitCode != 0)
                     throw new Exception("tar extraction failed");
 
-                try
+                if (Dialog != null)
                 {
-                    if (Directory.Exists(symlink))
-                        Directory.Delete(symlink);
-                    Directory.CreateSymbolicLink(symlink, extractDir);
+                    Dialog.ProgressIndeterminate = false;
+                    Dialog.ProgressValue = ProgressBarMaximum;
+                    Dialog.TaskbarProgressValue = 1.0;
                 }
-                catch { }
 
-                try { File.Delete(downloadPath); } catch { }
+                CleanupOldWineCache(cacheDir, tag);
 
-                CleanupOldKombuchaDirs(tag);
                 return true;
             }
             catch (Exception ex)
@@ -2584,26 +2809,26 @@ namespace Froststrap
             }
         }
 
-        private static void CleanupOldKombuchaDirs(string currentTag)
+        private static void CleanupOldWineCache(string cacheDir, string currentTag)
         {
             try
             {
-                var baseDir = Paths.Base;
-                if (!Directory.Exists(baseDir)) return;
+                if (!Directory.Exists(cacheDir)) return;
 
-                var directories = Directory.GetDirectories(baseDir, "kombucha-*");
-                foreach (var dir in directories)
+                var archives = Directory.GetFiles(cacheDir, "*.tar.xz");
+                foreach (var archive in archives)
                 {
-                    string dirName = Path.GetFileName(dir);
-                    if (dirName != $"kombucha-{currentTag}")
+                    string archiveName = Path.GetFileNameWithoutExtension(archive);
+                    if (archiveName != currentTag)
                     {
-                        try { Directory.Delete(dir, true); } catch { }
+                        try { File.Delete(archive); }
+                        catch (Exception ex) { App.Logger.WriteLine("Bootstrapper::CleanupOldWineCache", $"Failed to delete {archive}: {ex.Message}"); }
                     }
                 }
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine("Bootstrapper::CleanupOldKombuchaDirs", $"Failed running directory cleanup: {ex.Message}");
+                App.Logger.WriteLine("Bootstrapper::CleanupOldWineCache", $"Failed running cleanup: {ex.Message}");
             }
         }
 
@@ -2612,10 +2837,13 @@ namespace Froststrap
             const string LOG_IDENT = "Bootstrapper::ApplyRegistryTweaks";
             try
             {
-                string localAppData = Path.Combine(Paths.Base, "wine-appdata");
+                string localAppData = Path.Combine(_winePrefixPath, "drive_c", "users", "froststrap", "AppData", "Local");
+                string documents = Path.Combine(_winePrefixPath, "drive_c", "users", "froststrap", "Documents");
+                string pictures = Path.Combine(_winePrefixPath, "drive_c", "users", "froststrap", "Pictures");
+
                 Directory.CreateDirectory(localAppData);
-                string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                string pictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                Directory.CreateDirectory(documents);
+                Directory.CreateDirectory(pictures);
 
                 string tempDir = Paths.Temp;
                 Directory.CreateDirectory(tempDir);
@@ -2638,8 +2866,8 @@ Windows Registry Editor Version 5.00
                 };
                 psi.Environment["WINEPREFIX"] = _winePrefixPath;
                 psi.Environment["WINEARCH"] = "win64";
-                using var p = Process.Start(psi);
-                await p!.WaitForExitAsync();
+                using var p = Process.Start(psi) ?? throw new Exception("Failed to start regedit");
+                await p.WaitForExitAsync();
 
                 try { File.Delete(regFile); } catch { }
 
@@ -2654,41 +2882,41 @@ Windows Registry Editor Version 5.00
         private static string ToRegHex(string input)
         {
             var bytes = Encoding.Unicode.GetBytes(input + "\0");
-            return BitConverter.ToString(bytes).Replace("-", "");
+            return Convert.ToHexString(bytes);
         }
 
-        private async Task DownloadFileWithProgressAsync(string url, string destination)
+        private async Task DownloadFileWithProgressAsync(string url, string destination, double maxProgressFraction = 1.0)
         {
             using var response = await App.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 
             long totalBytes = response.Content.Headers.ContentLength ?? -1;
-            using var stream = await response.Content.ReadAsStreamAsync();
-            using var fileStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None);
+            await using var stream = await response.Content.ReadAsStreamAsync();
+            await using var fileStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            if (Dialog != null)
+            {
+                Dialog.ProgressMaximum = ProgressBarMaximum;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+            }
+
+            double adjustedMax = ProgressBarMaximum * maxProgressFraction;
+            _progressIncrement = totalBytes > 0 ? adjustedMax / totalBytes : 0;
+            _totalDownloadedBytes = 0;
 
             var buffer = new byte[4096];
             long totalRead = 0;
             int bytesRead;
 
-            if (Dialog != null && totalBytes > 0)
+            while ((bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length))) > 0)
             {
-                Dialog.ProgressMaximum = ProgressBarMaximum;
-                Dialog.ProgressValue = 0;
-                Dialog.TaskbarProgressValue = 0;
-            }
-
-            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-            {
-                await fileStream.WriteAsync(buffer, 0, bytesRead);
+                await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead));
                 totalRead += bytesRead;
-
-                if (Dialog != null && totalBytes > 0)
-                {
-                    double progress = (double)totalRead / totalBytes;
-                    Dialog.ProgressValue = (int)(progress * ProgressBarMaximum);
-                    Dialog.TaskbarProgressValue = progress;
-                }
+                _totalDownloadedBytes = totalRead;
+                UpdateProgressBar();
             }
+
+            _totalDownloadedBytes = 0;
         }
 
         private async Task<bool> SetupDxvkAsync()
@@ -2770,6 +2998,7 @@ Windows Registry Editor Version 5.00
             };
             psi.Environment["WINEPREFIX"] = _winePrefixPath;
             psi.Environment["WINEARCH"] = "win64";
+            psi.Environment["WINEDLLOVERRIDES"] = "mscoree,mshtml=";
 
             App.Logger.WriteLine(LOG_IDENT, $"Starting: {cmd} {arguments}");
             using var process = Process.Start(psi);
@@ -2827,7 +3056,7 @@ Windows Registry Editor Version 5.00
         {
             const string LOG_IDENT = "Bootstrapper::LaunchStudioViaWine";
 
-            string studioExe = Path.Combine(_latestVersionDirectory, "RobloxStudioBeta.exe");
+            string studioExe = Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName);
             if (!File.Exists(studioExe))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Cannot find RobloxStudioBeta.exe");
@@ -2847,18 +3076,28 @@ Windows Registry Editor Version 5.00
             env["WINEFSYNC"] = "1";
             env["DXVK_ASYNC"] = "1";
             env["DXVK_HUD"] = "0";
-            env["WINEDLLOVERRIDES"] = "d3d10core,d3d11,dxgi=n,b;d3d9=b";
+            env["WINEDLLOVERRIDES"] = "d3d10core,d3d11,dxgi=n,b;d3d9=b;mscoree,mshtml=";
+            if (File.Exists(Path.Combine(_latestVersionDirectory, "d3d11.dll")))
+            {
+                env["DXVK_LOG_LEVEL"] = "warn";
+                env["DXVK_LOG_PATH"] = "none";
+                env["DXVK_STATE_CACHE_PATH"] = Paths.Cache;
+            }
             env["ROBLOX_CRASH_HANDLER"] = "0";
             env["RobloxTelemetryEnabled"] = "false";
-            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--disable-gpu-compositing";
-            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] += " --use-angle=vulkan";
+            string angle = "gl";
+            if (File.Exists(Path.Combine(_latestVersionDirectory, "d3d11.dll")))
+                angle = "vulkan";
+
+            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = $"--disable-gpu-compositing --use-angle={angle}";
             env["WINE_LARGE_ADDRESS_AWARE"] = "1";
             env["STAGING_SHARED_MEMORY"] = "1";
-            env["WINEDEBUG"] = "-all";
+            env["WINEDEBUG"] = "warn+seh,fixme-all,err-kerberos,err-ntlm,err-combase";
             env["MESA_GL_VERSION_OVERRIDE"] = "4.5";
             env["MESA_GLSL_VERSION_OVERRIDE"] = "450";
 
-            string currentPath = env.ContainsKey("PATH") ? env["PATH"] : "";
+            env.TryGetValue("PATH", out string? currentPath);
+            currentPath ??= "";
             env["PATH"] = _latestVersionDirectory + ":" + currentPath;
 
             string? dll;
@@ -2925,6 +3164,13 @@ Windows Registry Editor Version 5.00
             try
             {
                 using var process = Process.Start(startInfo);
+                if (process == null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to start Roblox Studio process - Process.Start returned null");
+                    await Frontend.ShowMessageBox("Could not start Roblox Studio. Please check your Wine installation.", MessageBoxImage.Error);
+                    App.Terminate(ErrorCode.ERROR_CANCELLED);
+                    return;
+                }
                 _appPid = process.Id;
                 App.Logger.WriteLine(LOG_IDENT, $"Roblox Studio started with Wine (PID {_appPid})");
             }
@@ -2991,12 +3237,12 @@ Windows Registry Editor Version 5.00
                         string value = match.Groups[3].Value.Trim();
                         if (name == "EncryptionKey" && value.StartsWith("hex:"))
                         {
-                            encryptionKeyHex = value.Substring(4);
+                            encryptionKeyHex = value[4..];
                         }
                         else if (name.StartsWith("Generic: https://www.roblox.com:RobloxStudioAuth"))
                         {
                             if (value.StartsWith("hex:"))
-                                credEntries[name] = value.Substring(4);
+                                credEntries[name] = value[4..];
                         }
                     }
                 }
@@ -3172,18 +3418,18 @@ Windows Registry Editor Version 5.00
                         familyName = Regex.Replace(familyName, "(?<=[A-Z])([A-Z][a-z])", " $1");
                         familyName = Regex.Replace(familyName, "(?<=[a-z0-9])([A-Z])", " $1");
 
-                        var fontFamilyData = new Models.FontFamily
+                        var fontFamilyData = new FontFamily
                         {
                             Name = familyName,
                             Faces =
                             [
-                                new Models.FontFace { Name = "Thin", Weight = 100, Style = "normal", AssetId = rbxAssetPath },
-                                new Models.FontFace { Name = "Light", Weight = 300, Style = "normal", AssetId = rbxAssetPath },
-                                new Models.FontFace { Name = "Regular", Weight = 400, Style = "normal", AssetId = rbxAssetPath },
-                                new Models.FontFace { Name = "Medium", Weight = 500, Style = "normal", AssetId = rbxAssetPath },
-                                new Models.FontFace { Name = "Semi Bold", Weight = 600, Style = "normal", AssetId = rbxAssetPath },
-                                new Models.FontFace { Name = "Bold", Weight = 700, Style = "normal", AssetId = rbxAssetPath },
-                                new Models.FontFace { Name = "Extra Bold", Weight = 800, Style = "normal", AssetId = rbxAssetPath }
+                                new FontFace { Name = "Thin", Weight = 100, Style = "normal", AssetId = rbxAssetPath },
+                                new FontFace { Name = "Light", Weight = 300, Style = "normal", AssetId = rbxAssetPath },
+                                new FontFace { Name = "Regular", Weight = 400, Style = "normal", AssetId = rbxAssetPath },
+                                new FontFace { Name = "Medium", Weight = 500, Style = "normal", AssetId = rbxAssetPath },
+                                new FontFace { Name = "Semi Bold", Weight = 600, Style = "normal", AssetId = rbxAssetPath },
+                                new FontFace { Name = "Bold", Weight = 700, Style = "normal", AssetId = rbxAssetPath },
+                                new FontFace { Name = "Extra Bold", Weight = 800, Style = "normal", AssetId = rbxAssetPath }
                             ]
                         };
 
@@ -3371,10 +3617,15 @@ Windows Registry Editor Version 5.00
                     targetFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
                 }
 
-                var packageMapEntry = PackageDirectoryMap.SingleOrDefault(x => !String.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase));
-                string packageName = packageMapEntry.Key;
+                if (!PackageDirectoryMap.TryGetValue(targetFile.Split(Path.DirectorySeparatorChar)[0], out string? packageDir) || string.IsNullOrEmpty(packageDir))
+                {
+                    string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
+                    if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
+                    continue;
+                }
 
-                if (String.IsNullOrEmpty(packageName))
+                string packageName = PackageDirectoryMap.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase)).Key;
+                if (string.IsNullOrEmpty(packageName))
                 {
                     string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
                     if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
@@ -3384,7 +3635,7 @@ Windows Registry Editor Version 5.00
                 if (!fileRestoreMap.ContainsKey(packageName))
                     fileRestoreMap[packageName] = [];
 
-                string internalZipPath = targetFile[packageMapEntry.Value.Length..].TrimStart(Path.DirectorySeparatorChar);
+                string internalZipPath = targetFile[packageDir.Length..].TrimStart(Path.DirectorySeparatorChar);
                 fileRestoreMap[packageName].Add(internalZipPath);
             }
 
@@ -3432,7 +3683,7 @@ Windows Registry Editor Version 5.00
                 {
                     string originalRelName = Path.Combine(
                         Path.GetDirectoryName(relativeFile) ?? "",
-                        string.Concat(fileNameWithoutExt.AsSpan(..^7), Path.GetExtension(relativeFile))
+                        string.Concat(fileNameWithoutExt.AsSpan(0, fileNameWithoutExt.Length - 7), Path.GetExtension(relativeFile))
                     );
                     deleteSet.Add(originalRelName);
                     copyMap.Remove(originalRelName);
@@ -3490,7 +3741,6 @@ Windows Registry Editor Version 5.00
             {
                 // let's cheat! if the stock bootstrapper already previously downloaded the file,
                 // then we can just copy the one from there
-
                 App.Logger.WriteLine(LOG_IDENT, $"Found existing copy at '{robloxPackageLocation}'! Copying to Downloads folder...");
                 File.Copy(robloxPackageLocation, package.DownloadPath);
                 _totalDownloadedBytes += package.PackedSize;
@@ -3524,7 +3774,7 @@ Windows Registry Editor Version 5.00
                             return;
                         }
 
-                        int bytesRead = await stream.ReadAsync(buffer, _cancelTokenSource.Token);
+                        int bytesRead = await stream.ReadAsync(buffer.AsMemory(0, buffer.Length), _cancelTokenSource.Token);
                         if (bytesRead == 0)
                             break;
 
