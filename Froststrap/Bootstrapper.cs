@@ -18,9 +18,12 @@ using Froststrap.AppData;
 using Froststrap.Models.APIs;
 using Froststrap.RobloxInterfaces;
 using ICSharpCode.SharpZipLib.Zip;
+using ICSharpCode.SharpZipLib.GZip;
+using ICSharpCode.SharpZipLib.Tar;
 using Microsoft.Win32;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
+using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Web;
@@ -37,6 +40,11 @@ namespace Froststrap
         private const int MaxDownloadAttempts = 5;
         private const string SoberFlatpakId = "org.vinegarhq.Sober";
         private const string BackgroundUpdaterMutexName = "Bloxstrap-BackgroundUpdater";
+        private const string WinePrefixDir = "wineprefix";
+        private const string KombuchaRepoOwner = "vinegarhq";
+        private const string KombuchaRepoName = "kombucha";
+        private const string DxvkVersion = "2.7.1";
+        private const string WebView2Version = "144.0.3719.92";
 
         private const string AppSettings =
             "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
@@ -72,7 +80,12 @@ namespace Froststrap
             || (!OperatingSystem.IsLinux() && (
                 String.IsNullOrEmpty(AppData.DistributionState.VersionGuid)
                 || (OperatingSystem.IsMacOS() ? !Directory.Exists(AppData.ExecutablePath) : !File.Exists(AppData.ExecutablePath))
-            ));
+            ))
+            || (OperatingSystem.IsLinux() && IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, "RobloxStudioBeta.exe")));
+
+        private string? _winePrefixPath;
+        private string _wineRootPath = "";
+        private string _wineBinaryPath = "wine";
 
         private bool _isInstalling = false;
         private double _progressIncrement;
@@ -131,6 +144,16 @@ namespace Froststrap
 
             foreach (var package in localData)
                 PackageDirectoryMap[package.Key] = package.Value;
+
+            // Linux treats \\ weirdly, it leaves a \ in their name and dosent place in correct directory
+            if (OperatingSystem.IsLinux())
+            {
+                foreach (var key in PackageDirectoryMap.Keys.ToList())
+                {
+                    if (PackageDirectoryMap[key] != null)
+                        PackageDirectoryMap[key] = PackageDirectoryMap[key].Replace('\\', '/');
+                }
+            }
         }
 
         private void SetStatus(string message)
@@ -204,11 +227,11 @@ namespace Froststrap
             SetStatus(Strings.Bootstrapper_Status_Connecting);
 
             // Skip the Roblox deployment API connectivity check entirely.
-            if (OperatingSystem.IsLinux())
+            if (OperatingSystem.IsLinux() && !IsStudioLaunch)
             {
                 _noConnection = true;
                 _latestVersionDirectory = Paths.SoberAssetOverlay;
-                App.Logger.WriteLine(LOG_IDENT, "Linux: skipping connectivity check and upgrade flow — Sober manages Roblox.");
+                App.Logger.WriteLine(LOG_IDENT, "Linux (Player): skipping connectivity check — Sober manages Roblox.");
             }
             else
             {
@@ -615,7 +638,7 @@ namespace Froststrap
                 _latestVersionDirectory = Path.Combine(Paths.Versions, _latestVersionGuid);
 
             // Mods are applied directly into Sober's asset_overlay directory instead of a versioned folder.
-            if (OperatingSystem.IsLinux())
+            if (OperatingSystem.IsLinux() && !IsStudioLaunch)
                 _latestVersionDirectory = Paths.SoberAssetOverlay;
 
             if (OperatingSystem.IsMacOS())
@@ -999,9 +1022,34 @@ namespace Froststrap
             // Skip all binary discovery and download, send directly to Sober via flatpak run.
             if (OperatingSystem.IsLinux())
             {
+                if (IsStudioLaunch)
+                {
+                    if (!await EnsureWineAndDependenciesAsync())
+                        return;
+
+                    string studioExe = Path.Combine(_latestVersionDirectory, "RobloxStudioBeta.exe");
+                    if (!File.Exists(studioExe))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "RobloxStudioBeta.exe missing, triggering upgrade...");
+                        await UpgradeRoblox();
+                    }
+
+                    if (!File.Exists(studioExe))
+                    {
+                        await Frontend.ShowMessageBox(
+                            "Roblox Studio installation failed. Please check your connection and try again.",
+                            MessageBoxImage.Error);
+                        App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
+                        return;
+                    }
+
+                    SetStatus("Starting Roblox Studio with Wine...");
+                    await LaunchStudioViaWineAsync();
+                    return;
+                }
+
                 if (!await EnsureSoberInstalledAsync())
                     return;
-
                 SetStatus("Starting Sober...");
                 await LaunchViaSober([]);
                 return;
@@ -1094,9 +1142,11 @@ namespace Froststrap
             await Task.Delay(1000);
         }
 
-        private async Task LaunchWatcherIfNeededAsync(List<int> autoclosePids, string? logFileName = null)
+        private async Task LaunchWatcherIfNeededAsync( List<int> autoclosePids, string? logFileName = null, string? logDirectory = null)
         {
-            if (!(App.Settings.Prop.EnableActivityTracking || App.LaunchSettings.TestModeFlag.Active || autoclosePids.Count > 0))
+            if (!(App.Settings.Prop.EnableActivityTracking
+                || App.LaunchSettings.TestModeFlag.Active
+                || autoclosePids.Count > 0))
                 return;
 
             try
@@ -1110,7 +1160,7 @@ namespace Froststrap
 
             if (string.IsNullOrEmpty(logFileName))
             {
-                string rbxLogDir = Paths.RobloxLogs;
+                string rbxLogDir = logDirectory ?? Paths.RobloxLogs;
 
                 for (int i = 0; i < 60; i++)
                 {
@@ -1475,8 +1525,12 @@ namespace Froststrap
 
             if (OperatingSystem.IsLinux())
             {
-                App.Logger.WriteLine(LOG_IDENT, "Skipping cleanup on Linux to avoid deleting Sober's data directory.");
-                return;
+                bool isStudio = App.Bootstrapper?.IsStudioLaunch ?? false;
+                if (!isStudio)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Skipping cleanup on Linux (Player) to protect Sober's data directory.");
+                    return;
+                }
             }
 
             if (App.LaunchSettings.BackgroundUpdaterFlag.Active)
@@ -1494,6 +1548,10 @@ namespace Froststrap
             foreach (string dir in Directory.GetDirectories(Paths.Versions))
             {
                 string dirName = Path.GetFileName(dir);
+
+                // to make static directory work on studio linux
+                if (OperatingSystem.IsLinux() && dirName == "Sober")
+                    continue;
 
                 bool shouldDelete = StaticDirectory
                     ? dirName != "WindowsPlayer" && dirName != "WindowsStudio64" && dirName != "MacPlayer" && dirName != "MacStudio"
@@ -2076,18 +2134,6 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::LaunchViaSober";
 
-            // TODO: add vinegar support for Roblox Studio on Linux
-            if (IsStudioLaunch)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Roblox Studio is not supported on Linux via Sober. Aborting.");
-                await Frontend.ShowMessageBox(
-                    "Roblox Studio is not available on Linux. Sober only supports the Roblox Player.",
-                    MessageBoxImage.Error
-                );
-                App.Terminate(ErrorCode.ERROR_CANCELLED);
-                return;
-            }
-
             if (App.Settings.Prop.ShowServerDetails)
                 App.SoberSettings.Prop.ServerLocationIndicatorEnabled = false;
 
@@ -2200,6 +2246,656 @@ namespace Froststrap
                 );
                 App.Terminate(ErrorCode.ERROR_CANCELLED);
             }
+        }
+
+        private async Task<string> RunProcessAndReadOutputAsync(string fileName, string arguments)
+        {
+            var psi = new ProcessStartInfo(fileName, arguments)
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            using var process = Process.Start(psi);
+            if (process == null) return string.Empty;
+            string output = await process.StandardOutput.ReadToEndAsync();
+            await process.WaitForExitAsync();
+            return output;
+        }
+
+        private string GetWineLogDirectory()
+        {
+            if (string.IsNullOrEmpty(_winePrefixPath))
+            {
+                App.Logger.WriteLine("Bootstrapper::GetWineLogDirectory", "Wine prefix not set, using default.");
+                _winePrefixPath = Path.Combine(Paths.Base, "WinePrefix");
+            }
+
+            string usersPath = Path.Combine(_winePrefixPath, "drive_c", "users");
+            string wineUser = "froststrap";
+            if (Directory.Exists(usersPath))
+            {
+                var userDirs = Directory.GetDirectories(usersPath);
+                if (userDirs.Length > 0)
+                    wineUser = Path.GetFileName(userDirs[0]);
+            }
+
+            return Path.Combine(_winePrefixPath, "drive_c", "users", wineUser, "AppData", "Local", "Roblox", "logs");
+        }
+
+        private async Task<bool> EnsureWineAndDependenciesAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::EnsureWineAndDependencies";
+
+            string kombuchaLink = Path.Combine(Paths.Base, "kombucha");
+            if (!File.Exists(Path.Combine(kombuchaLink, "bin", "wine")))
+            {
+                SetStatus("Downloading Wine build...");
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = false;
+                    Dialog.ProgressMaximum = ProgressBarMaximum;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+                }
+                bool downloaded = await DownloadKombuchaAsync();
+                if (Dialog != null)
+                {
+                    Dialog.ProgressIndeterminate = true;
+                    Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+                }
+                if (!downloaded)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Kombucha download failed, falling back to system Wine.");
+                    _wineRootPath = "";
+                    _wineBinaryPath = "wine";
+                }
+                else
+                {
+                    _wineRootPath = kombuchaLink;
+                    _wineBinaryPath = Path.Combine(_wineRootPath, "bin", "wine");
+                }
+            }
+            else
+            {
+                _wineRootPath = kombuchaLink;
+                _wineBinaryPath = Path.Combine(_wineRootPath, "bin", "wine");
+            }
+
+            if (!string.IsNullOrEmpty(_wineRootPath))
+            {
+                var kombuchaBin = Path.Combine(_wineRootPath, "bin");
+                var currentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
+                if (!currentPath.StartsWith(kombuchaBin + ":"))
+                    Environment.SetEnvironmentVariable("PATH", kombuchaBin + ":" + currentPath);
+            }
+
+            try
+            {
+                var psi = new ProcessStartInfo(_wineBinaryPath, "--version")
+                {
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var p = Process.Start(psi);
+                if (p == null) throw new Exception("Wine not functional");
+                await p.WaitForExitAsync();
+                if (p.ExitCode != 0) throw new Exception("Wine returned error.");
+            }
+            catch
+            {
+                await Frontend.ShowMessageBox("Failed to run Wine. Please install Wine manually or check your settings.", MessageBoxImage.Error);
+                return false;
+            }
+
+            _winePrefixPath = Path.Combine(Paths.Base, WinePrefixDir);
+            Directory.CreateDirectory(_winePrefixPath);
+            Environment.SetEnvironmentVariable("WINEPREFIX", _winePrefixPath);
+            Environment.SetEnvironmentVariable("WINEARCH", "win64");
+
+            SetStatus("Cleaning up...");
+            await Task.Run(() =>
+            {
+                try
+                {
+                    var killInfo = new ProcessStartInfo("wineserver", "-k")
+                    {
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+                    killInfo.Environment["WINEPREFIX"] = _winePrefixPath;
+                    var killProc = Process.Start(killInfo);
+                    killProc?.WaitForExit(5000);
+                }
+                catch { }
+            });
+
+            SetStatus("Initializing Wine prefix...");
+            if (!await RunWineProcessAsync("wine", "wineboot -u", timeoutMinutes: 15))
+            {
+                await Frontend.ShowMessageBox("Failed to initialize Wine prefix.", MessageBoxImage.Error);
+                return false;
+            }
+
+            SetStatus("Applying Wine configuration...");
+            await ApplyWineRegistryTweaksAsync();
+
+            SetStatus("Setting up DXVK...");
+            if (!await SetupDxvkAsync())
+            {
+                App.Logger.WriteLine(LOG_IDENT, "DXVK installation failed, continuing without it.");
+            }
+
+            SetStatus("Checking WebView2...");
+            await InstallWebView2IfNeededAsync();
+
+            return true;
+        }
+
+        private async Task<bool> DownloadKombuchaAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::DownloadKombucha";
+
+            try
+            {
+                var url = $"https://api.github.com/repos/{KombuchaRepoOwner}/{KombuchaRepoName}/releases/latest";
+                var json = await App.HttpClient.GetStringAsync(url);
+                var release = JsonSerializer.Deserialize<Froststrap.Models.APIs.GitHub.GithubRelease>(json);
+                if (release?.Assets == null || release.Assets.Count == 0)
+                    throw new Exception("No assets found");
+
+                string tag = release.TagName;
+                string extractDir = Path.Combine(Paths.Base, $"kombucha-{tag}");
+                string symlink = Path.Combine(Paths.Base, "kombucha");
+
+                if (Directory.Exists(extractDir) && File.Exists(Path.Combine(extractDir, "bin", "wine")))
+                {
+                    if (!Directory.Exists(symlink))
+                    {
+                        try { Directory.CreateSymbolicLink(symlink, extractDir); } catch { }
+                    }
+                    CleanupOldKombuchaDirs(tag);
+                    return true;
+                }
+
+                var asset = release.Assets.FirstOrDefault(a => a.Name.EndsWith(".tar.xz"));
+                if (asset == null) throw new Exception("No .tar.xz asset");
+
+                string downloadPath = Path.Combine(Paths.Downloads, asset.Name);
+                Directory.CreateDirectory(Paths.Downloads);
+
+                await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, downloadPath);
+
+                SetStatus("Extracting Wine build...");
+                Directory.CreateDirectory(extractDir);
+
+                var extractPsi = new ProcessStartInfo("tar", $"-xJf \"{downloadPath}\" -C \"{extractDir}\" --strip-components=1")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using var extractProc = Process.Start(extractPsi);
+                if (extractProc == null) throw new Exception("Failed to start tar");
+                await extractProc.WaitForExitAsync();
+                if (extractProc.ExitCode != 0)
+                    throw new Exception("tar extraction failed");
+
+                try
+                {
+                    if (Directory.Exists(symlink))
+                        Directory.Delete(symlink);
+                    Directory.CreateSymbolicLink(symlink, extractDir);
+                }
+                catch { }
+
+                try { File.Delete(downloadPath); } catch { }
+
+                CleanupOldKombuchaDirs(tag);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        private void CleanupOldKombuchaDirs(string currentTag)
+        {
+            try
+            {
+                var baseDir = Paths.Base;
+                if (!Directory.Exists(baseDir)) return;
+
+                var directories = Directory.GetDirectories(baseDir, "kombucha-*");
+                foreach (var dir in directories)
+                {
+                    string dirName = Path.GetFileName(dir);
+                    if (dirName != $"kombucha-{currentTag}")
+                    {
+                        try { Directory.Delete(dir, true); } catch { }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("Bootstrapper::CleanupOldKombuchaDirs", $"Failed running directory cleanup: {ex.Message}");
+            }
+        }
+
+        private async Task ApplyWineRegistryTweaksAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyRegistryTweaks";
+            try
+            {
+                string localAppData = Path.Combine(Paths.Base, "wine-appdata");
+                Directory.CreateDirectory(localAppData);
+                string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string pictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+
+                string tempDir = Paths.Temp;
+                Directory.CreateDirectory(tempDir);
+                string regFile = Path.Combine(tempDir, "froststrap_wine_tweaks.reg");
+
+                var regContent = $@"
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders]
+""Local AppData""=hex(2):{ToRegHex(localAppData)}
+""Documents""=hex(2):{ToRegHex(documents)}
+""My Pictures""=hex(2):{ToRegHex(pictures)}
+";
+                await File.WriteAllTextAsync(regFile, regContent);
+
+                var psi = new ProcessStartInfo(_wineBinaryPath, $"regedit /S \"{regFile}\"")
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                psi.Environment["WINEPREFIX"] = _winePrefixPath;
+                psi.Environment["WINEARCH"] = "win64";
+                using var p = Process.Start(psi);
+                await p!.WaitForExitAsync();
+
+                try { File.Delete(regFile); } catch { }
+
+                await RunWineProcessAsync("wine", "wineboot -r", timeoutMinutes: 2);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Registry tweaks failed: {ex.Message}");
+            }
+        }
+
+        private static string ToRegHex(string input)
+        {
+            var bytes = Encoding.Unicode.GetBytes(input + "\0");
+            return BitConverter.ToString(bytes).Replace("-", "");
+        }
+
+        private async Task DownloadFileWithProgressAsync(string url, string destination)
+        {
+            using var response = await App.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            response.EnsureSuccessStatusCode();
+
+            long totalBytes = response.Content.Headers.ContentLength ?? -1;
+            using var stream = await response.Content.ReadAsStreamAsync();
+            using var fileStream = new FileStream(destination, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            var buffer = new byte[4096];
+            long totalRead = 0;
+            int bytesRead;
+
+            if (Dialog != null && totalBytes > 0)
+            {
+                Dialog.ProgressMaximum = ProgressBarMaximum;
+                Dialog.ProgressValue = 0;
+                Dialog.TaskbarProgressValue = 0;
+            }
+
+            while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                await fileStream.WriteAsync(buffer, 0, bytesRead);
+                totalRead += bytesRead;
+
+                if (Dialog != null && totalBytes > 0)
+                {
+                    double progress = (double)totalRead / totalBytes;
+                    Dialog.ProgressValue = (int)(progress * ProgressBarMaximum);
+                    Dialog.TaskbarProgressValue = progress;
+                }
+            }
+        }
+
+        private async Task<bool> SetupDxvkAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::SetupDxvk";
+            string marker = Path.Combine(_latestVersionDirectory, ".dxvk_installed");
+            if (File.Exists(marker) && File.ReadAllText(marker).Trim() == DxvkVersion)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"DXVK {DxvkVersion} already installed.");
+                return true;
+            }
+
+            string cacheDir = Path.Combine(Paths.Cache, "dxvk");
+            string archivePath = Path.Combine(cacheDir, $"dxvk-{DxvkVersion}.tar.gz");
+            Directory.CreateDirectory(cacheDir);
+
+            if (!File.Exists(archivePath))
+            {
+                SetStatus("Downloading DXVK...");
+                string url = $"https://github.com/doitsujin/dxvk/releases/download/v{DxvkVersion}/dxvk-{DxvkVersion}.tar.gz";
+                await DownloadFileWithProgressAsync(url, archivePath);
+            }
+
+            SetStatus("Extracting DXVK...");
+
+            bool success = await Task.Run(() =>
+            {
+                try
+                {
+                    using var fileStream = File.OpenRead(archivePath);
+                    using var gzipStream = new GZipInputStream(fileStream);
+                    using var tarStream = new TarInputStream(gzipStream, Encoding.UTF8);
+
+                    TarEntry entry;
+                    while ((entry = tarStream.GetNextEntry()) != null)
+                    {
+                        if (!entry.Name.Contains("/x64/") || !entry.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                            continue;
+
+                        string fileName = Path.GetFileName(entry.Name);
+                        string destPath = Path.Combine(_latestVersionDirectory, fileName);
+                        using var output = File.Create(destPath);
+                        tarStream.CopyEntryContents(output);
+                    }
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"DXVK extraction failed: {ex.Message}");
+                    return false;
+                }
+            });
+
+            if (!success)
+                return false;
+
+            await File.WriteAllTextAsync(marker, DxvkVersion);
+            App.Logger.WriteLine(LOG_IDENT, "DXVK installed successfully.");
+            return true;
+        }
+
+        private async Task InstallWebView2IfNeededAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::InstallWebView2";
+
+            var checkPsi = new ProcessStartInfo(_wineBinaryPath,
+                "reg query \"HKLM\\Software\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}\" /v pv")
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            checkPsi.Environment["WINEPREFIX"] = _winePrefixPath;
+            checkPsi.Environment["WINEARCH"] = "win64";
+            using var p = Process.Start(checkPsi);
+            if (p == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to query WebView2 version.");
+                return;
+            }
+            string output = await p.StandardOutput.ReadToEndAsync();
+            await p.WaitForExitAsync();
+
+            string installedVersion = "";
+            if (p.ExitCode == 0 && output.Contains("pv"))
+            {
+                var match = Regex.Match(output, @"pv\s+REG_SZ\s+(.+)");
+                if (match.Success) installedVersion = match.Groups[1].Value.Trim();
+            }
+
+            if (installedVersion == WebView2Version)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"WebView2 {WebView2Version} already installed.");
+                return;
+            }
+
+            string packagePath = Path.Combine(Paths.Downloads, "WebView2RuntimeInstaller.zip");
+            if (!File.Exists(packagePath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "WebView2RuntimeInstaller.zip not found in downloads; skipping WebView2 installation.");
+                return;
+            }
+
+            string tempDir = Path.Combine(Paths.Temp, "WebView2Installer");
+            if (Directory.Exists(tempDir))
+                Directory.Delete(tempDir, true);
+            Directory.CreateDirectory(tempDir);
+
+            SetStatus("Extracting WebView2 installer...");
+            await Task.Run(() =>
+            {
+                ExtractZipWithTransform(packagePath, tempDir, null);
+            });
+
+            string installerPath = Path.Combine(tempDir, "WebView2RuntimeInstaller", "MicrosoftEdgeWebview2Setup.exe");
+            if (!File.Exists(installerPath))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "MicrosoftEdgeWebview2Setup.exe not found after extraction.");
+                return;
+            }
+
+            SetStatus("Installing WebView2...");
+            App.Logger.WriteLine(LOG_IDENT, "Running WebView2 installer...");
+            bool success = await RunWineProcessAsync(installerPath, "/silent /install", timeoutMinutes: 10);
+
+            try { Directory.Delete(tempDir, true); } catch { }
+
+            if (!success)
+                App.Logger.WriteLine(LOG_IDENT, "WebView2 installation may have failed.");
+        }
+
+        private async Task<bool> RunWineProcessAsync(string fileName, string arguments, int timeoutMinutes = 5)
+        {
+            const string LOG_IDENT = "Bootstrapper::RunWineProcessAsync";
+
+            string cmd = fileName == "wine" ? _wineBinaryPath : fileName;
+
+            using var timeoutCts = new CancellationTokenSource(TimeSpan.FromMinutes(timeoutMinutes));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                _cancelTokenSource.Token, timeoutCts.Token);
+
+            var psi = new ProcessStartInfo(cmd, arguments)
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                CreateNoWindow = true
+            };
+            psi.Environment["WINEPREFIX"] = _winePrefixPath;
+            psi.Environment["WINEARCH"] = "win64";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Starting: {cmd} {arguments}");
+            using var process = Process.Start(psi);
+            if (process == null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to start process.");
+                return false;
+            }
+
+            var outputTask = Task.Run(async () =>
+            {
+                try
+                {
+                    string? line;
+                    while ((line = await process.StandardOutput.ReadLineAsync()) != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                            App.Logger.WriteLine(LOG_IDENT, $"[out] {line}");
+                    }
+                }
+                catch (ObjectDisposedException) { }
+            });
+            var errorTask = Task.Run(async () =>
+            {
+                try
+                {
+                    string? line;
+                    while ((line = await process.StandardError.ReadLineAsync()) != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(line))
+                            App.Logger.WriteLine(LOG_IDENT, $"[err] {line}");
+                    }
+                }
+                catch (ObjectDisposedException) { }
+            });
+
+            try
+            {
+                await process.WaitForExitAsync(linkedCts.Token);
+                await Task.WhenAll(outputTask, errorTask);
+            }
+            catch (OperationCanceledException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Process '{cmd}' timed out or was cancelled. Killing...");
+                try { process.Kill(true); } catch { }
+                return false;
+            }
+
+            if (process.ExitCode != 0)
+                App.Logger.WriteLine(LOG_IDENT, $"Process '{cmd} {arguments}' exited with code {process.ExitCode}");
+            return process.ExitCode == 0;
+        }
+
+        private async Task LaunchStudioViaWineAsync()
+        {
+            const string LOG_IDENT = "Bootstrapper::LaunchStudioViaWine";
+
+            string studioExe = Path.Combine(_latestVersionDirectory, "RobloxStudioBeta.exe");
+            if (!File.Exists(studioExe))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Cannot find RobloxStudioBeta.exe");
+                return;
+            }
+
+            var env = new Dictionary<string, string>();
+            foreach (DictionaryEntry de in Environment.GetEnvironmentVariables())
+            {
+                if (de.Key is string key && de.Value is string value)
+                    env[key] = value;
+            }
+
+            env["WINEPREFIX"] = _winePrefixPath ?? "";
+            env["WINEARCH"] = "win64";
+            env["WINEESYNC"] = "1";
+            env["WINEFSYNC"] = "1";
+            env["DXVK_ASYNC"] = "1";
+            env["DXVK_HUD"] = "0";
+            env["WINEDLLOVERRIDES"] = "d3d10core,d3d11,dxgi=n,b;d3d9=b";
+            env["ROBLOX_CRASH_HANDLER"] = "0";
+            env["RobloxTelemetryEnabled"] = "false";
+            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--disable-gpu-compositing";
+            env["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] += " --use-angle=vulkan";
+
+            string currentPath = env.ContainsKey("PATH") ? env["PATH"] : "";
+            env["PATH"] = _latestVersionDirectory + ":" + currentPath;
+
+            string? dll;
+            string fastPath = Path.Combine(_latestVersionDirectory, "Plugins", "Qt5", "platforms", "qwindows.dll");
+
+            if (File.Exists(fastPath))
+            {
+                dll = fastPath;
+            }
+            else
+            {
+                dll = Directory.GetFiles(_latestVersionDirectory, "qwindows.dll", SearchOption.AllDirectories)
+                    .FirstOrDefault();
+            }
+
+            string? platformsDir = !string.IsNullOrEmpty(dll)
+                ? Path.GetDirectoryName(Path.GetDirectoryName(dll))
+                : null;
+
+            if (platformsDir != null && Directory.Exists(platformsDir))
+            {
+                env["QT_PLUGIN_PATH"] = platformsDir;
+                App.Logger.WriteLine(LOG_IDENT, $"QT_PLUGIN_PATH set to {platformsDir}");
+            }
+            else
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Warning: Qt platform plugin not found – Studio may fail to start.");
+            }
+
+            var startInfo = new ProcessStartInfo
+            {
+                FileName = _wineBinaryPath,
+                Arguments = $"\"{studioExe}\" {_launchCommandLine}",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                WorkingDirectory = _latestVersionDirectory
+            };
+
+            foreach (var kvp in env)
+                startInfo.Environment[kvp.Key] = kvp.Value;
+
+            try
+            {
+                var ulimit = await RunProcessAndReadOutputAsync("bash", "-c \"ulimit -n\"");
+                if (int.TryParse(ulimit?.Trim(), out int fdLimit) && fdLimit < 524288)
+                    App.Logger.WriteLine(LOG_IDENT, $"File descriptor limit ({fdLimit}) may be too low for esync/fsync.");
+            }
+            catch { }
+
+            var autoclosePids = new List<int>();
+            foreach (var integration in App.Settings.Prop.CustomIntegrations)
+            {
+                if (integration?.PreLaunch == true)
+                    LaunchIntegration(integration, autoclosePids, LOG_IDENT);
+            }
+
+            try
+            {
+                using var process = Process.Start(startInfo);
+                if (process == null) throw new Exception("Failed to start wine process.");
+                _appPid = process.Id;
+                App.Logger.WriteLine(LOG_IDENT, $"Roblox Studio started with Wine (PID {_appPid})");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to launch Studio: {ex.Message}");
+                await Frontend.ShowMessageBox("Could not start Roblox Studio. Please check your Wine installation.", MessageBoxImage.Error);
+                App.Terminate(ErrorCode.ERROR_CANCELLED);
+                return;
+            }
+
+            _mutex?.ReleaseAsync();
+
+            foreach (var integration in App.Settings.Prop.CustomIntegrations)
+            {
+                if (integration == null || integration.PreLaunch || integration.SpecifyGame)
+                    continue;
+                LaunchIntegration(integration, autoclosePids, LOG_IDENT);
+            }
+
+            string wineLogDir = GetWineLogDirectory();
+            Directory.CreateDirectory(wineLogDir);
+            await LaunchWatcherIfNeededAsync(autoclosePids, logDirectory: wineLogDir);
+
+            try
+            {
+                string localAppData = Path.Combine(Paths.Base, "wine-appdata");
+                if (Directory.Exists(localAppData))
+                {
+                    Directory.Delete(localAppData, true);
+                }
+            }
+            catch { }
+
+            await Task.Delay(1000);
         }
 
         private static void StartBackgroundUpdater()
@@ -2436,13 +3132,15 @@ namespace Froststrap
                 }));
             }
 
-            if (!OperatingSystem.IsLinux() && !File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
-                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
+            bool needsAppSettings = !OperatingSystem.IsLinux() || IsStudioLaunch;
+            if (needsAppSettings && !File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
+                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"),
+                    AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
 
             var fileResults = await Task.WhenAll(fileTasks);
             success = success && fileResults.All(r => r);
 
-            if (App.Settings.Prop.UseFastFlagManager && !OperatingSystem.IsLinux())
+            if (App.Settings.Prop.UseFastFlagManager && (!OperatingSystem.IsLinux() || IsStudioLaunch))
             {
                 string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
                 if (File.Exists(source))
@@ -2754,14 +3452,8 @@ namespace Froststrap
 
                     App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
 
-                    var fastZip = new FastZip(_fastZipEvents)
-                    {
-                        RestoreDateTimeOnExtract = false,
-                        RestoreAttributesOnExtract = false
-                    };
-
-                    fastZip.ExtractZip(package.DownloadPath, packageFolder, fileFilter);
-
+                    // Use custom extraction that transforms backslashes to forward slashes
+                    ExtractZipWithTransform(package.DownloadPath, packageFolder, fileFilter);
                     if (_packageExtractionSuccess)
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
@@ -2802,6 +3494,46 @@ namespace Froststrap
                     await Task.Delay(1000);
                     await DownloadPackage(package);
                 }
+            }
+        }
+
+        // for some reason on linux, it treats file directory entries in the zip as files with backslashes in their names,
+        // instead of actual directories, which causes issues with mods, this should fix it
+        private void ExtractZipWithTransform(string zipPath, string destDir, string? fileFilter = null)
+        {
+            using var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read);
+            using var zf = new ZipFile(fs);
+            foreach (ZipEntry entry in zf)
+            {
+                if (entry.IsDirectory)
+                    continue;
+
+                string transformedName = entry.Name.Replace('\\', '/');
+
+                if (!string.IsNullOrEmpty(fileFilter))
+                {
+                    var patterns = fileFilter.Split(';');
+                    bool matches = false;
+                    foreach (var pattern in patterns)
+                    {
+                        if (Regex.IsMatch(transformedName, pattern))
+                        {
+                            matches = true;
+                            break;
+                        }
+                    }
+                    if (!matches)
+                        continue;
+                }
+
+                string destPath = Path.Combine(destDir, transformedName);
+                string? destDirectory = Path.GetDirectoryName(destPath);
+                if (!string.IsNullOrEmpty(destDirectory))
+                    Directory.CreateDirectory(destDirectory);
+
+                using var zipStream = zf.GetInputStream(entry);
+                using var outputStream = File.Create(destPath);
+                zipStream.CopyTo(outputStream);
             }
         }
         #endregion
