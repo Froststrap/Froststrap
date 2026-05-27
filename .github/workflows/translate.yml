@@ -1,0 +1,38 @@
+name: Auto-translate with LibreTranslate
+
+on:
+  push:
+    branches: [ feat/linux-studio-support ]
+    paths:
+      - 'Froststrap/Resources/Strings.resx'
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: feat/linux-studio-support
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Run translation script
+        shell: pwsh
+        run: ./.github/scripts/Translate-Resx.ps1
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          base: feat/linux-studio-support
+          commit-message: "chore: auto-translate resources (LibreTranslate)"
+          title: "Translations from LibreTranslate"
+          body: |
+            This PR adds/updates translations for the changed English strings.
+            Translations are provided by LibreTranslate.
+            Please review and merge if everything looks correct.
+          branch: "auto-translate"
+          delete-branch: true

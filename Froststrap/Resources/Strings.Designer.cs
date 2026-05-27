@@ -6554,6 +6554,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is a test for the translation workflow to see if it works correctly. (maybe this will motivate me to add strings instead of hardcoded).
+        /// </summary>
+        public static string TestingPurposes_ForWorkflow_Translation {
+            get {
+                return ResourceManager.GetString("TestingPurposes.ForWorkflow.Translation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to They&apos;ll be kept where Froststrap was installed, and will automatically be restored on a reinstall..
         /// </summary>
         public static string Uninstaller_KeepData_Description {
