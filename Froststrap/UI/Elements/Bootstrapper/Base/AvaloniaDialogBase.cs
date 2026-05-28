@@ -1,6 +1,5 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
-using Froststrap.UI.Elements.Base;
 using Froststrap.UI.Utility;
 
 namespace Froststrap.UI.Elements.Bootstrapper.Base
@@ -93,10 +92,12 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
             {
                 TaskbarProgress.SetProgressState(hwnd, BackingTaskbarProgressState);
 
-                const int precision = 1000;
-                int completed = (int)Math.Clamp(BackingTaskbarProgressValue * precision, 0, precision);
-
-                TaskbarProgress.SetProgressValue(hwnd, completed, precision);
+                if (BackingTaskbarProgressState == TaskbarItemProgressState.Normal)
+                {
+                    const int precision = 1000;
+                    int completed = (int)Math.Clamp(BackingTaskbarProgressValue * precision, 0, precision);
+                    TaskbarProgress.SetProgressValue(hwnd, completed, precision);
+                }
             }
             catch (Exception ex)
             {
