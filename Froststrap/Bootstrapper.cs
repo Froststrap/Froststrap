@@ -2662,16 +2662,23 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                 _winePrefixPath = Path.Combine(Paths.Base, "WinePrefix");
             }
 
-            string usersPath = Path.Combine(_winePrefixPath, "drive_c", "users");
-            string wineUser = "froststrap";
-            if (Directory.Exists(usersPath))
+            string systemUser = Environment.UserName;
+            string logPath = Path.Combine(_winePrefixPath, "drive_c", "users", systemUser, "AppData", "Local", "Roblox", "logs");
+
+            if (!Directory.Exists(logPath))
             {
-                var userDirs = Directory.GetDirectories(usersPath);
-                if (userDirs.Length > 0)
-                    wineUser = Path.GetFileName(userDirs[0]);
+                try
+                {
+                    Directory.CreateDirectory(logPath);
+                    App.Logger.WriteLine("Bootstrapper::GetWineLogDirectory", $"Created log directory: {logPath}");
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("Bootstrapper::GetWineLogDirectory", $"Failed to create log directory: {ex.Message}");
+                }
             }
 
-            return Path.Combine(_winePrefixPath, "drive_c", "users", wineUser, "AppData", "Local", "Roblox", "logs");
+            return logPath;
         }
 
         private async Task<bool> EnsureWineAndDependenciesAsync()
@@ -2766,9 +2773,6 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                     return false;
                 }
 
-                SetStatus("Applying Wine configuration...");
-                await ApplyWineRegistryTweaksAsync();
-
                 SetStatus("Setting up DXVK...");
                 if (!await SetupDxvkAsync())
                     App.Logger.WriteLine(LOG_IDENT, "DXVK installation failed, continuing without it.");
@@ -2850,8 +2854,6 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                     Dialog.TaskbarProgressValue = 1.0;
                 }
 
-                CleanupOldWineCache(cacheDir, tag);
-
                 return true;
             }
             catch (Exception ex)
@@ -2859,89 +2861,6 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                 App.Logger.WriteLine(LOG_IDENT, $"Error: {ex.Message}");
                 return false;
             }
-        }
-
-        private static void CleanupOldWineCache(string cacheDir, string currentTag)
-        {
-            try
-            {
-                if (!Directory.Exists(cacheDir)) return;
-
-                var archives = Directory.GetFiles(cacheDir, "*.tar.xz");
-                foreach (var archive in archives)
-                {
-                    string archiveName = Path.GetFileNameWithoutExtension(archive);
-                    if (archiveName != currentTag)
-                    {
-                        try { File.Delete(archive); }
-                        catch (Exception ex) { App.Logger.WriteLine("Bootstrapper::CleanupOldWineCache", $"Failed to delete {archive}: {ex.Message}"); }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("Bootstrapper::CleanupOldWineCache", $"Failed running cleanup: {ex.Message}");
-            }
-        }
-
-        private async Task ApplyWineRegistryTweaksAsync()
-        {
-            const string LOG_IDENT = "Bootstrapper::ApplyRegistryTweaks";
-
-            if (string.IsNullOrEmpty(_winePrefixPath))
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Wine prefix path is null or empty, skipping registry tweaks.");
-                return;
-            }
-
-            try
-            {
-                string localAppData = Path.Combine(_winePrefixPath, "drive_c", "users", "froststrap", "AppData", "Local");
-                string documents = Path.Combine(_winePrefixPath, "drive_c", "users", "froststrap", "Documents");
-                string pictures = Path.Combine(_winePrefixPath, "drive_c", "users", "froststrap", "Pictures");
-
-                Directory.CreateDirectory(localAppData);
-                Directory.CreateDirectory(documents);
-                Directory.CreateDirectory(pictures);
-
-                string tempDir = Paths.Temp;
-                Directory.CreateDirectory(tempDir);
-                string regFile = Path.Combine(tempDir, "froststrap_wine_tweaks.reg");
-
-                var regContent = $@"
-Windows Registry Editor Version 5.00
-
-[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders]
-""Local AppData""=hex(2):{ToRegHex(localAppData)}
-""Documents""=hex(2):{ToRegHex(documents)}
-""My Pictures""=hex(2):{ToRegHex(pictures)}
-";
-                await File.WriteAllTextAsync(regFile, regContent);
-
-                var psi = new ProcessStartInfo(_wineBinaryPath, $"regedit /S \"{regFile}\"")
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                psi.Environment["WINEPREFIX"] = _winePrefixPath;
-                psi.Environment["WINEARCH"] = "win64";
-                using var p = Process.Start(psi) ?? throw new Exception("Failed to start regedit");
-                await p.WaitForExitAsync();
-
-                try { File.Delete(regFile); } catch { }
-
-                await RunWineProcessAsync("wine", "wineboot -r", timeoutMinutes: 2);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Registry tweaks failed: {ex.Message}");
-            }
-        }
-
-        private static string ToRegHex(string input)
-        {
-            var bytes = Encoding.Unicode.GetBytes(input + "\0");
-            return Convert.ToHexString(bytes);
         }
 
         private async Task DownloadFileWithProgressAsync(string url, string destination, double maxProgressFraction = 1.0)
@@ -3253,6 +3172,19 @@ Windows Registry Editor Version 5.00
             {
                 App.Logger.WriteLine(LOG_IDENT, "Warning: Qt platform plugin not found – Studio may fail to start.");
             }
+
+            if (!string.IsNullOrEmpty(_winePrefixPath))
+            {
+                string systemUser = Environment.UserName ?? "froststrap";
+                string winePluginDir = Path.Combine(_winePrefixPath, "drive_c", "users", systemUser, "AppData", "Local", "Roblox", "Plugins");
+                StudioPluginManager.OverridePluginDirectory = winePluginDir;
+                StudioPluginManager.Sync();
+            }
+            else
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Wine prefix path is null or empty; cannot set plugin override.");
+            }
+
 
             string? cookie = await GetRobloxSecurityCookieAsync();
             if (!string.IsNullOrEmpty(cookie))

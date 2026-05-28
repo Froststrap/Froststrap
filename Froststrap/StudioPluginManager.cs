@@ -5,7 +5,19 @@
         private const string LOG_IDENT = "StudioIntegration";
         private const string VersionApiUrl = "https://api.github.com/repos/Froststrap/FroststrapStudioRPC/releases/latest";
 
-        private static string PluginFile => Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+        public static string? OverridePluginDirectory { get; set; }
+
+        private static string PluginFile
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(OverridePluginDirectory))
+                    return Path.Combine(OverridePluginDirectory, "FroststrapStudioRPC.rbxmx");
+
+                return Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
+            }
+        }
+
         private static string VersionCacheFile => Path.Combine(Paths.Cache, "StudioRPCVersion.json");
 
         public static void Sync()
@@ -47,10 +59,7 @@
             var asset = release.Assets?.FirstOrDefault(x => x.Name.EndsWith(".rbxmx"));
             if (asset is null) return;
 
-            using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("User-Agent", App.ProjectName);
-
-            byte[] data = await client.GetByteArrayAsync(asset.BrowserDownloadUrl);
+            byte[] data = await App.HttpClient.GetByteArrayAsync(asset.BrowserDownloadUrl);
 
             Directory.CreateDirectory(Path.GetDirectoryName(PluginFile)!);
             await File.WriteAllBytesAsync(PluginFile, data);
@@ -63,9 +72,7 @@
         {
             try
             {
-                using HttpClient client = new();
-                client.DefaultRequestHeaders.Add("User-Agent", App.ProjectName);
-                var response = await client.GetStringAsync(VersionApiUrl);
+                var response = await App.HttpClient.GetStringAsync(VersionApiUrl);
                 return JsonSerializer.Deserialize<GithubRelease>(response);
             }
             catch { return null; }
