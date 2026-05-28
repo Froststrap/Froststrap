@@ -644,7 +644,7 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                     }
 
                     RevertChannel();
-                    clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck);
+                    clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck, false, AppData.BinaryType);
                 }
 
                 if (clientVersion.IsBehindDefaultChannel && App.Settings.Prop.ChannelChangeMode == ChannelChangeMode.Prompt)
