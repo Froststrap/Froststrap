@@ -644,6 +644,13 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                     }
 
                     RevertChannel();
+
+                    if (IsStudioLaunch)
+                        App.Settings.Prop.StudioChannel = Deployment.DefaultChannel;
+                    else
+                        App.Settings.Prop.PlayerChannel = Deployment.DefaultChannel;
+                    App.Settings.Save();
+
                     clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck, false, AppData.BinaryType);
                 }
 
@@ -660,7 +667,14 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                         App.Logger.WriteLine("Bootstrapper::CheckLatestVersion", $"Changed Roblox channel from {Deployment.Channel} to {Deployment.DefaultChannel}");
 
                         RevertChannel();
-                        clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel);
+
+                        if (IsStudioLaunch)
+                            App.Settings.Prop.StudioChannel = Deployment.DefaultChannel;
+                        else
+                            App.Settings.Prop.PlayerChannel = Deployment.DefaultChannel;
+                        App.Settings.Save();
+
+                        clientVersion = await Deployment.GetInfo(Deployment.DefaultChannel, behindProductionCheck: false, binaryTypeOverride: AppData.BinaryType);
                     }
                 }
 
