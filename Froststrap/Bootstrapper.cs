@@ -24,6 +24,7 @@ using Microsoft.Win32;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Data;
 using System.Net.Security;
@@ -131,6 +132,8 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
         private long _totalDownloadedBytes = 0;
         private bool _packageExtractionSuccess = true;
 
+        private SynchronizationContext? _uiContext;
+
         private bool _noConnection = false;
 
         private AsyncMutex? _mutex;
@@ -210,24 +213,23 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
         private void SetStatus(string message)
         {
             message = message.Replace("{product}", AppData.ProductName);
-
-            Dialog?.Message = message;
+            _uiContext?.Post(_ => Dialog?.Message = message, null);
         }
 
         private void UpdateProgressBar()
         {
-            if (Dialog is null)
-                return;
+            long current = Interlocked.Read(ref _totalDownloadedBytes);
+            _uiContext?.Post(_ =>
+            {
+                if (Dialog is null) return;
+                int progressValue = (int)Math.Floor(_progressIncrement * current);
+                progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
+                Dialog.ProgressValue = progressValue;
 
-            // UI progress
-            int progressValue = (int)Math.Floor(_progressIncrement * _totalDownloadedBytes);
-            progressValue = Math.Clamp(progressValue, 0, ProgressBarMaximum);
-            Dialog.ProgressValue = progressValue;
-
-            // Taskbar progress
-            double taskbarProgressValue = _taskbarProgressIncrement * _totalDownloadedBytes;
-            taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
-            Dialog.TaskbarProgressValue = taskbarProgressValue;
+                double taskbarProgressValue = _taskbarProgressIncrement * current;
+                taskbarProgressValue = Math.Clamp(taskbarProgressValue, 0, _taskbarProgressMaximum);
+                Dialog.TaskbarProgressValue = taskbarProgressValue;
+            }, null);
         }
 
         private async Task HandleConnectionError(Exception exception)
@@ -271,6 +273,8 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
 
             // this is now always enabled as of v2.8.0
             Dialog?.CancelEnabled = true;
+
+            _uiContext = SynchronizationContext.Current ?? new SynchronizationContext();
 
             if (AutomaticallyUpdateSober && _launchMode == LaunchMode.Player)
                 await UpdateSoberFlatpakAsync();
@@ -1351,7 +1355,7 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
-            else if (_appPid != 0)
+            else
             {
                 try
                 {
@@ -1772,8 +1776,6 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                     .OrderByDescending(p => p.PackedSize)
                     .ToList();
 
-            var downloadedPackages = new List<Package>();
-
             var cachedPackageHashes = Directory.GetFiles(Paths.Downloads)
                 .Select(Path.GetFileName)
                 .Where(name => name != null)
@@ -1803,51 +1805,89 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                 _taskbarProgressIncrement = totalPackedSize > 0 ? _taskbarProgressMaximum / (double)totalPackedSize : 0;
             }
 
-            var packageTasks = new List<Task>();
-            using SemaphoreSlim downloadSemaphore = new(MaxThreadDownload);
+            int totalPackages = packages.Count;
+            int processedPackages = 0;
+            int completedDownloads = 0;
+            int totalDownloads = packages.Count(p => p.Name != "WebView2RuntimeInstaller.zip");
+            var downloadsTcs = new TaskCompletionSource<bool>();
+            if (totalDownloads == 0) downloadsTcs.TrySetResult(true);
+            int maxConcurrency = MaxThreadDownload > 0 ? MaxThreadDownload : 1;
+            using var semaphore = new SemaphoreSlim(maxConcurrency);
+            var tasks = new List<Task>();
+            var extractionSuccesses = new ConcurrentBag<bool>();
 
             foreach (var package in packages)
             {
                 if (_cancelTokenSource.IsCancellationRequested) break;
 
-                await downloadSemaphore.WaitAsync(_cancelTokenSource.Token);
+                await semaphore.WaitAsync(_cancelTokenSource.Token);
 
-                var task = Task.Run(async () =>
+                tasks.Add(Task.Run(async () =>
                 {
                     try
                     {
-                        int remaining;
-                        lock (downloadedPackages)
+                        if (_cancelTokenSource.IsCancellationRequested) return;
+
+                        int remaining = totalPackages - Interlocked.Increment(ref processedPackages);
+
+                        bool packageExists = File.Exists(package.DownloadPath);
+                        if (packageExists)
                         {
-                            remaining = packages.Count - downloadedPackages.Count;
+                            string calculatedMD5 = MD5Hash.FromFile(package.DownloadPath);
+                            if (!OperatingSystem.IsMacOS() && calculatedMD5 != package.Signature)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Package {package.Name} is corrupted ({calculatedMD5} != {package.Signature})! Deleting and re-downloading...");
+                                File.Delete(package.DownloadPath);
+                                packageExists = false;
+                            }
+                            else
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Package {package.Name} already exists in cache, skipping download...");
+                                Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
+                                UpdateProgressBar();
+                            }
                         }
 
-                        SetStatus($"{Strings.Bootstrapper_Status_Downloading} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}");
+                        if (!packageExists)
+                        {
+                            string downloadMsg = remaining > 0
+                                ? $"{Strings.Bootstrapper_Status_Downloading} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}"
+                                : $"{Strings.Bootstrapper_Status_Downloading} {package.Name}...";
+                            SetStatus(downloadMsg);
+                            await DownloadPackage(package);
+                        }
 
-                        await DownloadPackage(package);
+                        if (Interlocked.Increment(ref completedDownloads) == totalDownloads)
+                            downloadsTcs.TrySetResult(true);
 
                         if (package.Name != "WebView2RuntimeInstaller.zip")
                         {
-                            SetStatus($"{Strings.Bootstrapper_Status_Extracting} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}");
-
-                            await ExtractPackage(package);
+                            string extractMsg = remaining > 0
+                                ? $"{Strings.Bootstrapper_Status_Extracting} {package.Name} - {remaining} {Strings.Bootstrapper_Status_PackagesLeft}"
+                                : $"{Strings.Bootstrapper_Status_Extracting} {package.Name}...";
+                            SetStatus(extractMsg);
+                            bool success = await ExtractPackage(package);
+                            extractionSuccesses.Add(success);
                         }
-
-                        lock (downloadedPackages)
+                        else
                         {
-                            downloadedPackages.Add(package);
+                            extractionSuccesses.Add(true);
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Error processing {package.Name}: {ex.Message}");
+                        extractionSuccesses.Add(false);
                     }
                     finally
                     {
-                        downloadSemaphore.Release();
+                        semaphore.Release();
                     }
-                }, _cancelTokenSource.Token);
-
-                packageTasks.Add(task);
+                }, _cancelTokenSource.Token));
             }
 
-            await Task.WhenAll(packageTasks);
+            await Task.WhenAll(tasks);
+            _packageExtractionSuccess = extractionSuccesses.All(s => s);
 
             if (_cancelTokenSource.IsCancellationRequested) return;
 
@@ -1856,34 +1896,6 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                 Dialog.ProgressIndeterminate = true;
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
                 SetStatus(Strings.Bootstrapper_Status_Configuring);
-            }
-
-            if (Dialog is not null)
-            {
-                Dialog.ProgressIndeterminate = true;
-                Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
-                SetStatus(Strings.Bootstrapper_Status_Configuring);
-            }
-
-            if (OperatingSystem.IsMacOS())
-            {
-                string[] appNames = ["RobloxPlayer.app", "RobloxStudio.app"];
-                foreach (string appName in appNames)
-                {
-                    string appPath = Path.Combine(_latestVersionDirectory, appName);
-                    if (!Directory.Exists(appPath)) continue;
-
-                    string macOsDir = Path.Combine(appPath, "Contents", "MacOS");
-                    if (Directory.Exists(macOsDir))
-                    {
-                        foreach (string file in Directory.GetFiles(macOsDir))
-                        {
-                            var fileInfo = new FileInfo(file);
-                            fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
-                        }
-                    }
-                    Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"")?.WaitForExit();
-                }
             }
 
             if (OperatingSystem.IsWindows() && App.State.Prop.PromptWebView2Install)
@@ -1911,7 +1923,31 @@ SB/c9O+lxbtVGjhjhE63bK2VVOxlIhBJF7jAHscPrFRH
                             Directory.Delete(baseDir, true);
                         }
                     }
-                    else { App.State.Prop.PromptWebView2Install = false; }
+                    else
+                    {
+                        App.State.Prop.PromptWebView2Install = false;
+                    }
+                }
+            }
+
+            if (OperatingSystem.IsMacOS())
+            {
+                string[] appNames = ["RobloxPlayer.app", "RobloxStudio.app"];
+                foreach (string appName in appNames)
+                {
+                    string appPath = Path.Combine(_latestVersionDirectory, appName);
+                    if (!Directory.Exists(appPath)) continue;
+
+                    string macOsDir = Path.Combine(appPath, "Contents", "MacOS");
+                    if (Directory.Exists(macOsDir))
+                    {
+                        foreach (string file in Directory.GetFiles(macOsDir))
+                        {
+                            var fileInfo = new FileInfo(file);
+                            fileInfo.UnixFileMode |= UnixFileMode.UserExecute | UnixFileMode.GroupExecute | UnixFileMode.OtherExecute;
+                        }
+                    }
+                    Process.Start("xattr", $"-dr com.apple.quarantine \"{appPath}\"")?.WaitForExit();
                 }
             }
 
@@ -3823,7 +3859,7 @@ Windows Registry Editor Version 5.00
                 else
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Package is already downloaded, skipping...");
-                    _totalDownloadedBytes += package.PackedSize;
+                    Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
                     UpdateProgressBar();
                     return;
                 }
@@ -3834,7 +3870,7 @@ Windows Registry Editor Version 5.00
                 // then we can just copy the one from there
                 App.Logger.WriteLine(LOG_IDENT, $"Found existing copy at '{robloxPackageLocation}'! Copying to Downloads folder...");
                 File.Copy(robloxPackageLocation, package.DownloadPath);
-                _totalDownloadedBytes += package.PackedSize;
+                Interlocked.Add(ref _totalDownloadedBytes, package.PackedSize);
                 UpdateProgressBar();
                 return;
             }
@@ -3872,8 +3908,7 @@ Windows Registry Editor Version 5.00
                         totalBytesRead += bytesRead;
                         await fileStream.WriteAsync(buffer.AsMemory(0, bytesRead), _cancelTokenSource.Token);
 
-                        _totalDownloadedBytes += bytesRead;
-
+                        Interlocked.Add(ref _totalDownloadedBytes, bytesRead);
                         UpdateProgressBar();
                     }
 
@@ -3907,7 +3942,7 @@ Windows Registry Editor Version 5.00
                     if (File.Exists(package.DownloadPath))
                         File.Delete(package.DownloadPath);
 
-                    _totalDownloadedBytes -= totalBytesRead;
+                    Interlocked.Add(ref _totalDownloadedBytes, -totalBytesRead);
                     UpdateProgressBar();
 
                     // attempt download over HTTP
@@ -3922,7 +3957,7 @@ Windows Registry Editor Version 5.00
             }
         }
 
-        private async Task ExtractPackage(Package package, List<string>? files = null)
+        private async Task<bool> ExtractPackage(Package package, List<string>? files = null)
         {
             const string LOG_IDENT = "Bootstrapper::ExtractPackage";
             int attempts = 0;
@@ -3933,46 +3968,35 @@ Windows Registry Editor Version 5.00
                 try
                 {
                     attempts++;
-                    _packageExtractionSuccess = true;
 
                     string packageFolder = _latestVersionDirectory;
                     if (!OperatingSystem.IsMacOS())
                     {
                         string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-
                         if (packageDir is null)
                         {
                             App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                            return;
+                            return false;
                         }
-
                         packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
                     }
 
                     string? fileFilter = null;
-
                     if (files is not null)
                     {
                         var regexList = new List<string>();
                         foreach (string file in files)
                             regexList.Add("^" + file.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)") + "$");
-
-                        fileFilter = String.Join(';', regexList);
+                        fileFilter = string.Join(';', regexList);
                     }
 
                     App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
 
                     // Use custom extraction that transforms backslashes to forward slashes
                     ExtractZipWithTransform(package.DownloadPath, packageFolder, fileFilter);
-                    if (_packageExtractionSuccess)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
-                        return;
-                    }
-                    else
-                    {
-                        throw new Exception("Extraction failed according to success flag.");
-                    }
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
+                    return true;
                 }
                 catch (Exception ex)
                 {
@@ -3981,8 +4005,7 @@ Windows Registry Editor Version 5.00
                     if (ex.Message.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
                     {
                         App.Logger.WriteLine(LOG_IDENT, $"Ignoring non-critical extraction failure for font file: {ex.Message}");
-                        _packageExtractionSuccess = true;
-                        return;
+                        return true;
                     }
 
                     if (File.Exists(package.DownloadPath))
@@ -3993,18 +4016,18 @@ Windows Registry Editor Version 5.00
 
                     if (attempts >= maxAttempts)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Raising error.");
-                        throw;
+                        App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Giving up.");
+                        return false;
                     }
 
                     App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
-
                     SetStatus($"Retrying {package.Name}...");
-
                     await Task.Delay(1000);
                     await DownloadPackage(package);
                 }
             }
+
+            return false;
         }
 
         // for some reason on linux, it treats file directory entries in the zip as files with backslashes in their names,
