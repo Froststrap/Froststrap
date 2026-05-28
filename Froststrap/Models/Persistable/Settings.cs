@@ -94,6 +94,8 @@ namespace Froststrap.Models.Persistable
         public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public string StudioChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
+        public bool EnableWebView2 { get; set; } = true;
+        public string WebView2Version { get; set; } = string.Empty;
         public StudioRenderer StudioRenderer { get; set; } = StudioRenderer.DXVK;
         public bool StudioVersionOverrideEnabled { get; set; } = false;
         public string StudioVersionOverrideHash { get; set; } = string.Empty;
