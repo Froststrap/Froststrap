@@ -31,7 +31,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             LoadProfile.Items.Clear();
 
-            string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
+            string profilesDirectory = Paths.SavedFlagProfiles;
 
             if (!Directory.Exists(profilesDirectory))
                 Directory.CreateDirectory(profilesDirectory);
@@ -98,7 +98,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 }
             }
 
-            string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
+            string profilesDirectory = Paths.SavedFlagProfiles;
             string oldPath = Path.Combine(profilesDirectory, oldProfileName);
             string newPath = Path.Combine(profilesDirectory, newName);
 
@@ -128,7 +128,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 return;
             }
 
-            string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
+            string profilesDirectory = Paths.SavedFlagProfiles;
             string profilePath = Path.Combine(profilesDirectory, selectedProfile);
 
             if (!File.Exists(profilePath))

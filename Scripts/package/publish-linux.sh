@@ -3,6 +3,7 @@ set -e
 
 PROJECT_FILE=${1:-"Froststrap/Froststrap.csproj"}
 BUILD_DIR=${2:-"build"}
+PUBLISH_PROFILE=${3:-"Publish-linux-x64"}
 CONFIG="Release"
 APP_DIR="$BUILD_DIR/AppDir"
 SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -11,11 +12,8 @@ REPO_ROOT=$(cd "$SCRIPT_DIR/../.." && pwd)
 # Clean and Publish .NET
 rm -rf "$BUILD_DIR" && mkdir -p "$BUILD_DIR"
 dotnet publish "$PROJECT_FILE" \
-    -r linux-x64 \
     -c "$CONFIG" \
-    --self-contained true \
-    -p:PublishSingleFile=true \
-    -p:IncludeNativeLibrariesForSelfExtract=true \
+    -p:PublishProfile="$PUBLISH_PROFILE" \
     -o "$BUILD_DIR/linux-temp"
 
 # Setup Filesystem
