@@ -86,7 +86,6 @@ namespace Froststrap
             || (OperatingSystem.IsLinux() && IsStudioLaunch && !File.Exists(Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName)));
 
         private bool _isInstalling = false;
-        private bool WineInitialized = false;
         private double _progressIncrement;
         private double _taskbarProgressIncrement;
         private double _taskbarProgressMaximum;
@@ -2953,7 +2952,6 @@ namespace Froststrap
 
             await EnsureWebView2ViaWineAsync();
 
-            WineInitialized = true;
             return true;
         }
 

@@ -5,7 +5,7 @@ using FluentIcons.Common;
 
 namespace Froststrap.UI.Elements.Controls
 {
-    public class IconButton : Button
+    public class IconButton : SplitButton
     {
         public static readonly StyledProperty<Geometry?> IconDataProperty =
             AvaloniaProperty.Register<IconButton, Geometry?>(nameof(IconData));

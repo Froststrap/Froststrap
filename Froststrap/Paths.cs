@@ -129,9 +129,12 @@ namespace Froststrap
                 Application = Path.Combine(DataRoot, exeName);
 
             if (OperatingSystem.IsLinux())
+            {
                 Directory.CreateDirectory(Path.GetDirectoryName(Application) ?? Application);
+                Directory.CreateDirectory(WineRoot);
+            }
 
-            Directory.CreateDirectory(ConfigRoot);
+                Directory.CreateDirectory(ConfigRoot);
             Directory.CreateDirectory(DataRoot);
 
             // Also ensure common per-user dirs exist
@@ -145,7 +148,6 @@ namespace Froststrap
             Directory.CreateDirectory(Versions);
             Directory.CreateDirectory(Cache);
             Directory.CreateDirectory(Logs);
-            Directory.CreateDirectory(WineRoot);
 
             // Perform one-time migration from legacy ~/.config/<AppName> layout to XDG layout
             if (OperatingSystem.IsLinux())
@@ -161,7 +163,7 @@ namespace Froststrap
                         Directory.Move(regressedRobloxPath, Roblox);
                     }
 
-                    void TryMove(string src, string dst)
+                    static void TryMove(string src, string dst)
                     {
                         try
                         {

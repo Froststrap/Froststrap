@@ -74,20 +74,6 @@ namespace Froststrap.UI.Elements.Settings
 
             App.WindowsBackdrop();
 
-            bool isPlayerInstalled;
-
-            if (OperatingSystem.IsLinux())
-            {
-                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                isPlayerInstalled = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-            }
-            else
-            {
-                isPlayerInstalled = App.IsPlayerInstalled;
-            }
-
-            LaunchButton.Content = isPlayerInstalled ? Strings.Menu_SaveAndLaunch : Strings.Menu_SaveAndInstall;
-
             UpdatePageView(_viewModel.CurrentPage);
 
             Dispatcher.UIThread.Post(() =>

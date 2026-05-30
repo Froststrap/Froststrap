@@ -63,6 +63,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool HasBreadcrumbs => BreadcrumbItems.Count > 0;
         public bool ShowPageTitle => !HasBreadcrumbs;
 
+        public ICommand SetLaunchModeCommand { get; }
+
         public IRelayCommand NavigateToIntegrationsCommand { get; }
         public IRelayCommand NavigateToBehaviourCommand { get; }
         public IRelayCommand NavigateToSoberSettingsCommand { get; }
@@ -96,6 +98,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public MainWindowViewModel()
         {
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
+
+            SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
 
             OpenAboutCommand = new RelayCommand(OpenAbout);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
@@ -268,9 +272,65 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             SaveSettings();
             if (!App.LaunchSettings.TestModeFlag.Active)
-                Process.Start(Paths.Application, "-player");
+            {
+
+                string arg = SelectedLaunchMode == LaunchMode.Player ? "-player" : "-studio";
+                Process.Start(Paths.Application, arg);
+            }
             else
+            {
                 CloseWindow();
+            }
+        }
+
+        public LaunchMode SelectedLaunchMode
+        {
+            get => App.Settings.Prop.DefaultSaveAndLaunchMode;
+            set 
+            { 
+                App.Settings.Prop.DefaultSaveAndLaunchMode = value; 
+                OnPropertyChanged(nameof(SelectedLaunchMode));
+                OnPropertyChanged(nameof(LaunchButtonText));
+            }
+        }
+
+        public static bool IsPlayerInstalled
+        {
+            get
+            {
+                if (OperatingSystem.IsLinux())
+                {
+                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                    return Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                }
+                else
+                {
+                    return App.IsPlayerInstalled;
+                }
+            }
+        }
+
+        public static bool IsStudioInstalled => App.IsStudioInstalled;
+        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? "Sober" : "Player";
+
+        public string LaunchButtonText
+        {
+            get
+            {
+                if (SelectedLaunchMode == LaunchMode.Player)
+                {
+                    string modeName = OperatingSystem.IsLinux() ? "Sober" : "Player";
+                    return IsPlayerInstalled
+                        ? $"Save and Launch {modeName}"
+                        : $"Save and Install {modeName}";
+                }
+                else
+                {
+                    return IsStudioInstalled
+                        ? "Save and Launch Studio"
+                        : "Save and Install Studio";
+                }
+            }
         }
 
         private async void RestartApp()

@@ -112,5 +112,6 @@ namespace Froststrap.Models.Persistable
         public bool DisableGameSearch { get; set; } = false;
         public bool ForceLocalData { get; set; } = false;
         public bool DebugDisableVersionPackageCleanup { get; set; } = false;
+        public LaunchMode DefaultSaveAndLaunchMode { get; set; } = LaunchMode.Player;
     }
 }
