@@ -30,41 +30,13 @@ namespace Froststrap.UI.ViewModels
                 {
                     FilterSearchResults();
 
-                    if (!DisableGameSearch)
-                    {
-                        TriggerGameSearch(value);
-                    }
-                    else
-                    {
-                        GameSearchResults.Clear();
-                        IsGameSearchLoading = false;
-                    }
+                    TriggerGameSearch(value);
+                    GameSearchResults.Clear();
+                    IsGameSearchLoading = false;
                 }
             }
         }
 
-        public bool DisableGameSearch
-        {
-            get => App.Settings.Prop.DisableGameSearch;
-            set
-            {
-                if (App.Settings.Prop.DisableGameSearch != value)
-                {
-                    App.Settings.Prop.DisableGameSearch = value;
-                    OnPropertyChanged(nameof(DisableGameSearch));
-
-                    if (value)
-                    {
-                        GameSearchResults.Clear();
-                        IsGameSearchLoading = false;
-                    }
-                    else if (!string.IsNullOrWhiteSpace(SearchQuery))
-                    {
-                        TriggerGameSearch(SearchQuery);
-                    }
-                }
-            }
-        }
 
         private ObservableCollection<OmniSearchContent> _gameSearchResults = [];
         public ObservableCollection<OmniSearchContent> GameSearchResults
@@ -139,6 +111,17 @@ namespace Froststrap.UI.ViewModels
 
         private void TriggerGameSearch(string query)
         {
+            if (!App.Settings.Prop.GameSearch)
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    GameSearchResults.Clear();
+                    IsSearchFlyoutOpen = FilteredSearchResults.Count > 0;
+                    OnPropertyChanged(nameof(HasAnyResults));
+                });
+                return;
+            }
+
             _searchDebounceCts?.Cancel();
             _searchDebounceCts = new CancellationTokenSource();
             var token = _searchDebounceCts.Token;
@@ -148,6 +131,8 @@ namespace Froststrap.UI.ViewModels
 
         private async Task SearchGamesAsync(string query, CancellationToken token)
         {
+            if (!App.Settings.Prop.GameSearch) return;
+
             if (string.IsNullOrWhiteSpace(query))
             {
                 Dispatcher.UIThread.Post(() => {
@@ -286,7 +271,8 @@ namespace Froststrap.UI.ViewModels
         [RelayCommand]
         private async Task LoadMoreGamesAsync()
         {
-            if (string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading) return;
+            if (!App.Settings.Prop.GameSearch || string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading)
+                return;
 
             try
             {

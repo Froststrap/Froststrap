@@ -174,10 +174,10 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool DisabeGameSearch
+        public static bool GameSearch
         {
-            get => App.Settings.Prop.DisableGameSearch;
-            set => App.Settings.Prop.DisableGameSearch = value;
+            get => App.Settings.Prop.GameSearch;
+            set => App.Settings.Prop.GameSearch = value;
         }
 
         private async Task HandleTestModeConfirmation()
