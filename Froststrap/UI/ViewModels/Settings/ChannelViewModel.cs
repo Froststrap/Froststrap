@@ -14,6 +14,8 @@ namespace Froststrap.UI.ViewModels.Settings
         private CancellationTokenSource? _playerCts;
         private CancellationTokenSource? _studioCts;
 
+        public ICommand OpenWineCfgCommand { get; }
+
         public ChannelViewModel()
         {
             _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
@@ -27,7 +29,11 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 var newEntry = new EnvEntry("", "", RemoveEnvEntry);
                 StudioEnvEntries.Add(newEntry);
-            });
+            }); 
+            
+            OpenWineCfgCommand = new RelayCommand(OpenWineCfg);
+
+            OnPropertyChanged(nameof(IsWineAvailable));
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -50,6 +56,63 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
 
                 OnPropertyChanged(nameof(PreReleaseUpdatesEnabled));
+            }
+        }
+
+        private void OpenWineCfg()
+        {
+            string wineBinary = App.Settings.Prop.WineBinaryPath;
+            if (string.IsNullOrEmpty(wineBinary) || !File.Exists(wineBinary))
+            {
+                wineBinary = Path.Combine(Paths.Base, "kombucha", "bin", "wine");
+                if (!File.Exists(wineBinary))
+                {
+                    _ = Frontend.ShowMessageBox("Wine binary not found. Please ensure Wine is installed.", MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            string winePrefix = App.Settings.Prop.WinePrefixPath ?? Path.Combine(Paths.Base, "prefixes", "studio");
+            var psi = new ProcessStartInfo
+            {
+                FileName = wineBinary,
+                Arguments = "winecfg",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            psi.EnvironmentVariables["WINEPREFIX"] = winePrefix;
+            psi.EnvironmentVariables["WINEDLLOVERRIDES"] = "winemenubuilder.exe=d";
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                _ = Frontend.ShowMessageBox($"Failed to start winecfg: {ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        private static string GetEffectiveWineBinary()
+        {
+            string? customPath = App.Settings.Prop.WineBinaryPath;
+            if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
+                return customPath;
+
+            string kombuchaPath = Path.Combine(Paths.Base, "kombucha", "bin", "wine");
+            return File.Exists(kombuchaPath) ? kombuchaPath : "wine";
+        }
+
+        public static bool IsWineAvailable
+        {
+            get
+            {
+                if (!OperatingSystem.IsLinux()) return false;
+                string wineBinary = GetEffectiveWineBinary();
+                if (!File.Exists(wineBinary)) return false;
+
+                string winePrefix = App.Settings.Prop.WinePrefixPath ?? Path.Combine(Paths.Base, "prefixes", "studio");
+                return Directory.Exists(winePrefix);
             }
         }
 
@@ -365,6 +428,37 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => App.Settings.Prop.StudioDebug;
             set => App.Settings.Prop.StudioDebug = value;
+        }
+
+        public bool VirtualDesktopEnabled
+        {
+            get => !string.IsNullOrEmpty(App.Settings.Prop.StudioVirtualDesktop);
+            set
+            {
+                if (!value)
+                    VirtualDesktopResolution = "";
+                else if (string.IsNullOrEmpty(VirtualDesktopResolution))
+                    VirtualDesktopResolution = "1920x1080";
+                OnPropertyChanged();
+            }
+        }
+
+        public static string VirtualDesktopResolution
+        {
+            get => App.Settings.Prop.StudioVirtualDesktop ?? string.Empty;
+            set => App.Settings.Prop.StudioVirtualDesktop = value;
+        }
+
+        public static string StudioLauncher
+        {
+            get => App.Settings.Prop.StudioLauncher ?? string.Empty;
+            set => App.Settings.Prop.StudioLauncher = value;
+        }
+
+        public static bool EnableWebView2
+        {
+            get => App.Settings.Prop.EnableWebView2;
+            set => App.Settings.Prop.EnableWebView2 = value;
         }
 
         public ObservableCollection<EnvEntry> StudioEnvEntries { get; set; }

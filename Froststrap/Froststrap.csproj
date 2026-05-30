@@ -66,6 +66,9 @@
 		<EmbeddedResource Include="Resources\SkyboxFix\9244e00ff9fd6cee0bb40a262bb35d31" />
 		<EmbeddedResource Include="Resources\SkyboxFix\a50f6563c50ca4d5dcb255ee5cfab097" />
 		<EmbeddedResource Include="Resources\SkyboxFix\a564ec8aeef3614e788d02f0090089d8" />
+		<EmbeddedResource Include="Resources\vinegar_layer.cpp" />
+		<EmbeddedResource Include="Resources\vk_layer.h" />
+		<EmbeddedResource Include="Resources\VkLayer_VINEGAR_VinegarLayer.json" />
 	</ItemGroup>
 
     <!-- NuGet packages -->

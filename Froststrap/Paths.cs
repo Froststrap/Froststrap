@@ -37,6 +37,7 @@ namespace Froststrap
 
         public static string SoberAssetOverlay { get; private set; } = "";
         public static string SoberConfig { get; private set; } = "";
+        public static string WineRoot { get; private set; } = "";
 
         public static string CustomFont => Path.Combine(PresetModifications, "content", "fonts", "CustomFont.ttf");
 
@@ -77,6 +78,8 @@ namespace Froststrap
                 SoberAssetOverlay = Path.Combine(Roblox, "data", "sober", "asset_overlay");
 
                 SoberConfig = Path.Combine(Roblox, "config", "sober", "config.json");
+                
+                WineRoot = Path.Combine(DataRoot, "Wine");
 
                 // Set cache and logs to XDG locations
                 Cache = Path.Combine(xdgCache, App.ProjectName);
@@ -142,6 +145,7 @@ namespace Froststrap
             Directory.CreateDirectory(Versions);
             Directory.CreateDirectory(Cache);
             Directory.CreateDirectory(Logs);
+            Directory.CreateDirectory(WineRoot);
 
             // Perform one-time migration from legacy ~/.config/<AppName> layout to XDG layout
             if (OperatingSystem.IsLinux())

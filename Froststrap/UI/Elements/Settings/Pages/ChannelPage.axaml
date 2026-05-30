@@ -393,12 +393,39 @@
                 </StackPanel>
             </controls:CardExpander>
 
+            <controls:CardAction
+                Icon="Settings"
+                Header="Advanced Wine Settings"
+                Command="{Binding OpenWineCfgCommand}"
+                IsVisible="{Binding IsWineAvailable}"/>
+
+            <controls:OptionControl Header="Web Pages"
+                                    Description="Used for certain UI elements and logging in">
+                <ToggleSwitch IsChecked="{Binding EnableWebView2, Mode=TwoWay}" />
+            </controls:OptionControl>
+
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
                                     Header="Graphics Renderer"
                                     Description="Select the rendering backend for Studio under Wine.">
                 <ComboBox Width="200"
                           ItemsSource="{Binding StudioRendererOptions, Mode=OneTime}"
                           SelectedItem="{Binding SelectedStudioRenderer, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl Header="Virtual Desktops"
+                                    Description="Create an isolated window for each instance">
+                <StackPanel Spacing="4">
+                    <ToggleSwitch IsChecked="{Binding VirtualDesktopEnabled, Mode=TwoWay}" />
+                    <TextBox Text="{Binding VirtualDesktopResolution, Mode=TwoWay}"
+                             IsEnabled="{Binding VirtualDesktopEnabled}"
+                             Watermark="e.g. 1920x1080"
+                             Margin="0,4,0,0" />
+                </StackPanel>
+            </controls:OptionControl>
+
+            <controls:OptionControl Header="Launcher Command"
+                                    Description="Wrap the Studio command (e.g. gamescope -- %command%)">
+                <TextBox Text="{Binding StudioLauncher, Mode=TwoWay}" Watermark="gamescope -- %command%" />
             </controls:OptionControl>
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
