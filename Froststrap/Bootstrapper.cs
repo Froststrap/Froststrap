@@ -995,7 +995,7 @@ namespace Froststrap
                 }
             }
 
-            const int MAX_CANDIDATES = 25;
+            int MAX_CANDIDATES = App.Settings.Prop.MaxServerCheck;
             var fetcher = new Integrations.RobloxServerFetcher();
             string? cookie = await fetcher.ResolveCookieAsync();
             if (string.IsNullOrEmpty(cookie))
