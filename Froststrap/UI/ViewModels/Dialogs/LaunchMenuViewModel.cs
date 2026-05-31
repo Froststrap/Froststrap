@@ -1,28 +1,53 @@
-﻿using System.Windows.Input;
+﻿using System.ComponentModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    public class LaunchMenuViewModel
+    public class LaunchMenuViewModel : NotifyPropertyChangedViewModel
     {
-        public static string Version => string.Format(Strings.Menu_About_Version, App.Version);
+        private LaunchMode _selectedLaunchMode = LaunchMode.Player;
+        public LaunchMode SelectedLaunchMode
+        {
+            get => _selectedLaunchMode;
+            set
+            {
+                if (_selectedLaunchMode != value)
+                {
+                    _selectedLaunchMode = value;
+                    OnPropertyChanged(nameof(SelectedLaunchMode));
+                    OnPropertyChanged(nameof(LaunchButtonText));
+                    OnPropertyChanged(nameof(LaunchButtonIcon));
+                }
+            }
+        }
 
-        public ICommand LaunchSettingsCommand => new RelayCommand(LaunchSettings);
+        public string LaunchButtonText => SelectedLaunchMode == LaunchMode.Player ? "Launch Player" : "Launch Studio";
+        public string LaunchButtonIcon => SelectedLaunchMode == LaunchMode.Player ? "PlayCircle" : "Wrench";
 
-        public ICommand LaunchRobloxCommand => new RelayCommand(LaunchRoblox);
-
-        public ICommand LaunchRobloxStudioCommand => new RelayCommand(LaunchRobloxStudio);
-
-        public ICommand LaunchAboutCommand => new RelayCommand(LaunchAbout);
+        public ICommand LaunchCommand { get; }
+        public ICommand SetLaunchModeCommand { get; }
+        public ICommand LaunchSettingsCommand { get; }
+        public ICommand LaunchAboutCommand { get; }
 
         public event EventHandler<NextAction>? CloseWindowRequest;
 
-        private void LaunchSettings() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings);
+        public LaunchMenuViewModel()
+        {
+            LaunchCommand = new RelayCommand(ExecuteLaunch);
+            SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
+            LaunchSettingsCommand = new RelayCommand(() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings));
+            LaunchAboutCommand = new RelayCommand(() => new Elements.About.MainWindow().Show());
+        }
 
-        private void LaunchRoblox() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRoblox);
+        private void ExecuteLaunch()
+        {
+            NextAction action = SelectedLaunchMode == LaunchMode.Player
+                ? NextAction.LaunchRoblox
+                : NextAction.LaunchRobloxStudio;
+            CloseWindowRequest?.Invoke(this, action);
+        }
 
-        private void LaunchRobloxStudio() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRobloxStudio);
-
-        private void LaunchAbout() => new Elements.About.MainWindow().Show();
+        public static string Version => string.Format(Strings.Menu_About_Version, App.Version);
     }
 }
