@@ -211,12 +211,16 @@ namespace Froststrap.UI.ViewModels.Settings
                     NavigateToShortcutsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.QuickPlayViewModel":
                     NavigateToQuickPlayCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.ChannelViewModel":
+                    NavigateToChannelsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.CommunityModsViewModel":
                     NavigateToCommunityModsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModsPresetsViewModel":
                     NavigateToPresetModsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModGeneratorViewModel":
                     NavigateToModGeneratorCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.RegionSelectorViewModel":
+                    NavigateToRegionSelectorCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlags.FastFlagEditorViewModel":
                     NavigateToFastFlagEditorCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.GlobalSettings.GlobalSettingsEditorViewModel":
