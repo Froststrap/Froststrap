@@ -135,10 +135,32 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool EnableBetterMatchmaking
+        public bool EnableBetterMatchmaking
         {
             get => App.Settings.Prop.EnableBetterMatchmaking;
-            set => App.Settings.Prop.EnableBetterMatchmaking = value;
+            set
+            {
+                App.Settings.Prop.EnableBetterMatchmaking = value;
+                OnPropertyChanged(nameof(EnableBetterMatchmaking));
+            }
+        }
+
+        public static bool JoinSmallerServer
+        {
+            get => App.Settings.Prop.JoinSmallerServer;
+            set => App.Settings.Prop.JoinSmallerServer = value;
+        }
+
+        public static int MaxServerCheck
+        {
+            get => App.Settings.Prop.MaxServerCheck;
+            set => App.Settings.Prop.MaxServerCheck = value;
+        }
+
+        public static int BestRegionAmounts
+        {
+            get => App.Settings.Prop.BestRegionAmounts;
+            set => App.Settings.Prop.BestRegionAmounts = value;
         }
 
         public static CleanerOptions SelectedCleanUpMode

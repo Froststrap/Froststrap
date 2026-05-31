@@ -978,7 +978,7 @@ namespace Froststrap
             for (int i = 0; i < topRegions.Count; i++)
                 regionRank[topRegions[i].Region] = i + 1;
 
-            App.Logger.WriteLine(LOG_IDENT, $"Top 5 regions: {string.Join(" -> ", topRegions.Select(r => r.Region))}");
+            App.Logger.WriteLine(LOG_IDENT, $"Top regions: {string.Join(" -> ", topRegions.Select(r => r.Region))}");
 
             if (!string.IsNullOrEmpty(_joinData.JobId))
             {
@@ -1008,7 +1008,7 @@ namespace Froststrap
             var candidates = fetchResult.Servers?
                 .Where(s => !string.IsNullOrEmpty(s.Id))
                 .Take(MAX_CANDIDATES)
-                .ToList() ?? new List<ServerInstance>();
+                .ToList() ?? [];
 
             if (candidates.Count == 0)
             {
@@ -1049,11 +1049,11 @@ namespace Froststrap
                 return bestServerId;
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "No server found in any of the top 5 regions.");
+            App.Logger.WriteLine(LOG_IDENT, "No server found in any of the top regions.");
             return "";
         }
 
-        private async Task<string?> GetServerRegionAsync(string jobId, long placeId)
+        private static async Task<string?> GetServerRegionAsync(string jobId, long placeId)
         {
             var fetcher = new Integrations.RobloxServerFetcher();
             string? cookie = await fetcher.ResolveCookieAsync();
@@ -1076,9 +1076,7 @@ namespace Froststrap
             string json = await response.Content.ReadAsStringAsync();
             using var doc = JsonDocument.Parse(json);
 
-            //forgot which one it was and too lazy to check honestly
-            if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem) ||
-                doc.RootElement.TryGetProperty("dataCenterId", out dcElem))
+            if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem))
             {
                 if (dcElem.TryGetInt32(out int dcId))
                 {
@@ -1091,11 +1089,11 @@ namespace Froststrap
             return null;
         }
 
-        private async Task<List<RegionDistance>> GetClosestRegionsWithDistanceAsync(double userLat, double userLon, int topCount = 3)
+        private static async Task<List<RegionDistance>> GetClosestRegionsWithDistanceAsync(double userLat, double userLon, int topCount = 3)
         {
             var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
             if (datacenters == null || datacenters.Count == 0)
-                return new List<RegionDistance>();
+                return [];
 
             var regionDistance = new Dictionary<string, double>();
 
@@ -1111,7 +1109,7 @@ namespace Froststrap
                 double distance = GetDistance(userLat, userLon, lat, lon);
                 string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
 
-                if (!regionDistance.ContainsKey(regionKey) || distance < regionDistance[regionKey])
+                if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
                     regionDistance[regionKey] = distance;
             }
 
@@ -3221,8 +3219,8 @@ namespace Froststrap
                     }
                 }
 
-                var asset = release.Assets?.FirstOrDefault(a => a.Name?.EndsWith(".tar.xz") == true);
-                if (asset is null) throw new Exception("No .tar.xz asset found");
+                var asset = release.Assets?.FirstOrDefault(a => a.Name?.EndsWith(".tar.xz") == true)
+                    ?? throw new Exception("No .tar.xz asset found");
 
                 string cacheDir = Path.Combine(Paths.Cache, "kombucha");
                 Directory.CreateDirectory(cacheDir);
