@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs
@@ -22,7 +21,46 @@ namespace Froststrap.UI.ViewModels.Dialogs
             }
         }
 
-        public string LaunchButtonText => SelectedLaunchMode == LaunchMode.Player ? "Launch Player" : "Launch Studio";
+        public static bool IsPlayerInstalled
+        {
+            get
+            {
+                if (OperatingSystem.IsLinux())
+                {
+                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                    return Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                }
+                else
+                {
+                    return App.IsPlayerInstalled;
+                }
+            }
+        }
+
+        public static bool IsStudioInstalled => App.IsStudioInstalled;
+
+        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? "Sober" : "Player";
+
+        public string LaunchButtonText
+        {
+            get
+            {
+                if (SelectedLaunchMode == LaunchMode.Player)
+                {
+                    string modeName = OperatingSystem.IsLinux() ? "Sober" : "Player";
+                    return IsPlayerInstalled
+                        ? $"Launch {modeName}"
+                        : $"Install {modeName}";
+                }
+                else
+                {
+                    return IsStudioInstalled
+                        ? "Launch Studio"
+                        : "Install Studio";
+                }
+            }
+        }
+
         public string LaunchButtonIcon => SelectedLaunchMode == LaunchMode.Player ? "PlayCircle" : "Wrench";
 
         public ICommand LaunchCommand { get; }

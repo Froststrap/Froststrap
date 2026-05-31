@@ -38,6 +38,8 @@
                                  HorizontalAlignment="Stretch"
                                  Height="52"
                                  CornerRadius="8"
+                                 FontWeight="SemiBold"
+                                 FontSize="14"
                                  Command="{Binding LaunchCommand}"
                                  IconSize="20"
                                  Icon="{Binding LaunchButtonIcon}"
@@ -45,7 +47,7 @@
                                  Padding="16,0">
                 <controls:IconButton.Flyout>
                     <MenuFlyout Placement="BottomEdgeAlignedRight">
-                        <MenuItem Header="Player"
+                        <MenuItem Header="{Binding PlayerMenuItemText}"
                                   Command="{Binding SetLaunchModeCommand}"
                                   CommandParameter="{x:Static enums:LaunchMode.Player}">
                             <MenuItem.Icon>
