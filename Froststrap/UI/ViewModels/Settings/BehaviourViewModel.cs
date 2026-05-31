@@ -141,12 +141,6 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.EnableBetterMatchmaking = value;
         }
 
-        public static bool EnableBetterMatchmakingRandomization
-        {
-            get => App.Settings.Prop.EnableBetterMatchmakingRandomization;
-            set => App.Settings.Prop.EnableBetterMatchmakingRandomization = value;
-        }
-
         public static CleanerOptions SelectedCleanUpMode
         {
             get => App.Settings.Prop.CleanerOptions;

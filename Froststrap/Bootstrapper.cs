@@ -443,6 +443,7 @@ namespace Froststrap
                     else if (!allModificationsApplied)
                         Frontend.ShowBalloonTip(Strings.Bootstrapper_ModificationsFailed_Title, Strings.Bootstrapper_ModificationsFailed_Message, Avalonia.Controls.Notifications.NotificationType.Warning);
                 }
+
                 if (!OperatingSystem.IsLinux())
                 {
                     await StartRoblox();
@@ -961,64 +962,148 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::GetBetterMatchmakingServerID";
 
-            Uri ipinfoUrl = new("https://ipinfo.io/json");
-            Uri roValraDatacentersUrl = new("https://apis.rovalra.com/v1/datacenters/list");
+            var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
+            if (string.IsNullOrEmpty(ipinfo.Loc))
+                throw new HttpRequestException("Location data missing from ipinfo.io");
 
-            var ipinfo = await Http.GetJson<IPInfoResponse>(ipinfoUrl);
+            string[] location = ipinfo.Loc.Split(',');
+            double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
+            double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
 
-            if (string.IsNullOrEmpty(ipinfo.Country))
-                throw new HttpRequestException("Country is blank.");
+            List<RegionDistance> topRegions = await GetClosestRegionsWithDistanceAsync(userLat, userLon, 5);
+            if (topRegions.Count == 0)
+                throw new HttpRequestException("No regions found from datacenter list");
 
-            var datacenters = await Http.GetJson<List<RoValraDatacenter>>(roValraDatacentersUrl);
+            App.Logger.WriteLine(LOG_IDENT, $"Top 5 regions: {string.Join(" -> ", topRegions.Select(r => r.Region))}");
 
+            if (!string.IsNullOrEmpty(_joinData.JobId))
+            {
+                string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!);
+                if (defaultRegion != null)
+                {
+                    bool isInTop5 = topRegions.Any(r => r.Region.Equals(defaultRegion, StringComparison.OrdinalIgnoreCase));
+                    App.Logger.WriteLine(LOG_IDENT, $"Default server region: {defaultRegion} – {(isInTop5 ? "in top 5, keeping it" : "not in top 5, will override")}");
+                    if (isInTop5)
+                        return _joinData.JobId;
+                }
+            }
+
+            const int MAX_CANDIDATES = 100;
+            var fetcher = new Integrations.RobloxServerFetcher();
+            string? cookie = await fetcher.ResolveCookieAsync();
+            if (string.IsNullOrEmpty(cookie))
+                throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
+
+            SetStatus("Searching for nearby servers...");
+            var fetchResult = await fetcher.FetchServerInstancesAsync((long)_joinData.PlaceId!, cursor: "", sortOrder: 2, optionalCookie: cookie);
+
+            var candidates = fetchResult.Servers?
+                .Where(s => !string.IsNullOrEmpty(s.Id))
+                .Take(MAX_CANDIDATES)
+                .ToList() ?? new List<ServerInstance>();
+
+            if (candidates.Count == 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "No servers found at all.");
+                return "";
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Collected {candidates.Count} candidate servers (max {MAX_CANDIDATES}).");
+
+            foreach (var regionInfo in topRegions)
+            {
+                var match = candidates.FirstOrDefault(s => s.Region != null && s.Region.Equals(regionInfo.Region, StringComparison.OrdinalIgnoreCase));
+                if (match != null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Found server in {regionInfo.Region} (rank {Array.IndexOf(topRegions.Select(r => r.Region).ToArray(), regionInfo.Region) + 1})");
+                    return match.Id;
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "No server found in any of the top 5 regions.");
+            return "";
+        }
+
+        private async Task<string?> GetServerRegionAsync(string jobId, long placeId)
+        {
+            var fetcher = new Integrations.RobloxServerFetcher();
+            string? cookie = await fetcher.ResolveCookieAsync();
+            if (string.IsNullOrEmpty(cookie))
+                return null;
+
+            using var httpClient = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
+            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(new { placeId, isTeleport = false, gameId = jobId, gameJoinAttemptId = jobId }),
+                Encoding.UTF8,
+                "application/json"
+            );
+
+            var response = await httpClient.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            string json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            //forgot which one it was and too lazy to check honestly
+            if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem) ||
+                doc.RootElement.TryGetProperty("dataCenterId", out dcElem))
+            {
+                if (dcElem.TryGetInt32(out int dcId))
+                {
+                    var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+                    var entry = datacenters?.FirstOrDefault(dc => dc.DataCenterIds.Contains(dcId));
+                    if (entry != null)
+                        return $"{entry.Location.City}, {entry.Location.Country}".TrimStart(',').Trim();
+                }
+            }
+            return null;
+        }
+
+        private async Task<List<RegionDistance>> GetClosestRegionsWithDistanceAsync(double userLat, double userLon, int topCount = 3)
+        {
+            var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
             if (datacenters == null || datacenters.Count == 0)
-                throw new HttpRequestException("No datacenters in response.");
+                return new List<RegionDistance>();
 
-            string[] location = ipinfo.Loc.Split(",");
-            double lat1 = double.Parse(location[0], CultureInfo.InvariantCulture);
-            double lon1 = double.Parse(location[1], CultureInfo.InvariantCulture);
+            var regionDistance = new Dictionary<string, double>();
 
-            var regions = datacenters
-                .OrderBy(dc => GetDistance(lat1, lon1, dc.Location.Latitude, dc.Location.Longitude))
-                .Select(dc => dc.Location.Country)
-                .Distinct()
+            foreach (var dc in datacenters)
+            {
+                if (dc.Location == null || dc.Location.LatLong == null || dc.Location.LatLong.Length < 2)
+                    continue;
+
+                if (!double.TryParse(dc.Location.LatLong[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double lat) ||
+                    !double.TryParse(dc.Location.LatLong[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double lon))
+                    continue;
+
+                double distance = GetDistance(userLat, userLon, lat, lon);
+                string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
+
+                if (!regionDistance.ContainsKey(regionKey) || distance < regionDistance[regionKey])
+                    regionDistance[regionKey] = distance;
+            }
+
+            var closest = regionDistance
+                .OrderBy(kvp => kvp.Value)
+                .Take(topCount)
+                .Select(kvp => new RegionDistance { Region = kvp.Key, DistanceKm = kvp.Value })
                 .ToList();
 
-            if (regions.Contains(ipinfo.Country, StringComparer.OrdinalIgnoreCase))
-            {
-                regions.Remove(ipinfo.Country);
-                regions.Insert(0, ipinfo.Country);
-            }
+            return closest;
+        }
 
-            foreach (var region in regions)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Checking for servers in user region");
-                Uri roValraServersApi = new($"https://apis.rovalra.com/v1/servers/region?place_id={_joinData.PlaceId}&region={region}");
-
-                var valraResponse = await Http.GetJson<RoValraServers>(roValraServersApi);
-
-                if (valraResponse?.Servers != null && valraResponse.Servers.Count > 0 && valraResponse.Servers[0].ServerId != null)
-                {
-                    if (App.Settings.Prop.EnableBetterMatchmakingRandomization)
-                    {
-                        int index = Random.Shared.Next(0, valraResponse.Servers.Count);
-                        return valraResponse.Servers[index].ServerId;
-                    }
-
-                    return valraResponse.Servers[0].ServerId;
-                }
-
-                App.Logger.WriteLine(LOG_IDENT, $"No servers available in user region. Falling back to the next closest...");
-            }
-
-            return "";
+        private class RegionDistance
+        {
+            public string Region { get; set; } = "";
+            public double DistanceKm { get; set; }
         }
 
         private async Task StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
-
-            SetStatus(Strings.Bootstrapper_Status_Starting);
 
             if (_launchMode == LaunchMode.Player)
             {
@@ -1070,44 +1155,10 @@ namespace Froststrap
                 }
 
                 if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
-                    _launchCommandLine = "roblox://navigation/home"; // fixes a bug on rblx.org where its stuck on the login screen, doesnt affect anything else
+                    _launchCommandLine = "roblox://navigation/home";
             }
 
-            // Skip all binary discovery and download, send directly to Sober via flatpak run.
-            if (OperatingSystem.IsLinux())
-            {
-                if (IsStudioLaunch)
-                {
-                    if (!await EnsureWineAndDependenciesAsync())
-                        return;
-
-                    string studioExe = Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName);
-                    if (!File.Exists(studioExe))
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "RobloxStudioBeta.exe missing, triggering upgrade...");
-                        await UpgradeRoblox();
-                    }
-
-                    if (!File.Exists(studioExe))
-                    {
-                        await Frontend.ShowMessageBox(
-                            "Roblox Studio installation failed. Please check your connection and try again.",
-                            MessageBoxImage.Error);
-                        App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
-                        return;
-                    }
-
-                    SetStatus("Starting Roblox Studio with Wine...");
-                    await LaunchStudioViaWineAsync();
-                    return;
-                }
-
-                if (!await EnsureSoberInstalledAsync())
-                    return;
-                SetStatus("Starting Sober...");
-                await LaunchViaSober([]);
-                return;
-            }
+            SetStatus(Strings.Bootstrapper_Status_Starting);
 
             string expectedName = IsStudioLaunch ? App.RobloxStudioAppName : App.RobloxPlayerAppName;
             string expectedPath = Path.Combine((string)AppData.Directory, expectedName);

@@ -98,41 +98,7 @@
                     <controls:OptionControl
                         Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Title}"
                         Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Description}">
-                        <StackPanel Orientation="Horizontal">
-                            <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
-                                <ic:SymbolIcon.Styles>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Setter Property="IsVisible" Value="False"/>
-                                    </Style>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Style.Resources>
-                                        </Style.Resources>
-                                        <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
-                                    </Style>
-                                </ic:SymbolIcon.Styles>
-                            </ic:SymbolIcon>
-                            <ToggleSwitch IsChecked="{Binding EnableBetterMatchmaking, Mode=TwoWay}" />
-                        </StackPanel>
-                    </controls:OptionControl>
-
-                    <controls:OptionControl
-                        Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Title}"
-                        Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Description}">
-                        <StackPanel Orientation="Horizontal">
-                            <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
-                                <ic:SymbolIcon.Styles>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Setter Property="IsVisible" Value="False"/>
-                                    </Style>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Style.Resources>
-                                        </Style.Resources>
-                                        <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
-                                    </Style>
-                                </ic:SymbolIcon.Styles>
-                            </ic:SymbolIcon>
-                            <ToggleSwitch IsChecked="{Binding EnableBetterMatchmakingRandomization, Mode=TwoWay}" />
-                        </StackPanel>
+                        <ToggleSwitch IsChecked="{Binding EnableBetterMatchmaking, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
