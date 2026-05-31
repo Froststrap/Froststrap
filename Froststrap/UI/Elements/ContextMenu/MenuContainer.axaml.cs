@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.Integrations;
+using Froststrap.Models.APIs;
 using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI.Elements.ContextMenu
@@ -95,8 +96,6 @@ namespace Froststrap.UI.Elements.ContextMenu
                     {
                         if (App.Settings.Prop.PlaytimeCounter) StartTotalPlaytimeTimer();
 
-                        UpdateRegionJoinUI();
-
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, App.Settings.Prop.ShowGameHistoryMenu);
                     }
 
@@ -176,14 +175,14 @@ namespace Froststrap.UI.Elements.ContextMenu
                 if (ActivityWatcher?.Data.ServerType == ServerType.Public && InviteDeeplinkMenuItem != null)
                     InviteDeeplinkMenuItem.IsVisible = true;
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
-                UpdateRegionJoinUI();
+                AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, true);
             });
 
         private void ActivityWatcher_OnGameLeave(object? sender, EventArgs e) =>
             Dispatcher.UIThread.Invoke(() => {
                 InviteDeeplinkMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
-                UpdateRegionJoinUI();
+                AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                 _serverInformationWindow?.Close();
             });
 
@@ -224,40 +223,25 @@ namespace Froststrap.UI.Elements.ContextMenu
             else _gameHistoryWindow.Activate();
         }
 
-        private void UpdateRegionJoinUI()
-        {
-            if (AutoJoinRegionMenuItem == null) return;
-
-            string region = App.Settings.Prop.SelectedRegion;
-            bool hasRegion = !string.IsNullOrEmpty(region);
-
-            bool inGame = ActivityWatcher?.InGame ?? false;
-            AutoJoinRegionMenuItem.IsVisible = hasRegion && inGame;
-
-            AutoJoinRegionMenuItem.Header = hasRegion ? $"Join {region}" : "No Region Selected";
-            AutoJoinRegionMenuItem.IsEnabled = hasRegion;
-        }
-
         private async void AutoJoinRegionMenuItem_Click(object? sender, EventArgs e)
         {
-            if (ActivityWatcher?.InGame != true || ActivityWatcher?.Data == null)
-            {
-                _ = Frontend.ShowMessageBox("You need to be in a game to use this feature.", MessageBoxImage.Warning);
-                return;
-            }
-            string selectedRegion = App.Settings.Prop.SelectedRegion;
-            if (string.IsNullOrEmpty(selectedRegion)) return;
-            await FindAndJoinServerInRegion(ActivityWatcher.Data.PlaceId, selectedRegion);
+            if (ActivityWatcher is null) return;
+
+            await FindAndJoinServerInRegion(ActivityWatcher.Data.PlaceId);
         }
 
-        private async Task FindAndJoinServerInRegion(long placeId, string selectedRegion)
+        private async Task FindAndJoinServerInRegion(long placeId)
         {
+            bool joinSmallerServer = App.Settings.Prop.JoinSmallerServer;
+            int bestRegionAmounts = App.Settings.Prop.BestRegionAmounts;
+            int maxServerCheck = App.Settings.Prop.MaxServerCheck;
+
             var fetcher = new RobloxServerFetcher();
 
             string? resolvedCookie = await fetcher.ResolveCookieAsync();
             if (string.IsNullOrWhiteSpace(resolvedCookie))
             {
-                _ = Frontend.ShowMessageBox("No valid cookie found, Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use.", MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox("No valid cookie found. Log in using account manager or turn on 'Froststrap Account Permission' to use this feature.", MessageBoxImage.Error);
                 return;
             }
 
@@ -265,52 +249,187 @@ namespace Froststrap.UI.Elements.ContextMenu
             if (datacentersResult == null) return;
             var (_, dcMap) = datacentersResult.Value;
 
-            string? nextCursor = "";
-            for (int i = 0; i < 20; i++)
+            List<string> topRegions = await GetClosestRegionsForAutoModeAsync(bestRegionAmounts);
+            if (topRegions.Count == 0)
             {
-                var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, 2, resolvedCookie);
+                _ = Frontend.ShowMessageBox("Could not determine your location for Auto mode. Please try again later.", MessageBoxImage.Warning);
+                return;
+            }
+
+            var regionRank = new Dictionary<string, int>();
+            for (int i = 0; i < topRegions.Count; i++)
+                regionRank[topRegions[i]] = i + 1;
+
+            string? nextCursor = "";
+            int serversChecked = 0;
+            const int maxAttempts = 50;
+
+            string? bestServerId = null;
+            string? bestServerRegion = null;
+            int bestRank = int.MaxValue;
+            int bestPlayers = int.MaxValue;
+            int bestMaxPlayers = 0;
+
+            while (serversChecked < maxServerCheck && serversChecked < maxAttempts)
+            {
+                int sortOrder = joinSmallerServer ? 1 : 2;
+                var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, sortOrder, resolvedCookie);
 
                 if (result?.Servers == null || result.Servers.Count == 0)
                 {
-                    await Task.Delay(1000);
+                    if (string.IsNullOrEmpty(nextCursor)) break;
+                    await Task.Delay(500);
                     continue;
                 }
 
-                var match = result.Servers.FirstOrDefault(s =>
-                    s.DataCenterId.HasValue &&
-                    dcMap.TryGetValue(s.DataCenterId.Value, out var mappedRegion) &&
-                    mappedRegion == selectedRegion &&
-                    s.Playing < s.MaxPlayers);
-
-                if (match != null)
+                foreach (var server in result.Servers)
                 {
-                    MessageBoxResult confirmResult = await Frontend.ShowMessageBox(
-                        $"Found server in {selectedRegion} with {match.Playing}/{match.MaxPlayers} players.\nDo you want to join?",
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
-                    );
+                    if (serversChecked >= maxServerCheck) break;
 
-                    if (confirmResult == MessageBoxResult.Yes)
+                    if (!server.DataCenterId.HasValue) continue;
+                    if (!dcMap.TryGetValue(server.DataCenterId.Value, out var serverRegion)) continue;
+                    if (server.Playing >= server.MaxPlayers) continue;
+
+                    serversChecked++;
+
+                    if (!regionRank.TryGetValue(serverRegion, out int rank)) continue;
+
+                    bool isBetter = false;
+                    if (rank < bestRank)
                     {
-                        string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={match.Id}";
-                        Process.Start(new ProcessStartInfo
-                        {
-                            FileName = robloxUri,
-                            UseShellExecute = true
-                        });
-
-                        _watcher?.KillRobloxProcess();
-                        return;
+                        isBetter = true;
                     }
-                    else return;
+                    else if (rank == bestRank && joinSmallerServer && server.Playing < bestPlayers)
+                    {
+                        isBetter = true;
+                    }
+                    else if (rank == bestRank && !joinSmallerServer && server.Playing > bestPlayers)
+                    {
+                        isBetter = true;
+                    }
+
+                    if (isBetter)
+                    {
+                        bestRank = rank;
+                        bestPlayers = server.Playing;
+                        bestMaxPlayers = server.MaxPlayers;
+                        bestServerId = server.Id;
+                        bestServerRegion = serverRegion;
+                        App.Logger.WriteLine("AutoJoin", $"Found better server in {serverRegion} (rank {rank}, players: {server.Playing}/{server.MaxPlayers})");
+
+                        if (rank == 1)
+                        {
+                            App.Logger.WriteLine("AutoJoin", "Found rank 1 server, stopping early");
+                            break;
+                        }
+                    }
                 }
 
-                if (string.IsNullOrEmpty(result.NextCursor)) break;
-                nextCursor = result.NextCursor;
-                await Task.Delay(500);
+                if (bestRank == 1 && bestServerId != null)
+                    break;
+
+                if (!string.IsNullOrEmpty(result.NextCursor))
+                {
+                    nextCursor = result.NextCursor;
+                }
+                else
+                {
+                    break;
+                }
+
+                await Task.Delay(200);
             }
 
-            _ = Frontend.ShowMessageBox($"No available {selectedRegion} servers found.", MessageBoxImage.Information);
+            if (bestServerId != null)
+            {
+                string playerCount = $"{bestPlayers}/{bestMaxPlayers}";
+
+                MessageBoxResult confirmResult = await Frontend.ShowMessageBox(
+                    $"Found server in {bestServerRegion} with {playerCount} players.\nDo you want to join?",
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo
+                );
+
+                if (confirmResult == MessageBoxResult.Yes)
+                {
+                    string robloxUri = $"roblox://experiences/start?placeId={placeId}&gameInstanceId={bestServerId}";
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = robloxUri,
+                        UseShellExecute = true
+                    });
+
+                    _watcher?.KillRobloxProcess();
+                    return;
+                }
+            }
+
+            string errorMessage = $"Could not find a suitable server after checking {serversChecked} servers in {topRegions.Count} regions.";
+            _ = Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Information);
+        }
+
+        private async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
+        {
+            try
+            {
+                var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
+                if (string.IsNullOrEmpty(ipinfo?.Loc))
+                    return new List<string>();
+
+                string[] location = ipinfo.Loc.Split(',');
+                double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
+                double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
+
+                var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+                if (datacenters == null || datacenters.Count == 0)
+                    return new List<string>();
+
+                var regionDistance = new Dictionary<string, double>();
+
+                foreach (var dc in datacenters)
+                {
+                    if (dc.Location == null || dc.Location.LatLong == null || dc.Location.LatLong.Length < 2)
+                        continue;
+
+                    if (!double.TryParse(dc.Location.LatLong[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double lat) ||
+                        !double.TryParse(dc.Location.LatLong[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double lon))
+                        continue;
+
+                    double distance = GetDistance(userLat, userLon, lat, lon);
+                    string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
+
+                    if (!regionDistance.ContainsKey(regionKey) || distance < regionDistance[regionKey])
+                        regionDistance[regionKey] = distance;
+                }
+
+                var closestRegions = regionDistance
+                    .OrderBy(kvp => kvp.Value)
+                    .Take(topCount)
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+
+                App.Logger.WriteLine("AutoJoin", $"Top {closestRegions.Count} regions: {string.Join(", ", closestRegions)}");
+                return closestRegions;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("AutoJoin::GetClosestRegionsForAutoMode", ex);
+                return new List<string>();
+            }
+        }
+
+        private static double Deg2Rad(double deg) => deg * (Math.PI / 180.0);
+
+        private static double GetDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            const double R = 6371;
+            double dLat = Deg2Rad(lat2 - lat1);
+            double dLon = Deg2Rad(lon2 - lon1);
+            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                      Math.Cos(Deg2Rad(lat1)) * Math.Cos(Deg2Rad(lat2)) *
+                      Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return R * c;
         }
     }
 }

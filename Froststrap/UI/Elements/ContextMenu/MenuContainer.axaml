@@ -17,7 +17,7 @@ Opacity="0">
             <NativeMenuItemSeparator />
             <NativeMenuItem Header="{x:Static resources:Strings.Common_DiscordRichPresence}" IsVisible="False" Click="RichPresenceMenuItem_Click" ToggleType="CheckBox" IsChecked="True" />
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_CopyDeeplinkInvite}" IsVisible="False" Click="InviteDeeplinkMenuItem_Click" />
-            <NativeMenuItem Header="Join Server" IsVisible="False" Click="AutoJoinRegionMenuItem_Click"/>
+            <NativeMenuItem Header="Join Best Region (Auto)" IsVisible="False" Click="AutoJoinRegionMenuItem_Click"/>
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_ServerInformation_Title}" IsVisible="False" Click="ServerDetailsMenuItem_Click" />
             <NativeMenuItem Header="{x:Static resources:Strings.ContextMenu_GameHistory_Title}" Click="JoinLastServerMenuItem_Click" />
             <NativeMenuItemSeparator />
