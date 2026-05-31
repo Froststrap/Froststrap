@@ -54,6 +54,7 @@ namespace Froststrap.Models.Persistable
         public bool JoinSmallerServer { get; set; } = false;
         public int BestRegionAmounts { get; set; } = 5;
         public int MaxServerCheck { get; set; } = 25;
+        public string SelectedRegion { get; set; } = "Auto";
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
         // FastFlag Editor/Settings
@@ -110,7 +111,6 @@ namespace Froststrap.Models.Persistable
         public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];
 
         // Misc Stuff
-        public string SelectedRegion { get; set; } = string.Empty;
         public bool GameSearch { get; set; } = true;
         public bool ForceLocalData { get; set; } = false;
         public bool DebugDisableVersionPackageCleanup { get; set; } = false;

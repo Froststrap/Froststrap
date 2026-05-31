@@ -106,6 +106,30 @@
                         <ToggleSwitch IsChecked="{Binding JoinSmallerServer, Mode=TwoWay}" />
                     </controls:OptionControl>
 
+					<controls:OptionControl
+						Header="Preferred Region"
+						Description="Select a specific region to join, or leave on Auto for the best available.">
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+							<ui:ProgressRing
+								IsActive="{Binding IsLoadingRegions}"
+								Width="20"
+								Height="20"
+								Margin="0,0,8,0"
+								IsVisible="{Binding IsLoadingRegions}"/>
+							<ComboBox
+								MinWidth="200"
+								ItemsSource="{Binding AvailableRegions}"
+								SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"
+								IsEnabled="{Binding !IsLoadingRegions}">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding}" />
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
+						</StackPanel>
+					</controls:OptionControl>
+
                     <controls:OptionControl
                         Header="Max Server Check Amount"
                         Description="Select how many sservers to check">

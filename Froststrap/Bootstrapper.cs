@@ -962,6 +962,40 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::GetBetterMatchmakingServerID";
 
+            if (!string.IsNullOrEmpty(App.Settings.Prop.SelectedRegion) &&
+                !App.Settings.Prop.SelectedRegion.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"User selected specific region: {App.Settings.Prop.SelectedRegion}");
+
+                var selectedRegionFetcher = new Integrations.RobloxServerFetcher();
+                string? selectedRegionCookie = await selectedRegionFetcher.ResolveCookieAsync();
+                if (string.IsNullOrEmpty(selectedRegionCookie))
+                    throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
+
+                SetStatus($"Searching for servers in {App.Settings.Prop.SelectedRegion}...");
+                int selectedRegionServerSize = App.Settings.Prop.JoinSmallerServer ? 1 : 2;
+                var selectedRegionFetchResult = await selectedRegionFetcher.FetchServerInstancesAsync((long)_joinData.PlaceId!, cursor: "", sortOrder: selectedRegionServerSize, optionalCookie: selectedRegionCookie);
+
+                var selectedRegionCandidates = selectedRegionFetchResult.Servers?
+                    .Where(s => !string.IsNullOrEmpty(s.Id) &&
+                               s.Region != null &&
+                               s.Region.Equals(App.Settings.Prop.SelectedRegion, StringComparison.OrdinalIgnoreCase))
+                    .Take(App.Settings.Prop.MaxServerCheck)
+                    .ToList();
+
+                if (selectedRegionCandidates != null && selectedRegionCandidates.Count > 0)
+                {
+                    var best = App.Settings.Prop.JoinSmallerServer
+                        ? selectedRegionCandidates.OrderBy(s => s.Playing).First()
+                        : selectedRegionCandidates.First();
+
+                    App.Logger.WriteLine(LOG_IDENT, $"Found server in selected region {App.Settings.Prop.SelectedRegion}: {best.Id} (players: {best.Playing})");
+                    return best.Id;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"No servers found in selected region {App.Settings.Prop.SelectedRegion}. Falling back to Auto mode.");
+            }
+
             var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
             if (string.IsNullOrEmpty(ipinfo.Loc))
                 throw new HttpRequestException("Location data missing from ipinfo.io");
