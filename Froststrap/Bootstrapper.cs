@@ -970,7 +970,7 @@ namespace Froststrap
             double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
             double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
 
-            List<RegionDistance> topRegions = await GetClosestRegionsWithDistanceAsync(userLat, userLon, 5);
+            List<RegionDistance> topRegions = await GetClosestRegionsWithDistanceAsync(userLat, userLon, App.Settings.Prop.BestRegionAmounts);
             if (topRegions.Count == 0)
                 throw new HttpRequestException("No regions found from datacenter list");
 

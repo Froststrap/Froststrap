@@ -51,7 +51,8 @@ namespace Froststrap.Models.Persistable
         public bool MultiInstanceLaunching { get; set; } = false;
         public bool Error773Fix { get; set; } = false;
         public bool EnableBetterMatchmaking { get; set; } = false;
-        public bool JoinSmallerServer { get; set; } = true;
+        public bool JoinSmallerServer { get; set; } = false;
+        public int BestRegionAmounts { get; set; } = 5;
         public int MaxServerCheck { get; set; } = 25;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
