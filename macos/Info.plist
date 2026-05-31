@@ -16,6 +16,8 @@
     <string>Froststrap</string>
     <key>CFBundleDisplayName</key>
     <string>Froststrap</string>
+    <key>CFBundleIconFile</key>
+    <string>Froststrap</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -62,7 +64,7 @@
                 <string>rbxlx</string>
             </array>
             <key>CFBundleTypeIconFile</key>
-            <string>AppIcon</string>
+            <string>Froststrap</string>
         </dict>
     </array>
 </dict>

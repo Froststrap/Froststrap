@@ -1,13 +1,19 @@
 <Application
     x:Class="Froststrap.App"
+    Name="Froststrap"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     xmlns:sty="using:FluentAvalonia.Styling"
     xmlns:converters="using:Froststrap.UI.Converters"
     RequestedThemeVariant="Dark">
 
     <Application.Styles>
         <sty:FluentAvaloniaTheme PreferSystemTheme="True" PreferUserAccentColor="True" />
+
+        <Style Selector="ic|SymbolIcon">
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
+        </Style>
 
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/Hyperlink.axaml" />
         <StyleInclude Source="avares://Froststrap/UI/Elements/Controls/OptionControl.axaml" />
