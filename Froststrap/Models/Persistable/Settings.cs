@@ -51,6 +51,7 @@ namespace Froststrap.Models.Persistable
         public bool MultiInstanceLaunching { get; set; } = false;
         public bool Error773Fix { get; set; } = false;
         public bool EnableBetterMatchmaking { get; set; } = false;
+        public bool JoinSmallerServer { get; set; } = true;
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
         // FastFlag Editor/Settings

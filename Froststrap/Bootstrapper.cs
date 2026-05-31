@@ -974,28 +974,36 @@ namespace Froststrap
             if (topRegions.Count == 0)
                 throw new HttpRequestException("No regions found from datacenter list");
 
+            var regionRank = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < topRegions.Count; i++)
+                regionRank[topRegions[i].Region] = i + 1;
+
             App.Logger.WriteLine(LOG_IDENT, $"Top 5 regions: {string.Join(" -> ", topRegions.Select(r => r.Region))}");
 
             if (!string.IsNullOrEmpty(_joinData.JobId))
             {
                 string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!);
-                if (defaultRegion != null)
+                if (defaultRegion != null && regionRank.TryGetValue(defaultRegion, out int rank))
                 {
-                    bool isInTop5 = topRegions.Any(r => r.Region.Equals(defaultRegion, StringComparison.OrdinalIgnoreCase));
-                    App.Logger.WriteLine(LOG_IDENT, $"Default server region: {defaultRegion} – {(isInTop5 ? "in top 5, keeping it" : "not in top 5, will override")}");
-                    if (isInTop5)
+                    App.Logger.WriteLine(LOG_IDENT, $"Default server region: {defaultRegion} (rank {rank})");
+                    if (rank == 1)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Default server is already in the closest region. Keeping it.");
                         return _joinData.JobId;
+                    }
+                    App.Logger.WriteLine(LOG_IDENT, $"Default server rank {rank} is not top 1. Will search for better.");
                 }
             }
 
-            const int MAX_CANDIDATES = 100;
+            const int MAX_CANDIDATES = 25;
             var fetcher = new Integrations.RobloxServerFetcher();
             string? cookie = await fetcher.ResolveCookieAsync();
             if (string.IsNullOrEmpty(cookie))
                 throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
             SetStatus("Searching for nearby servers...");
-            var fetchResult = await fetcher.FetchServerInstancesAsync((long)_joinData.PlaceId!, cursor: "", sortOrder: 2, optionalCookie: cookie);
+            int ServerSize = App.Settings.Prop.JoinSmallerServer ? 1 : 2;
+            var fetchResult = await fetcher.FetchServerInstancesAsync((long)_joinData.PlaceId!, cursor: "", sortOrder: ServerSize, optionalCookie: cookie);
 
             var candidates = fetchResult.Servers?
                 .Where(s => !string.IsNullOrEmpty(s.Id))
@@ -1010,14 +1018,35 @@ namespace Froststrap
 
             App.Logger.WriteLine(LOG_IDENT, $"Collected {candidates.Count} candidate servers (max {MAX_CANDIDATES}).");
 
-            foreach (var regionInfo in topRegions)
+            string? bestServerId = null;
+            int bestRank = int.MaxValue;
+
+            foreach (var server in candidates)
             {
-                var match = candidates.FirstOrDefault(s => s.Region != null && s.Region.Equals(regionInfo.Region, StringComparison.OrdinalIgnoreCase));
-                if (match != null)
+                if (string.IsNullOrEmpty(server.Region))
+                    continue;
+
+                if (!regionRank.TryGetValue(server.Region, out int rank))
+                    continue;
+
+                if (rank < bestRank)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Found server in {regionInfo.Region} (rank {Array.IndexOf(topRegions.Select(r => r.Region).ToArray(), regionInfo.Region) + 1})");
-                    return match.Id;
+                    bestRank = rank;
+                    bestServerId = server.Id;
+                    App.Logger.WriteLine(LOG_IDENT, $"Found server in {server.Region} (rank {rank}) – new best");
+
+                    if (rank == 1)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Reached top region (rank 1). Stopping early.");
+                        return bestServerId;
+                    }
                 }
+            }
+
+            if (bestServerId != null)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Selected best server with rank {bestRank}");
+                return bestServerId;
             }
 
             App.Logger.WriteLine(LOG_IDENT, "No server found in any of the top 5 regions.");
