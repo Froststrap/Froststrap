@@ -399,7 +399,8 @@
                 Command="{Binding OpenWineCfgCommand}"
                 IsVisible="{Binding IsWineAvailable}"/>
 
-            <controls:OptionControl Header="Web Pages"
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Web Pages"
                                     Description="Used for certain UI elements and logging in">
                 <ToggleSwitch IsChecked="{Binding EnableWebView2, Mode=TwoWay}" />
             </controls:OptionControl>
@@ -412,18 +413,21 @@
                           SelectedItem="{Binding SelectedStudioRenderer, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="Virtual Desktops"
-                                    Description="Create an isolated window for each instance">
-                <StackPanel Spacing="4">
+            <controls:CardExpander Header="Virtual Desktops" Classes="NoUserExpansion"
+                                   Description="Create an isolated window for each instance" IsExpanded="{Binding VirtualDesktopEnabled, Mode=OneWay}"
+				   IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
+                <controls:CardExpander.HeaderContent>
                     <ToggleSwitch IsChecked="{Binding VirtualDesktopEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+                <StackPanel Spacing="4">
                     <TextBox Text="{Binding VirtualDesktopResolution, Mode=TwoWay}"
                              IsEnabled="{Binding VirtualDesktopEnabled}"
-                             Watermark="e.g. 1920x1080"
-                             Margin="0,4,0,0" />
+                             Watermark="e.g. 1920x1080"/>
                 </StackPanel>
-            </controls:OptionControl>
+            </controls:CardExpander>
 
-            <controls:OptionControl Header="Launcher Command"
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Launcher Command"
                                     Description="Wrap the Studio command (e.g. gamescope -- %command%)">
                 <TextBox Text="{Binding StudioLauncher, Mode=TwoWay}" Watermark="gamescope -- %command%" />
             </controls:OptionControl>

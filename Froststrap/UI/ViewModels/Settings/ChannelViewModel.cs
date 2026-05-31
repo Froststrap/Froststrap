@@ -439,7 +439,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     VirtualDesktopResolution = "";
                 else if (string.IsNullOrEmpty(VirtualDesktopResolution))
                     VirtualDesktopResolution = "1920x1080";
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(VirtualDesktopEnabled));
+                OnPropertyChanged(nameof(VirtualDesktopResolution));
             }
         }
 
