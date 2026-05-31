@@ -38,7 +38,6 @@ namespace Froststrap.Models.Persistable
         public bool WindowAllowAll { get; set; } = false;
         public ObservableCollection<long> WindowAllowedUniverses { get; set; } = [];
         public ObservableCollection<long> WindowBlacklistedUniverses { get; set; } = [];
-
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = [];
 
         // Bootstrapper Page

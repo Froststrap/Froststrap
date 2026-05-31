@@ -368,13 +368,13 @@ namespace Froststrap.UI.Elements.ContextMenu
             _ = Frontend.ShowMessageBox(errorMessage, MessageBoxImage.Information);
         }
 
-        private async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
+        private static async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
         {
             try
             {
                 var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
                 if (string.IsNullOrEmpty(ipinfo?.Loc))
-                    return new List<string>();
+                    return [];
 
                 string[] location = ipinfo.Loc.Split(',');
                 double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
@@ -382,7 +382,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
                 var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
                 if (datacenters == null || datacenters.Count == 0)
-                    return new List<string>();
+                    return [];
 
                 var regionDistance = new Dictionary<string, double>();
 
@@ -398,7 +398,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                     double distance = GetDistance(userLat, userLon, lat, lon);
                     string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
 
-                    if (!regionDistance.ContainsKey(regionKey) || distance < regionDistance[regionKey])
+                    if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
                         regionDistance[regionKey] = distance;
                 }
 
@@ -414,7 +414,7 @@ namespace Froststrap.UI.Elements.ContextMenu
             catch (Exception ex)
             {
                 App.Logger.WriteException("AutoJoin::GetClosestRegionsForAutoMode", ex);
-                return new List<string>();
+                return [];
             }
         }
 

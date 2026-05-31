@@ -452,8 +452,8 @@ namespace Froststrap
                 {
                     if (!await EnsureWineAndDependenciesAsync())
                         await Frontend.ShowMessageBox(
-    "Necessery wine files could not be auto installed.",
-    MessageBoxImage.Error);
+                            "Necessery wine files could not be auto installed.",
+                            MessageBoxImage.Error);
                     App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
 
                     string studioExe = Path.Combine(_latestVersionDirectory, App.RobloxStudioAppName);
@@ -471,14 +471,12 @@ namespace Froststrap
                         App.Terminate(ErrorCode.ERROR_INSTALL_FAILURE);
                     }
 
-                    SetStatus("Starting Roblox Studio with Wine...");
                     await LaunchStudioViaWineAsync();
                 }
                 else
                 {
                     if (!await EnsureSoberInstalledAsync())
                         return;
-                    SetStatus("Starting Sober...");
                     await LaunchViaSober([]);
                 }
 
@@ -1324,6 +1322,55 @@ namespace Froststrap
             if (App.Settings.Prop.UseDisableAppPatch)
                 App.SoberSettings.Prop.CloseOnLeave = false;
 
+            _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
+
+            if (_joinData.JoinType == GameJoinType.Unknown)
+                App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
+
+            App.Logger.WriteLine(LOG_IDENT, $"Join origin: {_joinData.JoinOrigin}");
+
+            bool isFollowUser = false;
+
+            // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
+            // idk why they dont use it when the user is following a friend, but ok
+            if (App.Settings.Prop.EnableBetterMatchmaking &&
+                (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend — showing dialog");
+
+                var result = await Frontend.ShowMessageBox(
+                    String.Format(Strings.Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo
+                );
+
+                if (result == MessageBoxResult.Yes)
+                    isFollowUser = true;
+            }
+
+            try
+            {
+                if (App.Settings.Prop.EnableBetterMatchmaking && _joinData.JoinType != GameJoinType.RequestPrivateGame && _joinData.PlaceId != null && !isFollowUser)
+                {
+                    string serverid = await GetBetterMatchmakingServerID();
+                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+
+                    if (!string.IsNullOrEmpty(serverid))
+                        _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                _ = Frontend.ShowConnectivityDialog(
+                    String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                    Strings.Dialog_Connectivity_MatchmakingFailed,
+                    MessageBoxImage.Warning,
+                    ex
+                    );
+            }
+
+            SetStatus("Starting Sober...");
+
             App.Logger.WriteLine(LOG_IDENT, $"Launching Sober via flatpak with args: {_launchCommandLine}");
 
             var startInfo = new ProcessStartInfo
@@ -1436,6 +1483,8 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Cannot find RobloxStudioBeta.exe");
                 return;
             }
+
+            SetStatus("Starting Roblox Studio with Wine...");
 
             var env = new Dictionary<string, string>();
 
@@ -2476,7 +2525,6 @@ namespace Froststrap
                     if (soberProcess.ExitCode == 0)
                     {
                         App.Logger.WriteLine(LOG_IDENT, "Sober is already installed.");
-                        SetStatus("Starting Sober...");
                         return true;
                     }
                 }

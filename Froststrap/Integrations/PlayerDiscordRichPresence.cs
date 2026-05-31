@@ -357,7 +357,6 @@ namespace Froststrap.Integrations
 
             var universeDetails = activity.UniverseDetails!;
 
-            // IDE0059 Fix: Only assign if needed
             string icon = universeDetails.Thumbnail.ImageUrl!;
             string smallImage = "roblox";
             string smallImageText = "Roblox";

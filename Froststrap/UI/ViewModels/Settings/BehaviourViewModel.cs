@@ -1,7 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using static Froststrap.AppStorageManager;
-
-namespace Froststrap.UI.ViewModels.Settings
+﻿namespace Froststrap.UI.ViewModels.Settings
 {
     public class BehaviourViewModel : NotifyPropertyChangedViewModel
     {
@@ -229,18 +226,21 @@ namespace Froststrap.UI.ViewModels.Settings
                 }
                 else
                 {
-                    AvailableRegions = new List<string> { "Auto" };
+                    AvailableRegions = ["Auto"];
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
-                AvailableRegions = new List<string> { "Auto" };
+                AvailableRegions = [ "Auto" ];
             }
             finally
             {
                 IsLoadingRegions = false;
+                SelectedRegion = "Auto";
                 OnPropertyChanged(nameof(SelectedRegion));
+                OnPropertyChanged(nameof(AvailableRegions));
+                OnPropertyChanged(nameof(IsLoadingRegions));
             }
         }
 

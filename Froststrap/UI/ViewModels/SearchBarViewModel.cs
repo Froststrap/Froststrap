@@ -612,13 +612,13 @@ namespace Froststrap.UI.ViewModels
             }
         }
 
-        private async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
+        private static async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
         {
             try
             {
                 var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
                 if (string.IsNullOrEmpty(ipinfo?.Loc))
-                    return new List<string>();
+                    return [];
 
                 string[] location = ipinfo.Loc.Split(',');
                 double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
@@ -626,7 +626,7 @@ namespace Froststrap.UI.ViewModels
 
                 var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
                 if (datacenters == null || datacenters.Count == 0)
-                    return new List<string>();
+                    return [];
 
                 var regionDistance = new Dictionary<string, double>();
 
@@ -642,7 +642,7 @@ namespace Froststrap.UI.ViewModels
                     double distance = GetDistance(userLat, userLon, lat, lon);
                     string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
 
-                    if (!regionDistance.ContainsKey(regionKey) || distance < regionDistance[regionKey])
+                    if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
                         regionDistance[regionKey] = distance;
                 }
 
@@ -658,7 +658,7 @@ namespace Froststrap.UI.ViewModels
             catch (Exception ex)
             {
                 App.Logger.WriteException("SearchBarViewModel::GetClosestRegionsForAutoMode", ex);
-                return new List<string>();
+                return [];
             }
         }
 

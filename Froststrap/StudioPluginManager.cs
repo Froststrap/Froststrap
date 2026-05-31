@@ -14,6 +14,7 @@
                 if (!string.IsNullOrEmpty(OverridePluginDirectory))
                     return Path.Combine(OverridePluginDirectory, "FroststrapStudioRPC.rbxmx");
 
+                // not sure if this works for macos
                 return Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
             }
         }

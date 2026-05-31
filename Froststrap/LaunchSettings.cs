@@ -46,7 +46,7 @@ namespace Froststrap
 #endif
 
             Args = args;
-            string? entryAssemblyPath = Assembly.GetEntryAssembly()?.Location;
+            string? entryAssemblyPath = AppContext.BaseDirectory;
 
             Dictionary<string, LaunchFlag> flagMap = [];
 
