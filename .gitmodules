@@ -1,0 +1,3 @@
+[submodule "ColorPicker"]
+	path = ColorPicker
+	url = https://github.com/Froststrap/ColorPicker.git
