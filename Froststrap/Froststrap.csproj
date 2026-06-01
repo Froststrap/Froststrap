@@ -95,7 +95,7 @@
     </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ColorPicker-Avalonia\src\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
+		<ProjectReference Include="..\ColorPicker\src\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
 	</ItemGroup>
 
     <ItemGroup>
