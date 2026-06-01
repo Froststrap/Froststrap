@@ -24,7 +24,7 @@ namespace Froststrap.UI.Elements.Base
                 this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.NoChrome;
                 this.SystemDecorations = SystemDecorations.Full;
             }
-            if (OperatingSystem.IsMacOS())
+            else if (OperatingSystem.IsMacOS())
             {
                 this.ExtendClientAreaChromeHints = ExtendClientAreaChromeHints.PreferSystemChrome;
                 this.SystemDecorations = SystemDecorations.Full;
