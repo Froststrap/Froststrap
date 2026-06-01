@@ -8,13 +8,14 @@
 *  SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
-using Avalonia.Threading;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Integrations;
-using System.Collections.ObjectModel;
-using Froststrap.UI.Elements.Settings;
 using FluentAvalonia.UI.Controls;
+using Froststrap.Integrations;
+using Froststrap.Models.APIs;
+using Froststrap.UI.Elements.Settings;
+using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels
 {
@@ -30,41 +31,13 @@ namespace Froststrap.UI.ViewModels
                 {
                     FilterSearchResults();
 
-                    if (!DisableGameSearch)
-                    {
-                        TriggerGameSearch(value);
-                    }
-                    else
-                    {
-                        GameSearchResults.Clear();
-                        IsGameSearchLoading = false;
-                    }
+                    TriggerGameSearch(value);
+                    GameSearchResults.Clear();
+                    IsGameSearchLoading = false;
                 }
             }
         }
 
-        public bool DisableGameSearch
-        {
-            get => App.Settings.Prop.DisableGameSearch;
-            set
-            {
-                if (App.Settings.Prop.DisableGameSearch != value)
-                {
-                    App.Settings.Prop.DisableGameSearch = value;
-                    OnPropertyChanged(nameof(DisableGameSearch));
-
-                    if (value)
-                    {
-                        GameSearchResults.Clear();
-                        IsGameSearchLoading = false;
-                    }
-                    else if (!string.IsNullOrWhiteSpace(SearchQuery))
-                    {
-                        TriggerGameSearch(SearchQuery);
-                    }
-                }
-            }
-        }
 
         private ObservableCollection<OmniSearchContent> _gameSearchResults = [];
         public ObservableCollection<OmniSearchContent> GameSearchResults
@@ -139,6 +112,17 @@ namespace Froststrap.UI.ViewModels
 
         private void TriggerGameSearch(string query)
         {
+            if (!App.Settings.Prop.GameSearch)
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    GameSearchResults.Clear();
+                    IsSearchFlyoutOpen = FilteredSearchResults.Count > 0;
+                    OnPropertyChanged(nameof(HasAnyResults));
+                });
+                return;
+            }
+
             _searchDebounceCts?.Cancel();
             _searchDebounceCts = new CancellationTokenSource();
             var token = _searchDebounceCts.Token;
@@ -148,6 +132,8 @@ namespace Froststrap.UI.ViewModels
 
         private async Task SearchGamesAsync(string query, CancellationToken token)
         {
+            if (!App.Settings.Prop.GameSearch) return;
+
             if (string.IsNullOrWhiteSpace(query))
             {
                 Dispatcher.UIThread.Post(() => {
@@ -286,7 +272,8 @@ namespace Froststrap.UI.ViewModels
         [RelayCommand]
         private async Task LoadMoreGamesAsync()
         {
-            if (string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading) return;
+            if (!App.Settings.Prop.GameSearch || string.IsNullOrWhiteSpace(NextPageCursor) || string.IsNullOrWhiteSpace(SearchQuery) || IsGameSearchLoading)
+                return;
 
             try
             {
@@ -445,14 +432,15 @@ namespace Froststrap.UI.ViewModels
         {
             if (content == null) return;
 
-            string selectedRegion = App.Settings.Prop.SelectedRegion ?? "";
-            if (string.IsNullOrWhiteSpace(selectedRegion)) return;
+            bool joinSmallerServer = App.Settings.Prop.JoinSmallerServer;
+            int bestRegionAmounts = App.Settings.Prop.BestRegionAmounts;
+            int maxServerCheck = App.Settings.Prop.MaxServerCheck;
 
             Clear();
 
             MainWindow.ShowGlobalNotification(
                 "Joining Game",
-                $"Searching for region {selectedRegion}",
+                $"Auto mode: Finding best region for you (checking {bestRegionAmounts} regions)",
                 InfoBarSeverity.Informational,
                 5000,
                 FluentIcons.Common.Symbol.Globe
@@ -460,8 +448,8 @@ namespace Froststrap.UI.ViewModels
 
             var fetcher = new RobloxServerFetcher();
             string? nextCursor = "";
-            int attemptCount = 0;
-            const int maxAttempts = 20;
+            int serversChecked = 0;
+            const int maxAttempts = 50;
 
             try
             {
@@ -474,52 +462,103 @@ namespace Froststrap.UI.ViewModels
                 if (string.IsNullOrWhiteSpace(Roblosecurity))
                 {
                     MainWindow.ShowGlobalNotification(
-                    "No Valid Cookie Found",
-                    $"Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use.",
-                    InfoBarSeverity.Error,
-                    5000,
-                    FluentIcons.Common.Symbol.AccessibilityError
+                        "No Valid Cookie Found",
+                        "Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use.",
+                        InfoBarSeverity.Error,
+                        5000,
+                        FluentIcons.Common.Symbol.AccessibilityError
                     );
                     return;
                 }
 
-                while (attemptCount < maxAttempts)
+                List<string> topRegions = await GetClosestRegionsForAutoModeAsync(bestRegionAmounts);
+                if (topRegions.Count == 0)
                 {
-                    attemptCount++;
-                    var result = await fetcher.FetchServerInstancesAsync(content.RootPlaceId, nextCursor, 2, Roblosecurity);
+                    MainWindow.ShowGlobalNotification(
+                        "Auto Mode Failed",
+                        "Could not determine your location. Please try again later.",
+                        InfoBarSeverity.Warning,
+                        5000,
+                        FluentIcons.Common.Symbol.Warning
+                    );
+                    return;
+                }
+
+                var regionRank = new Dictionary<string, int>();
+                for (int i = 0; i < topRegions.Count; i++)
+                    regionRank[topRegions[i]] = i + 1;
+
+                MainWindow.ShowGlobalNotification(
+                    "Auto Mode",
+                    $"Top {topRegions.Count} regions: {string.Join(", ", topRegions.Take(3))}",
+                    InfoBarSeverity.Informational,
+                    3000,
+                    FluentIcons.Common.Symbol.Globe
+                );
+
+                string? bestServerId = null;
+                string? bestServerRegion = null;
+                int bestRank = int.MaxValue;
+                int bestPlayers = int.MaxValue;
+                int bestMaxPlayers = 0;
+
+                while (serversChecked < maxServerCheck && serversChecked < maxAttempts)
+                {
+                    int sortOrder = joinSmallerServer ? 1 : 2;
+                    var result = await fetcher.FetchServerInstancesAsync(content.RootPlaceId, nextCursor, sortOrder, Roblosecurity);
 
                     if (result?.Servers == null || result.Servers.Count == 0)
                     {
-                        await Task.Delay(1000);
+                        if (string.IsNullOrEmpty(nextCursor)) break;
+                        await Task.Delay(500);
                         continue;
                     }
 
-                    var matchingServer = result.Servers.FirstOrDefault(server =>
+                    foreach (var server in result.Servers)
                     {
-                        if (server.DataCenterId.HasValue && dcMap.TryGetValue(server.DataCenterId.Value, out var mappedRegion))
+                        if (serversChecked >= maxServerCheck) break;
+
+                        if (!server.DataCenterId.HasValue) continue;
+                        if (!dcMap.TryGetValue(server.DataCenterId.Value, out var serverRegion)) continue;
+                        if (server.Playing >= server.MaxPlayers) continue;
+
+                        serversChecked++;
+
+                        if (!regionRank.TryGetValue(serverRegion, out int rank)) continue;
+
+                        bool isBetter = false;
+                        if (rank < bestRank)
                         {
-                            return mappedRegion == selectedRegion;
+                            isBetter = true;
                         }
-                        return false;
-                    });
-
-                    if (matchingServer != null)
-                    {
-                        MainWindow.ShowGlobalNotification(
-                            "Server Found",
-                            $"Joining server in {selectedRegion}",
-                            InfoBarSeverity.Success,
-                            5000,
-                            FluentIcons.Common.Symbol.Checkmark
-                        );
-
-                        Process.Start(new ProcessStartInfo
+                        else if (rank == bestRank && joinSmallerServer && server.Playing < bestPlayers)
                         {
-                            FileName = $"roblox://experiences/start?placeId={content.RootPlaceId}&gameInstanceId={matchingServer.Id}",
-                            UseShellExecute = true
-                        });
-                        return;
+                            isBetter = true;
+                        }
+                        else if (rank == bestRank && !joinSmallerServer && server.Playing > bestPlayers)
+                        {
+                            isBetter = true;
+                        }
+
+                        if (isBetter)
+                        {
+                            bestRank = rank;
+                            bestPlayers = server.Playing;
+                            bestMaxPlayers = server.MaxPlayers;
+                            bestServerId = server.Id;
+                            bestServerRegion = serverRegion;
+                            App.Logger.WriteLine("RegionJoinGame", $"Found better server in {serverRegion} (rank {rank}, players: {server.Playing}/{server.MaxPlayers})");
+
+                            if (rank == 1)
+                            {
+                                App.Logger.WriteLine("RegionJoinGame", "Found rank 1 server, stopping early");
+                                break;
+                            }
+                        }
                     }
+
+                    if (bestRank == 1 && bestServerId != null)
+                        break;
 
                     if (!string.IsNullOrEmpty(result.NextCursor))
                     {
@@ -527,22 +566,34 @@ namespace Froststrap.UI.ViewModels
                     }
                     else
                     {
-                        MainWindow.ShowGlobalNotification(
-                            "Not Found",
-                            $"Could not find a server in {selectedRegion}.",
-                            InfoBarSeverity.Warning,
-                            5000,
-                            FluentIcons.Common.Symbol.Warning
-                        );
-                        return;
+                        break;
                     }
 
-                    await Task.Delay(500);
+                    await Task.Delay(200);
+                }
+
+                if (bestServerId != null)
+                {
+                    string playerCount = $"{bestPlayers}/{bestMaxPlayers}";
+                    MainWindow.ShowGlobalNotification(
+                        "Server Found",
+                        $"Joining server in {bestServerRegion} (rank {bestRank}, {playerCount} players)",
+                        InfoBarSeverity.Success,
+                        5000,
+                        FluentIcons.Common.Symbol.Checkmark
+                    );
+
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = $"roblox://experiences/start?placeId={content.RootPlaceId}&gameInstanceId={bestServerId}",
+                        UseShellExecute = true
+                    });
+                    return;
                 }
 
                 MainWindow.ShowGlobalNotification(
-                    "Search Timeout",
-                    $"Failed to find a server in {selectedRegion} after {maxAttempts} attempts.",
+                    "Not Found",
+                    $"Could not find a suitable server after checking {serversChecked} servers in {topRegions.Count} regions.",
                     InfoBarSeverity.Warning,
                     5000,
                     FluentIcons.Common.Symbol.Warning
@@ -551,7 +602,78 @@ namespace Froststrap.UI.ViewModels
             catch (Exception ex)
             {
                 App.Logger.WriteLine("SearchBarViewModel::RegionJoinGame", $"Exception: {ex.Message}");
+                MainWindow.ShowGlobalNotification(
+                    "Error",
+                    $"Failed to join game: {ex.Message}",
+                    InfoBarSeverity.Error,
+                    5000,
+                    FluentIcons.Common.Symbol.AccessibilityError
+                );
             }
+        }
+
+        private static async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
+        {
+            try
+            {
+                var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
+                if (string.IsNullOrEmpty(ipinfo?.Loc))
+                    return [];
+
+                string[] location = ipinfo.Loc.Split(',');
+                double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
+                double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
+
+                var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+                if (datacenters == null || datacenters.Count == 0)
+                    return [];
+
+                var regionDistance = new Dictionary<string, double>();
+
+                foreach (var dc in datacenters)
+                {
+                    if (dc.Location == null || dc.Location.LatLong == null || dc.Location.LatLong.Length < 2)
+                        continue;
+
+                    if (!double.TryParse(dc.Location.LatLong[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double lat) ||
+                        !double.TryParse(dc.Location.LatLong[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double lon))
+                        continue;
+
+                    double distance = GetDistance(userLat, userLon, lat, lon);
+                    string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
+
+                    if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
+                        regionDistance[regionKey] = distance;
+                }
+
+                var closestRegions = regionDistance
+                    .OrderBy(kvp => kvp.Value)
+                    .Take(topCount)
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+
+                App.Logger.WriteLine("SearchBarViewModel::GetClosestRegionsForAutoMode", $"Top {closestRegions.Count} regions: {string.Join(", ", closestRegions)}");
+                return closestRegions;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("SearchBarViewModel::GetClosestRegionsForAutoMode", ex);
+                return [];
+            }
+        }
+
+        private static double Deg2Rad(double deg) => deg * (Math.PI / 180.0);
+
+        private static double GetDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            const double R = 6371;
+            double dLat = Deg2Rad(lat2 - lat1);
+            double dLon = Deg2Rad(lon2 - lon1);
+            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                      Math.Cos(Deg2Rad(lat1)) * Math.Cos(Deg2Rad(lat2)) *
+                      Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return R * c;
         }
     }
 }

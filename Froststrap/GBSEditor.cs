@@ -211,7 +211,6 @@ namespace Froststrap
             string basePath = ResolvePath(PresetPaths[vectorName], RootPaths);
             XElement? vectorElement = Document?.XPathSelectElement(basePath);
 
-            // IDE0031: Simplified null check
             if (vectorElement?.Element(axis) is XElement axisElement)
             {
                 axisElement.Value = value;

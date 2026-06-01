@@ -578,11 +578,10 @@ namespace Froststrap.UI.ViewModels.Settings
             var files = await tl.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
                 Title = "Select Background Image",
-                FileTypeFilter = [FilePickerFileTypes.ImageAll], // IDE0300
+                FileTypeFilter = [FilePickerFileTypes.ImageAll],
                 AllowMultiple = false
             });
 
-            // CA1826: Use direct indexing/Count instead of LINQ for StorageProvider lists
             if (files.Count > 0)
             {
                 BackgroundImagePath = files[0].Path.LocalPath;
@@ -619,7 +618,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task AddGradientStop()
         {
-            // IDE0090: Simplified 'new' expression
             GradientStops newStop = new() { Offset = 0.5, Color = "#000000" };
             newStop.PropertyChanged += OnGradientStopPropertyChanged;
             GradientStops.Add(newStop);
@@ -636,7 +634,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void ResetGradient()
         {
-            // IDE0305: Collection initialization simplified using [ ]
             List<GradientStops> defaultStops =
             [
                 new() { Offset = 0.0, Color = "#4D5560" },

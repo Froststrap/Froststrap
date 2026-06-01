@@ -11,7 +11,7 @@ namespace Froststrap
 
         public override string ClassName => nameof(FastFlagManager);
         public override string LOG_IDENT_CLASS => ClassName;
-        public override string ProfilesLocation => Path.Combine(Paths.Base, "Profiles");
+        public override string ProfilesLocation => Paths.SavedFlagProfiles;
         public override string FileName => "ClientAppSettings.json";
         public override string FileLocation => Path.Combine(Paths.PresetModifications, "ClientSettings", FileName);
 
@@ -268,7 +268,7 @@ namespace Froststrap
         {
             try
             {
-                string profilesDirectory = Path.Combine(Paths.Base, Paths.SavedFlagProfiles);
+                string profilesDirectory = Paths.SavedFlagProfiles;
 
                 if (!Directory.Exists(profilesDirectory))
                     Directory.CreateDirectory(profilesDirectory);

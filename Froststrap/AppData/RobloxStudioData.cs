@@ -4,10 +4,8 @@
     {
         public string ProductName => "Roblox Studio";
 
-        // LinuxStudio has no meaning, we need to add an alterantive method (vinegar maybe?)
-        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacStudio"
-            : OperatingSystem.IsLinux() ? "LinuxStudio"
-            : "WindowsStudio64";
+        // We are using wine to run linux studio, so we need to use the windows binary name.
+        public override string BinaryType => OperatingSystem.IsMacOS() ? "MacStudio" : "WindowsStudio64";
 
         public string RegistryName => "RobloxStudio";
 

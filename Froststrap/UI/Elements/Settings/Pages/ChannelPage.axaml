@@ -16,24 +16,27 @@
 
     <ScrollViewer>
         <StackPanel Margin="14">
-            <StackPanel Orientation="Horizontal" Spacing="6">
-                <controls:IconButton
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="6">
+                <controls:CardAction
+                    Grid.Column="0"
                     Icon="ArrowImport"
-                    Content="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
+                    Header="{x:Static resources:Strings.Menu_BottomButtons_ImportSettings}"
                     Command="{Binding ImportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
-                <controls:IconButton
+                <controls:CardAction
+                    Grid.Column="1"
                     Icon="ArrowExport"
-                    Content="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
+                    Header="{x:Static resources:Strings.Menu_BottomButtons_ExportSettings}"
                     Command="{Binding ExportSettingsCommand}"
                     CommandParameter="{Binding $parent[UserControl]}" />
 
-                <controls:IconButton
+                <controls:CardAction
+                    Grid.Column="2"
                     Icon="ArrowReset"
-                    Content="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
+                    Header="{x:Static resources:Strings.Menu_BottomButtons_ResetSettingsToDefault}"
                     Command="{Binding ResetSettingsToDefaultCommand}" />
-            </StackPanel>
+            </Grid>
 
             <Separator Margin="0,12,0,12" />
 
@@ -44,6 +47,7 @@
 
             <controls:CardExpander
                 Header="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Title}"
+                Description="{x:Static resources:Strings.Menu_Behaviour_AutoUpdate_Description}"
                 IsExpanded="{Binding AutomaticUpdatesEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion">
 
@@ -52,21 +56,22 @@
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
+                    Description="Froststrap will automatically check and update itself to a test version when launching Roblox."
                     Header="Update to Pre Releases">
                     <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"/>
                 </controls:OptionControl>
             </controls:CardExpander>
 
             <controls:OptionControl
+                Description="Automatically hide the settings window when launching Roblox and restore it when Roblox closes."
                 Header="{x:Static resources:Strings.Menu_TestMode}">
-                <ToggleSwitch
-                    IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"/>
+                <ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"/>
             </controls:OptionControl>
 
             <controls:OptionControl
-                Header="Disable Game Search"
-                Description="Stops the top search bar for searching for games.">
-                <ToggleSwitch IsChecked="{Binding DisabeGameSearch, Mode=TwoWay}" />
+                Header="Game Search"
+                Description="Shows you games in the top searchbar.">
+                <ToggleSwitch IsChecked="{Binding GameSearch, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <Separator Margin="0,8,0,4"/>
@@ -75,7 +80,6 @@
                        FontSize="20"
                        FontWeight="Bold"
                        Text="Roblox" />
-
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
                                     Header="Automatically update Sober">
@@ -95,9 +99,8 @@
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="Multi Thread Download"
-                                    Description="Specify the thread amount used for downloading.">
+            <controls:OptionControl Header="Multi Thread Download"
+                                    Description="Specify the thread amount used for downloading, Only affects studio on linux.">
                 <TextBox
                     Width="200"
                     Margin="8,0,0,0"
@@ -105,15 +108,14 @@
                     Text="{Binding MaxThreadDownload, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
+            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Title}"
                                     Description="{x:Static resources:Strings.Menu_Channel_StaticDirectory_Description}">
                 <ToggleSwitch IsChecked="{Binding StaticDirectory, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:CardExpander
-                Header="{x:Static resources:Strings.Common_Channel}"
-                Description="{x:Static resources:Strings.Menu_ChannelChanger_Description}"
+                Header="Player Channel"
+                Description="Roblox game client channel (e.g. production, zcanary, etc.)"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
                 IsExpanded="True">
 
@@ -122,12 +124,11 @@
                         Width="200"
                         Margin="8,0,0,0"
                         Padding="10,5"
-                        Text="{Binding ViewChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        Text="{Binding PlayerChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </controls:CardExpander.HeaderContent>
 
                 <StackPanel Spacing="8">
-                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
-                        <!-- Version Row -->
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding PlayerDeployInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="0"
@@ -139,9 +140,8 @@
                             Grid.Row="0"
                             Grid.Column="1"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                            Text="{Binding ChannelDeployInfo.Version, Mode=OneWay}" />
+                            Text="{Binding PlayerDeployInfo.Version, Mode=OneWay}" />
 
-                        <!-- Version GUID Row -->
                         <TextBlock
                             Grid.Row="1"
                             Grid.Column="0"
@@ -153,9 +153,8 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                            Text="{Binding ChannelDeployInfo.VersionGuid, Mode=OneWay}" />
+                            Text="{Binding PlayerDeployInfo.VersionGuid, Mode=OneWay}" />
 
-                        <!-- Timestamp Row -->
                         <TextBlock
                             Grid.Row="2"
                             Grid.Column="0"
@@ -167,24 +166,14 @@
                             Grid.Row="2"
                             Grid.Column="1"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                            Text="{Binding ChannelDeployInfo.Timestamp, Mode=OneWay}" />
+                            Text="{Binding PlayerDeployInfo.Timestamp, Mode=OneWay}" />
 
-                        <!-- Available Channels Button -->
-                        <Button
-                            Grid.Row="0"
-                            Grid.Column="2"
-                            Margin="16,0,0,0"
-                            HorizontalAlignment="Right"
-                            Click="OpenChannelListDialog_Click"
-                            Content="{x:Static resources:Strings.Menu_ChannelChanger_AvailableChannels}" />
-
-                        <!-- Out of Date Warning -->
                         <StackPanel
                             Grid.Row="3"
                             Grid.ColumnSpan="3"
                             Margin="0,8,0,0"
                             Orientation="Horizontal"
-                            IsVisible="{Binding ShowChannelWarning, Mode=OneWay}">
+                            IsVisible="{Binding PlayerShowChannelWarning, Mode=OneWay}">
                             <Image Source="avares://Froststrap/Resources/MessageBox/Warning.png"
                                    RenderOptions.BitmapInterpolationMode="HighQuality"
                                    Width="24"
@@ -196,14 +185,14 @@
                         </StackPanel>
                     </Grid>
 
-                    <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding ChannelDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
+                    <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding PlayerDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
                         <ui:ProgressRing
                             Grid.Column="0"
                             Width="64"
                             Height="64"
                             Margin="12"
                             IsIndeterminate="True"
-                            IsVisible="{Binding !ShowLoadingError, Mode=OneWay}" />
+                            IsVisible="{Binding !PlayerShowLoadingError, Mode=OneWay}" />
 
                         <Image Source="avares://Froststrap/Resources/MessageBox/FullQuality/Error.png"
                                Grid.Column="0"
@@ -211,21 +200,19 @@
                                Margin="6"
                                Width="60"
                                Height="60"
-                               IsVisible="{Binding ShowLoadingError, Mode=OneWay}"/>
+                               IsVisible="{Binding PlayerShowLoadingError, Mode=OneWay}"/>
 
                         <TextBlock
                             Grid.Column="1"
                             Margin="16"
                             VerticalAlignment="Center"
-                            Text="{Binding ChannelInfoLoadingText, Mode=OneWay}"
+                            Text="{Binding PlayerInfoLoadingText, Mode=OneWay}"
                             TextWrapping="Wrap" />
                     </Grid>
                 </StackPanel>
             </controls:CardExpander>
 
-            <!-- Channel Change Action Option -->
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="{x:Static resources:Strings.Menu_Channel_ChangeAction_Title}"
+            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Channel_ChangeAction_Title}"
                                     Description="{x:Static resources:Strings.Menu_Channel_ChangeAction_Description}">
                 <ComboBox
                     Width="200"
@@ -235,18 +222,16 @@
                     SelectedItem="{Binding SelectedChannelChangeMode, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <Separator Margin="0,8,0,4" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}" />
+            <Separator Margin="0,8,0,4" />
 
             <TextBlock Margin="0,8,0,0"
                        FontSize="20"
                        FontWeight="Bold"
-                       IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                       Text="Studio Version Downgrader" />
+                       Text="Roblox Studio" />
 
             <controls:CardExpander
                 Header="Override Studio Version"
                 Description="Force Roblox Studio to install and use a specific version hash instead of the latest."
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
                 IsExpanded="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion">
 
@@ -308,6 +293,189 @@
                 </controls:OptionControl>
 
             </controls:CardExpander>
+
+            <controls:CardExpander
+                Header="Studio Channel"
+                Description="Roblox Studio channel (e.g. production, zcanary, etc.)"
+                IsExpanded="True">
+
+                <controls:CardExpander.HeaderContent>
+                    <TextBox
+                        Width="200"
+                        Margin="8,0,0,0"
+                        Padding="10,5"
+                        IsEnabled="{Binding !StudioVersionOverrideEnabled, Mode=TwoWay}"
+                        Text="{Binding StudioChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                </controls:CardExpander.HeaderContent>
+
+                <StackPanel Spacing="8">
+                    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto" IsVisible="{Binding StudioDeployInfo, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,16,8"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Common_Version}" />
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="{Binding StudioDeployInfo.Version, Mode=OneWay}" />
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,16,8"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Common_VersionGuid}" />
+                        <TextBlock
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="{Binding StudioDeployInfo.VersionGuid, Mode=OneWay}" />
+
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="0,0,16,8"
+                            VerticalAlignment="Center"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{x:Static resources:Strings.Common_Timestamp}" />
+                        <TextBlock
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="{Binding StudioDeployInfo.Timestamp, Mode=OneWay}" />
+
+                        <StackPanel
+                            Grid.Row="3"
+                            Grid.ColumnSpan="3"
+                            Margin="0,8,0,0"
+                            Orientation="Horizontal"
+                            IsVisible="{Binding StudioShowChannelWarning, Mode=OneWay}">
+                            <Image Source="avares://Froststrap/Resources/MessageBox/Warning.png"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality"
+                                   Width="24"
+                                   Height="24"/>
+                            <TextBlock
+                                Margin="8,0,0,0"
+                                VerticalAlignment="Center"
+                                Text="{x:Static resources:Strings.Menu_Deployment_Channel_OutOfDate}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*" IsVisible="{Binding StudioDeployInfo, Converter={x:Static ObjectConverters.IsNull}}">
+                        <ui:ProgressRing
+                            Grid.Column="0"
+                            Width="64"
+                            Height="64"
+                            Margin="12"
+                            IsIndeterminate="True"
+                            IsVisible="{Binding !StudioShowLoadingError, Mode=OneWay}" />
+
+                        <Image Source="avares://Froststrap/Resources/MessageBox/FullQuality/Error.png"
+                               Grid.Column="0"
+                               RenderOptions.BitmapInterpolationMode="HighQuality"
+                               Margin="6"
+                               Width="60"
+                               Height="60"
+                               IsVisible="{Binding StudioShowLoadingError, Mode=OneWay}"/>
+
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="16"
+                            VerticalAlignment="Center"
+                            Text="{Binding StudioInfoLoadingText, Mode=OneWay}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <controls:CardAction
+                Icon="Settings"
+                Header="Advanced Wine Settings"
+                Command="{Binding OpenWineCfgCommand}"
+                IsVisible="{Binding IsWineAvailable}"/>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Web Pages"
+                                    Description="Used for certain UI elements and logging in">
+                <ToggleSwitch IsChecked="{Binding EnableWebView2, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Graphics Renderer"
+                                    Description="Select the rendering backend for Studio under Wine.">
+                <ComboBox Width="200"
+                          ItemsSource="{Binding StudioRendererOptions, Mode=OneTime}"
+                          SelectedItem="{Binding SelectedStudioRenderer, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:CardExpander Header="Virtual Desktops" Classes="NoUserExpansion"
+                                   Description="Create an isolated window for each instance" IsExpanded="{Binding VirtualDesktopEnabled, Mode=OneWay}"
+				   IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding VirtualDesktopEnabled, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
+                <StackPanel Spacing="4">
+                    <TextBox Text="{Binding VirtualDesktopResolution, Mode=TwoWay}"
+                             IsEnabled="{Binding VirtualDesktopEnabled}"
+                             Watermark="e.g. 1920x1080"/>
+                </StackPanel>
+            </controls:CardExpander>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Launcher Command"
+                                    Description="Wrap the Studio command (e.g. gamescope -- %command%)">
+                <TextBox Text="{Binding StudioLauncher, Mode=TwoWay}" Watermark="gamescope -- %command%" />
+            </controls:OptionControl>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Game Mode"
+                                    Description="Apply system optimizations if available (requires gamemoded).">
+                <ToggleSwitch IsChecked="{Binding StudioGameMode, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Debug Mode"
+                                    Description="Enable verbose Wine/DXVK logging and console output.">
+                <ToggleSwitch IsChecked="{Binding StudioDebug, Mode=TwoWay}" />
+            </controls:OptionControl>
+
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
+                                    Header="Environment Variables"
+                                    Description="Additional environment variables passed to Wine.">
+                <StackPanel Spacing="8">
+                    <ItemsControl ItemsSource="{Binding StudioEnvEntries}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2">
+                                    <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
+                                             Width="150"
+                                             Watermark="Variable"
+                                             Padding="8,5" />
+                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                             Width="200"
+                                             Watermark="Value"
+                                             Padding="8,5" />
+                                    <controls:IconButton Icon="Delete"
+                                                         Classes="Danger"
+                                                         Command="{Binding RemoveCommand}"
+                                                         Width="30"
+                                                         Padding="0"
+                                                         ToolTip.Tip="Remove" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Button Content="+ Add Variable"
+                            Command="{Binding AddStudioEnvCommand}"
+                            HorizontalAlignment="Left"
+                            Margin="0,4,0,0" />
+                </StackPanel>
+            </controls:OptionControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

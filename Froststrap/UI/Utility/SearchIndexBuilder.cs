@@ -207,7 +207,7 @@ namespace Froststrap.UI.Utility
                     var text = tb.Text;
                     return !string.IsNullOrWhiteSpace(text) &&
                            text.Length is > 3 and < 100 &&
-                           !text.Contains('\n') && // CA1847: Faster char-based lookup
+                           !text.Contains('\n') &&
                            tb.FontWeight == Avalonia.Media.FontWeight.Bold;
                 })
                 .DistinctBy(tb => tb.Text);

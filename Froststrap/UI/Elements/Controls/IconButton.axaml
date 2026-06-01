@@ -9,29 +9,30 @@
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ControlStrokeColorDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="12,6" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Transitions">
-            <Transitions>
-                <BrushTransition Property="Background" Duration="0:0:0.1" />
-            </Transitions>
-        </Setter>
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="PART_LayoutRoot"
+                <Button Name="PART_PrimaryButton"
                         Background="{TemplateBinding Background}"
+                        Foreground="{TemplateBinding Foreground}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                        Padding="{TemplateBinding Padding}"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        Command="{TemplateBinding Command}"
+                        CommandParameter="{TemplateBinding CommandParameter}">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                Spacing="8">
                         <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
                                        Foreground="{TemplateBinding Foreground}"
                                        FontSize="{TemplateBinding IconSize}"
                                        VerticalAlignment="Center"
                                        IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
-
                         <Path Data="{TemplateBinding IconData}"
                               Fill="{TemplateBinding Foreground}"
                               Width="{TemplateBinding IconSize}"
@@ -45,109 +46,253 @@
                                 </MultiBinding>
                             </Path.IsVisible>
                         </Path>
-
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Center"
                                           IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     </StackPanel>
-                </Border>
+                </Button>
             </ControlTemplate>
         </Setter>
     </Style>
 
-    <Style Selector="controls|IconButton:pointerover /template/ Border#PART_LayoutRoot">
+    <Style Selector="controls|IconButton:pointerover /template/ Button#PART_PrimaryButton">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
     </Style>
-
-    <Style Selector="controls|IconButton:pressed">
+    <Style Selector="controls|IconButton:pressed /template/ Button#PART_PrimaryButton">
         <Setter Property="RenderTransform" Value="scale(0.98)" />
     </Style>
-
-    <Style Selector="controls|IconButton:disabled /template/ Border#PART_LayoutRoot">
+    <Style Selector="controls|IconButton:disabled /template/ Button#PART_PrimaryButton">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorDisabledBrush}" />
         <Setter Property="Opacity" Value="0.5" />
     </Style>
 
-    <Style Selector="controls|IconButton.Danger:not(:disabled)">
+    <Style Selector="controls|IconButton.Danger /template/ Button#PART_PrimaryButton">
         <Setter Property="Background" Value="#FF3B30" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderBrush" Value="#E03026" />
     </Style>
-
-    <Style Selector="controls|IconButton.Danger:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+    <Style Selector="controls|IconButton.Danger:not(:disabled):pointerover /template/ Button#PART_PrimaryButton">
         <Setter Property="Background" Value="#FF5247" />
     </Style>
-
-    <Style Selector="controls|IconButton.Danger:disabled /template/ Border#PART_LayoutRoot">
+    <Style Selector="controls|IconButton.Danger:disabled /template/ Button#PART_PrimaryButton">
         <Setter Property="Background" Value="#80FF3B30" />
         <Setter Property="BorderBrush" Value="#80E03026" />
     </Style>
 
-    <Style Selector="controls|IconButton.Primary">
+    <Style Selector="controls|IconButton.Primary /template/ Button#PART_PrimaryButton">
         <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
     </Style>
-
-    <Style Selector="controls|IconButton.Primary:not(:disabled):pointerover /template/ Border#PART_LayoutRoot">
+    <Style Selector="controls|IconButton.Primary:not(:disabled):pointerover /template/ Button#PART_PrimaryButton">
         <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
         <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushPointerOver}" />
     </Style>
+    <Style Selector="controls|IconButton.Primary:disabled /template/ Button#PART_PrimaryButton">
+        <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundDisabled}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushDisabled}" />
+    </Style>
 
-    <Style Selector="controls|IconButton.Primary:disabled /template/ Border#PART_LayoutRoot">
+
+    <Style Selector="controls|IconButton.DropDownButton">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button Name="PART_PrimaryButton"
+                            Grid.Column="0"
+                            Background="{TemplateBinding Background}"
+                            Foreground="{TemplateBinding Foreground}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6,0,0,6"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Command="{TemplateBinding Command}"
+                            CommandParameter="{TemplateBinding CommandParameter}">
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Spacing="8">
+                            <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
+                                           Foreground="{TemplateBinding Foreground}"
+                                           FontSize="{TemplateBinding IconSize}"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                            <Path Data="{TemplateBinding IconData}"
+                                  Fill="{TemplateBinding Foreground}"
+                                  Width="{TemplateBinding IconSize}"
+                                  Height="{TemplateBinding IconSize}"
+                                  Stretch="Uniform"
+                                  VerticalAlignment="Center">
+                                <Path.IsVisible>
+                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
+                                        <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
+                                    </MultiBinding>
+                                </Path.IsVisible>
+                            </Path>
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Center"
+                                              IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Name="PART_SecondaryButton"
+                            Grid.Column="1"
+                            Background="{TemplateBinding Background}"
+                            Foreground="{TemplateBinding Foreground}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="0,1,1,1"
+                            CornerRadius="0,6,6,0"
+                            Padding="8,0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            IsVisible="{TemplateBinding Flyout, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter Content="{TemplateBinding Content}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+
+                        <ic:SymbolIcon Name="PART_Chevron"
+                                       Symbol="ChevronDown"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center">
+                            <ic:SymbolIcon.Transitions>
+                                <Transitions>
+                                    <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.2" Easing="CubicEaseOut" />
+                                </Transitions>
+                            </ic:SymbolIcon.Transitions>
+                        </ic:SymbolIcon>
+                    </Button>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="controls|IconButton.DropDownButton:pointerover /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton:pointerover /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton:pressed /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton:pressed /template/ Button#PART_SecondaryButton">
+        <Setter Property="RenderTransform" Value="scale(0.98)" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton:disabled /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton:disabled /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource ControlFillColorDisabledBrush}" />
+        <Setter Property="Opacity" Value="0.5" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton:flyout-open /template/ ic|SymbolIcon#PART_Chevron">
+        <Setter Property="Symbol" Value="ChevronDown" />
+        <Setter Property="RenderTransform" Value="rotate(180deg)" />
+    </Style>
+
+    <Style Selector="controls|IconButton.DropDownButton.Danger /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Danger /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#FF3B30" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="#E03026" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Danger:not(:disabled):pointerover /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Danger:not(:disabled):pointerover /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#FF5247" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Danger:disabled /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Danger:disabled /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="#80FF3B30" />
+        <Setter Property="BorderBrush" Value="#80E03026" />
+    </Style>
+
+    <Style Selector="controls|IconButton.DropDownButton.Primary /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Primary /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource AccentButtonBackground}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource AccentButtonForeground}" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Primary:not(:disabled):pointerover /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Primary:not(:disabled):pointerover /template/ Button#PART_SecondaryButton">
+        <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundPointerOver}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushPointerOver}" />
+    </Style>
+    <Style Selector="controls|IconButton.DropDownButton.Primary:disabled /template/ Button#PART_PrimaryButton, controls|IconButton.DropDownButton.Primary:disabled /template/ Button#PART_SecondaryButton">
         <Setter Property="Background" Value="{DynamicResource AccentButtonBackgroundDisabled}" />
         <Setter Property="BorderBrush" Value="{DynamicResource AccentButtonBorderBrushDisabled}" />
     </Style>
 
     <Design.PreviewWith>
         <StackPanel Spacing="16" Background="{DynamicResource ApplicationPageBackgroundThemeBrush}">
-            <!-- Default IconButton -->
             <StackPanel Spacing="8">
-                <TextBlock Text="Default" FontWeight="Bold" />
+                <TextBlock Text="Base Buttons" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Icon="Home" Content="Home" />
-                    <controls:IconButton Icon="Settings" Content="Settings" />
-                    <controls:IconButton Icon="Delete" Content="Delete" />
-                </StackPanel>
-            </StackPanel>
-
-            <!-- Primary IconButton -->
-            <StackPanel Spacing="8">
-                <TextBlock Text="Primary" FontWeight="Bold" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Classes="Primary" Icon="Save" Content="Save" />
-                    <controls:IconButton Classes="Primary" Icon="Add" Content="Add" />
-                    <controls:IconButton Classes="Primary" Icon="Checkmark" Content="Confirm" />
-                </StackPanel>
-            </StackPanel>
-
-            <!-- Danger IconButton -->
-            <StackPanel Spacing="8">
-                <TextBlock Text="Danger" FontWeight="Bold" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
                     <controls:IconButton Classes="Danger" Icon="Delete" Content="Delete" />
-                    <controls:IconButton Classes="Danger" Icon="Warning" Content="Warning" />
                 </StackPanel>
             </StackPanel>
 
-            <!-- Disabled IconButton -->
             <StackPanel Spacing="8">
-                <TextBlock Text="Disabled" FontWeight="Bold" />
+                <TextBlock Text="DropDown Buttons" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <controls:IconButton IsEnabled="False" Icon="Settings" Content="Disabled" />
-                    <controls:IconButton Classes="Primary" IsEnabled="False" Icon="Save" Content="Disabled" />
-                    <controls:IconButton Classes="Danger" IsEnabled="False" Icon="Delete" Content="Disabled" />
+                    <controls:IconButton Classes="DropDownButton" Icon="Settings" Content="Settings">
+                        <controls:IconButton.Flyout>
+                            <MenuFlyout Placement="Bottom">
+                                <MenuItem Header="Test" />
+                            </MenuFlyout>
+                        </controls:IconButton.Flyout>
+                    </controls:IconButton>
+
+                    <controls:IconButton Classes="DropDownButton Primary" Icon="Save" Content="Save">
+                        <controls:IconButton.Flyout>
+                            <MenuFlyout Placement="Bottom">
+                                <MenuItem Header="Test" />
+                            </MenuFlyout>
+                        </controls:IconButton.Flyout>
+                    </controls:IconButton>
+
+                    <controls:IconButton Classes="DropDownButton Danger" Icon="Delete" Content="Delete">
+                        <controls:IconButton.Flyout>
+                            <MenuFlyout Placement="Bottom">
+                                <MenuItem Header="Test" />
+                            </MenuFlyout>
+                        </controls:IconButton.Flyout>
+                    </controls:IconButton>
                 </StackPanel>
             </StackPanel>
 
-            <!-- Icon Only -->
             <StackPanel Spacing="8">
-                <TextBlock Text="Icon Only" FontWeight="Bold" />
+                <TextBlock Text="Disabled DropDown Buttons" FontWeight="Bold" />
                 <StackPanel Orientation="Horizontal" Spacing="8">
-                    <controls:IconButton Icon="Home" />
-                    <controls:IconButton Classes="Primary" Icon="Save" />
-                    <controls:IconButton Classes="Danger" Icon="Delete" />
+                    <controls:IconButton IsEnabled="False" Classes="DropDownButton" Icon="Settings" Content="Disabled" />
+                    <controls:IconButton IsEnabled="False" Classes="DropDownButton Primary" Icon="Save" Content="Disabled" />
+                    <controls:IconButton IsEnabled="False" Classes="DropDownButton Danger" Icon="Delete" Content="Disabled" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

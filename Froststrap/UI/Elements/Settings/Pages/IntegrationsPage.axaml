@@ -305,47 +305,40 @@
                 FontSize="18"
                 Margin="0,16,0,0"
                 FontWeight="Bold"
-                Text="Roblox Studio"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"/>
+                Text="Roblox Studio"/>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    x:Name="StudioActivityOption"
+            <controls:OptionControl x:Name="StudioActivityOption"
                                     Header="Display Studio Activity"
                                     Description="Shows Roblox Studio as your Discord activity on launch."
                                     IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="Dynamic Thumbnail"
+            <controls:OptionControl Header="Dynamic Thumbnail"
                                     Description="Changes the thumbnail depending on the script you have open."
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="Editing Info"
+            <controls:OptionControl Header="Editing Info"
                                     Description="Shows the script type, script name, and number of lines in the script."
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="Workspace Info"
+            <controls:OptionControl Header="Workspace Info"
                                     Description="Displays the name of your current workspace."
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="Show Testing"
+            <controls:OptionControl Header="Show Testing"
                                     Description="Shows a small play icon in your RPC when testing a game."
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
-                                    Header="Join Button"
+            <controls:OptionControl Header="Join Button"
                                     Description="Adds a small button to join the game your working on."
                                     IsEnabled="{Binding StudioRPCEnabled}">
                 <ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />

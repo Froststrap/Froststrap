@@ -10,31 +10,5 @@
 
         [JsonPropertyName("latLong")]
         public string[] LatLong { get; set; } = null!;
-
-        [JsonIgnore]
-        public double Latitude
-        {
-            get
-            {
-                if (LatLong != null && LatLong.Length > 0 && double.TryParse(LatLong[0], out double lat))
-                {
-                    return lat;
-                }
-                return 0;
-            }
-        }
-
-        [JsonIgnore]
-        public double Longitude
-        {
-            get
-            {
-                if (LatLong != null && LatLong.Length > 1 && double.TryParse(LatLong[1], out double lon))
-                {
-                    return lon;
-                }
-                return 0;
-            }
-        }
     }
 }

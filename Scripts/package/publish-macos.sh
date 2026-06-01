@@ -3,6 +3,8 @@ set -e
 
 PROJECT_FILE=${1:-"Froststrap/Froststrap.csproj"}
 BUILD_DIR=${2:-"build"}
+PUBLISH_PROFILE_ARM64=${3:-"Publish-osx-arm64"}
+PUBLISH_PROFILE_X64=${4:-"Publish-osx-x64"}
 CONFIG="Release"
 
 # Create new environment
@@ -13,15 +15,15 @@ mkdir -p "$BUILD_DIR/Froststrap.app/Contents/MacOS"
 mkdir -p "$BUILD_DIR/Froststrap.app/Contents/Resources"
 
 # Publish
-for arch in arm64 x64; do
-    dotnet publish "$PROJECT_FILE" \
-        -r "osx-$arch" \
-        -c "$CONFIG" \
-        --self-contained true \
-        -p:PublishSingleFile=true \
-        -p:IncludeNativeLibrariesForSelfExtract=true \
-        -o "./$BUILD_DIR/temp/$arch"
-done
+dotnet publish "$PROJECT_FILE" \
+    -c "$CONFIG" \
+    -p:PublishProfile="$PUBLISH_PROFILE_ARM64" \
+    -o "./$BUILD_DIR/temp/arm64"
+
+dotnet publish "$PROJECT_FILE" \
+    -c "$CONFIG" \
+    -p:PublishProfile="$PUBLISH_PROFILE_X64" \
+    -o "./$BUILD_DIR/temp/x64"
 
 # Create Universal Binary
 lipo -create \

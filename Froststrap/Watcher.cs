@@ -27,6 +27,8 @@ namespace Froststrap
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed = false;
 
+        private int _gameModeHandle = -1;
+
         public Watcher()
         {
             const string LOG_IDENT = "Watcher";
@@ -63,6 +65,15 @@ namespace Froststrap
 
             RobloxPath = _watcherData.RobloxDirectory;
             ProcessId = _watcherData.ProcessId;
+
+            if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
+            {
+                _ = Task.Run(async () =>
+                {
+                    await Task.Delay(1000);
+                    _gameModeHandle = await RegisterGameModeWithDbusSendAsync(_watcherData.ProcessId);
+                });
+            }
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
@@ -139,6 +150,129 @@ namespace Froststrap
             }
         }
 
+        private static async Task<int> RegisterGameModeWithDbusSendAsync(int pid)
+        {
+            const string LOG_IDENT = "Watcher::RegisterGameModeWithDbusSend";
+
+            const string GameModePortalService = "org.freedesktop.portal.Desktop";
+            const string GameModePortalPath = "/org/freedesktop/portal/desktop";
+            const string GameModePortalInterface = "org.freedesktop.portal.GameMode";
+
+            if (pid <= 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Invalid PID: {pid}");
+                return -1;
+            }
+
+            try
+            {
+                var whichPsi = new ProcessStartInfo
+                {
+                    FileName = "which",
+                    Arguments = "dbus-send",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var whichProcess = Process.Start(whichPsi);
+                if (whichProcess == null || !whichProcess.WaitForExit(1000) || whichProcess.ExitCode != 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "dbus-send not found, GameMode registration skipped");
+                    return -1;
+                }
+
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "dbus-send",
+                    Arguments = $"--session --print-reply --dest={GameModePortalService} {GameModePortalPath} {GameModePortalInterface}.RegisterGame int32:{pid}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(psi);
+                if (process == null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to start dbus-send");
+                    return -1;
+                }
+
+                string output = await process.StandardOutput.ReadToEndAsync();
+                string error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"dbus-send failed: {error}");
+                    return -1;
+                }
+
+                var match = Regex.Match(output, @"int32\s+(\d+)");
+                if (!match.Success)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Failed to parse GameMode response: {output}");
+                    return -1;
+                }
+
+                int handle = int.Parse(match.Groups[1].Value);
+
+                if (handle < 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"GameMode registration rejected with handle {handle}");
+                    return -1;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Registered with GameMode via dbus-send, handle: {handle}");
+                return handle;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to register with GameMode: {ex.Message}");
+                return -1;
+            }
+        }
+
+        private static async Task UnregisterGameModeWithDbusSendAsync(int handle)
+        {
+            const string LOG_IDENT = "Watcher::UnregisterGameModeWithDbusSend";
+
+            const string GameModePortalService = "org.freedesktop.portal.Desktop";
+            const string GameModePortalPath = "/org/freedesktop/portal/desktop";
+            const string GameModePortalInterface = "org.freedesktop.portal.GameMode";
+
+            if (handle <= 0)
+                return;
+
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = "dbus-send",
+                    Arguments = $"--session --print-reply --dest={GameModePortalService} {GameModePortalPath} {GameModePortalInterface}.UnregisterGame int32:{handle}",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using var process = Process.Start(psi);
+                if (process != null)
+                {
+                    await process.WaitForExitAsync();
+                    if (process.ExitCode == 0)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Unregistered from GameMode, handle: {handle}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to unregister from GameMode: {ex.Message}");
+            }
+        }
+
         public void KillRobloxProcess() => CloseProcess(_watcherData!.ProcessId, true);
 
         public static void CloseProcess(int pid, bool force = false)
@@ -200,6 +334,11 @@ namespace Froststrap
             }
             catch (OperationCanceledException) { return; }
 
+            if (_gameModeHandle > 0)
+            {
+                await UnregisterGameModeWithDbusSendAsync(_gameModeHandle);
+            }
+
             if (_watcherData.AutoclosePids is not null)
             {
                 foreach (int pid in _watcherData.AutoclosePids)
@@ -218,6 +357,12 @@ namespace Froststrap
             App.Logger.WriteLine("Watcher::Dispose", "Disposing Watcher");
 
             _cancellationTokenSource.Cancel();
+
+            if (_gameModeHandle > 0)
+            {
+                _ = UnregisterGameModeWithDbusSendAsync(_gameModeHandle);
+                _gameModeHandle = -1;
+            }
 
             if (App.Settings.Prop.MultiInstanceLaunching)
             {

@@ -36,6 +36,7 @@ namespace Froststrap.UI.ViewModels.Settings
         #region Fields
         private bool _hasSearched;
         private string _placeId = "";
+        private string _selectedRegion = "";
         private bool _isLoading;
         private bool _isGameSearchLoading;
         private string _loadingMessage = "";
@@ -275,13 +276,12 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public string? SelectedRegion
         {
-            get => App.Settings.Prop.SelectedRegion;
+            get => _selectedRegion;
             set
             {
-                App.Settings.Prop.SelectedRegion = value ?? "";
+                _selectedRegion = value ?? "";
                 OnPropertyChanged();
                 SearchCommand.NotifyCanExecuteChanged();
-                App.Settings.Save();
             }
         }
 
@@ -335,7 +335,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 await SaveDatacentersToCacheAsync(result.Value);
             }
 
-            SelectedRegion = Regions.FirstOrDefault(r => r.Equals(App.Settings.Prop.SelectedRegion, StringComparison.OrdinalIgnoreCase)) ?? Regions.FirstOrDefault();
+            SelectedRegion = Regions.FirstOrDefault(r => r.Equals(_selectedRegion, StringComparison.OrdinalIgnoreCase)) ?? Regions.FirstOrDefault();
 
             LoadingMessage = $"Loaded {Regions.Count} regions.";
             IsLoading = false;
