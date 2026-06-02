@@ -84,7 +84,7 @@ public partial class App : Application
 
     public static readonly JsonManager<State> State = new();
 
-    public static readonly AppStorageManager StorageSettings = new();
+    public static readonly AppStorageManager AppStorage = new();
 
     public static readonly JsonManager<SoberSettings> SoberSettings = new();
 
@@ -591,7 +591,7 @@ public partial class App : Application
             Settings.Load();
             State.Load();
             FastFlags.Load();
-            StorageSettings.Load();
+            AppStorage.Load();
             GlobalSettings.Load();
 
             if (OperatingSystem.IsLinux())

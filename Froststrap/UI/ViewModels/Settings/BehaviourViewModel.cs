@@ -20,38 +20,56 @@
             set => App.Settings.Prop.SelectedProcessPriority = value;
         }
 
-        // Ill move to global settings in the future, too lazy to do it now
-        public static bool IsAppStorageVisible => App.StorageSettings.Loaded && (ShowLaunchAtStartup || ShowMinimizeToTray || ShowSystemTrayModal || ShowTheme);
-        public static bool ShowLaunchAtStartup => !string.IsNullOrEmpty(App.StorageSettings.Prop.LaunchAtStartup);
-        public static bool ShowMinimizeToTray => !string.IsNullOrEmpty(App.StorageSettings.Prop.MinimizeToTray);
-        public static bool ShowSystemTrayModal => !string.IsNullOrEmpty(App.StorageSettings.Prop.SystemTrayModalShown);
-        public static bool ShowTheme => !string.IsNullOrEmpty(App.StorageSettings.Prop.DeviceLevelTheme);
-
-        public static bool LaunchAtStartup
+        public bool LaunchAtStartup
         {
-            get => AppStorageManager.GetBoolValue("LaunchAtStartup");
-            set => AppStorageManager.SetBoolValue("LaunchAtStartup", value);
+            get => App.AppStorage.GetBoolPreset("System.LaunchAtStartup");
+            set => App.AppStorage.SetBoolPreset("System.LaunchAtStartup", value);
         }
 
-        public static bool MinimizeToTray
+        public bool MinimizeToTray
         {
-            get => AppStorageManager.GetBoolValue("MinimizeToTray");
-            set => AppStorageManager.SetBoolValue("MinimizeToTray", value);
+            get => App.AppStorage.GetBoolPreset("System.MinimizeToTray");
+            set => App.AppStorage.SetBoolPreset("System.MinimizeToTray", value);
         }
 
-        public static bool SystemTrayModalShown
+        public bool SystemTrayModalShown
         {
-            get => AppStorageManager.GetBoolValue("SystemTrayModalShown");
-            set => AppStorageManager.SetBoolValue("SystemTrayModalShown", value);
+            get => App.AppStorage.GetBoolPreset("System.SystemTrayModalShown");
+            set => App.AppStorage.SetBoolPreset("System.SystemTrayModalShown", value);
         }
 
-        public static IEnumerable<AppStorageManager.AppStorageSettingTheme> AppThemeOptions => Enum.GetValues<AppStorageManager.AppStorageSettingTheme>();
 
-        public static AppStorageManager.AppStorageSettingTheme SelectedTheme
+        public IEnumerable<Enums.AppStoragePresets.Theme> AppThemeOptions => Enum.GetValues<Enums.AppStoragePresets.Theme>();
+
+        public Enums.AppStoragePresets.Theme SelectedTheme
         {
-            get => AppStorageManager.GetTheme();
-            set => AppStorageManager.SetTheme(value);
+            get
+            {
+                string? json = App.AppStorage.GetPreset("UI.Theme");
+                if (string.IsNullOrEmpty(json))
+                    return Enums.AppStoragePresets.Theme.Dark;
+
+                try
+                {
+                    var dict = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+                    string? themeValue = dict?.Values.FirstOrDefault();
+                    return themeValue == "light" ? Enums.AppStoragePresets.Theme.Light : Enums.AppStoragePresets.Theme.Dark;
+                }
+                catch
+                {
+                    return Enums.AppStoragePresets.Theme.Dark;
+                }
+            }
+            set
+            {
+                string userId = App.AppStorage.GetValue("UserId") ?? "0";
+                string themeValue = AppStorageManager.ThemeValues[value];
+                string themeObject = $"{{\"{userId}\":\"{themeValue}\"}}";
+                App.AppStorage.SetPreset("UI.Theme", themeObject);
+            }
         }
+
+        public bool IsAppStorageVisible => App.AppStorage.Loaded;
 
         public bool MultiInstances
         {

@@ -162,8 +162,7 @@
 
                     <controls:OptionControl
                         Header="Roblox App Theme"
-                        Description="Changes the visual theme for Roblox."
-                        IsVisible="{Binding ShowTheme}">
+                        Description="Changes the visual theme for Roblox.">
                         <ComboBox
                             MinWidth="200"
                             ItemsSource="{Binding AppThemeOptions}"
@@ -178,22 +177,19 @@
 
                     <controls:OptionControl
                         Header="Launch at Startup"
-                        Description="Automatically launch the Roblox app when you start your PC."
-                        IsVisible="{Binding ShowLaunchAtStartup}">
+                        Description="Automatically launch the Roblox app when you start your PC.">
                         <ToggleSwitch IsChecked="{Binding LaunchAtStartup, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Header="Minimize to Tray"
-                        Description="Sends the app to the system tray instead of closing it fully."
-                        IsVisible="{Binding ShowMinimizeToTray}">
+                        Description="Sends the app to the system tray instead of closing it fully.">
                         <ToggleSwitch IsChecked="{Binding MinimizeToTray, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Header="System Tray Modal"
-                        Description="Controls whether the tray informational modal is suppressed."
-                        IsVisible="{Binding ShowSystemTrayModal}">
+                        Description="Controls whether the tray informational modal is suppressed.">
                         <ToggleSwitch IsChecked="{Binding SystemTrayModalShown, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>
