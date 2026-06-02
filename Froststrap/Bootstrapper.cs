@@ -4263,8 +4263,8 @@ Windows Registry Editor Version 5.00
                         string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
                         if (packageDir is null)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                            return false;
+                            App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map, skipping.");
+                            return true;
                         }
                         packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
                     }
