@@ -32,30 +32,17 @@
                         </Transitions>
                     </Border.Transitions>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <ic:SymbolIcon Symbol="{TemplateBinding Icon}"
                                        Foreground="{TemplateBinding Foreground}"
                                        FontSize="{TemplateBinding IconSize}"
                                        VerticalAlignment="Center"
                                        IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"/>
 
-                        <Path Data="{TemplateBinding IconData}"
-                              Fill="{TemplateBinding Foreground}"
-                              Width="{TemplateBinding IconSize}"
-                              Height="{TemplateBinding IconSize}"
-                              Stretch="Uniform"
-                              VerticalAlignment="Center">
-                            <Path.IsVisible>
-                                <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IconData" Converter="{x:Static ObjectConverters.IsNotNull}"/>
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" Converter="{x:Static ObjectConverters.IsNull}"/>
-                                </MultiBinding>
-                            </Path.IsVisible>
-                        </Path>
-
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Center"
+                                          Margin="8,0,0,0"
                                           IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     </StackPanel>
                 </Border>

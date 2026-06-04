@@ -102,7 +102,7 @@
                 <StackPanel>
                     <controls:OptionControl
                         Header="Join Smaller Servers"
-                        Description="Join smaller servers when joinning through play button">
+                        Description="Join smaller servers when joining through play button">
                         <ToggleSwitch IsChecked="{Binding JoinSmallerServer, Mode=TwoWay}" />
                     </controls:OptionControl>
 
