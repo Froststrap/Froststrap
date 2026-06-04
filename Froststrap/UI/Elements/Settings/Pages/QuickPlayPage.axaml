@@ -50,7 +50,9 @@
                                                 <ic:SymbolIcon Symbol="Layer" FontSize="18" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="{Binding ServerCount, StringFormat='View Servers ({0})'}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}" CommandParameter="{Binding}">
+                                        <MenuItem Header="{Binding ServerCountDisplay}"
+                                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
+                                                  CommandParameter="{Binding}">
                                             <MenuItem.Icon>
                                                 <ic:SymbolIcon Symbol="Server" FontSize="18" />
                                             </MenuItem.Icon>
@@ -85,12 +87,23 @@
                                                 </Grid>
                                             </StackPanel>
                                         </StackPanel>
-                                        <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="Black">
+                                        <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="8" Padding="6,2" CornerRadius="8" Background="Black" IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
                                             <StackPanel Orientation="Horizontal" Spacing="4">
                                                 <ic:SymbolIcon Symbol="Server" FontSize="10"/>
                                                 <TextBlock Text="{Binding ServerCount}" FontSize="10" FontWeight="Bold"/>
                                             </StackPanel>
                                         </Border>
+
+                                        <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8">
+                                            <Border Padding="6,2" CornerRadius="6" Background="#22C55E"
+                                                    IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
+                                                <TextBlock Text="Tracked" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                            <Border Padding="6,2" CornerRadius="6" Background="#3B82F6"
+                                                    IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}">
+                                                <TextBlock Text="Roblox API" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                            </Border>
+                                        </Grid>
                                     </Panel>
                                 </controls:Card>
                             </Button>
@@ -147,40 +160,55 @@
                         </Grid>
                     </Border>
 
-                    <ScrollViewer Height="350">
-                        <ItemsControl ItemsSource="{Binding SelectedGameServers}" Padding="10">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="models:ServerInfo">
-                                    <Border Padding="12" Margin="0,2" Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8">
-                                        <Grid ColumnDefinitions="*, Auto">
-                                            <StackPanel Spacing="4">
-                                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                                    <ic:SymbolIcon Symbol="Earth" FontSize="14"/>
-                                                    <TextBlock Text="{Binding Region}" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                                                    <Border Margin="4,0,0,0" Padding="5,1" CornerRadius="4" Background="{DynamicResource AccentButtonBackground}" IsVisible="{Binding IsLatest}">
-                                                        <TextBlock Text="Latest" FontSize="8" FontWeight="Medium"/>
-                                                    </Border>
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                                        <ic:SymbolIcon Symbol="Timer" FontSize="12" Opacity="0.5" />
-                                                        <TextBlock Margin ="0,0,0,4" Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
-                                                    </StackPanel>
-                                                    <TextBlock Text="{Binding JoinedAt, StringFormat='{}{0:MM/dd HH:mm}'}" FontSize="11" Opacity="0.4"/>
-                                                </StackPanel>
-                                            </StackPanel>
+                    <Grid>
+                        <Grid IsVisible="{Binding IsLoadingServers}" Height="350" Background="#80000000" ZIndex="1">
+                            <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ui:ProgressRing IsActive="{Binding IsLoadingServers}" Width="40" Height="40"
+                                                 Foreground="{DynamicResource SystemAccentColor}"/>
+                                <TextBlock Text="Loading servers..." FontSize="12" Opacity="0.7"/>
+                            </StackPanel>
+                        </Grid>
 
-                                            <controls:IconButton Grid.Column="1" Classes="Primary" VerticalAlignment="Center"
-                                                                 Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}"
-                                                                 CommandParameter="{Binding}"
-                                                                 Content="Join"
-                                                                 Icon="Play"/>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                        <ScrollViewer Height="350" IsVisible="{Binding !IsLoadingServers}">
+                            <ItemsControl ItemsSource="{Binding SelectedGameServers}" Padding="10">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="models:ServerInfo">
+                                        <Border Padding="12" Margin="0,2" Background="{DynamicResource ControlFillColorDefaultBrush}" CornerRadius="8">
+                                            <Grid ColumnDefinitions="*, Auto">
+                                                <StackPanel Spacing="4">
+                                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                                        <ic:SymbolIcon Symbol="Earth" FontSize="14"/>
+                                                        <TextBlock Text="{Binding Region}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+
+                                                        <Border Margin="4,0,0,0" Padding="5,1" CornerRadius="4"
+                                                                Background="{DynamicResource AccentButtonBackground}"
+                                                                IsVisible="{Binding IsLatest}">
+                                                            <TextBlock Text="Latest" FontSize="8" FontWeight="Medium"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                                            <ic:SymbolIcon Symbol="Timer" FontSize="12" Opacity="0.5" />
+                                                            <TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
+                                                        </StackPanel>
+                                                        <TextBlock Text="{Binding JoinedAt, StringFormat='{}{0:MM/dd HH:mm}'}"
+                                                                   FontSize="11" Opacity="0.4"
+                                                                   IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+
+                                                <controls:IconButton Grid.Column="1" Classes="Primary" VerticalAlignment="Center"
+                                                                     Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}"
+                                                                     CommandParameter="{Binding}"
+                                                                     Content="Join" Icon="Play"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
                 </StackPanel>
             </Border>
         </Border>
@@ -314,15 +342,10 @@
                                                     </TextBlock>
                                                 </StackPanel>
 
-                                                <Button Grid.Column="2" VerticalAlignment="Center"
-                                                        Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinPrivateServerCommand}"
-                                                        CommandParameter="{Binding AccessCode}"
-                                                        Classes="AccentButton">
-                                                    <StackPanel Orientation="Horizontal" Spacing="4">
-                                                        <ic:SymbolIcon Symbol="Play" FontSize="14" Foreground="White"/>
-                                                        <TextBlock Text="Join" Foreground="White"/>
-                                                    </StackPanel>
-                                                </Button>
+                                                <controls:IconButton Grid.Column="2" VerticalAlignment="Center" Content="Join" Icon="Play"
+                                                                     Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinPrivateServerCommand}"
+                                                                     CommandParameter="{Binding AccessCode}"
+                                                                     Classes="Primary"/>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>

@@ -12,5 +12,9 @@
         public int ServerCount { get; set; }
         public string? LastJobId { get; set; }
         public UniverseDetails? OriginalDetails { get; set; }
+        public GameSource Source { get; set; }
+        public long LastPlayedTicks { get; set; }
+
+        public string ServerCountDisplay => Source == GameSource.RobloxApi ? "View Servers" : $"View Servers ({ServerCount})";
     }
 }
