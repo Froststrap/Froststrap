@@ -73,66 +73,81 @@
                 </ComboBox>
             </controls:OptionControl>
 
-            <controls:CardExpander Header="Experimental" Description="A collection of experimental settings. Be careful while using them, as they may or may not work as intended." IsExpanded="True">
+            <controls:OptionControl
+                Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
+                Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
+                        <ic:SymbolIcon.Styles>
+                            <Style Selector="ic|SymbolIcon">
+                                <Setter Property="IsVisible" Value="False"/>
+                            </Style>
+                            <Style Selector="ic|SymbolIcon">
+                                <Style.Resources>
+                                </Style.Resources>
+                                <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
+                            </Style>
+                        </ic:SymbolIcon.Styles>
+                    </ic:SymbolIcon>
+                    <ToggleSwitch IsChecked="{Binding CookieAccess, Mode=TwoWay}" />
+                </StackPanel>
+            </controls:OptionControl>
+
+            <controls:CardExpander Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Title}"
+                                   Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Description}"
+                                   Classes="NoUserExpansion" IsExpanded="{Binding EnableBetterMatchmaking, Mode=OneWay}">
+                <controls:CardExpander.HeaderContent>
+                    <ToggleSwitch IsChecked="{Binding EnableBetterMatchmaking, Mode=TwoWay}" />
+                </controls:CardExpander.HeaderContent>
                 <StackPanel>
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Title}"
-                        Description="{Binding Source={x:Static resources:Strings.Menu_Behaviour_AllowCookieAccess_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/fishstrap/fishstrap/wiki/Account-Access#what-will-fishstrap-access-with-your-account'}">
-                        <StackPanel Orientation="Horizontal" Spacing="8">
-                            <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
-                                <ic:SymbolIcon.Styles>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Setter Property="IsVisible" Value="False"/>
-                                    </Style>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Style.Resources>
-                                        </Style.Resources>
-                                        <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
-                                    </Style>
-                                </ic:SymbolIcon.Styles>
-                            </ic:SymbolIcon>
-                            <ToggleSwitch IsChecked="{Binding CookieAccess, Mode=TwoWay}" />
+                        Header="Join Smaller Servers"
+                        Description="Join smaller servers when joinning through play button">
+                        <ToggleSwitch IsChecked="{Binding JoinSmallerServer, Mode=TwoWay}" />
+                    </controls:OptionControl>
+
+                    <controls:OptionControl
+                        Header="Preferred Region"
+                        Description="Select a specific region to join, or leave on Auto for the best available.">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <ui:ProgressRing
+                                IsActive="{Binding IsLoadingRegions}"
+                                Width="20"
+                                Height="20"
+                                Margin="0,0,8,0"
+                                IsVisible="{Binding IsLoadingRegions}"/>
+                            <ComboBox
+                                MinWidth="200"
+                                ItemsSource="{Binding AvailableRegions}"
+                                SelectedItem="{Binding SelectedRegion, Mode=TwoWay}"
+                                IsEnabled="{Binding !IsLoadingRegions}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </StackPanel>
                     </controls:OptionControl>
 
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Title}"
-                        Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_Description}">
-                        <StackPanel Orientation="Horizontal">
-                            <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
-                                <ic:SymbolIcon.Styles>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Setter Property="IsVisible" Value="False"/>
-                                    </Style>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Style.Resources>
-                                        </Style.Resources>
-                                        <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
-                                    </Style>
-                                </ic:SymbolIcon.Styles>
-                            </ic:SymbolIcon>
-                            <ToggleSwitch IsChecked="{Binding EnableBetterMatchmaking, Mode=TwoWay}" />
-                        </StackPanel>
+                        Header="Max Server Check Amount"
+                        Description="Select how many servers to check, the more the longer it might take.">
+                        <TextBox
+                            Width="200"
+                            Margin="8,0,0,0"
+                            Padding="10,5"
+                            Text="{Binding MaxServerCheck, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
-                        Header="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Title}"
-                        Description="{x:Static resources:Strings.Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Description}">
-                        <StackPanel Orientation="Horizontal">
-                            <ic:SymbolIcon Symbol="Warning" VerticalAlignment="Center" Foreground="Orange">
-                                <ic:SymbolIcon.Styles>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Setter Property="IsVisible" Value="False"/>
-                                    </Style>
-                                    <Style Selector="ic|SymbolIcon">
-                                        <Style.Resources>
-                                        </Style.Resources>
-                                        <Setter Property="IsVisible" Value="{Binding CookieLoadingFailed}"/>
-                                    </Style>
-                                </ic:SymbolIcon.Styles>
-                            </ic:SymbolIcon>
-                            <ToggleSwitch IsChecked="{Binding EnableBetterMatchmakingRandomization, Mode=TwoWay}" />
-                        </StackPanel>
+                        Header="Best Region Amounts"
+                        Description="Select the amount of regions to check for, helps if it cant find your best regions.">
+                        <TextBox
+                            Width="200"
+                            Margin="8,0,0,0"
+                            Padding="10,5"
+                            Text="{Binding BestRegionAmounts, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                     </controls:OptionControl>
                 </StackPanel>
             </controls:CardExpander>
@@ -147,8 +162,7 @@
 
                     <controls:OptionControl
                         Header="Roblox App Theme"
-                        Description="Changes the visual theme for Roblox."
-                        IsVisible="{Binding ShowTheme}">
+                        Description="Changes the visual theme for Roblox.">
                         <ComboBox
                             MinWidth="200"
                             ItemsSource="{Binding AppThemeOptions}"
@@ -163,22 +177,19 @@
 
                     <controls:OptionControl
                         Header="Launch at Startup"
-                        Description="Automatically launch the Roblox app when you start your PC."
-                        IsVisible="{Binding ShowLaunchAtStartup}">
+                        Description="Automatically launch the Roblox app when you start your PC.">
                         <ToggleSwitch IsChecked="{Binding LaunchAtStartup, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Header="Minimize to Tray"
-                        Description="Sends the app to the system tray instead of closing it fully."
-                        IsVisible="{Binding ShowMinimizeToTray}">
+                        Description="Sends the app to the system tray instead of closing it fully.">
                         <ToggleSwitch IsChecked="{Binding MinimizeToTray, Mode=TwoWay}" />
                     </controls:OptionControl>
 
                     <controls:OptionControl
                         Header="System Tray Modal"
-                        Description="Controls whether the tray informational modal is suppressed."
-                        IsVisible="{Binding ShowSystemTrayModal}">
+                        Description="Controls whether the tray informational modal is suppressed.">
                         <ToggleSwitch IsChecked="{Binding SystemTrayModalShown, Mode=TwoWay}" />
                     </controls:OptionControl>
                 </StackPanel>

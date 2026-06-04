@@ -50,6 +50,9 @@ namespace Froststrap.UI.Elements.Settings
             gbs.Opacity = _viewModel.GBSEnabled ? 1 : 0.5;
             gbs.IsEnabled = _viewModel.GBSEnabled; // binding doesnt work as expected so we are setting it in here instead
 
+            sober.Opacity = _viewModel.SoberEnabled ? 1 : 0.5;
+            sober.IsEnabled = _viewModel.SoberEnabled; // binding doesnt work as expected so we are setting it in here instead
+
             LoadState();
 
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
@@ -70,20 +73,6 @@ namespace Froststrap.UI.Elements.Settings
             this.Closed += MainWindow_Closed;
 
             App.WindowsBackdrop();
-
-            bool isPlayerInstalled;
-
-            if (OperatingSystem.IsLinux())
-            {
-                var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
-                isPlayerInstalled = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-            }
-            else
-            {
-                isPlayerInstalled = App.IsPlayerInstalled;
-            }
-
-            LaunchButton.Content = isPlayerInstalled ? Strings.Menu_SaveAndLaunch : Strings.Menu_SaveAndInstall;
 
             UpdatePageView(_viewModel.CurrentPage);
 

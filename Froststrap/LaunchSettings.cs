@@ -1,4 +1,6 @@
-﻿namespace Froststrap
+using System.Reflection;
+
+namespace Froststrap
 {
     public class LaunchSettings
     {
@@ -44,6 +46,7 @@
 #endif
 
             Args = args;
+            string? entryAssemblyPath = AppContext.BaseDirectory;
 
             Dictionary<string, LaunchFlag> flagMap = [];
 
@@ -67,7 +70,11 @@
             {
                 string arg = Args[0];
 
-                if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
+                if (ShouldSkipHostArgument(arg, entryAssemblyPath))
+                {
+                    startIdx = 1;
+                }
+                else if (arg.StartsWith("roblox:", StringComparison.OrdinalIgnoreCase)
                     || arg.StartsWith("roblox-player:", StringComparison.OrdinalIgnoreCase))
                 {
                     App.Logger.WriteLine(LOG_IDENT, "Got Roblox player argument");
@@ -153,6 +160,23 @@
                     return;
                 }
             }
+        }
+
+        private static bool ShouldSkipHostArgument(string arg, string? entryAssemblyPath)
+        {
+            if (string.IsNullOrWhiteSpace(arg))
+                return false;
+
+            if (!Path.IsPathRooted(arg))
+                return false;
+
+            if (string.Equals(arg, entryAssemblyPath, StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (arg.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            return false;
         }
 
         private void ParsePlayer(string? data)

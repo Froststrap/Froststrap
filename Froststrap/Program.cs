@@ -15,16 +15,32 @@ sealed class Program
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    {
+        string iconPath = ExtractToTemp("IconFroststrap.ico", "IconFroststrap.ico");
+
+        return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithAppNotifications(new AppNotificationOptions
             {
-#if WINDOWS
-            AppName = "Froststrap",
-            AppIcon = "avares://Froststrap/Froststrap.ico",
-            AppUserModelId = "Froststrap.Froststrap",
-            DisableComServer = true
-#endif
+                AppName = "Froststrap",
+                AppUserModelId = "Icon.Froststrap",
+                AppIcon = iconPath,
+                DisableComServer = true
             })
             .LogToTrace();
+    }
+
+    public static string ExtractToTemp(string name, string fileName)
+    {
+        string tempFilePath = Path.Combine(Paths.Temp, fileName);
+
+        if (!File.Exists(tempFilePath))
+        {
+            using var stream = Resource.GetStream(name);
+            Directory.CreateDirectory(Path.GetDirectoryName(tempFilePath)!);
+            using var fileStream = File.Create(tempFilePath);
+            stream.CopyTo(fileStream);
+        }
+        return tempFilePath;
+    }
 }

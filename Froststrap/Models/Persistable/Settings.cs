@@ -38,7 +38,6 @@ namespace Froststrap.Models.Persistable
         public bool WindowAllowAll { get; set; } = false;
         public ObservableCollection<long> WindowAllowedUniverses { get; set; } = [];
         public ObservableCollection<long> WindowBlacklistedUniverses { get; set; } = [];
-
         public ObservableCollection<CustomIntegration> CustomIntegrations { get; set; } = [];
 
         // Bootstrapper Page
@@ -51,10 +50,13 @@ namespace Froststrap.Models.Persistable
         public bool MultiInstanceLaunching { get; set; } = false;
         public bool Error773Fix { get; set; } = false;
         public bool EnableBetterMatchmaking { get; set; } = false;
-        public bool EnableBetterMatchmakingRandomization { get; set; } = false;
+        public bool JoinSmallerServer { get; set; } = false;
+        public int BestRegionAmounts { get; set; } = 5;
+        public int MaxServerCheck { get; set; } = 25;
+        public string SelectedRegion { get; set; } = "Auto";
         public ProcessPriorityOption SelectedProcessPriority { get; set; } = ProcessPriorityOption.Normal;
 
-        // FastFlag Editor/Settings Related
+        // FastFlag Editor/Settings
         public bool UseFastFlagManager { get; set; } = true;
 
         // Appearance Page
@@ -91,15 +93,26 @@ namespace Froststrap.Models.Persistable
         public bool AutomaticallyUpdateSober { get; set; } = true;
         public string RobloxDomain { get; set; } = RobloxInterfaces.Deployment.DefaultRobloxDomain;
         public bool StaticDirectory { get; set; } = false;
-        public string Channel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
+        public string PlayerChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
+        public string StudioChannel { get; set; } = RobloxInterfaces.Deployment.DefaultChannel;
         public ChannelChangeMode ChannelChangeMode { get; set; } = ChannelChangeMode.Prompt;
+        public bool EnableWebView2 { get; set; } = true;
+        public string? StudioForcedGpu { get; set; } = string.Empty;
+        public string? StudioVirtualDesktop { get; set; } = string.Empty;
+        public string? StudioLauncher { get; set; } = string.Empty;
+        public StudioRenderer StudioRenderer { get; set; } = StudioRenderer.DXVK;
         public bool StudioVersionOverrideEnabled { get; set; } = false;
         public string StudioVersionOverrideHash { get; set; } = string.Empty;
+        public string WineBinaryPath { get; set; } = string.Empty;
+        public string WinePrefixPath { get; set; } = string.Empty;
+        public bool StudioGameMode { get; set; } = false;
+        public bool StudioDebug { get; set; } = false;
+        public Dictionary<string, string> StudioEnvironmentVariables { get; set; } = [];
 
         // Misc Stuff
-        public string SelectedRegion { get; set; } = string.Empty;
-        public bool DisableGameSearch { get; set; } = false;
+        public bool GameSearch { get; set; } = true;
         public bool ForceLocalData { get; set; } = false;
         public bool DebugDisableVersionPackageCleanup { get; set; } = false;
+        public LaunchMode DefaultSaveAndLaunchMode { get; set; } = LaunchMode.Player;
     }
 }

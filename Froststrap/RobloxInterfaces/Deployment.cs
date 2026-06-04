@@ -7,16 +7,15 @@
         public const string DefaultChannel = "production";
 
         public static event EventHandler<string>? ChannelChanged;
-        private static string _channel = App.Settings.Prop.Channel;
+
+        private static string _channel = DefaultChannel;
         public static string Channel
         {
             get => _channel;
             set
             {
+                if (_channel == value) return;
                 _channel = value;
-                App.Settings.Prop.Channel = Channel;
-                App.Settings.Save();
-
                 ChannelChanged?.Invoke(null, value);
             }
         }
@@ -41,8 +40,6 @@
 
         private static readonly Dictionary<string, ClientVersion> ClientVersionCache = [];
 
-        // a list of roblox deployment locations that we check for, in case one of them don't work
-        // these are all weighted based on their priority, so that we pick the most optimal one that we can. 0 = highest
         private static readonly List<string> BaseUrls =
         [
             "https://setup.rbxcdn.com",
@@ -52,7 +49,6 @@
             "https://s3.amazonaws.com/setup.roblox.com"
         ];
 
-        // This checks the latency of the servers to see which one is best for the user
         private static async Task<(string url, long latency)> GetLatency(string url, CancellationToken token)
         {
             var stopwatch = Stopwatch.StartNew();
@@ -60,7 +56,6 @@
             {
                 using var request = new HttpRequestMessage(HttpMethod.Head, $"{url}/versionStudio");
                 using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
-
                 response.EnsureSuccessStatusCode();
                 stopwatch.Stop();
                 return (url, stopwatch.ElapsedMilliseconds);
@@ -75,7 +70,6 @@
         /// This function serves double duty as the setup mirror enumerator, and as our connectivity check.
         /// Returns null for success.
         /// </summary>
-        /// <returns></returns>
         public static async Task<Exception?> InitializeConnectivity()
         {
             const string LOG_IDENT = "Deployment::InitializeConnectivity";
@@ -118,12 +112,9 @@
         public static string GetLocation(string resource)
         {
             string location = BaseUrl;
-
             if (!IsDefaultChannel)
                 location += "/channel/common";
-
             location += resource;
-
             return location;
         }
 
@@ -138,7 +129,6 @@
 
                 string content = await response.Content.ReadAsStringAsync();
                 UserChannel channelInfo = JsonSerializer.Deserialize<UserChannel>(content)!;
-
                 return channelInfo;
             }
             catch (HttpRequestException ex)
@@ -146,22 +136,18 @@
                 App.Logger.WriteLine(LOG_IDENT, "Failed to get user channel");
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
-
             return null;
         }
 
         public static async Task<bool> IsChannelPrivate(string channel)
         {
-
             if (channel == "production")
                 channel = "live";
-
             if (channel == "live")
                 return false;
 
             try
             {
-
                 Uri apiUrl = UrlBuilder.BuildApiUrl("clientsettingscdn", $"v2/client-version/{BinaryType}/channel/{channel}");
                 var response = await App.HttpClient.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
@@ -171,7 +157,6 @@
                 if (BadChannelCodes.Contains(ex.StatusCode))
                     return true;
             }
-
             return false;
         }
 
@@ -180,7 +165,6 @@
             const string LOG_IDENT = "Deployment::GetVersionTimestamp";
             const string header = "last-modified";
 
-            // since we arent getting the timestamp during launch there shouldnt be any collisions
             if (string.IsNullOrEmpty(BaseUrl))
                 await InitializeConnectivity();
 
@@ -193,9 +177,7 @@
                 if (response.Content.Headers.TryGetValues(header, out var values))
                 {
                     string lastModified = values.First();
-
                     DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
-
                     return dateTime;
                 }
             }
@@ -204,7 +186,6 @@
                 App.Logger.WriteLine(LOG_IDENT, $"Failed to get timestamp for {version}");
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
-
             return null;
         }
 
@@ -212,21 +193,17 @@
         {
             const string LOG_IDENT = "Deployment::GetInfo";
 
-            if (String.IsNullOrEmpty(channel))
+            if (string.IsNullOrEmpty(channel))
                 channel = Channel;
 
-            bool isDefaultChannel = String.Compare(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase) == 0;
+            bool isDefaultChannel = string.Compare(channel, DefaultChannel, StringComparison.OrdinalIgnoreCase) == 0;
 
             App.Logger.WriteLine(LOG_IDENT, $"Getting deploy info for channel {channel}");
 
             string activeBinaryType = binaryTypeOverride ?? BinaryType;
-
             string cacheKey = $"{channel}-{activeBinaryType}";
 
-            HttpRequestMessage request = new()
-            {
-                Method = HttpMethod.Get
-            };
+            HttpRequestMessage request = new() { Method = HttpMethod.Get };
 
             if (!string.IsNullOrEmpty(ChannelToken))
             {
@@ -244,7 +221,6 @@
             else
             {
                 string path = $"v2/client-version/{activeBinaryType}";
-
                 if (!isDefaultChannel)
                     path += $"/channel/{channel}";
 
@@ -253,8 +229,7 @@
                     request.RequestUri = UrlBuilder.BuildApiUrl("clientsettingscdn", path);
                     clientVersion = await Http.SendJson<ClientVersion>(request);
                 }
-                catch (HttpRequestException httpEx)
-                when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
+                catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
                 {
                     throw new InvalidChannelException(httpEx.StatusCode);
                 }
@@ -263,14 +238,11 @@
                     App.Logger.WriteLine(LOG_IDENT, "Failed to contact clientsettingscdn! Falling back to clientsettings...");
                     App.Logger.WriteException(LOG_IDENT, ex);
 
-                    // HttpRequestMessage is single-use, reusing the same object after it has been sent
-                    // throws InvalidOperationException. Create a fresh request for the fallback attempt.
                     HttpRequestMessage fallbackRequest = new()
                     {
                         Method = HttpMethod.Get,
                         RequestUri = UrlBuilder.BuildApiUrl("clientsettings", path)
                     };
-
                     if (!string.IsNullOrEmpty(ChannelToken))
                         fallbackRequest.Headers.Add("Roblox-Channel-Token", ChannelToken);
 
@@ -278,19 +250,16 @@
                     {
                         clientVersion = await Http.SendJson<ClientVersion>(fallbackRequest);
                     }
-                    catch (HttpRequestException httpEx)
-                    when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
+                    catch (HttpRequestException httpEx) when (!isDefaultChannel && BadChannelCodes.Contains(httpEx.StatusCode))
                     {
                         throw new InvalidChannelException(httpEx.StatusCode);
                     }
                 }
 
-                // check if channel is behind LIVE
                 if (!isDefaultChannel && behindProductionCheck)
                 {
                     var defaultClientVersion = await GetInfo(DefaultChannel);
-
-                    if ((Utilities.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan))
+                    if (Utilities.CompareVersions(clientVersion.Version, defaultClientVersion.Version) == VersionComparison.LessThan)
                         clientVersion.IsBehindDefaultChannel = true;
                 }
                 else

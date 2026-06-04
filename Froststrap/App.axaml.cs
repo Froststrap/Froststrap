@@ -84,7 +84,7 @@ public partial class App : Application
 
     public static readonly JsonManager<State> State = new();
 
-    public static readonly AppStorageManager StorageSettings = new();
+    public static readonly AppStorageManager AppStorage = new();
 
     public static readonly JsonManager<SoberSettings> SoberSettings = new();
 
@@ -559,8 +559,26 @@ public partial class App : Application
                 Logger.Initialize(LaunchSettings.UninstallFlag.Active);
             }
 
-            if (Paths.Process != Paths.Application && !File.Exists(Paths.Application))
-                File.Copy(Paths.Process, Paths.Application);
+            if (Paths.Process != Paths.Application)
+            {
+                if (OperatingSystem.IsLinux())
+                {
+                    string escapedProcessPath = Paths.Process.Replace("\"", "\\\"");
+                    string launcherScript = $"#!/bin/sh\nexec \"{escapedProcessPath}\" \"$@\"\n";
+
+                    bool needsUpdate = !File.Exists(Paths.Application)
+                        || File.ReadAllText(Paths.Application) != launcherScript;
+
+                    if (needsUpdate)
+                        File.WriteAllText(Paths.Application, launcherScript);
+
+                    Process.Start("chmod", $"+x \"{Paths.Application}\"")?.WaitForExit();
+                }
+                else if (!File.Exists(Paths.Application))
+                {
+                    File.Copy(Paths.Process, Paths.Application);
+                }
+            }
 
             if (!Logger.Initialized && !Logger.NoWriteMode)
             {
@@ -573,7 +591,7 @@ public partial class App : Application
             Settings.Load();
             State.Load();
             FastFlags.Load();
-            StorageSettings.Load();
+            AppStorage.Load();
             GlobalSettings.Load();
 
             if (OperatingSystem.IsLinux())
@@ -622,16 +640,13 @@ public partial class App : Application
                 }
             }
 
-            if (PlatformSettings is not null)
+            PlatformSettings?.ColorValuesChanged += (sender, args) =>
             {
-                PlatformSettings.ColorValuesChanged += (sender, args) =>
+                Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        AvaloniaWindow.ApplyTheme();
-                    });
-                };
-            }
+                    AvaloniaWindow.ApplyTheme();
+                });
+            };
 
             LaunchHandler.ProcessLaunchArgs();
         }

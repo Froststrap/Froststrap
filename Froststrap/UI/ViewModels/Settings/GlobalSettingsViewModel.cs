@@ -91,8 +91,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 FileTypeFilter = [new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml"] }]
             });
 
-            // CA1826: Collections like IReadOnlyList (returned by OpenFilePickerAsync) are indexable.
-            // Using [0] or Count check is more efficient than .FirstOrDefault() LINQ extension.
             if (result.Count == 0) return;
             var selectedFile = result[0];
 

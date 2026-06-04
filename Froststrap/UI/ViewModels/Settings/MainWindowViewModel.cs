@@ -63,6 +63,8 @@ namespace Froststrap.UI.ViewModels.Settings
         public bool HasBreadcrumbs => BreadcrumbItems.Count > 0;
         public bool ShowPageTitle => !HasBreadcrumbs;
 
+        public ICommand SetLaunchModeCommand { get; }
+
         public IRelayCommand NavigateToIntegrationsCommand { get; }
         public IRelayCommand NavigateToBehaviourCommand { get; }
         public IRelayCommand NavigateToSoberSettingsCommand { get; }
@@ -91,10 +93,13 @@ namespace Froststrap.UI.ViewModels.Settings
         public EventHandler? RequestCloseWindowEvent;
         public event EventHandler? SettingsSaved;
         public bool GBSEnabled = App.GlobalSettings.Loaded;
+        public bool SoberEnabled = OperatingSystem.IsLinux() && File.Exists(Paths.SoberConfig);
 
         public MainWindowViewModel()
         {
             _breadcrumbItems.CollectionChanged += OnBreadcrumbsChanged;
+
+            SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
 
             OpenAboutCommand = new RelayCommand(OpenAbout);
             SaveSettingsCommand = new RelayCommand(SaveSettings);
@@ -206,12 +211,16 @@ namespace Froststrap.UI.ViewModels.Settings
                     NavigateToShortcutsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.QuickPlayViewModel":
                     NavigateToQuickPlayCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.ChannelViewModel":
+                    NavigateToChannelsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.CommunityModsViewModel":
                     NavigateToCommunityModsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModsPresetsViewModel":
                     NavigateToPresetModsCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModGeneratorViewModel":
                     NavigateToModGeneratorCommand.Execute(null); break;
+                case "Froststrap.UI.ViewModels.Settings.RegionSelectorViewModel":
+                    NavigateToRegionSelectorCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlags.FastFlagEditorViewModel":
                     NavigateToFastFlagEditorCommand.Execute(null); break;
                 case "Froststrap.UI.ViewModels.Settings.GlobalSettings.GlobalSettingsEditorViewModel":
@@ -243,7 +252,7 @@ namespace Froststrap.UI.ViewModels.Settings
             App.State.Save();
             App.FastFlags.Save();
             App.GlobalSettings.Save();
-            App.StorageSettings.Save();
+            App.AppStorage.Save();
 
             if (OperatingSystem.IsLinux())
                 App.SoberSettings.Save();
@@ -267,9 +276,65 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             SaveSettings();
             if (!App.LaunchSettings.TestModeFlag.Active)
-                Process.Start(Paths.Application, "-player");
+            {
+
+                string arg = SelectedLaunchMode == LaunchMode.Player ? "-player" : "-studio";
+                Process.Start(Paths.Application, arg);
+            }
             else
+            {
                 CloseWindow();
+            }
+        }
+
+        public LaunchMode SelectedLaunchMode
+        {
+            get => App.Settings.Prop.DefaultSaveAndLaunchMode;
+            set 
+            { 
+                App.Settings.Prop.DefaultSaveAndLaunchMode = value; 
+                OnPropertyChanged(nameof(SelectedLaunchMode));
+                OnPropertyChanged(nameof(LaunchButtonText));
+            }
+        }
+
+        public static bool IsPlayerInstalled
+        {
+            get
+            {
+                if (OperatingSystem.IsLinux())
+                {
+                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                    return Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                }
+                else
+                {
+                    return App.IsPlayerInstalled;
+                }
+            }
+        }
+
+        public static bool IsStudioInstalled => App.IsStudioInstalled;
+        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? "Sober" : "Player";
+
+        public string LaunchButtonText
+        {
+            get
+            {
+                if (SelectedLaunchMode == LaunchMode.Player)
+                {
+                    string modeName = OperatingSystem.IsLinux() ? "Sober" : "Player";
+                    return IsPlayerInstalled
+                        ? $"Save and Launch {modeName}"
+                        : $"Save and Install {modeName}";
+                }
+                else
+                {
+                    return IsStudioInstalled
+                        ? "Save and Launch Studio"
+                        : "Save and Install Studio";
+                }
+            }
         }
 
         private async void RestartApp()

@@ -26,12 +26,12 @@ publish-windows:
 [unix]
 publish-macos:
     chmod +x ./Scripts/package/publish-macos.sh
-    ./Scripts/package/publish-macos.sh "{{ project_file }}" "{{ build_dir }}"
+    ./Scripts/package/publish-macos.sh "{{ project_file }}" "{{ build_dir }}" "Publish-osx-arm64" "Publish-osx-x64"
 
 [unix]
 publish-linux:
     chmod +x ./Scripts/package/publish-linux.sh
-    ./Scripts/package/publish-linux.sh "{{ project_file }}" "{{ build_dir }}"
+    ./Scripts/package/publish-linux.sh "{{ project_file }}" "{{ build_dir }}" "Publish-linux-x64"
 
 [unix]
 publish-flatpak:

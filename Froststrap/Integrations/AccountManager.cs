@@ -825,7 +825,7 @@ namespace Froststrap.Integrations
                         "--disable-setuid-sandbox",
                         "--disable-blink-features=AutomationControlled"
                     ],
-                    IgnoredDefaultArgs = ["--enable-automation" ]
+                    IgnoredDefaultArgs = ["--enable-automation"]
                 });
 
                 if (_browser == null) return null;
@@ -867,7 +867,7 @@ namespace Froststrap.Integrations
                     App.Logger.WriteLine(LOG_IDENT_BROWSER, "Navigating to Roblox...");
                     await mainPage.GoToAsync("https://www.roblox.com/login", new NavigationOptions
                     {
-                        WaitUntil = [WaitUntilNavigation.Load]
+                        WaitUntil = [WaitUntilNavigation.Networkidle2]
                     });
                 }
                 catch (Exception ex)

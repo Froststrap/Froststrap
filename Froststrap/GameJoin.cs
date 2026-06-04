@@ -12,13 +12,11 @@ namespace Froststrap
             if (!match.Success)
                 return 0;
 
-            // CA1806: Use a discard for the unused boolean return of TryParse
             _ = long.TryParse(match.Groups[1].Value, out long result);
 
             return result;
         }
 
-        // CA1822: Marked as static because it does not access instance members
         private static string RegexMatchString(string url, string query, string pattern)
         {
             Match match = Regex.Match(url, query + pattern);

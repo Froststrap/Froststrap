@@ -1,20 +1,39 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.RobloxInterfaces;
-using System.Net;
-using System.Text.Json;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
     public class ChannelViewModel : NotifyPropertyChangedViewModel
     {
-        private CancellationTokenSource? _cts;
+        private CancellationTokenSource? _playerCts;
+        private CancellationTokenSource? _studioCts;
+
+        public ICommand OpenWineCfgCommand { get; }
 
         public ChannelViewModel()
         {
-            Task.Run(() => LoadChannelDeployInfo(App.Settings.Prop.Channel));
+            _ = LoadChannelDeployInfo(App.Settings.Prop.PlayerChannel, false);
+            _ = LoadChannelDeployInfo(App.Settings.Prop.StudioChannel, true);
+
+            StudioEnvEntries = [];
+            foreach (var kv in App.Settings.Prop.StudioEnvironmentVariables)
+                StudioEnvEntries.Add(new EnvEntry(kv.Key, kv.Value, RemoveEnvEntry));
+
+            AddStudioEnvCommand = new RelayCommand(() =>
+            {
+                var newEntry = new EnvEntry("", "", RemoveEnvEntry);
+                StudioEnvEntries.Add(newEntry);
+            }); 
+            
+            OpenWineCfgCommand = new RelayCommand(OpenWineCfg);
+
+            OnPropertyChanged(nameof(IsWineAvailable));
         }
 
         public static IEnumerable<UpdateCheck> UpdateCheckValues => Enum.GetValues<UpdateCheck>();
@@ -40,10 +59,72 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
+        private void OpenWineCfg()
+        {
+            string wineBinary = App.Settings.Prop.WineBinaryPath;
+            if (string.IsNullOrEmpty(wineBinary) || !File.Exists(wineBinary))
+            {
+                wineBinary = Path.Combine(Paths.Base, "kombucha", "bin", "wine");
+                if (!File.Exists(wineBinary))
+                {
+                    _ = Frontend.ShowMessageBox("Wine binary not found. Please ensure Wine is installed.", MessageBoxImage.Error);
+                    return;
+                }
+            }
+
+            string winePrefix = App.Settings.Prop.WinePrefixPath ?? Path.Combine(Paths.Base, "prefixes", "studio");
+            var psi = new ProcessStartInfo
+            {
+                FileName = wineBinary,
+                Arguments = "winecfg",
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            psi.EnvironmentVariables["WINEPREFIX"] = winePrefix;
+            psi.EnvironmentVariables["WINEDLLOVERRIDES"] = "winemenubuilder.exe=d";
+
+            try
+            {
+                Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                _ = Frontend.ShowMessageBox($"Failed to start winecfg: {ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        private static string GetEffectiveWineBinary()
+        {
+            string? customPath = App.Settings.Prop.WineBinaryPath;
+            if (!string.IsNullOrEmpty(customPath) && File.Exists(customPath))
+                return customPath;
+
+            string kombuchaPath = Path.Combine(Paths.Base, "kombucha", "bin", "wine");
+            return File.Exists(kombuchaPath) ? kombuchaPath : "wine";
+        }
+
+        public static bool IsWineAvailable
+        {
+            get
+            {
+                if (!OperatingSystem.IsLinux()) return false;
+                string wineBinary = GetEffectiveWineBinary();
+                if (!File.Exists(wineBinary)) return false;
+
+                string winePrefix = App.Settings.Prop.WinePrefixPath ?? Path.Combine(Paths.Base, "prefixes", "studio");
+                return Directory.Exists(winePrefix);
+            }
+        }
+
+        private static Window? GetMainWindow()
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                return desktop.MainWindow;
+            return null;
+        }
+
         public ICommand ImportSettingsCommand => new AsyncRelayCommand<object?>(ImportSettingsAsync);
-
         public ICommand ExportSettingsCommand => new AsyncRelayCommand<object?>(ExportSettingsAsync);
-
         public ICommand ResetSettingsToDefaultCommand => new RelayCommand(ResetSettingsToDefault);
 
         public bool PreReleaseUpdatesEnabled
@@ -52,24 +133,17 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 if (value)
-                {
                     SelectedUpdateCheck = UpdateCheck.Both;
-                }
                 else if (SelectedUpdateCheck is UpdateCheck.Test or UpdateCheck.Both)
-                {
                     SelectedUpdateCheck = UpdateCheck.Stable;
-                }
                 else
-                {
                     OnPropertyChanged(nameof(PreReleaseUpdatesEnabled));
-                }
             }
         }
 
         private static bool ValidateDomain(string domain)
         {
             const string domainPattern = @"^([a-zA-Z0-9.-]+)\.([a-zA-Z0-9]+)$";
-
             return Regex.IsMatch(domain, domainPattern);
         }
 
@@ -91,9 +165,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 if (value && !App.State.Prop.TestModeWarningShown)
-                {
                     _ = HandleTestModeConfirmation();
-                }
                 else
                 {
                     App.LaunchSettings.TestModeFlag.Active = value;
@@ -102,22 +174,20 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        public static bool DisabeGameSearch
+        public static bool GameSearch
         {
-            get => App.Settings.Prop.DisableGameSearch;
-            set => App.Settings.Prop.DisableGameSearch = value;
+            get => App.Settings.Prop.GameSearch;
+            set => App.Settings.Prop.GameSearch = value;
         }
 
         private async Task HandleTestModeConfirmation()
         {
             var result = await Frontend.ShowMessageBox(Strings.Menu_TestMode_Prompt, MessageBoxImage.Information, MessageBoxButton.YesNo);
-
             if (result == MessageBoxResult.Yes)
             {
                 App.State.Prop.TestModeWarningShown = true;
                 App.LaunchSettings.TestModeFlag.Active = true;
             }
-
             OnPropertyChanged(nameof(TestModeEnabled));
         }
 
@@ -141,116 +211,178 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
                     bool isLinuxPlayerInstalled = Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
-
                     return !isLinuxPlayerInstalled;
                 }
-
                 return !App.IsPlayerInstalled && !App.IsStudioInstalled;
             }
         }
 
-
-        private async Task LoadChannelDeployInfo(string channel)
+        private static string NormalizeChannel(string channel)
         {
-            _cts?.Cancel();
-            _cts = new CancellationTokenSource();
-            var token = _cts.Token;
+            if (string.Equals(channel, "live", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(channel, "zlive", StringComparison.OrdinalIgnoreCase))
+                return Deployment.DefaultChannel;
+            return channel;
+        }
+
+        private async Task LoadChannelDeployInfo(string channel, bool isStudio)
+        {
+            var cts = new CancellationTokenSource();
+            if (isStudio)
+            {
+                _studioCts?.Cancel();
+                _studioCts = cts;
+            }
+            else
+            {
+                _playerCts?.Cancel();
+                _playerCts = cts;
+            }
+
+            var token = cts.Token;
 
             try
             {
-                ShowLoadingError = false;
-                OnPropertyChanged(nameof(ShowLoadingError));
-
-                ChannelInfoLoadingText = Strings.Menu_Channel_Switcher_Fetching;
-                OnPropertyChanged(nameof(ChannelInfoLoadingText));
-
-                ChannelDeployInfo = null;
-                OnPropertyChanged(nameof(ChannelDeployInfo));
+                if (isStudio)
+                {
+                    StudioShowLoadingError = false;
+                    StudioInfoLoadingText = Strings.Menu_Channel_Switcher_Fetching;
+                    StudioDeployInfo = null;
+                    OnPropertyChanged(nameof(StudioShowLoadingError));
+                    OnPropertyChanged(nameof(StudioInfoLoadingText));
+                    OnPropertyChanged(nameof(StudioDeployInfo));
+                }
+                else
+                {
+                    PlayerShowLoadingError = false;
+                    PlayerInfoLoadingText = Strings.Menu_Channel_Switcher_Fetching;
+                    PlayerDeployInfo = null;
+                    OnPropertyChanged(nameof(PlayerShowLoadingError));
+                    OnPropertyChanged(nameof(PlayerInfoLoadingText));
+                    OnPropertyChanged(nameof(PlayerDeployInfo));
+                }
 
                 if (token.IsCancellationRequested) return;
 
-                bool isPrivate = await Deployment.IsChannelPrivate(channel);
+                string binaryType = isStudio
+                    ? (OperatingSystem.IsMacOS() ? "MacStudio" : "WindowsStudio64")
+                    : (OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer");
 
+                bool isPrivate = await Deployment.IsChannelPrivate(channel);
                 if (token.IsCancellationRequested) return;
 
                 if (App.Cookies.Loaded && isPrivate && string.IsNullOrEmpty(Deployment.ChannelToken))
                 {
-                    UserChannel? userChannel = await Deployment.GetUserChannel(OperatingSystem.IsMacOS() ? "MacPlayer" : "WindowsPlayer");
+                    UserChannel? userChannel = await Deployment.GetUserChannel(binaryType);
                     if (userChannel?.Token is not null)
                         Deployment.ChannelToken = userChannel.Token;
                 }
 
-                ClientVersion info = await Deployment.GetInfo(channel, true, true);
-
+                ClientVersion info = await Deployment.GetInfo(channel, true, true, binaryType);
                 if (token.IsCancellationRequested) return;
 
-                ShowChannelWarning = info.IsBehindDefaultChannel;
-                OnPropertyChanged(nameof(ShowChannelWarning));
-
-                ChannelDeployInfo = new DeployInfo
+                var deployInfo = new DeployInfo
                 {
                     Version = info.Version,
                     VersionGuid = isPrivate ? "version-private" : info.VersionGuid,
                     Timestamp = info.Timestamp?.ToLocalTime().ToString() ?? "?"
                 };
 
-                App.State.Prop.IgnoreOutdatedChannel = true;
-                OnPropertyChanged(nameof(ChannelDeployInfo));
+                if (isStudio)
+                {
+                    StudioDeployInfo = deployInfo;
+                    StudioShowChannelWarning = info.IsBehindDefaultChannel;
+                    OnPropertyChanged(nameof(StudioDeployInfo));
+                    OnPropertyChanged(nameof(StudioShowChannelWarning));
+                }
+                else
+                {
+                    PlayerDeployInfo = deployInfo;
+                    PlayerShowChannelWarning = info.IsBehindDefaultChannel;
+                    OnPropertyChanged(nameof(PlayerDeployInfo));
+                    OnPropertyChanged(nameof(PlayerShowChannelWarning));
+                }
             }
-            catch (OperationCanceledException) { /* Do nothing, task was replaced */ }
+            catch (OperationCanceledException) { }
             catch (InvalidChannelException ex)
             {
                 if (token.IsCancellationRequested) return;
 
-                ShowLoadingError = true;
-                OnPropertyChanged(nameof(ShowLoadingError));
-
-                if (ex.StatusCode == HttpStatusCode.Unauthorized)
-                    ChannelInfoLoadingText = Strings.Menu_Channel_Switcher_Unauthorized;
+                string errorText;
+                if (ex.StatusCode.HasValue && ex.StatusCode.Value == HttpStatusCode.Unauthorized)
+                    errorText = Strings.Menu_Channel_Switcher_Unauthorized;
+                else if (ex.StatusCode.HasValue)
+                    errorText = $"HTTP error {(int)ex.StatusCode.Value}";
                 else
-                    ChannelInfoLoadingText = $"An http error has occured ({ex.StatusCode})";
+                    errorText = "An unknown HTTP error occurred.";
 
-                OnPropertyChanged(nameof(ChannelInfoLoadingText));
+                if (isStudio)
+                {
+                    StudioShowLoadingError = true;
+                    StudioInfoLoadingText = errorText;
+                    OnPropertyChanged(nameof(StudioShowLoadingError));
+                    OnPropertyChanged(nameof(StudioInfoLoadingText));
+                }
+                else
+                {
+                    PlayerShowLoadingError = true;
+                    PlayerInfoLoadingText = errorText;
+                    OnPropertyChanged(nameof(PlayerShowLoadingError));
+                    OnPropertyChanged(nameof(PlayerInfoLoadingText));
+                }
             }
             catch (Exception ex)
             {
                 if (token.IsCancellationRequested) return;
-
-                ShowLoadingError = true;
-                OnPropertyChanged(nameof(ShowLoadingError));
-                ChannelInfoLoadingText = "Failed to load channel deployment data info.";
-                OnPropertyChanged(nameof(ChannelInfoLoadingText));
-
+                if (isStudio)
+                {
+                    StudioShowLoadingError = true;
+                    StudioInfoLoadingText = "Failed to load channel data.";
+                    OnPropertyChanged(nameof(StudioShowLoadingError));
+                    OnPropertyChanged(nameof(StudioInfoLoadingText));
+                }
+                else
+                {
+                    PlayerShowLoadingError = true;
+                    PlayerInfoLoadingText = "Failed to load channel data.";
+                    OnPropertyChanged(nameof(PlayerShowLoadingError));
+                    OnPropertyChanged(nameof(PlayerInfoLoadingText));
+                }
                 App.Logger.WriteException("ChannelViewModel::LoadChannelDeployInfo", ex);
             }
         }
 
-        public bool ShowLoadingError { get; set; } = false;
-        public bool ShowChannelWarning { get; set; } = false;
+        public DeployInfo? PlayerDeployInfo { get; private set; }
+        public DeployInfo? StudioDeployInfo { get; private set; }
 
-        public DeployInfo? ChannelDeployInfo { get; private set; } = null;
-        public string ChannelInfoLoadingText { get; private set; } = null!;
+        public bool PlayerShowLoadingError { get; set; }
+        public bool StudioShowLoadingError { get; set; }
+        public string PlayerInfoLoadingText { get; private set; } = "";
+        public string StudioInfoLoadingText { get; private set; } = "";
+        public bool PlayerShowChannelWarning { get; set; }
+        public bool StudioShowChannelWarning { get; set; }
 
-        public string ViewChannel
+        public string PlayerChannel
         {
-            get => App.Settings.Prop.Channel;
+            get => App.Settings.Prop.PlayerChannel;
             set
             {
                 value = value.Trim();
+                App.Settings.Prop.PlayerChannel = NormalizeChannel(value);
+                OnPropertyChanged();
+                _ = LoadChannelDeployInfo(value, false);
+            }
+        }
 
-                _ = LoadChannelDeployInfo(value);
-
-                if (value.Equals("live", StringComparison.OrdinalIgnoreCase) ||
-                    value.Equals("zlive", StringComparison.OrdinalIgnoreCase))
-                {
-                    App.Settings.Prop.Channel = Deployment.DefaultChannel;
-                }
-                else
-                {
-                    App.Settings.Prop.Channel = value;
-                }
-
-                OnPropertyChanged(nameof(ViewChannel));
+        public string StudioChannel
+        {
+            get => App.Settings.Prop.StudioChannel;
+            set
+            {
+                value = value.Trim();
+                App.Settings.Prop.StudioChannel = NormalizeChannel(value);
+                OnPropertyChanged();
+                _ = LoadChannelDeployInfo(value, true);
             }
         }
 
@@ -278,12 +410,131 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.Settings.Prop.StaticDirectory = value;
         }
 
+        public IEnumerable<StudioRenderer> StudioRendererOptions { get; } = Enum.GetValues<StudioRenderer>();
+
+        public static StudioRenderer SelectedStudioRenderer
+        {
+            get => App.Settings.Prop.StudioRenderer;
+            set => App.Settings.Prop.StudioRenderer = value;
+        }
+
+        public static bool StudioGameMode
+        {
+            get => App.Settings.Prop.StudioGameMode;
+            set => App.Settings.Prop.StudioGameMode = value;
+        }
+
+        public static bool StudioDebug
+        {
+            get => App.Settings.Prop.StudioDebug;
+            set => App.Settings.Prop.StudioDebug = value;
+        }
+
+        public bool VirtualDesktopEnabled
+        {
+            get => !string.IsNullOrEmpty(App.Settings.Prop.StudioVirtualDesktop);
+            set
+            {
+                if (!value)
+                    VirtualDesktopResolution = "";
+                else if (string.IsNullOrEmpty(VirtualDesktopResolution))
+                    VirtualDesktopResolution = "1920x1080";
+                OnPropertyChanged(nameof(VirtualDesktopEnabled));
+                OnPropertyChanged(nameof(VirtualDesktopResolution));
+            }
+        }
+
+        public static string VirtualDesktopResolution
+        {
+            get => App.Settings.Prop.StudioVirtualDesktop ?? string.Empty;
+            set => App.Settings.Prop.StudioVirtualDesktop = value;
+        }
+
+        public static string StudioLauncher
+        {
+            get => App.Settings.Prop.StudioLauncher ?? string.Empty;
+            set => App.Settings.Prop.StudioLauncher = value;
+        }
+
+        public static bool EnableWebView2
+        {
+            get => App.Settings.Prop.EnableWebView2;
+            set => App.Settings.Prop.EnableWebView2 = value;
+        }
+
+        public ObservableCollection<EnvEntry> StudioEnvEntries { get; set; }
+        public ICommand AddStudioEnvCommand { get; }
+
+        public class EnvEntry : NotifyPropertyChangedViewModel
+        {
+            private string _key;
+            private string _value;
+            private string _originalKey;
+            private readonly Action<EnvEntry> _removeAction;
+
+            public string Key
+            {
+                get => _key;
+                set
+                {
+                    if (_key == value) return;
+                    var oldKey = _key;
+                    _key = value;
+                    OnPropertyChanged();
+                    UpdateDictionary(oldKey);
+                }
+            }
+
+            public string Value
+            {
+                get => _value;
+                set
+                {
+                    if (_value == value) return;
+                    _value = value;
+                    OnPropertyChanged();
+                    UpdateDictionary(_key);
+                }
+            }
+
+            public ICommand RemoveCommand { get; }
+
+            public EnvEntry(string key, string value, Action<EnvEntry> removeAction)
+            {
+                _key = key;
+                _originalKey = key;
+                _value = value;
+                _removeAction = removeAction;
+                RemoveCommand = new RelayCommand(() => _removeAction(this));
+            }
+
+            private void UpdateDictionary(string currentKey)
+            {
+                var dict = App.Settings.Prop.StudioEnvironmentVariables;
+
+                if (!string.IsNullOrEmpty(_originalKey) && _originalKey != currentKey)
+                    dict.Remove(_originalKey);
+
+                if (!string.IsNullOrWhiteSpace(currentKey))
+                    dict[currentKey] = Value;
+                else
+                    dict.Remove(currentKey);
+
+                _originalKey = currentKey;
+                App.Settings.Save();
+            }
+        }
+
+        private void RemoveEnvEntry(EnvEntry entry)
+        {
+            App.Settings.Prop.StudioEnvironmentVariables.Remove(entry.Key);
+            StudioEnvEntries.Remove(entry);
+        }
+
         private async Task ImportSettingsAsync(object? parameter)
         {
-            var topLevel = TopLevel.GetTopLevel(parameter as Control);
-
-            if (topLevel == null)
-                return;
+            var topLevel = parameter as Control != null ? TopLevel.GetTopLevel(parameter as Control) : GetMainWindow();
+            if (topLevel == null) return;
 
             var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
             {
@@ -292,16 +543,16 @@ namespace Froststrap.UI.ViewModels.Settings
                 FileTypeFilter = [new FilePickerFileType("JSON") { Patterns = ["*.json"] }]
             });
 
-            if (files.Count == 0)
-                return;
+            if (files.Count == 0) return;
 
             string? sourcePath = files[0].TryGetLocalPath();
-            if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
-                return;
+            if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath)) return;
 
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(App.Settings.FileLocation)!);
+                string? dir = Path.GetDirectoryName(App.Settings.FileLocation);
+                if (!string.IsNullOrEmpty(dir))
+                    Directory.CreateDirectory(dir);
                 File.Copy(sourcePath, App.Settings.FileLocation, true);
                 App.Settings.Load();
                 RefreshBindings();
@@ -314,10 +565,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task ExportSettingsAsync(object? parameter)
         {
-            var topLevel = TopLevel.GetTopLevel(parameter as Control);
-
-            if (topLevel == null)
-                return;
+            var topLevel = parameter as Control != null ? TopLevel.GetTopLevel(parameter as Control) : GetMainWindow();
+            if (topLevel == null) return;
 
             App.Settings.Save();
 
@@ -328,12 +577,10 @@ namespace Froststrap.UI.ViewModels.Settings
                 FileTypeChoices = [new FilePickerFileType("JSON") { Patterns = ["*.json"] }]
             });
 
-            if (file is null)
-                return;
+            if (file is null) return;
 
             string? destinationPath = file.TryGetLocalPath();
-            if (string.IsNullOrWhiteSpace(destinationPath))
-                return;
+            if (string.IsNullOrWhiteSpace(destinationPath)) return;
 
             try
             {
@@ -362,11 +609,15 @@ namespace Froststrap.UI.ViewModels.Settings
             OnPropertyChanged(nameof(AutomaticallyUpdateSober));
             OnPropertyChanged(nameof(StaticDirectory));
             OnPropertyChanged(nameof(TestModeEnabled));
-            OnPropertyChanged(nameof(ViewChannel));
             OnPropertyChanged(nameof(IsRobloxInstallationMissing));
             OnPropertyChanged(nameof(StudioVersionOverrideEnabled));
             OnPropertyChanged(nameof(StudioVersionOverrideHash));
+            OnPropertyChanged(nameof(PlayerChannel));
+            OnPropertyChanged(nameof(StudioChannel));
             SetHashValidationState(StudioHashValidationState.Idle, string.Empty);
+            OnPropertyChanged(nameof(SelectedStudioRenderer));
+            OnPropertyChanged(nameof(StudioGameMode));
+            OnPropertyChanged(nameof(StudioDebug));
         }
 
         public static IReadOnlyDictionary<string, ChannelChangeMode> ChannelChangeModes => new Dictionary<string, ChannelChangeMode>
@@ -395,7 +646,6 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 App.Settings.Prop.StudioVersionOverrideEnabled = value;
                 OnPropertyChanged(nameof(StudioVersionOverrideEnabled));
-
                 if (value && !string.IsNullOrWhiteSpace(App.Settings.Prop.StudioVersionOverrideHash))
                     _ = ValidateStudioVersionHashAsync(App.Settings.Prop.StudioVersionOverrideHash);
                 else if (!value)
@@ -411,7 +661,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 value = value?.Trim() ?? string.Empty;
                 App.Settings.Prop.StudioVersionOverrideHash = value;
                 OnPropertyChanged(nameof(StudioVersionOverrideHash));
-
                 if (App.Settings.Prop.StudioVersionOverrideEnabled)
                     _ = ValidateStudioVersionHashAsync(value);
                 else
@@ -483,8 +732,7 @@ namespace Froststrap.UI.ViewModels.Settings
             try { await Task.Delay(500, token); }
             catch (OperationCanceledException) { return; }
 
-            if (token.IsCancellationRequested)
-                return;
+            if (token.IsCancellationRequested) return;
 
             try
             {
@@ -497,25 +745,16 @@ namespace Froststrap.UI.ViewModels.Settings
                 using var request = new HttpRequestMessage(HttpMethod.Head, manifestUrl);
                 using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token);
 
-                if (token.IsCancellationRequested)
-                    return;
+                if (token.IsCancellationRequested) return;
 
                 if (response.IsSuccessStatusCode)
-                {
                     SetHashValidationState(StudioHashValidationState.Valid, "Version found.");
-                }
                 else if (response.StatusCode == HttpStatusCode.NotFound)
-                {
                     SetHashValidationState(StudioHashValidationState.Invalid, "Version not found on Roblox servers.");
-                }
                 else
-                {
                     SetHashValidationState(StudioHashValidationState.Invalid, $"Unexpected response: {(int)response.StatusCode} {response.StatusCode}");
-                }
             }
-            catch (OperationCanceledException)
-            {
-            }
+            catch (OperationCanceledException) { }
             catch (Exception ex)
             {
                 if (!token.IsCancellationRequested)

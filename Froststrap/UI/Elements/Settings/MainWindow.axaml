@@ -9,7 +9,7 @@
     xmlns:ic="using:FluentIcons.Avalonia.Fluent"
     xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings"
     xmlns:lucideAvalonia="clr-namespace:LucideAvalonia;assembly=LucideAvalonia"
-    xmlns:models="using:Froststrap.Models"
+    xmlns:enums="using:Froststrap.Enums"
     xmlns:resources="using:Froststrap.Resources"
     xmlns:ui="using:FluentAvalonia.UI.Controls"
     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
@@ -99,7 +99,7 @@
                     </ui:NavigationViewItem.IconSource>
                 </ui:NavigationViewItem>
 
-                <ui:NavigationViewItem Content="Sober Settings" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Tag="sobersettings">
+                <ui:NavigationViewItem Name="sober" Content="Sober Settings" IsVisible="{x:Static gv:GlobalViewModel.IsLinux}" Tag="sobersettings">
                     <ui:NavigationViewItem.IconSource>
                         <ic:SymbolIconSource Symbol="Settings" />
                     </ui:NavigationViewItem.IconSource>
@@ -237,13 +237,29 @@
                     x:Name="AccountSelectorView"
                     Grid.Column="0"
                     Margin="8,0,0,0" />
-                <Button x:Name="LaunchButton"
-                        Grid.Column="2"
-                        Height="36"
-                        Padding="20,0"
-                        Classes="accent"
-                        Command="{Binding SaveAndLaunchSettingsCommand}"
-                        Content="{x:Static resources:Strings.Menu_SaveAndLaunch}" />
+                <controls:IconButton Grid.Column="2"
+                                     Height="36"
+                                     Padding="20,0"
+                                     Classes="DropDownButton Primary"
+                                     Command="{Binding SaveAndLaunchSettingsCommand}"
+                                     Content="{Binding LaunchButtonText}">
+                    <controls:IconButton.Flyout>
+                        <MenuFlyout Placement="TopEdgeAlignedRight">
+                            <MenuItem Header="{Binding PlayerMenuItemText}" Command="{Binding SetLaunchModeCommand}"
+                                      CommandParameter="{x:Static enums:LaunchMode.Player}">
+                                <MenuItem.Icon>
+                                    <ic:SymbolIcon Symbol="Games" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="Studio" Command="{Binding SetLaunchModeCommand}"
+                                      CommandParameter="{x:Static enums:LaunchMode.Studio}">
+                                <MenuItem.Icon>
+                                    <ic:SymbolIcon Symbol="Wrench" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </MenuFlyout>
+                    </controls:IconButton.Flyout>
+                </controls:IconButton>
                 <Button
                     Grid.Column="3"
                     Height="36"

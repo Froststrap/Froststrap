@@ -3,26 +3,89 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Froststrap.UI.ViewModels.Dialogs
 {
-    public class LaunchMenuViewModel
+    public class LaunchMenuViewModel : NotifyPropertyChangedViewModel
     {
-        public static string Version => string.Format(Strings.Menu_About_Version, App.Version);
+        private LaunchMode _selectedLaunchMode = LaunchMode.Player;
+        public LaunchMode SelectedLaunchMode
+        {
+            get => _selectedLaunchMode;
+            set
+            {
+                if (_selectedLaunchMode != value)
+                {
+                    _selectedLaunchMode = value;
+                    OnPropertyChanged(nameof(SelectedLaunchMode));
+                    OnPropertyChanged(nameof(LaunchButtonText));
+                    OnPropertyChanged(nameof(LaunchButtonIcon));
+                }
+            }
+        }
 
-        public ICommand LaunchSettingsCommand => new RelayCommand(LaunchSettings);
+        public static bool IsPlayerInstalled
+        {
+            get
+            {
+                if (OperatingSystem.IsLinux())
+                {
+                    var clientPath = Path.Combine(Paths.Versions, "Sober", "data", "sober", "packages", "x86_64", "com.roblox.client");
+                    return Directory.Exists(clientPath) && Directory.EnumerateFiles(clientPath, "*", SearchOption.AllDirectories).Any();
+                }
+                else
+                {
+                    return App.IsPlayerInstalled;
+                }
+            }
+        }
 
-        public ICommand LaunchRobloxCommand => new RelayCommand(LaunchRoblox);
+        public static bool IsStudioInstalled => App.IsStudioInstalled;
 
-        public ICommand LaunchRobloxStudioCommand => new RelayCommand(LaunchRobloxStudio);
+        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? "Sober" : "Player";
 
-        public ICommand LaunchAboutCommand => new RelayCommand(LaunchAbout);
+        public string LaunchButtonText
+        {
+            get
+            {
+                if (SelectedLaunchMode == LaunchMode.Player)
+                {
+                    string modeName = OperatingSystem.IsLinux() ? "Sober" : "Player";
+                    return IsPlayerInstalled
+                        ? $"Launch {modeName}"
+                        : $"Install {modeName}";
+                }
+                else
+                {
+                    return IsStudioInstalled
+                        ? "Launch Studio"
+                        : "Install Studio";
+                }
+            }
+        }
+
+        public string LaunchButtonIcon => SelectedLaunchMode == LaunchMode.Player ? "PlayCircle" : "Wrench";
+
+        public ICommand LaunchCommand { get; }
+        public ICommand SetLaunchModeCommand { get; }
+        public ICommand LaunchSettingsCommand { get; }
+        public ICommand LaunchAboutCommand { get; }
 
         public event EventHandler<NextAction>? CloseWindowRequest;
 
-        private void LaunchSettings() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings);
+        public LaunchMenuViewModel()
+        {
+            LaunchCommand = new RelayCommand(ExecuteLaunch);
+            SetLaunchModeCommand = new RelayCommand<LaunchMode>(mode => SelectedLaunchMode = mode);
+            LaunchSettingsCommand = new RelayCommand(() => CloseWindowRequest?.Invoke(this, NextAction.LaunchSettings));
+            LaunchAboutCommand = new RelayCommand(() => new Elements.About.MainWindow().Show());
+        }
 
-        private void LaunchRoblox() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRoblox);
+        private void ExecuteLaunch()
+        {
+            NextAction action = SelectedLaunchMode == LaunchMode.Player
+                ? NextAction.LaunchRoblox
+                : NextAction.LaunchRobloxStudio;
+            CloseWindowRequest?.Invoke(this, action);
+        }
 
-        private void LaunchRobloxStudio() => CloseWindowRequest?.Invoke(this, NextAction.LaunchRobloxStudio);
-
-        private void LaunchAbout() => new Elements.About.MainWindow().Show();
+        public static string Version => string.Format(Strings.Menu_About_Version, App.Version);
     }
 }

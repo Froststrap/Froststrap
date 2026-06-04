@@ -1,88 +1,86 @@
 ﻿<base:AvaloniaWindow x:Class="Froststrap.UI.Elements.Dialogs.LaunchMenuDialog"
-    xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
-    xmlns:resources="clr-namespace:Froststrap.Resources"
-    xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
-    xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
-    xmlns:ic="using:FluentIcons.Avalonia.Fluent"
-    x:DataType="vm:LaunchMenuViewModel"
-    Title="Froststrap"
-    Width="350" SizeToContent="Height"
-    CanResize="False"
-    WindowStartupLocation="CenterScreen"
-    mc:Ignorable="d">
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
+                     xmlns:resources="clr-namespace:Froststrap.Resources"
+                     xmlns:models="clr-namespace:Froststrap.UI.ViewModels"
+                     xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
+                     xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+                     xmlns:enums="clr-namespace:Froststrap.Enums"
+                     x:DataType="vm:LaunchMenuViewModel"
+                     Title="Froststrap"
+                     Width="420"
+                     SizeToContent="Height"
+                     CanResize="False"
+                     WindowStartupLocation="CenterScreen"
+                     mc:Ignorable="d">
 
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*">
-        <controls:TitleBar Grid.Row="0" Title="Froststrap" Icon="avares://Froststrap/Froststrap.ico" />
+        <controls:TitleBar Grid.Row="0" Title="" />
 
-        <StackPanel Grid.Row="1" Margin="24" Spacing="16">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16">
-                <Image Width="72" Height="72" Source="avares://Froststrap/Froststrap.ico" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+        <StackPanel Grid.Row="1" Margin="32,0,32,32">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="16" Margin="0,0,0,24">
+                <Image Width="64" Height="64" Source="avares://Froststrap/Froststrap.ico"
+                       RenderOptions.BitmapInterpolationMode="HighQuality"/>
                 <StackPanel VerticalAlignment="Center" Spacing="4">
                     <TextBlock Name="LaunchTitle" Text="Froststrap" FontSize="28" FontWeight="Bold" />
-                    <TextBlock Text="{Binding Version}" 
-                               FontSize="13" 
+                    <TextBlock Text="{Binding Version}"
+                               FontSize="13"
                                Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                 </StackPanel>
             </StackPanel>
 
-            <StackPanel Spacing="6">
+            <controls:IconButton Classes="DropDownButton"
+                                 Margin="0,0,0,8"
+                                 HorizontalAlignment="Stretch"
+                                 Height="52"
+                                 CornerRadius="8"
+                                 FontWeight="SemiBold"
+                                 FontSize="14"
+                                 Command="{Binding LaunchCommand}"
+                                 IconSize="20"
+                                 Icon="{Binding LaunchButtonIcon}"
+                                 Content="{Binding LaunchButtonText}"
+                                 Padding="16,0">
+                <controls:IconButton.Flyout>
+                    <MenuFlyout Placement="BottomEdgeAlignedRight">
+                        <MenuItem Header="{Binding PlayerMenuItemText}"
+                                  Command="{Binding SetLaunchModeCommand}"
+                                  CommandParameter="{x:Static enums:LaunchMode.Player}">
+                            <MenuItem.Icon>
+                                <ic:SymbolIcon Symbol="Games" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Studio"
+                                  Command="{Binding SetLaunchModeCommand}"
+                                  CommandParameter="{x:Static enums:LaunchMode.Studio}">
+                            <MenuItem.Icon>
+                                <ic:SymbolIcon Symbol="Wrench" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuFlyout>
+                </controls:IconButton.Flyout>
+            </controls:IconButton>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
                 <controls:CardAction
-                    Icon="PlayCircle"
-                    Header="{x:Static resources:Strings.LaunchMenu_LaunchRoblox}"
-                    Command="{Binding LaunchRobloxCommand}"
-                    TabIndex="0"
-                    Padding="16,14" />
+                    Grid.Column="0"
+                    Icon="Settings"
+                    Header="Settings"
+                    Command="{Binding LaunchSettingsCommand}"
+                    Padding="12,10" />
 
-                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                    <controls:CardAction 
-                        Grid.Column="0"
-                        Icon="Settings"
-                        Header="{x:Static resources:Strings.Common_Settings}"
-                        Command="{Binding LaunchSettingsCommand}"
-                        TabIndex="1"
-                        Padding="16,14" />
-
-                    <controls:CardAction 
-                        Grid.Column="1"
-                        Icon="Wrench"
-                        Header="{x:Static resources:Strings.Common_Studio}"
-                        Command="{Binding LaunchRobloxStudioCommand}"
-                        TabIndex="2"
-                        Padding="16,14" />
-                </Grid>
-            </StackPanel>
-            <StackPanel HorizontalAlignment="Center" Spacing="8">
-                <controls:IconButton
-                     Icon="Info" 
-                     Content="{x:Static resources:Strings.About_Title}" 
-                     Command="{Binding LaunchAboutCommand}" 
-                     BorderBrush="Transparent" 
-                     BorderThickness="0" 
-                     Background="Transparent"
-                     Padding="8,6" />
-                <controls:IconButton Icon="Chat" 
-                     Content="{x:Static resources:Strings.LaunchMenu_Discord}" 
-                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
-                     CommandParameter="https://discord.gg/KdR9vpRcUN" 
-                     BorderBrush="Transparent" 
-                     BorderThickness="0" 
-                     Background="Transparent"
-                     Padding="8,6" />
-                <controls:IconButton
-                     Icon="BookOpen"
-                     Content="{x:Static resources:Strings.LaunchMenu_Wiki_Title}" 
-                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}" 
-                     CommandParameter="https://github.com/Meddsam/Froststrap/wiki"
-                     BorderBrush="Transparent" 
-                     BorderThickness="0" 
-                     Background="Transparent"
-                     Padding="8,6" />
-            </StackPanel>
+                <controls:CardAction
+                    Grid.Column="1"
+                    Icon="Chat"
+                    Header="Discord"
+                    Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
+                    CommandParameter="https://discord.gg/KdR9vpRcUN"
+                    Padding="12,10" />
+            </Grid>
         </StackPanel>
     </Grid>
 </base:AvaloniaWindow>
