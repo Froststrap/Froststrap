@@ -29,12 +29,20 @@
                                     <MenuFlyout Placement="Pointer">
                                         <MenuItem Header="Join Game" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
-                                                <ic:SymbolIcon Symbol="Play" FontSize="18" />
+                                                <ic:SymbolIcon Symbol="Play" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="Rejoin Last" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
+                                        <MenuItem Header="Rejoin Last Server" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
-                                                <ic:SymbolIcon Symbol="History" FontSize="18" />
+                                                <ic:SymbolIcon Symbol="History" FontSize="16" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Header="Join Best Region"
+                                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinBestRegionCommand}"
+                                                  CommandParameter="{Binding}"
+                                                  IsEnabled="{Binding DataContext.CanJoinBestRegion, ElementName=RootPage}">
+                                            <MenuItem.Icon>
+                                                <ic:SymbolIcon Symbol="Earth" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="Private Servers"
@@ -42,25 +50,25 @@
                                                   Command="{Binding DataContext.ShowPrivateServersCommand, ElementName=RootPage}"
                                                   CommandParameter="{Binding}">
                                             <MenuItem.Icon>
-                                                <ic:SymbolIcon Symbol="LockMultiple" FontSize="18" />
+                                                <ic:SymbolIcon Symbol="LockMultiple" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="View Subplaces" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
-                                                <ic:SymbolIcon Symbol="Layer" FontSize="18" />
+                                                <ic:SymbolIcon Symbol="Layer" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <MenuItem Header="{Binding ServerCountDisplay}"
                                                   Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
                                                   CommandParameter="{Binding}">
                                             <MenuItem.Icon>
-                                                <ic:SymbolIcon Symbol="Server" FontSize="18" />
+                                                <ic:SymbolIcon Symbol="Server" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
                                         <MenuItem Header="Visit Page" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
-                                                <ic:SymbolIcon Symbol="Open" FontSize="18" />
+                                                <ic:SymbolIcon Symbol="Open" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                     </MenuFlyout>
@@ -97,11 +105,11 @@
                                         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8">
                                             <Border Padding="6,2" CornerRadius="6" Background="#22C55E"
                                                     IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
-                                                <TextBlock Text="Tracked" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                <TextBlock Text="Tracked" FontSize="10" FontWeight="Bold"/>
                                             </Border>
                                             <Border Padding="6,2" CornerRadius="6" Background="#3B82F6"
                                                     IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}">
-                                                <TextBlock Text="Roblox API" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                <TextBlock Text="Roblox API" FontSize="10" FontWeight="Bold"/>
                                             </Border>
                                         </Grid>
                                     </Panel>
@@ -130,6 +138,26 @@
                            HorizontalAlignment="Center"
                            FontSize="12"
                            Opacity="0.6"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#CC000000">
+            <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Finding best server for your region..."
+                           HorizontalAlignment="Center"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Opacity="0.9"/>
+
+                <ui:ProgressRing IsActive="{Binding IsJoiningBestRegion}"
+                                 Width="48"
+                                 Height="48"
+                                 Foreground="{DynamicResource SystemAccentColor}"/>
+
+                <TextBlock Text="Checking servers..."
+                           HorizontalAlignment="Center"
+                           FontSize="12"
+                           Opacity="0.7"/>
             </StackPanel>
         </Grid>
 
