@@ -1378,5 +1378,13 @@ namespace Froststrap.Integrations
         {
             return _avatarUrlCache.TryGetValue(userId, out var url) ? url : null;
         }
+
+        public void AddAccount(AccountManagerAccount account)
+        {
+            if (_accounts.Any(a => a.UserId == account.UserId))
+                return;
+            _accounts.Add(account);
+            SaveAccounts();
+        }
     }
 }
