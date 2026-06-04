@@ -229,7 +229,9 @@
                     {
                         if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.City))
                         {
-                            string region = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
+                            string region = $"{dc.Location.City}, {dc.Location.Country}"
+                                .TrimStart(',')
+                                .Trim();
                             regions.Add(region);
                         }
                         else if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.Country))
@@ -246,19 +248,46 @@
                 {
                     AvailableRegions = ["Auto"];
                 }
+
+                await SyncSelectedRegionAfterLoad();
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
-                AvailableRegions = [ "Auto" ];
+                AvailableRegions = ["Auto"];
+                await SyncSelectedRegionAfterLoad();
             }
             finally
             {
                 IsLoadingRegions = false;
+            }
+        }
+
+        private async Task SyncSelectedRegionAfterLoad()
+        {
+            await Task.Delay(50);
+
+            string current = SelectedRegion;
+
+            var match = AvailableRegions.FirstOrDefault(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (match != null)
+            {
+                if (match != current)
+                {
+                    SelectedRegion = match;
+                }
+                else
+                {
+                    var original = SelectedRegion;
+                    SelectedRegion = null!;
+                    await Task.Delay(10);
+                    SelectedRegion = original;
+                }
+            }
+            else
+            {
                 SelectedRegion = "Auto";
-                OnPropertyChanged(nameof(SelectedRegion));
-                OnPropertyChanged(nameof(AvailableRegions));
-                OnPropertyChanged(nameof(IsLoadingRegions));
             }
         }
 

@@ -4027,6 +4027,9 @@ Windows Registry Editor Version 5.00
 
                 if (fileNameWithoutExt.EndsWith("_Delete"))
                 {
+                    if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+                        continue;
+
                     string directory = Path.GetDirectoryName(fileLocation) ?? "";
                     string originalName = fileNameWithoutExt[..^7];
                     targetFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
