@@ -178,7 +178,7 @@ namespace Froststrap.UI.ViewModels.Settings
                         var servers = await FetchServersForGameAsync(item.PlaceId);
                         if (servers.Count > 0)
                         {
-                            servers = servers.OrderByDescending(s => s.JoinedAt).ToList();
+                            servers = [.. servers.OrderByDescending(s => s.JoinedAt)];
                             foreach (var s in servers)
                                 SelectedGameServers.Add(s);
                         }
@@ -639,13 +639,13 @@ namespace Froststrap.UI.ViewModels.Settings
             if (result.Servers == null || result.Servers.Count == 0)
                 return [];
 
-            return result.Servers.Select(s => new ServerInfo
+            return [.. result.Servers.Select(s => new ServerInfo
             {
                 JobId = s.Id,
                 Region = s.Region,
                 JoinedAt = s.FirstSeen ?? DateTime.UtcNow,
                 IsLatest = false
-            }).ToList();
+            })];
         }
 
         private async Task FindAndJoinServerInRegionAsync(long placeId)
@@ -685,10 +685,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 const int maxAttempts = 50;
 
                 string? bestServerId = null;
-                string? bestServerRegion = null;
                 int bestRank = int.MaxValue;
                 int bestPlayers = int.MaxValue;
-                int bestMaxPlayers = 0;
 
                 while (serversChecked < maxServerCheck && serversChecked < maxAttempts)
                 {
@@ -719,9 +717,9 @@ namespace Froststrap.UI.ViewModels.Settings
                         {
                             bestRank = rank;
                             bestPlayers = server.Playing;
-                            bestMaxPlayers = server.MaxPlayers;
+                            int bestMaxPlayers = server.MaxPlayers;
                             bestServerId = server.Id;
-                            bestServerRegion = serverRegion;
+                            string? bestServerRegion = serverRegion;
                             if (rank == 1) break;
                         }
                     }

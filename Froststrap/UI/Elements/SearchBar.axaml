@@ -122,9 +122,10 @@
                                                         <controls:IconButton Grid.Column="2"
                                                                              Command="{Binding $parent[UserControl].DataContext.RegionJoinGameCommand}"
                                                                              CommandParameter="{Binding}"
-                                                                             Padding="8"
+                                                                             Padding="0"
                                                                              ToolTip.Tip="Region Selector"
                                                                              Margin="0,0,4,0" Width="32" Height="32"
+                                                                             IconSize="16"
                                                                              Icon="Earth"
                                                                              Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                                                              CornerRadius="6"/>
@@ -135,6 +136,8 @@
                                                                              ToolTip.Tip="Quick Play"
                                                                              Classes="Primary"
                                                                              Width="32" Height="32"
+                                                                             Padding="0"
+                                                                             IconSize="16"
                                                                              Icon="Play"
                                                                              CornerRadius="6"/>
                                                     </Grid>

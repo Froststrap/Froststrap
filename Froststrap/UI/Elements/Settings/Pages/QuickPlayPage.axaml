@@ -45,6 +45,14 @@
                                                 <ic:SymbolIcon Symbol="Earth" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
+                                        <Separator />
+                                        <MenuItem Header="{Binding ServerCountDisplay}"
+                                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
+                                                  CommandParameter="{Binding}">
+                                            <MenuItem.Icon>
+                                                <ic:SymbolIcon Symbol="Server" FontSize="16" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                         <MenuItem Header="Private Servers"
                                                   IsVisible="{Binding DataContext.HasActiveAccount, ElementName=RootPage}"
                                                   Command="{Binding DataContext.ShowPrivateServersCommand, ElementName=RootPage}"
@@ -56,13 +64,6 @@
                                         <MenuItem Header="View Subplaces" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
                                                 <ic:SymbolIcon Symbol="Layer" FontSize="16" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem Header="{Binding ServerCountDisplay}"
-                                                  Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
-                                                  CommandParameter="{Binding}">
-                                            <MenuItem.Icon>
-                                                <ic:SymbolIcon Symbol="Server" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
@@ -216,7 +217,7 @@
                                                     </StackPanel>
 
                                                     <StackPanel Orientation="Horizontal" Spacing="10">
-                                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                                        <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}">
                                                             <ic:SymbolIcon Symbol="Timer" FontSize="12" Opacity="0.5" />
                                                             <TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
                                                         </StackPanel>
