@@ -1,7 +1,6 @@
 {
   mkShell,
   lib,
-  xorg,
   stdenv,
   expat,
   fontconfig,
@@ -10,8 +9,12 @@
   vulkan-loader,
   wayland,
   libxkbcommon,
-  libxkbcommon_8,
   pkg-config,
+  libX11,
+  libICE,
+  libXi,
+  libXrandr,
+  libSM,
   libxcb,
   xcbutil,
   libxcursor,
@@ -20,7 +23,7 @@
   glib,
   create-dmg
 }:
-mkShell rec {
+mkShell (finalAttrs: {
   meta.license = lib.licenses.unlicense;
   runtimeLibs = lib.optionals stdenv.isLinux [
     expat
@@ -32,13 +35,11 @@ mkShell rec {
     libxkbcommon
 
     # X11 libs
-    # FIXME: Need to use new Nixpkgs spec for these,
-    # this is deprecated
-    xorg.libX11
-    xorg.libICE
-    xorg.libSM
-    xorg.libXi
-    xorg.libXrandr
+    libX11
+    libICE
+    libSM
+    libXi
+    libXrandr
     libxcursor
     libxcb
     xcbutil
@@ -58,8 +59,7 @@ mkShell rec {
     libxcb
     xcbutil
     libxkbcommon
-    libxkbcommon_8
   ];
 
-  LD_LIBRARY_PATH = lib.makeLibraryPath runtimeLibs;
-}
+  LD_LIBRARY_PATH = lib.makeLibraryPath finalAttrs.runtimeLibs;
+})
