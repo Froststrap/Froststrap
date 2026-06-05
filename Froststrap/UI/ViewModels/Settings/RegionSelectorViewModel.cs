@@ -12,10 +12,7 @@ using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using Froststrap.UI.ViewModels.AccountManagers;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Text.Json;
 
 namespace Froststrap.UI.ViewModels.Settings
 {

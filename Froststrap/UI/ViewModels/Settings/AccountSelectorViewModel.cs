@@ -1,7 +1,8 @@
-using System.Collections.ObjectModel;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
+using Froststrap.UI.Elements.Dialogs;
+using System.Collections.ObjectModel;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -167,8 +168,16 @@ namespace Froststrap.UI.ViewModels.Settings
                 switch (SelectedAddMethod)
                 {
                     case "Quick Sign In":
-                        newAccount = await _accountManager.AddAccountByQuickSignInAsync();
-                        break;
+                        {
+                            var dialog = new QuickSignCodeDialog();
+                            var cts = new CancellationTokenSource();
+
+                            dialog.Closed += (_, _) => cts.Cancel();
+                            dialog.Show();
+
+                            newAccount = await AccountManager.AddAccountByQuickSignInAsync(dialog, cts.Token);
+                            break;
+                        }
                     case "Browser":
                         newAccount = await _accountManager.AddAccountByBrowser();
                         break;
@@ -176,7 +185,7 @@ namespace Froststrap.UI.ViewModels.Settings
                         OnManualAddRequested?.Invoke();
                         return;
                     case "Local Cookie":
-                        newAccount = await ImportFromRobloxClient();
+                        newAccount = await ImportFromCookieManager();
                         break;
                 }
 
@@ -203,9 +212,9 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private static async Task<AccountManagerAccount?> ImportFromRobloxClient()
+        private static async Task<AccountManagerAccount?> ImportFromCookieManager()
         {
-            const string LOG_IDENT = "ImportFromRobloxClient";
+            const string LOG_IDENT = "ImportFromCookieManager";
 
             var cookieManager = new CookiesManager();
 
