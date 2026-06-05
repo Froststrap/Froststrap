@@ -25,7 +25,6 @@ namespace Froststrap.UI.ViewModels.Settings
         private readonly ObservableCollection<PlaceInfo> _subplaces = [];
         private UniverseDetails? _selectedUniverseDetails;
         private readonly string _cachePath = Path.Combine(Paths.Cache, "GameHistory.json");
-        private static readonly string _apiGamesCachePath = Path.Combine(Paths.Cache, "ApiRecentGames.json");
         private List<GameHistoryEntry> _allHistory = [];
 
         private bool _isPrivateServersOverlayVisible;
@@ -239,6 +238,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 Dispatcher.UIThread.InvokeAsync(() => OnPropertyChanged(nameof(HasActiveAccount)));
             };
 
+            AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
             _ = Initialize();
         }
 
@@ -247,6 +247,23 @@ namespace Froststrap.UI.ViewModels.Settings
             IsLoading = true;
 
             _allHistory = LoadLocalHistory(_cachePath);
+            await LoadLocalGamesIntoList();
+
+            if (HasActiveAccount)
+            {
+                await LoadApiGamesAndMerge();
+            }
+
+            IsLoading = false;
+
+            if (HasActiveAccount)
+            {
+                _ = RefreshApiGamesInBackground();
+            }
+        }
+
+        private async Task LoadLocalGamesIntoList()
+        {
             var universeIds = _allHistory.Select(x => x.UniverseId).Where(id => id > 0).Distinct().ToList();
             if (universeIds.Count > 0)
                 await UniverseDetails.FetchBulk(string.Join(",", universeIds));
@@ -274,11 +291,25 @@ namespace Froststrap.UI.ViewModels.Settings
 
             await FetchThumbnailsForGames(localGames);
 
-            var apiGames = new List<QuickPlayGameItem>();
-            if (HasActiveAccount)
-                apiGames = await GetCachedApiGamesAsync();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                RecentGames.Clear();
+                foreach (var game in localGames) RecentGames.Add(game);
+            });
+        }
 
-            var merged = MergeByApiOrder(localGames, apiGames);
+        private async Task LoadApiGamesAndMerge()
+        {
+            var apiGames = await GetCachedApiGamesAsync();
+            if (apiGames.Count == 0)
+            {
+                apiGames = await FetchRecentlyVisitedFromApiAsync();
+                if (apiGames.Count > 0)
+                    await SetCachedApiGamesAsync(apiGames);
+            }
+
+            var currentLocal = RecentGames.ToList();
+            var merged = MergeByApiOrder(currentLocal, apiGames);
             await EnrichGamesWithDetails(merged);
 
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -286,11 +317,15 @@ namespace Froststrap.UI.ViewModels.Settings
                 RecentGames.Clear();
                 foreach (var game in merged) RecentGames.Add(game);
             });
+        }
 
-            IsLoading = false;
-
-            if (HasActiveAccount)
-                _ = RefreshApiGamesInBackground();
+        private static string GetApiGamesCachePath()
+        {
+            var activeUserId = AccountManager.Shared?.ActiveAccount?.UserId;
+            if (activeUserId.HasValue)
+                return Path.Combine(Paths.Cache, $"ApiRecentGames_{activeUserId.Value}.json");
+            else
+                return Path.Combine(Paths.Cache, "ApiRecentGames_empty.json");
         }
 
         private static async Task FetchThumbnailsForGames(List<QuickPlayGameItem> games)
@@ -320,8 +355,9 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             try
             {
-                if (!File.Exists(_apiGamesCachePath)) return [];
-                var json = await File.ReadAllTextAsync(_apiGamesCachePath);
+                string cachePath = GetApiGamesCachePath();
+                if (!File.Exists(cachePath)) return [];
+                var json = await File.ReadAllTextAsync(cachePath);
                 return JsonSerializer.Deserialize<List<QuickPlayGameItem>>(json) ?? [];
             }
             catch { return []; }
@@ -331,8 +367,9 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             try
             {
+                string cachePath = GetApiGamesCachePath();
                 var json = JsonSerializer.Serialize(games);
-                await File.WriteAllTextAsync(_apiGamesCachePath, json);
+                await File.WriteAllTextAsync(cachePath, json);
             }
             catch (Exception ex) { App.Logger.WriteLine("QuickPlayViewModel", $"Failed to cache API games: {ex.Message}"); }
         }
@@ -386,6 +423,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async Task RefreshApiGamesInBackground()
         {
+            if (!HasActiveAccount) return;
+
             try
             {
                 var freshApiGames = await FetchRecentlyVisitedFromApiAsync();
@@ -393,13 +432,13 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 await SetCachedApiGamesAsync(freshApiGames);
 
-                var localHistory = LoadLocalHistory(_cachePath);
-                var universeIds = localHistory.Select(x => x.UniverseId).Where(id => id > 0).Distinct().ToList();
+                _allHistory = LoadLocalHistory(_cachePath);
+                var universeIds = _allHistory.Select(x => x.UniverseId).Where(id => id > 0).Distinct().ToList();
                 if (universeIds.Count > 0)
                     await UniverseDetails.FetchBulk(string.Join(",", universeIds));
 
                 var localGames = new List<QuickPlayGameItem>();
-                foreach (var entry in localHistory)
+                foreach (var entry in _allHistory)
                 {
                     var details = UniverseDetails.LoadFromCache(entry.UniverseId);
                     var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
@@ -808,12 +847,37 @@ namespace Froststrap.UI.ViewModels.Settings
             return R * c;
         }
 
+        private async void OnActiveAccountChanged(AccountManagerAccount? account)
+        {
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                IsLoading = true;
+                try
+                {
+                    _allHistory = LoadLocalHistory(_cachePath);
+                    await LoadLocalGamesIntoList();
+
+                    if (account != null)
+                    {
+                        await LoadApiGamesAndMerge();
+                        _ = RefreshApiGamesInBackground();
+                    }
+                    else
+                    {
+                    }
+                }
+                finally
+                {
+                    IsLoading = false;
+                }
+            });
+        }
+
         private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null)
         {
             if (placeId == 0) return;
 
-            string baseUrl = "roblox://experiences/start";
-            string deeplink = $"{baseUrl}?placeId={placeId}";
+            string deeplink = $"roblox://experiences/start?placeId={placeId}";
 
             if (!string.IsNullOrEmpty(accessCode))
             {

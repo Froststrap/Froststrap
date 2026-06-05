@@ -122,8 +122,8 @@
             </StackPanel>
         </ScrollViewer>
 
-        <Grid IsVisible="{Binding IsLoading}" ZIndex="200" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <StackPanel Spacing="16" HorizontalAlignment="Center">
+        <Grid IsVisible="{Binding IsLoading}" ZIndex="200" Background="#99000000">
+            <StackPanel Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <TextBlock Text="Loading recent games..."
                            HorizontalAlignment="Center"
                            FontSize="14"
@@ -142,7 +142,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#CC000000">
+        <Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Finding best server for your region..."
                            HorizontalAlignment="Center"
