@@ -461,6 +461,11 @@ namespace Froststrap.UI.Elements.Settings
                 ("channels", "Channels", new ChannelViewModel()),
             };
 
+            if (!_viewModel.GBSEnabled)
+                pages.RemoveAll(p => p.PageTag == "globalsettings");
+            if (!_viewModel.SoberEnabled && !OperatingSystem.IsLinux())
+                pages.RemoveAll(p => p.PageTag == "sobersettings");
+
             var searchIndex = _searchIndexBuilder.BuildIndex(pages);
 
             var navigationActions = new Dictionary<string, Action>
