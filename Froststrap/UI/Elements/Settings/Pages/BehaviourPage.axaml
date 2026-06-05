@@ -102,7 +102,7 @@
                 <StackPanel>
                     <controls:OptionControl
                         Header="Join Smaller Servers"
-                        Description="Join smaller servers when joinning through play button">
+                        Description="Join smaller servers when joining through play button">
                         <ToggleSwitch IsChecked="{Binding JoinSmallerServer, Mode=TwoWay}" />
                     </controls:OptionControl>
 
@@ -132,7 +132,7 @@
 
                     <controls:OptionControl
                         Header="Max Server Check Amount"
-                        Description="Select how many sservers to check, the more the longer it might take.">
+                        Description="Select how many servers to check, the more the longer it might take.">
                         <TextBox
                             Width="200"
                             Margin="8,0,0,0"

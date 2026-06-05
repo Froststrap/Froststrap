@@ -420,7 +420,7 @@ namespace Froststrap.UI.ViewModels
 
             MainWindow.ShowGlobalNotification(
             "Joining Game",
-            $"Joinning {content.Name} using quick play.",
+            $"Joining {content.Name} using quick play.",
             InfoBarSeverity.Success,
             5000,
             FluentIcons.Common.Symbol.Globe

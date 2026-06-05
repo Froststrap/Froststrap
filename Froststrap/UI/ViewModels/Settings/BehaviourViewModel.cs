@@ -20,28 +20,28 @@
             set => App.Settings.Prop.SelectedProcessPriority = value;
         }
 
-        public bool LaunchAtStartup
+        public static bool LaunchAtStartup
         {
             get => App.AppStorage.GetBoolPreset("System.LaunchAtStartup");
             set => App.AppStorage.SetBoolPreset("System.LaunchAtStartup", value);
         }
 
-        public bool MinimizeToTray
+        public static bool MinimizeToTray
         {
             get => App.AppStorage.GetBoolPreset("System.MinimizeToTray");
             set => App.AppStorage.SetBoolPreset("System.MinimizeToTray", value);
         }
 
-        public bool SystemTrayModalShown
+        public static bool SystemTrayModalShown
         {
             get => App.AppStorage.GetBoolPreset("System.SystemTrayModalShown");
             set => App.AppStorage.SetBoolPreset("System.SystemTrayModalShown", value);
         }
 
 
-        public IEnumerable<Enums.AppStoragePresets.Theme> AppThemeOptions => Enum.GetValues<Enums.AppStoragePresets.Theme>();
+        public static IEnumerable<Enums.AppStoragePresets.Theme> AppThemeOptions => Enum.GetValues<Enums.AppStoragePresets.Theme>();
 
-        public Enums.AppStoragePresets.Theme SelectedTheme
+        public static Enums.AppStoragePresets.Theme SelectedTheme
         {
             get
             {
@@ -69,7 +69,7 @@
             }
         }
 
-        public bool IsAppStorageVisible => App.AppStorage.Loaded;
+        public static bool IsAppStorageVisible => App.AppStorage.Loaded;
 
         public bool MultiInstances
         {
@@ -229,7 +229,9 @@
                     {
                         if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.City))
                         {
-                            string region = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
+                            string region = $"{dc.Location.City}, {dc.Location.Country}"
+                                .TrimStart(',')
+                                .Trim();
                             regions.Add(region);
                         }
                         else if (dc.Location != null && !string.IsNullOrEmpty(dc.Location.Country))
@@ -246,19 +248,46 @@
                 {
                     AvailableRegions = ["Auto"];
                 }
+
+                await SyncSelectedRegionAfterLoad();
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException("BehaviourViewModel::LoadAvailableRegions", ex);
-                AvailableRegions = [ "Auto" ];
+                AvailableRegions = ["Auto"];
+                await SyncSelectedRegionAfterLoad();
             }
             finally
             {
                 IsLoadingRegions = false;
+            }
+        }
+
+        private async Task SyncSelectedRegionAfterLoad()
+        {
+            await Task.Delay(50);
+
+            string current = SelectedRegion;
+
+            var match = AvailableRegions.FirstOrDefault(r => string.Equals(r?.Trim(), current?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (match != null)
+            {
+                if (match != current)
+                {
+                    SelectedRegion = match;
+                }
+                else
+                {
+                    var original = SelectedRegion;
+                    SelectedRegion = null!;
+                    await Task.Delay(10);
+                    SelectedRegion = original;
+                }
+            }
+            else
+            {
                 SelectedRegion = "Auto";
-                OnPropertyChanged(nameof(SelectedRegion));
-                OnPropertyChanged(nameof(AvailableRegions));
-                OnPropertyChanged(nameof(IsLoadingRegions));
             }
         }
 

@@ -175,11 +175,9 @@
                                                     <TextBlock Text="{Binding DisplayName}"
                                                                FontSize="12"
                                                                FontWeight="SemiBold"
-                                                               Foreground="White"
                                                                TextTrimming="CharacterEllipsis"/>
                                                     <TextBlock Text="{Binding Username}"
                                                                FontSize="10"
-                                                               Foreground="White"
                                                                TextTrimming="CharacterEllipsis"/>
                                                 </StackPanel>
                                             </Grid>
@@ -205,7 +203,6 @@
                               Text="No accounts added&#xa;Click 'Add Account' above to get started"
                               FontSize="12"
                               TextAlignment="Center"
-                              Foreground="White"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center"
                               Padding="16,24"

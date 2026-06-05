@@ -1,10 +1,7 @@
 using System.Collections.ObjectModel;
-using Avalonia;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using Froststrap.Models;
-using System.Text.Json;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -129,8 +126,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OnActiveAccountChanged(AccountManagerAccount? account)
         {
-            CurrentAccount = account;
-            CurrentAccountAvatarUrl = account != null ? GetAccountAvatarUrl(account.UserId) : null;
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                CurrentAccount = account;
+                CurrentAccountAvatarUrl = account != null ? GetAccountAvatarUrl(account.UserId) : null;
+            });
         }
 
         [RelayCommand]
@@ -195,14 +195,30 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public event Action? OnManualAddRequested;
 
-        public void AddAccountDirect(AccountManagerAccount account)
+        public async void AddAccountDirect(AccountManagerAccount account)
         {
+            _accountManager.AddAccount(account);
+
+            string? avatarUrl = null;
+            try
+            {
+                var urlMap = await _accountManager.GetAvatarUrlsBulkAsync([account.UserId]);
+                avatarUrl = urlMap.GetValueOrDefault(account.UserId);
+                if (avatarUrl != null)
+                    _accountAvatarUrls[account.UserId] = avatarUrl;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to fetch avatar for {account.UserId}: {ex.Message}");
+            }
+
             if (Accounts.All(a => a.UserId != account.UserId))
             {
-                var avatarUrl = GetAccountAvatarUrl(account.UserId);
                 Accounts.Add(new AccountWithAvatar(account, avatarUrl));
-                _accountManager.SetActiveAccount(account.UserId);
             }
+
+            _accountManager.SetActiveAccount(account.UserId);
+
             IsDropdownOpen = false;
         }
 
