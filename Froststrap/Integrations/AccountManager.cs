@@ -110,8 +110,6 @@ namespace Froststrap.Integrations
                     Accounts = [.. _accounts.Select(acc => acc with { SecurityToken = Protect(acc.SecurityToken) })],
                     ActiveAccountId = ActiveAccount?.UserId,
                     LastUpdated = DateTime.UtcNow,
-                    CurrentPlaceId = CurrentPlaceId,
-                    CurrentServerInstanceId = CurrentServerInstanceId,
                 };
                 File.WriteAllText(_accountsLocation, JsonConvert.SerializeObject(data, Formatting.Indented));
             }

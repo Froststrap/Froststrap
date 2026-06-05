@@ -8,7 +8,7 @@
         [JsonPropertyName("name")]
         public string Username { get; set; } = string.Empty;
 
-        [JsonPropertyName("displayname")]
+        [JsonPropertyName("displayName")]
         public string DisplayName { get; set; } = string.Empty;
     }
 }

@@ -11,6 +11,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private readonly AccountManager _accountManager = null!;
         private readonly Dictionary<long, string?> _accountAvatarUrls = [];
 
+
         private AccountManagerAccount? _currentAccount;
         public AccountManagerAccount? CurrentAccount
         {
@@ -53,7 +54,9 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _isAddingAccount, value);
         }
 
-        public List<string> AddMethods { get; } = ["Quick Sign In", "Browser", "Manual"];
+        public List<string> AddMethods { get; } = ["Quick Sign In", "Browser", "Manual", "Local Cookie"];
+
+        public string CurrentAccountDisplayName => CurrentAccount == null ? "Not Logged In" : $"@{CurrentAccount.Username}";
 
         public AccountSelectorViewModel()
         {
@@ -110,6 +113,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     CurrentAccountAvatarUrl = GetAccountAvatarUrl(CurrentAccount.UserId);
                 }
+                OnPropertyChanged(nameof(CurrentAccountDisplayName));
 
                 Accounts.Clear();
                 foreach (var account in mgr.Accounts)
@@ -130,6 +134,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 CurrentAccount = account;
                 CurrentAccountAvatarUrl = account != null ? GetAccountAvatarUrl(account.UserId) : null;
+                OnPropertyChanged(nameof(CurrentAccountDisplayName));
             });
         }
 
@@ -170,10 +175,15 @@ namespace Froststrap.UI.ViewModels.Settings
                     case "Manual":
                         OnManualAddRequested?.Invoke();
                         return;
+                    case "Local Cookie":
+                        newAccount = await ImportFromRobloxClient();
+                        break;
                 }
 
                 if (newAccount != null && Accounts.All(a => a.UserId != newAccount.UserId))
                 {
+                    _accountManager.AddAccount(newAccount);
+
                     var avatarUrlMap = await _accountManager.GetAvatarUrlsBulkAsync([newAccount.UserId]);
                     var url = avatarUrlMap.GetValueOrDefault(newAccount.UserId);
                     _accountAvatarUrls[newAccount.UserId] = url;
@@ -191,6 +201,50 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 IsAddingAccount = false;
             }
+        }
+
+        private static async Task<AccountManagerAccount?> ImportFromRobloxClient()
+        {
+            const string LOG_IDENT = "ImportFromRobloxClient";
+
+            var cookieManager = new CookiesManager();
+
+            await cookieManager.LoadCookies();
+
+            if (!cookieManager.Loaded)
+            {
+                string error = cookieManager.State switch
+                {
+                    CookieState.NotAllowed => "Cookie access is disabled in settings.",
+                    CookieState.NotFound => "Roblox cookie file not found.",
+                    CookieState.Invalid => "Cookie found but is invalid or expired.",
+                    CookieState.Failed => "Failed to load cookie file.",
+                    _ => "Could not load Roblox cookie."
+                };
+                _ = Frontend.ShowMessageBox(error);
+                return null;
+            }
+
+            var authUser = await cookieManager.GetAuthenticated();
+            if (authUser == null || authUser.Id == 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to get authenticated user from cookie.");
+                return null;
+            }
+
+            string cookieValue = cookieManager.GetAuthCookie();
+            if (string.IsNullOrEmpty(cookieValue))
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Auth cookie is empty.");
+                return null;
+            }
+
+            return new AccountManagerAccount(
+                securityToken: cookieValue,
+                userId: authUser.Id,
+                username: authUser.Username,
+                displayName: authUser.DisplayName
+            );
         }
 
         public event Action? OnManualAddRequested;

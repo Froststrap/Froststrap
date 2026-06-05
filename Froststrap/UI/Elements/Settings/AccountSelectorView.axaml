@@ -44,13 +44,13 @@
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <Border Width="28" Height="28" CornerRadius="14" >
                     <Panel>
-                        <ic:SymbolIcon Symbol="Person" 
-                                            FontSize="16"
-                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
-                        <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}" 
+                        <ic:SymbolIcon Symbol="Person"
+                                       FontSize="16"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                        <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
                                Stretch="UniformToFill"
                                IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
                     </Panel>
@@ -58,22 +58,23 @@
 
                 <!-- Account Info -->
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Spacing="1" HorizontalAlignment="Stretch">
-                    <TextBlock Text="{Binding CurrentAccount.Username, FallbackValue='Not Logged In'}" 
-                              FontSize="11"
-                              FontWeight="SemiBold"
-                              Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                              TextTrimming="CharacterEllipsis"/>
-                    <TextBlock Text="{Binding CurrentAccount.DisplayName}" 
-                              FontSize="9"
-                              Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                              TextTrimming="CharacterEllipsis"/>
+
+                    <TextBlock Text="{Binding CurrentAccount.DisplayName}"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                               TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Text="{Binding CurrentAccountDisplayName}"
+                               FontSize="9"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                               TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </StackPanel>
         </Button>
 
         <!-- Account Dropdown Popup -->
         <Popup Name="AccountDropdown"
-               IsOpen="{Binding IsDropdownOpen}" 
+               IsOpen="{Binding IsDropdownOpen}"
                Placement="Bottom"
                PlacementTarget="{Binding #AccountButton}"
                VerticalOffset="6"
@@ -87,34 +88,34 @@
                     BoxShadow="0 8 32 0 #20000000">
                 <Grid RowDefinitions="Auto,*">
                     <!-- Add Account Section -->
-                    <Border Grid.Row="0" 
-                           Padding="12,12,12,12"
-                           Background="{DynamicResource ControlFillColorSecondaryBrush}"
-                           BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
-                           BorderThickness="0,0,0,1">
+                    <Border Grid.Row="0"
+                            Padding="12,12,12,12"
+                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="0,0,0,1">
                         <Grid ColumnDefinitions="*,Auto">
                             <Button Grid.Column="0"
-                                   Content="Add Account"
-                                   Command="{Binding AddAccountCommand}"
-                                   IsEnabled="{Binding !IsAddingAccount}"
-                                   Classes="FrostSubtle"
-                                   Height="32"
-                                   Margin="0,0,6,0"
-                                   HorizontalAlignment="Stretch"/>
+                                    Content="Add Account"
+                                    Command="{Binding AddAccountCommand}"
+                                    IsEnabled="{Binding !IsAddingAccount}"
+                                    Height="32"
+                                    Margin="0,0,6,0"
+                                    HorizontalAlignment="Stretch"/>
 
                             <Border Grid.Column="1"
                                     Width="36" Height="32"
                                     CornerRadius="6"
                                     ClipToBounds="True">
                                 <ComboBox ItemsSource="{Binding AddMethods}"
-                                         SelectedItem="{Binding SelectedAddMethod}"
-                                         IsEnabled="{Binding !IsAddingAccount}"
-                                         Width="36" Height="32"
-                                         MinWidth="0" Padding="0"
-                                         HorizontalAlignment="Stretch"
-                                         CornerRadius="6"
-                                         BorderThickness="1"
-                                         BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
+                                          SelectedItem="{Binding SelectedAddMethod}"
+                                          IsEnabled="{Binding !IsAddingAccount}"
+                                          Width="36" Height="32"
+                                          MinWidth="0" Padding="0"
+                                          HorizontalContentAlignment="Center"
+                                          VerticalContentAlignment="Center"
+                                          CornerRadius="6"
+                                          BorderThickness="1"
+                                          BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}">
                                     <ComboBox.Styles>
                                         <Style Selector="ComboBox /template/ ContentPresenter">
                                             <Setter Property="Opacity" Value="0" />
@@ -159,11 +160,11 @@
                                                         ClipToBounds="True">
                                                     <Panel>
                                                         <ic:SymbolIcon Symbol="Person"
-                                                                            FontSize="16"
-                                                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                            HorizontalAlignment="Center"
-                                                                            VerticalAlignment="Center"
-                                                                            IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                                                       FontSize="16"
+                                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
                                                         <Image Source="{Binding AvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
                                                                Stretch="UniformToFill"
                                                                IsVisible="{Binding AvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
@@ -176,7 +177,7 @@
                                                                FontSize="12"
                                                                FontWeight="SemiBold"
                                                                TextTrimming="CharacterEllipsis"/>
-                                                    <TextBlock Text="{Binding Username}"
+                                                    <TextBlock Text="{Binding Username, StringFormat='@{0}'}"
                                                                FontSize="10"
                                                                TextTrimming="CharacterEllipsis"/>
                                                 </StackPanel>
@@ -189,6 +190,7 @@
                                                              HorizontalAlignment="Right"
                                                              VerticalAlignment="Center"
                                                              Icon="Delete"
+                                                             IconSize="14"
                                                              Classes="Danger"
                                                              Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
                                                              CommandParameter="{Binding}"/>
@@ -200,13 +202,13 @@
 
                     <!-- Empty State -->
                     <TextBlock Grid.Row="1"
-                              Text="No accounts added&#xa;Click 'Add Account' above to get started"
-                              FontSize="12"
-                              TextAlignment="Center"
-                              HorizontalAlignment="Center"
-                              VerticalAlignment="Center"
-                              Padding="16,24"
-                              IsVisible="{Binding !Accounts.Count}"/>
+                               Text="No accounts added&#xa;Click 'Add Account' above to get started"
+                               FontSize="12"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Padding="16,24"
+                               IsVisible="{Binding !Accounts.Count}"/>
                 </Grid>
             </Border>
         </Popup>
