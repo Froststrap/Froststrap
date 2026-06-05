@@ -33,7 +33,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _accounts, value);
         }
 
-        private string _selectedAddMethod = "Quick Sign In";
+        private string _selectedAddMethod = "Local Cookie";
         public string SelectedAddMethod
         {
             get => _selectedAddMethod;
@@ -54,7 +54,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _isAddingAccount, value);
         }
 
-        public List<string> AddMethods { get; } = ["Quick Sign In", "Browser", "Manual", "Local Cookie"];
+        public List<string> AddMethods { get; } = ["Local Cookie", "Quick Sign In", "Manual", "Browser"];
 
         public string CurrentAccountDisplayName => CurrentAccount == null ? "Not Logged In" : $"@{CurrentAccount.Username}";
 

@@ -1226,18 +1226,25 @@ namespace Froststrap.Integrations
 
             try
             {
+                bool wasActive = (ActiveAccount?.UserId == account.UserId);
                 int removed = _accounts.RemoveAll(a => a.UserId == account.UserId);
+
                 if (removed > 0)
                 {
-                    if (ActiveAccount is not null && ActiveAccount.UserId == account.UserId)
-                        ActiveAccount = null;
+                    if (wasActive)
+                    {
+                        if (_accounts.Count == 0)
+                        {
+                            ActiveAccount = null;
+                            ActiveAccountChanged?.Invoke(null);
+                        }
+                        else
+                        {
+                            SetActiveAccount(_accounts.First().UserId);
+                        }
+                    }
 
                     SaveAccounts();
-
-                    if (ActiveAccount is null && _accounts.Count > 0)
-                    {
-                        SetActiveAccount(_accounts.First().UserId);
-                    }
 
                     App.Logger.WriteLine(LOG_IDENT_REMOVE, $"Removed account {account.Username} ({account.UserId}).");
                     return true;
