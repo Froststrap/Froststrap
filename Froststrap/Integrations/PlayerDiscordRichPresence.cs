@@ -447,17 +447,29 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT = "DiscordRichPresence::UpdatePresence";
 
-            if (_disposed || _currentPresence is null || !_rpcClient.IsInitialized)
+            if (_disposed || !_rpcClient.IsInitialized)
                 return;
-
-            _currentPresence.Assets ??= new Assets();
-
-            App.Logger.WriteLine(LOG_IDENT, $"Updating presence");
 
             try
             {
                 if (_visible)
-                    _rpcClient.SetPresence(_currentPresence);
+                {
+                    if (_currentPresence != null)
+                    {
+                        _currentPresence.Assets ??= new Assets();
+                        App.Logger.WriteLine(LOG_IDENT, "Updating presence");
+                        _rpcClient.SetPresence(_currentPresence);
+                    }
+                    else
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Clearing presence (no current presence)");
+                        _rpcClient.ClearPresence();
+                    }
+                }
+                else
+                {
+                    _rpcClient.ClearPresence();
+                }
             }
             catch (IOException ex) when (ex.InnerException is SocketException)
             {
