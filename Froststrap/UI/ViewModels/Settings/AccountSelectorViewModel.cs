@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Media;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Dialogs;
@@ -14,6 +16,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public event Action? OnManualAddRequested;
 
+        private DispatcherTimer? _presenceTimer;
+        private UserPresence? _currentPresence;
+        private const int PRESENCE_REFRESH_INTERVAL_MS = 20000;
 
         private AccountManagerAccount? _currentAccount;
         public AccountManagerAccount? CurrentAccount
@@ -55,6 +60,61 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             get => _isAddingAccount;
             set => SetProperty(ref _isAddingAccount, value);
+        }
+
+        private UserPresence? CurrentPresence
+        {
+            get => _currentPresence;
+            set
+            {
+                if (SetProperty(ref _currentPresence, value))
+                {
+                    OnPropertyChanged(nameof(PresenceTooltip));
+                    UpdatePresenceBrush();
+                }
+            }
+        }
+
+        private IBrush _presenceBrush = Brushes.Gray;
+        public IBrush PresenceBrush
+        {
+            get => _presenceBrush;
+            private set => SetProperty(ref _presenceBrush, value);
+        }
+
+        private void UpdatePresenceBrush()
+        {
+            if (CurrentPresence == null)
+            {
+                PresenceBrush = Brushes.Gray;
+                return;
+            }
+
+            int type = CurrentPresence.UserPresenceType;
+            PresenceBrush = type switch
+            {
+                0 => Brushes.Gray,
+                1 => Brushes.DodgerBlue,
+                2 => Brushes.LimeGreen,
+                3 => Brushes.Orange,
+                _ => Brushes.Gray
+            };
+        }
+
+        public string PresenceTooltip
+        {
+            get
+            {
+                if (CurrentPresence == null) return "Offline";
+                return CurrentPresence.UserPresenceType switch
+                {
+                    0 => "Offline",
+                    1 => "Online (Roblox website)",
+                    2 => "In a Roblox game",
+                    3 => "In Roblox Studio",
+                    _ => "Unknown"
+                };
+            }
         }
 
         public List<string> AddMethods { get; } = ["Local Cookie", "Quick Sign In", "Manual", "Browser"];
@@ -159,13 +219,61 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private void OnActiveAccountChanged(AccountManagerAccount? account)
         {
-            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            Dispatcher.UIThread.Post(() =>
             {
                 CurrentAccount = account;
                 CurrentAccountAvatarUrl = account != null ? GetAccountAvatarUrl(account.UserId) : null;
                 OnPropertyChanged(nameof(CurrentAccountDisplayName));
+
+                StopPresencePolling();
+                if (account != null)
+                {
+                    StartPresencePolling();
+                    _ = RefreshPresenceAsync();
+                }
+                else
+                {
+                    CurrentPresence = null;
+                }
             });
         }
+
+        private void StartPresencePolling()
+        {
+            if (_presenceTimer != null) return;
+
+            _presenceTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(PRESENCE_REFRESH_INTERVAL_MS)
+            };
+            _presenceTimer.Tick += async (s, e) => await RefreshPresenceAsync();
+            _presenceTimer.Start();
+        }
+
+        private void StopPresencePolling()
+        {
+            _presenceTimer?.Stop();
+            _presenceTimer = null;
+        }
+
+        private async Task RefreshPresenceAsync()
+        {
+            if (CurrentAccount == null) return;
+
+            try
+            {
+                var presence = await AccountManager.GetUserPresenceAsync(CurrentAccount.UserId);
+                if (presence != null)
+                {
+                    CurrentPresence = presence;
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to refresh presence: {ex.Message}");
+            }
+        }
+
 
         [RelayCommand]
         private void SelectAccount(AccountWithAvatar item)
@@ -330,6 +438,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public void Dispose()
         {
+            StopPresencePolling();
             _accountManager.ActiveAccountChanged -= OnActiveAccountChanged;
             GC.SuppressFinalize(this);
         }

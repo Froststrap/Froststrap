@@ -42,19 +42,34 @@
                 </Style>
             </Button.Styles>
             <StackPanel Orientation="Horizontal" Spacing="8">
-                <Border Width="28" Height="28" CornerRadius="14" >
-                    <Panel>
-                        <ic:SymbolIcon Symbol="Person"
-                                       FontSize="16"
-                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
-                        <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
-                               Stretch="UniformToFill"
-                               IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                    </Panel>
-                </Border>
+                <Grid Width="32" Height="32">
+                    <Border CornerRadius="16"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            BorderThickness="1" />
+
+                    <Border CornerRadius="16" ClipToBounds="True">
+                        <Panel>
+                            <ic:SymbolIcon Symbol="Person"
+                                           FontSize="18"
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
+                            <Image Source="{Binding CurrentAccountAvatarUrl, Converter={StaticResource UrlToBitmapConverter}}"
+                                   Stretch="UniformToFill"
+                                   IsVisible="{Binding CurrentAccountAvatarUrl, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                        </Panel>
+                    </Border>
+
+                    <Ellipse Width="10" Height="10"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Bottom"
+                             Margin="0,0,-2,-2"
+                             ToolTip.Tip="{Binding PresenceTooltip}"
+                             Fill="{Binding PresenceBrush}"
+                             IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}" />/>
+                </Grid>
 
                 <!-- Account Info -->
                 <StackPanel Orientation="Vertical" VerticalAlignment="Center" Spacing="1" HorizontalAlignment="Stretch"
