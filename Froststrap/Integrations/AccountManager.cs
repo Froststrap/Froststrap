@@ -113,42 +113,6 @@ namespace Froststrap.Integrations
             catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
         }
 
-        public void UpdateAccountToken(long userId, string newToken)
-        {
-            int index = _accounts.FindIndex(a => a.UserId == userId);
-            if (index != -1)
-            {
-                _accounts[index] = _accounts[index] with { SecurityToken = newToken, LastUsed = DateTime.UtcNow };
-                if (ActiveAccount?.UserId == userId) ActiveAccount = _accounts[index];
-                SaveAccounts();
-            }
-        }
-
-        public void CheckAndApplyCookieRotation(long userId, IEnumerable<string> headers)
-        {
-            const string KEY = ".ROBLOSECURITY=";
-            var header = headers.FirstOrDefault(h => h.Contains(KEY, StringComparison.OrdinalIgnoreCase));
-            if (header != null)
-            {
-                int start = header.IndexOf(KEY) + KEY.Length;
-                int end = header.IndexOf(';', start);
-                string token = (end == -1 ? header[start..] : header[start..end]).Trim();
-                if (!string.IsNullOrEmpty(token)) UpdateAccountToken(userId, token);
-            }
-        }
-
-        public void SetCurrentPlaceId(long placeId)
-        {
-            CurrentPlaceId = placeId;
-            SaveAccounts();
-        }
-
-        public void SetCurrentServerInstanceId(string serverInstanceId)
-        {
-            CurrentServerInstanceId = serverInstanceId ?? "";
-            SaveAccounts();
-        }
-
         public void SetActiveAccount(long? userId)
         {
             var acc = _accounts.Find(a => a.UserId == userId);
@@ -854,26 +818,6 @@ namespace Froststrap.Integrations
             {
                 App.Logger.WriteException(LOG_IDENT_REMOVE, ex);
                 return false;
-            }
-        }
-
-        public async Task LaunchAccountAsync(AccountManagerAccount? account, long placeId = 0, string serverId = "", bool followUser = false, bool joinVIP = false)
-        {
-            const string LOG_IDENT_MAIN = $"{LOG_IDENT}::LaunchAccount";
-
-            if (account is null) return;
-
-            try
-            {
-                SetActiveAccount(account.UserId);
-                SaveAccounts();
-
-                App.Logger.WriteLine(LOG_IDENT_MAIN, $"Initiating launch for {account.Username}");
-                await JoinServer(account, placeId, serverId, followUser, joinVIP).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT_MAIN, ex);
             }
         }
 
