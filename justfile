@@ -23,6 +23,11 @@ publish-windows:
     #!powershell
     pwsh ./Scripts/package/publish-windows.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
 
+[windows]
+publish-windows-contained:
+    #!powershell
+    pwsh ./Scripts/package/publish-windows-contained.ps1 -Project "{{ project_file }}" -BuildDir "{{ build_dir }}"
+
 [unix]
 publish-macos:
     chmod +x ./Scripts/package/publish-macos.sh
@@ -41,6 +46,7 @@ publish-flatpak:
 # CI Aliases
 ci-publish-windows:
     @just publish-windows
+    @just publish-windows-contained
 
 ci-publish-macos:
     @just publish-macos
