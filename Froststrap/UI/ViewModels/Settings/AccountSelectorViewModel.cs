@@ -12,6 +12,8 @@ namespace Froststrap.UI.ViewModels.Settings
         private readonly AccountManager _accountManager = null!;
         private readonly Dictionary<long, string?> _accountAvatarUrls = [];
 
+        public event Action? OnManualAddRequested;
+
 
         private AccountManagerAccount? _currentAccount;
         public AccountManagerAccount? CurrentAccount
@@ -85,11 +87,37 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 await LoadDataAsync();
+                await ValidateAndRemoveInvalidAccountsAsync();
                 App.Logger.WriteLine($"{LOG_IDENT}::InitializeDataAsync", "Initialised");
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine($"{LOG_IDENT}::InitializeDataAsync", $"Exception: {ex.Message}");
+            }
+        }
+
+        private async Task ValidateAndRemoveInvalidAccountsAsync()
+        {
+            var invalidAccounts = new List<AccountManagerAccount>();
+
+            foreach (var account in _accountManager.Accounts)
+            {
+                bool isValid = await AccountManager.ValidateAccountAsync(account);
+                if (!isValid)
+                    invalidAccounts.Add(account);
+            }
+
+            foreach (var account in invalidAccounts)
+            {
+                _accountManager.RemoveAccount(account);
+                App.Logger.WriteLine(LOG_IDENT, $"Removed expired/invalid account: {account.Username}");
+
+                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => Frontend.ShowMessageBox($"Account '{account.Username}' has been removed because its cookie is invalid or expired."));
+            }
+
+            if (invalidAccounts.Count > 0)
+            {
+                await LoadDataAsync();
             }
         }
 
@@ -255,8 +283,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 displayName: authUser.DisplayName
             );
         }
-
-        public event Action? OnManualAddRequested;
 
         public async void AddAccountDirect(AccountManagerAccount account)
         {
