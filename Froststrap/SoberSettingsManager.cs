@@ -3,6 +3,7 @@ namespace Froststrap;
 public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 {
     private static readonly JsonSerializerOptions _writeOptions = new() { WriteIndented = true };
+    private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
     public override string ClassName => nameof(SoberSettingsManager);
     public override string LOG_IDENT_CLASS => ClassName;
@@ -57,7 +58,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
                 bool b => b ? "true" : "false",
                 int i => i.ToString(),
                 long l => l.ToString(),
-                double d => d.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                double d => d.ToString(CultureInfo.InvariantCulture),
                 string s => s,
                 _ => val.ToString()
             };
@@ -90,16 +91,8 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
         try
         {
             string contents = File.ReadAllText(FileLocation);
-
-            var readOptions = new JsonSerializerOptions
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                AllowTrailingCommas = true
-            };
-
-            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, readOptions)
+            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, _readOptions)
                            ?? [];
-
             Prop = settings;
             Loaded = true;
             App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
@@ -154,7 +147,7 @@ public class SoberSettingsManager : JsonManager<Dictionary<string, object>>
 
         if (!Prop.TryGetValue(containerKey, out object? obj) || obj is not Dictionary<string, object> dict)
         {
-            dict = new Dictionary<string, object>();
+            dict = [];
             Prop[containerKey] = dict;
         }
         return dict;

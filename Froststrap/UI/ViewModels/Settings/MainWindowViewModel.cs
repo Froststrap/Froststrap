@@ -194,39 +194,65 @@ namespace Froststrap.UI.ViewModels.Settings
             switch (pageTypeName)
             {
                 case "Froststrap.UI.ViewModels.Settings.IntegrationsViewModel":
-                    NavigateToIntegrationsCommand.Execute(null); break;
+                    NavigateToIntegrationsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.BehaviourViewModel":
-                    NavigateToBehaviourCommand.Execute(null); break;
+                    NavigateToBehaviourCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.SoberSettingsViewModel":
-                    NavigateToSoberSettingsCommand.Execute(null); break;
+                    if (SoberEnabled)
+                        NavigateToSoberSettingsCommand.Execute(null);
+                    else
+                        NavigateToIntegrationsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.ModsViewModel":
-                    NavigateToMyModsCommand.Execute(null); break;
+                    NavigateToMyModsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel":
-                    NavigateToFastFlagsCommand.Execute(null); break;
+                    NavigateToFastFlagsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.AppearanceViewModel":
-                    NavigateToAppearanceCommand.Execute(null); break;
+                    NavigateToAppearanceCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.GlobalSettingsViewModel":
-                    NavigateToGlobalSettingsCommand.Execute(null); break;
+                    if (GBSEnabled)
+                        NavigateToGlobalSettingsCommand.Execute(null);
+                    else
+                        NavigateToIntegrationsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.ShortcutsViewModel":
-                    NavigateToShortcutsCommand.Execute(null); break;
+                    NavigateToShortcutsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.QuickPlayViewModel":
-                    NavigateToQuickPlayCommand.Execute(null); break;
+                    NavigateToQuickPlayCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.ChannelViewModel":
-                    NavigateToChannelsCommand.Execute(null); break;
+                    NavigateToChannelsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.CommunityModsViewModel":
-                    NavigateToCommunityModsCommand.Execute(null); break;
+                    NavigateToCommunityModsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModsPresetsViewModel":
-                    NavigateToPresetModsCommand.Execute(null); break;
+                    NavigateToPresetModsCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.Mods.ModGeneratorViewModel":
-                    NavigateToModGeneratorCommand.Execute(null); break;
+                    NavigateToModGeneratorCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.RegionSelectorViewModel":
-                    NavigateToRegionSelectorCommand.Execute(null); break;
+                    NavigateToRegionSelectorCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlags.FastFlagEditorViewModel":
-                    NavigateToFastFlagEditorCommand.Execute(null); break;
+                    NavigateToFastFlagEditorCommand.Execute(null);
+                    break;
                 case "Froststrap.UI.ViewModels.Settings.GlobalSettings.GlobalSettingsEditorViewModel":
-                    NavigateToGlobalSettingsEditorCommand.Execute(null); break;
+                    if (GBSEnabled)
+                        NavigateToGlobalSettingsEditorCommand.Execute(null);
+                    else
+                        NavigateToIntegrationsCommand.Execute(null);
+                    break;
                 default:
-                    NavigateToIntegrationsCommand.Execute(null); break;
+                    NavigateToIntegrationsCommand.Execute(null);
+                    break;
             }
         }
 

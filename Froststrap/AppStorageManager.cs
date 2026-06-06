@@ -3,6 +3,7 @@
 public class AppStorageManager : JsonManager<Dictionary<string, object>>
 {
     private static readonly JsonSerializerOptions _writeOptions = new() { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+    private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
 
     public override string ClassName => nameof(AppStorageManager);
     public override string LOG_IDENT_CLASS => ClassName;
@@ -130,20 +131,15 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
         {
             App.Logger.WriteLine(LOG_IDENT, "File does not exist. No storage loaded.");
             Loaded = false;
-            Prop = new Dictionary<string, object>();
+            Prop = [];
             return false;
         }
 
         try
         {
             string contents = File.ReadAllText(FileLocation);
-            var readOptions = new JsonSerializerOptions
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                AllowTrailingCommas = true
-            };
-            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, readOptions)
-                           ?? new Dictionary<string, object>();
+            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, _readOptions)
+                           ?? [];
 
             Prop = settings;
             Loaded = true;
@@ -155,7 +151,7 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
             App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
             App.Logger.WriteException(LOG_IDENT, ex);
             Loaded = false;
-            Prop = new Dictionary<string, object>();
+            Prop = [];
 
             if (alertFailure)
             {
