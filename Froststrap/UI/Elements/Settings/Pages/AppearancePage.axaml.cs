@@ -28,7 +28,7 @@ public partial class AppearancePage : UserControl
             return;
 
         var result = await Frontend.ShowMessageBox(
-            "You need to restart the app for the changes to apply. Do you want to restart now?",
+            "Some of these options require an app restart, Do you want to restart now?",
             MessageBoxImage.Information,
             MessageBoxButton.YesNo
         );

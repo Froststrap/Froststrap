@@ -383,36 +383,6 @@ public partial class App : Application
         set { if (Current is App app) app.RichPresence = value!; }
     }
 
-    public static void WindowsBackdrop()
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            ApplyBackdropToAllWindows();
-        });
-    }
-
-    private static void ApplyBackdropToAllWindows()
-    {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            foreach (var window in desktop.Windows)
-            {
-                if (Settings.Prop.SelectedBackdrop != WindowsBackdrops.None)
-                {
-                    window.TransparencyLevelHint = Settings.Prop.SelectedBackdrop switch
-                    {
-                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
-                        _ => [WindowTransparencyLevel.None]
-                    };
-
-                    window.Background = Brushes.Transparent;
-                }
-            }
-        }
-    }
-
     public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
     {
         const string LOG_IDENT = "App::GetLatestRelease";

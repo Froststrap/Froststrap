@@ -73,8 +73,6 @@ namespace Froststrap.UI.Elements.Settings
             this.Closing += MainWindow_Closing;
             this.Closed += MainWindow_Closed;
 
-            App.WindowsBackdrop();
-
             UpdatePageView(_viewModel.CurrentPage);
 
             Dispatcher.UIThread.Post(() =>

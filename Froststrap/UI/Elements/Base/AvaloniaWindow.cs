@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -160,6 +161,35 @@ namespace Froststrap.UI.Elements.Base
                     Application.Current.Resources["ApplicationBackgroundColor"] = Brushes.Transparent;
                 }
             }
+
+            UpdateBackdropForAllWindows();
+        }
+
+        public static void UpdateBackdropForAllWindows()
+        {
+            if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+                return;
+
+            var selectedBackdrop = App.Settings.Prop.SelectedBackdrop;
+
+            foreach (var window in desktop.Windows)
+            {
+                if (selectedBackdrop != Enums.WindowsBackdrops.None)
+                {
+                    window.TransparencyLevelHint = selectedBackdrop switch
+                    {
+                        Enums.WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
+                        Enums.WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
+                        Enums.WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
+                        _ => [WindowTransparencyLevel.None]
+                    };
+                    window.Background = Brushes.Transparent;
+                }
+                else
+                {
+                    window.TransparencyLevelHint = [WindowTransparencyLevel.None];
+                }
+            }
         }
 
         protected override void OnOpened(EventArgs e)
@@ -169,6 +199,8 @@ namespace Froststrap.UI.Elements.Base
             this.BorderBrush = Brushes.Red;
             this.BorderThickness = new Thickness(4);
 #endif
+
+            UpdateBackdropForAllWindows();
         }
     }
 }

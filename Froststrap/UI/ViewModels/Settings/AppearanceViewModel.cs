@@ -93,9 +93,12 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.SelectedBackdrop;
             set
             {
-                App.Settings.Prop.SelectedBackdrop = value;
-                OnPropertyChanged(nameof(SelectedBackdrop));
-                App.WindowsBackdrop();
+                if (App.Settings.Prop.SelectedBackdrop != value)
+                {
+                    App.Settings.Prop.SelectedBackdrop = value;
+                    OnPropertyChanged(nameof(SelectedBackdrop));
+                    AvaloniaWindow.UpdateBackdropForAllWindows();
+                }
             }
         }
 
