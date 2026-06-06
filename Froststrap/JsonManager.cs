@@ -30,9 +30,7 @@ namespace Froststrap
 
         public virtual string FileName => $"{ClassName}.json";
 
-        public virtual string FileLocation => typeof(T) == typeof(SoberSettings)
-            ? Paths.SoberConfig
-            : Path.Combine(Paths.Base, FileName);
+        public virtual string FileLocation => Path.Combine(Paths.Base, FileName);
 
         public bool IsSaved => File.Exists(FileLocation);
 

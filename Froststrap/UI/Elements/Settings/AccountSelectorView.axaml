@@ -68,7 +68,7 @@
                              Margin="0,0,-2,-2"
                              ToolTip.Tip="{Binding PresenceTooltip}"
                              Fill="{Binding PresenceBrush}"
-                             IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}" />/>
+                             IsVisible="{Binding CurrentAccount, Converter={x:Static ObjectConverters.IsNotNull}}" />
                 </Grid>
 
                 <!-- Account Info -->

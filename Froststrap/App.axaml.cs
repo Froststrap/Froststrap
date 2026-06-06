@@ -86,7 +86,7 @@ public partial class App : Application
 
     public static readonly AppStorageManager AppStorage = new();
 
-    public static readonly JsonManager<SoberSettings> SoberSettings = new();
+    public static readonly SoberSettingsManager SoberSettings = new();
 
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 

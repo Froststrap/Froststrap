@@ -463,7 +463,7 @@ namespace Froststrap.UI.Elements.Settings
 
             if (!_viewModel.GBSEnabled)
                 pages.RemoveAll(p => p.PageTag == "globalsettings");
-            if (!_viewModel.SoberEnabled && !OperatingSystem.IsLinux())
+            if (!_viewModel.SoberEnabled)
                 pages.RemoveAll(p => p.PageTag == "sobersettings");
 
             var searchIndex = _searchIndexBuilder.BuildIndex(pages);
