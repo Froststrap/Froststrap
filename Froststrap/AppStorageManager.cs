@@ -87,14 +87,21 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
     public string? GetValue(string key) => Prop.TryGetValue(key, out object? val) ? val?.ToString() : null;
     public T? GetRawValue<T>(string key) where T : class => Prop.TryGetValue(key, out object? val) ? val as T : null;
 
-    public void SetBoolPreset(string friendlyName, bool value)  => SetPreset(friendlyName, value ? "true" : "false");
+    public void SetBoolPreset(string friendlyName, bool value) => SetPreset(friendlyName, value ? "true" : "false");
 
-    public bool GetBoolPreset(string friendlyName)  => string.Equals(GetPreset(friendlyName), "true", StringComparison.OrdinalIgnoreCase);
+    public bool GetBoolPreset(string friendlyName) => string.Equals(GetPreset(friendlyName), "true", StringComparison.OrdinalIgnoreCase);
 
     // using jsonmanager save messes up  app theme formatting
     public override void Save()
     {
         string LOG_IDENT = $"{nameof(AppStorageManager)}::Save";
+
+        if (!File.Exists(FileLocation))
+        {
+            App.Logger.WriteLine(LOG_IDENT, "Save skipped – file does not exist.");
+            return;
+        }
+
         App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
 
         try
@@ -114,5 +121,48 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
         }
     }
 
-    public override bool Load(bool alertFailure = true) => base.Load(alertFailure);
+    public override bool Load(bool alertFailure = true)
+    {
+        string LOG_IDENT = $"{nameof(AppStorageManager)}::Load";
+        App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
+
+        if (!File.Exists(FileLocation))
+        {
+            App.Logger.WriteLine(LOG_IDENT, "File does not exist. No storage loaded.");
+            Loaded = false;
+            Prop = new Dictionary<string, object>();
+            return false;
+        }
+
+        try
+        {
+            string contents = File.ReadAllText(FileLocation);
+            var readOptions = new JsonSerializerOptions
+            {
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                AllowTrailingCommas = true
+            };
+            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, readOptions)
+                           ?? new Dictionary<string, object>();
+
+            Prop = settings;
+            Loaded = true;
+            App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+            App.Logger.WriteException(LOG_IDENT, ex);
+            Loaded = false;
+            Prop = new Dictionary<string, object>();
+
+            if (alertFailure)
+            {
+                string message = Strings.JsonManager_SettingsLoadFailed;
+                _ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
+            }
+            return false;
+        }
+    }
 }
