@@ -122,7 +122,7 @@ jobs:
           draft: true
           files: |
             release/Froststrap-Setup.exe
-	    release/Froststrap-SelfContained-Setup.exe 
+            release/Froststrap-SelfContained-Setup.exe
             release/Froststrap-macOS.dmg
             release/Froststrap-linux-x64.AppImage
             release/Froststrap-linux-x64.deb
