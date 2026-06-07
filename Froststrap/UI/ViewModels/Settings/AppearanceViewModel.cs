@@ -22,6 +22,8 @@ namespace Froststrap.UI.ViewModels.Settings
         private static readonly string[] JsonPatterns = ["*.json"];
         private static readonly JsonSerializerOptions SerializationOptions = new() { WriteIndented = true };
 
+        private CustomThemeCycleSelectionWrapper? _selectedThemeWrapper;
+
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
         public IAsyncRelayCommand<Control> BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(BrowseCustomIconLocation);
 
@@ -196,6 +198,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public void InitializeCustomThemeSelections()
         {
+            foreach (var w in CustomThemeSelections)
+                w.PropertyChanged -= OnCycleSelectionPropertyChanged;
+
             CustomThemeSelections.Clear();
             var savedList = App.Settings.Prop.CycleEnabledCustomThemes;
 
@@ -206,23 +211,39 @@ namespace Froststrap.UI.ViewModels.Settings
                     ThemeName = themeName,
                     IsSelected = savedList.Contains(themeName)
                 };
-
-                selection.PropertyChanged += (s, e) =>
-                {
-                    if (e.PropertyName == nameof(CustomThemeCycleSelectionWrapper.IsSelected))
-                    {
-                        if (selection.IsSelected)
-                        {
-                            if (!savedList.Contains(selection.ThemeName))
-                                savedList.Add(selection.ThemeName);
-                        }
-                        else
-                        {
-                            savedList.Remove(selection.ThemeName);
-                        }
-                    }
-                };
+                selection.PropertyChanged += OnCycleSelectionPropertyChanged;
                 CustomThemeSelections.Add(selection);
+            }
+        }
+
+        public CustomThemeCycleSelectionWrapper? SelectedThemeWrapper
+        {
+            get => _selectedThemeWrapper;
+            set
+            {
+                if (_selectedThemeWrapper != value)
+                {
+                    _selectedThemeWrapper = value;
+                    OnPropertyChanged();
+                    SelectedCustomTheme = value?.ThemeName;
+                }
+            }
+        }
+
+        private void OnCycleSelectionPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is CustomThemeCycleSelectionWrapper wrapper && e.PropertyName == nameof(wrapper.IsSelected))
+            {
+                var savedList = App.Settings.Prop.CycleEnabledCustomThemes;
+                if (wrapper.IsSelected)
+                {
+                    if (!savedList.Contains(wrapper.ThemeName))
+                        savedList.Add(wrapper.ThemeName);
+                }
+                else
+                {
+                    savedList.Remove(wrapper.ThemeName);
+                }
             }
         }
 
@@ -261,10 +282,12 @@ namespace Froststrap.UI.ViewModels.Settings
             if (dialog.Created)
             {
                 CustomThemes.Add(dialog.ThemeName);
+                var wrapper = new CustomThemeCycleSelectionWrapper { ThemeName = dialog.ThemeName, IsSelected = false };
+                wrapper.PropertyChanged += OnCycleSelectionPropertyChanged;
+                CustomThemeSelections.Add(wrapper);
 
-                SelectedCustomTheme = dialog.ThemeName;
+                SelectedThemeWrapper = wrapper;
                 SelectedCustomThemeIndex = CustomThemes.IndexOf(dialog.ThemeName);
-
                 OnPropertyChanged(nameof(SelectedCustomThemeIndex));
 
                 if (dialog.OpenEditor)
@@ -328,26 +351,50 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (SelectedCustomTheme is null) return;
 
+            var themeToDelete = SelectedCustomTheme;
+
             try
             {
-                DeleteCustomThemeStructure(SelectedCustomTheme);
+                DeleteCustomThemeStructure(themeToDelete);
             }
             catch (Exception ex)
             {
                 App.Logger.WriteException(nameof(AppearanceViewModel), ex);
-                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, SelectedCustomTheme, ex.Message), MessageBoxImage.Error);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_Appearance_CustomThemes_DeleteFailed, themeToDelete, ex.Message), MessageBoxImage.Error);
                 return;
             }
 
-            CustomThemes.Remove(SelectedCustomTheme);
-
-            if (CustomThemes.Count > 0)
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
             {
-                SelectedCustomThemeIndex = CustomThemes.Count - 1;
-                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-            }
+                var wrapperToDelete = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == themeToDelete);
 
-            OnPropertyChanged(nameof(IsCustomThemeSelected));
+                App.Settings.Prop.CycleEnabledCustomThemes.Remove(themeToDelete);
+
+                if (wrapperToDelete != null)
+                {
+                    wrapperToDelete.PropertyChanged -= OnCycleSelectionPropertyChanged;
+                    CustomThemeSelections.Remove(wrapperToDelete);
+                }
+
+                int idx = CustomThemes.IndexOf(themeToDelete);
+                if (idx >= 0) CustomThemes.RemoveAt(idx);
+
+                if (CustomThemes.Count > 0)
+                {
+                    var newSelectedWrapper = CustomThemeSelections.LastOrDefault();
+                    SelectedThemeWrapper = newSelectedWrapper;
+                    SelectedCustomThemeIndex = CustomThemes.Count - 1;
+                }
+                else
+                {
+                    SelectedThemeWrapper = null;
+                    SelectedCustomTheme = null;
+                    SelectedCustomThemeIndex = -1;
+                }
+
+                OnPropertyChanged(nameof(IsCustomThemeSelected));
+                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
+            });
         }
 
         private async void RenameCustomTheme()
@@ -393,15 +440,31 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             string newName = SelectedCustomThemeName;
-            int idx = CustomThemes.IndexOf(SelectedCustomTheme);
+            string oldName = SelectedCustomTheme;
 
-            CustomThemes[idx] = newName;
-            SelectedCustomTheme = newName;
-            SelectedCustomThemeIndex = idx;
+            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                int idx = CustomThemes.IndexOf(oldName);
+                if (idx >= 0) CustomThemes[idx] = newName;
 
-            OnPropertyChanged(nameof(SelectedCustomThemeIndex));
-            OnPropertyChanged(nameof(SelectedCustomTheme));
-            OnPropertyChanged(nameof(SelectedCustomThemeName));
+                var wrapper = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == oldName);
+                if (wrapper != null)
+                {
+                    wrapper.ThemeName = newName;
+                    if (App.Settings.Prop.CycleEnabledCustomThemes.Remove(oldName))
+                    {
+                        App.Settings.Prop.CycleEnabledCustomThemes.Add(newName);
+                    }
+                }
+
+                SelectedThemeWrapper = wrapper;
+                SelectedCustomTheme = newName;
+                SelectedCustomThemeIndex = idx;
+
+                OnPropertyChanged(nameof(SelectedCustomThemeIndex));
+                OnPropertyChanged(nameof(SelectedCustomTheme));
+                OnPropertyChanged(nameof(SelectedCustomThemeName));
+            });
         }
 
         private void PopulateCustomThemes()
@@ -416,25 +479,23 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 if (!File.Exists(Path.Combine(directory, "Theme.xml")))
                     continue;
-
                 CustomThemes.Add(Path.GetFileName(directory));
             }
 
+            InitializeCustomThemeSelections();
+
             if (!string.IsNullOrEmpty(selected))
             {
-                int idx = CustomThemes.IndexOf(selected);
-                if (idx != -1)
+                var wrapper = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == selected);
+                if (wrapper != null)
                 {
-                    SelectedCustomThemeIndex = idx;
-                    SelectedCustomTheme = selected;
+                    SelectedThemeWrapper = wrapper;
+                    SelectedCustomThemeIndex = CustomThemes.IndexOf(selected);
                     SelectedCustomThemeName = selected;
-
                     OnPropertyChanged(nameof(SelectedCustomThemeIndex));
                     OnPropertyChanged(nameof(SelectedCustomThemeName));
                 }
             }
-
-            InitializeCustomThemeSelections();
         }
 
         public string? SelectedCustomTheme
@@ -446,6 +507,11 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     App.Settings.Prop.SelectedCustomTheme = value;
                     SelectedCustomThemeName = value ?? string.Empty;
+
+                    if (value != null)
+                        SelectedThemeWrapper = CustomThemeSelections.FirstOrDefault(w => w.ThemeName == value);
+                    else
+                        SelectedThemeWrapper = null;
 
                     if (value != null && App.Settings.Prop.CycleEnabledCustomThemes.Contains(value))
                     {
@@ -772,7 +838,20 @@ namespace Froststrap.UI.ViewModels.Settings
     public class CustomThemeCycleSelectionWrapper : NotifyPropertyChangedViewModel
     {
         private bool _isSelected;
-        public string ThemeName { get; set; } = string.Empty;
+        private string _themeName = string.Empty;
+
+        public string ThemeName
+        {
+            get => _themeName;
+            set
+            {
+                if (_themeName != value)
+                {
+                    _themeName = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public bool IsSelected
         {
@@ -780,7 +859,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set
             {
                 _isSelected = value;
-                OnPropertyChanged(nameof(IsSelected));
+                OnPropertyChanged();
             }
         }
     }
