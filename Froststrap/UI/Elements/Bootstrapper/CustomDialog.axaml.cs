@@ -1,4 +1,6 @@
+using AnimatedImage.Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media.Imaging;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
 
@@ -18,6 +20,27 @@ namespace Froststrap.UI.Elements.Bootstrapper
             SetupDialog();
 
             Icon = new WindowIcon(App.Settings.Prop.BootstrapperIcon.GetIcon());
+            
+            this.Closing += CustomDialog_Closing;
+        }
+
+        private void CustomDialog_Closing(object? sender, WindowClosingEventArgs e)
+        {
+            CleanupAnimatedImages();
+        }
+
+        public static void CleanupAnimatedImages()
+        {
+            foreach (var image in _animatedImages.ToList())
+            {
+                var bitmap = image.Source as Bitmap;
+                image.Source = null;
+                bitmap?.Dispose();
+            }
+            _animatedImages.Clear();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         #region UI Elements Overrides
