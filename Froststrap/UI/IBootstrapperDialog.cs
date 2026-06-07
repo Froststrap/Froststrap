@@ -1,6 +1,4 @@
-﻿using Froststrap.Enums.BootstrapperDialogs;
-
-namespace Froststrap.UI
+﻿namespace Froststrap.UI
 {
     public interface IBootstrapperDialog
     {
