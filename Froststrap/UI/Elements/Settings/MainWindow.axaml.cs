@@ -11,6 +11,7 @@ using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
+using Froststrap.UI.ViewModels.Settings.Mods;
 using System.ComponentModel;
 using Symbol = FluentIcons.Common.Symbol;
 
@@ -22,6 +23,8 @@ namespace Froststrap.UI.Elements.Settings
 
         private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
         private readonly MainWindowViewModel? _viewModel;
+
+        private readonly Dictionary<string, Control> _cachedPages = [];
 
         public MainWindow()
         {
@@ -154,7 +157,24 @@ namespace Froststrap.UI.Elements.Settings
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
             if (pageControl == null || viewModel == null) return;
 
-            var view = ResolveViewForViewModel(viewModel);
+            bool shouldReinitialize = viewModel is AppearanceViewModel || viewModel is ModsViewModel;
+
+            string pageTag = _viewModel?.SelectedPage ?? "";
+            Control? view = null;
+
+            if (!shouldReinitialize && !string.IsNullOrEmpty(pageTag) && _cachedPages.TryGetValue(pageTag, out var cachedView))
+            {
+                view = cachedView;
+            }
+            else
+            {
+                view = ResolveViewForViewModel(viewModel);
+
+                if (view != null && !shouldReinitialize && !string.IsNullOrEmpty(pageTag))
+                {
+                    _cachedPages[pageTag] = view;
+                }
+            }
 
             if (view != null)
             {
@@ -163,7 +183,6 @@ namespace Froststrap.UI.Elements.Settings
 
                 Dispatcher.UIThread.Post(() =>
                 {
-                    var pageTag = _viewModel?.SelectedPage ?? "";
                     if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info))
                     {
                         IndexPage(view, pageTag, info.Title, info.Icon);
