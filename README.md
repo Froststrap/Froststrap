@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a> focused on performance, customization, and additional features.
+    Froststrap is a fork of <a href="https://github.com/fishstrap/fishstrap.git"><strong>Fishstrap</strong></a> focused on additional features like performance, customization.
 </p>
 
 <p align="center">
@@ -29,9 +29,13 @@
 > The repo, [Froststrap/Froststrap](https://github.com/Froststrap/Froststrap.git), and [our website](https://froststrap.github.io), are the **ONLY PLACES** you should
 > download the binary/executable from, as any other source is **NOT** affiliated with us, and is a potential threat. 
 
+>[!NOTE]
+> We are still working on Froststrap, don't stress, you can look at other branches.
+> We are currently working on adding Linux and macOS support, as apart of 2.0
+
 ---
 
-## Key Improvements Over Bloxstrap and Fishstrap
+## Key Improvements Fishstrap
 
 ### Integrations
 - Automatically rejoin servers you were disconnected from due to inactivity
