@@ -95,7 +95,7 @@
                         <Border Background="{DynamicResource SystemAccentColor}"
                                 CornerRadius="4" Padding="8,2"
                                 HorizontalAlignment="Left" Margin="0,8,0,0">
-                            <TextBlock Text="{Binding Mod.ModTypeDisplay}" FontSize="10" FontWeight="SemiBold" Foreground="White"/>
+                            <TextBlock Text="{Binding Mod.ModTypeDisplay}" FontSize="10" FontWeight="SemiBold"/>
                         </Border>
 
                         <Separator Margin="0,12"/>

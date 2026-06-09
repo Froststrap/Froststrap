@@ -1,7 +1,4 @@
-﻿using System;
-using Froststrap.Enums;
-
-namespace Froststrap.Utility
+﻿namespace Froststrap.Utility
 {
     public static class ThemeCycler
     {

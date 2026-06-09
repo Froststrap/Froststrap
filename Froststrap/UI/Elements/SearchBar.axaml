@@ -20,7 +20,7 @@
                  Text="{Binding SearchQuery}"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center">
-            
+
             <TextBox.InnerLeftContent>
                 <Button Command="{Binding ToggleSearchListCommand}"
                         Background="Transparent"
@@ -28,8 +28,8 @@
                         Padding="10,0,8,0"
                         IsTabStop="False"
                         VerticalAlignment="Center">
-                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" 
-                                   Symbol="Search" 
+                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   Symbol="Search"
                                    FontSize="16" />
                 </Button>
             </TextBox.InnerLeftContent>
@@ -44,15 +44,15 @@
                         Padding="0"
                         Margin="0,0,2,0"
                         VerticalAlignment="Center">
-                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" 
-                                   Symbol="Dismiss" 
+                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                   Symbol="Dismiss"
                                    FontSize="14" />
                 </Button>
             </TextBox.InnerRightContent>
 
             <FlyoutBase.AttachedFlyout>
-                <Flyout Placement="Bottom" 
-                        ShowMode="Transient" 
+                <Flyout Placement="Bottom"
+                        ShowMode="Transient"
                         IsOpen="{Binding IsSearchFlyoutOpen, Mode=TwoWay}">
                     <Border Width="400"
                             MaxHeight="450"
@@ -63,9 +63,9 @@
                             BoxShadow="0 8 32 0 #40000000"
                             Margin="0,4,0,0">
                         <Grid RowDefinitions="*,Auto">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
                                           HorizontalScrollBarVisibility="Auto"
-                                          IsVisible="{Binding HasAnyResults}" 
+                                          IsVisible="{Binding HasAnyResults}"
                                           ScrollChanged="OnScrollChanged">
                                 <StackPanel Spacing="0" Margin="4">
                                     <ItemsControl ItemsSource="{Binding FilteredSearchResults}" HorizontalAlignment="Stretch">
@@ -80,10 +80,27 @@
                                                         Padding="12,8"
                                                         CornerRadius="4"
                                                         Margin="0,1">
-                                                    <DockPanel LastChildFill="True">
-                                                        <ic:SymbolIcon Symbol="Settings" FontSize="14" Opacity="0.6" DockPanel.Dock="Left" Margin="0,0,10,0"/>
-                                                        <TextBlock Text="{Binding DisplayName}" FontSize="13" TextTrimming="CharacterEllipsis" />
-                                                    </DockPanel>
+                                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                                        <ic:SymbolIcon Grid.Column="0"
+                                                                       Symbol="{Binding IconSymbol, FallbackValue=Settings}"
+                                                                       FontSize="16"
+                                                                       Opacity="0.8"
+                                                                       Margin="0,0,12,0"
+                                                                       VerticalAlignment="Center" />
+
+                                                        <StackPanel Grid.Column="1"
+                                                                    VerticalAlignment="Center"
+                                                                    Spacing="2">
+                                                            <TextBlock Text="{Binding DisplayName}"
+                                                                       FontSize="13"
+                                                                       FontWeight="SemiBold"
+                                                                       TextTrimming="CharacterEllipsis" />
+                                                            <TextBlock Text="{Binding PageName}"
+                                                                       FontSize="11"
+                                                                       Opacity="0.6"
+                                                                       TextTrimming="CharacterEllipsis" />
+                                                        </StackPanel>
+                                                    </Grid>
                                                 </Button>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
@@ -94,27 +111,27 @@
                                             <DataTemplate DataType="robloxApis:OmniSearchContent">
                                                 <Border Background="{DynamicResource ControlFillColorDefaultBrush}"
                                                         BorderBrush="{DynamicResource ControlStrokeColorDefault}"
-														Width="390"
+                                                        Width="390"
                                                         BorderThickness="1"
                                                         Padding="8"
                                                         Margin="0,2"
                                                         CornerRadius="6">
                                                     <Grid ColumnDefinitions="Auto,*,Auto,Auto" HorizontalAlignment="Stretch">
-                                                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="4" ClipToBounds="True" 
+                                                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="4" ClipToBounds="True"
                                                                 Background="{DynamicResource ControlAlphaEmbedFillColorDefaultBrush}">
                                                             <Image RenderOptions.BitmapInterpolationMode="HighQuality"
                                                                    Source="{Binding ThumbnailBitmap}"
                                                                    Stretch="UniformToFill" />
                                                         </Border>
-                                                        
+
                                                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="12,0">
-                                                            <TextBlock Text="{Binding Name}" 
-                                                                       FontSize="14" 
-                                                                       FontWeight="SemiBold" 
+                                                            <TextBlock Text="{Binding Name}"
+                                                                       FontSize="14"
+                                                                       FontWeight="SemiBold"
                                                                        TextTrimming="CharacterEllipsis" />
                                                             <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0">
                                                                 <ic:SymbolIcon Symbol="People" FontSize="12" VerticalAlignment="Center" />
-                                                                <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" 
+                                                                <TextBlock Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}"
                                                                            FontSize="11" VerticalAlignment="Center" />
                                                             </StackPanel>
                                                         </StackPanel>
@@ -122,19 +139,22 @@
                                                         <controls:IconButton Grid.Column="2"
                                                                              Command="{Binding $parent[UserControl].DataContext.RegionJoinGameCommand}"
                                                                              CommandParameter="{Binding}"
-                                                                             Padding="8"
+                                                                             Padding="0"
                                                                              ToolTip.Tip="Region Selector"
-                                                                             Margin="0,0,4,0" Width="32" Height="32" 
-                                                                             Icon="Globe"
-                                                                             Background="{DynamicResource ControlFillColorSecondaryBrush}" 
+                                                                             Margin="0,0,4,0" Width="32" Height="32"
+                                                                             IconSize="16"
+                                                                             Icon="Earth"
+                                                                             Background="{DynamicResource ControlFillColorSecondaryBrush}"
                                                                              CornerRadius="6"/>
-                                                        
+
                                                         <controls:IconButton Grid.Column="3"
                                                                              Command="{Binding $parent[UserControl].DataContext.PlayGameCommand}"
                                                                              CommandParameter="{Binding}"
                                                                              ToolTip.Tip="Quick Play"
                                                                              Classes="Primary"
-                                                                             Width="32" Height="32" 
+                                                                             Width="32" Height="32"
+                                                                             Padding="0"
+                                                                             IconSize="16"
                                                                              Icon="Play"
                                                                              CornerRadius="6"/>
                                                     </Grid>
@@ -152,10 +172,10 @@
                                        Padding="20"
                                        Opacity="0.5" />
 
-                            <ProgressBar Grid.Row="1" 
-                                         IsIndeterminate="True" 
+                            <ProgressBar Grid.Row="1"
+                                         IsIndeterminate="True"
                                          Height="2"
-                                         VerticalAlignment="Bottom" 
+                                         VerticalAlignment="Bottom"
                                          IsVisible="{Binding IsGameSearchLoading}" />
                         </Grid>
                     </Border>

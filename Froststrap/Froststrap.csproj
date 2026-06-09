@@ -19,8 +19,7 @@
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
     </PropertyGroup>
 
-    <!-- Resources needed by Avalonia -->
-    <!-- We don't need that many Avalonia Resources just specify the folder only 😭 -->
+  <!-- Resources needed by Avalonia -->
 	<ItemGroup>
 		<AvaloniaResource Include="Resources\**" />
 		<AvaloniaResource Include="UI\AppThemes\EditorThemes\*.xshd" />
@@ -98,7 +97,7 @@
     </ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ColorPicker\src\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
+		<ProjectReference Include="..\ColorPicker\ColorPicker.AvaloniaUI\ColorPicker.AvaloniaUI.csproj" />
 	</ItemGroup>
 
     <ItemGroup>

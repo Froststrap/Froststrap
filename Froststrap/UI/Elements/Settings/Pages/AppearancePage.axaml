@@ -38,7 +38,7 @@
                     </controls:CardExpander.HeaderContent>
                     <StackPanel Spacing="15">
                         <StackPanel Spacing="5">
-                            <TextBlock Text="Background Mode:" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="Background Mode:" FontWeight="Bold"/>
                             <ComboBox ItemsSource="{Binding BackgroundTypes}"
                                       SelectedItem="{Binding BackgroundType}"
                                       HorizontalAlignment="Stretch"/>
@@ -62,7 +62,7 @@
 
                             </WrapPanel>
 
-                            <TextBlock Text="Gradient Stops:" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
+                            <TextBlock Text="Gradient Stops:" FontWeight="Bold" Margin="0,10,0,0"/>
 
                             <ItemsControl ItemsSource="{Binding GradientStops}">
                                 <ItemsControl.ItemTemplate>
@@ -100,7 +100,7 @@
                         </StackPanel>
 
                         <StackPanel Spacing="15" IsVisible="{Binding IsImageMode}">
-                            <TextBlock Text="Image Settings:" FontWeight="Bold" Foreground="White" Margin="0,10,0,0"/>
+                            <TextBlock Text="Image Settings:" FontWeight="Bold" Margin="0,10,0,0"/>
 
                             <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
                                 <TextBox Text="{Binding BackgroundImagePath}"
@@ -214,9 +214,23 @@
                                  Grid.Column="0"
                                  Height="280"
                                  Margin="0,0,8,0"
-                                 ItemsSource="{Binding CustomThemes}"
-                                 SelectedItem="{Binding SelectedCustomTheme, Mode=TwoWay}"
-                                 SelectedIndex="{Binding SelectedCustomThemeIndex, Mode=TwoWay}" />
+                                 ItemsSource="{Binding CustomThemeSelections}"
+                                 SelectedItem="{Binding SelectedThemeWrapper}"
+                                 SelectedIndex="{Binding SelectedCustomThemeIndex, Mode=TwoWay}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate DataType="vm:CustomThemeCycleSelectionWrapper">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <CheckBox Grid.Column="0"
+                                                  IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                                  IsVisible="{Binding $parent[ListBox].DataContext.IsThemeCyclingEnabled}"
+                                                  Margin="0,4,8,4" />
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding ThemeName}"
+                                                   VerticalAlignment="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
 
                         <Grid Grid.Row="1"
                               Grid.Column="0"
@@ -292,19 +306,6 @@
                                     <NumericUpDown Grid.Column="1" HorizontalAlignment="Stretch" Minimum="1" Increment="1"
                                                    Value="{Binding CycleIntervalValue, Mode=TwoWay}"/>
                                 </Grid>
-
-                                <StackPanel Spacing="6" Margin="0,6,0,0">
-                                    <TextBlock Text="Select Custom Themes to Cycle Through:" FontWeight="SemiBold"/>
-                                    <ItemsControl ItemsSource="{Binding CustomThemeSelections}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Margin="0,2">
-                                                    <TextBlock Text="{Binding ThemeName}"/>
-                                                </CheckBox>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </StackPanel>
                             </StackPanel>
                         </StackPanel>
 

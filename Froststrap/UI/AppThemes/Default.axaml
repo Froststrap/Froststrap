@@ -96,20 +96,6 @@
 		<Setter Property="Width" Value="3" />
 	</Style>
 
-	<Style Selector="Button.FrostTinted">
-		<Setter Property="Background" Value="{DynamicResource AccentFillColorSelectedTextBackgroundBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource SystemAccentColor}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
-		<Setter Property="CornerRadius" Value="6" />
-	</Style>
-
-	<Style Selector="Button.FrostSubtle">
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
-		<Setter Property="CornerRadius" Value="6" />
-	</Style>
-
 	<Style Selector="controls|Hyperlink">
 		<Setter Property="Foreground" Value="{DynamicResource SystemAccentColor}" />
 		<Setter Property="Cursor" Value="Hand" />

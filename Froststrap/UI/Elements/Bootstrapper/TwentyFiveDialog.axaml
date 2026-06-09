@@ -1,7 +1,7 @@
-<Window xmlns="https://github.com/avaloniaui"
+<base:AvaloniaDialogBase xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Froststrap.UI.ViewModels.Bootstrapper"
-        xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
+        xmlns:base="clr-namespace:Froststrap.UI.Elements.Bootstrapper.Base"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         x:Class="Froststrap.UI.Elements.Bootstrapper.TwentyFiveDialog"
         x:DataType="vm:TwentyFiveDialogViewModel"
@@ -50,4 +50,4 @@
                     IsEnabled="{Binding CancelEnabled}" />
 		</Grid>
 	</Grid>
-</Window>
+</base:AvaloniaDialogBase>

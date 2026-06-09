@@ -1,154 +1,164 @@
-﻿using Froststrap.Models;
-using System.Text.Json;
+﻿namespace Froststrap;
 
-namespace Froststrap
+public class AppStorageManager : JsonManager<Dictionary<string, object>>
 {
-    public class AppStorageManager : JsonManager<AppStorageSettings>
+    private static readonly JsonSerializerOptions _writeOptions = new() { WriteIndented = true, Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
+    private static readonly JsonSerializerOptions _readOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
+
+    public override string ClassName => nameof(AppStorageManager);
+    public override string LOG_IDENT_CLASS => ClassName;
+    public override string FileName => "appStorage.json";
+    public override string FileLocation => Path.Combine(Paths.Roblox, "LocalStorage", FileName);
+
+    public static readonly IReadOnlyDictionary<string, string> PresetKeys = new Dictionary<string, string>
     {
-        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
-        private static readonly JsonSerializerOptions _jsonReadOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip };
+        { "System.LaunchAtStartup", "LaunchAtStartup" },
+        { "System.MinimizeToTray", "MinimizeToTray" },
+        { "System.SystemTrayModalShown", "SystemTrayModalShown" },
+        { "UI.Theme", "DeviceLevelTheme" },
+        { "User.UserId", "UserId" },
+    };
 
-        public override string ClassName => nameof(AppStorageManager);
-        public override string LOG_IDENT_CLASS => ClassName;
-        public override string FileName => "appStorage.json";
-        public override string FileLocation => Path.Combine(Paths.Roblox, "LocalStorage", FileName);
+    public static IReadOnlyDictionary<Enums.AppStoragePresets.Theme, string> ThemeValues => new Dictionary<Enums.AppStoragePresets.Theme, string>
+    {
+        { Enums.AppStoragePresets.Theme.Light, "light" },
+        { Enums.AppStoragePresets.Theme.Dark, "dark" }
+    };
 
-        public enum AppStorageSettingTheme
+    public void SetValue(string key, object? value)
+    {
+        const string LOG_IDENT = "AppStorageManager::SetValue";
+
+        if (value is null)
         {
-            Light,
-            Dark
+            if (Prop.ContainsKey(key))
+                App.Logger.WriteLine(LOG_IDENT, $"Deletion of '{key}' pending");
+            Prop.Remove(key);
         }
-
-        public AppStorageManager() : base("AppStorage") { }
-
-        private static AppStorageManager Instance => App.StorageSettings;
-
-        /// <summary>
-        /// Gets a value from app storage
-        /// </summary>
-        public static string? GetValue(string key)
+        else
         {
-            var property = typeof(AppStorageSettings).GetProperty(key);
-            if (property != null)
-            {
-                var value = property.GetValue(Instance.Prop)?.ToString();
-                return string.IsNullOrEmpty(value) ? null : value;
-            }
+            string newVal = value.ToString()!;
+            if (Prop.TryGetValue(key, out object? existing) && existing?.ToString() == newVal)
+                return;
 
-            App.Logger.WriteLine(Instance.LOG_IDENT_CLASS, $"Property '{key}' not found");
+            App.Logger.WriteLine(LOG_IDENT, $"Setting '{key}' to '{newVal}'");
+            Prop[key] = newVal;
+        }
+    }
+
+    public void SetPreset(string friendlyName, object? value)
+    {
+        if (!PresetKeys.TryGetValue(friendlyName, out string? actualKey))
+        {
+            App.Logger.WriteLine("AppStorageManager::SetPreset", $"Unknown preset '{friendlyName}'");
+            return;
+        }
+        SetValue(actualKey, value);
+    }
+
+    public string? GetPreset(string friendlyName)
+    {
+        if (!PresetKeys.TryGetValue(friendlyName, out string? actualKey))
+        {
+            App.Logger.WriteLine("AppStorageManager::GetPreset", $"Unknown preset '{friendlyName}'");
             return null;
         }
+        return GetValue(actualKey);
+    }
 
-        /// <summary>
-        /// Sets a value in app storage
-        /// </summary>
-        public static void SetValue(string key, string? value)
+    public void SetRawValue(string key, object? value)
+    {
+        const string LOG_IDENT = "AppStorageManager::SetRawValue";
+
+        if (value is null)
         {
-            const string LOG_IDENT = "AppStorageManager::SetValue";
-
-            var property = typeof(AppStorageSettings).GetProperty(key);
-            if (property == null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Property '{key}' not found");
+            if (Prop.ContainsKey(key))
+                App.Logger.WriteLine(LOG_IDENT, $"Deletion of '{key}' pending");
+            Prop.Remove(key);
+        }
+        else
+        {
+            if (Prop.TryGetValue(key, out object? existing) && Equals(existing, value))
                 return;
-            }
+            App.Logger.WriteLine(LOG_IDENT, $"Setting '{key}' (raw)");
+            Prop[key] = value;
+        }
+    }
 
-            var currentValue = property.GetValue(Instance.Prop)?.ToString();
+    public string? GetValue(string key) => Prop.TryGetValue(key, out object? val) ? val?.ToString() : null;
+    public T? GetRawValue<T>(string key) where T : class => Prop.TryGetValue(key, out object? val) ? val as T : null;
 
-            if (value == null)
-            {
-                if (!string.IsNullOrEmpty(currentValue))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Setting '{key}' to null is pending");
-                    property.SetValue(Instance.Prop, "");
-                }
-            }
-            else
-            {
-                if (currentValue == value)
-                    return;
+    public void SetBoolPreset(string friendlyName, bool value) => SetPreset(friendlyName, value ? "true" : "false");
 
-                App.Logger.WriteLine(LOG_IDENT, $"Changing of '{key}' from '{currentValue}' to '{value}' is pending");
-                property.SetValue(Instance.Prop, value);
-            }
+    public bool GetBoolPreset(string friendlyName) => string.Equals(GetPreset(friendlyName), "true", StringComparison.OrdinalIgnoreCase);
+
+    // using jsonmanager save messes up  app theme formatting
+    public override void Save()
+    {
+        string LOG_IDENT = $"{nameof(AppStorageManager)}::Save";
+
+        if (!File.Exists(FileLocation))
+        {
+            App.Logger.WriteLine(LOG_IDENT, "Save skipped – file does not exist.");
+            return;
         }
 
-        public override void Save()
+        App.Logger.WriteLine(LOG_IDENT, $"Saving to {FileLocation}...");
+
+        try
         {
-            string LOG_IDENT = $"{nameof(AppStorageManager)}::Save";
-            App.Logger.WriteLine(LOG_IDENT, $"Saving to {Instance.FileLocation}...");
+            string? directory = Path.GetDirectoryName(FileLocation);
+            if (!string.IsNullOrEmpty(directory))
+                Directory.CreateDirectory(directory);
 
-            try
-            {
-                string? directory = Path.GetDirectoryName(Instance.FileLocation);
-                if (!string.IsNullOrEmpty(directory))
-                    Directory.CreateDirectory(directory);
+            string contents = JsonSerializer.Serialize(Prop, _writeOptions);
+            File.WriteAllText(FileLocation, contents);
+            App.Logger.WriteLine(LOG_IDENT, "Save Complete!");
+        }
+        catch (Exception ex)
+        {
+            App.Logger.WriteLine(LOG_IDENT, "Failed to save appStorage.json");
+            App.Logger.WriteException(LOG_IDENT, ex);
+        }
+    }
 
-                string contents = JsonSerializer.Serialize(Instance.Prop, _jsonOptions);
-                File.WriteAllText(Instance.FileLocation, contents);
+    public override bool Load(bool alertFailure = true)
+    {
+        string LOG_IDENT = $"{nameof(AppStorageManager)}::Load";
+        App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
-                App.Logger.WriteLine(LOG_IDENT, "Save Complete!");
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to save appStorage.json");
-                App.Logger.WriteException(LOG_IDENT, ex);
-            }
+        if (!File.Exists(FileLocation))
+        {
+            App.Logger.WriteLine(LOG_IDENT, "File does not exist. No storage loaded.");
+            Loaded = false;
+            Prop = [];
+            return false;
         }
 
-        public override bool Load(bool alertFailure = true)
+        try
         {
-            string LOG_IDENT = $"{nameof(AppStorageManager)}::Load";
-            App.Logger.WriteLine(LOG_IDENT, $"Loading from {Instance.FileLocation}...");
+            string contents = File.ReadAllText(FileLocation);
+            var settings = JsonSerializer.Deserialize<Dictionary<string, object>>(contents, _readOptions)
+                           ?? [];
 
-            try
-            {
-                if (File.Exists(Instance.FileLocation))
-                {
-                    string contents = File.ReadAllText(Instance.FileLocation);
-
-                    Instance._prop = JsonSerializer.Deserialize<AppStorageSettings>(contents, _jsonReadOptions)
-                            ?? new AppStorageSettings();
-
-                    Instance.Loaded = true;
-
-                    App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
-                    return true;
-                }
-
-                App.Logger.WriteLine(LOG_IDENT, "appStorage.json does not exist. Roblox may not be installed.");
-                Instance.Loaded = false;
-                return false;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Error loading appStorage.json");
-                App.Logger.WriteException(LOG_IDENT, ex);
-
-                if (alertFailure)
-                    _ = Frontend.ShowMessageBox($"Failed to load appStorage.json: {ex.Message}", MessageBoxImage.Error);
-
-                return false;
-            }
+            Prop = settings;
+            Loaded = true;
+            App.Logger.WriteLine(LOG_IDENT, "Loaded successfully!");
+            return true;
         }
-
-        public static void SetBoolValue(string key, bool value) => SetValue(key, value.ToString().ToLower());
-        public static bool GetBoolValue(string key) => GetValue(key)?.ToLower() == "true";
-
-        public static void SetTheme(AppStorageSettingTheme theme)
+        catch (Exception ex)
         {
-            string userId = Instance.Prop.UserId ?? "0";
-            string themeValue = theme == AppStorageSettingTheme.Dark ? "dark" : "light";
-            string themeJson = $"{{\"{userId}\":\"{themeValue}\"}}";
-            SetValue("DeviceLevelTheme", themeJson);
-        }
+            App.Logger.WriteLine(LOG_IDENT, "Failed to load!");
+            App.Logger.WriteException(LOG_IDENT, ex);
+            Loaded = false;
+            Prop = [];
 
-        public static AppStorageSettingTheme GetTheme()
-        {
-            var json = Instance.Prop.DeviceLevelTheme;
-            if (string.IsNullOrEmpty(json))
-                return AppStorageSettingTheme.Dark;
-            return json.Contains("dark") ? AppStorageSettingTheme.Dark : AppStorageSettingTheme.Light;
+            if (alertFailure)
+            {
+                string message = Strings.JsonManager_SettingsLoadFailed;
+                _ = Frontend.ShowMessageBox($"{message}\n\n{ex.Message}", MessageBoxImage.Warning);
+            }
+            return false;
         }
     }
 }

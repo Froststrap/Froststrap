@@ -1,4 +1,4 @@
-#   SPDX-License-Identifier: Unlicense
+# SPDX-License-Identifier: Unlicense
 
 {
   description = "Flake for Froststrap";

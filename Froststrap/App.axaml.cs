@@ -84,9 +84,9 @@ public partial class App : Application
 
     public static readonly JsonManager<State> State = new();
 
-    public static readonly AppStorageManager StorageSettings = new();
+    public static readonly AppStorageManager AppStorage = new();
 
-    public static readonly JsonManager<SoberSettings> SoberSettings = new();
+    public static readonly SoberSettingsManager SoberSettings = new();
 
     public static readonly LazyJsonManager<DistributionState> PlayerState = new(nameof(PlayerState));
 
@@ -383,36 +383,6 @@ public partial class App : Application
         set { if (Current is App app) app.RichPresence = value!; }
     }
 
-    public static void WindowsBackdrop()
-    {
-        Dispatcher.UIThread.Post(() =>
-        {
-            ApplyBackdropToAllWindows();
-        });
-    }
-
-    private static void ApplyBackdropToAllWindows()
-    {
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            foreach (var window in desktop.Windows)
-            {
-                if (Settings.Prop.SelectedBackdrop != WindowsBackdrops.None)
-                {
-                    window.TransparencyLevelHint = Settings.Prop.SelectedBackdrop switch
-                    {
-                        WindowsBackdrops.Acrylic => [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Mica => [WindowTransparencyLevel.Mica, WindowTransparencyLevel.None],
-                        WindowsBackdrops.Aero => [WindowTransparencyLevel.Blur, WindowTransparencyLevel.None],
-                        _ => [WindowTransparencyLevel.None]
-                    };
-
-                    window.Background = Brushes.Transparent;
-                }
-            }
-        }
-    }
-
     public static async Task<GithubRelease?> GetLatestRelease(bool includePreRelease = false)
     {
         const string LOG_IDENT = "App::GetLatestRelease";
@@ -591,7 +561,7 @@ public partial class App : Application
             Settings.Load();
             State.Load();
             FastFlags.Load();
-            StorageSettings.Load();
+            AppStorage.Load();
             GlobalSettings.Load();
 
             if (OperatingSystem.IsLinux())

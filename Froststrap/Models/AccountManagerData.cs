@@ -12,11 +12,5 @@ namespace Froststrap.Models
 
         [JsonPropertyName("lastUpdated")]
         public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
-
-        [JsonPropertyName("currentPlaceId")]
-        public long? CurrentPlaceId { get; set; }
-
-        [JsonPropertyName("currentServerInstanceId")]
-        public string CurrentServerInstanceId { get; set; } = "";
     }
 }

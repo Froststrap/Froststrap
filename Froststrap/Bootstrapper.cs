@@ -1311,16 +1311,18 @@ namespace Froststrap
             const string LOG_IDENT = "Bootstrapper::LaunchViaSober";
 
             if (App.Settings.Prop.ShowServerDetails)
-                App.SoberSettings.Prop.ServerLocationIndicatorEnabled = false;
+                App.SoberSettings.SetPreset("ServerLocationIndicatorEnabled", "false");
 
             if (App.Settings.Prop.UseDiscordRichPresence)
             {
-                App.SoberSettings.Prop.DiscordRpcEnabled = false;
-                App.SoberSettings.Prop.DiscordRpcShowJoinButton = false;
+                App.SoberSettings.SetPreset("DiscordRpcEnabled", "false");
+                App.SoberSettings.SetPreset("DiscordRpcShowJoinButton", "false");
             }
 
             if (App.Settings.Prop.UseDisableAppPatch)
-                App.SoberSettings.Prop.CloseOnLeave = false;
+                App.SoberSettings.SetPreset("CloseOnLeave", "false");
+
+            App.SoberSettings.Save();
 
             _joinData = GameJoin.GetJoinDataByLaunchCommand(_launchCommandLine);
 
@@ -3121,7 +3123,7 @@ namespace Froststrap
             if (string.IsNullOrEmpty(App.Settings.Prop.WinePrefixPath) || string.IsNullOrEmpty(_latestVersionDirectory))
                 return;
 
-            string[] dlls = [ "d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll" ];
+            string[] dlls = ["d3d9.dll", "d3d10core.dll", "d3d11.dll", "dxgi.dll"];
             string sourceDir = Path.Combine(App.Settings.Prop.WinePrefixPath, "drive_c", "windows", "system32");
             string targetDir = _latestVersionDirectory;
 
@@ -3263,7 +3265,7 @@ namespace Froststrap
 
         private static async Task<string?> FindSystemWineAsync()
         {
-            string[] paths = [ "/usr/bin/wine", "/usr/local/bin/wine" ];
+            string[] paths = ["/usr/bin/wine", "/usr/local/bin/wine"];
             foreach (var p in paths)
                 if (File.Exists(p)) return p;
             try
@@ -3618,7 +3620,7 @@ Windows Registry Editor Version 5.00
 
         #endregion
 
-        public static  async Task<string?> GetRobloxSecurityCookieAsync()
+        public static async Task<string?> GetRobloxSecurityCookieAsync()
         {
             const string LOG_IDENT = "Bootstrapper::GetRobloxSecurityCookie";
 
@@ -4027,6 +4029,9 @@ Windows Registry Editor Version 5.00
 
                 if (fileNameWithoutExt.EndsWith("_Delete"))
                 {
+                    if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+                        continue;
+
                     string directory = Path.GetDirectoryName(fileLocation) ?? "";
                     string originalName = fileNameWithoutExt[..^7];
                     targetFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
@@ -4263,8 +4268,8 @@ Windows Registry Editor Version 5.00
                         string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
                         if (packageDir is null)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map!");
-                            return false;
+                            App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map, skipping.");
+                            return true;
                         }
                         packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
                     }

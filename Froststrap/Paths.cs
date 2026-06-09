@@ -77,7 +77,7 @@ namespace Froststrap
 
                 SoberAssetOverlay = Path.Combine(Roblox, "data", "sober", "asset_overlay");
 
-                SoberConfig = Path.Combine(Roblox, "config", "sober", "config.json");
+                SoberConfig = Path.Combine(Roblox, "config", "sober");
                 
                 WineRoot = Path.Combine(DataRoot, "Wine");
 

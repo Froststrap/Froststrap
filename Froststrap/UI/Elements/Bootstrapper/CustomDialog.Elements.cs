@@ -18,6 +18,8 @@ namespace Froststrap.UI.Elements.Bootstrapper
 {
     public partial class CustomDialog
     {
+        private readonly static List<Image> _animatedImages = [];
+
         #region Transformation
         private static ScaleTransform HandleXmlElement_ScaleTransform(CustomDialog dialog, XElement xmlElement)
         {
@@ -565,10 +567,22 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
                 if (isAnimated)
                 {
-                    image.SetValue(ImageBehavior.AnimatedSourceProperty, imageData.Uri);
+                    var bytes = File.ReadAllBytes(imageData.Uri.LocalPath);
+                    var memoryStream = new MemoryStream(bytes);
 
-                    var repeat = ParseXmlAttribute<RepeatBehavior>(xmlElement, "RepeatBehavior", RepeatBehavior.Forever);
-                    image.SetValue(ImageBehavior.RepeatBehaviorProperty, repeat);
+                    var bitmap = new Bitmap(memoryStream);
+                    image.Source = bitmap;
+
+                    _animatedImages.Add(image);
+
+                    image.Unloaded += (s, e) =>
+                    {
+                        var src = image.Source as Bitmap;
+                        image.Source = null;
+                        src?.Dispose();
+                        memoryStream?.Dispose();
+                        _animatedImages.Remove(image);
+                    };
                 }
                 else
                 {

@@ -28,8 +28,6 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 LaunchTitle.Text = "Cartistrap";
             }
-
-            App.WindowsBackdrop();
         }
     }
 }

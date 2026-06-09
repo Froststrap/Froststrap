@@ -188,7 +188,7 @@ namespace Froststrap.UI.Elements.Dialogs
                     if (entries.Length == 1 && Directory.Exists(entries[0]))
                     {
                         Directory.Delete(finalDir, true);
-                        Directory.Move(entries[0], finalDir);
+                        MoveDirectory(entries[0], finalDir);
                     }
                     else
                     {
@@ -196,7 +196,7 @@ namespace Froststrap.UI.Elements.Dialogs
                         {
                             string dest = Path.Combine(finalDir, Path.GetFileName(entry));
                             if (Directory.Exists(entry))
-                                Directory.Move(entry, dest);
+                                MoveDirectory(entry, dest);
                             else
                                 File.Copy(entry, dest, true);
                         }
@@ -239,5 +239,29 @@ namespace Froststrap.UI.Elements.Dialogs
         }
 
         private void OnCancelButtonClicked(object sender, RoutedEventArgs e) => Close();
+
+        private static void MoveDirectory(string source, string dest)
+        {
+            try
+            {
+                Directory.Move(source, dest);
+            }
+            catch (IOException)
+            {
+                // Directory.Move fails across filesystem boundaries (tmpfs -> ext4 etc.).
+                // Fall back to recursive copy + delete.
+                CopyDirectory(source, dest);
+                Directory.Delete(source, true);
+            }
+        }
+
+        private static void CopyDirectory(string source, string dest)
+        {
+            Directory.CreateDirectory(dest);
+            foreach (var file in Directory.GetFiles(source))
+                File.Copy(file, Path.Combine(dest, Path.GetFileName(file)), true);
+            foreach (var dir in Directory.GetDirectories(source))
+                CopyDirectory(dir, Path.Combine(dest, Path.GetFileName(dir)));
+        }
     }
 }

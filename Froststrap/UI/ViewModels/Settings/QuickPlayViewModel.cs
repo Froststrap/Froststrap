@@ -1,9 +1,21 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Avalonia.Threading;
+using CommunityToolkit.Mvvm.Input;
+using Froststrap.Integrations;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
+    public record PrivateServerInfo(
+        long VipServerId,
+        string AccessCode,
+        string Name,
+        long OwnerId,
+        string OwnerName,
+        string? OwnerAvatarUrl,
+        int MaxPlayers,
+        int CurrentPlayers);
+
     public class QuickPlayViewModel : NotifyPropertyChangedViewModel
     {
         private bool _isLoading;
@@ -14,6 +26,16 @@ namespace Froststrap.UI.ViewModels.Settings
         private UniverseDetails? _selectedUniverseDetails;
         private readonly string _cachePath = Path.Combine(Paths.Cache, "GameHistory.json");
         private List<GameHistoryEntry> _allHistory = [];
+
+        private bool _isPrivateServersOverlayVisible;
+        private bool _arePrivateServersEmpty;
+        private bool _isLoadingPrivateServers;
+        private long _currentPrivateServersPlaceId;
+        private bool _isCurrentGameApi;
+        private bool _isLoadingServers;
+        private bool _isJoiningBestRegion;
+
+        private readonly ObservableCollection<PrivateServerInfo> _privateServers = [];
 
         public ObservableCollection<QuickPlayGameItem> RecentGames { get; } = [];
         public ObservableCollection<ServerInfo> SelectedGameServers { get; } = [];
@@ -48,7 +70,48 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _isLoadingSubplaces, value);
         }
 
+        public bool IsPrivateServersOverlayVisible
+        {
+            get => _isPrivateServersOverlayVisible;
+            set => SetProperty(ref _isPrivateServersOverlayVisible, value);
+        }
+
+        public bool ArePrivateServersEmpty
+        {
+            get => _arePrivateServersEmpty;
+            set => SetProperty(ref _arePrivateServersEmpty, value);
+        }
+
+        public bool IsLoadingPrivateServers
+        {
+            get => _isLoadingPrivateServers;
+            set => SetProperty(ref _isLoadingPrivateServers, value);
+        }
+
+        public bool IsLoadingServers
+        {
+            get => _isLoadingServers;
+            set => SetProperty(ref _isLoadingServers, value);
+        }
+
+        public bool IsCurrentGameApi
+        {
+            get => _isCurrentGameApi;
+            set => SetProperty(ref _isCurrentGameApi, value);
+        }
+
+        public bool IsJoiningBestRegion
+        {
+            get => _isJoiningBestRegion;
+            set => SetProperty(ref _isJoiningBestRegion, value);
+        }
+
         public ObservableCollection<PlaceInfo> Subplaces => _subplaces;
+        public ObservableCollection<PrivateServerInfo> PrivateServers => _privateServers;
+
+        public static bool HasActiveAccount => AccountManager.Shared?.ActiveAccount != null;
+        public bool IsTrackedGame => !IsCurrentGameApi;
+        public bool CanJoinBestRegion => !IsJoiningBestRegion;
 
         public ICommand JoinGameCommand { get; }
         public ICommand RejoinLastServerCommand { get; }
@@ -58,6 +121,10 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand VisitPageCommand { get; }
         public ICommand ViewSubplacesCommand { get; }
         public ICommand JoinSubplaceCommand { get; }
+        public ICommand ShowPrivateServersCommand { get; }
+        public ICommand JoinPrivateServerCommand { get; }
+        public ICommand ClosePrivateServersCommand { get; }
+        public ICommand JoinBestRegionCommand { get; }
 
         public QuickPlayViewModel()
         {
@@ -93,23 +160,47 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (subplace != null) LaunchRoblox(subplace.Id);
             });
 
-            ViewServersCommand = new RelayCommand<QuickPlayGameItem>(item =>
+            ViewServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
             {
                 if (item == null) return;
 
-                var entry = _allHistory.FirstOrDefault(x => x.UniverseId == item.UniverseId);
-                if (entry == null) return;
-
-                var sortedServers = entry.Servers.OrderByDescending(x => x.JoinedAt).ToList();
-
-                foreach (var s in sortedServers) s.IsLatest = false;
-                if (sortedServers.Count > 0) sortedServers[0].IsLatest = true;
-
-                SelectedGameServers.Clear();
-                foreach (var s in sortedServers) SelectedGameServers.Add(s);
-
                 SelectedUniverseDetails = item.OriginalDetails;
                 IsOverlayVisible = true;
+                SelectedGameServers.Clear();
+                IsLoadingServers = true;
+                IsCurrentGameApi = (item.Source == GameSource.RobloxApi);
+
+                try
+                {
+                    if (item.Source == GameSource.RobloxApi)
+                    {
+                        var servers = await FetchServersForGameAsync(item.PlaceId);
+                        if (servers.Count > 0)
+                        {
+                            servers = [.. servers.OrderByDescending(s => s.JoinedAt)];
+                            foreach (var s in servers)
+                                SelectedGameServers.Add(s);
+                        }
+                        item.ServerCount = servers.Count;
+                        OnPropertyChanged(nameof(RecentGames));
+                    }
+                    else
+                    {
+                        var entry = _allHistory.FirstOrDefault(x => x.UniverseId == item.UniverseId);
+                        if (entry != null)
+                        {
+                            var sortedServers = entry.Servers.OrderByDescending(x => x.JoinedAt).ToList();
+                            foreach (var s in sortedServers) s.IsLatest = false;
+                            if (sortedServers.Count > 0) sortedServers[0].IsLatest = true;
+                            foreach (var s in sortedServers)
+                                SelectedGameServers.Add(s);
+                        }
+                    }
+                }
+                finally
+                {
+                    IsLoadingServers = false;
+                }
             });
 
             CloseOverlayCommand = new RelayCommand(() => IsOverlayVisible = false);
@@ -120,43 +211,69 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (item != null) Process.Start(new ProcessStartInfo($"https://www.roblox.com/games/{item.PlaceId}") { UseShellExecute = true });
             });
 
+            ShowPrivateServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
+            {
+                if (item == null || item.PlaceId == 0) return;
+                _currentPrivateServersPlaceId = item.PlaceId;
+                await ShowPrivateServersForGameAsync();
+            });
+
+            JoinPrivateServerCommand = new RelayCommand<string>(accessCode =>
+            {
+                if (string.IsNullOrWhiteSpace(accessCode)) return;
+                LaunchRoblox(_currentPrivateServersPlaceId, accessCode: accessCode);
+                IsPrivateServersOverlayVisible = false;
+            });
+
+            JoinBestRegionCommand = new RelayCommand<QuickPlayGameItem>(async item =>
+            {
+                if (item == null || item.PlaceId == 0 || IsJoiningBestRegion) return;
+                await FindAndJoinServerInRegionAsync(item.PlaceId);
+            });
+
+            ClosePrivateServersCommand = new RelayCommand(() => IsPrivateServersOverlayVisible = false);
+
+            AccountManager.Shared.ActiveAccountChanged += _ =>
+            {
+                Dispatcher.UIThread.InvokeAsync(() => OnPropertyChanged(nameof(HasActiveAccount)));
+            };
+
+            AccountManager.Shared.ActiveAccountChanged += OnActiveAccountChanged;
             _ = Initialize();
         }
 
         private async Task Initialize()
         {
             IsLoading = true;
-            _allHistory = LoadLocalHistory();
 
-            if (_allHistory.Count == 0)
+            _allHistory = LoadLocalHistory(_cachePath);
+            await LoadLocalGamesIntoList();
+
+            if (HasActiveAccount)
             {
-                IsLoading = false;
-                return;
+                await LoadApiGamesAndMerge();
             }
 
-            var universeIds = _allHistory
-                .Select(x => x.UniverseId)
-                .Where(id => id > 0)
-                .Distinct()
-                .Select(id => id.ToString())
-                .ToList();
+            IsLoading = false;
 
+            if (HasActiveAccount)
+            {
+                _ = RefreshApiGamesInBackground();
+            }
+        }
+
+        private async Task LoadLocalGamesIntoList()
+        {
+            var universeIds = _allHistory.Select(x => x.UniverseId).Where(id => id > 0).Distinct().ToList();
             if (universeIds.Count > 0)
-            {
                 await UniverseDetails.FetchBulk(string.Join(",", universeIds));
-            }
-            else
-            {
-                App.Logger.WriteLine("QuickPlayViewModel", "No valid Universe IDs found in history.");
-            }
 
-            var uiItems = new List<QuickPlayGameItem>();
+            var localGames = new List<QuickPlayGameItem>();
             foreach (var entry in _allHistory)
             {
                 var details = UniverseDetails.LoadFromCache(entry.UniverseId);
                 var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
-
-                uiItems.Add(new QuickPlayGameItem
+                localGames.Add(new QuickPlayGameItem
                 {
                     UniverseId = entry.UniverseId,
                     PlaceId = entry.PlaceId,
@@ -166,11 +283,54 @@ namespace Froststrap.UI.ViewModels.Settings
                     Visits = details?.Data?.Visits ?? 0,
                     ServerCount = entry.Servers.Count,
                     LastJobId = lastSession?.JobId,
-                    OriginalDetails = details
+                    OriginalDetails = details,
+                    Source = GameSource.Tracked,
+                    LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0
                 });
             }
 
-            var thumbRequests = uiItems.Select(item => new ThumbnailRequest
+            await FetchThumbnailsForGames(localGames);
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                RecentGames.Clear();
+                foreach (var game in localGames) RecentGames.Add(game);
+            });
+        }
+
+        private async Task LoadApiGamesAndMerge()
+        {
+            var apiGames = await GetCachedApiGamesAsync();
+            if (apiGames.Count == 0)
+            {
+                apiGames = await FetchRecentlyVisitedFromApiAsync();
+                if (apiGames.Count > 0)
+                    await SetCachedApiGamesAsync(apiGames);
+            }
+
+            var currentLocal = RecentGames.ToList();
+            var merged = MergeByApiOrder(currentLocal, apiGames);
+            await EnrichGamesWithDetails(merged);
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                RecentGames.Clear();
+                foreach (var game in merged) RecentGames.Add(game);
+            });
+        }
+
+        private static string GetApiGamesCachePath()
+        {
+            var activeUserId = AccountManager.Shared?.ActiveAccount?.UserId;
+            if (activeUserId.HasValue)
+                return Path.Combine(Paths.Cache, $"ApiRecentGames_{activeUserId.Value}.json");
+            else
+                return Path.Combine(Paths.Cache, "ApiRecentGames_empty.json");
+        }
+
+        private static async Task FetchThumbnailsForGames(List<QuickPlayGameItem> games)
+        {
+            var thumbRequests = games.Select(item => new ThumbnailRequest
             {
                 TargetId = (ulong)item.UniverseId,
                 Type = ThumbnailType.GameIcon,
@@ -181,28 +341,144 @@ namespace Froststrap.UI.ViewModels.Settings
             try
             {
                 var urls = await Thumbnails.GetThumbnailUrlsAsync(thumbRequests, CancellationToken.None);
-                for (int i = 0; i < uiItems.Count; i++)
+                for (int i = 0; i < games.Count; i++)
                 {
-                    string? thumbUrl = urls.ElementAtOrDefault(i);
-                    if (string.IsNullOrEmpty(thumbUrl)) continue;
-                    uiItems[i].ThumbnailUrl = thumbUrl;
-                    if (uiItems[i].OriginalDetails?.Thumbnail != null)
-                        uiItems[i].OriginalDetails!.Thumbnail.ImageUrl = thumbUrl;
+                    string? url = urls.ElementAtOrDefault(i);
+                    if (!string.IsNullOrEmpty(url))
+                        games[i].ThumbnailUrl = url;
                 }
             }
             catch (Exception ex) { Debug.WriteLine($"Thumbnail fetch failed: {ex.Message}"); }
-
-            RecentGames.Clear();
-            foreach (var item in uiItems) RecentGames.Add(item);
-            IsLoading = false;
         }
 
-        private List<GameHistoryEntry> LoadLocalHistory()
+        private static async Task<List<QuickPlayGameItem>> GetCachedApiGamesAsync()
         {
             try
             {
-                if (!File.Exists(_cachePath)) return [];
-                string json = File.ReadAllText(_cachePath);
+                string cachePath = GetApiGamesCachePath();
+                if (!File.Exists(cachePath)) return [];
+                var json = await File.ReadAllTextAsync(cachePath);
+                return JsonSerializer.Deserialize<List<QuickPlayGameItem>>(json) ?? [];
+            }
+            catch { return []; }
+        }
+
+        private static async Task SetCachedApiGamesAsync(List<QuickPlayGameItem> games)
+        {
+            try
+            {
+                string cachePath = GetApiGamesCachePath();
+                var json = JsonSerializer.Serialize(games);
+                await File.WriteAllTextAsync(cachePath, json);
+            }
+            catch (Exception ex) { App.Logger.WriteLine("QuickPlayViewModel", $"Failed to cache API games: {ex.Message}"); }
+        }
+
+        private static List<QuickPlayGameItem> MergeByApiOrder(List<QuickPlayGameItem> localGames, List<QuickPlayGameItem> apiGames)
+        {
+            var localByUniverse = localGames.ToDictionary(g => g.UniverseId, g => g);
+            var result = new List<QuickPlayGameItem>(apiGames.Count);
+
+            foreach (var apiGame in apiGames)
+            {
+                if (localByUniverse.TryGetValue(apiGame.UniverseId, out var localGame))
+                {
+                    result.Add(localGame);
+                }
+                else
+                {
+                    result.Add(apiGame);
+                }
+            }
+
+            return result;
+        }
+
+        private static async Task EnrichGamesWithDetails(List<QuickPlayGameItem> games)
+        {
+            var needDetails = games.Where(g => g.OriginalDetails == null && g.UniverseId > 0).ToList();
+            if (needDetails.Count > 0)
+            {
+                var ids = needDetails.Select(g => g.UniverseId.ToString()).ToList();
+                await UniverseDetails.FetchBulk(string.Join(",", ids));
+                foreach (var game in needDetails)
+                {
+                    var details = UniverseDetails.LoadFromCache(game.UniverseId);
+                    if (details?.Data != null)
+                    {
+                        game.OriginalDetails = details;
+                        game.Creator = details.Data.Creator?.Name ?? "Unknown";
+                        if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? "Unknown";
+                        game.Playing = details.Data.Playing;
+                        game.Visits = details.Data.Visits;
+                    }
+                }
+            }
+
+            var needThumb = games.Where(g => string.IsNullOrEmpty(g.ThumbnailUrl)).ToList();
+            if (needThumb.Count > 0)
+                await FetchThumbnailsForGames(needThumb);
+        }
+
+
+        private async Task RefreshApiGamesInBackground()
+        {
+            if (!HasActiveAccount) return;
+
+            try
+            {
+                var freshApiGames = await FetchRecentlyVisitedFromApiAsync();
+                if (freshApiGames.Count == 0) return;
+
+                await SetCachedApiGamesAsync(freshApiGames);
+
+                _allHistory = LoadLocalHistory(_cachePath);
+                var universeIds = _allHistory.Select(x => x.UniverseId).Where(id => id > 0).Distinct().ToList();
+                if (universeIds.Count > 0)
+                    await UniverseDetails.FetchBulk(string.Join(",", universeIds));
+
+                var localGames = new List<QuickPlayGameItem>();
+                foreach (var entry in _allHistory)
+                {
+                    var details = UniverseDetails.LoadFromCache(entry.UniverseId);
+                    var lastSession = entry.Servers.OrderByDescending(s => s.JoinedAt).FirstOrDefault();
+                    localGames.Add(new QuickPlayGameItem
+                    {
+                        UniverseId = entry.UniverseId,
+                        PlaceId = entry.PlaceId,
+                        Name = details?.Data?.Name ?? "Unknown Game",
+                        Creator = details?.Data?.Creator?.Name ?? "Unknown",
+                        Playing = details?.Data?.Playing ?? 0,
+                        Visits = details?.Data?.Visits ?? 0,
+                        ServerCount = entry.Servers.Count,
+                        LastJobId = lastSession?.JobId,
+                        OriginalDetails = details,
+                        Source = GameSource.Tracked,
+                        LastPlayedTicks = lastSession?.JoinedAt.Ticks ?? 0
+                    });
+                }
+
+                var merged = MergeByApiOrder(localGames, freshApiGames);
+                await EnrichGamesWithDetails(merged);
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    RecentGames.Clear();
+                    foreach (var game in merged) RecentGames.Add(game);
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("QuickPlayViewModel", $"Background refresh failed: {ex.Message}");
+            }
+        }
+
+        private static List<GameHistoryEntry> LoadLocalHistory(string cachePath)
+        {
+            try
+            {
+                if (!File.Exists(cachePath)) return [];
+                string json = File.ReadAllText(cachePath);
                 return JsonSerializer.Deserialize<List<GameHistoryEntry>>(json) ?? [];
             }
             catch { return []; }
@@ -262,13 +538,357 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private static void LaunchRoblox(long placeId, string? jobId = null)
+        private async Task ShowPrivateServersForGameAsync()
+        {
+            if (_currentPrivateServersPlaceId == 0) return;
+
+            var accountManager = AccountManager.Shared;
+            if (accountManager is null)
+            {
+                _ = Frontend.ShowMessageBox("Account manager is not available.", MessageBoxImage.Error);
+                return;
+            }
+
+            var activeAccount = accountManager.ActiveAccount;
+            if (activeAccount == null)
+            {
+                _ = Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                return;
+            }
+
+            IsLoadingPrivateServers = true;
+            IsPrivateServersOverlayVisible = true;
+            PrivateServers.Clear();
+            ArePrivateServersEmpty = false;
+
+            try
+            {
+                string? cookie = accountManager.GetRoblosecurityForUser(activeAccount.UserId);
+                if (string.IsNullOrEmpty(cookie))
+                {
+                    _ = Frontend.ShowMessageBox("Unable to authenticate. Please log in again.", MessageBoxImage.Warning);
+                    return;
+                }
+
+                Uri url = UrlBuilder.BuildApiUrl(
+                    "games",
+                    $"v1/games/{_currentPrivateServersPlaceId}/private-servers?excludeFriendServers=false&sortOrder=Asc"
+                );
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, url);
+                request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+                request.Headers.Add("Origin", "https://www.roblox.com");
+                request.Headers.Add("Referrer", "https://www.roblox.com");
+
+                var response = await Http.SendJson<PrivateServersResponse>(request);
+                if (response?.Data == null || response.Data.Count == 0)
+                {
+                    ArePrivateServersEmpty = true;
+                    return;
+                }
+
+                var ownerIds = response.Data
+                    .Select(s => s.Owner.Id)
+                    .Where(id => id != 0)
+                    .Distinct()
+                    .ToList();
+
+                var avatarUrls = new Dictionary<long, string?>();
+                if (ownerIds.Count > 0)
+                {
+                    var results = await accountManager.GetAvatarUrlsBulkAsync(ownerIds);
+                    avatarUrls = results;
+                }
+
+                var servers = new List<PrivateServerInfo>();
+                foreach (var server in response.Data)
+                {
+                    string? avatarUrl = avatarUrls.GetValueOrDefault(server.Owner.Id);
+                    servers.Add(new PrivateServerInfo(
+                        server.VipServerId,
+                        server.AccessCode,
+                        server.Name,
+                        server.Owner.Id,
+                        server.Owner.Name,
+                        avatarUrl,
+                        server.MaxPlayers,
+                        server.Players.Count
+                    ));
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    foreach (var server in servers)
+                        PrivateServers.Add(server);
+                    ArePrivateServersEmpty = servers.Count == 0;
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("QuickPlayViewModel", $"Exception in ShowPrivateServersForGameAsync: {ex.Message}");
+                await Dispatcher.UIThread.InvokeAsync(() => ArePrivateServersEmpty = true);
+            }
+            finally
+            {
+                await Dispatcher.UIThread.InvokeAsync(() => IsLoadingPrivateServers = false);
+            }
+        }
+
+        private static async Task<List<QuickPlayGameItem>> FetchRecentlyVisitedFromApiAsync()
+        {
+            var accountManager = AccountManager.Shared;
+            if (accountManager == null) return [];
+            var activeAccount = accountManager.ActiveAccount;
+            if (activeAccount == null) return [];
+
+            string? cookie = accountManager.GetRoblosecurityForUser(activeAccount.UserId);
+            if (string.IsNullOrEmpty(cookie)) return [];
+
+            var url = UrlBuilder.BuildApiUrl("apis", "search-landing-page-api/v1?sessionId=Meddsam");
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
+            request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
+
+            var response = await Http.SendJson<RecentlyVisitedResponse>(request);
+            var recentSort = response?.Sorts?.FirstOrDefault(s => s.SortId == "RecentlyVisited");
+            if (recentSort?.Games == null) return [];
+
+            var games = new List<QuickPlayGameItem>(capacity: recentSort.Games.Count);
+            long baseTicks = DateTime.UtcNow.Ticks;
+
+            for (int i = 0; i < recentSort.Games.Count; i++)
+            {
+                var apiGame = recentSort.Games[i];
+                games.Add(new QuickPlayGameItem
+                {
+                    UniverseId = apiGame.UniverseId,
+                    PlaceId = apiGame.RootPlaceId,
+                    Name = apiGame.Name,
+                    Playing = apiGame.PlayerCount,
+                    Source = GameSource.RobloxApi,
+                    LastPlayedTicks = baseTicks - i
+                });
+            }
+            return games;
+        }
+
+        private static async Task<List<ServerInfo>> FetchServersForGameAsync(long placeId)
+        {
+            var fetcher = new RobloxServerFetcher();
+            var result = await fetcher.FetchServerInstancesAsync(placeId);
+            if (result.Servers == null || result.Servers.Count == 0)
+                return [];
+
+            return [.. result.Servers.Select(s => new ServerInfo
+            {
+                JobId = s.Id,
+                Region = s.Region,
+                JoinedAt = s.FirstSeen ?? DateTime.UtcNow,
+                IsLatest = false
+            })];
+        }
+
+        private async Task FindAndJoinServerInRegionAsync(long placeId)
+        {
+            IsJoiningBestRegion = true;
+            try
+            {
+                bool joinSmallerServer = App.Settings.Prop.JoinSmallerServer;
+                int bestRegionAmounts = App.Settings.Prop.BestRegionAmounts;
+                int maxServerCheck = App.Settings.Prop.MaxServerCheck;
+
+                var fetcher = new RobloxServerFetcher();
+                string? resolvedCookie = await fetcher.ResolveCookieAsync();
+                if (string.IsNullOrWhiteSpace(resolvedCookie))
+                {
+                    await Frontend.ShowMessageBox("No valid cookie found. Log in using account manager.", MessageBoxImage.Error);
+                    return;
+                }
+
+                var datacentersResult = await fetcher.GetDatacentersAsync();
+                if (datacentersResult == null) return;
+                var (_, dcMap) = datacentersResult.Value;
+
+                List<string> topRegions = await GetClosestRegionsForAutoModeAsync(bestRegionAmounts);
+                if (topRegions.Count == 0)
+                {
+                    await Frontend.ShowMessageBox("Could not determine your location.", MessageBoxImage.Warning);
+                    return;
+                }
+
+                var regionRank = new Dictionary<string, int>();
+                for (int i = 0; i < topRegions.Count; i++)
+                    regionRank[topRegions[i]] = i + 1;
+
+                string? nextCursor = "";
+                int serversChecked = 0;
+                const int maxAttempts = 50;
+
+                string? bestServerId = null;
+                int bestRank = int.MaxValue;
+                int bestPlayers = int.MaxValue;
+
+                while (serversChecked < maxServerCheck && serversChecked < maxAttempts)
+                {
+                    int sortOrder = joinSmallerServer ? 1 : 2;
+                    var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, sortOrder, resolvedCookie);
+                    if (result?.Servers == null || result.Servers.Count == 0)
+                    {
+                        if (string.IsNullOrEmpty(nextCursor)) break;
+                        await Task.Delay(500);
+                        continue;
+                    }
+
+                    foreach (var server in result.Servers)
+                    {
+                        if (serversChecked >= maxServerCheck) break;
+                        if (!server.DataCenterId.HasValue) continue;
+                        if (!dcMap.TryGetValue(server.DataCenterId.Value, out var serverRegion)) continue;
+                        if (server.Playing >= server.MaxPlayers) continue;
+                        serversChecked++;
+                        if (!regionRank.TryGetValue(serverRegion, out int rank)) continue;
+
+                        bool isBetter = false;
+                        if (rank < bestRank) isBetter = true;
+                        else if (rank == bestRank && joinSmallerServer && server.Playing < bestPlayers) isBetter = true;
+                        else if (rank == bestRank && !joinSmallerServer && server.Playing > bestPlayers) isBetter = true;
+
+                        if (isBetter)
+                        {
+                            bestRank = rank;
+                            bestPlayers = server.Playing;
+                            int bestMaxPlayers = server.MaxPlayers;
+                            bestServerId = server.Id;
+                            string? bestServerRegion = serverRegion;
+                            if (rank == 1) break;
+                        }
+                    }
+                    if (bestRank == 1 && bestServerId != null) break;
+                    if (!string.IsNullOrEmpty(result.NextCursor)) nextCursor = result.NextCursor;
+                    else break;
+                    await Task.Delay(200);
+                }
+
+                if (bestServerId != null)
+                {
+                    LaunchRoblox(placeId, bestServerId);
+                }
+                else
+                {
+                    await Frontend.ShowMessageBox("No suitable server found.", MessageBoxImage.Information);
+                }
+            }
+            finally
+            {
+                IsJoiningBestRegion = false;
+            }
+        }
+
+        private static async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
+        {
+            try
+            {
+                var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
+                if (string.IsNullOrEmpty(ipinfo?.Loc))
+                    return [];
+
+                string[] location = ipinfo.Loc.Split(',');
+                double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
+                double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
+
+                var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+                if (datacenters == null || datacenters.Count == 0)
+                    return [];
+
+                var regionDistance = new Dictionary<string, double>();
+
+                foreach (var dc in datacenters)
+                {
+                    if (dc.Location == null || dc.Location.LatLong == null || dc.Location.LatLong.Length < 2)
+                        continue;
+
+                    if (!double.TryParse(dc.Location.LatLong[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double lat) ||
+                        !double.TryParse(dc.Location.LatLong[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double lon))
+                        continue;
+
+                    double distance = GetDistance(userLat, userLon, lat, lon);
+                    string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
+
+                    if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
+                        regionDistance[regionKey] = distance;
+                }
+
+                var closestRegions = regionDistance
+                    .OrderBy(kvp => kvp.Value)
+                    .Take(topCount)
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+
+                App.Logger.WriteLine("QuickPlayViewModel", $"Top {closestRegions.Count} regions: {string.Join(", ", closestRegions)}");
+                return closestRegions;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteException("QuickPlayViewModel::GetClosestRegions", ex);
+                return [];
+            }
+        }
+
+        private static double Deg2Rad(double deg) => deg * Math.PI / 180.0;
+
+        private static double GetDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            const double R = 6371;
+            double dLat = Deg2Rad(lat2 - lat1);
+            double dLon = Deg2Rad(lon2 - lon1);
+            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                       Math.Cos(Deg2Rad(lat1)) * Math.Cos(Deg2Rad(lat2)) *
+                       Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return R * c;
+        }
+
+        private async void OnActiveAccountChanged(AccountManagerAccount? account)
+        {
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                IsLoading = true;
+                try
+                {
+                    _allHistory = LoadLocalHistory(_cachePath);
+                    await LoadLocalGamesIntoList();
+
+                    if (account != null)
+                    {
+                        await LoadApiGamesAndMerge();
+                        _ = RefreshApiGamesInBackground();
+                    }
+                    else
+                    {
+                    }
+                }
+                finally
+                {
+                    IsLoading = false;
+                }
+            });
+        }
+
+        private static void LaunchRoblox(long placeId, string? jobId = null, string? accessCode = null)
         {
             if (placeId == 0) return;
-            string url = string.IsNullOrEmpty(jobId)
-                ? $"roblox://experiences/start?placeId={placeId}"
-                : $"roblox://experiences/start?placeId={placeId}&gameInstanceId={jobId}";
-            Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+
+            string deeplink = $"roblox://experiences/start?placeId={placeId}";
+
+            if (!string.IsNullOrEmpty(accessCode))
+            {
+                deeplink += "&accessCode=" + Uri.EscapeDataString(accessCode);
+            }
+            else if (!string.IsNullOrEmpty(jobId))
+            {
+                deeplink += "&gameInstanceId=" + Uri.EscapeDataString(jobId);
+            }
+
+            Process.Start(new ProcessStartInfo(deeplink) { UseShellExecute = true });
         }
     }
 }

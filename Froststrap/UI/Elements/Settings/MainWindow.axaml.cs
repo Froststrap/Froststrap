@@ -11,7 +11,9 @@ using FluentAvalonia.UI.Controls;
 using Froststrap.UI.Elements.Controls;
 using Froststrap.UI.Utility;
 using Froststrap.UI.ViewModels.Settings;
+using Froststrap.UI.ViewModels.Settings.Mods;
 using System.ComponentModel;
+using Symbol = FluentIcons.Common.Symbol;
 
 namespace Froststrap.UI.Elements.Settings
 {
@@ -21,6 +23,8 @@ namespace Froststrap.UI.Elements.Settings
 
         private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
         private readonly MainWindowViewModel? _viewModel;
+
+        private readonly Dictionary<string, Control> _cachedPages = [];
 
         public MainWindow()
         {
@@ -71,8 +75,6 @@ namespace Froststrap.UI.Elements.Settings
 
             this.Closing += MainWindow_Closing;
             this.Closed += MainWindow_Closed;
-
-            App.WindowsBackdrop();
 
             UpdatePageView(_viewModel.CurrentPage);
 
@@ -135,12 +137,44 @@ namespace Froststrap.UI.Elements.Settings
             };
         }
 
+        private readonly Dictionary<string, (string Title, Symbol Icon)> _pageInfo = new()
+        {
+            ["integrations"] = ("Integrations", Symbol.Link),
+            ["behaviour"] = ("Behaviour", Symbol.PlaySettings),
+            ["sobersettings"] = ("Sober Settings", Symbol.Settings),
+            ["mods"] = ("Preset Mods", Symbol.PuzzlePiece),
+            ["fastflags"] = ("Fast Flags", Symbol.Flag),
+            ["appearance"] = ("Appearance", Symbol.Color),
+            ["regionselector"] = ("Region Selector", Symbol.Earth),
+            ["globalsettings"] = ("Global Settings", Symbol.EditSettings),
+            ["shortcuts"] = ("Shortcuts", Symbol.Link),
+            ["quickplay"] = ("Quick Play", Symbol.Replay),
+            ["channels"] = ("Channels", Symbol.CloudArrowUp),
+        };
+
         private void UpdatePageView(object? viewModel)
         {
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
             if (pageControl == null || viewModel == null) return;
 
-            var view = ResolveViewForViewModel(viewModel);
+            bool shouldReinitialize = viewModel is AppearanceViewModel || viewModel is ModsViewModel;
+
+            string pageTag = _viewModel?.SelectedPage ?? "";
+            Control? view = null;
+
+            if (!shouldReinitialize && !string.IsNullOrEmpty(pageTag) && _cachedPages.TryGetValue(pageTag, out var cachedView))
+            {
+                view = cachedView;
+            }
+            else
+            {
+                view = ResolveViewForViewModel(viewModel);
+
+                if (view != null && !shouldReinitialize && !string.IsNullOrEmpty(pageTag))
+                {
+                    _cachedPages[pageTag] = view;
+                }
+            }
 
             if (view != null)
             {
@@ -149,8 +183,10 @@ namespace Froststrap.UI.Elements.Settings
 
                 Dispatcher.UIThread.Post(() =>
                 {
-                    var pageTag = _viewModel?.SelectedPage ?? "";
-                    IndexPage(view, pageTag);
+                    if (!string.IsNullOrEmpty(pageTag) && _pageInfo.TryGetValue(pageTag, out var info))
+                    {
+                        IndexPage(view, pageTag, info.Title, info.Icon);
+                    }
 
                     if (_pendingSearchScrollItem != null)
                     {
@@ -442,6 +478,11 @@ namespace Froststrap.UI.Elements.Settings
                 ("channels", "Channels", new ChannelViewModel()),
             };
 
+            if (!_viewModel.GBSEnabled)
+                pages.RemoveAll(p => p.PageTag == "globalsettings");
+            if (!_viewModel.SoberEnabled)
+                pages.RemoveAll(p => p.PageTag == "sobersettings");
+
             var searchIndex = _searchIndexBuilder.BuildIndex(pages);
 
             var navigationActions = new Dictionary<string, Action>
@@ -483,7 +524,7 @@ namespace Froststrap.UI.Elements.Settings
 
             stagingArea.IsVisible = true;
 
-            foreach (var (pageTag, _, pageViewModel) in pages)
+            foreach (var (pageTag, pageTitle, pageViewModel) in pages)
             {
                 try
                 {
@@ -496,7 +537,8 @@ namespace Froststrap.UI.Elements.Settings
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Render);
                     await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
 
-                    IndexPage(view, pageTag);
+                    var (_, icon) = _pageInfo[pageTag];
+                    IndexPage(view, pageTag, pageTitle, icon);
 
                     stagingArea.Child = null;
 
@@ -512,7 +554,7 @@ namespace Froststrap.UI.Elements.Settings
             stagingArea.IsVisible = false;
         }
 
-        private void IndexPage(Control pageView, string pageTag)
+        private void IndexPage(Control pageView, string pageTag, string pageTitle, Symbol pageIcon)
         {
             if (_viewModel == null || _searchIndexBuilder == null) return;
 
@@ -522,6 +564,12 @@ namespace Froststrap.UI.Elements.Settings
 
                 if (addedItems.Count > 0)
                 {
+                    foreach (var item in addedItems)
+                    {
+                        item.PageName = pageTitle;
+                        item.IconSymbol = pageIcon;
+                    }
+
                     var hiddenControlHeaders = pageView.GetVisualDescendants()
                         .Where(c => !c.IsVisible)
                         .Select(c => {

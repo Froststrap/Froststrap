@@ -4,7 +4,7 @@ using Froststrap.UI.Utility;
 
 namespace Froststrap.UI.Elements.Bootstrapper.Base
 {
-    public class AvaloniaDialogBase : Locale.LocaleAwareWindow, IBootstrapperDialog
+    public class AvaloniaDialogBase : Window, IBootstrapperDialog
     {
         public const int TaskbarProgressMaximum = 100;
         public Froststrap.Bootstrapper? Bootstrapper { get; set; }

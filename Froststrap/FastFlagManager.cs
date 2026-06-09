@@ -214,41 +214,29 @@ namespace Froststrap
             try
             {
                 if (!App.SoberSettings.Loaded)
-                {
                     App.SoberSettings.Load(alertFailure: false);
-                }
 
-                App.SoberSettings.Prop.FFlags ??= [];
+                var fflagsDict = App.SoberSettings.GetOrCreateFFlagsContainer();
 
                 foreach (var kvp in Prop)
                 {
                     string val = kvp.Value?.ToString() ?? "";
-
                     if (bool.TryParse(val, out bool boolResult))
-                    {
-                        App.SoberSettings.Prop.FFlags[kvp.Key] = boolResult;
-                    }
+                        fflagsDict[kvp.Key] = boolResult;
                     else if (long.TryParse(val, out long longResult))
-                    {
-                        App.SoberSettings.Prop.FFlags[kvp.Key] = longResult;
-                    }
-                    else if (double.TryParse(val, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out double doubleResult))
-                    {
-                        App.SoberSettings.Prop.FFlags[kvp.Key] = doubleResult;
-                    }
+                        fflagsDict[kvp.Key] = longResult;
+                    else if (double.TryParse(val, NumberStyles.Float, CultureInfo.InvariantCulture, out double doubleResult))
+                        fflagsDict[kvp.Key] = doubleResult;
                     else
-                    {
-                        App.SoberSettings.Prop.FFlags[kvp.Key] = val;
-                    }
+                        fflagsDict[kvp.Key] = val;
                 }
 
                 App.SoberSettings.Save();
-
-                App.Logger.WriteLine(LOG_IDENT, $"Successfully synchronized and saved {App.SoberSettings.Prop.FFlags.Count} fflags to SoberSettings.");
+                App.Logger.WriteLine(LOG_IDENT, $"Successfully synced {fflagsDict.Count} flags.");
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Failed to sync fflags into App.SoberSettings configuration.");
+                App.Logger.WriteLine(LOG_IDENT, "Failed to sync flags.");
                 App.Logger.WriteException(LOG_IDENT, ex);
             }
         }

@@ -4,44 +4,44 @@
     {
         public static bool SoberAllowGamepadPermission
         {
-            get => App.SoberSettings.Prop.AllowGamepadPermission;
-            set => App.SoberSettings.Prop.AllowGamepadPermission = value;
+            get => App.SoberSettings.GetPreset("AllowGamepadPermission") == "true";
+            set => App.SoberSettings.SetPreset("AllowGamepadPermission", value);
         }
 
         public static bool SoberEnableGamemode
         {
-            get => App.SoberSettings.Prop.EnableGamemode;
-            set => App.SoberSettings.Prop.EnableGamemode = value;
+            get => App.SoberSettings.GetPreset("EnableGamemode") == "true";
+            set => App.SoberSettings.SetPreset("EnableGamemode", value);
         }
 
         public static bool SoberEnableHiDpi
         {
-            get => App.SoberSettings.Prop.EnableHiDpi;
-            set => App.SoberSettings.Prop.EnableHiDpi = value;
+            get => App.SoberSettings.GetPreset("EnableHiDpi") == "true";
+            set => App.SoberSettings.SetPreset("EnableHiDpi", value);
         }
 
         public static bool SoberTouchMode
         {
-            get => App.SoberSettings.Prop.TouchMode == "on";
-            set => App.SoberSettings.Prop.TouchMode = value ? "on" : "off";
+            get => App.SoberSettings.GetPreset("TouchMode") == "on";
+            set => App.SoberSettings.SetPreset("TouchMode", value ? "on" : "off");
         }
 
         public static bool SoberUseConsoleExperience
         {
-            get => App.SoberSettings.Prop.UseConsoleExperience;
-            set => App.SoberSettings.Prop.UseConsoleExperience = value;
+            get => App.SoberSettings.GetPreset("UseConsoleExperience") == "true";
+            set => App.SoberSettings.SetPreset("UseConsoleExperience", value);
         }
 
         public static bool SoberUseLibsecret
         {
-            get => App.SoberSettings.Prop.UseLibsecret;
-            set => App.SoberSettings.Prop.UseLibsecret = value;
+            get => App.SoberSettings.GetPreset("UseLibsecret") == "true";
+            set => App.SoberSettings.SetPreset("UseLibsecret", value);
         }
 
         public static bool SoberUseOpengl
         {
-            get => App.SoberSettings.Prop.UseOpengl;
-            set => App.SoberSettings.Prop.UseOpengl = value;
+            get => App.SoberSettings.GetPreset("UseOpengl") == "true";
+            set => App.SoberSettings.SetPreset("UseOpengl", value);
         }
     }
 }
