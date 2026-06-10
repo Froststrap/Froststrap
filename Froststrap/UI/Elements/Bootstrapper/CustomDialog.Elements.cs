@@ -123,7 +123,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             {
                 try
                 {
-                    imageBrush.Source = new Bitmap(sourceData.Uri!.LocalPath);
+                    imageBrush.Source = new Bitmap(sourceData.Path!);
                 }
                 catch (Exception ex)
                 {
@@ -561,13 +561,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
             {
                 image.Bind(Image.SourceProperty, new Binding("Icon"));
             }
-            else if (imageData.Uri != null)
+            else if (imageData.Path != null)
             {
                 bool isAnimated = ParseXmlAttribute<bool>(xmlElement, "IsAnimated", false);
 
                 if (isAnimated)
                 {
-                    var bytes = File.ReadAllBytes(imageData.Uri.LocalPath);
+                    var bytes = File.ReadAllBytes(imageData.Path);
                     var memoryStream = new MemoryStream(bytes);
 
                     var bitmap = new Bitmap(memoryStream);
@@ -586,7 +586,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 }
                 else
                 {
-                    image.Source = new Bitmap(imageData.Uri.LocalPath);
+                    image.Source = new Bitmap(imageData.Path);
                 }
             }
 

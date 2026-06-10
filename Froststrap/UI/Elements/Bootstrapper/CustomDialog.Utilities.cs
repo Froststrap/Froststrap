@@ -10,7 +10,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private struct GetImageSourceDataResult
         {
             public bool IsIcon = false;
-            public Uri? Uri = null;
+            public string? Path = null;
 
             public GetImageSourceDataResult() { }
         }
@@ -134,7 +134,45 @@ namespace Froststrap.UI.Elements.Bootstrapper
         private static string? GetFullPath(CustomDialog dialog, string? sourcePath)
         {
             if (sourcePath == null) return null;
-            return sourcePath.Replace("theme://", $"{dialog.ThemeDir}\\");
+
+            if (sourcePath.StartsWith("file://"))
+            {
+                string pathWithoutFile = sourcePath.Substring("file://".Length);
+
+                if (pathWithoutFile.StartsWith("/"))
+                    pathWithoutFile = pathWithoutFile.Substring(1);
+
+                pathWithoutFile = Environment.ExpandEnvironmentVariables(pathWithoutFile);
+
+
+                if (File.Exists(pathWithoutFile))
+                    return pathWithoutFile;
+
+                string absolutePath = Path.GetFullPath(pathWithoutFile);
+                return absolutePath;
+            }
+
+            if (sourcePath.StartsWith("theme://"))
+            {
+                string relativePath = sourcePath.Substring("theme://".Length);
+                string fullPath = Path.Combine(dialog.ThemeDir, relativePath);
+                fullPath = Environment.ExpandEnvironmentVariables(fullPath);
+                string normalized = Path.GetFullPath(fullPath);
+
+                return normalized;
+            }
+
+            string normalizedPath = sourcePath.Replace('\\', Path.DirectorySeparatorChar);
+            normalizedPath = Environment.ExpandEnvironmentVariables(normalizedPath);
+
+            if (Path.IsPathRooted(normalizedPath))
+                return normalizedPath;
+
+            string themePath = Path.Combine(dialog.ThemeDir, normalizedPath);
+            themePath = Environment.ExpandEnvironmentVariables(themePath);
+            string finalPath = Path.GetFullPath(themePath);
+
+            return finalPath;
         }
 
         private static GetImageSourceDataResult GetImageSourceData(CustomDialog dialog, string name, XElement xmlElement)
@@ -145,10 +183,10 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
             path = GetFullPath(dialog, path)!;
 
-            if (!Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out Uri? result))
-                throw new CustomThemeException("CustomTheme.Errors.ElementAttributeParseError", xmlElement.Name.ToString(), name, "Uri");
+            if (!File.Exists(path))
+                throw new CustomThemeException("CustomTheme.Errors.FileNotFound", path);
 
-            return new GetImageSourceDataResult { Uri = result };
+            return new GetImageSourceDataResult { Path = path };
         }
 
         private static object? GetContentFromXElement(CustomDialog dialog, XElement xmlElement)

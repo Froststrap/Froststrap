@@ -144,8 +144,7 @@
                                                Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Title}"
                                                Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Description}">
                             <Grid MinHeight="300" MaxHeight="500" Margin="-8,4,-8,0" RowDefinitions="340,Auto" ColumnDefinitions="250,*">
-                                <ListBox x:Name="CustomThemesListBox"
-                                         Grid.Row="0"
+                                <ListBox Grid.Row="0"
                                          Grid.Column="0"
                                          Margin="0,0,4,0"
                                          ItemsSource="{Binding CustomCursorSets}"
