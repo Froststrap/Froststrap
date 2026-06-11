@@ -109,7 +109,7 @@ namespace Froststrap.Integrations
             }
         }
 
-        public static async Task RecolorFontsAsync(string froststrapTemp, Color solidColor, string modName, string? gradientStops = null, double? angle = null, string? imageMap = null)
+        public static async Task RecolorFontsAsync(string froststrapTemp, Color solidColor, string modName, string? gradientStops = null, double? angle = null, string? imageMap = null, int? bands = null)
         {
             string fontDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
             if (!Directory.Exists(fontDir)) return;
@@ -123,6 +123,9 @@ namespace Froststrap.Integrations
 
             if (!string.IsNullOrEmpty(imageMap))
                 args += $" --image-map \"{imageMap}\"";
+
+            if (bands.HasValue && bands.Value > 0)
+                args += $" --bands {bands.Value}";
 
             App.Logger.WriteLine("RecolorFontsAsync", $"Recolor Args: {args}");
 

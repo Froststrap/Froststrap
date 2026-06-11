@@ -171,6 +171,21 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             get => _robloxIconImagePath;
             set => SetProperty(ref _robloxIconImagePath, value);
         }
+
+        private int _gradientBands = 8;
+        public int GradientBands
+        {
+            get => _gradientBands;
+            set
+            {
+                if (value < 0) value = 0;
+                if (value > 64) value = 64;
+                if (SetProperty(ref _gradientBands, value))
+                {
+                    GenerateModCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
         #endregion
 
         public Color SelectedMediaColor
@@ -423,7 +438,9 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (!string.IsNullOrWhiteSpace(RobloxIconImagePath) && File.Exists(RobloxIconImagePath))
                         imageMapArg = $"tilt:{RobloxIconImagePath}";
 
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg, imageMapArg);
+                    int? bandsArg = GradientBands > 0 ? GradientBands : (int?)null;
+
+                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg, imageMapArg, bandsArg);
 
                     WriteBuilderIconsJson(TempRoot);
 

@@ -146,12 +146,21 @@
                                    Text="Mod Options"
                                    Margin="0,0,0,8"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
-                        <StackPanel Orientation="Horizontal">
+                        <WrapPanel Orientation="Horizontal">
                             <CheckBox Content="Apply to Cursors" IsChecked="{Binding ColorCursors}" Margin="4,0"/>
                             <CheckBox Content="Apply to Shiftlock" IsChecked="{Binding ColorShiftlock}" Margin="4,0"/>
                             <CheckBox Content="Apply to Emote Wheel" IsChecked="{Binding ColorEmoteWheel}" Margin="4,0"/>
                             <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="4,0"/>
-                        </StackPanel>
+                            <TextBlock Text="Bands:" VerticalAlignment="Center" ToolTip.Tip="The higher the number, the higher quality but it takes longer, Default value is 8." Margin="4,0" />
+                            <NumericUpDown Value="{Binding GradientBands}"
+                                           Width="100"
+                                           Minimum="0"
+                                           Maximum="64"
+                                           Watermark="8"
+                                           ToolTip.Tip="The higher the number, the higher quality but it takes longer, Default value is 8."
+                                           VerticalAlignment="Center"
+                                           Margin="4,0"/>
+                        </WrapPanel>
 
                         <TextBlock Text="Roblox Icon (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
                         <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
