@@ -17,38 +17,39 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
     public partial class ModGeneratorPage : UserControl
     {
-        private bool _navigationSetUp = false;
+        private ModGeneratorDialogService? _dialogService;
 
         public ModGeneratorPage()
         {
             InitializeComponent();
             App.FrostRPC?.SetPage("Mod Generator");
-            this.Loaded += (s, e) => SetupNavigationIfNeeded();
+            this.DataContextChanged += OnDataContextChanged;
         }
 
-        private void SetupNavigationIfNeeded()
+        private void OnDataContextChanged(object? sender, EventArgs e)
         {
-            if (_navigationSetUp) return;
+            if (DataContext is not ModGeneratorViewModel viewModel) return;
 
-            try
-            {
-                var topLevel = TopLevel.GetTopLevel(this);
+            viewModel.OpenCommunityModsEvent -= OnOpenCommunityMods;
+            viewModel.OpenPresetModsEvent -= OnOpenPresetMods;
+            viewModel.OpenModsEvent -= OnOpenMods;
 
-                if (topLevel?.DataContext is MainWindowViewModel mainVm && DataContext is ModGeneratorViewModel genVm)
-                {
-                    var service = new ModGeneratorDialogService(mainVm);
+            viewModel.OpenCommunityModsEvent += OnOpenCommunityMods;
+            viewModel.OpenPresetModsEvent += OnOpenPresetMods;
+            viewModel.OpenModsEvent += OnOpenMods;
+        }
 
-                    genVm.OpenCommunityModsEvent += (s, e) => service.OpenCommunityMods();
-                    genVm.OpenPresetModsEvent += (s, e) => service.OpenPresetMods();
-                    genVm.OpenModsEvent += (s, e) => service.OpenMyMods();
+        private void OnOpenCommunityMods(object? sender, EventArgs e) => EnsureDialogService()?.OpenCommunityMods();
+        private void OnOpenPresetMods(object? sender, EventArgs e) => EnsureDialogService()?.OpenPresetMods();
+        private void OnOpenMods(object? sender, EventArgs e) => EnsureDialogService()?.OpenMyMods();
 
-                    _navigationSetUp = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException("ModGeneratorPage::SetupNavigation", ex);
-            }
+        private ModGeneratorDialogService? EnsureDialogService()
+        {
+            if (_dialogService != null) return _dialogService;
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.DataContext is MainWindowViewModel mainVm)
+                _dialogService = new ModGeneratorDialogService(mainVm);
+            return _dialogService;
         }
     }
 }

@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 using Froststrap.UI.ViewModels.Settings;
 
 namespace Froststrap.UI.Elements.Settings.Pages
@@ -9,50 +8,51 @@ namespace Froststrap.UI.Elements.Settings.Pages
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
 
         public void OpenCommunityMods() => _mainVm.NavigateToCommunityModsCommand.Execute(null);
-
         public void OpenMods() => _mainVm.NavigateToMyModsCommand.Execute(null);
-
         public void OpenModGenerator() => _mainVm.NavigateToModGeneratorCommand.Execute(null);
     }
 
     public partial class ModsPresetsPage : UserControl
     {
-        private bool _navigationSetUp = false;
+        private PresetModsDialogService? _dialogService;
 
         public ModsPresetsPage()
         {
             InitializeComponent();
             App.FrostRPC?.SetPage("Preset Mods");
+            this.DataContextChanged += OnDataContextChanged;
         }
 
-        protected override void OnLoaded(RoutedEventArgs e)
+        private void OnDataContextChanged(object? sender, EventArgs e)
         {
-            base.OnLoaded(e);
-            SetupNavigationIfNeeded();
+            if (DataContext is not ModsPresetsViewModel viewModel)
+                return;
+
+            viewModel.OpenCommunityModsEvent -= OnOpenCommunityMods;
+            viewModel.OpenModsEvent -= OnOpenMods;
+            viewModel.OpenModGeneratorEvent -= OnOpenModGenerator;
+
+            viewModel.OpenCommunityModsEvent += OnOpenCommunityMods;
+            viewModel.OpenModsEvent += OnOpenMods;
+            viewModel.OpenModGeneratorEvent += OnOpenModGenerator;
         }
 
-        private void SetupNavigationIfNeeded()
+        private void OnOpenCommunityMods(object? sender, EventArgs e) => EnsureDialogService()?.OpenCommunityMods();
+        private void OnOpenMods(object? sender, EventArgs e) => EnsureDialogService()?.OpenMods();
+        private void OnOpenModGenerator(object? sender, EventArgs e) => EnsureDialogService()?.OpenModGenerator();
+
+        private PresetModsDialogService? EnsureDialogService()
         {
-            if (_navigationSetUp) return;
+            if (_dialogService != null) return _dialogService;
 
-            try
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel?.DataContext is MainWindowViewModel mainVm)
             {
-                var topLevel = TopLevel.GetTopLevel(this);
-                if (topLevel?.DataContext is MainWindowViewModel mainVm && DataContext is ModsPresetsViewModel modsVm)
-                {
-                    var service = new PresetModsDialogService(mainVm);
-
-                    modsVm.OpenCommunityModsEvent += (s, e) => service.OpenCommunityMods();
-                    modsVm.OpenModsEvent += (s, e) => service.OpenMods();
-                    modsVm.OpenModGeneratorEvent += (s, e) => service.OpenModGenerator();
-
-                    _navigationSetUp = true;
-                }
+                _dialogService = new PresetModsDialogService(mainVm);
+                return _dialogService;
             }
-            catch (Exception ex)
-            {
-                App.Logger?.WriteException("ModsPresetsPage::SetupNavigation", ex);
-            }
+
+            return null;
         }
     }
 }

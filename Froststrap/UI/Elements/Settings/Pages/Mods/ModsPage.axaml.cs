@@ -108,9 +108,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
                     bool success = viewModel.RenameMod(_originalName, textBox.Text ?? "");
 
                     if (!success)
-                    {
                         textBox.Text = _originalName;
-                    }
                 }
             }
         }
@@ -127,9 +125,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
                     .ToArray();
 
                 if (paths.Length > 0)
-                {
                     await Task.Run(() => vm.ProcessDroppedFiles(paths!));
-                }
             }
         }
     }
