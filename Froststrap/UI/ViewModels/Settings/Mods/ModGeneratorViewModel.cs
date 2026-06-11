@@ -133,6 +133,31 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     OnSelectedFontChanged();
             }
         }
+
+        private string _modFolderName = "";
+        public string ModFolderName
+        {
+            get => _modFolderName;
+            set
+            {
+                if (SetProperty(ref _modFolderName, value))
+                {
+                    ValidateFolderName();
+                    GenerateModCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
+
+        private string _folderNameValidationError = "";
+        public string FolderNameValidationError
+        {
+            get => _folderNameValidationError;
+            set
+            {
+                if (SetProperty(ref _folderNameValidationError, value))
+                    OnPropertyChanged(nameof(HasFolderNameValidationError));
+            }
+        }
         #endregion
 
         public Color SelectedMediaColor
@@ -153,8 +178,22 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private bool CanGenerateMod()
         {
-            return IsNotGeneratingMod && GradientStops.All(s => IsValidHexColor(s.Color));
+            if (!IsNotGeneratingMod) return false;
+            if (!GradientStops.All(s => IsValidHexColor(s.Color))) return false;
+
+            if (IncludeModifications)
+            {
+                if (string.IsNullOrWhiteSpace(ModFolderName))
+                    return true;
+                else
+                    return string.IsNullOrEmpty(FolderNameValidationError);
+            }
+            return true;
         }
+
+        public static string SuggestedFolderName => GetNextAvailableModFolderName();
+
+        public bool HasFolderNameValidationError => !string.IsNullOrEmpty(FolderNameValidationError);
 
         private static string TempRoot => Path.Combine(Path.GetTempPath(), "Froststrap");
 
@@ -243,6 +282,45 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
         }
 
+        private void ValidateFolderName()
+        {
+            if (string.IsNullOrWhiteSpace(ModFolderName))
+            {
+                FolderNameValidationError = "";
+                return;
+            }
+
+            if (ModFolderName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+            {
+                FolderNameValidationError = "Folder name contains invalid characters.";
+                return;
+            }
+
+            string fullPath = Path.Combine(Paths.ModificationsProfiles, ModFolderName);
+            if (Directory.Exists(fullPath))
+                FolderNameValidationError = "A mod with this name already exists. Choose another name.";
+            else
+                FolderNameValidationError = "";
+        }
+
+        private static string GetNextAvailableModFolderName()
+        {
+            string baseName = "Generated Mod";
+            string folder = Path.Combine(Paths.ModificationsProfiles, baseName);
+            if (!Directory.Exists(folder))
+                return baseName;
+
+            int counter = 1;
+            while (true)
+            {
+                string candidate = $"{baseName} {counter}";
+                folder = Path.Combine(Paths.ModificationsProfiles, candidate);
+                if (!Directory.Exists(folder))
+                    return candidate;
+                counter++;
+            }
+        }
+
         private IBrush CreateGradientBrush()
         {
             if (!IsGradientMode || GradientStops.Count < 2)
@@ -302,7 +380,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
                     string contentDir = Path.Combine(TempRoot, "content", "textures");
 
-                    // Use a temporary folder name during processing (can be anything)
                     string tempFolderName = SolidColorHex;
 
                     Parallel.Invoke(
@@ -325,8 +402,9 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         angleArg = GradientAngle;
                     }
 
-                    // Generate a unique mod folder name like "Generated Mod", "Generated Mod 1", etc.
-                    string modFolderName = GenerateUniqueModFolderName();
+                    string modFolderName = string.IsNullOrWhiteSpace(ModFolderName)
+                        ? GetNextAvailableModFolderName()
+                        : ModFolderName;
                     await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg);
 
                     WriteBuilderIconsJson(TempRoot);
@@ -463,24 +541,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 IsNotGeneratingMod = true;
                 IsProgressVisible = false;
                 Progress = 0;
-            }
-        }
-
-        private static string GenerateUniqueModFolderName()
-        {
-            string baseName = "Generated Mod";
-            string folder = Path.Combine(Paths.ModificationsProfiles, baseName);
-            if (!Directory.Exists(folder))
-                return baseName;
-
-            int counter = 1;
-            while (true)
-            {
-                string candidate = $"{baseName} {counter}";
-                folder = Path.Combine(Paths.ModificationsProfiles, candidate);
-                if (!Directory.Exists(folder))
-                    return candidate;
-                counter++;
             }
         }
 

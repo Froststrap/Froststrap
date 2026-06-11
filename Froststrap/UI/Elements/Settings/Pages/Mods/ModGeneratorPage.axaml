@@ -153,6 +153,15 @@
                             <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="4,0"/>
                         </StackPanel>
 
+                        <TextBox Text="{Binding ModFolderName, UpdateSourceTrigger=PropertyChanged}"
+                                 Watermark="{Binding SuggestedFolderName}"
+                                 IsEnabled="{Binding IncludeModifications}"
+                                 Margin="0,8,0,4"/>
+                        <TextBlock Text="{Binding FolderNameValidationError}"
+                                   FontSize="12"
+                                   IsVisible="{Binding HasFolderNameValidationError}"
+                                   Margin="0,0,0,8"/>
+
                         <Separator Margin="0,12"/>
 
                         <Button Command="{Binding GenerateModCommand}"
