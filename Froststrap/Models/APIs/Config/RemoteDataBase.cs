@@ -1,4 +1,3 @@
-using Avalonia.Controls.Notifications;
 using FluentAvalonia.UI.Controls;
 
 namespace Froststrap.Models.APIs.Config

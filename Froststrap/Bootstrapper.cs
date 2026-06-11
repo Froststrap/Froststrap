@@ -4018,50 +4018,61 @@ Windows Registry Editor Version 5.00
                 enabledBitmap.Save(Path.Combine(idsPath, "enabled.png"));
             }
 
+			var fileRestoreMap = new Dictionary<string, List<string>>();
 
-            var fileRestoreMap = new Dictionary<string, List<string>>();
+			foreach (string fileLocation in AppData.DistributionState.ModManifest)
+			{
+				if (currentModManifest.ContainsKey(fileLocation))
+					continue;
 
-            foreach (var fileLocation in AppData.DistributionState.ModManifest)
-            {
-                if (currentModManifest.ContainsKey(fileLocation))
-                    continue;
+				string actualFile = fileLocation;
+				string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
 
-                string targetFile = fileLocation;
-                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+				if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
+				{
+					if (OperatingSystem.IsLinux() && !IsStudioLaunch)
+						continue;
 
-                if (fileNameWithoutExt.EndsWith("_Delete"))
-                {
-                    if (OperatingSystem.IsLinux() && !IsStudioLaunch)
-                        continue;
+					string directory = Path.GetDirectoryName(fileLocation) ?? "";
+					string originalName = fileNameWithoutExt[..^7];
+					actualFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
+				}
 
-                    string directory = Path.GetDirectoryName(fileLocation) ?? "";
-                    string originalName = fileNameWithoutExt[..^7];
-                    targetFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
-                }
+				string? packageName = null;
+				string? packageDir = null;
 
-                if (!PackageDirectoryMap.TryGetValue(targetFile.Split(Path.DirectorySeparatorChar)[0], out string? packageDir) || string.IsNullOrEmpty(packageDir))
-                {
-                    string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
-                    if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
-                    continue;
-                }
+				foreach (var kvp in PackageDirectoryMap)
+				{
+					if (!string.IsNullOrEmpty(kvp.Value) && actualFile.StartsWith(kvp.Value, StringComparison.OrdinalIgnoreCase))
+					{
+						packageName = kvp.Key;
+						packageDir = kvp.Value;
+						break;
+					}
+				}
 
-                string packageName = PackageDirectoryMap.FirstOrDefault(x => !string.IsNullOrEmpty(x.Value) && targetFile.StartsWith(x.Value, StringComparison.OrdinalIgnoreCase)).Key;
-                if (string.IsNullOrEmpty(packageName))
-                {
-                    string versionFileLocation = Path.Combine(_latestVersionDirectory, targetFile);
-                    if (File.Exists(versionFileLocation)) File.Delete(versionFileLocation);
-                    continue;
-                }
+				if (string.IsNullOrEmpty(packageName) || string.IsNullOrEmpty(packageDir))
+				{
+					string versionFileLocation = Path.Combine(_latestVersionDirectory, actualFile);
+					if (File.Exists(versionFileLocation))
+					{
+						Filesystem.AssertReadOnly(versionFileLocation);
+						File.Delete(versionFileLocation);
+						App.Logger.WriteLine(LOG_IDENT, $"Deleted orphaned file {actualFile}");
+					}
+					continue;
+				}
 
-                if (!fileRestoreMap.ContainsKey(packageName))
-                    fileRestoreMap[packageName] = [];
+				string internalZipPath = actualFile[packageDir.Length..].TrimStart(Path.DirectorySeparatorChar);
 
-                string internalZipPath = targetFile[packageDir.Length..].TrimStart(Path.DirectorySeparatorChar);
-                fileRestoreMap[packageName].Add(internalZipPath);
-            }
+				if (!fileRestoreMap.ContainsKey(packageName))
+					fileRestoreMap[packageName] = [];
 
-            if (!OperatingSystem.IsLinux())
+				fileRestoreMap[packageName].Add(internalZipPath);
+				App.Logger.WriteLine(LOG_IDENT, $"Will restore '{internalZipPath}' from package {packageName} (actualFile='{actualFile}', packageDir='{packageDir}')");
+			}
+
+			if (!OperatingSystem.IsLinux())
             {
                 foreach (var entry in fileRestoreMap)
                 {
@@ -4084,7 +4095,7 @@ Windows Registry Editor Version 5.00
             return success;
         }
 
-		private void SyncUnregisteredModFolders()
+		private static void SyncUnregisteredModFolders()
 		{
 			const string LOG_IDENT = "Bootstrapper::SyncUnregisteredModFolders";
 
@@ -4303,118 +4314,92 @@ Windows Registry Editor Version 5.00
             }
         }
 
-        private async Task<bool> ExtractPackage(Package package, List<string>? files = null)
-        {
-            const string LOG_IDENT = "Bootstrapper::ExtractPackage";
-            int attempts = 0;
-            const int maxAttempts = 3;
+		private async Task<bool> ExtractPackage(Package package, List<string>? files = null)
+		{
+			const string LOG_IDENT = "Bootstrapper::ExtractPackage";
+			int attempts = 0;
+			const int maxAttempts = 3;
 
-            while (attempts < maxAttempts)
-            {
-                try
-                {
-                    attempts++;
+			while (attempts < maxAttempts)
+			{
+				try
+				{
+					attempts++;
 
-                    string packageFolder = _latestVersionDirectory;
-                    if (!OperatingSystem.IsMacOS())
-                    {
-                        string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-                        if (packageDir is null)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} was not found in the package map, skipping.");
-                            return true;
-                        }
-                        packageFolder = Path.Combine(_latestVersionDirectory, packageDir);
-                    }
+					string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
+					if (packageDir is null)
+					{
+						App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} not found in package map, skipping.");
+						return true;
+					}
 
-                    string? fileFilter = null;
-                    if (files is not null)
-                    {
-                        var regexList = new List<string>();
-                        foreach (string file in files)
-                            regexList.Add("^" + file.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)") + "$");
-                        fileFilter = string.Join(';', regexList);
-                    }
+					string targetFolder = Path.Combine(_latestVersionDirectory, packageDir);
+					Directory.CreateDirectory(targetFolder);
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
+					if (files != null && files.Count > 0)
+					{
+						foreach (string relativePath in files)
+						{
+							string fullPath = Path.Combine(targetFolder, relativePath);
+							if (File.Exists(fullPath))
+								File.SetAttributes(fullPath, FileAttributes.Normal);
+						}
+					}
+					else
+					{
+						if (Directory.Exists(targetFolder))
+						{
+							foreach (string file in Directory.GetFiles(targetFolder, "*", SearchOption.AllDirectories))
+								File.SetAttributes(file, FileAttributes.Normal);
+						}
+					}
 
-                    // Use custom extraction that transforms backslashes to forward slashes
-                    ExtractZipWithTransform(package.DownloadPath, packageFolder, fileFilter);
+					string? fileFilter = null;
+					if (files != null && files.Count > 0)
+					{
+						var regexList = new List<string>();
+						foreach (string file in files)
+							regexList.Add("^" + Regex.Escape(file) + "$");
+						fileFilter = string.Join(';', regexList);
+					}
 
-                    App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Extraction failed on attempt {attempts}: {ex.Message}");
+					App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
+					var fastZip = new FastZip(_fastZipEvents);
+					fastZip.ExtractZip(package.DownloadPath, targetFolder, fileFilter);
+					App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
+					return true;
+				}
+				catch (Exception ex)
+				{
+					App.Logger.WriteLine(LOG_IDENT, $"Extraction failed on attempt {attempts}: {ex.Message}");
 
-                    if (ex.Message.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, $"Ignoring non-critical extraction failure for font file: {ex.Message}");
-                        return true;
-                    }
+					if (ex.Message.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+					{
+						App.Logger.WriteLine(LOG_IDENT, $"Ignoring non‑critical extraction failure for font file.");
+						return true;
+					}
 
-                    if (File.Exists(package.DownloadPath))
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Deleting corrupted package for retry...");
-                        File.Delete(package.DownloadPath);
-                    }
+					if (File.Exists(package.DownloadPath))
+					{
+						App.Logger.WriteLine(LOG_IDENT, "Deleting corrupted package for retry...");
+						File.Delete(package.DownloadPath);
+					}
 
-                    if (attempts >= maxAttempts)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Giving up.");
-                        return false;
-                    }
+					if (attempts >= maxAttempts)
+					{
+						App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Giving up.");
+						return false;
+					}
 
-                    App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
-                    SetStatus($"Retrying {package.Name}...");
-                    await Task.Delay(1000);
-                    await DownloadPackage(package);
-                }
-            }
+					App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
+					SetStatus($"Retrying {package.Name}...");
+					await Task.Delay(1000);
+					await DownloadPackage(package);
+				}
+			}
 
-            return false;
-        }
-
-        // for some reason on linux, it treats file directory entries in the zip as files with backslashes in their names,
-        // instead of actual directories, which causes issues with mods, this should fix it
-        private static void ExtractZipWithTransform(string zipPath, string destDir, string? fileFilter = null)
-        {
-            using var fs = new FileStream(zipPath, FileMode.Open, FileAccess.Read);
-            using var zf = new ZipFile(fs);
-            foreach (ZipEntry entry in zf)
-            {
-                if (entry.IsDirectory)
-                    continue;
-
-                string transformedName = entry.Name.Replace('\\', '/');
-
-                if (!string.IsNullOrEmpty(fileFilter))
-                {
-                    var patterns = fileFilter.Split(';');
-                    bool matches = false;
-                    foreach (var pattern in patterns)
-                    {
-                        if (Regex.IsMatch(transformedName, pattern))
-                        {
-                            matches = true;
-                            break;
-                        }
-                    }
-                    if (!matches)
-                        continue;
-                }
-
-                string destPath = Path.Combine(destDir, transformedName);
-                string? destDirectory = Path.GetDirectoryName(destPath);
-                if (!string.IsNullOrEmpty(destDirectory))
-                    Directory.CreateDirectory(destDirectory);
-
-                using var zipStream = zf.GetInputStream(entry);
-                using var outputStream = File.Create(destPath);
-                zipStream.CopyTo(outputStream);
-            }
-        }
-        #endregion
-    }
+			return false;
+		}
+		#endregion
+	}
 }
