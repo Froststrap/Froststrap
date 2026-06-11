@@ -16,7 +16,6 @@
 
     <ScrollViewer>
         <Grid Margin="14" RowDefinitions="Auto,Auto,*">
-            <!-- Top card buttons -->
             <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
                 <controls:CardAction Grid.Column="0" Margin="0,0,4,0"
                                      Command="{Binding OpenCommunityModsCommand}"
@@ -107,14 +106,17 @@
                                            Width="160"
                                            Minimum="0"
                                            Maximum="360"
-                                           FormatString="{}{0}°"/>
-                            <Button Content="Add Stop" Command="{Binding AddGradientStopCommand}"/>
+                                           FormatString="{}{0}°"
+                                           IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <Button Content="Add Stop" Command="{Binding AddGradientStopCommand}"
+                                    IsEnabled="{Binding IsNotGeneratingMod}"/>
                         </StackPanel>
 
                         <ItemsControl ItemsSource="{Binding GradientStops}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid ColumnDefinitions="Auto,*,45,110,Auto,Auto" Margin="0,4" VerticalAlignment="Center">
+                                    <Grid ColumnDefinitions="Auto,*,45,110,Auto,Auto" Margin="0,4" VerticalAlignment="Center"
+                                          IsEnabled="{Binding $parent[ItemsControl].DataContext.IsNotGeneratingMod}">
                                         <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                         <Slider Grid.Column="1" Minimum="0" Maximum="1"
                                                 Value="{Binding Offset, Mode=TwoWay}" VerticalAlignment="Center"/>
@@ -122,7 +124,7 @@
                                                    HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
                                         <TextBox Grid.Column="3" Text="{Binding Color, Mode=TwoWay}"
                                                  Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                        <Button Grid.Column="4" Content="Pick"
+                                        <Button Grid.Column="4" Content="ColorPicker"
                                                 Command="{Binding $parent[ItemsControl].DataContext.OpenColorPickerCommand}"
                                                 CommandParameter="{Binding}" Margin="0,0,4,0"/>
                                         <Button Grid.Column="5" Content="Remove"
@@ -147,33 +149,42 @@
                                    Margin="0,0,0,8"
                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
                         <WrapPanel Orientation="Horizontal">
-                            <CheckBox Content="Apply to Cursors" IsChecked="{Binding ColorCursors}" Margin="4,0"/>
-                            <CheckBox Content="Apply to Shiftlock" IsChecked="{Binding ColorShiftlock}" Margin="4,0"/>
-                            <CheckBox Content="Apply to Emote Wheel" IsChecked="{Binding ColorEmoteWheel}" Margin="4,0"/>
-                            <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="4,0"/>
+                            <CheckBox Content="Apply to Cursors" IsChecked="{Binding ColorCursors}" Margin="4,0"
+                                      IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <CheckBox Content="Apply to Shiftlock" IsChecked="{Binding ColorShiftlock}" Margin="4,0"
+                                      IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <CheckBox Content="Apply to Emote Wheel" IsChecked="{Binding ColorEmoteWheel}" Margin="4,0"
+                                      IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="4,0"
+                                      IsEnabled="{Binding IsNotGeneratingMod}"/>
                             <TextBlock Text="Bands:" VerticalAlignment="Center" ToolTip.Tip="The higher the number, the higher quality but it takes longer, Default value is 8." Margin="4,0" />
                             <NumericUpDown Value="{Binding GradientBands}"
                                            Width="100"
                                            Minimum="0"
                                            Maximum="64"
                                            Watermark="8"
-                                           ToolTip.Tip="The higher the number, the higher quality but it takes longer, Default value is 8."
+                                           ToolTip.Tip="The higher the number, the higher quality but it takes longer, Max is 64, Default is 8."
                                            VerticalAlignment="Center"
-                                           Margin="4,0"/>
+                                           Margin="4,0"
+                                           IsEnabled="{Binding IsNotGeneratingMod}"/>
                         </WrapPanel>
 
                         <TextBlock Text="Roblox Icon (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
                         <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
                             <TextBox Text="{Binding RobloxIconImagePath}" IsReadOnly="True" Watermark="No image selected"
-                                     VerticalAlignment="Center"/>
-                            <Button Grid.Column="1" Content="Select" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"/>
-                            <Button Grid.Column="2" Content="Clear" Command="{Binding ClearRobloxIconCommand}"/>
+                                     VerticalAlignment="Center"
+                                     IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <Button Grid.Column="1" Content="Select" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"
+                                    IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <Button Grid.Column="2" Content="Clear" Command="{Binding ClearRobloxIconCommand}"
+                                    IsEnabled="{Binding IsNotGeneratingMod}"/>
                         </Grid>
 
                         <TextBlock Text="Mod Name (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
                         <TextBox Text="{Binding ModFolderName, UpdateSourceTrigger=PropertyChanged}"
                                  Watermark="{Binding SuggestedFolderName}"
-                                 IsEnabled="{Binding IncludeModifications}"
+                                 IsVisible="{Binding IncludeModifications}"
+                                 IsEnabled="{Binding IsNotGeneratingMod}"
                                  Margin="0,8,0,4"/>
                         <TextBlock Text="{Binding FolderNameValidationError}"
                                    FontSize="12"
