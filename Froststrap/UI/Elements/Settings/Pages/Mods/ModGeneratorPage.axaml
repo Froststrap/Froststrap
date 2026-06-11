@@ -82,7 +82,7 @@
                                                 BorderThickness="1"
                                                 CornerRadius="4">
                                             <Viewbox Stretch="Uniform">
-                                                <Path Data="{Binding Data}" Fill="{Binding ColorBrush}" Margin="0,0,10,8"/>
+                                                <Path Data="{Binding Data}" Fill="{Binding Brush}" Margin="0,0,10,8"/>
                                             </Viewbox>
                                         </Border>
                                     </DataTemplate>

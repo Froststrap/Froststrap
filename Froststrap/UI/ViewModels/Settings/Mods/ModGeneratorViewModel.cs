@@ -1,13 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.IO.Compression;
-using System.Windows.Input;
-using Avalonia.Media;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
-using GradientStops = Froststrap.Models.GradientStops;
+using System.Collections.ObjectModel;
+using System.IO.Compression;
+using System.Windows.Input;
 using Color = Avalonia.Media.Color;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
@@ -24,16 +24,16 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             GenerateModCommand = new AsyncRelayCommand(GenerateModAsync, CanGenerateMod);
 
-            GradientStops.Add(new GradientStops { Offset = 0.0, Color = "#FFFFFF" });
-            GradientStops.Add(new GradientStops { Offset = 1.0, Color = "#000000" });
+            GradientStops.Add(new Models.GradientStops { Offset = 0.0, Color = "#FFFFFF" });
+            GradientStops.Add(new Models.GradientStops { Offset = 1.0, Color = "#000000" });
 
             GradientStops.CollectionChanged += (s, e) => OnGradientCollectionChanged();
             foreach (var stop in GradientStops)
                 stop.PropertyChanged += OnGradientStopPropertyChanged;
 
             AddGradientStopCommand = new RelayCommand(AddGradientStop);
-            RemoveGradientStopCommand = new RelayCommand<GradientStops?>(RemoveGradientStop);
-            OpenColorPickerCommand = new RelayCommand<GradientStops?>(OpenColorPickerAsync);
+            RemoveGradientStopCommand = new RelayCommand<Models.GradientStops?>(RemoveGradientStop);
+            OpenColorPickerCommand = new RelayCommand<Models.GradientStops?>(OpenColorPickerAsync);
 
             _ = LoadFontFilesAsync();
         }
@@ -106,11 +106,22 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         private ObservableCollection<GlyphItem> _glyphItems = [];
         public ObservableCollection<GlyphItem> GlyphItems { get => _glyphItems; set => SetProperty(ref _glyphItems, value); }
 
-        private ObservableCollection<GradientStops> _gradientStops = [];
-        public ObservableCollection<GradientStops> GradientStops { get => _gradientStops; set => SetProperty(ref _gradientStops, value); }
+        private ObservableCollection<Models.GradientStops> _gradientStops = [];
+        public ObservableCollection<Models.GradientStops> GradientStops { get => _gradientStops; set => SetProperty(ref _gradientStops, value); }
 
         private double _gradientAngle = 90;
-        public double GradientAngle { get => _gradientAngle; set => SetProperty(ref _gradientAngle, value); }
+        public double GradientAngle
+        {
+            get => _gradientAngle;
+            set
+            {
+                if (SetProperty(ref _gradientAngle, value))
+                {
+                    _ = Dispatcher.UIThread.InvokeAsync(() => OnSelectedFontChanged());
+                    GenerateModCommand.NotifyCanExecuteChanged();
+                }
+            }
+        }
 
         private string? _selectedFontDisplayName;
         public string? SelectedFontDisplayName
@@ -198,6 +209,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 var typeface = new Typeface(fontFamily);
                 var characterCodes = Enumerable.Range(0xF101, 495).ToList();
 
+                IBrush glyphBrush = IsGradientMode ? CreateGradientBrush() : PreviewBrush;
+
                 foreach (var characterCode in characterCodes)
                 {
                     string text = char.ConvertFromUtf32(characterCode);
@@ -216,7 +229,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                                 (50 - bounds.Height) / 2 - bounds.Y);
                             geometry.Transform = translate;
 
-                            glyphItems.Add(new GlyphItem { Data = geometry, ColorBrush = PreviewBrush });
+                            glyphItems.Add(new GlyphItem { Data = geometry, Brush = glyphBrush });
                         }
                         catch (Exception ex) { App.Logger?.WriteException("ModGenerator::LoadGlyphPreview", ex); }
                     });
@@ -228,6 +241,41 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 App.Logger?.WriteException("ModGenerator::LoadGlyphPreviews", ex);
                 StatusText = "Failed to load font glyphs.";
             }
+        }
+
+        private IBrush CreateGradientBrush()
+        {
+            if (!IsGradientMode || GradientStops.Count < 2)
+                return PreviewBrush;
+
+            var stops = GradientStops.OrderBy(s => s.Offset).ToList();
+            var avaloniaStops = new Avalonia.Media.GradientStops();
+            foreach (var stop in stops)
+            {
+                if (IsValidHexColor(stop.Color))
+                    avaloniaStops.Add(new Avalonia.Media.GradientStop(Color.Parse(stop.Color), stop.Offset));
+            }
+            if (avaloniaStops.Count < 2)
+                return PreviewBrush;
+
+            var brush = new LinearGradientBrush
+            {
+                GradientStops = avaloniaStops
+            };
+
+            double angleRad = GradientAngle * Math.PI / 180.0;
+            double dx = Math.Sin(angleRad);
+            double dy = -Math.Cos(angleRad);
+            double len = Math.Sqrt(dx * dx + dy * dy);
+            if (len > 0)
+            {
+                dx /= len;
+                dy /= len;
+            }
+            brush.StartPoint = new RelativePoint(0.5 - dx / 2, 0.5 - dy / 2, RelativeUnit.Relative);
+            brush.EndPoint = new RelativePoint(0.5 + dx / 2, 0.5 + dy / 2, RelativeUnit.Relative);
+
+            return brush;
         }
 
         private async Task GenerateModAsync()
@@ -494,6 +542,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             OnPropertyChanged(nameof(IsGradientMode));
             UpdateSolidColorFromGradient();
+            _ = Dispatcher.UIThread.InvokeAsync(() => OnSelectedFontChanged());
             GenerateModCommand.NotifyCanExecuteChanged();
         }
 
@@ -501,6 +550,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (e.PropertyName == nameof(Models.GradientStops.Color))
                 UpdateSolidColorFromGradient();
+            _ = Dispatcher.UIThread.InvokeAsync(() => OnSelectedFontChanged());
             GenerateModCommand.NotifyCanExecuteChanged();
         }
 
@@ -521,19 +571,19 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private void AddGradientStop()
         {
-            var newStop = new GradientStops { Offset = 0.5, Color = "#808080" };
+            var newStop = new Models.GradientStops { Offset = 0.5, Color = "#808080" };
             newStop.PropertyChanged += OnGradientStopPropertyChanged;
             GradientStops.Add(newStop);
         }
 
-        private void RemoveGradientStop(GradientStops? stop)
+        private void RemoveGradientStop(Models.GradientStops? stop)
         {
             if (stop == null || GradientStops.Count <= 1) return;
             stop.PropertyChanged -= OnGradientStopPropertyChanged;
             GradientStops.Remove(stop);
         }
 
-        private async void OpenColorPickerAsync(GradientStops? stop)
+        private async void OpenColorPickerAsync(Models.GradientStops? stop)
         {
             if (stop == null) return;
 

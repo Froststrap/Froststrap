@@ -6,7 +6,7 @@
                      xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
                      xmlns:md="clr-namespace:Froststrap.UI.Elements.Controls"
                      xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Dialogs"
-					 xmlns:gi="clr-namespace:Froststrap.Models"
+                     xmlns:gi="clr-namespace:Froststrap.Models"
                      xmlns:resources="clr-namespace:Froststrap.Resources"
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
                      x:DataType="vm:CommunityModInfoViewModel"
@@ -45,16 +45,16 @@
                                             <WrapPanel HorizontalAlignment="Center"/>
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate x:DataType="gi:GlyphItem">
-											<Border Width="42" Height="42" Margin="4" Padding="4"
-													CornerRadius="6" Background="{DynamicResource ControlFillColorSecondaryBrush}">
-												<Viewbox>
-													<Path Data="{Binding Data}" Fill="{Binding ColorBrush}"/>
-												</Viewbox>
-											</Border>
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="gi:GlyphItem">
+                                            <Border Width="42" Height="42" Margin="4" Padding="4"
+                                                    CornerRadius="6" Background="{DynamicResource ControlFillColorSecondaryBrush}">
+                                                <Viewbox>
+                                                    <Path Data="{Binding Data}" Fill="{Binding Brush}"/>
+                                                </Viewbox>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                                 <ui:ProgressRing IsIndeterminate="True"
                                                  IsVisible="{Binding IsLoadingGlyphs}"

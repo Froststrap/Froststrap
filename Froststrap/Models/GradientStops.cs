@@ -1,4 +1,5 @@
-﻿using Froststrap.UI.ViewModels;
+﻿using Avalonia.Media;
+using Froststrap.UI.ViewModels;
 
 namespace Froststrap.Models
 {

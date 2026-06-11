@@ -167,7 +167,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
                             newItems.Add(new GlyphItem
                             {
                                 Data = geometry,
-                                ColorBrush = finalBrush
+                                Brush = finalBrush
                             });
                         }
                         catch (Exception ex)
