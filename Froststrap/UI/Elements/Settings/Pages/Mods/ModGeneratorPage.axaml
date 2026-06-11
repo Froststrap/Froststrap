@@ -102,13 +102,13 @@
                                    Margin="0,0,0,12" Foreground="{DynamicResource TextFillColorPrimaryBrush}"/>
 
                         <StackPanel Margin="0,0,0,12" Orientation="Horizontal" Spacing="4">
-                            <Button Content="Add Stop" Command="{Binding AddGradientStopCommand}"/>
                             <TextBlock Text="Angle:" VerticalAlignment="Center" />
                             <NumericUpDown Value="{Binding GradientAngle}"
                                            Width="160"
                                            Minimum="0"
                                            Maximum="360"
                                            FormatString="{}{0}°"/>
+                            <Button Content="Add Stop" Command="{Binding AddGradientStopCommand}"/>
                         </StackPanel>
 
                         <ItemsControl ItemsSource="{Binding GradientStops}">
@@ -153,6 +153,15 @@
                             <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="4,0"/>
                         </StackPanel>
 
+                        <TextBlock Text="Roblox Icon (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
+                            <TextBox Text="{Binding RobloxIconImagePath}" IsReadOnly="True" Watermark="No image selected"
+                                     VerticalAlignment="Center"/>
+                            <Button Grid.Column="1" Content="Select" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"/>
+                            <Button Grid.Column="2" Content="Clear" Command="{Binding ClearRobloxIconCommand}"/>
+                        </Grid>
+
+                        <TextBlock Text="Mod Name (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
                         <TextBox Text="{Binding ModFolderName, UpdateSourceTrigger=PropertyChanged}"
                                  Watermark="{Binding SuggestedFolderName}"
                                  IsEnabled="{Binding IncludeModifications}"

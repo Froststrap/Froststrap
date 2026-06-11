@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using Avalonia.Controls;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
@@ -35,6 +36,9 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             RemoveGradientStopCommand = new RelayCommand<Models.GradientStops?>(RemoveGradientStop);
             OpenColorPickerCommand = new RelayCommand<Models.GradientStops?>(OpenColorPickerAsync);
 
+            SelectRobloxIconCommand = new RelayCommand(SelectRobloxIcon);
+            ClearRobloxIconCommand = new RelayCommand(() => RobloxIconImagePath = "");
+
             _ = LoadFontFilesAsync();
         }
 
@@ -47,6 +51,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ICommand AddGradientStopCommand { get; }
         public ICommand RemoveGradientStopCommand { get; }
         public ICommand OpenColorPickerCommand { get; }
+        public ICommand SelectRobloxIconCommand { get; }
+        public ICommand ClearRobloxIconCommand { get; }
 
         [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
         [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
@@ -157,6 +163,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 if (SetProperty(ref _folderNameValidationError, value))
                     OnPropertyChanged(nameof(HasFolderNameValidationError));
             }
+        }
+
+        private string _robloxIconImagePath = "";
+        public string RobloxIconImagePath
+        {
+            get => _robloxIconImagePath;
+            set => SetProperty(ref _robloxIconImagePath, value);
         }
         #endregion
 
@@ -405,7 +418,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     string modFolderName = string.IsNullOrWhiteSpace(ModFolderName)
                         ? GetNextAvailableModFolderName()
                         : ModFolderName;
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg);
+
+                    string? imageMapArg = null;
+                    if (!string.IsNullOrWhiteSpace(RobloxIconImagePath) && File.Exists(RobloxIconImagePath))
+                        imageMapArg = $"tilt:{RobloxIconImagePath}";
+
+                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg, imageMapArg);
 
                     WriteBuilderIconsJson(TempRoot);
 
@@ -670,12 +688,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (stop == null) return;
 
-            Avalonia.Controls.Window? window = null;
+            Window? window = null;
             if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 window = desktop.MainWindow;
 
             if (window == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
-                window = desktop2.Windows.FirstOrDefault(w => w.IsActive) as Avalonia.Controls.Window;
+                window = desktop2.Windows.FirstOrDefault(w => w.IsActive) as Window;
 
             if (window == null)
             {
@@ -695,6 +713,32 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 StatusText = $"Color picker error: {ex.Message}";
                 App.Logger?.WriteException("OpenColorPickerAsync", ex);
             }
+        }
+
+        private async void SelectRobloxIcon()
+        {
+            Window? window = null;
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                window = desktop.MainWindow;
+
+            if (window == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
+                window = desktop2.Windows.FirstOrDefault(w => w.IsActive) as Window;
+
+            if (window == null)
+            {
+                StatusText = "Cannot open file picker: no active window.";
+                return;
+            }
+
+            var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select Roblox Icon Image",
+                FileTypeFilter = [FilePickerFileTypes.ImageAll],
+                AllowMultiple = false
+            });
+
+            if (files.Count > 0)
+                RobloxIconImagePath = files[0].Path.LocalPath;
         }
     }
 }
