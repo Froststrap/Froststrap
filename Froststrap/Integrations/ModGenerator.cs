@@ -109,15 +109,16 @@ namespace Froststrap.Integrations
             }
         }
 
-        public static async Task RecolorFontsAsync(string froststrapTemp, Color solidColor, string modName)
+        public static async Task RecolorFontsAsync(string froststrapTemp, Color solidColor, string modName, string? gradientStops = null, double? angle = null)
         {
             string fontDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
             if (!Directory.Exists(fontDir)) return;
 
             string exePath = await DownloadModGeneratorAsync();
-            string hexColor = $"{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}";
-
-            string args = $"--path \"{fontDir}\" --color {hexColor} --bootstrapper Froststrap --mod-name \"{modName}\"";
+            string colorArg = gradientStops ?? $"{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}";
+            string args = $"--path \"{fontDir}\" --color {colorArg} --bootstrapper Froststrap --mod-name \"{modName}\"";
+            if (angle.HasValue)
+                args += $" --angle {angle.Value}";
 
             await ExecuteExeAsync(exePath, args, Path.GetDirectoryName(exePath)!);
         }
@@ -138,8 +139,6 @@ namespace Froststrap.Integrations
             string exePath = Path.Combine(cacheDir, assetName);
 
             if (File.Exists(exePath)) return exePath;
-
-            App.HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Froststrap/1.0");
 
             var release = await App.HttpClient.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
 
