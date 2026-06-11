@@ -3765,7 +3765,9 @@ Windows Registry Editor Version 5.00
             foreach (var m in App.State.Prop.Mods)
                 App.Logger.WriteLine(LOG_IDENT, $"Mod: '{m.FolderName}' Target='{m.Target}' Priority={m.Priority} FolderExists={Directory.Exists(Path.Combine(Paths.ModificationsProfiles, m.FolderName))}");
 
-            var activeMods = App.State.Prop.Mods
+			SyncUnregisteredModFolders();
+
+			var activeMods = App.State.Prop.Mods
                 .Where(x => x.Target != "Disabled" && (
                     x.Target == "Both" ||
                     (IsStudioLaunch && x.Target == "Studio") ||
@@ -4082,7 +4084,58 @@ Windows Registry Editor Version 5.00
             return success;
         }
 
-        private static void ProcessModDirectory(string sourcePath, Dictionary<string, string> copyMap, HashSet<string> deleteSet)
+		private void SyncUnregisteredModFolders()
+		{
+			const string LOG_IDENT = "Bootstrapper::SyncUnregisteredModFolders";
+
+			var existingFolders = Directory.GetDirectories(Paths.ModificationsProfiles)
+				.Select(Path.GetFileName)
+				.Where(x => !string.IsNullOrEmpty(x))
+				.ToHashSet();
+
+			var foldersToRemove = App.State.Prop.Mods
+				.Where(m => !existingFolders.Contains(m.FolderName))
+				.ToList();
+
+			foreach (var mod in foldersToRemove)
+			{
+				App.Logger.WriteLine(LOG_IDENT, $"Removing missing mod '{mod.FolderName}' from state.");
+				App.State.Prop.Mods.Remove(mod);
+			}
+
+			var registeredFolders = App.State.Prop.Mods
+				.Select(x => x.FolderName)
+				.ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+			var missingFolders = existingFolders.Except(registeredFolders, StringComparer.OrdinalIgnoreCase).ToList();
+
+			if (missingFolders.Count == 0 && foldersToRemove.Count == 0)
+				return;
+
+			if (missingFolders.Count > 0)
+			{
+				App.Logger.WriteLine(LOG_IDENT, $"Found {missingFolders.Count} unregistered mod folder(s): {string.Join(", ", missingFolders)}");
+
+				int currentMaxPriority = App.State.Prop.Mods.Count > 0
+					? App.State.Prop.Mods.Max(m => m.Priority)
+					: -1;
+
+				foreach (string? folder in missingFolders)
+				{
+					App.State.Prop.Mods.Add(new ModConfig
+					{
+						FolderName = folder!,
+						Target = "Both",
+						Priority = ++currentMaxPriority
+					});
+					App.Logger.WriteLine(LOG_IDENT, $"Registered mod '{folder}' with priority {currentMaxPriority}");
+				}
+			}
+
+			App.State.Save();
+		}
+
+		private static void ProcessModDirectory(string sourcePath, Dictionary<string, string> copyMap, HashSet<string> deleteSet)
         {
             foreach (string file in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
             {
