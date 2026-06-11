@@ -26,8 +26,8 @@ namespace Froststrap
         public static string Logs { get; private set; } = "";
         public static string Integrations { get; private set; } = "";
         public static string Versions { get; private set; } = "";
+        public static string ModificationsProfiles { get; private set; } = "";
         public static string Modifications { get; private set; } = "";
-        public static string PresetModifications { get; private set; } = "";
         public static string Roblox { get; private set; } = "";
         public static string CustomThemes { get; private set; } = "";
         public static string RobloxLogs { get; private set; } = "";
@@ -39,7 +39,7 @@ namespace Froststrap
         public static string SoberConfig { get; private set; } = "";
         public static string WineRoot { get; private set; } = "";
 
-        public static string CustomFont => Path.Combine(PresetModifications, "content", "fonts", "CustomFont.ttf");
+        public static string CustomFont => Path.Combine(Modifications, "content", "fonts", "CustomFont.ttf");
 
         public static string Base => DataRoot;
         public static bool Initialized => !String.IsNullOrEmpty(DataRoot);
@@ -97,8 +97,8 @@ namespace Froststrap
             Versions = Path.Combine(DataRoot, "Versions");
 
             // Mods and presets belong in config (user-editable settings)
-            Modifications = Path.Combine(ConfigRoot, "ModificationProfiles");
-            PresetModifications = Path.Combine(ConfigRoot, "Modifications");
+            ModificationsProfiles = Path.Combine(ConfigRoot, "ModificationProfiles");
+            Modifications = Path.Combine(ConfigRoot, "Modifications");
 
             // Ensure cache/logs have sensible defaults when not set by XDG above
             if (String.IsNullOrEmpty(Cache))
@@ -141,8 +141,8 @@ namespace Froststrap
             Directory.CreateDirectory(Path.GetDirectoryName(SavedFlagProfiles) ?? SavedFlagProfiles);
             Directory.CreateDirectory(CustomCursors);
             Directory.CreateDirectory(CustomThemes);
+            Directory.CreateDirectory(ModificationsProfiles);
             Directory.CreateDirectory(Modifications);
-            Directory.CreateDirectory(PresetModifications);
             Directory.CreateDirectory(Downloads);
             Directory.CreateDirectory(Integrations);
             Directory.CreateDirectory(Versions);
@@ -204,8 +204,8 @@ namespace Froststrap
                     }
 
                     // Compatibility migration for earlier releases where mods/presets were under DataRoot.
-                    TryMove(Path.Combine(DataRoot, "ModificationProfiles"), Modifications);
-                    TryMove(Path.Combine(DataRoot, "Modifications"), PresetModifications);
+                    TryMove(Path.Combine(DataRoot, "ModificationProfiles"), ModificationsProfiles);
+                    TryMove(Path.Combine(DataRoot, "Modifications"), Modifications);
 
                     string legacyBase = Path.Combine(UserProfile, ".config", App.ProjectName);
                     string marker = Path.Combine(ConfigRoot, ".migrated_to_xdg");
@@ -214,8 +214,8 @@ namespace Froststrap
                     {
 
                         // Move user-editable config from legacy to XDG config
-                        TryMove(Path.Combine(legacyBase, "ModificationProfiles"), Modifications);
-                        TryMove(Path.Combine(legacyBase, "Modifications"), PresetModifications);
+                        TryMove(Path.Combine(legacyBase, "ModificationProfiles"), ModificationsProfiles);
+                        TryMove(Path.Combine(legacyBase, "Modifications"), Modifications);
                         TryMove(Path.Combine(legacyBase, "SavedFlagProfiles"), SavedFlagProfiles);
                         TryMove(Path.Combine(legacyBase, "CustomCursorsSets"), CustomCursors);
                         TryMove(Path.Combine(legacyBase, "CustomThemes"), CustomThemes);

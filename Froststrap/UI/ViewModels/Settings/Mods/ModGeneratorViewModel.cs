@@ -301,7 +301,9 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     string luaDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages");
                     string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
                     string contentDir = Path.Combine(TempRoot, "content", "textures");
-                    string folderName = SolidColorHex;
+
+                    // Use a temporary folder name during processing (can be anything)
+                    string tempFolderName = SolidColorHex;
 
                     Parallel.Invoke(
                         () => SafeExtract(luaZip, luaDir),
@@ -322,7 +324,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         gradientArg = string.Join(",", orderedStops.Select(s => s.Color.TrimStart('#')));
                         angleArg = GradientAngle;
                     }
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, folderName, gradientArg, angleArg);
+
+                    // Generate a unique mod folder name like "Generated Mod", "Generated Mod 1", etc.
+                    string modFolderName = GenerateUniqueModFolderName();
+                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg);
 
                     WriteBuilderIconsJson(TempRoot);
 
@@ -398,7 +403,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     if (IncludeModifications)
                     {
-                        string targetFolder = Path.Combine(Paths.Modifications, folderName);
+                        string targetFolder = Path.Combine(Paths.ModificationsProfiles, modFolderName);
                         if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
                         int copiedFiles = 0;
                         var itemsToCopy = new List<string> { Path.Combine(TempRoot, "ExtraContent"), Path.Combine(TempRoot, "content"), infoPath };
@@ -458,6 +463,24 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 IsNotGeneratingMod = true;
                 IsProgressVisible = false;
                 Progress = 0;
+            }
+        }
+
+        private static string GenerateUniqueModFolderName()
+        {
+            string baseName = "Generated Mod";
+            string folder = Path.Combine(Paths.ModificationsProfiles, baseName);
+            if (!Directory.Exists(folder))
+                return baseName;
+
+            int counter = 1;
+            while (true)
+            {
+                string candidate = $"{baseName} {counter}";
+                folder = Path.Combine(Paths.ModificationsProfiles, candidate);
+                if (!Directory.Exists(folder))
+                    return candidate;
+                counter++;
             }
         }
 
@@ -588,10 +611,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (stop == null) return;
 
             Avalonia.Controls.Window? window = null;
-            if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                 window = desktop.MainWindow;
 
-            if (window == null && Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
+            if (window == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
                 window = desktop2.Windows.FirstOrDefault(w => w.IsActive) as Avalonia.Controls.Window;
 
             if (window == null)

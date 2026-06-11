@@ -63,7 +63,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (mod == null) return;
 
-            string folderPath = Path.Combine(Paths.Modifications, mod.FolderName);
+            string folderPath = Path.Combine(Paths.ModificationsProfiles, mod.FolderName);
 
             if (Directory.Exists(folderPath))
             {
@@ -78,7 +78,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         [RelayCommand]
         public void AddMod()
         {
-            string modsFolder = Paths.Modifications;
+            string modsFolder = Paths.ModificationsProfiles;
 
             string baseName = "New Mod";
             string folderName = baseName;
@@ -105,13 +105,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private static void SyncDiskWithState()
         {
-            if (!Directory.Exists(Paths.Modifications))
+            if (!Directory.Exists(Paths.ModificationsProfiles))
             {
-                Directory.CreateDirectory(Paths.Modifications);
+                Directory.CreateDirectory(Paths.ModificationsProfiles);
                 return;
             }
 
-            var physicalFolders = Directory.GetDirectories(Paths.Modifications)
+            var physicalFolders = Directory.GetDirectories(Paths.ModificationsProfiles)
                 .Select(Path.GetFileName)
                 .Where(x => !string.IsNullOrEmpty(x))
                 .ToHashSet();
@@ -167,8 +167,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (string.IsNullOrWhiteSpace(safeName) || safeName == oldName)
                 return false;
 
-            string oldPath = Path.Combine(Paths.Modifications, oldName);
-            string newPath = Path.Combine(Paths.Modifications, safeName);
+            string oldPath = Path.Combine(Paths.ModificationsProfiles, oldName);
+            string newPath = Path.Combine(Paths.ModificationsProfiles, safeName);
 
             try
             {
@@ -238,7 +238,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             try
             {
-                string path = Path.Combine(Paths.Modifications, mod.FolderName);
+                string path = Path.Combine(Paths.ModificationsProfiles, mod.FolderName);
                 if (Directory.Exists(path)) Directory.Delete(path, true);
 
                 Modifications.Remove(mod);
@@ -252,7 +252,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             foreach (var path in paths)
             {
                 string modName = Path.GetFileNameWithoutExtension(path) ?? "UnknownMod";
-                string targetDir = Path.Combine(Paths.Modifications, modName);
+                string targetDir = Path.Combine(Paths.ModificationsProfiles, modName);
 
                 try
                 {

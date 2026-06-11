@@ -4,7 +4,7 @@ namespace Froststrap.Models.SettingTasks
     {
         private const string CustomFontAssetId = "rbxasset://fonts/CustomFont.ttf";
         private static readonly JsonSerializerOptions SerializerOptions = new() { WriteIndented = true };
-        private static string CustomFontFamiliesDirectory => Path.Combine(Paths.PresetModifications, "content", "fonts", "families");
+        private static string CustomFontFamiliesDirectory => Path.Combine(Paths.Modifications, "content", "fonts", "families");
         private static readonly string[] CustomFontFamilyFiles =
         [
             "AccanthisADFStd.json",

@@ -200,11 +200,11 @@ namespace Froststrap.UI.ViewModels.Settings
             }
         }
 
-        private void OpenModsFolder() => Utilities.ShellExecute(Paths.PresetModifications, true);
+        private void OpenModsFolder() => Utilities.ShellExecute(Paths.Modifications, true);
 
-        private static string CursorPath => Path.Combine(Paths.PresetModifications, "content", "textures", "Cursors", "KeyboardMouse");
-        private static string ShiftlockPath => Path.Combine(Paths.PresetModifications, "content", "textures");
-        private static string SoundPath => Path.Combine(Paths.PresetModifications, "content", "sounds");
+        private static string CursorPath => Path.Combine(Paths.Modifications, "content", "textures", "Cursors", "KeyboardMouse");
+        private static string ShiftlockPath => Path.Combine(Paths.Modifications, "content", "textures");
+        private static string SoundPath => Path.Combine(Paths.Modifications, "content", "sounds");
 
         private static readonly string[] CursorFiles = [ "ArrowCursor.png", "ArrowFarCursor.png", "IBeamCursor.png" ];
         private static readonly string[] ShiftlockFiles = [ "MouseLockedCursor.png" ];
@@ -438,7 +438,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            string targetDir = Path.Combine(Paths.PresetModifications, "content", "textures");
+            string targetDir = Path.Combine(Paths.Modifications, "content", "textures");
             string targetKB = Path.Combine(targetDir, "Cursors", "KeyboardMouse");
 
             try
@@ -580,8 +580,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 return;
             }
 
-            string sourceMouseLocked = Path.Combine(Paths.PresetModifications, "content", "textures", "MouseLockedCursor.png");
-            string sourceKeyboardMouse = Path.Combine(Paths.PresetModifications, "content", "textures", "Cursors", "KeyboardMouse");
+            string sourceMouseLocked = Path.Combine(Paths.Modifications, "content", "textures", "MouseLockedCursor.png");
+            string sourceKeyboardMouse = Path.Combine(Paths.Modifications, "content", "textures", "Cursors", "KeyboardMouse");
 
             string targetBase = SelectedCustomCursorSet.FolderPath;
             string targetMouseLocked = Path.Combine(targetBase, "MouseLockedCursor.png");

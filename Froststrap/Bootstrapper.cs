@@ -3755,7 +3755,7 @@ Windows Registry Editor Version 5.00
             File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
 
             var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
-            Directory.CreateDirectory(Paths.Modifications);
+            Directory.CreateDirectory(Paths.ModificationsProfiles);
 
             string contentDirectory = OperatingSystem.IsMacOS()
                 ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
@@ -3763,7 +3763,7 @@ Windows Registry Editor Version 5.00
 
             App.Logger.WriteLine(LOG_IDENT, $"Total mods in state: {App.State.Prop.Mods.Count}");
             foreach (var m in App.State.Prop.Mods)
-                App.Logger.WriteLine(LOG_IDENT, $"Mod: '{m.FolderName}' Target='{m.Target}' Priority={m.Priority} FolderExists={Directory.Exists(Path.Combine(Paths.Modifications, m.FolderName))}");
+                App.Logger.WriteLine(LOG_IDENT, $"Mod: '{m.FolderName}' Target='{m.Target}' Priority={m.Priority} FolderExists={Directory.Exists(Path.Combine(Paths.ModificationsProfiles, m.FolderName))}");
 
             var activeMods = App.State.Prop.Mods
                 .Where(x => x.Target != "Disabled" && (
@@ -3781,18 +3781,18 @@ Windows Registry Editor Version 5.00
             if (File.Exists(Paths.CustomFont))
             {
                 activeFontFilename = "CustomFont.ttf";
-                modFontFamiliesFolder = Path.Combine(Paths.PresetModifications, "content", "fonts", "families");
+                modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
             }
             else
             {
                 string? customFontModName = activeMods.LastOrDefault(mod =>
                 {
-                    if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
+                    if (File.Exists(Path.Combine(Paths.ModificationsProfiles, mod.FolderName, "content", "fonts", "CustomFont.ttf")))
                     {
                         activeFontFilename = "CustomFont.ttf";
                         return true;
                     }
-                    if (File.Exists(Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf")))
+                    if (File.Exists(Path.Combine(Paths.ModificationsProfiles, mod.FolderName, "content", "fonts", "CustomFont.otf")))
                     {
                         activeFontFilename = "CustomFont.otf";
                         return true;
@@ -3801,7 +3801,7 @@ Windows Registry Editor Version 5.00
                 })?.FolderName;
 
                 if (customFontModName != null && activeFontFilename != null)
-                    modFontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModName, "content", "fonts", "families");
+                    modFontFamiliesFolder = Path.Combine(Paths.ModificationsProfiles, customFontModName, "content", "fonts", "families");
             }
 
             if (modFontFamiliesFolder != null && activeFontFilename != null)
@@ -3862,7 +3862,7 @@ Windows Registry Editor Version 5.00
 
             foreach (var mod in activeMods)
             {
-                string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+                string modSource = Path.Combine(Paths.ModificationsProfiles, mod.FolderName);
 
                 if (Directory.Exists(modSource))
                     ProcessModDirectory(modSource, finalFilesToCopy, filesToDelete);
@@ -3870,10 +3870,10 @@ Windows Registry Editor Version 5.00
                     App.Logger.WriteLine(LOG_IDENT, $"Skipping mod '{mod.FolderName}': directory not found");
             }
 
-            if (Directory.Exists(Paths.PresetModifications))
+            if (Directory.Exists(Paths.Modifications))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Applying PresetModifications (Flat folder)...");
-                ProcessModDirectory(Paths.PresetModifications, finalFilesToCopy, filesToDelete);
+                ProcessModDirectory(Paths.Modifications, finalFilesToCopy, filesToDelete);
             }
 
             foreach (var relPath in filesToDelete)
@@ -3965,7 +3965,7 @@ Windows Registry Editor Version 5.00
             }
 
             bool needsAppSettings = !OperatingSystem.IsLinux() || IsStudioLaunch;
-            if (needsAppSettings && !File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
+            if (needsAppSettings && !File.Exists(Path.Combine(Paths.ModificationsProfiles, "AppSettings.xml")))
                 await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"),
                     AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
 
@@ -3974,7 +3974,7 @@ Windows Registry Editor Version 5.00
 
             if (App.Settings.Prop.UseFastFlagManager && (!OperatingSystem.IsLinux() || IsStudioLaunch))
             {
-                string source = Path.Combine(Paths.PresetModifications, "ClientSettings", "ClientAppSettings.json");
+                string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
                 if (File.Exists(source))
                 {
                     string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");

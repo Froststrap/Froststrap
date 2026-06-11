@@ -13,7 +13,7 @@ namespace Froststrap
         public override string LOG_IDENT_CLASS => ClassName;
         public override string ProfilesLocation => Paths.SavedFlagProfiles;
         public override string FileName => "ClientAppSettings.json";
-        public override string FileLocation => Path.Combine(Paths.PresetModifications, "ClientSettings", FileName);
+        public override string FileLocation => Path.Combine(Paths.Modifications, "ClientSettings", FileName);
 
         public bool Changed => !OriginalProp.SequenceEqual(Prop);
 

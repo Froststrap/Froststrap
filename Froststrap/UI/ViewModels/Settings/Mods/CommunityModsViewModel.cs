@@ -180,7 +180,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 }
                 else
                 {
-                    string installPath = Path.Combine(Paths.Modifications, mod.Name);
+                    string installPath = Path.Combine(Paths.ModificationsProfiles, mod.Name);
                     if (Directory.Exists(installPath))
                     {
                         var result = await Frontend.ShowMessageBox($"Overwrite existing mod '{mod.Name}'?", MessageBoxImage.Question, MessageBoxButton.YesNo);
