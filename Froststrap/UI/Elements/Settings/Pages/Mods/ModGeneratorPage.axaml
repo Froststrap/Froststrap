@@ -155,18 +155,21 @@
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
                             <CheckBox Content="Apply to Emote Wheel" IsChecked="{Binding ColorEmoteWheel}" Margin="4,0"
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <CheckBox Content="Dont Color Play Icon" IsChecked="{Binding DontColorPlayIcon}" Margin="4,0"
+                                      IsEnabled="{Binding IsNotGeneratingMod}"/>
                             <CheckBox Content="Auto add to My Mods" IsChecked="{Binding IncludeModifications}" Margin="4,0"
                                       IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <TextBlock Text="Bands:" VerticalAlignment="Center" ToolTip.Tip="The higher the number, the higher quality but it takes longer, Default value is 8." Margin="4,0" />
-                            <NumericUpDown Value="{Binding GradientBands}"
-                                           Width="100"
-                                           Minimum="0"
-                                           Maximum="64"
-                                           Watermark="8"
-                                           ToolTip.Tip="The higher the number, the higher quality but it takes longer, Max is 64, Default is 8."
-                                           VerticalAlignment="Center"
-                                           Margin="4,0"
-                                           IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <TextBlock Text="Bands:" VerticalAlignment="Center" ToolTip.Tip="The higher the number, the higher quality but it takes longer, Default value is 8." />
+                                <NumericUpDown Value="{Binding GradientBands}"
+                                               Width="100"
+                                               Minimum="0"
+                                               Maximum="64"
+                                               Watermark="8"
+                                               ToolTip.Tip="The higher the number, the higher quality but it takes longer, Max is 64, Default is 8."
+                                               VerticalAlignment="Center"
+                                               IsEnabled="{Binding IsNotGeneratingMod}"/>
+                            </StackPanel>
                         </WrapPanel>
 
                         <TextBlock Text="Roblox Icon (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
@@ -180,7 +183,7 @@
                                     IsEnabled="{Binding IsNotGeneratingMod}"/>
                         </Grid>
 
-                        <TextBlock Text="Mod Name (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
+                        <TextBlock Text="Mod Name (optional)" FontWeight="SemiBold" Margin="0,8,0,4" IsVisible="{Binding IncludeModifications}"/>
                         <TextBox Text="{Binding ModFolderName, UpdateSourceTrigger=PropertyChanged}"
                                  Watermark="{Binding SuggestedFolderName}"
                                  IsVisible="{Binding IncludeModifications}"

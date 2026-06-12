@@ -186,6 +186,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 }
             }
         }
+
+        private bool _dontColorPlayIcon = false;
+        public bool DontColorPlayIcon
+        {
+            get => _dontColorPlayIcon;
+            set => SetProperty(ref _dontColorPlayIcon, value);
+        }
         #endregion
 
         public Color SelectedMediaColor
@@ -440,7 +447,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     int? bandsArg = GradientBands > 0 ? GradientBands : (int?)null;
 
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg, imageMapArg, bandsArg);
+                    string? skipGlyphsArg = null;
+                    if (DontColorPlayIcon)
+                    {
+                        skipGlyphsArg = "play-large,play-small";
+                    }
+
+                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg, imageMapArg, bandsArg, skipGlyphsArg);
 
                     WriteBuilderIconsJson(TempRoot);
 
