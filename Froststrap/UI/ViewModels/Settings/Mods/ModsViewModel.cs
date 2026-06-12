@@ -131,7 +131,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 }
             }
 
-            App.State.Save();
+            App.State.SaveSetting("Mods");
         }
 
         private void LoadModifications()
