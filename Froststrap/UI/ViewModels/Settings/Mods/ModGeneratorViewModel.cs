@@ -39,6 +39,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             SelectRobloxIconCommand = new RelayCommand(SelectRobloxIcon);
             ClearRobloxIconCommand = new RelayCommand(() => RobloxIconImagePath = "");
 
+
             _ = LoadFontFilesAsync();
         }
 
@@ -424,8 +425,33 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     StatusText = "Recoloring assets...";
                     Progress = 50;
+                    string foundationImagesDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "SpriteSheets");
+                    string? getImageSetDataPath = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "Generated", "GetImageSetData.lua");
+
                     var mappings = await ModGenerator.LoadMappingsAsync();
-                    ModGenerator.RecolorAllPngs(TempRoot, _solidColor, mappings, ColorCursors, ColorShiftlock, ColorEmoteWheel);
+
+                    List<ModGenerator.GradientStop>? gradientStopsForSprites = null;
+                    float gradientAngleForSprites = 0f;
+                    if (IsGradientMode)
+                    {
+                        gradientStopsForSprites = GradientStops.OrderBy(s => s.Offset)
+                            .Select(s => new ModGenerator.GradientStop((float)s.Offset, Color.Parse(s.Color)))
+                            .ToList();
+                        gradientAngleForSprites = (float)GradientAngle;
+                    }
+
+                    ModGenerator.RecolorAllPngs(
+                        TempRoot,
+                        _solidColor,
+                        mappings,
+                        ColorCursors,
+                        ColorShiftlock,
+                        ColorEmoteWheel,
+                        gradientStopsForSprites,
+                        gradientAngleForSprites,
+                        getImageSetDataPath,
+                        RobloxIconImagePath
+                    );
                     Progress = 70;
 
                     string? gradientArg = null;
@@ -491,11 +517,18 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                             preservePaths.Add(Path.GetFullPath(Path.Combine(emotesDir, e)));
                     }
 
+                    preservePaths.Add(Path.GetFullPath(foundationImagesDir));
+                    preservePaths.Add(Path.GetFullPath(getImageSetDataPath));
+
                     void DeleteExcept(string dir)
                     {
+                        if (preservePaths.Contains(Path.GetFullPath(dir)))
+                            return;
+
                         foreach (var file in Directory.GetFiles(dir))
                             if (!preservePaths.Contains(Path.GetFullPath(file)))
                                 try { File.Delete(file); } catch { }
+
                         foreach (var subDir in Directory.GetDirectories(dir))
                         {
                             DeleteExcept(subDir);
@@ -747,9 +780,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private async void SelectRobloxIcon()
         {
-            Window? window = null;
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-                window = desktop.MainWindow;
+            Window? window = GetActiveWindow();
 
             if (window == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
                 window = desktop2.Windows.FirstOrDefault(w => w.IsActive) as Window;
@@ -769,6 +800,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (files.Count > 0)
                 RobloxIconImagePath = files[0].Path.LocalPath;
+        }
+
+        private static Window? GetActiveWindow()
+        {
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                return desktop.MainWindow ?? desktop.Windows.FirstOrDefault(w => w.IsActive);
+            return null;
         }
     }
 }
