@@ -426,7 +426,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (IsGradientMode)
                     {
                         var orderedStops = GradientStops.OrderBy(s => s.Offset);
-                        gradientArg = string.Join(",", orderedStops.Select(s => s.Color.TrimStart('#')));
+                        gradientArg = string.Join(",", orderedStops.Select(s => $"{s.Offset}:{s.Color.TrimStart('#')}"));
                         angleArg = GradientAngle;
                     }
 
