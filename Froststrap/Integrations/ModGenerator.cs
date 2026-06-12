@@ -9,7 +9,6 @@
  */
 
 using System.IO.Compression;
-using System.Net.Http.Json;
 using System.Reflection;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -21,6 +20,9 @@ namespace Froststrap.Integrations
     public static class ModGenerator
     {
         private const string LOG_IDENT = "ModGenerator";
+
+        private const string ModGeneratorVersionApiUrl = "https://api.github.com/repos/Froststrap/mod-generator/releases/latest";
+        private static string ModGeneratorVersionCacheFile => Path.Combine(Paths.Cache, "ModGeneratorVersion.json");
 
         private static readonly string[] CursorFiles = ["IBeamCursor.png", "ArrowCursor.png", "ArrowFarCursor.png"];
         private static readonly string[] ShiftlockFiles = ["MouseLockedCursor.png"];
@@ -63,6 +65,98 @@ namespace Froststrap.Integrations
                         return true;
                 return false;
             }
+        }
+
+        private static async Task<GithubRelease?> GetLatestModGeneratorRelease()
+        {
+            try
+            {
+                return await Http.GetJson<GithubRelease>(new Uri(ModGeneratorVersionApiUrl));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string GetCachedModGeneratorVersion()
+        {
+            try
+            {
+                using var doc = JsonDocument.Parse(File.ReadAllText(ModGeneratorVersionCacheFile));
+                return doc.RootElement.GetProperty("Version").GetString() ?? "0.0.0";
+            }
+            catch
+            {
+                return "0.0.0";
+            }
+        }
+
+        private static void CacheModGeneratorVersion(string version)
+        {
+            var state = new { Version = version, UpdatedAt = DateTime.Now };
+            File.WriteAllText(ModGeneratorVersionCacheFile, JsonSerializer.Serialize(state));
+        }
+
+        public static async Task<string> EnsureModGeneratorAsync()
+        {
+            string exePath = GetModGeneratorExePath();
+            string cachedVersion = GetCachedModGeneratorVersion();
+
+            if (File.Exists(exePath))
+            {
+                var release = await GetLatestModGeneratorRelease();
+                if (release != null)
+                {
+                    bool needsUpdate = Utilities.CompareVersions(release.TagName, cachedVersion) == VersionComparison.GreaterThan;
+                    if (!needsUpdate)
+                        return exePath;
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Downloading mod-generator (cached: {cachedVersion})...");
+            await DownloadModGeneratorInternalAsync();
+            return exePath;
+        }
+
+        private static string GetModGeneratorExePath()
+        {
+            string assetName = GetModGeneratorAssetName();
+            string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
+            Directory.CreateDirectory(cacheDir);
+            return Path.Combine(cacheDir, assetName);
+        }
+
+        private static async Task DownloadModGeneratorInternalAsync()
+        {
+            var release = await GetLatestModGeneratorRelease();
+            if (release is null)
+                throw new Exception("Failed to fetch latest mod-generator release.");
+
+            string assetName = GetModGeneratorAssetName();
+            var asset = release.Assets?.FirstOrDefault(a => a.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));
+            string? downloadUrl = asset?.BrowserDownloadUrl;
+            if (string.IsNullOrEmpty(downloadUrl))
+                downloadUrl = $"https://github.com/Froststrap/mod-generator/releases/latest/download/{assetName}";
+
+            byte[] data = await App.HttpClient.GetByteArrayAsync(downloadUrl);
+            string exePath = GetModGeneratorExePath();
+            await File.WriteAllBytesAsync(exePath, data);
+
+            if (!OperatingSystem.IsWindows())
+            {
+                using var chmod = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{exePath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                });
+                if (chmod != null) await chmod.WaitForExitAsync();
+            }
+
+            CacheModGeneratorVersion(release.TagName);
+            App.Logger.WriteLine(LOG_IDENT, $"mod-generator updated to version {release.TagName}");
         }
 
         public static void RecolorAllPngs(
@@ -330,7 +424,7 @@ namespace Froststrap.Integrations
                     @"\['([^']+)'\]\s*=\s*{\s*ImageRectOffset\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageRectSize\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageSet\s*=\s*'([^']+)'",
                     RegexOptions.Compiled);
 
-                string[] tableNames = [ "assets_1x", "assets_2x", "assets_3x" ];
+                string[] tableNames = ["assets_1x", "assets_2x", "assets_3x"];
                 int totalMatches = 0;
 
                 foreach (string tableName in tableNames)
@@ -392,7 +486,7 @@ namespace Froststrap.Integrations
             string fontDir = Path.Combine(froststrapTemp, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons", "Font");
             if (!Directory.Exists(fontDir)) return;
 
-            string exePath = await DownloadModGeneratorAsync();
+            string exePath = await EnsureModGeneratorAsync();
             string colorArg = gradientStops ?? $"{solidColor.R:X2}{solidColor.G:X2}{solidColor.B:X2}";
             string args = $"--path \"{fontDir}\" --color {colorArg}";
 
@@ -410,35 +504,6 @@ namespace Froststrap.Integrations
             if (OperatingSystem.IsWindows()) return "mod-generator.exe";
             if (OperatingSystem.IsMacOS()) return "mod-generator-macos";
             return "mod-generator-linux";
-        }
-
-        private static async Task<string> DownloadModGeneratorAsync()
-        {
-            string assetName = GetModGeneratorAssetName();
-            string cacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
-            Directory.CreateDirectory(cacheDir);
-            string exePath = Path.Combine(cacheDir, assetName);
-            if (File.Exists(exePath)) return exePath;
-
-            var release = await App.HttpClient.GetFromJsonAsync<GithubRelease>("https://api.github.com/repos/Froststrap/mod-generator/releases/latest");
-            string? url = release?.Assets?.FirstOrDefault(a => a.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase))?.BrowserDownloadUrl;
-            url ??= $"https://github.com/Froststrap/mod-generator/releases/latest/download/{assetName}";
-
-            var data = await App.HttpClient.GetByteArrayAsync(url);
-            await File.WriteAllBytesAsync(exePath, data);
-
-            if (!OperatingSystem.IsWindows())
-            {
-                using var chmod = Process.Start(new ProcessStartInfo
-                {
-                    FileName = "chmod",
-                    Arguments = $"+x \"{exePath}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                });
-                if (chmod != null) await chmod.WaitForExitAsync();
-            }
-            return exePath;
         }
 
         public static async Task<(string luaZip, string extraZip, string contentZip, string hash, string version)> DownloadForModGenerator(bool overwrite = false)
