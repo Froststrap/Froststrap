@@ -490,7 +490,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         skipGlyphsArg = "play-large,play-small";
                     }
 
-                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, modFolderName, gradientArg, angleArg, imageMapArg, bandsArg, skipGlyphsArg);
+                    await ModGenerator.RecolorFontsAsync(TempRoot, _solidColor, gradientArg, angleArg, imageMapArg, bandsArg, skipGlyphsArg);
 
                     WriteBuilderIconsJson(TempRoot);
 
