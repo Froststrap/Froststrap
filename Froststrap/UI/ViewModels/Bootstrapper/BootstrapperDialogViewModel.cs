@@ -40,5 +40,16 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
             if (!keepOpen)
                 _dialog.CloseBootstrapper();
         }
+
+        private string _cancelButtonText = "Cancel";
+        public string CancelButtonText
+        {
+            get => _cancelButtonText;
+            set
+            {
+                _cancelButtonText = value;
+                OnPropertyChanged(nameof(CancelButtonText));
+            }
+        }
     }
 }

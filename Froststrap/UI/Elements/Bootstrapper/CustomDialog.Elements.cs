@@ -429,6 +429,11 @@ namespace Froststrap.UI.Elements.Bootstrapper
             {
                 button.Bind(Control.IsEnabledProperty, new Binding("CancelEnabled"));
                 button.Bind(Button.CommandProperty, new Binding("CancelInstallCommand"));
+                button.Bind(Button.ContentProperty, new Binding("CancelButtonText"));
+            }
+            else
+            {
+                button.Content = GetContentFromXElement(dialog, xmlElement);
             }
 
             return button;

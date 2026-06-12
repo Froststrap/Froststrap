@@ -1008,9 +1008,10 @@ namespace Froststrap
             double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
             double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
 
-            SetStatus("Checking Closest Regions...");
+            cancellationToken.ThrowIfCancellationRequested();
 
-            List<RegionDistance> topRegions = await GetClosestRegionsWithDistanceAsync(userLat, userLon, App.Settings.Prop.BestRegionAmounts);
+            SetStatus("Checking Closest Regions...");
+            List<RegionDistance> topRegions = await GetClosestRegionsWithDistanceAsync(userLat, userLon, App.Settings.Prop.BestRegionAmounts, cancellationToken);
             if (topRegions.Count == 0)
                 throw new HttpRequestException("No regions found from datacenter list");
 
@@ -1120,22 +1121,23 @@ namespace Froststrap
             string json = await response.Content.ReadAsStringAsync(cancellationToken);
             using var doc = JsonDocument.Parse(json);
 
-            if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem))
+            if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem) && dcElem.TryGetInt32(out int dcId))
             {
-                if (dcElem.TryGetInt32(out int dcId))
-                {
-                    var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
-                    var entry = datacenters?.FirstOrDefault(dc => dc.DataCenterIds.Contains(dcId));
-                    if (entry != null)
-                        return $"{entry.Location.City}, {entry.Location.Country}".TrimStart(',').Trim();
-                }
+                var datacentersUrl = new Uri("https://apis.rovalra.com/v1/datacenters/list");
+                var datacentersJson = await App.HttpClient.GetStringAsync(datacentersUrl, cancellationToken);
+                var datacenters = JsonSerializer.Deserialize<List<DatacenterEntry>>(datacentersJson);
+                var entry = datacenters?.FirstOrDefault(dc => dc.DataCenterIds.Contains(dcId));
+                if (entry != null)
+                    return $"{entry.Location.City}, {entry.Location.Country}".TrimStart(',').Trim();
             }
             return null;
         }
 
-        private static async Task<List<RegionDistance>> GetClosestRegionsWithDistanceAsync(double userLat, double userLon, int topCount = 3)
+        private static async Task<List<RegionDistance>> GetClosestRegionsWithDistanceAsync(double userLat, double userLon, int topCount = 3, CancellationToken cancellationToken = default)
         {
-            var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
+            var url = new Uri("https://apis.rovalra.com/v1/datacenters/list");
+            var json = await App.HttpClient.GetStringAsync(url, cancellationToken);
+            var datacenters = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
             if (datacenters == null || datacenters.Count == 0)
                 return [];
 
@@ -1157,13 +1159,10 @@ namespace Froststrap
                     regionDistance[regionKey] = distance;
             }
 
-            var closest = regionDistance
+            return new List<RegionDistance>(regionDistance
                 .OrderBy(kvp => kvp.Value)
                 .Take(topCount)
-                .Select(kvp => new RegionDistance { Region = kvp.Key, DistanceKm = kvp.Value })
-                .ToList();
-
-            return closest;
+                .Select(kvp => new RegionDistance { Region = kvp.Key, DistanceKm = kvp.Value }));
         }
 
         private async Task StartRoblox()
@@ -1205,6 +1204,8 @@ namespace Froststrap
                 _skipMatchmaking = false;
                 _matchmakingCts = new CancellationTokenSource();
 
+                Dialog?.CancelButtonText = "Skip";
+
                 try
                 {
                     if (App.Settings.Prop.EnableBetterMatchmaking &&
@@ -1239,6 +1240,7 @@ namespace Froststrap
                 }
                 finally
                 {
+                    Dialog?.CancelButtonText = "Cancel";
                     _matchmakingInProgress = false;
                     _matchmakingCts?.Dispose();
                     _matchmakingCts = null;
@@ -1391,6 +1393,8 @@ namespace Froststrap
             _skipMatchmaking = false;
             _matchmakingCts = new CancellationTokenSource();
 
+            Dialog?.CancelButtonText = "Skip";
+
             try
             {
                 if (App.Settings.Prop.EnableBetterMatchmaking &&
@@ -1425,6 +1429,7 @@ namespace Froststrap
             }
             finally
             {
+                Dialog?.CancelButtonText = "Cancel";
                 _matchmakingInProgress = false;
                 _matchmakingCts?.Dispose();
                 _matchmakingCts = null;
@@ -1884,7 +1889,7 @@ namespace Froststrap
                     App.Logger.WriteException(LOG_IDENT, ex);
                 }
             }
-            else
+            else if (_appPid != 0)
             {
                 try
                 {

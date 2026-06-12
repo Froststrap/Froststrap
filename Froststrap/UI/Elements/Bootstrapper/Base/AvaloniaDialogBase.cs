@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Froststrap.UI.Utility;
+using Froststrap.UI.ViewModels.Bootstrapper;
 
 namespace Froststrap.UI.Elements.Bootstrapper.Base
 {
@@ -25,6 +26,12 @@ namespace Froststrap.UI.Elements.Bootstrapper.Base
         {
             get => BackingMessage;
             set => RunOnUI(() => BackingMessage = value);
+        }
+
+        public virtual string CancelButtonText
+        {
+            get => ((BootstrapperDialogViewModel)DataContext!).CancelButtonText;
+            set => RunOnUI(() => ((BootstrapperDialogViewModel)DataContext!).CancelButtonText = value);
         }
 
         public virtual int ProgressMaximum

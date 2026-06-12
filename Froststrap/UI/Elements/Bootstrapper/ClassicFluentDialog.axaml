@@ -49,7 +49,7 @@
 				<SolidColorBrush Color="{DynamicResource SolidBackgroundFillColorSecondary}"
                                  Opacity="{Binding FooterOpacity}" />
 			</Border.Background>
-			<Button Content="Cancel"
+			<Button Content="{Binding CancelButtonText}"
                     Width="120"
                     HorizontalAlignment="Right"
                     IsEnabled="{Binding CancelEnabled}"

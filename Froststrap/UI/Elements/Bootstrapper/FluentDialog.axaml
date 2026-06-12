@@ -88,7 +88,7 @@
                 Width="120"
                 HorizontalAlignment="Center"
                 Command="{Binding CancelInstallCommand}"
-                Content="Cancel"
+                Content="{Binding CancelButtonText}"
                 FontSize="14"
                 IsEnabled="{Binding CancelEnabled}"
                 />
