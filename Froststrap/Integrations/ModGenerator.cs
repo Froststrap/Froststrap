@@ -75,7 +75,8 @@ namespace Froststrap.Integrations
             List<GradientStop>? gradient = null,
             float gradientAngleDeg = 0f,
             string? getImageSetDataPath = null,
-            string? customLogoPath = null)
+            string? customLogoPath = null,
+            string? customSpinnerPath = null)
         {
             if (string.IsNullOrWhiteSpace(rootDir) || !Directory.Exists(rootDir))
                 return;
@@ -110,7 +111,7 @@ namespace Froststrap.Integrations
 
             if (!string.IsNullOrWhiteSpace(getImageSetDataPath) && File.Exists(getImageSetDataPath))
             {
-                RecolorSpriteSheets(solidColor, gradient, gradientAngleDeg, getImageSetDataPath, customLogoPath);
+                RecolorSpriteSheets(solidColor, gradient, gradientAngleDeg, getImageSetDataPath, customLogoPath, customSpinnerPath);
             }
         }
 
@@ -119,7 +120,8 @@ namespace Froststrap.Integrations
             List<GradientStop>? gradient,
             float gradientAngleDeg,
             string getImageSetDataPath,
-            string? customLogoPath)
+            string? customLogoPath,
+            string? customSpinnerPath)
         {
             App.Logger?.WriteLine(LOG_IDENT, $"Parsing image set data: {getImageSetDataPath}");
 
@@ -141,6 +143,8 @@ namespace Froststrap.Integrations
 
                 if (!string.IsNullOrEmpty(customLogoPath) && File.Exists(customLogoPath))
                     modified |= ReplaceCustomSprite(sheet, sprites, "icons/logo/block", customLogoPath);
+                if (!string.IsNullOrEmpty(customSpinnerPath) && File.Exists(customSpinnerPath))
+                    modified |= ReplaceCustomSprite(sheet, sprites, "icons/graphic/loadingspinner", customSpinnerPath);
 
                 foreach (var sprite in sprites)
                 {
@@ -148,6 +152,8 @@ namespace Froststrap.Integrations
                     if (SpriteBlacklistInstance.IsBlacklisted(sprite.Name)) continue;
 
                     if (string.Equals(sprite.Name, "icons/logo/block", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(customLogoPath))
+                        continue;
+                    if (string.Equals(sprite.Name, "icons/graphic/loadingspinner", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(customSpinnerPath))
                         continue;
 
                     var rect = new Rectangle(sprite.X, sprite.Y, sprite.W, sprite.H);
@@ -324,7 +330,7 @@ namespace Froststrap.Integrations
                     @"\['([^']+)'\]\s*=\s*{\s*ImageRectOffset\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageRectSize\s*=\s*Vector2\.new\((\d+),\s*(\d+)\)\s*,\s*ImageSet\s*=\s*'([^']+)'",
                     RegexOptions.Compiled);
 
-                string[] tableNames = { "assets_1x", "assets_2x", "assets_3x" };
+                string[] tableNames = [ "assets_1x", "assets_2x", "assets_3x" ];
                 int totalMatches = 0;
 
                 foreach (string tableName in tableNames)
@@ -356,7 +362,7 @@ namespace Froststrap.Integrations
                         string imagePath = Path.GetFullPath(Path.Combine(spriteSheetsDir, imageSet));
 
                         if (!result.ContainsKey(imagePath))
-                            result[imagePath] = new List<SpriteDef>();
+                            result[imagePath] = [];
                         result[imagePath].Add(new SpriteDef(name, x, y, w, h));
                     }
                 }

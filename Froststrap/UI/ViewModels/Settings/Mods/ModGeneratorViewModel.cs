@@ -39,6 +39,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             SelectRobloxIconCommand = new RelayCommand(SelectRobloxIcon);
             ClearRobloxIconCommand = new RelayCommand(() => RobloxIconImagePath = "");
 
+            SelectSpinnerIconCommand = new RelayCommand(SelectSpinnerIcon);
+            ClearSpinnerIconCommand = new RelayCommand(() => CustomSpinnerPath = "");
 
             _ = LoadFontFilesAsync();
         }
@@ -54,6 +56,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ICommand OpenColorPickerCommand { get; }
         public ICommand SelectRobloxIconCommand { get; }
         public ICommand ClearRobloxIconCommand { get; }
+        public ICommand SelectSpinnerIconCommand { get; }
+        public ICommand ClearSpinnerIconCommand { get; }
 
         [RelayCommand] private void OpenMods() => OpenModsEvent?.Invoke(this, EventArgs.Empty);
         [RelayCommand] private void OpenPresetMods() => OpenPresetModsEvent?.Invoke(this, EventArgs.Empty);
@@ -193,6 +197,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             get => _dontColorPlayIcon;
             set => SetProperty(ref _dontColorPlayIcon, value);
+        }
+
+        private string _customSpinnerPath = "";
+        public string CustomSpinnerPath
+        {
+            get => _customSpinnerPath;
+            set => SetProperty(ref _customSpinnerPath, value);
         }
         #endregion
 
@@ -434,9 +445,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     float gradientAngleForSprites = 0f;
                     if (IsGradientMode)
                     {
-                        gradientStopsForSprites = GradientStops.OrderBy(s => s.Offset)
-                            .Select(s => new ModGenerator.GradientStop((float)s.Offset, Color.Parse(s.Color)))
-                            .ToList();
+                        gradientStopsForSprites = [.. GradientStops.OrderBy(s => s.Offset)
+                            .Select(s => new ModGenerator.GradientStop((float)s.Offset, Color.Parse(s.Color)))];
                         gradientAngleForSprites = (float)GradientAngle;
                     }
 
@@ -450,7 +460,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         gradientStopsForSprites,
                         gradientAngleForSprites,
                         getImageSetDataPath,
-                        RobloxIconImagePath
+                        RobloxIconImagePath,
+                        CustomSpinnerPath
                     );
                     Progress = 70;
 
@@ -518,7 +529,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     }
 
                     preservePaths.Add(Path.GetFullPath(foundationImagesDir));
-                    preservePaths.Add(Path.GetFullPath(getImageSetDataPath));
 
                     void DeleteExcept(string dir)
                     {
@@ -800,6 +810,26 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (files.Count > 0)
                 RobloxIconImagePath = files[0].Path.LocalPath;
+        }
+
+        private async void SelectSpinnerIcon()
+        {
+            Window? window = GetActiveWindow();
+            if (window == null)
+            {
+                StatusText = "Cannot open file picker: no active window.";
+                return;
+            }
+
+            var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+            {
+                Title = "Select Custom Spinner Image",
+                FileTypeFilter = [FilePickerFileTypes.ImageAll],
+                AllowMultiple = false
+            });
+
+            if (files.Count > 0)
+                CustomSpinnerPath = files[0].Path.LocalPath;
         }
 
         private static Window? GetActiveWindow()

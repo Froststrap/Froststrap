@@ -172,15 +172,30 @@
                             </StackPanel>
                         </WrapPanel>
 
-                        <TextBlock Text="Roblox Icon (optional)" FontWeight="SemiBold" Margin="0,8,0,4"/>
-                        <Grid ColumnDefinitions="*,Auto,Auto" Margin="0,0,0,8">
-                            <TextBox Text="{Binding RobloxIconImagePath}" IsReadOnly="True" Watermark="No image selected"
-                                     VerticalAlignment="Center"
-                                     IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <Button Grid.Column="1" Content="Select" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"
-                                    IsEnabled="{Binding IsNotGeneratingMod}"/>
-                            <Button Grid.Column="2" Content="Clear" Command="{Binding ClearRobloxIconCommand}"
-                                    IsEnabled="{Binding IsNotGeneratingMod}"/>
+                        <Grid ColumnDefinitions="*,*" Margin="0,8,0,8">
+                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                <TextBlock Text="Roblox Icon (optional)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                    <TextBox Text="{Binding RobloxIconImagePath}" IsReadOnly="True" Watermark="No image selected"
+                                             VerticalAlignment="Center" IsEnabled="{Binding IsNotGeneratingMod}"/>
+                                    <Button Grid.Column="1" Content="Select" Command="{Binding SelectRobloxIconCommand}" Margin="4,0,4,0"
+                                            IsEnabled="{Binding IsNotGeneratingMod}"/>
+                                    <Button Grid.Column="2" Content="Clear" Command="{Binding ClearRobloxIconCommand}"
+                                            IsEnabled="{Binding IsNotGeneratingMod}"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                <TextBlock Text="Spinner Icon (optional)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                    <TextBox Text="{Binding CustomSpinnerPath}" IsReadOnly="True" Watermark="No image selected"
+                                             VerticalAlignment="Center" IsEnabled="{Binding IsNotGeneratingMod}"/>
+                                    <Button Grid.Column="1" Content="Select" Command="{Binding SelectSpinnerIconCommand}" Margin="4,0,4,0"
+                                            IsEnabled="{Binding IsNotGeneratingMod}"/>
+                                    <Button Grid.Column="2" Content="Clear" Command="{Binding ClearSpinnerIconCommand}"
+                                            IsEnabled="{Binding IsNotGeneratingMod}"/>
+                                </Grid>
+                            </StackPanel>
                         </Grid>
 
                         <TextBlock Text="Mod Name (optional)" FontWeight="SemiBold" Margin="0,8,0,4" IsVisible="{Binding IncludeModifications}"/>
