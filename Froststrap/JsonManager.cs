@@ -1,6 +1,5 @@
-﻿using System.Reflection;
-using System.Text.Json;
-using System.Windows;
+﻿using System.Text.Json.Nodes;
+using System.Reflection;
 
 namespace Froststrap
 {
@@ -131,6 +130,59 @@ namespace Froststrap
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Save complete!");
+        }
+
+        public virtual void SaveSetting(string SettingName)
+        {
+            if (string.IsNullOrEmpty(SettingName))
+            {
+                Save();
+                return;
+            }
+
+            string LOG_IDENT = $"{LOG_IDENT_CLASS}::SaveSetting";
+            App.Logger.WriteLine(LOG_IDENT, $"Saving setting '{SettingName}' to {FileLocation}");
+
+            Directory.CreateDirectory(Path.GetDirectoryName(FileLocation)!);
+
+            try
+            {
+                JsonObject existingJson = [];
+                if (File.Exists(FileLocation))
+                {
+                    string existingContent = File.ReadAllText(FileLocation);
+                    if (!string.IsNullOrWhiteSpace(existingContent))
+                    {
+                        using var doc = JsonDocument.Parse(existingContent);
+                        existingJson = JsonSerializer.SerializeToNode(doc.RootElement)?.AsObject() ?? [];
+                    }
+                }
+
+                var currentJson = JsonSerializer.SerializeToNode(Prop, _jsonOptions)?.AsObject();
+                if (currentJson is null)
+                    throw new InvalidOperationException("Failed to serialize current object.");
+
+                if (currentJson.TryGetPropertyValue(SettingName, out JsonNode? value))
+                {
+                    existingJson[SettingName] = value?.DeepClone();
+                    App.Logger.WriteLine(LOG_IDENT, $"Updated Setting '{SettingName}'");
+                }
+                else
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Setting '{SettingName}' not found – aborting save.");
+                    return;
+                }
+
+                string contents = existingJson.ToJsonString(_jsonOptions);
+                File.WriteAllText(FileLocation, contents);
+                LastFileHash = MD5Hash.FromString(contents);
+                App.Logger.WriteLine(LOG_IDENT, "SaveSetting complete!");
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Failed to save Setting");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
         }
 
         public virtual void Delete()

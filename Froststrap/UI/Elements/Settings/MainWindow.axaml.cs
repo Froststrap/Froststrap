@@ -662,6 +662,12 @@ namespace Froststrap.UI.Elements.Settings
             State.Height = this.Height;
             State.Left = this.Position.X;
             State.Top = this.Position.Y;
+
+            if (_viewModel?.CurrentPage != null)
+            {
+                App.State.Prop.LastPage = _viewModel.CurrentPage.GetType().FullName;
+                App.State.SaveSetting("LastPage");
+            }
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
