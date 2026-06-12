@@ -216,14 +216,9 @@
                                                         </Border>
                                                     </StackPanel>
 
-                                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                                        <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}">
-                                                            <ic:SymbolIcon Symbol="Timer" FontSize="12" Opacity="0.5" />
-                                                            <TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
-                                                        </StackPanel>
-                                                        <TextBlock Text="{Binding JoinedAt, StringFormat='{}{0:MM/dd HH:mm}'}"
-                                                                   FontSize="11" Opacity="0.4"
-                                                                   IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}" />
+                                                    <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding #RootPage.DataContext.IsTrackedGame}">
+                                                        <ic:SymbolIcon Symbol="Timer" FontSize="12" Opacity="0.5" />
+                                                        <TextBlock Text="{Binding DurationText}" FontSize="11" Opacity="0.6"/>
                                                     </StackPanel>
                                                 </StackPanel>
 
