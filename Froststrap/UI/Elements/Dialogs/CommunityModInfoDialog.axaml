@@ -85,11 +85,21 @@
                         <TextBlock Text="{Binding Mod.Author, StringFormat='Created by {0}'}"
                                    FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-                        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4" IsVisible="{Binding Mod.IsColorMod}">
-                            <TextBlock Text="{Binding Mod.HexCode, StringFormat='Hex: {0}'}"
-                                       FontSize="12" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                            <Border Width="12" Height="12" CornerRadius="2"
-                                    Background="{Binding PreviewBrush}" VerticalAlignment="Center"/>
+                        <StackPanel Margin="0,4" IsVisible="{Binding Mod.IsColorMod}">
+                            <TextBlock Text="{Binding ColorDisplayText}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0"
+                                    IsVisible="{Binding Mod.GradientAngle.HasValue}">
+                            <TextBlock Text="Angle:"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
+                            <TextBlock Text="{Binding Mod.GradientAngle}"
+                                       FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                         </StackPanel>
 
                         <Border Background="{DynamicResource SystemAccentColor}"

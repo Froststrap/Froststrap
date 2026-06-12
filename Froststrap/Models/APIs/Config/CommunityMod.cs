@@ -16,7 +16,13 @@ namespace Froststrap.Models.APIs.Config
         public string DownloadUrl { get; set; } = null!;
 
         [JsonPropertyName("hexcode")]
-        public string HexCode { get; set; } = null!;
+        public string? HexCode { get; set; } = null!;
+
+        [JsonPropertyName("gradientStops")]
+        public List<GradientStops>? GradientStops { get; set; }
+
+        [JsonPropertyName("gradientAngle")]
+        public double? GradientAngle { get; set; }
 
         [JsonPropertyName("author")]
         public string Author { get; set; } = null!;
@@ -86,7 +92,7 @@ namespace Froststrap.Models.APIs.Config
         public bool IsCustomTheme => ModType == ModType.CustomTheme;
 
         [JsonIgnore]
-        public bool IsColorMod => ModType == ModType.ColorMod;
+        public bool IsColorMod => HexCode != null || (GradientStops != null && GradientStops.Count > 0);
 
         [JsonIgnore]
         public string ModTypeDisplay => ModType switch

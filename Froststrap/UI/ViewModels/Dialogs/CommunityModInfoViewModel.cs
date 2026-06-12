@@ -14,6 +14,13 @@ namespace Froststrap.UI.ViewModels.Dialogs
     {
         private static readonly string FontDir = Path.Combine(Path.GetTempPath(), "Froststrap", "Fonts");
 
+        private string _colorDisplayText = string.Empty;
+        public string ColorDisplayText
+        {
+            get => _colorDisplayText;
+            set => SetProperty(ref _colorDisplayText, value);
+        }
+
         private CommunityMod _mod = mod;
         public CommunityMod Mod
         {
@@ -86,10 +93,43 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         private void UpdateGlyphColors()
         {
-            if (Color.TryParse(Mod.HexCode, out var color))
+            if (Mod.GradientStops != null && Mod.GradientStops.Count > 0)
+            {
+                ColorDisplayText = string.Join(" → ", Mod.GradientStops.Select(s => s.Color.ToUpper()));
+
+                var stops = new Avalonia.Media.GradientStops();
+                foreach (var stop in Mod.GradientStops.OrderBy(s => s.Offset))
+                {
+                    if (Color.TryParse(stop.Color, out var color))
+                        stops.Add(new Avalonia.Media.GradientStop(color, stop.Offset));
+                }
+                if (stops.Count > 0)
+                {
+                    double angle = Mod.GradientAngle ?? 90;
+                    var brush = new LinearGradientBrush
+                    {
+                        GradientStops = stops,
+                        StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+                        EndPoint = new RelativePoint(1, 1, RelativeUnit.Relative)
+                    };
+                    double rad = (angle - 90) * Math.PI / 180.0;
+                    double dx = Math.Cos(rad);
+                    double dy = Math.Sin(rad);
+                    brush.StartPoint = new RelativePoint(0.5 - dx / 2, 0.5 - dy / 2, RelativeUnit.Relative);
+                    brush.EndPoint = new RelativePoint(0.5 + dx / 2, 0.5 + dy / 2, RelativeUnit.Relative);
+                    PreviewBrush = brush;
+                    return;
+                }
+            }
+            else if (!string.IsNullOrEmpty(Mod.HexCode) && Color.TryParse(Mod.HexCode, out var color))
+            {
+                ColorDisplayText = Mod.HexCode.ToUpper();
                 PreviewBrush = new SolidColorBrush(color);
-            else
-                PreviewBrush = Brushes.White;
+                return;
+            }
+
+            ColorDisplayText = "No color information";
+            PreviewBrush = Brushes.White;
         }
 
         private static bool IsFileReady(string filename)
@@ -162,12 +202,10 @@ namespace Froststrap.UI.ViewModels.Dialogs
                             );
                             geometry.Transform = translate;
 
-                            var finalBrush = PreviewBrush as SolidColorBrush ?? new SolidColorBrush(Colors.White);
-
                             newItems.Add(new GlyphItem
                             {
                                 Data = geometry,
-                                Brush = finalBrush
+                                Brush = PreviewBrush
                             });
                         }
                         catch (Exception ex)
