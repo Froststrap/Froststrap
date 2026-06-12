@@ -36,8 +36,9 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
 
         private void CancelInstall()
         {
-            _dialog.Bootstrapper?.Cancel();
-            _dialog.CloseBootstrapper();
+            bool keepOpen = _dialog.Bootstrapper?.Cancel() ?? false;
+            if (!keepOpen)
+                _dialog.CloseBootstrapper();
         }
     }
 }

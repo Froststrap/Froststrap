@@ -15,14 +15,12 @@
 #endif
 
 using Froststrap.AppData;
-using Froststrap.Models.APIs;
 using Froststrap.RobloxInterfaces;
 using ICSharpCode.SharpZipLib.Zip;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using Microsoft.Win32;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.ComponentModel;
@@ -91,6 +89,10 @@ namespace Froststrap
         private double _taskbarProgressMaximum;
         private long _totalDownloadedBytes = 0;
         private bool _packageExtractionSuccess = true;
+
+        private bool _matchmakingInProgress = false;
+        private bool _skipMatchmaking = false;
+        private CancellationTokenSource? _matchmakingCts;
 
         private SynchronizationContext? _uiContext;
 
@@ -956,7 +958,7 @@ namespace Froststrap
             return R * c;
         }
 
-        private async Task<string> GetBetterMatchmakingServerID()
+        private async Task<string> GetBetterMatchmakingServerID(CancellationToken cancellationToken = default)
         {
             const string LOG_IDENT = "Bootstrapper::GetBetterMatchmakingServerID";
 
@@ -972,7 +974,9 @@ namespace Froststrap
 
                 SetStatus($"Searching for servers in {App.Settings.Prop.SelectedRegion}...");
                 int selectedRegionServerSize = App.Settings.Prop.JoinSmallerServer ? 1 : 2;
-                var selectedRegionFetchResult = await selectedRegionFetcher.FetchServerInstancesAsync((long)_joinData.PlaceId!, cursor: "", sortOrder: selectedRegionServerSize, optionalCookie: selectedRegionCookie);
+                var selectedRegionFetchResult = await selectedRegionFetcher.FetchServerInstancesAsync(
+                    (long)_joinData.PlaceId!, cursor: "", sortOrder: selectedRegionServerSize,
+                    optionalCookie: selectedRegionCookie, cancellationToken: cancellationToken);
 
                 var selectedRegionCandidates = selectedRegionFetchResult.Servers?
                     .Where(s => !string.IsNullOrEmpty(s.Id) &&
@@ -994,13 +998,17 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, $"No servers found in selected region {App.Settings.Prop.SelectedRegion}. Falling back to Auto mode.");
             }
 
-            var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
-            if (string.IsNullOrEmpty(ipinfo.Loc))
+            cancellationToken.ThrowIfCancellationRequested();
+            var ipinfoJson = await App.HttpClient.GetStringAsync("https://ipinfo.io/json", cancellationToken);
+            var ipinfo = JsonSerializer.Deserialize<IPInfoResponse>(ipinfoJson);
+            if (string.IsNullOrEmpty(ipinfo?.Loc))
                 throw new HttpRequestException("Location data missing from ipinfo.io");
 
             string[] location = ipinfo.Loc.Split(',');
             double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
             double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
+
+            SetStatus("Checking Closest Regions...");
 
             List<RegionDistance> topRegions = await GetClosestRegionsWithDistanceAsync(userLat, userLon, App.Settings.Prop.BestRegionAmounts);
             if (topRegions.Count == 0)
@@ -1014,7 +1022,7 @@ namespace Froststrap
 
             if (!string.IsNullOrEmpty(_joinData.JobId))
             {
-                string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!);
+                string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!, cancellationToken);
                 if (defaultRegion != null && regionRank.TryGetValue(defaultRegion, out int rank))
                 {
                     App.Logger.WriteLine(LOG_IDENT, $"Default server region: {defaultRegion} (rank {rank})");
@@ -1035,7 +1043,9 @@ namespace Froststrap
 
             SetStatus("Searching for nearby servers...");
             int ServerSize = App.Settings.Prop.JoinSmallerServer ? 1 : 2;
-            var fetchResult = await fetcher.FetchServerInstancesAsync((long)_joinData.PlaceId!, cursor: "", sortOrder: ServerSize, optionalCookie: cookie);
+            var fetchResult = await fetcher.FetchServerInstancesAsync(
+                (long)_joinData.PlaceId!, cursor: "", sortOrder: ServerSize,
+                optionalCookie: cookie, cancellationToken: cancellationToken);
 
             var candidates = fetchResult.Servers?
                 .Where(s => !string.IsNullOrEmpty(s.Id))
@@ -1055,6 +1065,8 @@ namespace Froststrap
 
             foreach (var server in candidates)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (string.IsNullOrEmpty(server.Region))
                     continue;
 
@@ -1085,15 +1097,15 @@ namespace Froststrap
             return "";
         }
 
-        private static async Task<string?> GetServerRegionAsync(string jobId, long placeId)
+        private static async Task<string?> GetServerRegionAsync(string jobId, long placeId, CancellationToken cancellationToken = default)
         {
             var fetcher = new Integrations.RobloxServerFetcher();
             string? cookie = await fetcher.ResolveCookieAsync();
             if (string.IsNullOrEmpty(cookie))
                 return null;
 
-            using var httpClient = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
+            var url = UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance");
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
             request.Content = new StringContent(
                 JsonSerializer.Serialize(new { placeId, isTeleport = false, gameId = jobId, gameJoinAttemptId = jobId }),
@@ -1101,11 +1113,11 @@ namespace Froststrap
                 "application/json"
             );
 
-            var response = await httpClient.SendAsync(request);
+            var response = await App.HttpClient.SendAsync(request, cancellationToken);
             if (!response.IsSuccessStatusCode)
                 return null;
 
-            string json = await response.Content.ReadAsStringAsync();
+            string json = await response.Content.ReadAsStringAsync(cancellationToken);
             using var doc = JsonDocument.Parse(json);
 
             if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem))
@@ -1154,12 +1166,6 @@ namespace Froststrap
             return closest;
         }
 
-        private class RegionDistance
-        {
-            public string Region { get; set; } = "";
-            public double DistanceKm { get; set; }
-        }
-
         private async Task StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
@@ -1180,7 +1186,7 @@ namespace Froststrap
                 if (App.Settings.Prop.EnableBetterMatchmaking &&
                     (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend — showing dialog");
+                    App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, showing dialog");
 
                     var result = await Frontend.ShowMessageBox(
                         String.Format(Strings.Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
@@ -1192,16 +1198,35 @@ namespace Froststrap
                         isFollowUser = true;
                 }
 
+                string? serverid = null;
+                bool matchmakingCancelled = false;
+
+                _matchmakingInProgress = true;
+                _skipMatchmaking = false;
+                _matchmakingCts = new CancellationTokenSource();
+
                 try
                 {
-                    if (App.Settings.Prop.EnableBetterMatchmaking && _joinData.JoinType != GameJoinType.RequestPrivateGame && _joinData.PlaceId != null && !isFollowUser)
+                    if (App.Settings.Prop.EnableBetterMatchmaking &&
+                        _joinData.JoinType != GameJoinType.RequestPrivateGame &&
+                        _joinData.PlaceId != null &&
+                        !isFollowUser)
                     {
-                        string serverid = await GetBetterMatchmakingServerID();
-                        string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-
-                        if (!string.IsNullOrEmpty(serverid))
-                            _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                        if (_skipMatchmaking)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
+                            matchmakingCancelled = true;
+                        }
+                        else
+                        {
+                            serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                        }
                     }
+                }
+                catch (OperationCanceledException)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
+                    matchmakingCancelled = true;
                 }
                 catch (HttpRequestException ex)
                 {
@@ -1210,7 +1235,19 @@ namespace Froststrap
                         Strings.Dialog_Connectivity_MatchmakingFailed,
                         MessageBoxImage.Warning,
                         ex
-                        );
+                    );
+                }
+                finally
+                {
+                    _matchmakingInProgress = false;
+                    _matchmakingCts?.Dispose();
+                    _matchmakingCts = null;
+                }
+
+                if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
+                {
+                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+                    _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
                 }
 
                 if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
@@ -1347,16 +1384,35 @@ namespace Froststrap
                     isFollowUser = true;
             }
 
+            string? serverid = null;
+            bool matchmakingCancelled = false;
+
+            _matchmakingInProgress = true;
+            _skipMatchmaking = false;
+            _matchmakingCts = new CancellationTokenSource();
+
             try
             {
-                if (App.Settings.Prop.EnableBetterMatchmaking && _joinData.JoinType != GameJoinType.RequestPrivateGame && _joinData.PlaceId != null && !isFollowUser)
+                if (App.Settings.Prop.EnableBetterMatchmaking &&
+                    _joinData.JoinType != GameJoinType.RequestPrivateGame &&
+                    _joinData.PlaceId != null &&
+                    !isFollowUser)
                 {
-                    string serverid = await GetBetterMatchmakingServerID();
-                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-
-                    if (!string.IsNullOrEmpty(serverid))
-                        _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                    if (_skipMatchmaking)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
+                        matchmakingCancelled = true;
+                    }
+                    else
+                    {
+                        serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                    }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
+                matchmakingCancelled = true;
             }
             catch (HttpRequestException ex)
             {
@@ -1365,7 +1421,19 @@ namespace Froststrap
                     Strings.Dialog_Connectivity_MatchmakingFailed,
                     MessageBoxImage.Warning,
                     ex
-                    );
+                );
+            }
+            finally
+            {
+                _matchmakingInProgress = false;
+                _matchmakingCts?.Dispose();
+                _matchmakingCts = null;
+            }
+
+            if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
+            {
+                string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+                _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
             }
 
             SetStatus("Starting Sober...");
@@ -1779,12 +1847,21 @@ namespace Froststrap
             return false;
         }
 
-        public void Cancel()
+        public bool Cancel()
         {
             const string LOG_IDENT = "Bootstrapper::Cancel";
 
+            if (_matchmakingInProgress)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping Better MatchMaking.");
+                _skipMatchmaking = true;
+                _matchmakingCts?.Cancel();
+                Dialog?.Message = "Skipping server search...";
+                return true;
+            }
+
             if (_cancelTokenSource.IsCancellationRequested)
-                return;
+                return false;
 
             App.Logger.WriteLine(LOG_IDENT, "Cancelling launch...");
             _cancelTokenSource.Cancel();
@@ -1795,11 +1872,9 @@ namespace Froststrap
             {
                 try
                 {
-                    // clean up registry keys
                     if (OperatingSystem.IsWindows())
                         WindowsRegistry.RegisterClientLocation(IsStudioLaunch, null);
 
-                    // clean up install
                     if (Directory.Exists(_latestVersionDirectory))
                         Directory.Delete(_latestVersionDirectory, true);
                 }
@@ -1846,8 +1921,8 @@ namespace Froststrap
 
             Dialog?.CloseBootstrapper();
             App.SoftTerminate(ErrorCode.ERROR_CANCELLED);
+            return false;
         }
-
         #endregion
 
         #region App Install

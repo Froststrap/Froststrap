@@ -289,22 +289,22 @@ namespace Froststrap.Integrations
             return null;
         }
 
-        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", int sortOrder = 2, string? optionalCookie = null)
+        public async Task<FetchResult> FetchServerInstancesAsync(long placeId, string cursor = "", int sortOrder = 2, string? optionalCookie = null, CancellationToken cancellationToken = default)
         {
             string? roblosecurity = !string.IsNullOrWhiteSpace(optionalCookie) ? optionalCookie : await ResolveCookieAsync();
             if (string.IsNullOrWhiteSpace(roblosecurity)) return new FetchResult();
 
-            if (_datacenterIdToRegion == null) await GetDatacentersAsync();
+            if (_datacenterIdToRegion == null) await GetDatacentersAsync(cancellationToken);
 
             string url = $"https://games.roblox.com/v1/games/{placeId}/servers/Public?sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
 
             var req = new HttpRequestMessage(HttpMethod.Get, url);
             req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
 
-            var response = await _client.SendAsync(req).ConfigureAwait(false);
+            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode) return new FetchResult();
 
-            using var jsonDoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            using var jsonDoc = JsonDocument.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
             if (!jsonDoc.RootElement.TryGetProperty("data", out var dataElement)) return new FetchResult();
 
             string nextCursor = jsonDoc.RootElement.TryGetProperty("nextPageCursor", out var cElem) ? cElem.GetString() ?? "" : "";
@@ -312,7 +312,12 @@ namespace Froststrap.Integrations
             var instances = new ConcurrentBag<ServerInstance>();
             var placeCache = _serverCache.GetOrAdd(placeId, _ => []);
 
-            var parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = 8 };
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 8,
+                CancellationToken = cancellationToken
+            };
+
             await Parallel.ForEachAsync(dataElement.EnumerateArray(), parallelOptions, async (serverElem, ct) =>
             {
                 string jobId = serverElem.GetProperty("id").GetString() ?? "";
