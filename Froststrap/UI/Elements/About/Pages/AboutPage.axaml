@@ -142,7 +142,6 @@
                         <controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[AppleBlox](https://github.com/AppleBlox/appleblox)" />
 						<controls:MarkdownTextBlock MarkdownText="[Sober/Vinegar](https://github.com/vinegarhq/vinegar)" />
-						<controls:MarkdownTextBlock MarkdownText="[Funkstrap](https://github.com/DawndreamerStudios/funkstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[MaximumADHD](https://github.com/MaximumADHD)" />
                     </StackPanel>
                 </Expander>

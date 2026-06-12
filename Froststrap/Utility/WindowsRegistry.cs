@@ -180,32 +180,5 @@ namespace Froststrap.Utility
                 App.Logger.WriteLine("Protocol::Unregister", $"Failed to unregister {key}: {ex}");
             }
         }
-
-        public static void DisableFullscreenOptimizations(string exePath)
-        {
-            const string keyPath =
-                @"Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers";
-
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(keyPath))
-            {
-                key.SetValue(
-                    exePath,
-                    "~ DISABLEDXMAXIMIZEDWINDOWEDMODE",
-                    RegistryValueKind.String
-                );
-            }
-        }
-
-        // aka delete the old key on a roblox update
-        public static void EnableFullscreenOptimizations(string exePath)
-        {
-            const string keyPath =
-                @"Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers";
-
-            using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(keyPath, writable: true))
-            {
-                key?.DeleteValue(exePath, false);
-            }
-        }
     }
 }

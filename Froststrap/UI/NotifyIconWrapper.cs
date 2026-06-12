@@ -13,7 +13,7 @@ namespace Froststrap.UI
     {
         private bool _isDisposed = false;
         private readonly TrayIcon _trayIcon;
-        public readonly MenuContainer _menuContainer;
+        private readonly MenuContainer _menuContainer;
         private readonly Watcher _watcher;
         private ActivityWatcher? ActivityWatcher => _watcher.ActivityWatcher;
 

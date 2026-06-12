@@ -1240,9 +1240,6 @@ namespace Froststrap
                 WorkingDirectory = AppData.Directory
             };
 
-            if (OperatingSystem.IsWindows())
-                WindowsRegistry.DisableFullscreenOptimizations(AppData.ExecutablePath);
-
             if (OperatingSystem.IsMacOS())
                 startInfo.UseShellExecute = true;
 
@@ -1715,7 +1712,6 @@ namespace Froststrap
                 ProcessId = _appPid,
                 LogFile = logFileName,
                 AutoclosePids = autoclosePids,
-                RobloxDirectory = _latestVersionDirectory,
                 LaunchMode = _launchMode
             };
 
@@ -2090,9 +2086,6 @@ namespace Froststrap
                 // we dont want to accidentally delete the files of a running roblox instance
                 if (!TryDeleteRobloxInDirectory(dir))
                     continue;
-
-                if (OperatingSystem.IsWindows())
-                    WindowsRegistry.EnableFullscreenOptimizations(Path.Join(dir, "RobloxPlayerBeta.exe"));
 
                 try
                 {
@@ -3999,23 +3992,6 @@ Windows Registry Editor Version 5.00
                     }
                     catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                 }
-            }
-
-            if (App.Settings.Prop.EnableActivityTracking && App.Settings.Prop.UseWindowControl)
-            {
-                var idsPath = Path.Combine(_latestVersionDirectory, "content\\bloxstrap");
-
-                Directory.CreateDirectory(idsPath);
-
-                var directory = new DirectoryInfo(idsPath);
-
-                foreach (FileInfo file in directory.GetFiles()) file.Delete();
-                foreach (DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
-
-                using Image<Rgba32> enabledBitmap = new(1, 1);
-                enabledBitmap[0, 0] = Color.White;
-
-                enabledBitmap.Save(Path.Combine(idsPath, "enabled.png"));
             }
 
 			var fileRestoreMap = new Dictionary<string, List<string>>();

@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.Integrations;
-using Froststrap.Models.APIs;
 using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI.Elements.ContextMenu
@@ -20,8 +19,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private DispatcherTimer? _playtimeTimer;
         private DateTime? _studioPlaceJoinTime = null;
-
-        private WindowControlPermission? _windowPermissionWindow;
 
         private NativeMenuItem? VersionMenuItem;
         private NativeMenuItem? PlaytimeMenuItem;
@@ -148,26 +145,6 @@ namespace Froststrap.UI.Elements.ContextMenu
 
             if (!_serverInformationWindow.IsVisible) _serverInformationWindow.Show();
             else _serverInformationWindow.Activate();
-        }
-
-        public void ShowWindowPermissionWindow()
-        {
-            if (_windowPermissionWindow is null)
-            {
-                _windowPermissionWindow = new(_watcher?.ActivityWatcher!);
-                _windowPermissionWindow.Closed += (_, _) => _windowPermissionWindow = null;
-            }
-
-            if (!_windowPermissionWindow.IsVisible)
-            {
-                _windowPermissionWindow.Show();
-                _windowPermissionWindow.Topmost = true;
-                _windowPermissionWindow.Activate();
-                _windowPermissionWindow.Topmost = false;
-                _windowPermissionWindow.Focus();
-            }
-            else
-                _windowPermissionWindow.Activate();
         }
 
         private void ActivityWatcher_OnGameJoin(object? sender, EventArgs e) =>

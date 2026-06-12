@@ -59,7 +59,7 @@ namespace Froststrap.Integrations
         public event EventHandler<Message>? OnRPCMessage;
         public event EventHandler<StudioMessage>? OnStudioRPCMessage;
 
-        public Watcher watcher = null!;
+        private DateTime LastRPCRequest;
 
         private readonly LaunchMode _launchMode;
         private readonly int _robloxPID;
@@ -82,9 +82,6 @@ namespace Froststrap.Integrations
         public List<ActivityData> History = [];
 
         public bool IsDisposed = false;
-        public int defaultDelay = 1000;
-        public int windowLogDelay = 250;
-        public int delay = 1000;
 
         public static void CloseProcess(int pid)
         {
@@ -108,9 +105,8 @@ namespace Froststrap.Integrations
             }
         }
 
-        public ActivityWatcher(Watcher watch, string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
+        public ActivityWatcher(string? logFile = null, LaunchMode launchMode = LaunchMode.Player, int RobloxPID = 0)
         {
-            watcher = watch;
             if (!String.IsNullOrEmpty(logFile))
                 LogLocation = logFile;
 
@@ -140,9 +136,6 @@ namespace Froststrap.Integrations
             // - check for leaves/disconnects with 'Time to disconnect replication data: {{TIME}}' entry
             //
             // we'll tail the log file continuously, monitoring for any log entries that we need to determine the current game activity
-
-            delay = defaultDelay;
-            windowLogDelay = 1000 / (App.Settings.Prop.WindowReadFPS < 1 ? 1 : App.Settings.Prop.WindowReadFPS); // maybe remove this one since it can be changed in runtime now
 
             FileInfo logFileInfo;
 
@@ -207,7 +200,7 @@ namespace Froststrap.Integrations
                 string? log = await streamReader.ReadLineAsync();
 
                 if (log is null)
-                    await Task.Delay(delay);
+                    await Task.Delay(1000);
                 else
                     ReadLogEntry(log);
             }
@@ -530,6 +523,12 @@ namespace Froststrap.Integrations
 
                     App.Logger.WriteLine(LOG_IDENT, $"Received message: '{messagePlain}'");
 
+                    if ((DateTime.Now - LastRPCRequest).TotalSeconds <= 1)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Dropping message as ratelimit has been hit");
+                        return;
+                    }
+
                     try
                     {
                         message = JsonSerializer.Deserialize<Message>(messagePlain);
@@ -582,6 +581,8 @@ namespace Froststrap.Integrations
                     }
 
                     OnRPCMessage?.Invoke(this, message);
+
+                    LastRPCRequest = DateTime.Now;
                 }
                 else if (logMessage.StartsWith(GameServerUptimeEntry))
                 {

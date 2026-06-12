@@ -9,11 +9,7 @@ namespace Froststrap
 
         private readonly WatcherData? _watcherData;
 
-        public readonly NotifyIconWrapper? _notifyIcon;
-
-        public static string? RobloxPath { get; private set; }
-
-        public static int? ProcessId { get; private set; }
+        private readonly NotifyIconWrapper? _notifyIcon;
 
         public readonly ActivityWatcher? ActivityWatcher;
 
@@ -22,12 +18,11 @@ namespace Froststrap
         public readonly PlayerDiscordRichPresence? PlayerRichPresence;
         public readonly StudioDiscordRichPresence? StudioRichPresence;
 
-        public readonly WindowController? WindowController;
-
         private readonly CancellationTokenSource _cancellationTokenSource = new();
         private bool _isDisposed = false;
-
         private int _gameModeHandle = -1;
+
+        public static int? ProcessId { get; private set; }
 
         public Watcher()
         {
@@ -63,7 +58,6 @@ namespace Froststrap
             if (_watcherData is null)
                 throw new Exception("Watcher data is invalid");
 
-            RobloxPath = _watcherData.RobloxDirectory;
             ProcessId = _watcherData.ProcessId;
 
             if (OperatingSystem.IsLinux() && App.Settings.Prop.StudioGameMode && (_watcherData.LaunchMode == LaunchMode.Studio || _watcherData.LaunchMode == LaunchMode.StudioAuth))
@@ -77,7 +71,7 @@ namespace Froststrap
 
             if (App.Settings.Prop.EnableActivityTracking)
             {
-                ActivityWatcher = new(this, _watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
+                ActivityWatcher = new(_watcherData.LogFile, _watcherData.LaunchMode, _watcherData.ProcessId);
 
                 if (App.Settings.Prop.UseDisableAppPatch)
                 {
@@ -93,9 +87,6 @@ namespace Froststrap
                     StudioRichPresence = new(ActivityWatcher);
                 else if (_watcherData.LaunchMode == LaunchMode.Player && App.Settings.Prop.UseDiscordRichPresence)
                     PlayerRichPresence = new(ActivityWatcher);
-
-                if (App.Settings.Prop.UseWindowControl && _watcherData.LaunchMode == LaunchMode.Player)
-                    WindowController = new(ActivityWatcher);
 
                 if (_watcherData.LaunchMode == LaunchMode.Player)
                     IntegrationWatcher = new IntegrationWatcher(ActivityWatcher, _watcherData.ProcessId);
@@ -376,7 +367,6 @@ namespace Froststrap
             StudioRichPresence?.Dispose();
             ActivityWatcher?.Dispose();
             _cancellationTokenSource.Dispose();
-            WindowController?.Dispose();
 
             _isDisposed = true;
             GC.SuppressFinalize(this);

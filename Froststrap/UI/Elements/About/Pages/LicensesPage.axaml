@@ -41,12 +41,6 @@
                                CommandParameter="https://github.com/vinegarhq/vinegar/blob/master/LICENSE" />
 
                 <ui:CardAction Margin="4" Icon="Certificate"
-                               Header="Funkstrap"
-                               Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
-                               Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
-                               CommandParameter="https://github.com/DawndreamerStudios/funkstrap/blob/main/LICENSE" />
-
-                <ui:CardAction Margin="4" Icon="Certificate"
                                Header="Avalonia"
                                Description="{x:Static resources:Strings.Menu_About_Licenses_MIT}"
                                Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
