@@ -22,7 +22,9 @@
         devShells = forAllSystems (system: let
           pkgs = import nixpkgs { inherit system; };
         in rec {
-          froststrap = pkgs.callPackage ./nix/devShell.nix {};
+          dotnet = pkgs.callPackage ./nix/dotnetDevShell.nix { };
+          go = pkgs.callPackage ./nix/goDevShell.nix { };
+          froststrap = pkgs.callPackage ./nix/combinedDevShell.nix { };
           default = froststrap;
         });
         packages = forAllSystems (system: let
