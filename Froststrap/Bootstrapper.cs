@@ -952,6 +952,7 @@ namespace Froststrap
                 {
                     if (App.Settings.Prop.EnableBetterMatchmaking &&
                         _joinData.JoinType != GameJoinType.RequestPrivateGame &&
+                        _joinData.JoinType != GameJoinType.RequestGameJob &&
                         _joinData.PlaceId != null &&
                         !isFollowUser)
                     {
