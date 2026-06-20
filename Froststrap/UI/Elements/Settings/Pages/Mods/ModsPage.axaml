@@ -12,7 +12,7 @@
              x:DataType="vm:ModsViewModel"
              DragDrop.AllowDrop="True">
 
-    <Grid RowDefinitions="Auto, *, Auto" Margin="14">
+    <Grid RowDefinitions="Auto, *, Auto" Margin="14" DragDrop.AllowDrop="True" DragDrop.Drop="Page_Drop">
 
         <StackPanel Grid.Row="0">
             <Grid ColumnDefinitions="*,*,*">
