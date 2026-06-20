@@ -65,11 +65,13 @@
                 </controls:IconButton.Flyout>
             </controls:IconButton>
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="8">
                 <controls:CardAction
                     Grid.Column="0"
                     Icon="Settings"
                     Header="Settings"
+                    CornerRadius="8"
+                    BorderThickness="0"
                     Command="{Binding LaunchSettingsCommand}"
                     Padding="12,10" />
 
@@ -77,6 +79,8 @@
                     Grid.Column="1"
                     Icon="Chat"
                     Header="Discord"
+                    CornerRadius="8"
+                    BorderThickness="0"
                     Command="{x:Static models:GlobalViewModel.OpenWebpageCommand}"
                     CommandParameter="https://discord.gg/KdR9vpRcUN"
                     Padding="12,10" />
