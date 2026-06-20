@@ -3603,20 +3603,66 @@ Windows Registry Editor Version 5.00
             var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
 
             string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
-            if (File.Exists(Paths.CustomFont))
+
+            string? customFontPath = null;
+            string? customFontFilename = null;
+            string? customFontModFolder = null;
+
+            foreach (var mod in activeMods.OrderByDescending(m => m.Priority))
             {
-                App.Logger.WriteLine(LOG_IDENT, "Begin font check");
-                Directory.CreateDirectory(modFontFamiliesFolder);
+                string modTtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.ttf");
+                string modOtf = Path.Combine(Paths.Modifications, mod.FolderName, "content", "fonts", "CustomFont.otf");
+
+                if (File.Exists(modTtf))
+                {
+                    customFontPath = modTtf;
+                    customFontFilename = "CustomFont.ttf";
+                    customFontModFolder = mod.FolderName;
+                    break;
+                }
+                else if (File.Exists(modOtf))
+                {
+                    customFontPath = modOtf;
+                    customFontFilename = "CustomFont.otf";
+                    customFontModFolder = mod.FolderName;
+                    break;
+                }
+            }
+
+            if (customFontPath == null && File.Exists(Paths.CustomFont))
+            {
+                customFontPath = Paths.CustomFont;
+                customFontFilename = "CustomFont.ttf";
+            }
+
+            if (customFontPath != null && customFontFilename != null)
+            {
+                string fontFamiliesFolder;
+                if (customFontModFolder != null)
+                {
+                    fontFamiliesFolder = Path.Combine(Paths.Modifications, customFontModFolder, "content", "fonts", "families");
+                }
+                else
+                {
+                    fontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Begin font check using '{customFontFilename}' from '{customFontPath}' saving to '{fontFamiliesFolder}'");
+                Directory.CreateDirectory(fontFamiliesFolder);
+
                 string contentFolder = Path.Combine(_latestVersionDirectory, "content");
                 Directory.CreateDirectory(contentFolder);
                 string fontsFolder = Path.Combine(contentFolder, "fonts");
                 Directory.CreateDirectory(fontsFolder);
                 string familiesFolder = Path.Combine(fontsFolder, "families");
                 Directory.CreateDirectory(familiesFolder);
+
+                string rbxAssetPath = $"rbxasset://fonts/{customFontFilename}";
+
                 foreach (string jsonFilePath in Directory.GetFiles(familiesFolder))
                 {
                     string jsonFilename = Path.GetFileName(jsonFilePath);
-                    string modFilepath = Path.Combine(modFontFamiliesFolder, jsonFilename);
+                    string modFilepath = Path.Combine(fontFamiliesFolder, jsonFilename);
                     if (File.Exists(modFilepath))
                         continue;
                     App.Logger.WriteLine(LOG_IDENT, $"Setting font for {jsonFilename}");
@@ -3626,9 +3672,9 @@ Windows Registry Editor Version 5.00
                     bool shouldWrite = false;
                     foreach (var fontFace in fontFamilyData.Faces)
                     {
-                        if (fontFace.AssetId != "rbxasset://fonts/CustomFont.ttf")
+                        if (fontFace.AssetId != rbxAssetPath)
                         {
-                            fontFace.AssetId = "rbxasset://fonts/CustomFont.ttf";
+                            fontFace.AssetId = rbxAssetPath;
                             shouldWrite = true;
                         }
                     }
@@ -3637,9 +3683,13 @@ Windows Registry Editor Version 5.00
                 }
                 App.Logger.WriteLine(LOG_IDENT, "End font check");
             }
-            else if (Directory.Exists(modFontFamiliesFolder))
+            else
             {
-                Directory.Delete(modFontFamiliesFolder, true);
+                string flatFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
+                if (Directory.Exists(flatFontFamiliesFolder))
+                {
+                    Directory.Delete(flatFontFamiliesFolder, true);
+                }
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
