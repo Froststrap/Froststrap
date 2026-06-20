@@ -3736,8 +3736,16 @@ Windows Registry Editor Version 5.00
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
-            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")))
-                await File.WriteAllTextAsync(Path.Combine(_latestVersionDirectory, "AppSettings.xml"), AppSettings.Replace("roblox.com", Deployment.RobloxDomain));
+            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")) 
+                && (!OperatingSystem.IsLinux() || IsStudioLaunch))
+            {
+                Directory.CreateDirectory(_latestVersionDirectory);
+
+                await File.WriteAllTextAsync(
+                    Path.Combine(_latestVersionDirectory, "AppSettings.xml"),
+                    AppSettings.Replace("roblox.com", Deployment.RobloxDomain)
+                );
+            }
 
             foreach (string file in Directory.GetFiles(Paths.Modifications, "*.*", SearchOption.AllDirectories))
             {
