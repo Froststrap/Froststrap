@@ -343,7 +343,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 return;
             }
 
-            string fullPath = Path.Combine(Paths.ModificationsProfiles, ModFolderName);
+            string fullPath = Path.Combine(Paths.Modifications, ModFolderName);
             if (Directory.Exists(fullPath))
                 FolderNameValidationError = "A mod with this name already exists. Choose another name.";
             else
@@ -353,7 +353,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         private static string GetNextAvailableModFolderName()
         {
             string baseName = "Generated Mod";
-            string folder = Path.Combine(Paths.ModificationsProfiles, baseName);
+            string folder = Path.Combine(Paths.Modifications, baseName);
             if (!Directory.Exists(folder))
                 return baseName;
 
@@ -361,7 +361,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             while (true)
             {
                 string candidate = $"{baseName} {counter}";
-                folder = Path.Combine(Paths.ModificationsProfiles, candidate);
+                folder = Path.Combine(Paths.Modifications, candidate);
                 if (!Directory.Exists(folder))
                     return candidate;
                 counter++;
@@ -572,8 +572,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     if (IncludeModifications)
                     {
-                        string targetFolder = Path.Combine(Paths.ModificationsProfiles, modFolderName);
-                        if (!Directory.Exists(targetFolder)) Directory.CreateDirectory(targetFolder);
+                        string targetFolder = Path.Combine(Paths.Modifications, modFolderName);
+                        if (!Directory.Exists(targetFolder))
+                            Directory.CreateDirectory(targetFolder);
+
                         int copiedFiles = 0;
                         var itemsToCopy = new List<string> { Path.Combine(TempRoot, "ExtraContent"), Path.Combine(TempRoot, "content"), infoPath };
                         foreach (var item in itemsToCopy)
@@ -594,6 +596,30 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                                 }
                             }
                         }
+
+                        var existingMod = App.State.Prop.Mods.FirstOrDefault(m =>
+                            string.Equals(m.FolderName, modFolderName, StringComparison.OrdinalIgnoreCase));
+
+                        if (existingMod is null)
+                        {
+                            int maxPriority = App.State.Prop.Mods.Any() ? App.State.Prop.Mods.Max(m => m.Priority) : 0;
+                            var newMod = new ModConfig
+                            {
+                                FolderName = modFolderName,
+                                Enabled = true,
+                                Priority = maxPriority + 1,
+                                Target = ModTarget.Both
+                            };
+                            App.State.Prop.Mods.Add(newMod);
+                            App.State.SaveSetting("Mods");
+                            App.Logger.WriteLine(LOG_IDENT, $"Added mod '{modFolderName}' to state.");
+                        }
+                        else
+                        {
+                            existingMod.Enabled = true;
+                            App.State.SaveSetting("Mods");
+                        }
+
                         Progress = 100;
                         StatusText = $"Successfully applied modifications ({copiedFiles} files).";
                     }

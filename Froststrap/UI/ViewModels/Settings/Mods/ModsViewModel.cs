@@ -1,10 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
-using System.Windows;
-using System.Windows.Input;
-using Avalonia.Threading;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
@@ -19,12 +18,40 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
     {
         private readonly IModsDialogService _dialogService;
 
+        private ModConfig? _selectedMod;
+        public ModConfig? SelectedMod
+        {
+            get => _selectedMod;
+            set
+            {
+                if (SetProperty(ref _selectedMod, value))
+                {
+                    NewName = value?.FolderName ?? string.Empty;
+                    OnPropertyChanged(nameof(HasMods));
+                }
+            }
+        }
+
+        private string _newName = string.Empty;
+        public string NewName
+        {
+            get => _newName;
+            set => SetProperty(ref _newName, value);
+        }
+
+        public bool HasMods => Modifications.Count > 0;
+
         public ObservableCollection<ModConfig> Modifications { get; set; } = [];
+
+        public static IEnumerable<ModTarget> TargetOptions => Enum.GetValues<ModTarget>();
 
         public ICommand MoveUpCommand => new RelayCommand<ModConfig>(MoveUp);
         public ICommand MoveDownCommand => new RelayCommand<ModConfig>(MoveDown);
         public ICommand DeleteModCommand => new RelayCommand<ModConfig>(DeleteMod);
         public ICommand OpenModFolderCommand => new RelayCommand<ModConfig>(OpenFolder);
+        public ICommand ImportFolderCommand => new AsyncRelayCommand<object>(ImportFolderAsync);
+        public ICommand ImportZipCommand => new AsyncRelayCommand<object>(ImportZipAsync);
+        public ICommand RenameModCommand => new RelayCommand(RenameMod);
 
         public ModsViewModel()
             : this(new DefaultModsDialogService())
@@ -34,52 +61,27 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ModsViewModel(IModsDialogService dialogService)
         {
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
-            SyncDiskWithState();
             LoadModifications();
         }
 
-        public ICommand OpenModGeneratorCommand => new AsyncRelayCommand(async () =>
-        {
-            App.Logger.WriteLine("ModsViewModel", "OpenModGeneratorCommand executed");
-            await _dialogService.OpenModGeneratorAsync();
-            App.Logger.WriteLine("ModsViewModel", "OpenModGeneratorCommand completed");
-        });
-
-        public ICommand OpenCommunityModsCommand => new AsyncRelayCommand(async () =>
-        {
-            App.Logger.WriteLine("ModsViewModel", "OpenCommunityModsCommand executed");
-            await _dialogService.OpenCommunityModsAsync();
-            App.Logger.WriteLine("ModsViewModel", "OpenCommunityModsCommand completed");
-        });
-
-        public ICommand OpenPresetModsCommand => new AsyncRelayCommand(async () =>
-        {
-            App.Logger.WriteLine("ModsViewModel", "OpenPresetModsCommand executed");
-            await _dialogService.OpenPresetModsAsync();
-            App.Logger.WriteLine("ModsViewModel", "OpenPresetModsCommand completed");
-        });
+        public ICommand OpenModGeneratorCommand => new AsyncRelayCommand(async () => await _dialogService.OpenModGeneratorAsync());
+        public ICommand OpenCommunityModsCommand => new AsyncRelayCommand(async () => await _dialogService.OpenCommunityModsAsync());
+        public ICommand OpenPresetModsCommand => new AsyncRelayCommand(async () => await _dialogService.OpenPresetModsAsync());
 
         private void OpenFolder(ModConfig? mod)
         {
             if (mod == null) return;
-
-            string folderPath = Path.Combine(Paths.ModificationsProfiles, mod.FolderName);
-
+            string folderPath = Path.Combine(Paths.Modifications, mod.FolderName);
             if (Directory.Exists(folderPath))
-            {
                 Utilities.ShellExecute(folderPath, select: true);
-            }
             else
-            {
                 _ = Frontend.ShowMessageBox($"The folder for '{mod.FolderName}' no longer exists.", MessageBoxImage.Error, MessageBoxButton.OK);
-            }
         }
 
         [RelayCommand]
         public void AddMod()
         {
-            string modsFolder = Paths.ModificationsProfiles;
-
+            string modsFolder = Paths.Modifications;
             string baseName = "New Mod";
             string folderName = baseName;
             int counter = 1;
@@ -96,48 +98,46 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             Directory.CreateDirectory(Path.Combine(modsFolder, folderName));
 
-            Modifications.Add(new ModConfig
+            var newMod = new ModConfig
             {
                 FolderName = folderName,
-                Target = "Both"
-            });
+                Target = ModTarget.Both,
+                Enabled = true,
+                Priority = Modifications.Count > 0 ? Modifications.Max(x => x.Priority) + 1 : 1
+            };
+            Modifications.Add(newMod);
+            UpdatePriorities();
+            OnPropertyChanged(nameof(HasMods));
         }
 
-        private static void SyncDiskWithState()
+        private void CheckAndRemoveMissingMods()
         {
-            if (!Directory.Exists(Paths.ModificationsProfiles))
-            {
-                Directory.CreateDirectory(Paths.ModificationsProfiles);
+            var toRemove = Modifications
+                .Where(m => !Directory.Exists(Path.Combine(Paths.Modifications, m.FolderName)))
+                .ToList();
+
+            if (toRemove.Count == 0)
                 return;
-            }
 
-            var physicalFolders = Directory.GetDirectories(Paths.ModificationsProfiles)
-                .Select(Path.GetFileName)
-                .Where(x => !string.IsNullOrEmpty(x))
-                .ToHashSet();
+            string names = string.Join("\n", toRemove.Select(m => $"• {m.FolderName}"));
+            _ = Frontend.ShowMessageBox(
+                $"The following mod folders no longer exist on disk and will be removed:\n\n{names}",
+                MessageBoxImage.Warning,
+                MessageBoxButton.OK);
 
-            App.State.Prop.Mods.RemoveAll(x => !physicalFolders.Contains(x.FolderName));
+            foreach (var mod in toRemove)
+                Modifications.Remove(mod);
 
-            foreach (var folder in physicalFolders)
-            {
-                if (!App.State.Prop.Mods.Any(x => x.FolderName == folder))
-                {
-                    App.State.Prop.Mods.Add(new ModConfig
-                    {
-                        FolderName = folder!,
-                        Target = "Both",
-                        Priority = App.State.Prop.Mods.Count
-                    });
-                }
-            }
-
-            App.State.SaveSetting("Mods");
+            UpdatePriorities();
+            OnPropertyChanged(nameof(HasMods));
         }
 
         private void LoadModifications()
         {
             var sortedMods = App.State.Prop.Mods.OrderBy(x => x.Priority).ToList();
             Modifications = new ObservableCollection<ModConfig>(sortedMods);
+            CheckAndRemoveMissingMods();
+            SelectedMod = Modifications.FirstOrDefault();
         }
 
         public static void CopyDirectory(string sourceDir, string destDir, bool overwrite)
@@ -155,56 +155,16 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             }
 
             foreach (DirectoryInfo subDir in dir.GetDirectories())
-            {
                 CopyDirectory(subDir.FullName, Path.Combine(destDir, subDir.Name), overwrite);
-            }
         }
 
-        public bool RenameMod(string oldName, string newName)
-        {
-            string safeName = string.Join("_", newName.Split(Path.GetInvalidFileNameChars())).Trim();
-
-            if (string.IsNullOrWhiteSpace(safeName) || safeName == oldName)
-                return false;
-
-            string oldPath = Path.Combine(Paths.ModificationsProfiles, oldName);
-            string newPath = Path.Combine(Paths.ModificationsProfiles, safeName);
-
-            try
-            {
-                if (!Directory.Exists(oldPath)) return false;
-
-                if (Directory.Exists(newPath))
-                {
-                    _ = Frontend.ShowMessageBox($"A mod named '{safeName}' already exists.", MessageBoxImage.Error, MessageBoxButton.OK);
-                    return false;
-                }
-
-                Directory.Move(oldPath, newPath);
-
-                var mod = Modifications.FirstOrDefault(x => x.FolderName == oldName);
-                if (mod != null)
-                {
-                    mod.FolderName = safeName;
-                    UpdatePriorities();
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine("ModsViewModel::RenameMod", $"Rename failed: {ex.Message}");
-                return false;
-            }
-        }
-
-        private void UpdatePriorities()
+        public void UpdatePriorities()
         {
             for (int i = 0; i < Modifications.Count; i++)
-            {
-                Modifications[i].Priority = i;
-            }
+                Modifications[i].Priority = i + 1;
 
             App.State.Prop.Mods = [.. Modifications];
+            App.State.SaveSetting("Mods");
         }
 
         private void MoveUp(ModConfig? mod)
@@ -215,6 +175,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 Modifications.Move(index, index - 1);
                 UpdatePriorities();
+                SelectedMod = mod;
             }
         }
 
@@ -226,93 +187,270 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 Modifications.Move(index, index + 1);
                 UpdatePriorities();
+                SelectedMod = mod;
             }
         }
 
         private async void DeleteMod(ModConfig? mod)
         {
-            if (mod == null) return;
+            if (mod == null || string.IsNullOrWhiteSpace(mod.FolderName)) return;
+
+            string modPath = Path.Combine(Paths.Modifications, mod.FolderName);
+            if (Path.GetFullPath(modPath) == Path.GetFullPath(Paths.Modifications))
+                return;
 
             var result = await Frontend.ShowMessageBox($"Delete '{mod.FolderName}' permanently?", MessageBoxImage.Warning, MessageBoxButton.YesNo);
             if (result != MessageBoxResult.Yes) return;
 
             try
             {
-                string path = Path.Combine(Paths.ModificationsProfiles, mod.FolderName);
-                if (Directory.Exists(path)) Directory.Delete(path, true);
-
+                if (Directory.Exists(modPath)) Directory.Delete(modPath, true);
                 Modifications.Remove(mod);
                 UpdatePriorities();
+                OnPropertyChanged(nameof(HasMods));
+                if (SelectedMod == mod) SelectedMod = null;
             }
-            catch (Exception ex) { App.Logger.WriteLine("ModsViewModel::Delete", ex.Message); }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::Delete", ex.Message);
+                _ = Frontend.ShowMessageBox($"Failed to delete mod: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+            }
         }
 
-        public async Task ProcessDroppedFiles(string[] paths)
+        private void RenameMod()
+        {
+            if (SelectedMod == null || string.IsNullOrWhiteSpace(NewName))
+                return;
+
+            string oldName = SelectedMod.FolderName;
+            string newName = NewName.Trim();
+
+            if (oldName == newName) return;
+
+            string safeName = string.Join("_", newName.Split(Path.GetInvalidFileNameChars())).Trim();
+            if (string.IsNullOrWhiteSpace(safeName))
+            {
+                _ = Frontend.ShowMessageBox("Invalid folder name.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                return;
+            }
+
+            if (Modifications.Any(m => m.FolderName.Equals(safeName, StringComparison.OrdinalIgnoreCase) && m != SelectedMod))
+            {
+                _ = Frontend.ShowMessageBox($"A mod named '{safeName}' already exists.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                return;
+            }
+
+            string oldPath = Path.Combine(Paths.Modifications, oldName);
+            string newPath = Path.Combine(Paths.Modifications, safeName);
+
+            try
+            {
+                if (Directory.Exists(oldPath))
+                    Directory.Move(oldPath, newPath);
+
+                SelectedMod.FolderName = safeName;
+                UpdatePriorities();
+                NewName = safeName;
+                OnPropertyChanged(nameof(HasMods));
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::RenameMod", ex.Message);
+                _ = Frontend.ShowMessageBox($"Failed to rename mod: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+            }
+        }
+
+
+        private static readonly HashSet<string> RequiredModFolders = new()
+        {
+            "content", "ExtraContent", "PlatformContent"
+        };
+
+        private static string? ValidateModStructure(string rootDir)
+        {
+            foreach (string folder in RequiredModFolders)
+                if (Directory.Exists(Path.Combine(rootDir, folder)))
+                    return rootDir;
+
+            foreach (string subDir in Directory.GetDirectories(rootDir))
+                foreach (string folder in RequiredModFolders)
+                    if (Directory.Exists(Path.Combine(subDir, folder)))
+                        return subDir;
+
+            return null;
+        }
+
+        private async Task ImportFolderAsync(object? parameter)
+        {
+            var control = parameter as Avalonia.Visual;
+            if (control == null)
+            {
+                await Frontend.ShowMessageBox("Unable to get the source control.", MessageBoxImage.Error, MessageBoxButton.OK);
+                return;
+            }
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel == null)
+            {
+                await Frontend.ShowMessageBox("TopLevel not available.", MessageBoxImage.Error, MessageBoxButton.OK);
+                return;
+            }
+
+            var folders = await topLevel.StorageProvider.OpenFolderPickerAsync(
+                new FolderPickerOpenOptions { AllowMultiple = false, Title = "Select Mod Folder" });
+            if (folders.Count == 0) return;
+
+            string folderPath = folders[0].Path.LocalPath;
+            await ImportModFromSource(folderPath, isZip: false);
+        }
+
+        private async Task ImportZipAsync(object? parameter)
+        {
+            var control = parameter as Avalonia.Visual;
+            if (control == null)
+            {
+                await Frontend.ShowMessageBox("Unable to get the source control.", MessageBoxImage.Error, MessageBoxButton.OK);
+                return;
+            }
+
+            var topLevel = TopLevel.GetTopLevel(control);
+            if (topLevel == null)
+            {
+                await Frontend.ShowMessageBox("TopLevel not available.", MessageBoxImage.Error, MessageBoxButton.OK);
+                return;
+            }
+
+            var files = await topLevel.StorageProvider.OpenFilePickerAsync(
+                new FilePickerOpenOptions
+                {
+                    AllowMultiple = true,
+                    Title = "Select Mod ZIP Archive",
+                    FileTypeFilter = new[] { new FilePickerFileType("Zip Files") { Patterns = new[] { "*.zip" } } }
+                });
+            if (files.Count == 0) return;
+
+            string zipPath = files[0].Path.LocalPath;
+            string zipFileName = Path.GetFileNameWithoutExtension(zipPath);
+            string tempDir = Path.Combine(Path.GetTempPath(), "Froststrap_ModImport_" + Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempDir);
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    var fastZip = new FastZip();
+                    fastZip.ExtractZip(zipPath, tempDir, null);
+                });
+                await ImportModFromSource(tempDir, isZip: true, baseNameOverride: zipFileName);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::ImportZip", ex.Message);
+                await Frontend.ShowMessageBox($"Failed to extract ZIP: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+            }
+            finally
+            {
+                try { Directory.Delete(tempDir, true); } catch { }
+            }
+        }
+
+        public async Task ImportFromPaths(string[] paths)
         {
             foreach (var path in paths)
             {
-                string modName = Path.GetFileNameWithoutExtension(path) ?? "UnknownMod";
-                string targetDir = Path.Combine(Paths.ModificationsProfiles, modName);
-
-                try
+                if (Directory.Exists(path))
                 {
-                    if (Directory.Exists(path))
-                    {
-                        CopyDirectory(path, targetDir, true);
-                    }
-                    else if (Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase))
-                    {
-                        if (!Directory.Exists(targetDir))
-                            Directory.CreateDirectory(targetDir);
-
-                        new FastZip().ExtractZip(path, targetDir, null);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-                    if (Modifications.Any(x => x.FolderName.Equals(modName, StringComparison.OrdinalIgnoreCase)))
-                        continue;
-
-                    var newMod = new ModConfig
-                    {
-                        FolderName = modName,
-                        Target = "Both",
-                        Priority = Modifications.Count > 0 ? Modifications.Max(x => x.Priority) + 1 : 0
-                    };
-
-                    await Dispatcher.UIThread.InvokeAsync(() =>
-                    {
-                        Modifications.Add(newMod);
-                    });
+                    await ImportModFromSource(path, isZip: false, baseNameOverride: null);
                 }
-                catch (Exception ex)
+                else if (File.Exists(path) &&
+                         Path.GetExtension(path).Equals(".zip", StringComparison.OrdinalIgnoreCase))
                 {
-                    App.Logger.WriteLine("ModsViewModel::ProcessDroppedFiles", $"Error: {ex.Message}");
+                    string zipFileName = Path.GetFileNameWithoutExtension(path);
+                    string tempDir = Path.Combine(Path.GetTempPath(), "Froststrap_ModImport_" + Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(tempDir);
+
+                    try
+                    {
+                        await Task.Run(() =>
+                        {
+                            var fastZip = new FastZip();
+                            fastZip.ExtractZip(path, tempDir, null);
+                        });
+                        await ImportModFromSource(tempDir, isZip: true, baseNameOverride: zipFileName);
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine("ModsViewModel::ImportFromPaths", ex.Message);
+                        await Frontend.ShowMessageBox($"Failed to extract ZIP: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                    }
+                    finally
+                    {
+                        try { Directory.Delete(tempDir, true); } catch { }
+                    }
+                }
+                else
+                {
+                    await Frontend.ShowMessageBox($"Unsupported file type or path: {path}", MessageBoxImage.Warning, MessageBoxButton.OK);
                 }
             }
+        }
 
+        private async Task ImportModFromSource(string sourcePath, bool isZip, string? baseNameOverride = null)
+        {
+            string? modRoot = ValidateModStructure(sourcePath);
+            if (modRoot == null)
+            {
+                await Frontend.ShowMessageBox(
+                    "Selected source does not contain a valid mod structure.\nIt must contain at least one of the following folders: content, ExtraContent, PlatformContent.",
+                    MessageBoxImage.Error, MessageBoxButton.OK);
+                return;
+            }
+
+            string baseName;
+            if (!string.IsNullOrEmpty(baseNameOverride))
+                baseName = baseNameOverride;
+            else if (isZip)
+                baseName = Path.GetFileNameWithoutExtension(sourcePath);
+            else
+                baseName = Path.GetFileName(sourcePath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+
+            string safeName = string.Join("_", baseName.Split(Path.GetInvalidFileNameChars())).Trim();
+            if (string.IsNullOrWhiteSpace(safeName))
+                safeName = "ImportedMod";
+
+            string modsFolder = Paths.Modifications;
+            string newFolderName = safeName;
+            int counter = 1;
+            while (Directory.Exists(Path.Combine(modsFolder, newFolderName)) ||
+                   Modifications.Any(x => x.FolderName.Equals(newFolderName, StringComparison.OrdinalIgnoreCase)))
+            {
+                newFolderName = $"{safeName} {counter}";
+                counter++;
+            }
+
+            string destFolder = Path.Combine(modsFolder, newFolderName);
+            Directory.CreateDirectory(destFolder);
+            CopyDirectory(modRoot, destFolder, overwrite: false);
+
+            var newMod = new ModConfig
+            {
+                FolderName = newFolderName,
+                Target = ModTarget.Both,
+                Enabled = true,
+                Priority = Modifications.Count > 0 ? Modifications.Max(x => x.Priority) + 1 : 0
+            };
+            Modifications.Add(newMod);
             UpdatePriorities();
-            App.State.Save();
+            OnPropertyChanged(nameof(HasMods));
+
+            await Frontend.ShowMessageBox($"Mod '{newFolderName}' imported successfully.", MessageBoxImage.Information, MessageBoxButton.OK);
         }
     }
 
     public class DefaultModsDialogService : IModsDialogService
     {
-        public Task OpenCommunityModsAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task OpenPresetModsAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task OpenModGeneratorAsync()
-        {
-            return Task.CompletedTask;
-        }
+        public Task OpenCommunityModsAsync() => Task.CompletedTask;
+        public Task OpenPresetModsAsync() => Task.CompletedTask;
+        public Task OpenModGeneratorAsync() => Task.CompletedTask;
     }
 }

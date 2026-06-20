@@ -83,7 +83,7 @@ namespace Froststrap
             {
                 cleanupSequence.AddRange(
                 [
-                    () => Directory.Delete(Paths.ModificationsProfiles, true),
+                    () => Directory.Delete(Paths.Modifications, true),
                     () => Directory.Delete(Paths.CustomCursors, true),
                     () => File.Delete(App.Settings.FileLocation),
                     () => File.Delete(App.State.FileLocation),
@@ -216,55 +216,8 @@ namespace Froststrap
             }
             if (Utilities.CompareVersions(existingVer, "1.4.2") == VersionComparison.LessThan)
             {
-                string clientSettingsPath = Path.Combine(Paths.ModificationsProfiles, "ClientSettings");
-                string migrationPath = Path.Combine(Paths.ModificationsProfiles, "Migration from 1.4.1.0");
                 string genCacheDir = Path.Combine(Path.GetTempPath(), "Froststrap", "mod-generator");
                 string pluginCacheDir = Path.Combine(Paths.Roblox, "Plugins", "FroststrapStudioRPC.rbxmx");
-                string targetSettingsPath = Path.Combine(Paths.Base, "ClientSettings");
-
-                if (Directory.Exists(clientSettingsPath))
-                {
-                    if (Directory.Exists(targetSettingsPath))
-                        Directory.Delete(targetSettingsPath, true);
-                    Directory.Move(clientSettingsPath, targetSettingsPath);
-                }
-
-                // Only create the migration folder and move files if there is
-                // actually something in Modifications to migrate — avoids creating
-                // a phantom empty mod folder on installs with no existing mods.
-                var modFiles = Directory.Exists(Paths.ModificationsProfiles)
-                    ? new DirectoryInfo(Paths.ModificationsProfiles).GetFileSystemInfos()
-                        .Where(x => x.FullName != migrationPath)
-                        .ToList()
-                    : [];
-
-                if (modFiles.Count != 0)
-                {
-                    Directory.CreateDirectory(migrationPath);
-
-                    foreach (FileSystemInfo info in modFiles)
-                    {
-                        string destPath = Path.Combine(migrationPath, info.Name);
-
-                        try
-                        {
-                            if (info.Attributes.HasFlag(FileAttributes.Directory))
-                            {
-                                if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
-                                Directory.Move(info.FullName, destPath);
-                            }
-                            else
-                            {
-                                if (File.Exists(destPath)) File.Delete(destPath);
-                                File.Move(info.FullName, destPath);
-                            }
-                        }
-                        catch (IOException ex)
-                        {
-                            App.Logger.WriteLine(LOG_IDENT, $"Could not migrate {info.Name}: {ex.Message}");
-                        }
-                    }
-                }
 
                 if (Directory.Exists(genCacheDir))
                 {

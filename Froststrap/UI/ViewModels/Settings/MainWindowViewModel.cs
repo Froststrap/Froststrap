@@ -205,7 +205,7 @@ namespace Froststrap.UI.ViewModels.Settings
                     else
                         NavigateToIntegrationsCommand.Execute(null);
                     break;
-                case "Froststrap.UI.ViewModels.Settings.ModsViewModel":
+                case "Froststrap.UI.ViewModels.Settings.Mods.ModsViewModel":
                     NavigateToMyModsCommand.Execute(null);
                     break;
                 case "Froststrap.UI.ViewModels.Settings.FastFlagsViewModel":

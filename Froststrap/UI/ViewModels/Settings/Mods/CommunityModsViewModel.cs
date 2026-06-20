@@ -180,7 +180,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 }
                 else
                 {
-                    string installPath = Path.Combine(Paths.ModificationsProfiles, mod.Name);
+                    string installPath = Path.Combine(Paths.Modifications, mod.Name);
                     if (Directory.Exists(installPath))
                     {
                         var result = await Frontend.ShowMessageBox($"Overwrite existing mod '{mod.Name}'?", MessageBoxImage.Question, MessageBoxButton.YesNo);
@@ -190,6 +190,30 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     await ExtractZipAsync(tempFile, installPath);
                     if (mod.ModType == ModType.SkyBox) await ApplySkyboxFixAsync();
+
+                    var existingMod = App.State.Prop.Mods.FirstOrDefault(m =>
+                        string.Equals(m.FolderName, mod.Name, StringComparison.OrdinalIgnoreCase));
+
+                    if (existingMod != null)
+                    {
+                        existingMod.Enabled = true;
+                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Enabled existing mod '{mod.Name}'.");
+                    }
+                    else
+                    {
+                        int maxPriority = App.State.Prop.Mods.Any() ? App.State.Prop.Mods.Max(m => m.Priority) : 0;
+                        var newMod = new ModConfig
+                        {
+                            FolderName = mod.Name,
+                            Enabled = true,
+                            Priority = maxPriority + 1,
+                            Target = ModTarget.Both
+                        };
+                        App.State.Prop.Mods.Add(newMod);
+                        App.Logger.WriteLine("CommunityModsViewModel::DownloadModAsync", $"Added mod '{mod.Name}' to state.");
+                    }
+
+                    App.State.SaveSetting("Mods");
 
                     _ = Frontend.ShowMessageBox($"Mod '{mod.Name}' installed successfully!", MessageBoxImage.Information);
                 }

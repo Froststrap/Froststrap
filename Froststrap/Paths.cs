@@ -26,7 +26,6 @@ namespace Froststrap
         public static string Logs { get; private set; } = "";
         public static string Integrations { get; private set; } = "";
         public static string Versions { get; private set; } = "";
-        public static string ModificationsProfiles { get; private set; } = "";
         public static string Modifications { get; private set; } = "";
         public static string Roblox { get; private set; } = "";
         public static string CustomThemes { get; private set; } = "";
@@ -95,9 +94,6 @@ namespace Froststrap
             Downloads = Path.Combine(DataRoot, "Downloads");
             Integrations = Path.Combine(DataRoot, "Integrations");
             Versions = Path.Combine(DataRoot, "Versions");
-
-            // Mods and presets belong in config (user-editable settings)
-            ModificationsProfiles = Path.Combine(ConfigRoot, "ModificationProfiles");
             Modifications = Path.Combine(ConfigRoot, "Modifications");
 
             // Ensure cache/logs have sensible defaults when not set by XDG above
@@ -141,7 +137,6 @@ namespace Froststrap
             Directory.CreateDirectory(Path.GetDirectoryName(SavedFlagProfiles) ?? SavedFlagProfiles);
             Directory.CreateDirectory(CustomCursors);
             Directory.CreateDirectory(CustomThemes);
-            Directory.CreateDirectory(ModificationsProfiles);
             Directory.CreateDirectory(Modifications);
             Directory.CreateDirectory(Downloads);
             Directory.CreateDirectory(Integrations);
@@ -204,7 +199,6 @@ namespace Froststrap
                     }
 
                     // Compatibility migration for earlier releases where mods/presets were under DataRoot.
-                    TryMove(Path.Combine(DataRoot, "ModificationProfiles"), ModificationsProfiles);
                     TryMove(Path.Combine(DataRoot, "Modifications"), Modifications);
 
                     string legacyBase = Path.Combine(UserProfile, ".config", App.ProjectName);
@@ -214,7 +208,6 @@ namespace Froststrap
                     {
 
                         // Move user-editable config from legacy to XDG config
-                        TryMove(Path.Combine(legacyBase, "ModificationProfiles"), ModificationsProfiles);
                         TryMove(Path.Combine(legacyBase, "Modifications"), Modifications);
                         TryMove(Path.Combine(legacyBase, "SavedFlagProfiles"), SavedFlagProfiles);
                         TryMove(Path.Combine(legacyBase, "CustomCursorsSets"), CustomCursors);

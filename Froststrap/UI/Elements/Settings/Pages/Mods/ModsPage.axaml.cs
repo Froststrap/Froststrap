@@ -1,19 +1,12 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Froststrap.UI.ViewModels.Settings;
 using Froststrap.UI.ViewModels.Settings.Mods;
 
 namespace Froststrap.UI.Elements.Settings.Pages.Mods
 {
-    /// <summary>
-    /// Implementation of IModsDialogService for Mods navigation
-    /// </summary>
     internal class ModsDialogService(MainWindowViewModel mainVm) : IModsDialogService
     {
         private readonly MainWindowViewModel _mainVm = mainVm ?? throw new ArgumentNullException(nameof(mainVm));
@@ -39,17 +32,13 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
 
     public partial class ModsPage : UserControl
     {
-        private string _originalName = "";
         private bool _viewModelSetUp = false;
 
         public ModsPage()
         {
             AddHandler(DragDrop.DropEvent, Page_Drop);
-
             InitializeComponent();
-
             App.FrostRPC?.SetPage("Mods");
-
             this.Loaded += (s, e) => SetupViewModelIfNeeded();
         }
 
@@ -60,7 +49,6 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             try
             {
                 var topLevel = TopLevel.GetTopLevel(this);
-
                 if (topLevel?.DataContext is MainWindowViewModel mainVm)
                 {
                     CreateViewModelWithDialogService(mainVm);
@@ -93,30 +81,9 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             DataContext = fallbackVm;
         }
 
-        private void ModName_GotFocus(object? sender, GotFocusEventArgs e)
-        {
-            if (sender is TextBox textBox)
-                _originalName = textBox.Text ?? "";
-        }
-
-        private void ModName_LostFocus(object? sender, RoutedEventArgs e)
-        {
-            if (sender is TextBox textBox && DataContext is ModsViewModel viewModel)
-            {
-                if (_originalName != textBox.Text)
-                {
-                    bool success = viewModel.RenameMod(_originalName, textBox.Text ?? "");
-
-                    if (!success)
-                        textBox.Text = _originalName;
-                }
-            }
-        }
-
         private async void Page_Drop(object? sender, DragEventArgs e)
         {
             var files = e.DataTransfer.TryGetFiles();
-
             if (files != null && DataContext is ModsViewModel vm)
             {
                 var paths = files
@@ -125,7 +92,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
                     .ToArray();
 
                 if (paths.Length > 0)
-                    await Task.Run(() => vm.ProcessDroppedFiles(paths!));
+                    await vm.ImportFromPaths(paths!);
             }
         }
     }
