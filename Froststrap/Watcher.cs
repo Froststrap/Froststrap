@@ -355,12 +355,6 @@ namespace Froststrap
                 _gameModeHandle = -1;
             }
 
-            if (App.Settings.Prop.MultiInstanceLaunching)
-            {
-                App.Logger.WriteLine("Watcher::Dispose", "Starting multi-instance cleanup");
-                App.Bootstrapper?.CleanupMultiInstanceResources();
-            }
-
             IntegrationWatcher?.Dispose();
             _notifyIcon?.Dispose();
             PlayerRichPresence?.Dispose();

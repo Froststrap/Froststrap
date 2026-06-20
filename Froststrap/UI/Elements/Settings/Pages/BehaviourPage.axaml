@@ -29,27 +29,6 @@
                 <ToggleSwitch IsChecked="{Binding CloseCrashHandler, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <ui:InfoBar IsVisible="{x:Static gv:GlobalViewModel.IsWindows}" IsOpen="True" Severity="Warning" Message="{x:Static resources:Strings.Menu_Integrations_MultiInstanceLaunching_Warning}" />
-
-            <controls:CardExpander
-                Header="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Title}"
-                Description="{x:Static resources:Strings.Menu_Behaviour_MultiInstances_Description}"
-                IsExpanded="{Binding MultiInstances, Mode=OneWay}"
-                IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
-                Classes="NoUserExpansion">
-                <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch IsChecked="{Binding MultiInstances, Mode=TwoWay}" />
-                </controls:CardExpander.HeaderContent>
-
-                <StackPanel Margin="0,8,0,0">
-                    <controls:OptionControl
-                        Description="Automatically fixes error code 773 when teleporting between games with multiple accounts."
-                        Header="Teleport Fix">
-                        <ToggleSwitch IsChecked="{Binding Error773Fix, Mode=TwoWay}" />
-                    </controls:OptionControl>
-                </StackPanel>
-            </controls:CardExpander>
-
             <controls:OptionControl
                 Header="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Title}"
                 Description="{x:Static resources:Strings.Menu_Behaviour_BackgroundUpdates_Description}"

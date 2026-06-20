@@ -6,7 +6,6 @@ namespace Froststrap
     {
         public LaunchFlag MenuFlag { get; } = new("preferences,menu,settings");
         public LaunchFlag WatcherFlag { get; } = new("watcher");
-        public LaunchFlag MultiInstanceWatcherFlag { get; } = new("multiinstancewatcher");
         public LaunchFlag BackgroundUpdaterFlag { get; } = new("backgroundupdater");
         public LaunchFlag QuietFlag { get; } = new("quiet"); // need to update this
         public LaunchFlag UninstallFlag { get; } = new("uninstall"); // need to update this
@@ -25,7 +24,7 @@ namespace Froststrap
 #if DEBUG
         public static bool BypassUpdateCheck => true;
 #else
-        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || MultiInstanceWatcherFlag.Active || NsisFlag.Active;
+        public bool BypassUpdateCheck => UninstallFlag.Active || WatcherFlag.Active || BackgroundUpdaterFlag.Active || NsisFlag.Active;
 #endif
 
         public LaunchMode RobloxLaunchMode { get; set; } = LaunchMode.None;
