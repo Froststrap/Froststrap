@@ -247,24 +247,6 @@ namespace Froststrap
             }
         }
 
-        public static bool DoesEventExist(string name)
-        {
-#if WINDOWS
-            try
-            {
-                using (EventWaitHandle.OpenExisting(name)) { }
-                return true;
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return true;
-            }
-#else
-            // Not supported on operating systems other than windows
-            return false;
-#endif
-        }
-
         public static FileStream? _lockFileStream;
         public static bool IsInstanceRunningFileLock(string mutexName)
         {
@@ -298,7 +280,22 @@ namespace Froststrap
             Process[] processes = GetProcessesSafe();
             string processName = Path.GetFileNameWithoutExtension(App.RobloxPlayerAppName);
 
-            return processes.Any(x => x.ProcessName == processName);
+            if (OperatingSystem.IsLinux())
+                return processes.Any(x => x.ProcessName == "sober");
+            else
+                return processes.Any(x => x.ProcessName == processName);
+        }
+
+        public static void KillSober()
+        {
+            Process[] processes = GetProcessesSafe();
+            foreach (var p in processes)
+            {
+                if (p.ProcessName == "sober")
+                {
+                    try { p.Kill(); p.WaitForExit(1000); } catch { }
+                }
+            }
         }
 
         public static void KillBackgroundUpdater()

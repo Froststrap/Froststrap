@@ -215,6 +215,9 @@ namespace Froststrap
                     App.Terminate();
                     return;
                 }
+
+                if (OperatingSystem.IsLinux())
+                    Utilities.KillSober();
             }
 
             // start bootstrapper and show the bootstrapper modal if we're not running silently
