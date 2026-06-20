@@ -33,10 +33,7 @@ namespace Froststrap.Utility
                 // Use file-based locking on macOS/Linux
                 try
                 {
-                    string lockDir = Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Froststrap"
-                    );
+                    string lockDir = Paths.Base;;
                     Directory.CreateDirectory(lockDir);
 
                     string lockFile = Path.Combine(lockDir, $"{_lockName}.lock");

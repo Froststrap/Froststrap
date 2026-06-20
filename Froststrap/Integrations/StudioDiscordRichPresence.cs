@@ -34,7 +34,6 @@ namespace Froststrap.Integrations
             const string LOG_IDENT = "StudioDiscordRichPresence";
             _activityWatcher = activityWatcher;
 
-            // 1. Hook up events
             _activityWatcher.OnStudioRPCMessage += (_, message) => ProcessRPCMessage(message);
             _activityWatcher.OnStudioPlaceOpened += (_, _) => HandleStudioPlaceOpened();
             _activityWatcher.OnStudioPlaceClosed += (_, _) => HandleStudioPlaceClosed();
@@ -104,8 +103,8 @@ namespace Froststrap.Integrations
                 {
                     LargeImageKey = "roblox_studio",
                     LargeImageText = "Roblox Studio",
-                    SmallImageKey = "roblox_studio",
-                    SmallImageText = "Roblox Studio",
+                    SmallImageKey = null,
+                    SmallImageText = null
                 },
             };
 
@@ -134,8 +133,8 @@ namespace Froststrap.Integrations
                 {
                     LargeImageKey = "roblox_studio",
                     LargeImageText = "Roblox Studio",
-                    SmallImageKey = "roblox_studio",
-                    SmallImageText = "Roblox Studio",
+                    SmallImageKey = null,
+                    SmallImageText = null
                 },
             };
 
