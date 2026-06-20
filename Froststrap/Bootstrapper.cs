@@ -830,10 +830,24 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, $"No servers found in selected region {App.Settings.Prop.SelectedRegion}. Falling back to Auto mode.");
             }
 
+            if (cancellationToken.IsCancellationRequested)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Matchmaking was cancelled before auto mode could start.");
+                return "";
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             var autoFetcher = new Integrations.RobloxServerFetcher();
+
+            if (cancellationToken.IsCancellationRequested)
+                return "";
+
             var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(App.Settings.Prop.BestRegionAmounts, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested)
+                return "";
+
             if (topRegions.Count == 0)
                 throw new HttpRequestException("No regions found from datacenter list");
 
@@ -3613,7 +3627,7 @@ Windows Registry Editor Version 5.00
                         }
                     }
                     if (shouldWrite)
-                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, new JsonSerializerOptions { WriteIndented = true }));
+                        File.WriteAllText(modFilepath, JsonSerializer.Serialize(fontFamilyData, _indentedJsonOptions));
                 }
                 App.Logger.WriteLine(LOG_IDENT, "End font check");
             }
@@ -3638,7 +3652,8 @@ Windows Registry Editor Version 5.00
             {
                 if (_cancelTokenSource.IsCancellationRequested)
                     return true;
-                string relativeFile = file.Substring(Paths.Modifications.Length + 1);
+
+                string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
                 if (relativeFile == "README.txt")
                 {
                     File.Delete(file);
@@ -3696,7 +3711,7 @@ Windows Registry Editor Version 5.00
                     if (_cancelTokenSource.IsCancellationRequested)
                         return true;
 
-                    string relativeFile = file.Substring(modDir.Length + 1);
+                    string relativeFile = Path.GetRelativePath(modDir, file);
                     if (relativeFile == "README.txt")
                     {
                         File.Delete(file);

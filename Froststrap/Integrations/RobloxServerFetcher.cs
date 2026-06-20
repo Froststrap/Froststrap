@@ -165,6 +165,8 @@ namespace Froststrap.Integrations
 
             try
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var json = await _client.GetStringAsync(DatacenterUrl, cancellationToken);
                 var datacenterEntries = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
 
@@ -191,6 +193,10 @@ namespace Froststrap.Integrations
                 _datacenterIdToRegion = map;
 
                 return (_regionList, _datacenterIdToRegion);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -367,9 +373,10 @@ namespace Froststrap.Integrations
             if (_datacenterIdToRegion == null) await GetDatacentersAsync(cancellationToken);
 
             var baseUri = UrlBuilder.BuildApiUrl("games", $"v1/games/{placeId}/servers/Public", secure: true);
-            var uriBuilder = new UriBuilder(baseUri);
-            uriBuilder.Query = $"sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
-            Uri url = uriBuilder.Uri;
+            var url = new UriBuilder(baseUri)
+            {
+                Query = $"sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}"
+            }.Uri;
 
             var req = new HttpRequestMessage(HttpMethod.Get, url);
             req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
@@ -409,11 +416,11 @@ namespace Froststrap.Integrations
             var regionTasks = new List<Task<(string jobId, int? dcId)>>();
             var uptimeTasks = new Dictionary<string, Task<DateTime?>>();
 
-            foreach (var serverInfo in serverInfos)
+            foreach (var (jobId, playing, maxPlayers, _) in serverInfos)
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var regionTask = FetchServerRegionAsync(placeId, serverInfo.jobId, roblosecurity, cancellationToken);
+                var regionTask = FetchServerRegionAsync(placeId, jobId, roblosecurity, cancellationToken);
                 regionTasks.Add(regionTask);
             }
 

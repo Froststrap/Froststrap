@@ -896,9 +896,10 @@ namespace Froststrap.Integrations
             {
                 var batch = userIds.Skip(i).Take(batchSize).ToList();
                 string idsParam = string.Join(',', batch);
-                var baseUri = UrlBuilder.BuildApiUrl("thumbnails", "v1/users/avatar-headshot", secure: true);
-                var uriBuilder = new UriBuilder(baseUri);
-                uriBuilder.Query = $"userIds={idsParam}&size=75x75&format=Png&isCircular=true";
+                var uriBuilder = new UriBuilder(UrlBuilder.BuildApiUrl("thumbnails", "v1/users/avatar-headshot", secure: true))
+                {
+                    Query = $"userIds={idsParam}&size=75x75&format=Png&isCircular=true"
+                };
                 Uri url = uriBuilder.Uri;
 
                 try

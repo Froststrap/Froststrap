@@ -157,9 +157,10 @@ namespace Froststrap.UI.ViewModels
                 {
                     try
                     {
-                        var baseUri = UrlBuilder.BuildApiUrl("games", "v1/games/multiget-place-details", secure: true);
-                        var uriBuilder = new UriBuilder(baseUri);
-                        uriBuilder.Query = $"placeIds={placeId}";
+                        var uriBuilder = new UriBuilder(UrlBuilder.BuildApiUrl("games", "v1/games/multiget-place-details", secure: true))
+                        {
+                            Query = $"placeIds={placeId}"
+                        };
                         var placeReq = new HttpRequestMessage(HttpMethod.Get, uriBuilder.Uri);
                         var account = AccountManager.Shared.ActiveAccount;
                         if (account != null)

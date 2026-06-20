@@ -19,7 +19,7 @@ namespace Froststrap.Utility
         private static GenericTriState _loadStatus = GenericTriState.Unknown;
 
         private static string? _froststrapIconPath;
-        private static readonly object _iconLock = new();
+        private static readonly Lock _iconLock = new();
 
         public static string GetFroststrapIconPath()
         {
@@ -43,7 +43,7 @@ namespace Froststrap.Utility
 
                     var uri = new Uri("avares://Froststrap/Froststrap.png");
                     using var pngStream = AssetLoader.Open(uri);
-                    if (pngStream == null)
+                    if (pngStream is null)
                         throw new FileNotFoundException("Embedded Froststrap.png not found.");
 
                     using var fileStream = File.Create(iconPath);
