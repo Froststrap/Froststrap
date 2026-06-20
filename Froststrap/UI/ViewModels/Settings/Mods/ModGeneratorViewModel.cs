@@ -602,7 +602,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                         if (existingMod is null)
                         {
-                            int maxPriority = App.State.Prop.Mods.Any() ? App.State.Prop.Mods.Max(m => m.Priority) : 0;
+                            int maxPriority = App.State.Prop.Mods.Count > 0 ? App.State.Prop.Mods.Max(m => m.Priority) : 0;
                             var newMod = new ModConfig
                             {
                                 FolderName = modFolderName,

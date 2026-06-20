@@ -261,10 +261,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
 
 
-        private static readonly HashSet<string> RequiredModFolders = new()
-        {
-            "content", "ExtraContent", "PlatformContent"
-        };
+        private static readonly HashSet<string> RequiredModFolders = [ "content", "ExtraContent", "PlatformContent" ];
 
         private static string? ValidateModStructure(string rootDir)
         {
@@ -282,15 +279,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private async Task ImportFolderAsync(object? parameter)
         {
-            var control = parameter as Avalonia.Visual;
-            if (control == null)
+            if (parameter is not Avalonia.Visual control)
             {
                 await Frontend.ShowMessageBox("Unable to get the source control.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel == null)
+            if (TopLevel.GetTopLevel(control) is not TopLevel topLevel)
             {
                 await Frontend.ShowMessageBox("TopLevel not available.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
@@ -306,15 +301,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
         private async Task ImportZipAsync(object? parameter)
         {
-            var control = parameter as Avalonia.Visual;
-            if (control == null)
+            if (parameter is not Avalonia.Visual control)
             {
                 await Frontend.ShowMessageBox("Unable to get the source control.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
-            var topLevel = TopLevel.GetTopLevel(control);
-            if (topLevel == null)
+            if (TopLevel.GetTopLevel(control) is not TopLevel topLevel)
             {
                 await Frontend.ShowMessageBox("TopLevel not available.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
@@ -325,7 +318,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 {
                     AllowMultiple = true,
                     Title = "Select Mod ZIP Archive",
-                    FileTypeFilter = new[] { new FilePickerFileType("Zip Files") { Patterns = new[] { "*.zip" } } }
+                    FileTypeFilter = [ new FilePickerFileType("Zip Files") { Patterns = [ "*.zip" ] } ]
                 });
             if (files.Count == 0) return;
 
