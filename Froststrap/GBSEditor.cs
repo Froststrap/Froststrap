@@ -145,14 +145,40 @@ namespace Froststrap
             return File.GetAttributes(FileLocation).HasFlag(FileAttributes.ReadOnly);
         }
 
+        public void CreateTemplate()
+        {
+            string LOG_IDENT = "GBSEditor::CreateTemplate";
+            App.Logger.WriteLine(LOG_IDENT, $"Creating template at {FileLocation}...");
+
+            try
+            {
+                var uri = new Uri("avares://Froststrap/Resources/GlobalBasicSettings_Template.xml");
+                var assetLoader = Avalonia.Platform.AssetLoader.GetAssets(uri, null);
+
+                using var resourceStream = Avalonia.Platform.AssetLoader.Open(uri);
+                using var fileStream = File.Create(FileLocation);
+                resourceStream.CopyTo(fileStream);
+
+                previousReadOnlyState = GetReadOnly();
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to create template at {FileLocation}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+
         public void Load()
         {
             const string LOG_IDENT = "GBSEditor::Load";
 
             App.Logger.WriteLine(LOG_IDENT, $"Loading from {FileLocation}...");
 
-            if (!File.Exists(FileLocation)) // since the file gets created after roblox starts it might not exist yet
-                return;
+            // since the file gets created after roblox starts it might not exist yet
+            // this safeguard should only run once, that being when the user first installs fishstrap
+            if (!File.Exists(FileLocation))
+                CreateTemplate();
 
             try
             {

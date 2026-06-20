@@ -137,10 +137,27 @@ namespace Froststrap.UI.ViewModels.Settings
             set => App.GlobalSettings.SetReadOnly(value);
         }
 
-        public static string FramerateCap
+        public static int FramerateCap
         {
-            get => App.GlobalSettings.GetPreset("Rendering.FramerateCap")!;
-            set => App.GlobalSettings.SetPreset("Rendering.FramerateCap", value);
+            get
+            {
+                if (int.TryParse(App.GlobalSettings.GetPreset("Rendering.FramerateCap"), out int framerate))
+                {
+                    if (framerate < 1)
+                        return 60;
+                    else
+                        return framerate;
+                }
+                else
+                    return 60;
+            }
+            set
+            {
+                if (value < 1)
+                    value = -1;
+
+                App.GlobalSettings.SetPreset("Rendering.FramerateCap", value);
+            }
         }
 
         public string GraphicsQuality
