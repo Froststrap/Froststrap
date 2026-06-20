@@ -3583,18 +3583,24 @@ Windows Registry Editor Version 5.00
 
             File.Delete(Path.Combine(Paths.Base, "ModManifest.txt"));
 
-            var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
             Directory.CreateDirectory(Paths.Modifications);
 
-            var enabledMods = App.State.Prop.Mods
+            var allMods = App.State.Prop.Mods.ToList();
+            var allModFolderNames = allMods.Select(m => m.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var activeMods = App.State.Prop.Mods
                 .Where(m => m.Enabled && (
                     m.Target == ModTarget.Both ||
                     (IsStudioLaunch && m.Target == ModTarget.Studio) ||
                     (!IsStudioLaunch && m.Target == ModTarget.Player)))
-                .OrderBy(m => m.Priority)
+                .OrderByDescending(x => x.Priority)
                 .ToList();
 
-            var modFolderNames = enabledMods.Select(m => m.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            string contentDirectory = OperatingSystem.IsMacOS()
+                ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                : _latestVersionDirectory;
+
+            var currentModManifest = new Dictionary<string, ModFileEntry>(StringComparer.OrdinalIgnoreCase);
 
             string modFontFamiliesFolder = Path.Combine(Paths.Modifications, "content", "fonts", "families");
             if (File.Exists(Paths.CustomFont))
@@ -3637,119 +3643,227 @@ Windows Registry Editor Version 5.00
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Writing AppSettings.xml...");
-            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml")) 
+            if (!File.Exists(Path.Combine(Paths.Modifications, "AppSettings.xml"))
                 && (!OperatingSystem.IsLinux() || IsStudioLaunch))
             {
                 Directory.CreateDirectory(_latestVersionDirectory);
-
                 await File.WriteAllTextAsync(
                     Path.Combine(_latestVersionDirectory, "AppSettings.xml"),
                     AppSettings.Replace("roblox.com", Deployment.RobloxDomain)
                 );
             }
 
-            foreach (string file in Directory.GetFiles(Paths.Modifications, "*.*", SearchOption.AllDirectories))
+            var allModFiles = new Dictionary<string, (string SourcePath, int Priority, string ModName, FileInfo Info)>(StringComparer.OrdinalIgnoreCase);
+
+            if (Directory.Exists(Paths.Modifications))
             {
-                if (_cancelTokenSource.IsCancellationRequested)
-                    return true;
-
-                string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
-                if (relativeFile == "README.txt")
+                App.Logger.WriteLine(LOG_IDENT, "Processing PresetModifications (Flat folder)...");
+                foreach (string file in Directory.GetFiles(Paths.Modifications, "*.*", SearchOption.AllDirectories))
                 {
-                    File.Delete(file);
-                    continue;
-                }
+                    string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
 
-                if (!App.Settings.Prop.UseFastFlagManager && string.Equals(relativeFile, "ClientSettings\\ClientAppSettings.json", StringComparison.OrdinalIgnoreCase))
-                    continue;
+                    if (relativeFile == "README.txt" ||
+                        relativeFile.EndsWith("info.json") ||
+                        relativeFile.EndsWith(".lock") ||
+                        relativeFile.StartsWith("ClientSettings\\"))
+                        continue;
 
-                if (relativeFile.EndsWith("info.json"))
-                    continue;
+                    if (allModFolderNames.Any(modName => relativeFile.StartsWith(modName + "\\", StringComparison.OrdinalIgnoreCase)))
+                        continue;
 
-                if (relativeFile.EndsWith(".lock"))
-                    continue;
-
-                if (modFolderNames.Any(modName => relativeFile.StartsWith(modName + "\\", StringComparison.OrdinalIgnoreCase)))
-                    continue;
-
-                string fileModFolder = Path.Combine(Paths.Modifications, relativeFile);
-                string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
-                var sourceInfo = new FileInfo(fileModFolder);
-                currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
-                if (File.Exists(fileVersionFolder) && MD5Hash.FromFile(fileModFolder) == MD5Hash.FromFile(fileVersionFolder))
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} already exists in the version folder, and is a match");
-                    continue;
-                }
-                Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-                Filesystem.AssertReadOnly(fileVersionFolder);
-                try
-                {
-                    File.Copy(fileModFolder, fileVersionFolder, true);
-                    Filesystem.AssertReadOnly(fileVersionFolder);
-                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} has been copied to the version folder");
-                }
-                catch (Exception ex)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, $"Failed to apply modification ({relativeFile})");
-                    App.Logger.WriteException(LOG_IDENT, ex);
-                    success = false;
+                    var info = new FileInfo(file);
+                    allModFiles[relativeFile] = (file, int.MinValue, "BaseModification", info);
                 }
             }
 
-            foreach (var mod in enabledMods)
+            foreach (var mod in activeMods)
             {
-                string modDir = Path.Combine(Paths.Modifications, mod.FolderName);
-                if (!Directory.Exists(modDir))
+                string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+                if (!Directory.Exists(modSource))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Mod '{mod.FolderName}' is enabled but its directory is missing. Skipping.");
+                    App.Logger.WriteLine(LOG_IDENT, $"Skipping mod '{mod.FolderName}': directory not found");
                     continue;
                 }
-                App.Logger.WriteLine(LOG_IDENT, $"Applying mod '{mod.FolderName}' (priority: {mod.Priority})");
-                foreach (string file in Directory.GetFiles(modDir, "*.*", SearchOption.AllDirectories))
+
+                App.Logger.WriteLine(LOG_IDENT, $"Processing mod '{mod.FolderName}' (priority: {mod.Priority})");
+
+                foreach (string file in Directory.GetFiles(modSource, "*.*", SearchOption.AllDirectories))
                 {
-                    if (_cancelTokenSource.IsCancellationRequested)
-                        return true;
+                    string relativeFile = Path.GetRelativePath(modSource, file);
 
-                    string relativeFile = Path.GetRelativePath(modDir, file);
-                    if (relativeFile == "README.txt")
+                    if (relativeFile == "README.txt" ||
+                        relativeFile.EndsWith("info.json") ||
+                        relativeFile.EndsWith(".lock") ||
+                        relativeFile.StartsWith("ClientSettings\\"))
+                        continue;
+
+                    string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
+                        continue;
+
+                    var info = new FileInfo(file);
+
+                    allModFiles[relativeFile] = (file, mod.Priority, mod.FolderName, info);
+                }
+            }
+
+            var filesToDelete = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var mod in activeMods)
+            {
+                string modSource = Path.Combine(Paths.Modifications, mod.FolderName);
+                if (!Directory.Exists(modSource)) continue;
+
+                foreach (string file in Directory.GetFiles(modSource, "*_Delete.*", SearchOption.AllDirectories))
+                {
+                    string relativeFile = Path.GetRelativePath(modSource, file);
+                    string actualFile = relativeFile;
+                    string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(relativeFile);
+                    if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
                     {
-                        File.Delete(file);
-                        continue;
+                        string directory = Path.GetDirectoryName(relativeFile) ?? "";
+                        string originalName = fileNameWithoutExt[..^7];
+                        actualFile = Path.Combine(directory, originalName + Path.GetExtension(relativeFile));
                     }
+                    filesToDelete.Add(actualFile);
+                }
+            }
 
-                    if (string.Equals(relativeFile, "ClientSettings\\ClientAppSettings.json", StringComparison.OrdinalIgnoreCase))
-                        continue;
+            foreach (string relPath in filesToDelete)
+            {
+                allModFiles.Remove(relPath);
+            }
 
-                    if (relativeFile.EndsWith("info.json"))
-                        continue;
+            foreach (string relPath in filesToDelete)
+            {
+                string targetFile = Path.Combine(contentDirectory, relPath);
+                if (File.Exists(targetFile))
+                {
+                    Filesystem.AssertReadOnly(targetFile);
+                    File.Delete(targetFile);
+                    App.Logger.WriteLine(LOG_IDENT, $"{relPath} deleted via _Delete flag");
 
-                    if (relativeFile.EndsWith(".lock"))
-                        continue;
-
-                    string fileVersionFolder = Path.Combine(_latestVersionDirectory, relativeFile);
-                    var sourceInfo = new FileInfo(file);
-                    currentModManifest[relativeFile] = new ModFileEntry { Size = sourceInfo.Length, LastModified = sourceInfo.LastWriteTime };
-                    if (File.Exists(fileVersionFolder) && MD5Hash.FromFile(file) == MD5Hash.FromFile(fileVersionFolder))
+                    string? parentDir = Path.GetDirectoryName(targetFile);
+                    while (!string.IsNullOrEmpty(parentDir) &&
+                           parentDir.TrimEnd(Path.DirectorySeparatorChar) != contentDirectory.TrimEnd(Path.DirectorySeparatorChar))
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} from mod '{mod.FolderName}' already exists in the version folder, and is a match");
-                        continue;
+                        if (Directory.Exists(parentDir) && !Directory.EnumerateFileSystemEntries(parentDir).Any())
+                        {
+                            Directory.Delete(parentDir);
+                            parentDir = Path.GetDirectoryName(parentDir);
+                        }
+                        else break;
                     }
+                }
 
-                    Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
-                    Filesystem.AssertReadOnly(fileVersionFolder);
+                lock (currentModManifest)
+                    currentModManifest[relPath + "_Delete"] = new ModFileEntry { Size = 0, LastModified = DateTime.Now };
+            }
+
+            var fileTasks = new List<Task<bool>>();
+            using var semaphore = new SemaphoreSlim(8);
+
+            foreach (var entry in allModFiles)
+            {
+                if (_cancelTokenSource.IsCancellationRequested) return true;
+
+                string relativeFile = entry.Key;
+                var (sourceFile, priority, modName, sourceInfo) = entry.Value;
+                string fileVersionFolder = Path.Combine(contentDirectory, relativeFile);
+
+                fileTasks.Add(Task.Run(async () =>
+                {
+                    await semaphore.WaitAsync();
                     try
                     {
-                        File.Copy(file, fileVersionFolder, true);
-                        Filesystem.AssertReadOnly(fileVersionFolder);
-                        App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} from mod '{mod.FolderName}' has been copied to the version folder");
+                        bool needsCopy = true;
+
+                        if (File.Exists(fileVersionFolder))
+                        {
+                            var targetInfo = new FileInfo(fileVersionFolder);
+
+                            if (targetInfo.Length == sourceInfo.Length &&
+                                targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (size/time) from mod '{modName}' (priority: {priority})");
+                                needsCopy = false;
+                            }
+                            else
+                            {
+                                string sourceHash = await Task.Run(() => MD5Hash.FromFile(sourceFile));
+                                string targetHash = await Task.Run(() => MD5Hash.FromFile(fileVersionFolder));
+
+                                if (sourceHash == targetHash)
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (MD5) from mod '{modName}' (priority: {priority})");
+                                    needsCopy = false;
+
+                                    File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                                }
+                                else
+                                {
+                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} differs, applying from mod '{modName}' (priority: {priority})");
+                                }
+                            }
+                        }
+
+                        if (needsCopy)
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(fileVersionFolder)!);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            File.Copy(sourceFile, fileVersionFolder, true);
+                            File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
+                            Filesystem.AssertReadOnly(fileVersionFolder);
+                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied from mod '{modName}' (priority: {priority})");
+                        }
+
+                        lock (currentModManifest)
+                        {
+                            currentModManifest[relativeFile] = new ModFileEntry
+                            {
+                                Size = sourceInfo.Length,
+                                LastModified = sourceInfo.LastWriteTime
+                            };
+                        }
+
+                        return true;
                     }
                     catch (Exception ex)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply mod file '{relativeFile}' from mod '{mod.FolderName}'");
-                        App.Logger.WriteException(LOG_IDENT, ex);
-                        success = false;
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply ({relativeFile}) from mod '{modName}': {ex.Message}");
+                        return false;
                     }
+                    finally { semaphore.Release(); }
+                }));
+            }
+
+            var fileResults = await Task.WhenAll(fileTasks);
+            success = success && fileResults.All(r => r);
+
+            if (App.Settings.Prop.UseFastFlagManager && (!OperatingSystem.IsLinux() || IsStudioLaunch))
+            {
+                string source = Path.Combine(Paths.Modifications, "ClientSettings", "ClientAppSettings.json");
+                if (File.Exists(source))
+                {
+                    string rel = Path.Combine("ClientSettings", "ClientAppSettings.json");
+                    string dest = Path.Combine(contentDirectory, rel);
+                    var info = new FileInfo(source);
+
+                    lock (currentModManifest)
+                        currentModManifest[rel] = new ModFileEntry { Size = info.Length, LastModified = info.LastWriteTime };
+
+                    try
+                    {
+                        bool match = File.Exists(dest) &&
+                            (await Task.Run(() => MD5Hash.FromFile(source)) == await Task.Run(() => MD5Hash.FromFile(dest)));
+                        if (!match)
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(dest)!);
+                            File.Copy(source, dest, true);
+                            File.SetLastWriteTime(dest, info.LastWriteTime);
+                            App.Logger.WriteLine(LOG_IDENT, "FastFlags Applied.");
+                        }
+                    }
+                    catch (Exception ex) { App.Logger.WriteException(LOG_IDENT, ex); }
                 }
             }
 
@@ -3758,18 +3872,23 @@ Windows Registry Editor Version 5.00
             {
                 if (currentModManifest.ContainsKey(fileLocation))
                     continue;
+
                 string actualFile = fileLocation;
                 string? fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileLocation);
+
                 if (fileNameWithoutExt != null && fileNameWithoutExt.EndsWith("_Delete"))
                 {
                     if (OperatingSystem.IsLinux() && !IsStudioLaunch)
                         continue;
+
                     string directory = Path.GetDirectoryName(fileLocation) ?? "";
                     string originalName = fileNameWithoutExt[..^7];
                     actualFile = Path.Combine(directory, originalName + Path.GetExtension(fileLocation));
                 }
+
                 string? packageName = null;
                 string? packageDir = null;
+
                 foreach (var kvp in PackageDirectoryMap)
                 {
                     if (!string.IsNullOrEmpty(kvp.Value) && actualFile.StartsWith(kvp.Value, StringComparison.OrdinalIgnoreCase))
@@ -3779,6 +3898,7 @@ Windows Registry Editor Version 5.00
                         break;
                     }
                 }
+
                 if (string.IsNullOrEmpty(packageName) || string.IsNullOrEmpty(packageDir))
                 {
                     string versionFileLocation = Path.Combine(_latestVersionDirectory, actualFile);
@@ -3790,11 +3910,14 @@ Windows Registry Editor Version 5.00
                     }
                     continue;
                 }
+
                 string internalZipPath = actualFile[packageDir.Length..].TrimStart(Path.DirectorySeparatorChar);
+
                 if (!fileRestoreMap.ContainsKey(packageName))
                     fileRestoreMap[packageName] = [];
+
                 fileRestoreMap[packageName].Add(internalZipPath);
-                App.Logger.WriteLine(LOG_IDENT, $"Will restore '{internalZipPath}' from package {packageName}");
+                App.Logger.WriteLine(LOG_IDENT, $"Will restore '{internalZipPath}' from package {packageName} (actualFile='{actualFile}', packageDir='{packageDir}')");
             }
 
             if (!OperatingSystem.IsLinux())
@@ -3816,7 +3939,7 @@ Windows Registry Editor Version 5.00
                 AppData.DistributionStateManager.Save();
             }
 
-            App.Logger.WriteLine(LOG_IDENT, "Finished applying modifications.");
+            App.Logger.WriteLine(LOG_IDENT, "Finished checking file mods");
             return success;
         }
 

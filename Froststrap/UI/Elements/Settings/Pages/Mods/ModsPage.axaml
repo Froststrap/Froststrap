@@ -109,10 +109,10 @@
                                                    FontWeight="Medium"
                                                    TextTrimming="CharacterEllipsis" />
                                         <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,2,0,0">
-                                            <TextBlock Text="{Binding Priority, StringFormat='{}Load order: {0}'}"
+                                            <TextBlock Text="{Binding Priority, StringFormat='{}Priority: {0}'}"
                                                        FontSize="11"
                                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                            <TextBlock Text="{Binding FileCount, StringFormat='{}{0} files'}"
+                                            <TextBlock Text="{Binding FileCount, StringFormat='{}{0} Files'}"
                                                        FontSize="11"
                                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                                         </StackPanel>
