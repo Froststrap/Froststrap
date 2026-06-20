@@ -10,13 +10,56 @@
 
 using System.Security.Cryptography;
 using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 
 namespace Froststrap.Utility
 {
     internal static class Shortcut
     {
         private static GenericTriState _loadStatus = GenericTriState.Unknown;
-        
+
+        private static string? _froststrapIconPath;
+        private static readonly object _iconLock = new();
+
+        public static string GetFroststrapIconPath()
+        {
+            if (_froststrapIconPath != null && File.Exists(_froststrapIconPath))
+                return _froststrapIconPath;
+
+            lock (_iconLock)
+            {
+                if (_froststrapIconPath != null && File.Exists(_froststrapIconPath))
+                    return _froststrapIconPath;
+
+                try
+                {
+                    string iconPath = Path.Combine(Paths.Base, "froststrap.png");
+
+                    if (File.Exists(iconPath))
+                    {
+                        _froststrapIconPath = iconPath;
+                        return iconPath;
+                    }
+
+                    var uri = new Uri("avares://Froststrap/Froststrap.png");
+                    using var pngStream = AssetLoader.Open(uri);
+                    if (pngStream == null)
+                        throw new FileNotFoundException("Embedded Froststrap.png not found.");
+
+                    using var fileStream = File.Create(iconPath);
+                    pngStream.CopyTo(fileStream);
+
+                    _froststrapIconPath = iconPath;
+                    return iconPath;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine("Shortcut::GetFroststrapIconPath", $"Failed to extract icon: {ex.Message}");
+                    return "application-x-executable";
+                }
+            }
+        }
+
         public static string ResolvePath(string lnkPath)
         {
             if (OperatingSystem.IsLinux())
@@ -249,7 +292,7 @@ namespace Froststrap.Utility
         {
             string finalDesktopPath = Path.ChangeExtension(desktopPath, ".desktop");
             string appName = Path.GetFileNameWithoutExtension(finalDesktopPath);
-            string icon = string.IsNullOrEmpty(iconPath) ? "application-x-executable" : iconPath;
+            string icon = string.IsNullOrEmpty(iconPath) ? GetFroststrapIconPath() : iconPath;
 
             string content =
                 $"""
