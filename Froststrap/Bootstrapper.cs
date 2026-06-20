@@ -3665,7 +3665,6 @@ Windows Registry Editor Version 5.00
                     string modFilepath = Path.Combine(fontFamiliesFolder, jsonFilename);
                     if (File.Exists(modFilepath))
                         continue;
-                    App.Logger.WriteLine(LOG_IDENT, $"Setting font for {jsonFilename}");
                     var fontFamilyData = JsonSerializer.Deserialize<FontFamily>(File.ReadAllText(jsonFilePath));
                     if (fontFamilyData is null)
                         continue;
@@ -3834,7 +3833,7 @@ Windows Registry Editor Version 5.00
                             if (targetInfo.Length == sourceInfo.Length &&
                                 targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
                             {
-                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (size/time) from mod '{modName}' (priority: {priority})");
+                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (size/time)");
                                 needsCopy = false;
                             }
                             else
@@ -3844,14 +3843,14 @@ Windows Registry Editor Version 5.00
 
                                 if (sourceHash == targetHash)
                                 {
-                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (MD5) from mod '{modName}' (priority: {priority})");
+                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (MD5)");
                                     needsCopy = false;
 
                                     File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
                                 }
                                 else
                                 {
-                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} differs, applying from mod '{modName}' (priority: {priority})");
+                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} diffrent, applying)");
                                 }
                             }
                         }
@@ -3863,7 +3862,7 @@ Windows Registry Editor Version 5.00
                             File.Copy(sourceFile, fileVersionFolder, true);
                             File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
                             Filesystem.AssertReadOnly(fileVersionFolder);
-                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied from mod '{modName}' (priority: {priority})");
+                            App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} applied");
                         }
 
                         lock (currentModManifest)
@@ -3967,7 +3966,7 @@ Windows Registry Editor Version 5.00
                     fileRestoreMap[packageName] = [];
 
                 fileRestoreMap[packageName].Add(internalZipPath);
-                App.Logger.WriteLine(LOG_IDENT, $"Will restore '{internalZipPath}' from package {packageName} (actualFile='{actualFile}', packageDir='{packageDir}')");
+                App.Logger.WriteLine(LOG_IDENT, $"Restoring '{internalZipPath}' from package {packageName}");
             }
 
             if (!OperatingSystem.IsLinux())

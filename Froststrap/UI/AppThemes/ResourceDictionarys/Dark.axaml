@@ -10,4 +10,6 @@
 	<SolidColorBrush x:Key="NormalDarkAndLightBackground"  Color="#01000000" />
 
 	<SolidColorBrush x:Key="ApplicationBackgroundColor"    Color="#01000000" />
+
+	<SolidColorBrush x:Key="NotificationBackgroundColor"   Color="#2D2D2D" />
 </ResourceDictionary>

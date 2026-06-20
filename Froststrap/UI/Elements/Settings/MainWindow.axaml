@@ -208,14 +208,6 @@
                     </Border>
 
                     <Panel Grid.Row="1">
-                        <Panel
-                            Name="NotificationPanel"
-                            MaxWidth="450"
-                            Margin="0,0,0,15"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Bottom"
-                            ZIndex="1000" />
-
                         <TransitioningContentControl
                             x:Name="PageContentControl"
                             HorizontalAlignment="Stretch"
@@ -282,6 +274,15 @@
                     Content="{x:Static resources:Strings.Common_Close}" />
             </Grid>
         </Border>
+
+        <Panel
+            Name="NotificationPanel"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Margin="0,0,0,15"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
+            ZIndex="1000" />
 
         <Border
             x:Name="OffscreenIndexingCanvas"

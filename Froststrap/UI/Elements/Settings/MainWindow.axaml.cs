@@ -24,6 +24,10 @@ namespace Froststrap.UI.Elements.Settings
         private static Models.Persistable.WindowState State => App.State.Prop.SettingsWindow;
         private readonly MainWindowViewModel? _viewModel;
 
+        private Border? _currentNotification;
+        private CancellationTokenSource? _notificationCts;
+        private bool _isAnimatingOut = false;
+
         private readonly Dictionary<string, Control> _cachedPages = [];
 
         public MainWindow()
@@ -319,24 +323,84 @@ namespace Froststrap.UI.Elements.Settings
                 5000);
         }
 
-        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, FluentIcons.Common.Symbol? icon = null)
+        public static void ShowGlobalNotification(string title, string subtitle, InfoBarSeverity type, int timeout = 3000, Symbol? icon = null)
         {
             Dispatcher.UIThread.Post(() => Instance?.ShowNotification(title, subtitle, type, timeout, icon));
         }
 
-        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, FluentIcons.Common.Symbol? customIcon = null)
+        public void ShowNotification(string title, string subtitle, InfoBarSeverity type, int timeout, Symbol? customIcon = null)
+        {
+            var notificationPanel = this.FindControl<Panel>("NotificationPanel");
+            if (notificationPanel == null) return;
+
+            // If a notification is currently animating out, wait for it to finish
+            if (_isAnimatingOut)
+            {
+                // Schedule this notification to show after the animation completes
+                Task.Run(async () =>
+                {
+                    while (_isAnimatingOut)
+                    {
+                        await Task.Delay(50);
+                    }
+                    Dispatcher.UIThread.Post(() => ShowNotification(title, subtitle, type, timeout, customIcon));
+                });
+                return;
+            }
+
+            // Cancel existing notification timeout
+            _notificationCts?.Cancel();
+            _notificationCts?.Dispose();
+            _notificationCts = new CancellationTokenSource();
+            var token = _notificationCts.Token;
+
+            // If there's a current notification, animate it out first
+            if (_currentNotification != null && notificationPanel.Children.Contains(_currentNotification))
+            {
+                _isAnimatingOut = true;
+                var oldNotification = _currentNotification;
+
+                // Animate out the old notification
+                oldNotification.Opacity = 0;
+                oldNotification.RenderTransform = new TranslateTransform(0, 40);
+
+                // Wait for animation to complete
+                Task.Run(async () =>
+                {
+                    await Task.Delay(350);
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        if (notificationPanel.Children.Contains(oldNotification))
+                        {
+                            notificationPanel.Children.Remove(oldNotification);
+                        }
+                        _isAnimatingOut = false;
+                        _currentNotification = null;
+
+                        // Now show the new notification
+                        ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
+                    });
+                });
+                return;
+            }
+
+            // No existing notification, show directly
+            ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
+        }
+
+        private void ShowNotificationInternal(string title, string subtitle, InfoBarSeverity type, int timeout, Symbol? customIcon = null)
         {
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
             var accentColor = type == InfoBarSeverity.Success ? "#00D084" : "#FFB900";
             var iconSymbol = customIcon ?? (type == InfoBarSeverity.Success
-                ? FluentIcons.Common.Symbol.CheckmarkCircle
-                : FluentIcons.Common.Symbol.Warning);
+                ? Symbol.CheckmarkCircle
+                : Symbol.Warning);
 
             var contentGrid = new Grid
             {
-                ColumnDefinitions = new ColumnDefinitions("Auto,*"),
+                ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
                 Margin = new Thickness(0)
             };
 
@@ -364,52 +428,94 @@ namespace Froststrap.UI.Elements.Settings
             Grid.SetColumn(textPanel, 1);
             contentGrid.Children.Add(textPanel);
 
+            var closeButton = new IconButton
+            {
+                Icon = Symbol.Dismiss,
+                IconSize = 16,
+                Background = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(8, 4, 8, 4),
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
+                Width = 32,
+                Height = 32,
+                Margin = new Thickness(0, 0, 12, 0)
+            };
+
+            closeButton.Bind(IconButton.ForegroundProperty, new DynamicResourceExtension("TextFillColorSecondaryBrush"));
+
+            Grid.SetColumn(closeButton, 2);
+            contentGrid.Children.Add(closeButton);
+
             var notification = new Border
             {
                 BorderBrush = new SolidColorBrush(Color.Parse(accentColor)),
                 BorderThickness = new Thickness(1),
-                Padding = new Thickness(0, 12, 24, 12),
-                Margin = new Thickness(0, 0, 0, 10),
+                Padding = new Thickness(0, 12, 0, 12),
+                Margin = new Thickness(200, 0, 200, 40),
                 MinWidth = 350,
-                MaxWidth = 500,
                 Height = 80,
-                CornerRadius = new CornerRadius(12),
+                CornerRadius = new CornerRadius(6),
                 Opacity = 0,
                 RenderTransform = new TranslateTransform(0, 40),
-                Cursor = new Cursor(StandardCursorType.Hand),
                 Child = contentGrid,
-                BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") })
+                BoxShadow = new BoxShadows(new BoxShadow { Blur = 10, OffsetY = 4, Color = Color.Parse("#40000000") }),
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
             };
 
-            notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("SolidBackgroundFillColorBase"));
-
+            notification.Bind(Border.BackgroundProperty, new DynamicResourceExtension("NotificationBackgroundColor"));
 
             notification.Transitions =
             [
                 new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
-                new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
+        new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
             ];
 
             async void Dismiss()
             {
+                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 if (!notificationPanel.Children.Contains(notification)) return;
                 notification.Opacity = 0;
                 notification.RenderTransform = new TranslateTransform(0, 40);
                 await Task.Delay(350);
-                notificationPanel.Children.Remove(notification);
+                if (notificationPanel.Children.Contains(notification))
+                {
+                    notificationPanel.Children.Remove(notification);
+                }
+                if (_currentNotification == notification)
+                {
+                    _currentNotification = null;
+                }
             }
 
-            notification.PointerPressed += (s, e) => Dismiss();
+            closeButton.Click += (s, e) =>
+            {
+                e.Handled = true;
+                Dismiss();
+            };
+
+            notification.PointerPressed += (s, e) =>
+            {
+                if (e.Source is IconButton) return;
+                Dismiss();
+            };
+
+            _currentNotification = notification;
             notificationPanel.Children.Add(notification);
 
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
+                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 await Task.Delay(50);
+                if (_notificationCts?.Token.IsCancellationRequested ?? false) return;
                 notification.Opacity = 1;
                 notification.RenderTransform = new TranslateTransform(0, 0);
 
                 await Task.Delay(timeout);
-                Dismiss();
+                if (!(_notificationCts?.Token.IsCancellationRequested ?? false))
+                {
+                    Dismiss();
+                }
             });
         }
 
