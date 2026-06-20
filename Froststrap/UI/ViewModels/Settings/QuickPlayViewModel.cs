@@ -228,7 +228,28 @@ namespace Froststrap.UI.ViewModels.Settings
             JoinBestRegionCommand = new RelayCommand<QuickPlayGameItem>(async item =>
             {
                 if (item == null || item.PlaceId == 0 || IsJoiningBestRegion) return;
-                await FindAndJoinServerInRegionAsync(item.PlaceId);
+
+                IsJoiningBestRegion = true;
+                try
+                {
+                    var fetcher = new RobloxServerFetcher();
+                    bool success = await fetcher.JoinBestServerAsync(
+                        item.PlaceId,
+                        App.Settings.Prop.JoinSmallerServer,
+                        App.Settings.Prop.BestRegionAmounts,
+                        App.Settings.Prop.MaxServerCheck,
+                        showConfirmation: false
+                    );
+
+                    if (!success)
+                    {
+                        await Frontend.ShowMessageBox("No suitable server found.", MessageBoxImage.Information);
+                    }
+                }
+                finally
+                {
+                    IsJoiningBestRegion = false;
+                }
             });
 
             ClosePrivateServersCommand = new RelayCommand(() => IsPrivateServersOverlayVisible = false);
@@ -685,166 +706,6 @@ namespace Froststrap.UI.ViewModels.Settings
                 JoinedAt = s.FirstSeen ?? DateTime.UtcNow,
                 IsLatest = false
             })];
-        }
-
-        private async Task FindAndJoinServerInRegionAsync(long placeId)
-        {
-            IsJoiningBestRegion = true;
-            try
-            {
-                bool joinSmallerServer = App.Settings.Prop.JoinSmallerServer;
-                int bestRegionAmounts = App.Settings.Prop.BestRegionAmounts;
-                int maxServerCheck = App.Settings.Prop.MaxServerCheck;
-
-                var fetcher = new RobloxServerFetcher();
-                string? resolvedCookie = await fetcher.ResolveCookieAsync();
-                if (string.IsNullOrWhiteSpace(resolvedCookie))
-                {
-                    await Frontend.ShowMessageBox("No valid cookie found. Log in using account manager.", MessageBoxImage.Error);
-                    return;
-                }
-
-                var datacentersResult = await fetcher.GetDatacentersAsync();
-                if (datacentersResult == null) return;
-                var (_, dcMap) = datacentersResult.Value;
-
-                List<string> topRegions = await GetClosestRegionsForAutoModeAsync(bestRegionAmounts);
-                if (topRegions.Count == 0)
-                {
-                    await Frontend.ShowMessageBox("Could not determine your location.", MessageBoxImage.Warning);
-                    return;
-                }
-
-                var regionRank = new Dictionary<string, int>();
-                for (int i = 0; i < topRegions.Count; i++)
-                    regionRank[topRegions[i]] = i + 1;
-
-                string? nextCursor = "";
-                int serversChecked = 0;
-                const int maxAttempts = 50;
-
-                string? bestServerId = null;
-                int bestRank = int.MaxValue;
-                int bestPlayers = int.MaxValue;
-
-                while (serversChecked < maxServerCheck && serversChecked < maxAttempts)
-                {
-                    int sortOrder = joinSmallerServer ? 1 : 2;
-                    var result = await fetcher.FetchServerInstancesAsync(placeId, nextCursor, sortOrder, resolvedCookie);
-                    if (result?.Servers == null || result.Servers.Count == 0)
-                    {
-                        if (string.IsNullOrEmpty(nextCursor)) break;
-                        await Task.Delay(500);
-                        continue;
-                    }
-
-                    foreach (var server in result.Servers)
-                    {
-                        if (serversChecked >= maxServerCheck) break;
-                        if (!server.DataCenterId.HasValue) continue;
-                        if (!dcMap.TryGetValue(server.DataCenterId.Value, out var serverRegion)) continue;
-                        if (server.Playing >= server.MaxPlayers) continue;
-                        serversChecked++;
-                        if (!regionRank.TryGetValue(serverRegion, out int rank)) continue;
-
-                        bool isBetter = false;
-                        if (rank < bestRank) isBetter = true;
-                        else if (rank == bestRank && joinSmallerServer && server.Playing < bestPlayers) isBetter = true;
-                        else if (rank == bestRank && !joinSmallerServer && server.Playing > bestPlayers) isBetter = true;
-
-                        if (isBetter)
-                        {
-                            bestRank = rank;
-                            bestPlayers = server.Playing;
-                            int bestMaxPlayers = server.MaxPlayers;
-                            bestServerId = server.Id;
-                            string? bestServerRegion = serverRegion;
-                            if (rank == 1) break;
-                        }
-                    }
-                    if (bestRank == 1 && bestServerId != null) break;
-                    if (!string.IsNullOrEmpty(result.NextCursor)) nextCursor = result.NextCursor;
-                    else break;
-                    await Task.Delay(200);
-                }
-
-                if (bestServerId != null)
-                {
-                    LaunchRoblox(placeId, bestServerId);
-                }
-                else
-                {
-                    await Frontend.ShowMessageBox("No suitable server found.", MessageBoxImage.Information);
-                }
-            }
-            finally
-            {
-                IsJoiningBestRegion = false;
-            }
-        }
-
-        private static async Task<List<string>> GetClosestRegionsForAutoModeAsync(int topCount)
-        {
-            try
-            {
-                var ipinfo = await Http.GetJson<IPInfoResponse>(new Uri("https://ipinfo.io/json"));
-                if (string.IsNullOrEmpty(ipinfo?.Loc))
-                    return [];
-
-                string[] location = ipinfo.Loc.Split(',');
-                double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
-                double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
-
-                var datacenters = await Http.GetJson<List<DatacenterEntry>>(new Uri("https://apis.rovalra.com/v1/datacenters/list"));
-                if (datacenters == null || datacenters.Count == 0)
-                    return [];
-
-                var regionDistance = new Dictionary<string, double>();
-
-                foreach (var dc in datacenters)
-                {
-                    if (dc.Location == null || dc.Location.LatLong == null || dc.Location.LatLong.Length < 2)
-                        continue;
-
-                    if (!double.TryParse(dc.Location.LatLong[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double lat) ||
-                        !double.TryParse(dc.Location.LatLong[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double lon))
-                        continue;
-
-                    double distance = GetDistance(userLat, userLon, lat, lon);
-                    string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
-
-                    if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
-                        regionDistance[regionKey] = distance;
-                }
-
-                var closestRegions = regionDistance
-                    .OrderBy(kvp => kvp.Value)
-                    .Take(topCount)
-                    .Select(kvp => kvp.Key)
-                    .ToList();
-
-                App.Logger.WriteLine("QuickPlayViewModel", $"Top {closestRegions.Count} regions: {string.Join(", ", closestRegions)}");
-                return closestRegions;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException("QuickPlayViewModel::GetClosestRegions", ex);
-                return [];
-            }
-        }
-
-        private static double Deg2Rad(double deg) => deg * Math.PI / 180.0;
-
-        private static double GetDistance(double lat1, double lon1, double lat2, double lon2)
-        {
-            const double R = 6371;
-            double dLat = Deg2Rad(lat2 - lat1);
-            double dLon = Deg2Rad(lon2 - lon1);
-            double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                       Math.Cos(Deg2Rad(lat1)) * Math.Cos(Deg2Rad(lat2)) *
-                       Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return R * c;
         }
 
         private async void OnActiveAccountChanged(AccountManagerAccount? account)

@@ -797,23 +797,6 @@ namespace Froststrap
             return false;
         }
 
-        private static double Deg2Rad(double deg) => deg * (Math.PI / 180.0);
-
-        private static double GetDistance(double lat1, double lon1, double lat2, double lon2)
-        {
-            const double R = 6371;
-
-            double dLat = Deg2Rad(lat2 - lat1);
-            double dLon = Deg2Rad(lon2 - lon1);
-            double a =
-                Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                Math.Cos(Deg2Rad(lat1)) * Math.Cos(Deg2Rad(lat2)) *
-                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-
-            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return R * c;
-        }
-
         private async Task<string> GetBetterMatchmakingServerID(CancellationToken cancellationToken = default)
         {
             const string LOG_IDENT = "Bootstrapper::GetBetterMatchmakingServerID";
@@ -829,125 +812,59 @@ namespace Froststrap
                     throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
                 SetStatus($"Searching for servers in {App.Settings.Prop.SelectedRegion}...");
-                int selectedRegionServerSize = App.Settings.Prop.JoinSmallerServer ? 1 : 2;
-                var selectedRegionFetchResult = await selectedRegionFetcher.FetchServerInstancesAsync(
-                    (long)_joinData.PlaceId!, cursor: "", sortOrder: selectedRegionServerSize,
-                    optionalCookie: selectedRegionCookie, cancellationToken: cancellationToken);
 
-                var selectedRegionCandidates = selectedRegionFetchResult.Servers?
-                    .Where(s => !string.IsNullOrEmpty(s.Id) &&
-                               s.Region != null &&
-                               s.Region.Equals(App.Settings.Prop.SelectedRegion, StringComparison.OrdinalIgnoreCase))
-                    .Take(App.Settings.Prop.MaxServerCheck)
-                    .ToList();
+                var selectedRegionResult = await selectedRegionFetcher.FindBestServerInSelectedRegionAsync(
+                    (long)_joinData.PlaceId!,
+                    App.Settings.Prop.SelectedRegion,
+                    App.Settings.Prop.JoinSmallerServer,
+                    App.Settings.Prop.MaxServerCheck,
+                    cookie: selectedRegionCookie,
+                    cancellationToken: cancellationToken);
 
-                if (selectedRegionCandidates != null && selectedRegionCandidates.Count > 0)
+                if (selectedRegionResult.Found)
                 {
-                    var best = App.Settings.Prop.JoinSmallerServer
-                        ? selectedRegionCandidates.OrderBy(s => s.Playing).First()
-                        : selectedRegionCandidates.First();
-
-                    App.Logger.WriteLine(LOG_IDENT, $"Found server in selected region {App.Settings.Prop.SelectedRegion}: {best.Id} (players: {best.Playing})");
-                    return best.Id;
+                    App.Logger.WriteLine(LOG_IDENT, $"Found server in selected region {App.Settings.Prop.SelectedRegion}: {selectedRegionResult.ServerId} (players: {selectedRegionResult.Players})");
+                    return selectedRegionResult.ServerId!;
                 }
 
                 App.Logger.WriteLine(LOG_IDENT, $"No servers found in selected region {App.Settings.Prop.SelectedRegion}. Falling back to Auto mode.");
             }
 
             cancellationToken.ThrowIfCancellationRequested();
-            var ipinfoJson = await App.HttpClient.GetStringAsync("https://ipinfo.io/json", cancellationToken);
-            var ipinfo = JsonSerializer.Deserialize<IPInfoResponse>(ipinfoJson);
-            if (string.IsNullOrEmpty(ipinfo?.Loc))
-                throw new HttpRequestException("Location data missing from ipinfo.io");
 
-            string[] location = ipinfo.Loc.Split(',');
-            double userLat = double.Parse(location[0], CultureInfo.InvariantCulture);
-            double userLon = double.Parse(location[1], CultureInfo.InvariantCulture);
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            SetStatus("Checking Closest Regions...");
-            List<RegionDistance> topRegions = await GetClosestRegionsWithDistanceAsync(userLat, userLon, App.Settings.Prop.BestRegionAmounts, cancellationToken);
+            var autoFetcher = new Integrations.RobloxServerFetcher();
+            var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(App.Settings.Prop.BestRegionAmounts, cancellationToken);
             if (topRegions.Count == 0)
                 throw new HttpRequestException("No regions found from datacenter list");
-
-            var regionRank = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-            for (int i = 0; i < topRegions.Count; i++)
-                regionRank[topRegions[i].Region] = i + 1;
-
-            App.Logger.WriteLine(LOG_IDENT, $"Top regions: {string.Join(" -> ", topRegions.Select(r => r.Region))}");
 
             if (!string.IsNullOrEmpty(_joinData.JobId))
             {
                 string? defaultRegion = await GetServerRegionAsync(_joinData.JobId, (long)_joinData.PlaceId!, cancellationToken);
-                if (defaultRegion != null && regionRank.TryGetValue(defaultRegion, out int rank))
+                if (defaultRegion != null && topRegions.Count > 0 &&
+                    defaultRegion.Equals(topRegions[0], StringComparison.OrdinalIgnoreCase))
                 {
-                    App.Logger.WriteLine(LOG_IDENT, $"Default server region: {defaultRegion} (rank {rank})");
-                    if (rank == 1)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Default server is already in the closest region. Keeping it.");
-                        return _joinData.JobId;
-                    }
-                    App.Logger.WriteLine(LOG_IDENT, $"Default server rank {rank} is not top 1. Will search for better.");
+                    App.Logger.WriteLine(LOG_IDENT, $"Default server is already in the closest region. Keeping it.");
+                    return _joinData.JobId;
                 }
             }
-
-            int MAX_CANDIDATES = App.Settings.Prop.MaxServerCheck;
-            var fetcher = new Integrations.RobloxServerFetcher();
-            string? cookie = await fetcher.ResolveCookieAsync();
-            if (string.IsNullOrEmpty(cookie))
-                throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
             SetStatus("Searching for nearby servers...");
-            int ServerSize = App.Settings.Prop.JoinSmallerServer ? 1 : 2;
-            var fetchResult = await fetcher.FetchServerInstancesAsync(
-                (long)_joinData.PlaceId!, cursor: "", sortOrder: ServerSize,
-                optionalCookie: cookie, cancellationToken: cancellationToken);
+            string? autoCookie = await autoFetcher.ResolveCookieAsync();
+            if (string.IsNullOrEmpty(autoCookie))
+                throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
-            var candidates = fetchResult.Servers?
-                .Where(s => !string.IsNullOrEmpty(s.Id))
-                .Take(MAX_CANDIDATES)
-                .ToList() ?? [];
+            var autoResult = await autoFetcher.FindBestServerInRegionAsync(
+                (long)_joinData.PlaceId!,
+                topRegions,
+                App.Settings.Prop.JoinSmallerServer,
+                App.Settings.Prop.MaxServerCheck,
+                cookie: autoCookie,
+                cancellationToken: cancellationToken);
 
-            if (candidates.Count == 0)
+            if (autoResult.Found)
             {
-                App.Logger.WriteLine(LOG_IDENT, "No servers found at all.");
-                return "";
-            }
-
-            App.Logger.WriteLine(LOG_IDENT, $"Collected {candidates.Count} candidate servers (max {MAX_CANDIDATES}).");
-
-            string? bestServerId = null;
-            int bestRank = int.MaxValue;
-
-            foreach (var server in candidates)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (string.IsNullOrEmpty(server.Region))
-                    continue;
-
-                if (!regionRank.TryGetValue(server.Region, out int rank))
-                    continue;
-
-                if (rank < bestRank)
-                {
-                    bestRank = rank;
-                    bestServerId = server.Id;
-                    App.Logger.WriteLine(LOG_IDENT, $"Found server in {server.Region} (rank {rank}) – new best");
-
-                    if (rank == 1)
-                    {
-                        App.Logger.WriteLine(LOG_IDENT, "Reached top region (rank 1). Stopping early.");
-                        return bestServerId;
-                    }
-                }
-            }
-
-            if (bestServerId != null)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Selected best server with rank {bestRank}");
-                return bestServerId;
+                App.Logger.WriteLine(LOG_IDENT, $"Selected best server in {autoResult.Region} (rank {autoResult.Rank}, players: {autoResult.Players})");
+                return autoResult.ServerId!;
             }
 
             App.Logger.WriteLine(LOG_IDENT, "No server found in any of the top regions.");
@@ -959,6 +876,10 @@ namespace Froststrap
             var fetcher = new Integrations.RobloxServerFetcher();
             string? cookie = await fetcher.ResolveCookieAsync();
             if (string.IsNullOrEmpty(cookie))
+                return null;
+
+            var datacentersResult = await fetcher.GetDatacentersAsync(cancellationToken);
+            if (datacentersResult == null)
                 return null;
 
             var url = UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance");
@@ -979,46 +900,11 @@ namespace Froststrap
 
             if (doc.RootElement.TryGetProperty("DataCenterId", out var dcElem) && dcElem.TryGetInt32(out int dcId))
             {
-                var datacentersUrl = new Uri("https://apis.rovalra.com/v1/datacenters/list");
-                var datacentersJson = await App.HttpClient.GetStringAsync(datacentersUrl, cancellationToken);
-                var datacenters = JsonSerializer.Deserialize<List<DatacenterEntry>>(datacentersJson);
-                var entry = datacenters?.FirstOrDefault(dc => dc.DataCenterIds.Contains(dcId));
-                if (entry != null)
-                    return $"{entry.Location.City}, {entry.Location.Country}".TrimStart(',').Trim();
+                var (_, dcMap) = datacentersResult.Value;
+                if (dcMap.TryGetValue(dcId, out string? region))
+                    return region;
             }
             return null;
-        }
-
-        private static async Task<List<RegionDistance>> GetClosestRegionsWithDistanceAsync(double userLat, double userLon, int topCount = 3, CancellationToken cancellationToken = default)
-        {
-            var url = new Uri("https://apis.rovalra.com/v1/datacenters/list");
-            var json = await App.HttpClient.GetStringAsync(url, cancellationToken);
-            var datacenters = JsonSerializer.Deserialize<List<DatacenterEntry>>(json);
-            if (datacenters == null || datacenters.Count == 0)
-                return [];
-
-            var regionDistance = new Dictionary<string, double>();
-
-            foreach (var dc in datacenters)
-            {
-                if (dc.Location == null || dc.Location.LatLong == null || dc.Location.LatLong.Length < 2)
-                    continue;
-
-                if (!double.TryParse(dc.Location.LatLong[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double lat) ||
-                    !double.TryParse(dc.Location.LatLong[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double lon))
-                    continue;
-
-                double distance = GetDistance(userLat, userLon, lat, lon);
-                string regionKey = $"{dc.Location.City}, {dc.Location.Country}".TrimStart(',').Trim();
-
-                if (!regionDistance.TryGetValue(regionKey, out double existingDistance) || distance < existingDistance)
-                    regionDistance[regionKey] = distance;
-            }
-
-            return new List<RegionDistance>(regionDistance
-                .OrderBy(kvp => kvp.Value)
-                .Take(topCount)
-                .Select(kvp => new RegionDistance { Region = kvp.Key, DistanceKm = kvp.Value }));
         }
 
         private async Task StartRoblox()
