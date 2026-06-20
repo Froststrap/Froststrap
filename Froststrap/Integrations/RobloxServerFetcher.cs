@@ -137,7 +137,7 @@ namespace Froststrap.Integrations
             while (true)
             {
                 attempt++;
-                var joinReq = new HttpRequestMessage(HttpMethod.Post, "https://gamejoin.roblox.com/v1/join-game-instance");
+                var joinReq = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("gamejoin", "v1/join-game-instance", secure: true));
                 joinReq.Headers.Add("Referer", $"https://roblox.com/games/{placeId}");
                 joinReq.Headers.Add("Origin", "https://roblox.com");
                 joinReq.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");
@@ -200,7 +200,7 @@ namespace Froststrap.Integrations
             {
                 if (string.IsNullOrWhiteSpace(roblosecurityCookie)) return false;
 
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://users.roblox.com/v1/users/authenticated");
+                var request = new HttpRequestMessage(HttpMethod.Get, UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
                 request.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurityCookie}");
 
                 var response = await _client.SendAsync(request);
@@ -296,7 +296,10 @@ namespace Froststrap.Integrations
 
             if (_datacenterIdToRegion == null) await GetDatacentersAsync(cancellationToken);
 
-            string url = $"https://games.roblox.com/v1/games/{placeId}/servers/Public?sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
+            var baseUri = UrlBuilder.BuildApiUrl("games", $"v1/games/{placeId}/servers/Public", secure: true);
+            var uriBuilder = new UriBuilder(baseUri);
+            uriBuilder.Query = $"sortOrder={sortOrder}&excludeFullGames=true&limit=100&cursor={cursor}";
+            Uri url = uriBuilder.Uri;
 
             var req = new HttpRequestMessage(HttpMethod.Get, url);
             req.Headers.Add("Cookie", $".ROBLOSECURITY={roblosecurity}");

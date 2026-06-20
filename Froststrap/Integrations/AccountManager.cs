@@ -139,7 +139,7 @@ namespace Froststrap.Integrations
             {
                 using var client = new HttpClient();
 
-                var createUrl = "https://apis.roblox.com/auth-token-service/v1/login/create";
+                var createUrl = UrlBuilder.BuildApiUrl("apis", "auth-token-service/v1/login/create", secure: true);
                 var createResponse = await client.PostAsync(createUrl,
                     new StringContent("{}", Encoding.UTF8, "application/json"), cancellationToken);
                 createResponse.EnsureSuccessStatusCode();
@@ -151,7 +151,7 @@ namespace Froststrap.Integrations
 
                 await Dispatcher.UIThread.InvokeAsync(() => dialog.StartNewSignIn(code));
 
-                var statusUrl = "https://apis.roblox.com/auth-token-service/v1/login/status";
+                var statusUrl = UrlBuilder.BuildApiUrl("apis", "auth-token-service/v1/login/status", secure: true);
                 string? status = null;
 
                 while (!cancellationToken.IsCancellationRequested)
@@ -269,7 +269,7 @@ namespace Froststrap.Integrations
                 if (cancellationToken.IsCancellationRequested || status == "Cancelled")
                     return null;
 
-                var loginUrl = "https://auth.roblox.com/v2/login";
+                var loginUrl = UrlBuilder.BuildApiUrl("auth", "v2/login", secure: true);
                 var loginData = new
                 {
                     ctype = "AuthToken",
@@ -701,7 +701,7 @@ namespace Froststrap.Integrations
 
                 try
                 {
-                    var response = await client.GetAsync(new Uri("https://users.roblox.com/v1/users/authenticated"));
+                    var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
                     response.EnsureSuccessStatusCode();
 
                     string json = await response.Content.ReadAsStringAsync();
@@ -737,7 +737,7 @@ namespace Froststrap.Integrations
                 var requestData = new { userIds = new[] { userId } };
                 string jsonPayload = System.Text.Json.JsonSerializer.Serialize(requestData);
 
-                using var request = new HttpRequestMessage(HttpMethod.Post, new Uri("https://presence.roblox.com/v1/presence/users"));
+                using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("presence", "v1/presence/users", secure: true));
                 request.Content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
                 var result = await Http.SendJson<UserPresenceResponse>(request).ConfigureAwait(false);
@@ -769,7 +769,7 @@ namespace Froststrap.Integrations
                 handler.CookieContainer.Add(new Cookie(".ROBLOSECURITY", decryptedCookie, "/", ".roblox.com"));
 
                 using var client = new HttpClient(handler);
-                var response = await client.GetAsync("https://users.roblox.com/v1/users/authenticated");
+                var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
 
                 bool isValid = response.StatusCode == HttpStatusCode.OK;
                 App.Logger.WriteLine(LOG_IDENT_VALIDATE, $"Account {account.Username}: {(isValid ? "Valid" : "Invalid")} (Status: {response.StatusCode})");
@@ -823,7 +823,7 @@ namespace Froststrap.Integrations
 
         private static async Task<string> GetCsrfToken(string cookie)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/logout");
+            var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("auth", "v1/logout", secure: true));
             request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
 
             var resp = await App.HttpClient.SendAsync(request);
@@ -832,7 +832,7 @@ namespace Froststrap.Integrations
 
         public static async Task<string?> GetAuthTicket(string cookie, string csrf, long placeId)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Post, "https://auth.roblox.com/v1/authentication-ticket/");
+            using var request = new HttpRequestMessage(HttpMethod.Post, UrlBuilder.BuildApiUrl("auth", "v1/authentication-ticket/", secure: true));
             request.Headers.Add("Cookie", $".ROBLOSECURITY={cookie}");
             request.Headers.Add("X-CSRF-TOKEN", csrf);
             request.Headers.Add("Referer", $"https://www.roblox.com/games/{placeId}/");
@@ -854,10 +854,15 @@ namespace Froststrap.Integrations
             var launchTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             string requestType = followUser ? "RequestFollowUser" : (joinVip ? "RequestPrivateGame" : "RequestGame");
-            string launcherUrl = $"https://assetgame.roblox.com/game/PlaceLauncher.ashx?request={requestType}&placeId={placeId}";
+            var launcherUri = UrlBuilder.BuildApiUrl("assetgame", $"game/PlaceLauncher.ashx", secure: true);
+            var uriBuilder = new UriBuilder(launcherUri);
+            var query = $"request={requestType}&placeId={placeId}";
 
-            if (joinVip) launcherUrl += $"&accessCode={jobId}";
-            else if (!string.IsNullOrEmpty(jobId)) launcherUrl += $"&gameId={jobId}";
+            if (joinVip) query += $"&accessCode={jobId}";
+            else if (!string.IsNullOrEmpty(jobId)) query += $"&gameId={jobId}";
+
+            uriBuilder.Query = query;
+            string launcherUrl = uriBuilder.Uri.ToString();
 
             string launchArgs = $"roblox-player:1+launchmode:play+gameinfo:{ticket}+launchtime:{launchTime}+placelauncherurl:{HttpUtility.UrlEncode(launcherUrl)}+browsertrackerid:{browserTrackerId}+LaunchExp:InApp";
 
@@ -891,7 +896,10 @@ namespace Froststrap.Integrations
             {
                 var batch = userIds.Skip(i).Take(batchSize).ToList();
                 string idsParam = string.Join(',', batch);
-                Uri url = new($"https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds={idsParam}&size=75x75&format=Png&isCircular=true");
+                var baseUri = UrlBuilder.BuildApiUrl("thumbnails", "v1/users/avatar-headshot", secure: true);
+                var uriBuilder = new UriBuilder(baseUri);
+                uriBuilder.Query = $"userIds={idsParam}&size=75x75&format=Png&isCircular=true";
+                Uri url = uriBuilder.Uri;
 
                 try
                 {

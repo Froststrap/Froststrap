@@ -85,7 +85,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
                 cookieContainer.Add(new Uri("https://roblox.com"), new Cookie(".ROBLOSECURITY", rawValue, "/", ".roblox.com"));
 
-                var response = await client.GetAsync("https://users.roblox.com/v1/users/authenticated");
+                var response = await client.GetAsync(UrlBuilder.BuildApiUrl("users", "v1/users/authenticated", secure: true));
 
                 if (!response.IsSuccessStatusCode)
                     return null;
