@@ -12,7 +12,7 @@
              x:DataType="vm:ModsViewModel"
              DragDrop.AllowDrop="True">
 
-    <Grid RowDefinitions="Auto, *, Auto" Margin="14" DragDrop.AllowDrop="True" DragDrop.Drop="Page_Drop">
+    <Grid RowDefinitions="Auto, *, Auto" Margin="14" DragDrop.AllowDrop="True" DragDrop.Drop="Page_Drop" Background="Transparent">
 
         <StackPanel Grid.Row="0">
             <Grid ColumnDefinitions="*,*,*">
@@ -29,8 +29,7 @@
 
             <Separator Margin="0,8" />
 
-            <ui:InfoBar Title="Important"
-                        Message="You can drag and drop your mod (folder or .zip) here to auto‑add it."
+            <ui:InfoBar Message="Import mods by dragging the mod or importing, mods with lower priority get applied last making it win conflicts with other mods."
                         Severity="Informational"
                         IsOpen="True"
                         Margin="0,4"
@@ -46,13 +45,13 @@
                 <controls:IconButton Icon="Folder"
                                      Content="Import Folder"
                                      HorizontalAlignment="Stretch"
-                                     Margin="0,0,4,4"
+                                     Margin="0,0,4,0"
                                      Command="{Binding ImportFolderCommand}"
                                      CommandParameter="{Binding $self}" />
                 <controls:IconButton Icon="FolderZip"
                                      Content="Import ZIP"
                                      HorizontalAlignment="Stretch"
-                                     Margin="4,0,0,4"
+                                     Margin="4,0,0,0"
                                      Grid.Column="1"
                                      Command="{Binding ImportZipCommand}"
                                      CommandParameter="{Binding $self}" />

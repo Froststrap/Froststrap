@@ -12,7 +12,6 @@
         <Setter Property="Padding" Value="12,6" />
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="IconSize" Value="16" />
-        <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
         <Setter Property="Transitions">
             <Transitions>
                 <BrushTransition Property="Background" Duration="0:0:0.1" />
@@ -52,10 +51,6 @@
 
     <Style Selector="controls|IconButton:pointerover /template/ Border#PART_LayoutRoot">
         <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
-    </Style>
-
-    <Style Selector="controls|IconButton:pressed">
-        <Setter Property="RenderTransform" Value="scale(0.98)" />
     </Style>
 
     <Style Selector="controls|IconButton:disabled /template/ Border#PART_LayoutRoot">
