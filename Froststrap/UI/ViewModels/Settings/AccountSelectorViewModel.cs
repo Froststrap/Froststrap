@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.Integrations;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
+using System.Security.Principal;
 
 namespace Froststrap.UI.ViewModels.Settings
 {
@@ -325,18 +326,20 @@ namespace Froststrap.UI.ViewModels.Settings
                         break;
                 }
 
-                if (newAccount != null && Accounts.All(a => a.UserId != newAccount.UserId))
-                {
-                    _accountManager.AddAccount(newAccount);
+                if (newAccount == null) return;
 
-                    var avatarUrlMap = await _accountManager.GetAvatarUrlsBulkAsync([newAccount.UserId]);
-                    var url = avatarUrlMap.GetValueOrDefault(newAccount.UserId);
-                    _accountAvatarUrls[newAccount.UserId] = url;
+                if (await HandleDuplicateAccountAsync(newAccount))
+                    return;
 
-                    Accounts.Add(new AccountWithAvatar(newAccount, url));
-                    _accountManager.SetActiveAccount(newAccount.UserId);
-                    IsDropdownOpen = false;
-                }
+                _accountManager.AddAccount(newAccount);
+
+                var avatarUrlMap = await _accountManager.GetAvatarUrlsBulkAsync([newAccount.UserId]);
+                var url = avatarUrlMap.GetValueOrDefault(newAccount.UserId);
+                _accountAvatarUrls[newAccount.UserId] = url;
+
+                Accounts.Add(new AccountWithAvatar(newAccount, url));
+                _accountManager.SetActiveAccount(newAccount.UserId);
+                IsDropdownOpen = false;
             }
             catch (Exception ex)
             {
@@ -346,6 +349,21 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 IsAddingAccount = false;
             }
+        }
+
+        private async Task<bool> HandleDuplicateAccountAsync(AccountManagerAccount account)
+        {
+            var existing = _accountManager.Accounts.FirstOrDefault(a => a.UserId == account.UserId);
+            if (existing != null)
+            {
+                _accountManager.SetActiveAccount(existing.UserId);
+                IsDropdownOpen = false;
+                await Frontend.ShowMessageBox(
+                    $"Account '@{existing.Username}' is already logged in.\nSwitched to it.",
+                    MessageBoxImage.Information);
+                return true;
+            }
+            return false;
         }
 
         private static async Task<AccountManagerAccount?> ImportFromCookieManager()
@@ -394,6 +412,9 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public async void AddAccountDirect(AccountManagerAccount account)
         {
+            if (await HandleDuplicateAccountAsync(account))
+                return;
+
             _accountManager.AddAccount(account);
 
             string? avatarUrl = null;
@@ -415,7 +436,6 @@ namespace Froststrap.UI.ViewModels.Settings
             }
 
             _accountManager.SetActiveAccount(account.UserId);
-
             IsDropdownOpen = false;
         }
 

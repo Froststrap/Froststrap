@@ -100,7 +100,8 @@
                Placement="Bottom"
                PlacementTarget="{Binding #AccountButton}"
                VerticalOffset="6"
-               IsLightDismissEnabled="True">
+               IsLightDismissEnabled="True"
+               MaxHeight="450">
             <Border MinWidth="260"
                     MaxHeight="420"
                     Background="#2D2D2D"
@@ -161,21 +162,22 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                        <Button Grid.Column="0"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Padding="12,10,12,10"
-                                                HorizontalAlignment="Stretch"
-                                                HorizontalContentAlignment="Stretch"
-                                                Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).SelectAccountCommand}"
-                                                CommandParameter="{Binding}">
-                                            <Button.Styles>
-                                                <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                                    <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
-                                                </Style>
-                                            </Button.Styles>
-                                            <Grid ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                    <Button Background="Transparent"
+                                            BorderThickness="0"
+                                            Padding="12,10,12,10"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).SelectAccountCommand}"
+                                            CommandParameter="{Binding}">
+                                        <Button.Styles>
+                                            <Style Selector="Button:pointerover /template/ ContentPresenter">
+                                                <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}"/>
+                                            </Style>
+                                        </Button.Styles>
+
+                                        <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                                            <!-- Account info -->
+                                            <Grid Grid.Column="0" ColumnDefinitions="Auto,*" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                                                 <!-- Avatar -->
                                                 <Border Width="32" Height="32" CornerRadius="16"
                                                         Background="{DynamicResource ControlFillColorSecondaryBrush}"
@@ -204,19 +206,21 @@
                                                                TextTrimming="CharacterEllipsis"/>
                                                 </StackPanel>
                                             </Grid>
-                                        </Button>
 
-                                        <controls:IconButton Grid.Column="1"
-                                                             Width="32" Height="32" Padding="4"
-                                                             Margin="12,0,12,0"
-                                                             HorizontalAlignment="Right"
-                                                             VerticalAlignment="Center"
-                                                             Icon="Delete"
-                                                             IconSize="14"
-                                                             Classes="Danger"
-                                                             Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
-                                                             CommandParameter="{Binding}"/>
-                                    </Grid>
+                                            <controls:IconButton Grid.Column="1"
+                                                                 Width="32"
+                                                                 Height="32"
+                                                                 Padding="4"
+                                                                 Margin="12,0,0,0"
+                                                                 HorizontalAlignment="Right"
+                                                                 VerticalAlignment="Center"
+                                                                 Icon="Delete"
+                                                                 IconSize="14"
+                                                                 Classes="Danger"
+                                                                 Command="{Binding $parent[ItemsControl].((vm:AccountSelectorViewModel)DataContext).DeleteAccountCommand}"
+                                                                 CommandParameter="{Binding}"/>
+                                        </Grid>
+                                    </Button>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
