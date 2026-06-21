@@ -21,8 +21,6 @@ public partial class App : Application
     private const string MockReleaseTagEnvironmentVariable = "MOCK_RELEASE_TAG";
     private const string MockCurrentVersionEnvironmentVariable = "MOCK_CURRENT_VERSION";
 
-    public static bool UpdateCheckCompleted { get; private set; }
-
 #if QA_BUILD
     public const string ProjectName = "Froststrap-QA";
 #else
@@ -115,142 +113,6 @@ public partial class App : Application
         }
 
         return null;
-    }
-
-    public static async Task<bool> UpdateApplicationAsync()
-    {
-        const string LOG_IDENT = "App::UpdateApplicationAsync";
-
-        if (UpdateCheckCompleted)
-        {
-            Logger.WriteLine(LOG_IDENT, "Skipping because update check already ran this session.");
-            return false;
-        }
-
-        try
-        {
-            if (Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
-            {
-                Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings.");
-                return false;
-            }
-
-            UpdateCheck preference = Settings.Prop.UpdateChecks;
-            bool includePreRelease = preference is UpdateCheck.Both or UpdateCheck.Test;
-
-            Logger.WriteLine(LOG_IDENT, $"Checking for app updates (current={GetUpdateCheckVersion()}, prereleases={includePreRelease}, mockRelease={(IsMockReleaseEnabled ? MockReleaseTag : "<none>")}, mockCurrent={(MockCurrentVersion ?? "<none>")})");
-
-            GithubRelease? releaseInfo = await GetLatestRelease(includePreRelease);
-            if (releaseInfo is null)
-                return false;
-
-            string currentVer = GetUpdateCheckVersion();
-            string releaseVer = releaseInfo.TagName;
-
-            var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
-            if (versionComparison != VersionComparison.LessThan)
-            {
-                Logger.WriteLine(LOG_IDENT, $"No update required. Current: {currentVer}, Latest: {releaseVer}");
-                return false;
-            }
-
-            string releaseType = releaseInfo.Prerelease ? "Pre-release" : "Stable";
-            Logger.WriteLine(LOG_IDENT, $"{releaseType} update available: {currentVer} -> {releaseVer}");
-
-            var result = await Frontend.ShowMessageBox(
-                $"A new {releaseType.ToLower()} version {releaseVer} is available. Would you like to update now?",
-                MessageBoxImage.Question,
-                MessageBoxButton.YesNo
-            );
-
-            if (result != MessageBoxResult.Yes)
-            {
-                Logger.WriteLine(LOG_IDENT, "User declined the update.");
-                return false;
-            }
-
-            if (releaseInfo.Assets is null || releaseInfo.Assets.Count == 0)
-            {
-                Logger.WriteLine(LOG_IDENT, "Release found but no assets were available for download.");
-                return false;
-            }
-
-            string downloadLocation;
-
-            if (IsMockReleaseEnabled)
-            {
-                downloadLocation = Path.Combine(Paths.TempUpdates, Path.GetFileName(Paths.Process));
-                Directory.CreateDirectory(Paths.TempUpdates);
-
-                Logger.WriteLine(LOG_IDENT, $"Using local mock updater payload for {releaseVer}.");
-                File.Copy(Paths.Process, downloadLocation, overwrite: true);
-            }
-            else
-            {
-                var asset = releaseInfo.Assets[0];
-                downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
-                Directory.CreateDirectory(Paths.TempUpdates);
-
-                Logger.WriteLine(LOG_IDENT, $"Downloading {releaseVer}...");
-
-                if (!File.Exists(downloadLocation))
-                {
-                    using var response = await HttpClient.GetAsync(asset.BrowserDownloadUrl);
-                    response.EnsureSuccessStatusCode();
-
-                    await using var fileStream = new FileStream(downloadLocation, FileMode.Create, FileAccess.Write, FileShare.None);
-                    await response.Content.CopyToAsync(fileStream);
-                }
-            }
-
-            Logger.WriteLine(LOG_IDENT, $"Starting updater {releaseVer}...");
-
-            Settings.Save();
-
-            // Since we switched to NSIS, -quiet and -upgrade are redundant.
-            // Now we launch the binary with /S to overwrite installed exe and update reg keys
-            // without UI.
-            var startInfo = new ProcessStartInfo(downloadLocation)
-            {
-                UseShellExecute = true,
-            };
-            startInfo.ArgumentList.Add("/S");
-
-            var process = Process.Start(startInfo);
-            if (process is null)
-            {
-                var fallback = await Frontend.ShowMessageBox(
-                    string.Format(Strings.Bootstrapper_AutoUpdateFailed, releaseVer),
-                    MessageBoxImage.Information,
-                    MessageBoxButton.YesNo);
-
-                if (fallback == MessageBoxResult.Yes)
-                    Utilities.ShellExecute(ProjectDownloadLink);
-
-                return false;
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Logger.WriteLine(LOG_IDENT, "An exception occurred when running the auto-updater");
-            Logger.WriteException(LOG_IDENT, ex);
-
-            var result = await Frontend.ShowMessageBox(
-                Strings.Bootstrapper_AutoUpdateFailed,
-                MessageBoxImage.Information,
-                MessageBoxButton.YesNo);
-
-            if (result == MessageBoxResult.Yes)
-                Utilities.ShellExecute(ProjectDownloadLink);
-
-            return false;
-        }
-        finally
-        {
-            UpdateCheckCompleted = true;
-        }
     }
 
     private async void OnUnhandledException(object? sender, UnhandledExceptionEventArgs e)
@@ -389,50 +251,45 @@ public partial class App : Application
 
         try
         {
-            if (includePreRelease && IsMockReleaseEnabled)
+            if (IsMockReleaseEnabled)
             {
                 string mockTag = MockReleaseTag ?? "v0.0.0-mock";
-                Logger.WriteLine(LOG_IDENT, $"Using mocked prerelease {mockTag} from environment.");
-
+                Logger.WriteLine(LOG_IDENT, $"Using mocked release {mockTag}");
                 return new GithubRelease
                 {
                     TagName = mockTag,
                     Name = mockTag,
-                    Body = "Local prerelease mock.",
+                    Body = "Mock release",
                     Prerelease = true,
                     CreatedAt = DateTime.UtcNow.ToString("o"),
                     Assets = []
                 };
             }
 
-            Uri releasesUrl = includePreRelease
-                ? new($"https://api.github.com/repos/{ProjectRepository}/releases")
-                : new($"https://api.github.com/repos/{ProjectRepository}/releases/latest");
+            string url = includePreRelease
+                ? $"https://api.github.com/repos/{ProjectRepository}/releases"
+                : $"https://api.github.com/repos/{ProjectRepository}/releases/latest";
 
             if (includePreRelease)
             {
-                // Note: Ensure your Http utility accepts Uri as a parameter
-                var releases = await Http.GetJson<List<GithubRelease>>(releasesUrl);
-
+                var releases = await Http.GetJson<List<GithubRelease>>(new Uri(url));
                 if (releases is null || releases.Count == 0)
                 {
-                    Logger.WriteLine(LOG_IDENT, "No releases found in the repository.");
+                    Logger.WriteLine(LOG_IDENT, "No releases found");
                     return null;
                 }
-
                 return releases[0];
             }
             else
             {
-                return await Http.GetJson<GithubRelease>(releasesUrl);
+                return await Http.GetJson<GithubRelease>(new Uri(url));
             }
         }
         catch (Exception ex)
         {
             Logger.WriteException(LOG_IDENT, ex);
+            return null;
         }
-
-        return null;
     }
 
     public override async void OnFrameworkInitializationCompleted()
@@ -578,15 +435,11 @@ public partial class App : Application
 
             await Installer.RunMigrations();
 
+            if (!LaunchSettings.BypassUpdateCheck)
+                await Installer.HandleUpgrade();
+
             if (Settings.Prop.AllowCookieAccess)
                 await Task.Run(Cookies.LoadCookies);
-
-            if (!LaunchSettings.BypassUpdateCheck)
-            {
-                bool updateFound = await UpdateApplicationAsync();
-                if (updateFound)
-                    return;
-            }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

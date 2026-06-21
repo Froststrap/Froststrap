@@ -248,7 +248,7 @@ namespace Froststrap
             }
 
 #if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
-            if (!App.UpdateCheckCompleted && !App.LaunchSettings.BypassUpdateCheck && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
+            if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
             {
                 bool updatePresent = await CheckForUpdates();
                 if (updatePresent)
@@ -1693,154 +1693,666 @@ namespace Froststrap
         {
             const string LOG_IDENT = "Bootstrapper::CheckForUpdates";
 
-            if (App.Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings.");
-                return false;
-            }
-
             if (Process.GetProcessesByName(App.ProjectName).Length > 1)
             {
-                App.Logger.WriteLine(LOG_IDENT, $"More than one {App.ProjectName} instance running, aborting update check.");
+                App.Logger.WriteLine(LOG_IDENT, $"More than one {App.ProjectName} instance running, aborting update check");
                 return false;
             }
 
-            SetStatus("Checking for Updates...");
-
-            GithubRelease? releaseInfo = null;
-            string version;
-
-#if !DEBUG_UPDATER
-            UpdateCheck preference = App.Settings.Prop.UpdateChecks;
-            bool includePreRelease = preference == UpdateCheck.Both || preference == UpdateCheck.Test;
-
-            releaseInfo = await App.GetLatestRelease(includePreRelease);
-
-            if (releaseInfo is null)
-                return false;
-
-            string currentVer = App.GetUpdateCheckVersion();
-            string releaseVer = releaseInfo.TagName;
-            version = releaseVer;
-
-            var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
-
-            if (versionComparison == VersionComparison.LessThan)
+            if (App.Settings.Prop.UpdateChecks == UpdateCheck.Disabled)
             {
-                string releaseType = releaseInfo.Prerelease ? "Pre-release" : "Stable";
-                App.Logger.WriteLine(LOG_IDENT, $"{releaseType} update available: {currentVer} -> {releaseVer}");
-
-                var result = await Frontend.ShowMessageBox(
-                    $"A new {releaseType.ToLower()} version {releaseVer} is available. Would you like to update now?",
-                    MessageBoxImage.Question,
-                    MessageBoxButton.YesNo
-                );
-
-                if (result != MessageBoxResult.Yes)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "User declined the update.");
-                    return false;
-                }
-            }
-            else
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"No update required. Current: {currentVer}, Latest: {releaseVer}");
+                App.Logger.WriteLine(LOG_IDENT, "Update checking is disabled in settings");
                 return false;
             }
-#else
-    version = App.Version;
-#endif
 
-            SetStatus(Strings.Bootstrapper_Status_UpgradingFroststrap);
+            App.Logger.WriteLine(LOG_IDENT, "Checking for updates...");
 
             try
             {
-                string downloadLocation;
+                bool includePreRelease = false;
 
-#if DEBUG_UPDATER
-                downloadLocation = Path.Combine(Paths.TempUpdates, "Bloxstrap.exe");
-                Directory.CreateDirectory(Paths.TempUpdates);
-                File.Copy(Paths.Process, downloadLocation, overwrite: true);
-#else
-                if (App.IsMockReleaseEnabled)
-                {
-                    downloadLocation = Path.Combine(Paths.TempUpdates, Path.GetFileName(Paths.Process));
-                    Directory.CreateDirectory(Paths.TempUpdates);
-                    App.Logger.WriteLine(LOG_IDENT, $"Using local mock updater payload for {version}.");
-                    File.Copy(Paths.Process, downloadLocation, overwrite: true);
-                }
-                else if (releaseInfo!.Assets is null || releaseInfo.Assets.Count == 0)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Release found but no assets were available for download.");
-                    return false;
-                }
-                else
-                {
-                    var asset = releaseInfo.Assets[0];
-                    downloadLocation = Path.Combine(Paths.TempUpdates, asset.Name);
-                    Directory.CreateDirectory(Paths.TempUpdates);
-
-                    App.Logger.WriteLine(LOG_IDENT, $"Downloading {version}...");
-
-                    if (!File.Exists(downloadLocation))
-                    {
-                        using var response = await App.HttpClient.GetAsync(asset.BrowserDownloadUrl);
-                        response.EnsureSuccessStatusCode();
-
-                        await using var fileStream = new FileStream(downloadLocation, FileMode.Create, FileAccess.Write, FileShare.None);
-                        await response.Content.CopyToAsync(fileStream);
-                    }
-                }
+#if QA_BUILD || DEBUG
+                includePreRelease = true;
 #endif
 
-                App.Logger.WriteLine(LOG_IDENT, $"Starting updater {version}...");
+                if (App.Settings.Prop.UpdateChecks == UpdateCheck.Both || App.Settings.Prop.UpdateChecks == UpdateCheck.Test)
+                    includePreRelease = true;
 
-                var startInfo = new ProcessStartInfo(downloadLocation) { UseShellExecute = true };
-                startInfo.ArgumentList.Add("-upgrade");
+                var releaseInfo = await App.GetLatestRelease(includePreRelease);
 
-                foreach (var arg in App.LaunchSettings.Args)
-                    startInfo.ArgumentList.Add(arg);
-
-                if (_launchMode == LaunchMode.Player && !startInfo.ArgumentList.Contains("-player"))
-                    startInfo.ArgumentList.Add("-player");
-                else if (_launchMode == LaunchMode.Studio && !startInfo.ArgumentList.Contains("-studio"))
-                    startInfo.ArgumentList.Add("-studio");
-
-                App.Settings.Save();
-
-                using var updateLock = new InterProcessLock("AutoUpdater");
-
-                var process = Process.Start(startInfo);
-                if (process == null)
+                if (releaseInfo is null)
                 {
-                    var result = await Frontend.ShowMessageBox(
-                        string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
-                        MessageBoxImage.Information,
-                        MessageBoxButton.YesNo);
-
-                    if (result == MessageBoxResult.Yes)
-                        Utilities.ShellExecute(App.ProjectDownloadLink);
-
+                    App.Logger.WriteLine(LOG_IDENT, "Failed to get release information");
                     return false;
                 }
 
+                string currentVer = App.Version;
+                string releaseVer = releaseInfo.TagName;
+                var versionComparison = Utilities.CompareVersions(currentVer, releaseVer);
+
+                if (versionComparison == VersionComparison.Equal || versionComparison == VersionComparison.GreaterThan)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"No updates found. Current: {currentVer}, Latest: {releaseVer}");
+                    return false;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Update available: {currentVer} -> {releaseVer}");
+
+                var asset = FindPlatformAsset(releaseInfo.Assets);
+                if (asset is null)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "No suitable asset found for this platform");
+                    await Frontend.ShowMessageBox(
+                        $"No update package available for {GetPlatformName()}. Please download manually from GitHub.",
+                        MessageBoxImage.Warning
+                    );
+                    Utilities.ShellExecute(App.ProjectDownloadLink);
+                    return false;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Found matching asset: {asset.Name}");
+
+                if (!App.LaunchSettings.QuietFlag.Active)
+                {
+                    string releaseType = releaseInfo.Prerelease ? "pre-release" : "stable";
+                    var result = await Frontend.ShowMessageBox(
+                        $"A new {releaseType} version {releaseVer} is available.\n\nWould you like to update now?",
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result != MessageBoxResult.Yes)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "User declined the update");
+                        return false;
+                    }
+                }
+
+                SetStatus($"Downloading update {releaseVer}...");
+
+                string downloadPath = Path.Combine(Paths.TempUpdates, asset.Name);
+                Directory.CreateDirectory(Paths.TempUpdates);
+
+                App.Logger.WriteLine(LOG_IDENT, $"Downloading update from {asset.BrowserDownloadUrl}");
+
+                await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, downloadPath);
+
+                App.Logger.WriteLine(LOG_IDENT, $"Download complete: {downloadPath}");
+
+                SetStatus($"Installing update {releaseVer}...");
+
+                bool updateApplied = await ApplyUpdate(downloadPath);
+
+                if (!updateApplied)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Update application failed");
+                    await Frontend.ShowMessageBox(
+                        string.Format(Strings.Bootstrapper_AutoUpdateFailed, releaseVer),
+                        MessageBoxImage.Information
+                    );
+                    Utilities.ShellExecute(App.ProjectDownloadLink);
+                    return false;
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, "Update applied successfully");
                 return true;
             }
             catch (Exception ex)
             {
-                App.Logger.WriteLine(LOG_IDENT, "An exception occurred when running the auto-updater");
+                App.Logger.WriteLine(LOG_IDENT, "An exception occurred during update check");
                 App.Logger.WriteException(LOG_IDENT, ex);
 
-                var result = await Frontend.ShowMessageBox(
-                    string.Format(Strings.Bootstrapper_AutoUpdateFailed, version),
-                    MessageBoxImage.Information,
-                    MessageBoxButton.YesNo);
+                if (!App.LaunchSettings.QuietFlag.Active)
+                {
+                    await Frontend.ShowMessageBox(Strings.Bootstrapper_AutoUpdateFailed, MessageBoxImage.Information);
+                }
 
-                if (result == MessageBoxResult.Yes)
-                    Utilities.ShellExecute(App.ProjectDownloadLink);
+                return false;
+            }
+        }
+
+        private static GithubReleaseAsset? FindPlatformAsset(List<GithubReleaseAsset>? assets)
+        {
+            if (assets is null || assets.Count == 0)
+                return null;
+
+            var patterns = GetPlatformAssetPatterns();
+
+            foreach (var pattern in patterns)
+            {
+                var asset = assets.FirstOrDefault(a =>
+                    a.Name?.EndsWith(pattern, StringComparison.OrdinalIgnoreCase) == true);
+                if (asset is not null)
+                    return asset;
             }
 
+            return null;
+        }
+
+        private static List<string> GetPlatformAssetPatterns()
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                try
+                {
+                    var fileInfo = new FileInfo(Paths.Process);
+                    bool isSelfContained = fileInfo.Length > 80 * 1024 * 1024;
+
+                    if (isSelfContained)
+                        return ["Froststrap-SelfContained-Setup.exe", "-SelfContained-Setup.exe"];
+                    else
+                        return ["Froststrap-Setup.exe", "-Setup.exe"];
+                }
+                catch
+                {
+                    return ["Froststrap-Setup.exe", "-Setup.exe"];
+                }
+            }
+            else if (OperatingSystem.IsMacOS())
+            {
+                return ["Froststrap-macOS.dmg", ".dmg"];
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                if (IsRunningAsFlatpak())
+                    return ["Froststrap-linux-x64.flatpak", ".flatpak"];
+
+                if (Paths.Process.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase))
+                    return ["Froststrap-linux-x64.AppImage", ".AppImage"];
+
+                if (IsDebInstalled())
+                    return ["Froststrap-linux-x64.deb", ".deb"];
+
+                if (IsRpmInstalled())
+                    return ["Froststrap-linux-x64.rpm", ".rpm"];
+
+                return ["Froststrap-linux-x64.AppImage", ".AppImage"];
+            }
+
+            return [];
+        }
+
+        private static bool IsRunningAsFlatpak()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("FLATPAK_ID")))
+                    return true;
+
+                if (File.Exists("/.flatpak-info"))
+                    return true;
+
+                string processPath = Paths.Process;
+                if (processPath.Contains("/app/") && processPath.Contains("/flatpak/"))
+                    return true;
+            }
+            catch { }
+
             return false;
+        }
+
+        private static bool IsDebInstalled()
+        {
+            try
+            {
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "dpkg",
+                        Arguments = "-l " + App.ProjectName.ToLower(),
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                return output.Contains(App.ProjectName, StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool IsRpmInstalled()
+        {
+            try
+            {
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "rpm",
+                        Arguments = "-qa " + App.ProjectName.ToLower(),
+                        RedirectStandardOutput = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                return output.Contains(App.ProjectName, StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static string GetPlatformName()
+        {
+            if (OperatingSystem.IsWindows()) return "Windows";
+            if (OperatingSystem.IsMacOS()) return "macOS";
+            if (OperatingSystem.IsLinux()) return "Linux";
+            return "Unknown";
+        }
+
+        private static async Task<bool> ApplyUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyUpdate";
+
+            try
+            {
+                App.Settings.Save();
+                App.State.Save();
+                App.PlayerState.Save();
+                App.StudioState.Save();
+
+                App.Logger.WriteLine(LOG_IDENT, $"Applying update: {updatePath}");
+
+                if (OperatingSystem.IsWindows())
+                {
+                    return await ApplyWindowsUpdate(updatePath);
+                }
+                else if (OperatingSystem.IsMacOS())
+                {
+                    return await ApplyMacOSUpdate(updatePath);
+                }
+                else if (OperatingSystem.IsLinux())
+                {
+                    if (IsRunningAsFlatpak())
+                        return await ApplyLinuxFlatpakUpdate(updatePath);
+                    else if (Paths.Process.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase))
+                        return await ApplyLinuxAppImageUpdate(updatePath);
+                    else if (IsDebInstalled())
+                        return await ApplyLinuxDebUpdate(updatePath);
+                    else if (IsRpmInstalled())
+                        return await ApplyLinuxRpmUpdate(updatePath);
+                    else
+                        return await ApplyLinuxAppImageUpdate(updatePath);
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, "Unsupported operating system for updates");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyWindowsUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyWindowsUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying Windows update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.bat");
+                string processPath = Paths.Process;
+
+                string scriptContent = $@"@echo off
+echo Waiting for {App.ProjectName} to exit...
+timeout /t 2 /nobreak >nul
+
+echo Installing update...
+""{updatePath}"" /S
+
+if errorlevel 1 (
+    echo Update failed with error code %errorlevel%
+    pause
+    exit /b %errorlevel%
+)
+
+echo Update installed successfully!
+echo Restarting {App.ProjectName}...
+
+start "" "" ""{processPath}""
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Windows update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyMacOSUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyMacOSUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying macOS update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
+                string appName = App.ProjectName;
+
+                string scriptContent = $@"#!/bin/bash
+set -e
+
+echo ""Waiting for {appName} to exit...""
+sleep 2
+
+echo ""Mounting DMG...""
+MOUNT_DIR=$(hdiutil attach ""{updatePath}"" -nobrowse -mountpoint /Volumes/{appName}Update | grep -o '/Volumes/.*')
+
+if [ -z ""$MOUNT_DIR"" ]; then
+    echo ""Failed to mount DMG""
+    exit 1
+fi
+
+echo ""Copying app to /Applications...""
+if [ -d ""/Applications/{appName}.app"" ]; then
+    rm -rf ""/Applications/{appName}.app""
+fi
+cp -R ""$MOUNT_DIR/{appName}.app"" /Applications/
+
+echo ""Unmounting DMG...""
+hdiutil detach ""$MOUNT_DIR""
+
+echo ""Removing old app data...""
+rm -rf ""{Paths.Base}""
+
+echo ""Starting {appName}...""
+open /Applications/{appName}.app
+
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var chmodInfo = new ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{scriptPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var chmod = Process.Start(chmodInfo))
+                    await chmod!.WaitForExitAsync();
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply macOS update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyLinuxFlatpakUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyLinuxFlatpakUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux Flatpak update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
+                string appName = App.ProjectName.ToLower();
+
+                string scriptContent = $@"#!/bin/bash
+set -e
+
+echo ""Waiting for {appName} to exit...""
+sleep 2
+
+echo ""Installing Flatpak update...""
+flatpak install --assumeyes --noninteractive ""{updatePath}""
+
+echo ""Starting {appName}...""
+flatpak run io.github.{appName}
+
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var chmodInfo = new ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{scriptPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var chmod = Process.Start(chmodInfo))
+                    await chmod!.WaitForExitAsync();
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux Flatpak update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyLinuxAppImageUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyLinuxAppImageUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux AppImage update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
+                string targetPath = Paths.Process;
+                string backupPath = targetPath + ".old";
+                string appName = App.ProjectName.ToLower();
+
+                string scriptContent = $@"#!/bin/bash
+set -e
+
+echo ""Waiting for {appName} to exit...""
+sleep 2
+
+echo ""Replacing AppImage...""
+if [ -f ""{targetPath}"" ]; then
+    mv ""{targetPath}"" ""{backupPath}""
+fi
+
+cp ""{updatePath}"" ""{targetPath}""
+chmod +x ""{targetPath}""
+
+echo ""Starting {appName}...""
+exec ""{targetPath}"" ""$@""
+
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var chmodInfo = new ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{scriptPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var chmod = Process.Start(chmodInfo))
+                    await chmod!.WaitForExitAsync();
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux AppImage update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyLinuxDebUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyLinuxDebUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux DEB update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
+                string appName = App.ProjectName.ToLower();
+
+                string scriptContent = $@"#!/bin/bash
+set -e
+
+echo ""Waiting for {appName} to exit...""
+sleep 2
+
+echo ""Installing DEB package...""
+sudo dpkg -i ""{updatePath}""
+sudo apt-get install -f -y
+
+echo ""Starting {appName}...""
+{appName}
+
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var chmodInfo = new ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{scriptPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var chmod = Process.Start(chmodInfo))
+                    await chmod!.WaitForExitAsync();
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux DEB update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task<bool> ApplyLinuxRpmUpdate(string updatePath)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyLinuxRpmUpdate";
+
+            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux RPM update: {updatePath}");
+
+            try
+            {
+                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
+                string appName = App.ProjectName.ToLower();
+
+                string scriptContent = $@"#!/bin/bash
+set -e
+
+echo ""Waiting for {appName} to exit...""
+sleep 2
+
+echo ""Installing RPM package...""
+sudo rpm -Uvh ""{updatePath}""
+
+echo ""Starting {appName}...""
+{appName}
+
+exit";
+
+                await File.WriteAllTextAsync(scriptPath, scriptContent);
+
+                var chmodInfo = new ProcessStartInfo
+                {
+                    FileName = "chmod",
+                    Arguments = $"+x \"{scriptPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+                using (var chmod = Process.Start(chmodInfo))
+                    await chmod!.WaitForExitAsync();
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = scriptPath,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process.Start(startInfo);
+                App.Terminate();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux RPM update: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
         }
 
         #endregion

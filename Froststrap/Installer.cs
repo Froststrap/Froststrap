@@ -142,19 +142,251 @@ namespace Froststrap
             }
         }
 
-        public static async Task RunMigrations()
+        public static async Task HandleUpgrade()
+        {
+            const string LOG_IDENT = "Installer::HandleUpgrade";
+
+            if (!File.Exists(Paths.Application) || Paths.Process == Paths.Application)
+                return;
+
+            bool isAutoUpgrade = App.LaunchSettings.UpgradeFlag.Active
+                || Paths.Process.StartsWith(Path.Combine(Paths.Base, "Updates"))
+                || Paths.Process.StartsWith(Path.Combine(Paths.Temp, "Updates"))
+                || Paths.Process.StartsWith(Paths.TempUpdates);
+
+            var existingVer = GetVersionInfo(Paths.Application);
+            var currentVer = GetVersionInfo(Paths.Process);
+
+            if (MD5Hash.FromFile(Paths.Process) == MD5Hash.FromFile(Paths.Application))
+                return;
+
+            if (currentVer is not null && existingVer is not null)
+            {
+                var comparison = Utilities.CompareVersions(currentVer, existingVer);
+
+                if (comparison == VersionComparison.LessThan)
+                {
+                    var result = await Frontend.ShowMessageBox(
+                        Strings.InstallChecker_VersionLessThanInstalled,
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result != MessageBoxResult.Yes)
+                        return;
+                }
+            }
+
+            if (!isAutoUpgrade)
+            {
+                var result = await Frontend.ShowMessageBox(
+                    Strings.InstallChecker_VersionDifferentThanInstalled,
+                    MessageBoxImage.Question,
+                    MessageBoxButton.YesNo
+                );
+
+                if (result != MessageBoxResult.Yes)
+                    return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Starting upgrade process...");
+
+            bool copySuccess = await CopyExecutableWithRetry();
+            if (!copySuccess)
+                return;
+
+            await UpdateVersionInfo();
+
+            await RunMigrations(existingVer);
+
+            App.Settings.Save();
+            App.FastFlags.Save();
+            App.State.Save();
+            App.PlayerState.Save();
+            App.StudioState.Save();
+
+            if (isAutoUpgrade && OpenReleaseNotes)
+            {
+                Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer ?? App.Version}");
+            }
+            else if (!isAutoUpgrade)
+            {
+                await Frontend.ShowMessageBox(
+                    string.Format(Strings.InstallChecker_Updated, currentVer ?? App.Version),
+                    MessageBoxImage.Information
+                );
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, "Upgrade completed successfully");
+        }
+
+        private static string? GetVersionInfo(string filePath)
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                    return null;
+
+                var versionInfo = FileVersionInfo.GetVersionInfo(filePath);
+
+                if (!string.IsNullOrEmpty(versionInfo.ProductVersion))
+                    return versionInfo.ProductVersion;
+
+                if (!string.IsNullOrEmpty(versionInfo.FileVersion))
+                    return versionInfo.FileVersion;
+
+                if (OperatingSystem.IsMacOS())
+                {
+                    string infoPlist = Path.Combine(Path.GetDirectoryName(filePath) ?? "", "..", "Info.plist");
+                    if (File.Exists(infoPlist))
+                    {
+                        var plist = new System.Xml.XmlDocument();
+                        plist.Load(infoPlist);
+                        var node = plist.SelectSingleNode("//key[text()='CFBundleShortVersionString']/following-sibling::string");
+                        if (node != null)
+                            return node.InnerText;
+                    }
+                }
+
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static async Task<bool> CopyExecutableWithRetry()
+        {
+            const string LOG_IDENT = "Installer::CopyExecutableWithRetry";
+
+            try
+            {
+                if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+                {
+                    if (File.Exists(Paths.Application))
+                    {
+                        var fileInfo = new FileInfo(Paths.Application) { IsReadOnly = false };
+                        if (OperatingSystem.IsLinux())
+                        {
+                            var psi = new ProcessStartInfo("chmod", $"+w \"{Paths.Application}\"")
+                            {
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            };
+                            using var process = Process.Start(psi);
+                            await process!.WaitForExitAsync();
+                        }
+                    }
+                }
+
+                for (int i = 1; i <= 10; i++)
+                {
+                    try
+                    {
+                        File.Copy(Paths.Process, Paths.Application, true);
+
+                        if (OperatingSystem.IsLinux() || OperatingSystem.IsMacOS())
+                        {
+                            var psi = new ProcessStartInfo("chmod", $"+x \"{Paths.Application}\"")
+                            {
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            };
+                            using var process = Process.Start(psi);
+                            await process!.WaitForExitAsync();
+                        }
+
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        if (i == 10)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Failed to copy after 10 attempts: {ex.Message}");
+                            App.Logger.WriteException(LOG_IDENT, ex);
+                            return false;
+                        }
+
+                        await Task.Delay(500);
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to copy executable: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+                return false;
+            }
+        }
+
+        private static async Task UpdateVersionInfo()
+        {
+            const string LOG_IDENT = "Installer::UpdateVersionInfo";
+
+            try
+            {
+                if (OperatingSystem.IsWindows())
+                {
+                    using var uninstallKey = Registry.CurrentUser.CreateSubKey(App.UninstallKey);
+                    uninstallKey.SetValueSafe("DisplayVersion", App.Version);
+                    uninstallKey.SetValueSafe("Publisher", App.ProjectOwner);
+                    uninstallKey.SetValueSafe("HelpLink", App.ProjectHelpLink);
+                    uninstallKey.SetValueSafe("URLInfoAbout", App.ProjectSupportLink);
+                    uninstallKey.SetValueSafe("URLUpdateInfo", App.ProjectDownloadLink);
+                }
+                else if (OperatingSystem.IsMacOS())
+                {
+                    string appPath = Paths.Application;
+                    string infoPlist = Path.Combine(Path.GetDirectoryName(appPath) ?? "", "..", "Info.plist");
+
+                    if (File.Exists(infoPlist))
+                    {
+                        var plist = new System.Xml.XmlDocument();
+                        plist.Load(infoPlist);
+
+                        var versionNode = plist.SelectSingleNode("//key[text()='CFBundleShortVersionString']/following-sibling::string");
+                        if (versionNode != null)
+                        {
+                            versionNode.InnerText = App.Version;
+                            plist.Save(infoPlist);
+                        }
+                    }
+                }
+                else if (OperatingSystem.IsLinux())
+                {
+                    string versionFile = Path.Combine(Paths.Base, ".version");
+                    await File.WriteAllTextAsync(versionFile, App.Version);
+
+                    string desktopFile = Path.Combine(Paths.UserProfile, ".local", "share", "applications",
+                        $"{App.ProjectName.ToLower()}.desktop");
+                    if (File.Exists(desktopFile))
+                    {
+                        var content = await File.ReadAllTextAsync(desktopFile);
+                    }
+                }
+
+                App.Logger.WriteLine(LOG_IDENT, $"Version info updated to {App.Version}");
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Failed to update version info: {ex.Message}");
+                App.Logger.WriteException(LOG_IDENT, ex);
+            }
+        }
+
+        public static async Task RunMigrations(string? previousVersion = null)
         {
             const string LOG_IDENT = "Installer::RunMigrations";
 
-            // Ensure the Sober data directory symlink is in place every launch.
             if (OperatingSystem.IsLinux())
                 SetupSoberSymlink();
 
             string currentVer = App.Version;
-            string? existingVer = App.State.Prop.LastMigratedVersion;
+            string? existingVer = previousVersion ?? App.State.Prop.LastMigratedVersion;
 
-            // Fresh install — Settings.json doesn't exist yet so there is nothing
-            // to migrate. Stamp the current version and return immediately.
             if (existingVer is null && !App.Settings.IsSaved)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Fresh install detected — stamping LastMigratedVersion as {currentVer}");
@@ -163,8 +395,6 @@ namespace Froststrap
                 return;
             }
 
-            // Existing install that pre-dates LastMigratedVersion being introduced.
-            // Use the presence of the pre-1.4.0.0 legacy RobloxState file to decide.
             if (existingVer is null)
             {
                 var legacyStateCheck = new JsonManager<RobloxState>();
@@ -242,9 +472,6 @@ namespace Froststrap
                 App.Settings.Prop.SelectedBackdrop = WindowsBackdrops.None;
             }
 
-            // Save everything and stamp the version so this batch doesn't re-run
-            App.Settings.Save();
-            App.FastFlags.Save();
             App.State.Prop.LastMigratedVersion = currentVer;
             App.State.Save();
 
@@ -252,11 +479,6 @@ namespace Froststrap
             if (App.StudioState.Loaded) App.StudioState.Save();
 
             App.Logger.WriteLine(LOG_IDENT, $"Migrations complete — LastMigratedVersion set to {currentVer}");
-
-#pragma warning disable CS0162 // Keep this here
-            if (OpenReleaseNotes)
-                Utilities.ShellExecute($"https://github.com/{App.ProjectRepository}/releases/tag/{currentVer}");
-#pragma warning restore CS0162
         }
 
         [SupportedOSPlatform("windows")]
