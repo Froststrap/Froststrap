@@ -7,10 +7,12 @@ using Avalonia.Platform.Storage;
 using FluentIcons.Common;
 using Froststrap.UI.Elements.Dialogs;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 {
-    public partial class FastFlagEditor : UserControl
+    public partial class FastFlagEditor : UserControl, INotifyPropertyChanged
     {
         private readonly ObservableCollection<FastFlag> _fastFlagList = [];
         private bool _showPresets = true;
@@ -25,6 +27,20 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
         private DataGrid? _dataGrid;
         private TextBox? _searchTextBox;
+
+        public new event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected bool SetProperty<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
 
         public FastFlagEditor()
         {
@@ -697,6 +713,52 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (string.IsNullOrEmpty(bestMatch))
             {
                 SuggestionKeywordRun.Text = bestMatch;
+            }
+        }
+
+        private void OnDragEnter(object? sender, DragEventArgs e)
+        {
+            if (e.DataTransfer.Contains(DataFormat.File))
+                DragOverlay.IsVisible = true;
+        }
+
+        private void OnDragLeave(object? sender, DragEventArgs e)
+        {
+            DragOverlay.IsVisible = false;
+        }
+
+        private async void OnDrop(object? sender, DragEventArgs e)
+        {
+            DragOverlay.IsVisible = false;
+
+            var files = e.DataTransfer.TryGetFiles();
+            if (files == null) return;
+
+            var supportedExtensions = new[] { ".json", ".txt" };
+            var filePaths = files
+                .Select(f => f.TryGetLocalPath())
+                .Where(p => !string.IsNullOrEmpty(p))
+                .Select(p => p!)
+                .Where(p => supportedExtensions.Contains(Path.GetExtension(p).ToLowerInvariant()))
+                .ToList();
+
+            if (filePaths.Count == 0)
+            {
+                await Frontend.ShowMessageBox("Please drop JSON or TXT files.", MessageBoxImage.Information);
+                return;
+            }
+
+            foreach (var path in filePaths)
+            {
+                try
+                {
+                    string content = await File.ReadAllTextAsync(path);
+                    await ImportJSON(content);
+                }
+                catch (Exception ex)
+                {
+                    await Frontend.ShowMessageBox($"Failed to read/import '{Path.GetFileName(path!)}': {ex.Message}", MessageBoxImage.Error);
+                }
             }
         }
     }

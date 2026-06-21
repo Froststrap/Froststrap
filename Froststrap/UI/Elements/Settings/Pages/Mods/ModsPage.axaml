@@ -199,7 +199,7 @@
               IsVisible="{Binding IsDragOver}"
               Background="#88000000">
 
-            <TextBlock Text="📦 Drop to import mod"
+            <TextBlock Text="📦 Drop to import Zip / Folder"
                        FontSize="20"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"
