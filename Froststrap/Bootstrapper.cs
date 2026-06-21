@@ -1779,6 +1779,9 @@ namespace Froststrap
 
                 App.Logger.WriteLine(LOG_IDENT, $"Download complete: {downloadPath}");
 
+                Dialog?.ProgressIndeterminate = true;
+                Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
+
                 SetStatus($"Installing update {releaseVer}...");
 
                 bool updateApplied = await ApplyUpdate(downloadPath);
