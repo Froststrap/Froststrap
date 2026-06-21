@@ -39,6 +39,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             set => SetProperty(ref _newName, value);
         }
 
+        private bool _isDragOver;
+        public bool IsDragOver
+        {
+            get => _isDragOver;
+            set => SetProperty(ref _isDragOver, value);
+        }
+
         public bool HasMods => Modifications.Count > 0;
 
         public ObservableCollection<ModConfig> Modifications { get; set; } = [];

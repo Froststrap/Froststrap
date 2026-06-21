@@ -81,18 +81,35 @@ namespace Froststrap.UI.Elements.Settings.Pages.Mods
             DataContext = fallbackVm;
         }
 
+        private void Page_DragEnter(object? sender, DragEventArgs e)
+        {
+            if (DataContext is ModsViewModel vm)
+                vm.IsDragOver = true;
+        }
+
+        private void Page_DragLeave(object? sender, DragEventArgs e)
+        {
+            if (DataContext is ModsViewModel vm)
+                vm.IsDragOver = false;
+        }
+
         private async void Page_Drop(object? sender, DragEventArgs e)
         {
-            var files = e.DataTransfer.TryGetFiles();
-            if (files != null && DataContext is ModsViewModel vm)
+            if (DataContext is ModsViewModel vm)
             {
-                var paths = files
-                    .Select(f => f.TryGetLocalPath())
-                    .Where(p => !string.IsNullOrEmpty(p))
-                    .ToArray();
+                vm.IsDragOver = false;
 
-                if (paths.Length > 0)
-                    await vm.ImportFromPaths(paths!);
+                var files = e.DataTransfer.TryGetFiles();
+                if (files != null)
+                {
+                    var paths = files
+                        .Select(f => f.TryGetLocalPath())
+                        .Where(p => !string.IsNullOrEmpty(p))
+                        .ToArray();
+
+                    if (paths.Length > 0)
+                        await vm.ImportFromPaths(paths!);
+                }
             }
         }
     }
