@@ -248,7 +248,7 @@ namespace Froststrap
             }
 
 #if (!DEBUG || DEBUG_UPDATER) && !QA_BUILD
-            if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled)
+            if (!App.LaunchSettings.BypassUpdateCheck && !App.LaunchSettings.UpgradeFlag.Active && App.Settings.Prop.UpdateChecks != UpdateCheck.Disabled && !OperatingSystem.IsLinux())
             {
                 bool updatePresent = await CheckForUpdates();
                 if (updatePresent)
@@ -965,8 +965,7 @@ namespace Froststrap
                 try
                 {
                     if (App.Settings.Prop.EnableBetterMatchmaking &&
-                        _joinData.JoinType != GameJoinType.RequestPrivateGame &&
-                        _joinData.JoinType != GameJoinType.RequestGameJob &&
+                        _joinData.JoinType == GameJoinType.RequestGame &&
                         _joinData.PlaceId != null &&
                         !isFollowUser)
                     {
@@ -1155,7 +1154,7 @@ namespace Froststrap
             try
             {
                 if (App.Settings.Prop.EnableBetterMatchmaking &&
-                    _joinData.JoinType != GameJoinType.RequestPrivateGame &&
+                    _joinData.JoinType == GameJoinType.RequestGame &&
                     _joinData.PlaceId != null &&
                     !isFollowUser)
                 {
@@ -1705,6 +1704,8 @@ namespace Froststrap
                 return false;
             }
 
+            SetStatus("Checking for updates");
+
             App.Logger.WriteLine(LOG_IDENT, "Checking for updates...");
 
             try
@@ -1855,104 +1856,14 @@ namespace Froststrap
             {
                 return ["Froststrap-macOS.dmg", ".dmg"];
             }
-            else if (OperatingSystem.IsLinux())
-            {
-                if (IsRunningAsFlatpak())
-                    return ["Froststrap-linux-x64.flatpak", ".flatpak"];
-
-                if (Paths.Process.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase))
-                    return ["Froststrap-linux-x64.AppImage", ".AppImage"];
-
-                if (IsDebInstalled())
-                    return ["Froststrap-linux-x64.deb", ".deb"];
-
-                if (IsRpmInstalled())
-                    return ["Froststrap-linux-x64.rpm", ".rpm"];
-
-                return ["Froststrap-linux-x64.AppImage", ".AppImage"];
-            }
 
             return [];
-        }
-
-        private static bool IsRunningAsFlatpak()
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("FLATPAK_ID")))
-                    return true;
-
-                if (File.Exists("/.flatpak-info"))
-                    return true;
-
-                string processPath = Paths.Process;
-                if (processPath.Contains("/app/") && processPath.Contains("/flatpak/"))
-                    return true;
-            }
-            catch { }
-
-            return false;
-        }
-
-        private static bool IsDebInstalled()
-        {
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "dpkg",
-                        Arguments = "-l " + App.ProjectName.ToLower(),
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
-
-                return output.Contains(App.ProjectName, StringComparison.OrdinalIgnoreCase);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private static bool IsRpmInstalled()
-        {
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "rpm",
-                        Arguments = "-qa " + App.ProjectName.ToLower(),
-                        RedirectStandardOutput = true,
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    }
-                };
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
-
-                return output.Contains(App.ProjectName, StringComparison.OrdinalIgnoreCase);
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         private static string GetPlatformName()
         {
             if (OperatingSystem.IsWindows()) return "Windows";
             if (OperatingSystem.IsMacOS()) return "macOS";
-            if (OperatingSystem.IsLinux()) return "Linux";
             return "Unknown";
         }
 
@@ -1976,19 +1887,6 @@ namespace Froststrap
                 else if (OperatingSystem.IsMacOS())
                 {
                     return await ApplyMacOSUpdate(updatePath);
-                }
-                else if (OperatingSystem.IsLinux())
-                {
-                    if (IsRunningAsFlatpak())
-                        return await ApplyLinuxFlatpakUpdate(updatePath);
-                    else if (Paths.Process.EndsWith(".AppImage", StringComparison.OrdinalIgnoreCase))
-                        return await ApplyLinuxAppImageUpdate(updatePath);
-                    else if (IsDebInstalled())
-                        return await ApplyLinuxDebUpdate(updatePath);
-                    else if (IsRpmInstalled())
-                        return await ApplyLinuxRpmUpdate(updatePath);
-                    else
-                        return await ApplyLinuxAppImageUpdate(updatePath);
                 }
 
                 App.Logger.WriteLine(LOG_IDENT, "Unsupported operating system for updates");
@@ -2121,238 +2019,6 @@ exit";
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT, $"Failed to apply macOS update: {ex.Message}");
-                App.Logger.WriteException(LOG_IDENT, ex);
-                return false;
-            }
-        }
-
-        private static async Task<bool> ApplyLinuxFlatpakUpdate(string updatePath)
-        {
-            const string LOG_IDENT = "Bootstrapper::ApplyLinuxFlatpakUpdate";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux Flatpak update: {updatePath}");
-
-            try
-            {
-                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
-                string appName = App.ProjectName.ToLower();
-
-                string scriptContent = $@"#!/bin/bash
-set -e
-
-echo ""Waiting for {appName} to exit...""
-sleep 2
-
-echo ""Installing Flatpak update...""
-flatpak install --assumeyes --noninteractive ""{updatePath}""
-
-echo ""Starting {appName}...""
-flatpak run io.github.{appName}
-
-exit";
-
-                await File.WriteAllTextAsync(scriptPath, scriptContent);
-
-                var chmodInfo = new ProcessStartInfo
-                {
-                    FileName = "chmod",
-                    Arguments = $"+x \"{scriptPath}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using (var chmod = Process.Start(chmodInfo))
-                    await chmod!.WaitForExitAsync();
-
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = scriptPath,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                Process.Start(startInfo);
-                App.Terminate();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux Flatpak update: {ex.Message}");
-                App.Logger.WriteException(LOG_IDENT, ex);
-                return false;
-            }
-        }
-
-        private static async Task<bool> ApplyLinuxAppImageUpdate(string updatePath)
-        {
-            const string LOG_IDENT = "Bootstrapper::ApplyLinuxAppImageUpdate";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux AppImage update: {updatePath}");
-
-            try
-            {
-                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
-                string targetPath = Paths.Process;
-                string backupPath = targetPath + ".old";
-                string appName = App.ProjectName.ToLower();
-
-                string scriptContent = $@"#!/bin/bash
-set -e
-
-echo ""Waiting for {appName} to exit...""
-sleep 2
-
-echo ""Replacing AppImage...""
-if [ -f ""{targetPath}"" ]; then
-    mv ""{targetPath}"" ""{backupPath}""
-fi
-
-cp ""{updatePath}"" ""{targetPath}""
-chmod +x ""{targetPath}""
-
-echo ""Starting {appName}...""
-exec ""{targetPath}"" ""$@""
-
-exit";
-
-                await File.WriteAllTextAsync(scriptPath, scriptContent);
-
-                var chmodInfo = new ProcessStartInfo
-                {
-                    FileName = "chmod",
-                    Arguments = $"+x \"{scriptPath}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using (var chmod = Process.Start(chmodInfo))
-                    await chmod!.WaitForExitAsync();
-
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = scriptPath,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                Process.Start(startInfo);
-                App.Terminate();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux AppImage update: {ex.Message}");
-                App.Logger.WriteException(LOG_IDENT, ex);
-                return false;
-            }
-        }
-
-        private static async Task<bool> ApplyLinuxDebUpdate(string updatePath)
-        {
-            const string LOG_IDENT = "Bootstrapper::ApplyLinuxDebUpdate";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux DEB update: {updatePath}");
-
-            try
-            {
-                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
-                string appName = App.ProjectName.ToLower();
-
-                string scriptContent = $@"#!/bin/bash
-set -e
-
-echo ""Waiting for {appName} to exit...""
-sleep 2
-
-echo ""Installing DEB package...""
-sudo dpkg -i ""{updatePath}""
-sudo apt-get install -f -y
-
-echo ""Starting {appName}...""
-{appName}
-
-exit";
-
-                await File.WriteAllTextAsync(scriptPath, scriptContent);
-
-                var chmodInfo = new ProcessStartInfo
-                {
-                    FileName = "chmod",
-                    Arguments = $"+x \"{scriptPath}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using (var chmod = Process.Start(chmodInfo))
-                    await chmod!.WaitForExitAsync();
-
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = scriptPath,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                Process.Start(startInfo);
-                App.Terminate();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux DEB update: {ex.Message}");
-                App.Logger.WriteException(LOG_IDENT, ex);
-                return false;
-            }
-        }
-
-        private static async Task<bool> ApplyLinuxRpmUpdate(string updatePath)
-        {
-            const string LOG_IDENT = "Bootstrapper::ApplyLinuxRpmUpdate";
-
-            App.Logger.WriteLine(LOG_IDENT, $"Applying Linux RPM update: {updatePath}");
-
-            try
-            {
-                string scriptPath = Path.Combine(Paths.TempUpdates, "update_runner.sh");
-                string appName = App.ProjectName.ToLower();
-
-                string scriptContent = $@"#!/bin/bash
-set -e
-
-echo ""Waiting for {appName} to exit...""
-sleep 2
-
-echo ""Installing RPM package...""
-sudo rpm -Uvh ""{updatePath}""
-
-echo ""Starting {appName}...""
-{appName}
-
-exit";
-
-                await File.WriteAllTextAsync(scriptPath, scriptContent);
-
-                var chmodInfo = new ProcessStartInfo
-                {
-                    FileName = "chmod",
-                    Arguments = $"+x \"{scriptPath}\"",
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                using (var chmod = Process.Start(chmodInfo))
-                    await chmod!.WaitForExitAsync();
-
-                var startInfo = new ProcessStartInfo
-                {
-                    FileName = scriptPath,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                Process.Start(startInfo);
-                App.Terminate();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                App.Logger.WriteLine(LOG_IDENT, $"Failed to apply Linux RPM update: {ex.Message}");
                 App.Logger.WriteException(LOG_IDENT, ex);
                 return false;
             }
@@ -3177,7 +2843,7 @@ exit";
                 {
                     if (Dialog is not null)
                     {
-                        Dialog.ProgressIndeterminate = false;
+                        Dialog.ProgressIndeterminate = true;
                         Dialog.ProgressValue = 0;
                         Dialog.TaskbarProgressValue = 0.0;
                         Dialog.TaskbarProgressState = TaskbarItemProgressState.None;

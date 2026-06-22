@@ -435,7 +435,7 @@ public partial class App : Application
 
             await Installer.RunMigrations();
 
-            if (!LaunchSettings.BypassUpdateCheck)
+            if (!LaunchSettings.BypassUpdateCheck && !OperatingSystem.IsLinux())
                 await Installer.HandleUpgrade();
 
             if (Settings.Prop.AllowCookieAccess)
