@@ -11,7 +11,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Check if docker-compose.yml exists in project root
+REM Check if docker-compose.yml exists
 if not exist "docker-compose.deeplx.yml" (
     echo docker-compose.deeplx.yml not found!
     echo Starting with docker run instead...
@@ -37,6 +37,7 @@ if errorlevel 1 (
     if errorlevel 1 (
         echo Failed to start DeepLX with compose!
         echo Trying docker run instead...
+        docker rm -f deeplx 2>nul
         docker run -d --name deeplx -p 1188:1188 ghcr.io/owo-network/deeplx:latest
     )
     

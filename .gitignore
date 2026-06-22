@@ -360,3 +360,4 @@ flatpak/build-dir/
 flatpak/repo/
 .flatpak-builder/
 *.flatpak
+deeplx_cache.json
