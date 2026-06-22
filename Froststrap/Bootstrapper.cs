@@ -2962,6 +2962,15 @@ exit";
             App.Logger.WriteLine(LOG_IDENT, $"Running 'flatpak update {SoberFlatpakId}'.");
             SetStatus("Updating Sober...");
 
+            if (Dialog is not null)
+            {
+                Dialog.ProgressIndeterminate = false;
+                Dialog.ProgressMaximum = 100;
+                Dialog.ProgressValue = 0;
+                Dialog.TaskbarProgressState = TaskbarItemProgressState.Normal;
+                Dialog.TaskbarProgressValue = 0.0;
+            }
+
             var updateStartInfo = new ProcessStartInfo
             {
                 FileName = "flatpak",
@@ -2973,6 +2982,15 @@ exit";
             };
 
             Process? updateProcess = null;
+
+            var timeout = TimeSpan.FromMinutes(10);
+            var cts = new CancellationTokenSource(timeout);
+
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(
+                cts.Token,
+                _cancelTokenSource.Token
+            );
+
             try
             {
                 using var process = Process.Start(updateStartInfo);
@@ -2983,57 +3001,188 @@ exit";
                     return;
                 }
 
-                List<string> lines = [];
-                object lineLock = new();
-
-                async Task ReadUpdateStream(StreamReader reader)
-                {
-                    while (true)
-                    {
-                        string? line = await reader.ReadLineAsync();
-                        if (line is null)
-                            break;
-
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            lock (lineLock)
-                            {
-                                lines.Add(line.Trim());
-                            }
-
-                            App.Logger.WriteLine(LOG_IDENT, $"[flatpak] {line}");
-                        }
-                    }
-                }
-
-                await Task.WhenAll(
-                    ReadUpdateStream(updateProcess.StandardOutput),
-                    ReadUpdateStream(updateProcess.StandardError),
-                    updateProcess.WaitForExitAsync().WaitAsync(TimeSpan.FromMinutes(3))
+                var progressRegex = new Regex(
+                    @"Updating\s+(?<current>\d+)/(?<total>\d+)…",
+                    RegexOptions.Compiled | RegexOptions.IgnoreCase
+                );
+                var percentRegex = new Regex(
+                    @"(?<percent>\d+)%",
+                    RegexOptions.Compiled
                 );
 
-                if (updateProcess.ExitCode != 0)
+                int totalUpdates = 0;
+                int currentUpdate = 0;
+
+                var outputTask = Task.Run(async () =>
                 {
-                    string details = string.Join('\n', lines.TakeLast(8));
-                    App.Logger.WriteLine(LOG_IDENT, $"flatpak update exited with code {updateProcess.ExitCode}. {details}");
+                    try
+                    {
+                        while (!linkedCts.Token.IsCancellationRequested)
+                        {
+                            string? line = await updateProcess.StandardOutput.ReadLineAsync();
+                            if (line is null)
+                                break;
+
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"[flatpak] {line}");
+
+                                var progressMatch = progressRegex.Match(line);
+                                int current = 0, total = 0;
+                                if (progressMatch.Success)
+                                {
+                                    current = int.Parse(progressMatch.Groups["current"].Value);
+                                    total = int.Parse(progressMatch.Groups["total"].Value);
+                                }
+
+                                var percentMatch = percentRegex.Match(line);
+                                int percent = -1;
+                                if (percentMatch.Success)
+                                {
+                                    percent = int.Parse(percentMatch.Groups["percent"].Value);
+                                }
+
+                                if (progressMatch.Success && percentMatch.Success)
+                                {
+                                    if (total != totalUpdates)
+                                        totalUpdates = total;
+                                    if (current != currentUpdate)
+                                        currentUpdate = current;
+
+                                    double segmentSize = 100.0 / total;
+                                    double segmentProgress = (current - 1) * segmentSize + (percent / 100.0) * segmentSize;
+                                    int overallPercent = (int)Math.Round(segmentProgress);
+                                    overallPercent = Math.Clamp(overallPercent, 0, 100);
+
+                                    _uiContext?.Post(_ =>
+                                    {
+                                        if (Dialog is not null)
+                                        {
+                                            Dialog.ProgressValue = overallPercent;
+                                            Dialog.TaskbarProgressValue = overallPercent / 100.0;
+                                            Dialog.Message = $"Updating Sober ({current}/{total}): {percent}%";
+                                        }
+                                    }, null);
+                                }
+                                else if (progressMatch.Success)
+                                {
+                                    totalUpdates = total;
+                                    currentUpdate = current;
+                                    double segmentStart = (current - 1) * (100.0 / total);
+                                    int overallPercent = (int)Math.Round(segmentStart);
+                                    overallPercent = Math.Clamp(overallPercent, 0, 100);
+                                    _uiContext?.Post(_ =>
+                                    {
+                                        if (Dialog is not null)
+                                        {
+                                            Dialog.ProgressValue = overallPercent;
+                                            Dialog.TaskbarProgressValue = overallPercent / 100.0;
+                                            Dialog.Message = $"Updating Sober ({current}/{total})...";
+                                        }
+                                    }, null);
+                                }
+                                else
+                                {
+                                    string trimmed = line.Trim();
+                                    if (!string.IsNullOrEmpty(trimmed) && trimmed.Length < 80)
+                                    {
+                                        _uiContext?.Post(_ =>
+                                        {
+                                            if (Dialog is not null)
+                                                Dialog.Message = trimmed;
+                                        }, null);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Output reading cancelled.");
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!updateProcess.HasExited)
+                            App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak output: {ex.Message}");
+                    }
+                }, linkedCts.Token);
+
+                var errorTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        while (!linkedCts.Token.IsCancellationRequested)
+                        {
+                            string? line = await updateProcess.StandardError.ReadLineAsync();
+                            if (line is null)
+                                break;
+                            if (!string.IsNullOrWhiteSpace(line))
+                                App.Logger.WriteLine(LOG_IDENT, $"[flatpak-err] {line}");
+                        }
+                    }
+                    catch (OperationCanceledException) { }
+                    catch (Exception ex)
+                    {
+                        if (!updateProcess.HasExited)
+                            App.Logger.WriteLine(LOG_IDENT, $"Error reading flatpak stderr: {ex.Message}");
+                    }
+                }, linkedCts.Token);
+
+                await Task.WhenAny(
+                    updateProcess.WaitForExitAsync(linkedCts.Token),
+                    Task.Delay(Timeout.Infinite, linkedCts.Token)
+                );
+
+                if (!updateProcess.HasExited && linkedCts.IsCancellationRequested)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Update cancelled by user or timeout. Killing process.");
+                    try { updateProcess.Kill(true); } catch { }
                 }
-                else
+
+                if (!updateProcess.HasExited)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "Sober update check finished successfully.");
+                    await updateProcess.WaitForExitAsync();
+                }
+
+                if (updateProcess.ExitCode != 0 && updateProcess.ExitCode != -1)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"flatpak update exited with code {updateProcess.ExitCode}.");
+                }
+                else if (updateProcess.ExitCode == 0)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Sober update finished successfully.");
+                    _uiContext?.Post(_ =>
+                    {
+                        if (Dialog is not null)
+                        {
+                            Dialog.ProgressValue = 100;
+                            Dialog.TaskbarProgressValue = 1.0;
+                            Dialog.Message = "Sober update complete.";
+                        }
+                    }, null);
                 }
             }
-            catch (TimeoutException ex)
+            catch (OperationCanceledException) when (cts.IsCancellationRequested)
             {
-                App.Logger.WriteLine(LOG_IDENT, "Timed out while updating Sober.");
-                App.Logger.WriteException(LOG_IDENT, ex);
-
-                if (updateProcess is not null && !updateProcess.HasExited)
-                    updateProcess.Kill(true);
+                App.Logger.WriteLine(LOG_IDENT, "Update timed out after 10 minutes.");
             }
             catch (Exception ex)
             {
                 App.Logger.WriteLine(LOG_IDENT, "Failed to update Sober.");
                 App.Logger.WriteException(LOG_IDENT, ex);
+            }
+            finally
+            {
+                _uiContext?.Post(_ =>
+                {
+                    if (Dialog is not null)
+                    {
+                        Dialog.ProgressIndeterminate = false;
+                        Dialog.ProgressValue = 0;
+                        Dialog.TaskbarProgressValue = 0.0;
+                        Dialog.TaskbarProgressState = TaskbarItemProgressState.None;
+                    }
+                }, null);
             }
         }
 
