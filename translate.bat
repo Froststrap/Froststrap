@@ -11,8 +11,8 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Check if docker-compose.yml exists in .github/workflows/
-if not exist ".github\workflows\docker-compose.deeplx.yml" (
+REM Check if docker-compose.yml exists in project root
+if not exist "docker-compose.deeplx.yml" (
     echo docker-compose.deeplx.yml not found!
     echo Starting with docker run instead...
     docker stop deeplx 2>nul
@@ -32,7 +32,7 @@ REM Check if DeepLX is running
 docker ps | findstr deeplx >nul
 if errorlevel 1 (
     echo Starting DeepLX container...
-    docker-compose -f .github\workflows\docker-compose.deeplx.yml up -d
+    docker-compose -f docker-compose.deeplx.yml up -d
     
     if errorlevel 1 (
         echo Failed to start DeepLX with compose!
