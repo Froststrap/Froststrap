@@ -2756,8 +2756,7 @@ exit";
                                     {
                                         _uiContext?.Post(_ =>
                                         {
-                                            if (Dialog is not null)
-                                                Dialog.Message = trimmed;
+                                            Dialog?.Message = trimmed;
                                         }, null);
                                     }
                                 }
