@@ -14,7 +14,5 @@
         public UniverseDetails? OriginalDetails { get; set; }
         public GameSource Source { get; set; }
         public long LastPlayedTicks { get; set; }
-
-        public string ServerCountDisplay => Source == GameSource.RobloxApi ? "View Servers" : $"View Servers ({ServerCount})";
     }
 }

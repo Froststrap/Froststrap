@@ -116,6 +116,7 @@ namespace Froststrap.UI.ViewModels.Settings
         public ICommand JoinGameCommand { get; }
         public ICommand RejoinLastServerCommand { get; }
         public ICommand ViewServersCommand { get; }
+        public ICommand ViewRobloxServersCommand { get; }
         public ICommand CloseOverlayCommand { get; }
         public ICommand CloseSubplacesCommand { get; }
         public ICommand VisitPageCommand { get; }
@@ -162,39 +163,24 @@ namespace Froststrap.UI.ViewModels.Settings
 
             ViewServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
             {
-                if (item == null) return;
+                if (item == null || item.Source != GameSource.Tracked) return;
 
                 SelectedUniverseDetails = item.OriginalDetails;
                 IsOverlayVisible = true;
                 SelectedGameServers.Clear();
                 IsLoadingServers = true;
-                IsCurrentGameApi = (item.Source == GameSource.RobloxApi);
+                IsCurrentGameApi = false;
 
                 try
                 {
-                    if (item.Source == GameSource.RobloxApi)
+                    var entry = _allHistory.FirstOrDefault(x => x.UniverseId == item.UniverseId);
+                    if (entry != null)
                     {
-                        var servers = await FetchServersForGameAsync(item.PlaceId);
-                        if (servers.Count > 0)
-                        {
-                            servers = [.. servers.OrderByDescending(s => s.JoinedAt)];
-                            foreach (var s in servers)
-                                SelectedGameServers.Add(s);
-                        }
-                        item.ServerCount = servers.Count;
-                        OnPropertyChanged(nameof(RecentGames));
-                    }
-                    else
-                    {
-                        var entry = _allHistory.FirstOrDefault(x => x.UniverseId == item.UniverseId);
-                        if (entry != null)
-                        {
-                            var sortedServers = entry.Servers.OrderByDescending(x => x.JoinedAt).ToList();
-                            foreach (var s in sortedServers) s.IsLatest = false;
-                            if (sortedServers.Count > 0) sortedServers[0].IsLatest = true;
-                            foreach (var s in sortedServers)
-                                SelectedGameServers.Add(s);
-                        }
+                        var sortedServers = entry.Servers.OrderByDescending(x => x.JoinedAt).ToList();
+                        foreach (var s in sortedServers) s.IsLatest = false;
+                        if (sortedServers.Count > 0) sortedServers[0].IsLatest = true;
+                        foreach (var s in sortedServers)
+                            SelectedGameServers.Add(s);
                     }
                 }
                 finally
@@ -249,6 +235,34 @@ namespace Froststrap.UI.ViewModels.Settings
                 finally
                 {
                     IsJoiningBestRegion = false;
+                }
+            });
+
+            ViewRobloxServersCommand = new RelayCommand<QuickPlayGameItem>(async item =>
+            {
+                if (item == null) return;
+
+                SelectedUniverseDetails = item.OriginalDetails;
+                IsOverlayVisible = true;
+                SelectedGameServers.Clear();
+                IsLoadingServers = true;
+                IsCurrentGameApi = true;
+
+                try
+                {
+                    var servers = await FetchServersForGameAsync(item.PlaceId);
+                    if (servers.Count > 0)
+                    {
+                        servers = [.. servers.OrderByDescending(s => s.JoinedAt)];
+                        foreach (var s in servers)
+                            SelectedGameServers.Add(s);
+                    }
+                    item.ServerCount = servers.Count;
+                    OnPropertyChanged(nameof(RecentGames));
+                }
+                finally
+                {
+                    IsLoadingServers = false;
                 }
             });
 
