@@ -573,13 +573,13 @@ namespace Froststrap.Integrations
         }
 
         public async Task<ServerSelectionResult> FindBestServerInRegionAsync(
-            long placeId,
-            List<string> topRegions,
-            bool joinSmallerServer = true,
-            int maxServerCheck = 100,
-            int maxPages = 5,
-            string? cookie = null,
-            CancellationToken cancellationToken = default)
+    long placeId,
+    List<string> topRegions,
+    bool joinSmallerServer = true,
+    int maxServerCheck = 100,
+    int maxPages = 5,
+    string? cookie = null,
+    CancellationToken cancellationToken = default)
         {
             try
             {
@@ -602,22 +602,29 @@ namespace Froststrap.Integrations
 
                 App.Logger.WriteLine("RobloxServerFetcher", $"Searching in top {topRegions.Count} regions: {string.Join(", ", topRegions)}");
 
-                string? nextCursor = "";
+                string? nextCursor = null;
                 int serversChecked = 0;
                 int pagesFetched = 0;
 
                 var allServers = new List<ServerInstance>();
 
-                while (!string.IsNullOrEmpty(nextCursor) && pagesFetched < maxPages && serversChecked < maxServerCheck)
+                while (pagesFetched < maxPages && serversChecked < maxServerCheck)
                 {
                     int sortOrder = joinSmallerServer ? 1 : 2;
                     var result = await FetchServerInstancesAsync(placeId, nextCursor ?? "", sortOrder, cookie, cancellationToken);
 
                     if (result?.Servers == null || result.Servers.Count == 0)
                     {
-                        if (string.IsNullOrEmpty(nextCursor)) break;
-                        await Task.Delay(500, cancellationToken);
-                        continue;
+                        if (pagesFetched == 0 && string.IsNullOrEmpty(result?.NextCursor))
+                            break;
+
+                        if (!string.IsNullOrEmpty(result?.NextCursor))
+                        {
+                            await Task.Delay(500, cancellationToken);
+                            nextCursor = result.NextCursor;
+                            continue;
+                        }
+                        break;
                     }
 
                     foreach (var server in result.Servers)
@@ -634,14 +641,11 @@ namespace Froststrap.Integrations
                     }
 
                     pagesFetched++;
-
-                    if (!string.IsNullOrEmpty(result.NextCursor))
-                        nextCursor = result.NextCursor;
-                    else
+                    nextCursor = result.NextCursor;
+                    if (string.IsNullOrEmpty(nextCursor))
                         break;
 
-                    if (!string.IsNullOrEmpty(nextCursor))
-                        await Task.Delay(100, cancellationToken);
+                    await Task.Delay(100, cancellationToken);
                 }
 
                 App.Logger.WriteLine("RobloxServerFetcher", $"Collected {allServers.Count} servers from {pagesFetched} pages");
