@@ -27,25 +27,30 @@ namespace Froststrap.Integrations
             _activityWatcher = activityWatcher;
 
 #if DEBUG
-            var robloxProcesses = Process.GetProcessesByName("RobloxPlayerBeta");
-            if (robloxProcesses.Length == 0)
+            if (OperatingSystem.IsWindows())
             {
-                robloxProcesses = [.. Process.GetProcesses()
+                var robloxProcesses = Process.GetProcessesByName("RobloxPlayerBeta");
+                if (robloxProcesses.Length == 0)
+                {
+                    robloxProcesses = [.. Process.GetProcesses()
                     .Where(p => p.ProcessName.Contains("Roblox", StringComparison.OrdinalIgnoreCase))];
-            }
+                }
 
-            if (robloxProcesses.Length > 0)
-            {
-                _ = robloxProcesses[0].Id;
+                if (robloxProcesses.Length > 0)
+                {
+                    _ = robloxProcesses[0].Id;
+                }
             }
 #endif
 
             _activityWatcher.OnGameJoin += OnGameJoin;
             _activityWatcher.OnGameLeave += OnGameLeave;
 
-            LoadDefaultIcon();
+            if (OperatingSystem.IsWindows())
+                LoadDefaultIcon();
         }
 
+        [SupportedOSPlatform("windows")]
         private void LoadDefaultIcon()
         {
             try
@@ -97,20 +102,23 @@ namespace Froststrap.Integrations
             if (!_activityWatcher.InGame)
                 return;
 
-            Task.Run(async () =>
+            if (OperatingSystem.IsWindows())
             {
-                EnsureWindowHandleCached();
-
-                if (App.Settings.Prop.AutoChangeIcon)
+                Task.Run(async () =>
                 {
-                    await UpdateIconToGameIcon();
-                }
+                    EnsureWindowHandleCached();
 
-                if (App.Settings.Prop.AutoChangeTitle)
-                {
-                    await UpdateTitleToGameName();
-                }
-            });
+                    if (App.Settings.Prop.AutoChangeIcon)
+                    {
+                        await UpdateIconToGameIcon();
+                    }
+
+                    if (App.Settings.Prop.AutoChangeTitle)
+                    {
+                        await UpdateTitleToGameName();
+                    }
+                });
+            }
 
             long currentGameId = _activityWatcher.Data.PlaceId;
 
@@ -127,7 +135,7 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT = "IntegrationWatcher::OnGameLeave";
 
-            if (_robloxWindowHandle.Value != IntPtr.Zero)
+            if (_robloxWindowHandle.Value != IntPtr.Zero || OperatingSystem.IsWindows())
             {
                 try
                 {
@@ -177,6 +185,7 @@ namespace Froststrap.Integrations
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private void EnsureWindowHandleCached()
         {
             if (_robloxWindowHandle.Value != IntPtr.Zero) return;
@@ -205,6 +214,7 @@ namespace Froststrap.Integrations
             _robloxWindowHandle = (HWND)nativeHandle;
         }
 
+        [SupportedOSPlatform("windows")]
         private async Task UpdateIconToGameIcon()
         {
             const string LOG_IDENT = "IntegrationWatcher::UpdateIconToGameIcon";
@@ -265,6 +275,7 @@ namespace Froststrap.Integrations
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private async Task UpdateTitleToGameName()
         {
             const string LOG_IDENT = "IntegrationWatcher::UpdateTitleToGameName";
