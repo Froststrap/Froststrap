@@ -2309,4 +2309,7 @@ You can no longer use Bloxshade with Froststrap.</value>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>left</value>
   </data>
+  <data name="TranslationTesting.Test" xml:space="preserve">
+    <value>This string is made to test auto translation, ignore please.</value>
+  </data>
 </root>
