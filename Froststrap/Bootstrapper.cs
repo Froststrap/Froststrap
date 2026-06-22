@@ -843,6 +843,8 @@ namespace Froststrap
             if (cancellationToken.IsCancellationRequested)
                 return "";
 
+            SetStatus($"Finding top {App.Settings.Prop.BestRegionAmounts} regions...");
+
             var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(App.Settings.Prop.BestRegionAmounts, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested)
@@ -4037,21 +4039,38 @@ Windows Registry Editor Version 5.00
             if (Directory.Exists(Paths.Modifications))
             {
                 App.Logger.WriteLine(LOG_IDENT, "Processing PresetModifications (Flat folder)...");
-                foreach (string file in Directory.GetFiles(Paths.Modifications, "*.*", SearchOption.AllDirectories))
-                {
-                    string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
 
+                foreach (string file in Directory.GetFiles(Paths.Modifications))
+                {
+                    string relativeFile = Path.GetFileName(file);
                     if (relativeFile == "README.txt" ||
                         relativeFile.EndsWith("info.json") ||
                         relativeFile.EndsWith(".lock") ||
                         relativeFile.StartsWith("ClientSettings\\"))
                         continue;
 
-                    if (allModFolderNames.Any(modName => relativeFile.StartsWith(modName + "\\", StringComparison.OrdinalIgnoreCase)))
-                        continue;
-
                     var info = new FileInfo(file);
                     allModFiles[relativeFile] = (file, int.MinValue, "BaseModification", info);
+                }
+
+                foreach (string dir in Directory.GetDirectories(Paths.Modifications))
+                {
+                    string dirName = Path.GetFileName(dir);
+                    if (allModFolderNames.Contains(dirName, StringComparer.OrdinalIgnoreCase))
+                        continue;
+
+                    foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+                    {
+                        string relativeFile = Path.GetRelativePath(Paths.Modifications, file);
+                        if (relativeFile == "README.txt" ||
+                            relativeFile.EndsWith("info.json") ||
+                            relativeFile.EndsWith(".lock") ||
+                            relativeFile.StartsWith("ClientSettings\\"))
+                            continue;
+
+                        var info = new FileInfo(file);
+                        allModFiles[relativeFile] = (file, int.MinValue, "BaseModification", info);
+                    }
                 }
             }
 
@@ -4163,7 +4182,6 @@ Windows Registry Editor Version 5.00
                             if (targetInfo.Length == sourceInfo.Length &&
                                 targetInfo.LastWriteTime == sourceInfo.LastWriteTime)
                             {
-                                App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (size/time)");
                                 needsCopy = false;
                             }
                             else
@@ -4173,14 +4191,9 @@ Windows Registry Editor Version 5.00
 
                                 if (sourceHash == targetHash)
                                 {
-                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} matches (MD5)");
                                     needsCopy = false;
 
                                     File.SetLastWriteTime(fileVersionFolder, sourceInfo.LastWriteTime);
-                                }
-                                else
-                                {
-                                    App.Logger.WriteLine(LOG_IDENT, $"{relativeFile} diffrent, applying)");
                                 }
                             }
                         }
