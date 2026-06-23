@@ -18,12 +18,15 @@ class DeepLXTranslator:
         self.cache_file = self.project_root / "deeplx_cache.json"
         
         self.languages = [
-            "ar", "bg", "cs", "da", "de", "el", "es-ES", "et", 
-            "fi", "fr", "hu", "id", "it", "ja", "ko", "lt", 
-            "lv", "nl", "pl", "pt-BR", "pt-PT", "ro", "ru", 
-            "sk", "sl", "sv-SE", "tr", "uk", "zh-CN", "zh-TW"
+            "ar", "bg", "cs", "da", "de", "el", "es-ES", "et",
+            "fa", "fi", "fil", "fr", "hr", "hu", "id", "it",
+            "ja", "ko", "lt", "lv", "ms", "nl", "pl", "pt-BR",
+            "pt-PT", "ro", "ru", "sk", "sl", "sv-SE", "th",
+            "tr", "uk", "vi", "zh-CN", "zh-TW"
         ]
         
+        self.unsupported_languages = ["fil", "ms", "th", "vi", "fa", "hr"]
+        self.qa_languages = ["da", "el", "et", "lv", "pt-PT", "sk", "sl"]
         self.skip_languages = ["en-US", "en"]
         
         self.deepl_lang_map = {
@@ -192,6 +195,35 @@ class DeepLXTranslator:
         with open(self.base_file, 'r', encoding='utf-8') as f:
             return f.read()
     
+    def get_base_header(self) -> str:
+        base_content = self.get_base_file_content()
+        if not base_content:
+            return ""
+        
+        # Find the first real data element (not inside the comment block)
+        # We look for the pattern after the resheaders
+        # First, find where the comment block ends (the schema section)
+        schema_end = base_content.find('</xsd:schema>')
+        if schema_end != -1:
+            # Find the first data element after the schema
+            data_start = base_content.find('<data name=', schema_end)
+            if data_start != -1:
+                return base_content[:data_start]
+        
+        # Fallback: find the last resheader
+        resheader_end = base_content.rfind('</resheader>')
+        if resheader_end != -1:
+            data_start = base_content.find('<data name=', resheader_end)
+            if data_start != -1:
+                return base_content[:data_start]
+        
+        # Last resort: find first data element
+        data_start = base_content.find('<data name=')
+        if data_start == -1:
+            return base_content
+        
+        return base_content[:data_start]
+    
     def get_strings(self) -> Dict[str, str]:
         if not self.base_file.exists():
             print(f"Base file not found: {self.base_file}")
@@ -245,26 +277,10 @@ class DeepLXTranslator:
         except:
             return set()
     
-    def format_resx_file(self, root, schema_content, resheaders, base_content) -> str:
-        content = '<?xml version="1.0" encoding="utf-8"?>\n'
-        content += '<root'
+    def format_resx_file(self, data_elements, base_header) -> str:
+        # Strip trailing whitespace and ensure exactly one newline
+        content = base_header.rstrip() + '\n'
         
-        if 'xmlns:xs' in base_content:
-            content += ' xmlns:xs="http://www.w3.org/2001/XMLSchema"'
-        if 'xmlns:msdata' in base_content:
-            content += ' xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"'
-        content += '>\n'
-        
-        if schema_content:
-            schema_lines = schema_content.split('\n')
-            for line in schema_lines:
-                if line.strip():
-                    content += '  ' + line + '\n'
-        
-        for resheader in resheaders:
-            content += '  ' + resheader + '\n'
-        
-        data_elements = root.findall(".//data")
         data_elements.sort(key=lambda x: x.get("name", ""))
         
         for data in data_elements:
@@ -275,24 +291,27 @@ class DeepLXTranslator:
             if value is None:
                 continue
             
-            comment_text = comment.text if comment is not None and comment.text else None
+            content += f'  <data name="{name}" xml:space="preserve">\n'
+            content += f'    <value>{value.text}</value>\n'
             
-            if comment_text:
-                content += f'  <data name="{name}" xml:space="preserve">\n'
-                content += f'    <value>{value.text}</value>\n'
+            if comment is not None and comment.text:
+                # Escape any ampersands in comments
+                comment_text = comment.text.replace('&', '&amp;')
                 content += f'    <comment>{comment_text}</comment>\n'
-                content += '  </data>\n'
-            else:
-                content += f'  <data name="{name}" xml:space="preserve">\n'
-                content += f'    <value>{value.text}</value>\n'
-                content += '  </data>\n'
+            
+            content += '  </data>\n'
         
         content += '</root>'
+        
         return content
     
     def translate_language(self, lang: str, base_strings: Dict[str, str]):
         if lang in self.skip_languages:
             print(f"Skipping {lang} (base English file)")
+            return
+        
+        if lang in self.unsupported_languages:
+            print(f"Skipping {lang} (not supported by DeepL)")
             return
         
         lang_file = self.resources_dir / f"Strings.{lang}.resx"
@@ -335,48 +354,37 @@ class DeepLXTranslator:
             text_list = list(need_translation.values())
             translated_map = self.translate_batch(text_list, lang)
         
-        if lang_file.exists():
-            tree = ET.parse(lang_file)
-            root = tree.getroot()
-        else:
-            tree = ET.parse(self.base_file)
-            root = tree.getroot()
-            for data in root.findall(".//data"):
-                root.remove(data)
+        base_header = self.get_base_header()
+        if not base_header:
+            print(f"  Failed to read base header!")
+            return
         
-        for key in removed_keys:
-            data = root.find(f"./data[@name='{key}']")
-            if data is not None:
-                root.remove(data)
+        tree = ET.parse(self.base_file)
+        root = tree.getroot()
+        
+        for data in root.findall(".//data"):
+            root.remove(data)
         
         for key, original in need_translation.items():
             translated = translated_map.get(original, original)
             if translated == original:
                 continue
             
-            data = root.find(f"./data[@name='{key}']")
-            if data is None:
-                data = ET.SubElement(root, "data", {"name": key, "xml:space": "preserve"})
-                ET.SubElement(data, "value")
+            data = ET.SubElement(root, "data", {"name": key, "xml:space": "preserve"})
+            value_elem = ET.SubElement(data, "value")
+            value_elem.text = translated
             
-            value = data.find("value")
-            if value is not None:
-                value.text = translated
+            base_tree = ET.parse(self.base_file)
+            base_root = base_tree.getroot()
+            base_data = base_root.find(f"./data[@name='{key}']")
+            if base_data is not None:
+                comment = base_data.find("comment")
+                if comment is not None and comment.text:
+                    comment_elem = ET.SubElement(data, "comment")
+                    comment_elem.text = comment.text
         
-        base_content = self.get_base_file_content()
-        schema_content = ""
-        if base_content:
-            schema_start = base_content.find('<xs:schema')
-            if schema_start != -1:
-                schema_end = base_content.find('</xs:schema>') + len('</xs:schema>')
-                schema_content = base_content[schema_start:schema_end]
-        
-        resheaders = []
-        for resheader in root.findall(".//resheader"):
-            resheader_str = ET.tostring(resheader, encoding='unicode', method='xml')
-            resheaders.append(resheader_str)
-        
-        formatted_content = self.format_resx_file(root, schema_content, resheaders, base_content)
+        data_elements = root.findall(".//data")
+        formatted_content = self.format_resx_file(data_elements, base_header)
         
         with open(lang_file, 'w', encoding='utf-8') as f:
             f.write(formatted_content)
@@ -409,18 +417,20 @@ class DeepLXTranslator:
             return
         
         print(f"Found {len(base_strings)} strings in base file")
-        print(f"Translating {len(self.languages)} languages\n")
         
-        for i, lang in enumerate(self.languages):
-            print(f"\n[{i+1}/{len(self.languages)}]", end=" ")
+        active_languages = [lang for lang in self.languages if lang not in self.unsupported_languages]
+        print(f"Translating {len(active_languages)} languages\n")
+        
+        for i, lang in enumerate(active_languages):
+            print(f"\n[{i+1}/{len(active_languages)}]", end=" ")
             self.translate_language(lang, base_strings)
             
-            if i < len(self.languages) - 1:
+            if i < len(active_languages) - 1:
                 print("  Waiting 5 seconds before next language...")
                 time.sleep(5)
         
         total = sum(self.stats.values())
-        print(f"\nComplete. Processed {total} changes across {len(self.languages)} languages")
+        print(f"\nComplete. Processed {total} changes across {len(active_languages)} languages")
         
         stats_file = self.script_dir / "translation_stats.txt"
         with open(stats_file, 'w', encoding='utf-8') as f:

@@ -117,68 +117,181 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="About.Licenses.Title" xml:space="preserve">
+    <value>Licencje</value>
+    <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
+  </data>
+  <data name="About.Supporters.Description" xml:space="preserve">
+    <value>Oto osoby, które wsparły Froststrap za pośrednictwem serwisu Ko-fi. Ogromne podziękowania dla wszystkich!
+Każda z tych osób została uszeregowana według wysokości swojej łącznej wpłaty.</value>
+  </data>
+  <data name="About.Supporters.Monthly" xml:space="preserve">
+    <value>Miesięcznie</value>
+  </data>
+  <data name="About.Supporters.OneOff" xml:space="preserve">
+    <value>Jednorazowy</value>
+  </data>
+  <data name="About.Supporters.Title" xml:space="preserve">
+    <value>Zwolennicy Froststrap</value>
+  </data>
+  <data name="About.Title" xml:space="preserve">
+    <value>O firmie Froststrap</value>
+  </data>
+  <data name="About.Translators.Description" xml:space="preserve">
+    <value>Wszystkie tłumaczenia Froststrap powstają w ramach crowdsourcingu za pośrednictwem serwisu [Crowdin]({0}). Wszystkie osoby wymienione poniżej to ludzie, którzy hojnie poświęcili swój czas i wysiłek, aby pomóc w lokalizacji Froststrap. Ogromne podziękowania dla wszystkich!</value>
+  </data>
+  <data name="About.Translators.Title" xml:space="preserve">
+    <value>Tłumacze</value>
+  </data>
+  <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
+    <value>Nie udało się sprawdzić lokalizacji serwera. Być może dołączasz do gier zbyt szybko.</value>
+  </data>
+  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
+    <value>Twoja aktualna gra nie pojawi się w Twoim statusie na Discordzie, ponieważ podczas ładowania informacji o grze wystąpił błąd.</value>
+  </data>
+  <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
+    <value>Roblox nie obsługuje już systemów Windows 7 ani 8.1. Aby nadal grać w Roblox, należy zaktualizować system do wersji Windows 10 lub nowszej.</value>
+  </data>
+  <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
+    <value>Kanał, na którym obecnie się znajdujesz ({0}), został zablokowany dla użytkowników publicznych. Zostaniesz teraz przeniesiony na kanał domyślny ({1}).</value>
+  </data>
   <data name="Bootstrapper.AutoUpdateFailed" xml:space="preserve">
-    <value>Automatyczna aktualizacja do wersji {0} nie powiodła się. Prosimy zaktualizować Froststrap ręcznie, pobierając i uruchomiając program z oficjalnej strony internetowej.</value>
+    <value>Nie udało się automatycznie zaktualizować programu Froststrap do wersji {0}. Proszę zaktualizować go ręcznie, pobierając i uruchamiając plik z witryny internetowej.</value>
+  </data>
+  <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
+    <value>Roblox próbuje ustawić Twój kanał na {0}, jednak obecnie Twoim preferowanym kanałem jest {1}.
+
+
+Czy chcesz zmienić swój preferowany kanał na {0}?</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
-    <value>Roblox jest aktualnie uruchomiony. Uruchomienie następnej instancji spowoduje zamknięcie procesu. Czy jesteś pewien, że chcesz kontynuować uruchamianie?</value>
+    <value>Roblox jest obecnie uruchomiony, a uruchomienie kolejnej instancji spowoduje jego zamknięcie. Czy na pewno chcesz kontynuować uruchamianie?</value>
   </data>
-  <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
-    <value>Możliwe, że Roblox w tej chwili ma awarię. Więcej informacji na {0}.</value>
+  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
+    <value>Ansel nie jest obsługiwany.
+Nie można już korzystać z Bloxshade w połączeniu z Froststrap.</value>
   </data>
-  <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
-    <value>Nie można nawiązać połączenia, co prawdopodobnie wskazuje na słabe połączenie z internetem lub blok firewall. Jeśli połączenie jest w porządku, upewnij się, że twój antywirus nie blokuje Froststrap.</value>
+  <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
+    <value>Kanał, na którym obecnie się znajdujesz ({0}), jest nieaktualny i wygląda na to, że nie otrzymuje już aktualizacji.\n
+Czy chcesz przejść na kanał domyślny ({1})?</value>
+  </data>
+  <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
+    <value>Aktualizacje zostały wyłączone z powodu braku klienta.
+    Aby zapobiec problemom, aktualizacja będzie kontynuowana.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>Pozwól, aby Froststrap sam decydował, do których serwerów się dołączysz. Program wybiera serwer znajdujący się w najmniejszej odległości od Ciebie.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>Wygląda na to, że jeden z Twoich znajomych właśnie gra w tę grę. Chcesz do niego dołączyć?</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
+    <value>Losowo wybiera serwer z listy optymalnych serwerów.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
+    <value>Losowe przydzielanie graczy na serwerze BetterMatchmaking</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>Włącz funkcję BetterMatchmaking</value>
+  </data>
+  <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
+    <value>Niektóre treści mogą być niekompletne. Aby to naprawić, należy wymusić ponowną instalację Roblox w ustawieniach.</value>
+  </data>
+  <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
+    <value>Nie udało się wyodrębnić wszystkich plików</value>
+  </data>
+  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
+    <value>Froststrap próbował zaktualizować Roblox, ale nie może tego zrobić, ponieważ pliki Roblox są nadal w użyciu.
+
+Zamknij wszystkie aplikacje, które mogą korzystać z plików Roblox, a następnie uruchom program ponownie.</value>
+    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
   </data>
   <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Musisz najpierw zainstalować Froststrap, żeby móc go odinstalować.</value>
+    <value>Przed odinstalowaniem należy najpierw zainstalować Froststrap.</value>
+  </data>
+  <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
+    <value>Nie udało się zapisać {0}: {1}</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
+    <value>Nie wszystkie modyfikacje zostaną uwzględnione w obecnej wersji.</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Title" xml:space="preserve">
+    <value>Nie udało się zastosować wszystkich zmian</value>
   </data>
   <data name="Bootstrapper.NotEnoughSpace" xml:space="preserve">
-    <value>Froststrap nie ma wystarczającej ilości miejsca na dysku, aby pobrać i zainstalować Roblox. Zwolnij trochę miejsca na dysku i spróbuj ponownie.</value>
+    <value>Froststrap nie ma wystarczającej ilości miejsca na dysku, aby pobrać i zainstalować Roblox. Proszę zwolnić trochę miejsca na dysku i spróbować ponownie.</value>
   </data>
   <data name="Bootstrapper.Status.ApplyingModifications" xml:space="preserve">
-    <value>Stosowanie modyfikacji Roblox...</value>
+    <value>Wprowadzanie modyfikacji w Robloxie...</value>
+  </data>
+  <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
+    <value>Anulowanie aktualizacji Roblox.</value>
   </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
-    <value>Konfigurowanie {product}...</value>
+    <value>Konfiguracja {produktu}...</value>
   </data>
   <data name="Bootstrapper.Status.Connecting" xml:space="preserve">
-    <value>Łączenie do Roblox...</value>
+    <value>Łączenie się z Roblox...</value>
+  </data>
+  <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
+    <value>Pobieranie</value>
+  </data>
+  <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
+    <value>Wyodrębnianie</value>
   </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
-    <value>Instalowanie {product}...</value>
+    <value>Instalowanie {produktu}...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
-    <value>Instalowanie WebWiew2, proszę czekać...</value>
+    <value>Instalowanie WebView2, proszę czekać...</value>
+  </data>
+  <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
+    <value>po lewej</value>
   </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
     <value>Uruchamianie {product}...</value>
     <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
-    <value>Aktualizowanie {product}...</value>
+    <value>Aktualizacja {produktu}...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
+    <value>Pobieranie najnowszej wersji Froststrap...</value>
+  </data>
+  <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
+    <value>Oczekiwanie na dane...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingOtherInstances" xml:space="preserve">
-    <value>Czekam na inne instancje...</value>
+    <value>Oczekiwanie na inne instancje...</value>
   </data>
   <data name="Bootstrapper.StylePreview.ImageCancel" xml:space="preserve">
-    <value>Podgląd stylu — Kliknij „X” w prawym górnym rogu, aby zamknąć</value>
+    <value>Podgląd stylu – kliknij przycisk „X” w prawym górnym rogu, aby zamknąć</value>
     <comment>Text for style previews that use an X button. Currently only applies to Byfron</comment>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
-    <value>Podgląd stylu — Kliknij „Anuluj”, aby zamknąć</value>
+    <value>Podgląd stylu — kliknij „Anuluj”, aby zamknąć</value>
     <comment>Text for style previews that use text button that says "Cancel"</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
-    <value>Froststrap został pomyślnie odinstalowany</value>
+    <value>Program Froststrap został pomyślnie odinstalowany</value>
   </data>
   <data name="Bootstrapper.Uninstall.RobloxRunning" xml:space="preserve">
-    <value>Roblox jest obecnie uruchomiony w tle, ale musi zostać zamknięty przed odinstalowaniem Froststrap. Czy chcesz zamknąć Roblox teraz?</value>
+    <value>Roblox jest obecnie uruchomiony, ale przed odinstalowaniem Froststrap należy go zamknąć. Czy chcesz teraz zamknąć Roblox?</value>
   </data>
   <data name="Bootstrapper.WMFNotFound" xml:space="preserve">
-    <value>Roblox wymaga użycia komponentów Windows Media Foundation. Wygląda na to, że ich brakuje, prawdopodobnie dlatego, że używasz wersji N systemu Windows. Najpierw je zainstaluj, a następnie uruchom Roblox.</value>
+    <value>Roblox wymaga komponentów Windows Media Foundation. Wygląda na to, że ich brakuje, prawdopodobnie dlatego, że korzystasz z systemu Windows w wersji N. Zainstaluj je najpierw, a następnie uruchom Roblox.</value>
+  </data>
+  <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
+    <value>Obecnie nie masz zainstalowanego środowiska uruchomieniowego WebView2. Bez niego niektóre funkcje serwisu Roblox nie będą działać poprawnie, na przykład aplikacja na komputer. Czy chcesz je pobrać teraz?</value>
   </data>
   <data name="Common.AddSingle" xml:space="preserve">
-    <value>Dodaj jedną</value>
+    <value>Dodaj pojedynczy</value>
+  </data>
+  <data name="Common.Analytics" xml:space="preserve">
+    <value>Analizy</value>
+  </data>
+  <data name="Common.Automatic" xml:space="preserve">
+    <value>Automatyczny</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Przeglądaj</value>
@@ -186,230 +299,821 @@
   <data name="Common.Cancel" xml:space="preserve">
     <value>Anuluj</value>
   </data>
+  <data name="Common.Channel" xml:space="preserve">
+    <value>Kanał</value>
+  </data>
+  <data name="Common.Choose" xml:space="preserve">
+    <value>Wybierz</value>
+  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Zamknij</value>
+  </data>
+  <data name="Common.Color" xml:space="preserve">
+    <value>Kolor</value>
+  </data>
+  <data name="Common.CopyAll" xml:space="preserve">
+    <value>Kopiuj wszystko</value>
+  </data>
+  <data name="Common.CreateNew" xml:space="preserve">
+    <value>Utwórz nowy</value>
+  </data>
+  <data name="Common.Custom" xml:space="preserve">
+    <value>Niestandardowe</value>
+  </data>
+  <data name="Common.Debug" xml:space="preserve">
+    <value>Debugowanie</value>
+  </data>
+  <data name="Common.DebugMenu" xml:space="preserve">
+    <value>Menu debugowania</value>
+  </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>Domyślnie</value>
   </data>
   <data name="Common.Delete" xml:space="preserve">
     <value>Usuń</value>
   </data>
+  <data name="Common.DeleteAll" xml:space="preserve">
+    <value>Usuń wszystko</value>
+  </data>
+  <data name="Common.Deployment" xml:space="preserve">
+    <value>Wdrożenie</value>
+  </data>
+  <data name="Common.Disabled" xml:space="preserve">
+    <value>Niepełnosprawni</value>
+  </data>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
-    <value>Status aktywności Discord</value>
+    <value>Rozbudowana funkcjonalność Discord</value>
+  </data>
+  <data name="Common.Edit" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="Common.Experimental" xml:space="preserve">
+    <value>Eksperymentalne</value>
+  </data>
+  <data name="Common.Export" xml:space="preserve">
+    <value>Eksport</value>
+    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
+  </data>
+  <data name="Common.FilterType" xml:space="preserve">
+    <value>Typ filtra:</value>
   </data>
   <data name="Common.Help" xml:space="preserve">
     <value>Pomoc</value>
   </data>
-  <data name="Common.ImportJson" xml:space="preserve">
-    <value>Importuj JSON</value>
+  <data name="Common.ImportFromFile" xml:space="preserve">
+    <value>Importuj z pliku</value>
   </data>
-  <data name="Common.OpenLogFile" xml:space="preserve">
-    <value>Otwórz plik dziennika</value>
+  <data name="Common.LauncherType" xml:space="preserve">
+    <value>Typ: Program uruchamiający</value>
+  </data>
+  <data name="Common.Loading" xml:space="preserve">
+    <value>Ładowanie, proszę czekać...</value>
+  </data>
+  <data name="Common.LookingFor" xml:space="preserve">
+    <value>Szukam</value>
+  </data>
+  <data name="Common.Message" xml:space="preserve">
+    <value>Wiadomość</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Różne</value>
   </data>
+  <data name="Common.ModType" xml:space="preserve">
+    <value>Typ: Mod</value>
+  </data>
   <data name="Common.Name" xml:space="preserve">
     <value>Nazwa</value>
   </data>
+  <data name="Common.Navigation.Back" xml:space="preserve">
+    <value>Powrót</value>
+  </data>
+  <data name="Common.Navigation.Install" xml:space="preserve">
+    <value>Zainstaluj</value>
+    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
+  </data>
+  <data name="Common.Navigation.Next" xml:space="preserve">
+    <value>Dalej</value>
+  </data>
+  <data name="Common.NetworkError" xml:space="preserve">
+    <value>Nie udało się załadować danych z powodu błędu sieciowego.</value>
+  </data>
   <data name="Common.New" xml:space="preserve">
-    <value>Nowe</value>
+    <value>Nowość</value>
   </data>
   <data name="Common.No" xml:space="preserve">
     <value>Nie</value>
   </data>
-  <data name="Common.OK" xml:space="preserve">
-    <value>OK</value>
+  <data name="Common.NotAvailable" xml:space="preserve">
+    <value>Niedostępne</value>
+  </data>
+  <data name="Common.OpenDebugMenu" xml:space="preserve">
+    <value>Otwórz menu debugowania</value>
+  </data>
+  <data name="Common.OpenLogFile" xml:space="preserve">
+    <value>Otwórz plik dziennika</value>
+  </data>
+  <data name="Common.Performance" xml:space="preserve">
+    <value>Wydajność</value>
+  </data>
+  <data name="Common.PresetFlagLists" xml:space="preserve">
+    <value>Wstępnie zdefiniowane listy flag</value>
   </data>
   <data name="Common.Presets" xml:space="preserve">
-    <value>Presety</value>
+    <value>Ustawienia wstępne</value>
+  </data>
+  <data name="Common.Profiles" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Common.Quality" xml:space="preserve">
+    <value>Jakość</value>
+  </data>
+  <data name="Common.Recommended" xml:space="preserve">
+    <value>Polecane</value>
+  </data>
+  <data name="Common.Refresh" xml:space="preserve">
+    <value>Odśwież</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="Common.Rename" xml:space="preserve">
+    <value>Zmień nazwę</value>
   </data>
   <data name="Common.Reset" xml:space="preserve">
-    <value>Zresetuj</value>
+    <value>Resetuj</value>
     <comment>In the context of resetting something to a default value</comment>
+  </data>
+  <data name="Common.RobloxNotInstalled" xml:space="preserve">
+    <value>Aplikacja Roblox nie została jeszcze zainstalowana. Przed skorzystaniem z tej opcji należy przynajmniej raz uruchomić aplikację Roblox za pomocą Froststrap.</value>
+  </data>
+  <data name="Common.Search" xml:space="preserve">
+    <value>Wyszukiwanie</value>
+  </data>
+  <data name="Common.SearchBy" xml:space="preserve">
+    <value>Wyszukaj według</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Ustawienia</value>
+  </data>
+  <data name="Common.Shortcuts" xml:space="preserve">
+    <value>Skróty</value>
+  </data>
+  <data name="Common.Shortcuts.Desktop" xml:space="preserve">
+    <value>Ikona na pulpicie</value>
+  </data>
+  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
+    <value>Ikona w menu Start</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Kancelaria</value>
+  </data>
+  <data name="Common.SystemDefault" xml:space="preserve">
+    <value>Ustawienia domyślne systemu</value>
+  </data>
+  <data name="Common.Template" xml:space="preserve">
+    <value>Szablon</value>
+  </data>
+  <data name="Common.Time" xml:space="preserve">
+    <value>Czas</value>
+  </data>
+  <data name="Common.Timestamp" xml:space="preserve">
+    <value>Sygnatura czasowa</value>
+  </data>
+  <data name="Common.Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="Common.UnknownStatus" xml:space="preserve">
+    <value>Status nieznany</value>
+  </data>
+  <data name="Common.UserId" xml:space="preserve">
+    <value>Identyfikator użytkownika</value>
+  </data>
+  <data name="Common.Username" xml:space="preserve">
+    <value>Nazwa użytkownika</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Wartość</value>
   </data>
+  <data name="Common.Version" xml:space="preserve">
+    <value>Wersja</value>
+  </data>
+  <data name="Common.VersionGuid" xml:space="preserve">
+    <value>Identyfikator wersji</value>
+  </data>
   <data name="Common.Warning" xml:space="preserve">
-    <value>Uwaga</value>
+    <value>Ostrzeżenie</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Tak</value>
+  </data>
+  <data name="Common_FastFlags" xml:space="preserve">
+    <value>Szybki edytor flag</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Zamknij Roblox</value>
   </data>
   <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Czy na pewno chcesz zamknąć Roblox? To wymusi zakończenie procesu.</value>
+    <value>Czy na pewno chcesz zamknąć Roblox? Spowoduje to przymusowe zakończenie działania programu.</value>
   </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
-    <value>Kopiuj zaproszenie deeplink</value>
+    <value>Skopiuj link bezpośredni do zaproszenia</value>
+  </data>
+  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
+    <value>Wyczyść historię</value>
+  </data>
+  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
+    <value>Skopiuj identyfikator zadania</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
+    <value>Historia gier jest rejestrowana wyłącznie dla bieżącej sesji w serwisie Roblox. Gry pojawią się w tym miejscu w momencie ich opuszczenia lub teleportacji w ich obrębie. Nie do wszystkich serwerów będzie można ponownie dołączyć.</value>
+  </data>
+  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
+    <value>Nie ma jeszcze historii rozgrywek{0}{0}Weź udział w kilku rozgrywkach, aby je tu zobaczyć!</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
+    <value>Odśwież</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
+    <value>Dołącz ponownie</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
+    <value>Historia gry</value>
+  </data>
+  <data name="ContextMenu.Logs.Title" xml:space="preserve">
+    <value>Menu „Dzienniki”</value>
+  </data>
+  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
+    <value>Wyświetla ostatnio wysłane wiadomości od graczy.</value>
+  </data>
+  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
+    <value>Dzienniki komunikatów</value>
+  </data>
+  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
+    <value>Dzienniki graczy</value>
+  </data>
+  <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
+    <value>Lokalizacja: {0}
+Czas działania: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
-    <value>Skopiuj ID Miejsca</value>
+    <value>Skopiuj identyfikator instancji</value>
   </data>
   <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
-    <value>ID Miejsca</value>
+    <value>Identyfikator instancji</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
-    <value>Położenie</value>
+    <value>Lokalizacja</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Położone w {0}
-Kliknij, aby dowiedzieć się więcej</value>
+    <value>Lokalizacja: {0}
+Kliknij, aby uzyskać więcej informacji</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
+    <value>Połączono z serwerem prywatnym</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
     <value>Połączono z serwerem publicznym</value>
   </data>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
+    <value>Połączono z serwerem „Reserved”</value>
+  </data>
   <data name="ContextMenu.ServerInformation.Title" xml:space="preserve">
-    <value>Informacja o serwerze</value>
+    <value>Informacje o serwerze</value>
   </data>
   <data name="ContextMenu.ServerInformation.Type" xml:space="preserve">
-    <value>Rodzaj</value>
+    <value>Typ</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
+    <value>Czas sprawności</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.FileNotZip" xml:space="preserve">
+    <value>Plik musi być w formacie ZIP</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameEmpty" xml:space="preserve">
+    <value>Pole „Nazwa” nie może być puste</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameIllegalCharacters" xml:space="preserve">
+    <value>Nazwa zawiera niedozwolone znaki</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameReserved" xml:space="preserve">
+    <value>Nazwa jest już zajęta</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameTaken" xml:space="preserve">
+    <value>Ta nazwa jest już zajęta</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.Unknown" xml:space="preserve">
+    <value>Nieznany błąd</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipInvalidData" xml:space="preserve">
+    <value>Nieprawidłowy lub uszkodzony plik ZIP</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
+    <value>Nie znaleziono pliku motywu w pliku ZIP</value>
+  </data>
+  <data name="CustomTheme.Add.Title" xml:space="preserve">
+    <value>Dodaj własny motyw</value>
+  </data>
+  <data name="CustomTheme.DefaultName" xml:space="preserve">
+    <value>Motyw niestandardowy {0}</value>
+    <comment>{0} is a string (e.g. '1', '1-1234')</comment>
+  </data>
+  <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
+    <value>Zapisać zmiany w {0}?</value>
+  </data>
+  <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
+    <value>Nie udało się wyświetlić podglądu motywu: {0}</value>
+  </data>
+  <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
+    <value>Otwórz katalog motywów</value>
+  </data>
+  <data name="CustomTheme.Editor.Preview" xml:space="preserve">
+    <value>Podgląd</value>
+  </data>
+  <data name="CustomTheme.Editor.Save" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
+    <value>Podczas zapisywania motywu wystąpił błąd.</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
+    <value>Motyw został pomyślnie zapisany!</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
+    <value>Twój motyw został zapisany!</value>
+  </data>
+  <data name="CustomTheme.Editor.Title" xml:space="preserve">
+    <value>Edycja „{0}”</value>
+  </data>
+  <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
+    <value>Okno dialogowe niestandardowe zostało już zainicjowane</value>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeBlacklistedUriScheme" xml:space="preserve">
+    <value>{0}.{1} wykorzystuje schemat {2} znajdujący się na czarnej liście</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the URI scheme (e.g. http)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeConversionError" xml:space="preserve">
+    <value>{0} zawiera nieprawidłowy {1}: {2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeInvalidType" xml:space="preserve">
+    <value>{0}.{1} nie jest prawidłowym {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissing" xml:space="preserve">
+    <value>W elemencie {0} brakuje atrybutu {1}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissingChild" xml:space="preserve">
+    <value>W {0}.{1} brakuje elementu podrzędnego</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleChildren" xml:space="preserve">
+    <value>{0}.{1} może mieć tylko jedno dziecko</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleDefinitions" xml:space="preserve">
+    <value>{0} może mieć zdefiniowany tylko jeden {1}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeLargerThanMin" xml:space="preserve">
+    <value>{0}.{1} musi być większe niż {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax" xml:space="preserve">
+    <value>{0}.{1} musi być mniejsze niż {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseError" xml:space="preserve">
+    <value>Nie udało się przetworzyć {0}.{1} na {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseErrorNull" xml:space="preserve">
+    <value>{0}.{1} {2} ma wartość null</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
+    <value>{0} nie może mieć potomka typu {1}</value>
+    <comment>{0} and {1} are element names (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
+    <value>{0} może mieć tylko jedno dziecko</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementTypeCreationFailed" xml:space="preserve">
+    <value>Nie udało się utworzyć {1}: {2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
+    <value>Próbowano użyć nieprawidłowego typu tła okna: {0}</value>
+  </data>
+  <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
+    <value>Katalog główny pliku XML motywu nie jest {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.NoThemeSelected" xml:space="preserve">
+    <value>Nie wybrano żadnego niestandardowego motywu</value>
+  </data>
+  <data name="CustomTheme.Errors.SetupFailed" xml:space="preserve">
+    <value>Nie udało się skonfigurować niestandardowego programu rozruchowego: {0}.
+Zastosowano ustawienie domyślne: {1}.</value>
+    <comment>{0} is the error reason, {1} is the theme name (e.g. Froststrap (Classic))</comment>
+  </data>
+  <data name="CustomTheme.Errors.TooManyElements" xml:space="preserve">
+    <value>Niestandardowe sekwencje bootstrappingowe mogą zawierać maksymalnie {0} elementów, a otrzymano {1}</value>
+    <comment>{0} and {1} are numbers</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownElement" xml:space="preserve">
+    <value>Nieznany element {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
+    <value>{0} Nieznane {1} „{2}”</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
+    <value>Wersja {0} nie jest liczbą</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
+    <value>Wersja {0} {1} nie została rozpoznana</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
+    <value>Wersja {0} nie została ustawiona</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSupported" xml:space="preserve">
+    <value>Wersja {0} {1} nie jest już obsługiwana</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.XMLParseFailed" xml:space="preserve">
+    <value>Nie udało się przeanalizować pliku motywu: {0}</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.MoreExamples" xml:space="preserve">
+    <value>Przykłady niestandardowych programów bootstrapperów można znaleźć pod adresem {0}</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
+    <value>Umieść tutaj elementy interfejsu użytkownika</value>
+  </data>
+  <data name="CustomTheme.Templates.Simple.MoreExamples" xml:space="preserve">
+    <value>Więcej przykładów niestandardowych skryptów bootstrapper znajdziesz na stronie {0}</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
-    <value>Dodaj Fast Flag</value>
+    <value>Dodaj flagę „Szybkie”</value>
+  </data>
+  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
+    <value>Proszę poczekać na zakończenie instalacji.</value>
+  </data>
+  <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
+    <value>Proszę poczekać, aż proces odinstalowywania dobiegnie końca.</value>
+  </data>
+  <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
+    <value>Froststrap nie obsługuje już Bloxshade.
+Aby uzyskać więcej informacji, dołącz do serwera Bloxshade na Discordzie.</value>
+  </data>
+  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
+    <value>Przepraszam</value>
+  </data>
+  <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
+    <value>Program Froststrap nie mógł utworzyć skrótów na pulpicie i w menu Start. Spróbuj utworzyć je później w ustawieniach.</value>
+  </data>
+  <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
+    <value>Nie udało się nawiązać połączenia, co prawdopodobnie oznacza słabe połączenie internetowe lub blokadę przez zaporę sieciową. Jeśli połączenie działa prawidłowo, upewnij się, że program antywirusowy nie blokuje działania Froststrap.</value>
+  </data>
+  <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
+    <value>Funkcja BetterMatchmaking zostanie wyłączona na czas tej sesji.</value>
   </data>
   <data name="Dialog.Connectivity.MoreInfo" xml:space="preserve">
     <value>Więcej informacji:</value>
   </data>
+  <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
+    <value>Serwis Roblox może być obecnie niedostępny. Więcej informacji znajdziesz w {0}.</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
+    <value>Ponieważ konieczne jest zainstalowanie lub aktualizacja programu Roblox, program Froststrap nie może kontynuować działania.</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
+    <value>W ramach tej aktualizacji nie zostanie przeprowadzona kontrola Roblox pod kątem dostępnych aktualizacji, a zmiany wprowadzone w modach nie zostaną zastosowane.</value>
+  </data>
   <data name="Dialog.Connectivity.Title" xml:space="preserve">
     <value>Błąd połączenia</value>
   </data>
+  <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
+    <value>Spróbuj ponownie później.</value>
+  </data>
   <data name="Dialog.Connectivity.UnableToConnect" xml:space="preserve">
-    <value>Froststrap nie jest w stanie połączyć się z {0}</value>
+    <value>Froststrap nie może połączyć się z {0}</value>
     <comment>{0} is the name of a service (i.e. Roblox, GitHub)</comment>
+  </data>
+  <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
+    <value>Froststrap nie może pobrać Roblox</value>
+  </data>
+  <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
+    <value>W tej chwili nie można pobrać aplikacji Roblox. Aby uzyskać więcej informacji, zapoznaj się z poniższą stroną pomocy: {0}</value>
+    <comment>{0} is a URL</comment>
   </data>
   <data name="Dialog.Exception.CopyLogContents" xml:space="preserve">
     <value>Skopiuj zawartość dziennika</value>
   </data>
   <data name="Dialog.Exception.Info.1" xml:space="preserve">
-    <value>Wystąpił błąd podczas uruchamiania Froststrap</value>
+    <value>Podczas uruchamiania Froststrap/Froststrap wystąpił wyjątek</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Najpierw sprawdź [Froststrap Wiki]({0}), by zobaczyć czy ten problem nie został już rozwiązany.
+    <value>Najpierw sprawdź [Wiki Froststrap]({0}), aby upewnić się, czy problem ten nie został już rozwiązany.
 
-Jeśli nie, zgłoś ten błąd przez [GitHub]({1}) wraz z utworzoną kopią pliku dziennika.</value>
+Jeśli nie, zgłoś ten wyjątek poprzez [zgłoszenie na GitHubie]({1}), dołączając kopię utworzonego pliku dziennika.</value>
+  </data>
+  <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
+    <value>Najpierw sprawdź [Wiki Froststrap]({0}), aby upewnić się, czy problem ten nie został już rozwiązany.
+
+Jeśli nie, zgłoś ten błąd opiekunom tego forka. NIE zgłaszaj tego błędu w sekcji zgłoszeń na GitHubie projektu Froststrap, ponieważ jest to nieoficjalna kompilacja.</value>
+    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
+  </data>
+  <data name="Dialog.Exception.Report" xml:space="preserve">
+    <value>Zgłoś wyjątek</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
-    <value>Błąd Froststrap</value>
+    <value>Wyjątek Froststrap</value>
   </data>
-  <data name="Common.Custom" xml:space="preserve">
-    <value>Niestandardowy</value>
+  <data name="Dialog.Exception.Version" xml:space="preserve">
+    <value>Wersja {0}</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
-    <value>Wczesny 2015</value>
+  <data name="Dialog.IconLoadFailed" xml:space="preserve">
+    <value>Nie udało się załadować wybranej ikony programu rozruchowego.
+
+{0}</value>
+    <comment>{0} is an exception message</comment>
+  </data>
+  <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
+    <value>Wybierz preferowany język</value>
+  </data>
+  <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
+    <value>Przed kontynuowaniem instalacji wybierz język.
+Niektóre fragmenty tekstu mogą nie być przetłumaczone na wybrany język.</value>
+  </data>
+  <data name="Dialog.PlayerError.Crash" xml:space="preserve">
+    <value>Gra Roblox się zawiesiła.</value>
+  </data>
+  <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
+    <value>Nie udało się uruchomić serwisu Roblox.</value>
+  </data>
+  <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
+    <value>Aby dowiedzieć się, dlaczego może się tak dziać i jak można to rozwiązać, przeczytaj [ten artykuł pomocy]({0}).
+
+Sprawdź, czy Roblox działa z [oryginalnym programem uruchamiającym]({1}). Jeśli nie, to nie jest to problem związany z Froststrap. Jeśli działa, zapoznaj się z artykułem pomocy.</value>
+  </data>
+  <data name="Dialog.RegistryWriteError" xml:space="preserve">
+    <value>Program Froststrap nie może zapisywać danych w rejestrze systemu Windows. Prawdopodobnie program antywirusowy zakłóca jego działanie i powoduje problemy. Proszę sprawdzić, czy nie ma żadnych czynników ograniczających działanie programu Froststrap.</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
-    <value>Koniec 2015</value>
+    <value>Pod koniec 2015 roku</value>
   </data>
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
-    <value>Fake Byfron (2023)</value>
+    <value>Podróbka Byfronu (~2023)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
-    <value>Froststrap (Classic)</value>
+  <data name="Enums.BootstrapperStyle.CustomDialog" xml:space="preserve">
+    <value>Niestandardowe</value>
   </data>
-  <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
-    <value>Froststrap (Glass)</value>
+  <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
+    <value>Froststrap (nieprzezroczysty)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2008" xml:space="preserve">
-    <value>Legacy (2008 - 2011)</value>
+  <data name="Enums.BootstrapperStyle.TwentyFiveDialog" xml:space="preserve">
+    <value>Roblox (ok. 2025 r.)</value>
   </data>
-  <data name="Enums.BootstrapperStyle.LegacyDialog2011" xml:space="preserve">
-    <value>Legacy (2011 - 2014)</value>
+  <data name="Enums.CleanerOptions.Never" xml:space="preserve">
+    <value>Nigdy</value>
   </data>
-  <data name="Enums.BootstrapperStyle.ProgressDialog" xml:space="preserve">
-    <value>Roblox (~2014)</value>
+  <data name="Enums.CleanerOptions.OneDay" xml:space="preserve">
+    <value>Po 1 dniu</value>
   </data>
-  <data name="Enums.BootstrapperStyle.VistaDialog" xml:space="preserve">
-    <value>Vista (2008 - 2011)</value>
+  <data name="Enums.CleanerOptions.OneMonth" xml:space="preserve">
+    <value>Po 1 miesiącu</value>
+  </data>
+  <data name="Enums.CleanerOptions.OneWeek" xml:space="preserve">
+    <value>Po 1 tygodniu</value>
+  </data>
+  <data name="Enums.CleanerOptions.TwoMonths" xml:space="preserve">
+    <value>Po 2 miesiącach</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format1" xml:space="preserve">
+    <value>Domyślnie</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format2" xml:space="preserve">
+    <value>Polecane</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format3" xml:space="preserve">
+    <value>Alfabetycznie</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format4" xml:space="preserve">
+    <value>Sortowanie według długości w porządku malejącym</value>
+  </data>
+  <data name="Enums.CursorType.BlackAndWhiteDot" xml:space="preserve">
+    <value>Czarno-biała kropka</value>
   </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
-    <value>2006 (Cartoony)</value>
+    <value>~2006 (w stylu kreskówkowym)</value>
   </data>
-  <data name="Enums.CursorType.From2013" xml:space="preserve">
-    <value>2013 (Angular)</value>
+  <data name="Enums.CursorType.PurpleCross" xml:space="preserve">
+    <value>Fioletowy Krzyż</value>
   </data>
-  <data name="Enums.EmojiType.Catmoji" xml:space="preserve">
-    <value>Catmoji</value>
+  <data name="Enums.CustomThemeTemplate.Blank" xml:space="preserve">
+    <value>Puste</value>
+  </data>
+  <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
+    <value>Proste</value>
   </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
-    <value>Domyślny (Twemoji)</value>
+    <value>Domyślne (Twemoji)</value>
   </data>
-  <data name="Enums.EmojiType.Windows10" xml:space="preserve">
-    <value>Windows 10</value>
+  <data name="Enums.FlagPresets.RenderingMode.Vulkan" xml:space="preserve">
+    <value>Wulkan</value>
   </data>
-  <data name="Enums.EmojiType.Windows11" xml:space="preserve">
-    <value>Windows 11</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>Poziom 0 (najniższy)</value>
   </data>
-  <data name="Enums.EmojiType.Windows8" xml:space="preserve">
-    <value>Windows 8</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>Poziom 1 (niski)</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V1" xml:space="preserve">
-    <value>2015 (Wersja 1)</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>Poziom 2 (średni)</value>
   </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V2" xml:space="preserve">
-    <value>2020 (Wersja 2)</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4" xml:space="preserve">
-    <value>2023 (Wersja 4)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Default" xml:space="preserve">
-    <value>Wybrane przez grę</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Future" xml:space="preserve">
-    <value>Future (Faza 3)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.ShadowMap" xml:space="preserve">
-    <value>Shadow Map (Faza 2)</value>
-  </data>
-  <data name="Enums.FlagPresets.LightingMode.Voxel" xml:space="preserve">
-    <value>Voxel (Faza 1)</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D10" xml:space="preserve">
-    <value>Direct3D 10</value>
-  </data>
-  <data name="Enums.FlagPresets.RenderingMode.D3D11" xml:space="preserve">
-    <value>Direct3D 11</value>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>Poziom 3 (najwyższy)</value>
   </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
-    <value>Prywatny serwer</value>
+    <value>Serwer prywatny</value>
   </data>
   <data name="Enums.ServerType.Public" xml:space="preserve">
-    <value>Publiczny serwer</value>
+    <value>Serwer publiczny</value>
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
-    <value>Zarezerwowany serwer</value>
+    <value>Serwer zarezerwowany</value>
+  </data>
+  <data name="Enums.Theme.Blue" xml:space="preserve">
+    <value>Niebieski</value>
   </data>
   <data name="Enums.Theme.Dark" xml:space="preserve">
     <value>Ciemny</value>
   </data>
+  <data name="Enums.Theme.Green" xml:space="preserve">
+    <value>Zielony</value>
+  </data>
   <data name="Enums.Theme.Light" xml:space="preserve">
-    <value>Jasny</value>
+    <value>Światło</value>
+  </data>
+  <data name="Enums.Theme.Orange" xml:space="preserve">
+    <value>Pomarańczowy</value>
+  </data>
+  <data name="Enums.Theme.Pink" xml:space="preserve">
+    <value>Różowy</value>
+  </data>
+  <data name="Enums.Theme.Purple" xml:space="preserve">
+    <value>Fioletowy</value>
+  </data>
+  <data name="FileTypes.JSONFiles" xml:space="preserve">
+    <value>Pliki JSON</value>
+    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
+  </data>
+  <data name="FileTypes.ZipArchive" xml:space="preserve">
+    <value>Archiwum ZIP</value>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
     <value>Froststrap został zaktualizowany do wersji v{0}</value>
   </data>
   <data name="InstallChecker.VersionDifferentThanInstalled" xml:space="preserve">
-    <value>Wersja Froststrap, którą uruchomiłeś, różni się od wersji, którą aktualnie zainstalowałeś. 
-Czy chcesz zaktualizować aktualnie zainstalowaną wersję?</value>
+    <value>Wersja programu Froststrap, którą uruchomiłeś, różni się od wersji, którą masz obecnie zainstalowaną.
+Czy chcesz zaktualizować obecnie zainstalowaną wersję?</value>
+  </data>
+  <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
+    <value>Wersja programu Froststrap, którą uruchomiłeś, jest starsza od tej, którą masz obecnie zainstalowaną.
+Mogą wystąpić problemy, a Twoje ustawienia mogą ulec zmianie. Zaleca się ponowną instalację.
+Czy na pewno chcesz kontynuować?</value>
+  </data>
+  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
+    <value>Po zakończeniu instalacji i konfiguracji uruchamia aplikację Roblox</value>
+  </data>
+  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
+    <value>Zainstaluj i uruchom Roblox</value>
+  </data>
+  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
+    <value>Przejrzyj i dostosuj wszystkie funkcje i ustawienia dostępne w Froststrap</value>
+  </data>
+  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
+    <value>Skonfiguruj ustawienia Froststrap</value>
+  </data>
+  <data name="Installer.Completion.Text" xml:space="preserve">
+    <value>Froststrap został pomyślnie zainstalowany.
+
+Jednak Roblox nie został jeszcze zainstalowany. Zostanie zainstalowany przy pierwszym uruchomieniu Roblox za pomocą Froststrap. Przed instalacją warto najpierw skonfigurować ustawienia Froststrap.
+
+Ważna uwaga: Nie używaj skrótu „Roblox Player” do uruchamiania Roblox, ponieważ Froststrap nie będzie w stanie uruchomić Roblox z powodu konfliktów. Jeśli podczas uruchamiania z witryny Roblox nie widzisz, że Froststrap się uruchamia, po prostu uruchom Roblox z Froststrapem raz z poziomu aplikacji na pulpicie, aby rozwiązać ten problem.
+
+Co chcesz zrobić?</value>
+  </data>
+  <data name="Installer.Completion.Title" xml:space="preserve">
+    <value>Zakończenie</value>
+  </data>
+  <data name="Installer.FailedToImportSettings" xml:space="preserve">
+    <value>Nie udało się zaimportować ustawień Froststrap.
+
+{0}</value>
+  </data>
+  <data name="Installer.ImportSettings" xml:space="preserve">
+    <value>Importuj ustawienia z Froststrap</value>
+  </data>
+  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
+    <value>Program Froststrap został już wcześniej zainstalowany w tej lokalizacji i nadal tam się znajduje, jednak instalator nie może nadpisać starego pliku wykonywalnego. 
+
+Proszę ręcznie usunąć plik Froststrap.exe z lokalizacji instalacji lub spróbować ponownie uruchomić system, a następnie ponownie spróbować przeprowadzić instalację.</value>
+  </data>
+  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
+    <value>Znaleziono istniejące dane. Twoje modyfikacje i ustawienia zostaną przywrócone.</value>
+  </data>
+  <data name="Installer.Install.Location.Text" xml:space="preserve">
+    <value>Roblox zostanie również zainstalowany w tej ścieżce. Zmień tę opcję, jeśli wolisz instalować wszystkie gry na oddzielnym dysku. W przeciwnym razie zaleca się pozostawienie tej opcji bez zmian.</value>
+  </data>
+  <data name="Installer.Install.Location.Title" xml:space="preserve">
+    <value>Wybierz miejsce instalacji</value>
+  </data>
+  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
+    <value>Są to ogólne skróty, które wyświetlają menu uruchamiania z wieloma opcjami do wyboru. Skróty do konkretnych funkcji można utworzyć później w ustawieniach.</value>
+  </data>
+  <data name="Installer.Install.Title" xml:space="preserve">
+    <value>Zainstaluj</value>
+    <comment>Refers to "Install" as a verb</comment>
+  </data>
+  <data name="Installer.InstallationNotFound" xml:space="preserve">
+    <value>Nie znaleziono instalacji typu bootstrapper.</value>
+  </data>
+  <data name="Installer.ShouldCancel" xml:space="preserve">
+    <value>Czy na pewno chcesz anulować instalację?</value>
+  </data>
+  <data name="Installer.Title" xml:space="preserve">
+    <value>Instalator Froststrap</value>
+  </data>
+  <data name="Installer.Welcome.MainText" xml:space="preserve">
+    <value>Dziękujemy za pobranie Froststrap. 
+
+Jedynym oficjalnym źródłem pobierania Froststrap jest {0}, dlatego prosimy o upewnienie się, że pobrano go właśnie stamtąd.
+
+Proces instalacji będzie szybki i prosty, a po jej zakończeniu będzie można skonfigurować wszystkie ustawienia Froststrap.</value>
+    <comment>{0} and {1} are URLs</comment>
+  </data>
+  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
+    <value>Kliknij „Dalej”, aby kontynuować.</value>
+  </data>
+  <data name="Installer.Welcome.Title" xml:space="preserve">
+    <value>Witamy</value>
+  </data>
+  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
+    <value>Próbujesz zainstalować wersję {0} pakietu Froststrap, ale najnowsza dostępna wersja to {1}. Czy chcesz ją pobrać?</value>
+  </data>
+  <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
+    <value>Nie udało się załadować Twoich Fast Flags. Zostały one przywrócone do domyślnej konfiguracji.</value>
+  </data>
+  <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
+    <value>Nie udało się załadować Twoich ustawień. Zostały one przywrócone do domyślnej konfiguracji.</value>
+  </data>
+  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
+    <value>Skonfiguruj ustawienia</value>
+  </data>
+  <data name="LaunchMenu.Discord" xml:space="preserve">
+    <value>Dołącz do naszego serwera na Discordzie</value>
+    <comment>Call-to-action button</comment>
+  </data>
+  <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
+    <value>Uruchom Roblox</value>
+  </data>
+  <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
+    <value>Uruchom Roblox Studio</value>
+  </data>
+  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
+    <value>Pomoc znajdziesz na Wikipedii</value>
+  </data>
+  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
+    <value>Masz problem?</value>
+  </data>
+  <data name="Logger.NoWriteMode" xml:space="preserve">
+    <value>W przypadku tego uruchomienia nie zostanie utworzony żaden plik dziennika, ponieważ Froststrap nie może zapisywać danych w folderze „{0}”</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
-    <value>Współautorzy</value>
+    <value>Autorzy</value>
   </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
     <value>Kod</value>
   </data>
+  <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
+    <value>Autorzy</value>
+  </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>To ludzie, którzy wnieśli znaczący wkład w Froststrap, pomagając uczynić go tym, czym jest.</value>
+    <value>Oto wszystkie osoby, które wniosły znaczący wkład w rozwój projektów Froststrap i Froststrap, kształtując je tak, jak wyglądają dzisiaj.</value>
   </data>
-  <data name="Menu.About.Contributors.FeatureIdeas" xml:space="preserve">
-    <value>Pomysły</value>
-  </data>
-  <data name="Menu.About.Contributors.SpecialThanks" xml:space="preserve">
-    <value>Specjalne Podziękowania</value>
+  <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
+    <value>Inspiracje</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>Alternatywny launcher dla Roblox z wieloma dodatkowymi funkcjami.</value>
+    <value>Widelec typu Fishstrap/Froststrap.</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
     <value>Serwer Discord</value>
@@ -423,8 +1127,11 @@ Czy chcesz zaktualizować aktualnie zainstalowaną wersję?</value>
   <data name="Menu.About.Licenses" xml:space="preserve">
     <value>Licencje</value>
   </data>
+  <data name="Menu.About.Licenses.Apache" xml:space="preserve">
+    <value>Licencja Apache 2.0</value>
+  </data>
   <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>Licencja BSD 2-Clause</value>
+    <value>Licencja BSD z dwoma klauzulami</value>
   </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>Licencja MIT</value>
@@ -433,325 +1140,856 @@ Czy chcesz zaktualizować aktualnie zainstalowaną wersję?</value>
     <value>Zgłoś problem</value>
   </data>
   <data name="Menu.About.Title" xml:space="preserve">
-    <value>O</value>
+    <value>O nas</value>
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
     <value>Wersja {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountManager.Title" xml:space="preserve">
+    <value>Menedżer ds. obsługi klientów</value>
+  </data>
+  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
+    <value>Ustawienia zostały zapisane. Możesz teraz zamknąć to okno</value>
+  </data>
   <data name="Menu.AllFiles" xml:space="preserve">
     <value>Wszystkie pliki</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
-    <value>Pamiętaj, że nie wszystkie zmiany zostaną zastosowane natychmiast, dopóki nie zamkniesz wszystkich aktualnie otwartych instancji Roblox.</value>
+    <value>Należy pamiętać, że nie wszystkie wprowadzone zmiany zostaną natychmiast zastosowane, dopóki nie zamknie się wszystkich aktualnie otwartych instancji Roblox.</value>
   </data>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
-    <value>Froststrap już jest uruchomiony</value>
+    <value>Froststrap już działa</value>
   </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
-    <value>Możesz sprawić, że będzie wyglądać inaczej, retro lub nawet po prostu jak Roblox.</value>
+    <value>Dostosuj program rozruchowy Froststrap, korzystając z szerokiej gamy opcji.</value>
   </data>
-  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
-    <value>Launcher</value>
+  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
+    <value>Zmień ciąg pobierania. {0} to nazwa pakietu, {1} to rozmiar pobranych pakietów, a {2} to łączny rozmiar pakietów.</value>
+  </data>
+  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
+    <value>Stan pobierania pliku Bootstrapper</value>
+  </data>
+  <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
+    <value>Z łatwością dostosuj motywy Froststrap, korzystając z gotowych ustawień, lub stwórz własny, niepowtarzalny wygląd.</value>
+  </data>
+  <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
+    <value>Motywy aplikacji</value>
+  </data>
+  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
+    <value>Wybierz niestandardową czcionkę, aby zastąpić domyślną czcionkę interfejsu użytkownika Froststrap.</value>
+  </data>
+  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
+    <value>Niestandardowa czcionka aplikacji</value>
+  </data>
+  <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
+    <value>Nie udało się usunąć niestandardowego motywu {0}: {1}</value>
+  </data>
+  <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
+    <value>Nie wybrano żadnego niestandardowego motywu.</value>
+  </data>
+  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
+    <value>Nie udało się zmienić nazwy niestandardowego motywu {0} na {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>Skonfiguruj inne różne konfigurowalne opcje.</value>
+    <value>Skonfiguruj inne, różne opcje programu rozruchowego, które można dostosować.</value>
   </data>
   <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>Dostosowywanie</value>
+    <value>Dostosowanie</value>
   </data>
   <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>Musi to być plik .ico o rozmiarach od 16px do 128px. Ustaw ikonę jako „Niestandardową”, aby ją zastosować.</value>
+    <value>Musi to być plik .ico zawierający różne rozmiary, od 16px do 128px. Aby z niego skorzystać, należy ustawić opcję „Ikona” na „Niestandardowa”.</value>
   </data>
   <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>Niestandardowa Ikona</value>
+    <value>Ikona niestandardowa</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
-    <value>Tekst, który się wyświetla jako nazwa launchera.</value>
+    <value>Tekst wyświetlany jako tytuł programu rozruchowego.</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
     <value>Tytuł</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
-    <value>Skonfiguruj jak Froststrap powinien wyglądać.</value>
-  </data>
-  <data name="Menu.Appearance.Global.Theme.Title" xml:space="preserve">
-    <value>Globalny motyw</value>
+    <value>Skonfiguruj wygląd Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
-    <value>Wybierz jakiej ikony ma używać.</value>
+    <value>Wybierz ikonę, której ma używać Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>Ikona</value>
   </data>
+  <data name="Menu.Appearance.Language.Description" xml:space="preserve">
+    <value>Aby zmiany zaczęły obowiązywać, konieczne jest ponowne uruchomienie strony. Niektóre fragmenty tekstu mogą nie zostać przetłumaczone na wybrany język.</value>
+  </data>
+  <data name="Menu.Appearance.Language.Title" xml:space="preserve">
+    <value>Język</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
+    <value>Wybierz styl ekranu startowego. Uwaga: ciemny motyw nie jest obsługiwany w systemach Legacy ani Vista. Aby uzyskać więcej niestandardowych programów uruchamiających, odwiedź oficjalny serwer Froststrap na Discordzie.</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
+    <value>Styl „bootstrapper”</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
+    <value>Zmień kolejność pozycji w menu nawigacyjnym zgodnie z własnymi preferencjami. Zmiany zostaną zapisane automatycznie.</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
+    <value>Zamówienie z blokadą</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
+    <value>Przejdź w dół</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
+    <value>Przejdź wyżej</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
+    <value>Przywróć ustawienia domyślne</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
+    <value>Dostosowanie menu</value>
+  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Podgląd</value>
-  </data>
-  <data name="Menu.Appearance.Style.Description" xml:space="preserve">
-    <value>Wybierz, jak ma to wyglądać. Ciemny motyw nie dotyczy Legacy/Vista.</value>
-  </data>
-  <data name="Menu.Appearance.Style.Title" xml:space="preserve">
-    <value>Styl</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Wygląd</value>
   </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
+    <value>Wybierz efekt tła okna. Wymaga włączenia ciemnego motywu i ponownego uruchomienia aplikacji. Uwaga: funkcja Mica działa wyłącznie w systemie Windows 11.</value>
+  </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
+    <value>Tło okienne</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+    <value>Zapewnia dostęp do interfejsów API serwisu Roblox przy użyciu pliku cookie uwierzytelniającego. [Do czego będzie miał dostęp Froststrap?]({0})</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+    <value>Uprawnienia do konta Froststrap</value>
+  </data>
+  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
+    <value>Do obsługi shaderów wymagana jest obsługa Ansel.</value>
+  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
-    <value>Froststrap automatycznie zaktualizuje się po uruchomieniu Roblox.</value>
+    <value>Froststrap automatycznie sprawdzi i zaktualizuje się do stabilnej wersji podczas uruchamiania Roblox.</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
-    <value>Automatycznie zaktualizuj Froststrap</value>
+    <value>Automatyczna aktualizacja Froststrap</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+    <value>Zaktualizuj Roblox w tle, zamiast czekać. Nie zaleca się tej opcji w przypadku wolnych połączeń internetowych. Aby ta funkcja działała, potrzebne jest co najmniej 3 GB wolnego miejsca na dysku.</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+    <value>Aktualizacje dotyczące kontekstu</value>
+  </data>
+  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
+    <value>Kanał</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+    <value>Automatycznie zamyka proces RobloxCrashHandler.exe po uruchomieniu, aby zwolnić część zasobów systemowych.</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+    <value>Zamknij moduł obsługi awarii</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>Zapobiegnij zamknięciu istniejącej sesji przed przypadkowym uruchomieniem innej.</value>
+    <value>Zapobiega zamknięciu aktualnie uruchomionej gry w przypadku przypadkowego uruchomienia kolejnej instancji Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
-    <value>Prośba o potwierdzenie podczas uruchamiania innej instancji Roblox</value>
+    <value>Potwierdzenie uruchomienia instancji</value>
   </data>
   <data name="Menu.Behaviour.Description" xml:space="preserve">
-    <value>Skonfiguruj, co Froststrap powinien zrobić podczas uruchamiania Roblox.</value>
+    <value>Skonfiguruj, jak Froststrap ma się zachowywać podczas uruchamiania Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
+    <value>Po włączeniu tej opcji wszystkie animacje w aplikacji zostaną wyłączone. Wymagane jest ponowne uruchomienie aplikacji.</value>
+  </data>
+  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
+    <value>Wyłącz animacje</value>
+  </data>
+  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
+    <value>Wyłącza przyspieszenie sprzętowe wyłącznie w Froststrap. Uwaga: Aby zmiany zaczęły obowiązywać, należy ponownie uruchomić aplikację.</value>
+  </data>
+  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
+    <value>Wyłącz przyspieszenie sprzętowe</value>
+  </data>
+  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
+    <value>Dotyczy wyłącznie gier uruchamianych ze strony internetowej Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
+    <value>Zezwól na języki nieobsługiwane</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
-    <value>Roblox będzie zainstalowany na nowo przy następnym uruchomieniu.</value>
+    <value>Przy następnym uruchomieniu nastąpi czysta instalacja Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
-    <value>Zmuś Roblox do re-instalacji</value>
+    <value>Wymuś ponowną instalację Roblox</value>
   </data>
-  <data name="Menu.Behaviour.Title" xml:space="preserve">
-    <value>Launcher</value>
+  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
+    <value>Umożliwia jednoczesne otwarcie więcej niż jednej instancji Roblox. Może powodować problemy z aplikacją komputerową.</value>
+  </data>
+  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
+    <value>Uruchamianie wielu instancji</value>
+  </data>
+  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
+    <value>Przywraca ikony na pasku zadań i górnym pasku Roblox do wyglądu z poprzednich wersji. Może nie działać, jeśli uruchamianie Roblox trwa zbyt długo.</value>
+  </data>
+  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
+    <value>Ikona na pasku zadań</value>
+  </data>
+  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+    <value>Ustawia priorytet procesora dla aplikacji Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+    <value>Priorytet procesów w Roblox</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
+    <value>Automatycznie usuwa stare dane, aby zwolnić miejsce. Pierwotnie stworzone przez Fishstrap.</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Title" xml:space="preserve">
+    <value>Środek czyszczący do pasków Froststrap</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Description" xml:space="preserve">
+    <value>Pliki starsze niż określony czas zostaną usunięte.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Title" xml:space="preserve">
+    <value>Harmonogram usuwania plików</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Description" xml:space="preserve">
+    <value>Stare pliki do pobrania zostaną usunięte.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Title" xml:space="preserve">
+    <value>Pamięć podręczna</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
+    <value>Logi Froststrap zostaną usunięte.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
+    <value>Dzienniki Froststrap</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
+    <value>Logi Froststrap zostaną usunięte.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
+    <value>Dzienniki Froststrap</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
+    <value>Stare pliki dziennika zostaną usunięte.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
+    <value>Menu „Dzienniki”</value>
+  </data>
+  <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
+    <value>Ustawienia eksportu</value>
+  </data>
+  <data name="Menu.BottomButtons.ImportSettings" xml:space="preserve">
+    <value>Ustawienia importu</value>
+  </data>
+  <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
+    <value>Przywróć ustawienia domyślne</value>
+  </data>
+  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
+    <value>Odinstaluj Froststrap</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
+    <value>Zmiana automatyczna</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Description" xml:space="preserve">
+    <value>Roblox lub Froststrap mogą próbować zmienić Twój preferowany kanał.</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Ignore" xml:space="preserve">
+    <value>Nigdy się nie zmieniaj</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Prompt" xml:space="preserve">
+    <value>Zawsze na czas</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
+    <value>Automatyczna zmiana kanału</value>
+  </data>
+  <data name="Menu.Channel.Description" xml:space="preserve">
+    <value>Zmień ustawienia wdrażania i instalacji dla Roblox i Froststrap.</value>
+  </data>
+  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
+    <value>Ustaw domenę, z której będą korzystać Roblox i Froststrap. Wpisz wyłącznie zaufane domeny.</value>
+  </data>
+  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
+    <value>Domena Roblox</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
+    <value>Ulepszenia w Roblox</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades.Description" xml:space="preserve">
+    <value>Gdy ta opcja jest wyłączona, klient Roblox nie będzie aktualizował się do nowszych wersji.</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
+    <value>Przejście z katalogów instalacyjnych w formacie „wersja-xxx” na katalogi oparte na typie pliku binarnego dotyczy wyłącznie programu Studio w systemie Linux.</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
+    <value>Katalog statyczny</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Fetching" xml:space="preserve">
+    <value>Pobieranie najnowszych informacji o wdrożeniu, proszę czekać...</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
+    <value>Wskazany kanał albo nie istnieje, albo jest prywatny</value>
+  </data>
+  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
+    <value>Wymuś pobranie wersji Froststrap o określonym skrócie. Nie zmieniaj tego, jeśli nie wiesz, do czego to służy.</value>
+  </data>
+  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
+    <value>Skrót wersji</value>
+  </data>
+  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
+    <value>Dostępne kanały</value>
+  </data>
+  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
+    <value>Przeszukuje większość dostępnych kanałów pod kątem możliwości wykorzystania.</value>
+  </data>
+  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
+    <value>Ustawia kanał wdrażania. Nie zmieniaj tej wartości, chyba że wiesz, co robisz!</value>
+  </data>
+  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
+    <value>Aby wyłączyć animacje, uruchom ponownie aplikację.</value>
+  </data>
+  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
+    <value>Aby wyłączyć przyspieszenie sprzętowe i sprawić, by zmiana zaczęła obowiązywać, należy ponownie uruchomić aplikację.</value>
+  </data>
+  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
+    <value>Dzienniki graczy</value>
+  </data>
+  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
+    <value>Wyświetla graczy opuszczających lub dołączających do serwera, na którym się znajdujesz.</value>
+  </data>
+  <data name="Menu.CustomMods.Description" xml:space="preserve">
+    <value>Umożliwia instalowanie niestandardowych modów za pomocą Bootstrappera.</value>
+  </data>
+  <data name="Menu.CustomMods.Title" xml:space="preserve">
+    <value>Modyfikacje niestandardowe</value>
+  </data>
+  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
+    <value>Wyczyść dzienniki</value>
+  </data>
+  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
+    <value>Skopiuj zaznaczone</value>
+  </data>
+  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
+    <value>Dzienniki eksportu</value>
+  </data>
+  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
+    <value>Otwórz folder „Logs”</value>
+  </data>
+  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
+    <value>Odśwież dzienniki</value>
+  </data>
+  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
+    <value>Dzienniki wyszukiwania</value>
+  </data>
+  <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
+    <value>Ten kanał jest nieaktualny i prawdopodobnie nie jest już aktualizowany. Proszę skorzystać z innego kanału.</value>
+  </data>
+  <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
+    <value>Szybkie logowanie</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
-    <value>Dodaj nową</value>
+    <value>Dodaj nowy</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
+    <value>Ustawienia zaawansowane</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
+    <value>Importuj identyfikator JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
+    <value>Dodaj z identyfikatorem</value>
   </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
-    <value>Wpis dla tej nazwy flagi już istnieje.</value>
+    <value>Wpis o tej nazwie flagi już istnieje.</value>
   </data>
   <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Wróć</value>
+    <value>Powrót</value>
   </data>
   <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Niewłaściwe użycie tego może doprowadzić do niestabilności lub nieoczekiwanych zdarzeń.</value>
+    <value>Niewłaściwe użycie tej funkcji może spowodować niestabilność systemu lub wystąpienie nieoczekiwanych zdarzeń.</value>
     <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
   </data>
   <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Używaj z ostrożnością.</value>
+    <value>Należy stosować z ostrożnością.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
+    <value>Lista czystych</value>
   </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
-    <value>Niektóre flagi, które próbujesz zaimportować, mają już ustawione wartości. Czy chcesz nadpisać ich aktualne wartości wartościami zdefiniowanymi w imporcie?
+    <value>Niektóre z flag, które próbujesz zaimportować, mają już przypisane wartości. Czy chcesz zastąpić ich obecne wartości wartościami zdefiniowanymi w pliku importowym?
 
-Istnieje {0} sprzecznych definicji flag:
+Wystąpiło {0} konfliktów definicji flag:
 {1}</value>
     <comment>{0} is a number, {1} is a comma-separated list</comment>
   </data>
   <data name="Menu.FastFlagEditor.DeleteSelected" xml:space="preserve">
-    <value>Usuń wybrane</value>
+    <value>Usuń zaznaczone</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Zarządzaj własnymi Fast Flagami. Kliknij dwukrotnie kolumnę, którą chcesz edytować.</value>
+    <value>Zarządzaj swoimi FastFlags tutaj. Zapoznaj się z innymi funkcjami w sekcji „Ustawienia zaawansowane”.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
+    <value>Obsługiwane są wyłącznie pliki z rozszerzeniami .json i .txt</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
+    <value>📂 Wklej tutaj plik JSON lub TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
-    <value>Eksportuj JSON</value>
+    <value>Eksport JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
+    <value>Czy chcesz uwzględnić gotowe ustawienia FFlags?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
+    <value>Wpis „{0}” jest nieprawidłowy, ponieważ wartość musi być wartością logiczną (albo „True”, albo „False”)</value>
+    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
   </data>
   <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>Wpis dla '{0}' jest nieprawidłowy, ponieważ nazwa może zawierać tylko litery, cyfry i znaki podłogi</value>
+    <value>Wpis „{0}” jest nieprawidłowy, ponieważ nazwa może zawierać wyłącznie litery, cyfry i znaki podkreślenia</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
-    <value>JSON, który wprowadziłeś, wydaje się nieprawidłowy. Sprawdź to dokładnie i spróbuj ponownie.
+    <value>Wprowadzony przez Ciebie plik JSON wydaje się być nieprawidłowy. Sprawdź go jeszcze raz i spróbuj ponownie.
 
 Więcej informacji:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
+    <value>Wpis „{0}” jest nieprawidłowy, ponieważ wartość musi być liczbą całkowitą</value>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
+    <value>Wpis „{0}” jest nieprawidłowy, ponieważ filtr miejsca nie ma prawidłowego formatu.</value>
+  </data>
   <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>Wpis dla '{0}' jest nieprawidłowy, ponieważ nazwa musi zaczynać się od FFlag, DFInt, itp</value>
+    <value>Wpis „{0}” jest nieprawidłowy, ponieważ nazwa musi zaczynać się od FFlag, DFInt itp.</value>
   </data>
   <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
     <value>Skopiowano do schowka.</value>
   </data>
   <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Wygląda na to, że importujesz bardzo dużą konfigurację. Powinieneś importować tylko konfiguracje, które w pełni rozumiesz. NIE wklejaj na ślepo konfiguracji stworzonych przez inne osoby. Jeśli będziesz kontynuować, najprawdopodobniej wystąpią problemy ze stabilnością i napotkasz nieoczekiwane zmiany.
+    <value>Wygląda na to, że importujesz bardzo obszerną konfigurację. Powinieneś importować wyłącznie te konfiguracje, które w pełni rozumiesz. NIE wklejaj na ślepo konfiguracji stworzonych przez inne osoby. Jeśli będziesz kontynuować, najprawdopodobniej pojawią się problemy ze stabilnością i napotkasz nieoczekiwane zmiany.
 
-Czy jesteś pewien, że chcesz kontynuować?</value>
+Czy na pewno chcesz kontynuować?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
+    <value>Rany, tu jest tak pusto! Może dodamy FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
+    <value>Profile flag</value>
   </data>
   <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>Szukaj</value>
+    <value>Wyszukiwanie</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
-    <value>Pokaż ustawione flagi</value>
+    <value>Pokaż flagi ustawień wstępnych</value>
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
-    <value>Edytor Fast Flag'ów</value>
+    <value>Edytor FastFlag</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
     <value>Wróć</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Wiem, co robię!</value>
+    <value>Wiem, co robię</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Czy na pewno wiesz, co robisz?</value>
+    <value>Czy wiesz, co robisz?</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Fast Flagi są niezwykle potężne, ponieważ są przeznaczone do użytku wyłącznie przez inżynierów Roblox. Chociaż mogą być bardzo przydatne, ręczna konfiguracja może spowodować poważne problemy ze stabilnością i funkcjonalnością. NIE używaj edytora, jeśli nie jesteś pewien, co robisz.
+    <value>Flagi „Fast Flags” są niezwykle potężnym narzędziem, ponieważ są przeznaczone wyłącznie do użytku przez inżynierów Roblox. Chociaż mogą być bardzo przydatne, ich ręczna konfiguracja może spowodować poważne problemy ze stabilnością i funkcjonalnością. NIE korzystaj z edytora, jeśli nie masz pewności, co robisz.
 
-Również NIE używaj tego do importowania dużych „list flag” utworzonych przez inne osoby, które obiecują poprawę wydajności lub tym podobne. Podlegają one wyżej wymienionym problemom i będą powodować problemy, ponieważ nie będziesz w pełni świadomy tego, co się zmienia. Jeśli miałeś zamiar to zrobić, WRÓĆ.</value>
+NIE używaj tego narzędzia do importowania dużych „list flag” stworzonych przez inne osoby, które obiecują poprawę wydajności lub podobne korzyści. Są one narażone na wyżej wymienione problemy i spowodują u Ciebie kłopoty, ponieważ nie będziesz w pełni świadomy tego, co one zmieniają. Jeśli miałeś zamiar to zrobić, WRÓĆ DO POPRZEDNIEJ STRONY.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
-    <value>Kontroluj sposób konfiguracji określonych parametrów i funkcji silnika Roblox.</value>
+    <value>Steruj konfiguracją określonych parametrów i funkcji silnika Roblox.</value>
   </data>
   <data name="Menu.FastFlags.Editor.Description" xml:space="preserve">
-    <value>Zarządzaj własnymi Fast Flagami. Używaj ostrożnie.</value>
+    <value>Zarządzaj własnymi flagami Fast Flags. Należy zachować ostrożność.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
   <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Dowiedz się więcej o Fast Flagach, działaniu tych presetów i o sposobach ich używania.</value>
+    <value>Dowiedz się więcej o Fast Flags, o tym, do czego służą te ustawienia wstępne i jak z nich korzystać.</value>
     <comment>Title is Common.Help</comment>
   </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Direct3D [wyłącznie dla trybu pełnoekranowego]({0}) przy użyciu Alt+Enter jest już domyślnie włączone.</value>
+  <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
+    <value>Wyłączenie tej opcji spowoduje, że żadne ustawienia skonfigurowane w tym miejscu nie zostaną zastosowane w serwisie Roblox.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.EscapeMenuVersion.Title" xml:space="preserve">
-    <value>Preferowana wersja menu gry</value>
+  <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
+    <value>Zezwól Froststrap na zarządzanie FastFlags</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
+    <value>Skonfiguruj ustawienia graficzne i wydajnościowe silnika Roblox.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
-    <value>Roblox koryguje jakość renderowania w zależności od tego, jak twój ekran jest skalowany w systemie Windows.</value>
+    <value>Roblox obniża jakość renderowania w zależności od tego, w jakim stopniu skalowany jest ekran w systemie Windows.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
-    <value>Zachowaj jakość renderowania dzięki skalowaniu wyświetlacza</value>
+    <value>Zachowanie jakości renderowania przy skalowaniu wyświetlacza</value>
   </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Description" xml:space="preserve">
-    <value>Ustaw wartość na 0, jeśli chcesz użyć domyślnego limitera klatek na sekundę Roblox'a.</value>
+  <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
+    <value>Zmienia kolor nieba w grze na jednolity szary. Uwaga: Ta opcja nie zadziała w grach, w których twórca dodał niestandardowy skybox.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.FPSLimit.Title" xml:space="preserve">
-    <value>Limit liczby klatek na sekundę</value>
+  <data name="Menu.FastFlags.Presets.GraySky.Title" xml:space="preserve">
+    <value>Szare niebo</value>
   </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Description" xml:space="preserve">
-    <value>Przełączane za pomocą [skrótów klawiaturowych]({0}). Działa tylko wtedy, gdy należysz do [grupy Froststrap]({1}) w Roblox.</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Description" xml:space="preserve">
+    <value>Kontroluj jakość siatki, aby poprawić wydajność lub wygląd.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.HideGuis.Title" xml:space="preserve">
-    <value>Włącz możliwość ukrywania GUI (interfejsu gry)</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
+    <value>Przeciągnij, aby dostosować poziom szczegółowości siatki pod kątem wydajności lub jakości.</value>
   </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Description" xml:space="preserve">
-    <value>Wybrany zostanie wymuszony we wszystkich grach. [Uwaga, to może powodować problemy z oświetleniem!]({0})</value>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Title" xml:space="preserve">
+    <value>Szczegóły dotyczące siatki</value>
   </data>
-  <data name="Menu.FastFlags.Presets.LightingTechnology.Title" xml:space="preserve">
-    <value>Preferowana technologia oświetlenia</value>
+  <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
+    <value>Wyższe poziomy MSAA zmniejszają postrzępienie krawędzi, ale mogą wpływać na wydajność.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
+    <value>Jakość wygładzania krawędzi (MSAA)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
+    <value>Ustawia stałą jakość grafiki na wybrany poziom. Uwaga: Gdy to ustawienie jest włączone, suwak grafiki w menu Roblox wpływa wyłącznie na odległość renderowania w grze.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
+    <value>Zastąpienie poziomu jakości grafiki</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Description" xml:space="preserve">
+    <value>Wyłącza cienie wgrane, co poprawia wydajność, ale w niektórych grach może powodować problemy z oświetleniem.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Title" xml:space="preserve">
+    <value>Wstrzymaj działanie programu Voxelizer</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
+    <value>Usuwa domyślne tekstury trawy w Roblox. Uwaga: to ustawienie nie ma wpływu na niestandardowe tekstury trawy używane w poszczególnych grach.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Title" xml:space="preserve">
+    <value>Wyłącz trawę</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RenderingMode.Description" xml:space="preserve">
+    <value>Skonfiguruj interfejs API renderowania używany w Roblox. Uwaga: Naciśnij klawisze Alt + Enter, aby przejść do trybu pełnoekranowego z wyłącznością, jeśli jako interfejs API renderowania używasz Direct3D.</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
     <value>Tryb renderowania</value>
   </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
+    <value>Dostosuj jakość tekstur w grach. Uwaga: To ustawienie ma również wpływ na interfejs graficzny (GUI) i interfejs użytkownika (UI).</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>Jakość tekstury</value>
+  </data>
+  <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
+    <value>Przywróć wszystkie ustawienia domyślne</value>
+  </data>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
-    <value>Ustawienia silnika</value>
+    <value>Ustawienia FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
+    <value>Automatycznie dodaj skrót Alt+Enter FastFlag podczas uruchamiania Froststrap.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
+    <value>Ręczne użycie klawisza Alt</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
+    <value>Wybierz format, w jakim chcesz skopiować plik JSON.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
+    <value>Kopiuj format</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
+    <value>Po naciśnięciu klawiszy Ctrl+C kopiuje wybrane flagi w formacie JSON, zgodnie z wybranym formatem kopiowania.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
+    <value>Ctrl+C Format JSON</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
+    <value>Włącz kolumnę „Preset” dla przełączalnych znaczników FastFlags w ustawieniach FastFlag.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
+    <value>Kolumna ustawień wstępnych</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
+    <value>Wyświetl całkowitą liczbę flag w edytorze FastFlag.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
+    <value>Liczba flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
+    <value>Wyczyść FFlags</value>
   </data>
   <data name="Menu.FontFiles" xml:space="preserve">
     <value>Pliki czcionek</value>
+  </data>
+  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
+    <value>To anonimowe i nie ma w tym nic złego, obiecuję. Aby dowiedzieć się, jakie dane gromadzi Froststrap i dlaczego, zapoznaj się z [polityką prywatności]({0}) serwisu Froststrap.</value>
+  </data>
+  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
+    <value>Włącz wysyłanie danych analitycznych do Froststrap</value>
+  </data>
+  <data name="Menu.Froststrap.Description" xml:space="preserve">
+    <value>Skonfiguruj opcje związane z samym działaniem Froststrap.</value>
+  </data>
+  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
+    <value>Zbierz informacje, które można przesłać przez Internet, aby rozwiązać napotkany problem.</value>
+  </data>
+  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
+    <value>Konfiguracja Froststrap</value>
+    <comment>Label that appears next to a checkbox</comment>
+  </data>
+  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
+    <value>Wszystkie wpisy dotyczące Froststrap</value>
+    <comment>Label that appears next to a checkbox</comment>
+  </data>
+  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
+    <value>Eksport danych diagnostycznych</value>
+  </data>
+  <data name="Menu.GBSEditor.Description" xml:space="preserve">
+    <value>Zmień ustawienia gry za pomocą wygodnego menu.</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
+    <value>Zapobiegaj nadpisywaniu ustawień globalnych przez Roblox.</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
+    <value>Ustaw jako tylko do odczytu</value>
+  </data>
+  <data name="Menu.GlobalSettings.Title" xml:space="preserve">
+    <value>Ustawienia ogólne</value>
+  </data>
+  <data name="Menu.Help.Title" xml:space="preserve">
+    <value>Pomoc</value>
   </data>
   <data name="Menu.IconFiles" xml:space="preserve">
     <value>Pliki ikon</value>
   </data>
   <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Nie można tutaj zainstalować Froststrap. Wybierz inne miejsce instalacji lub skorzystaj z lokalizacji domyślnej, klikając przycisk resetowania.</value>
+    <value>Nie można zainstalować Froststrap w tej lokalizacji. Wybierz inną lokalizację lub skorzystaj z lokalizacji domyślnej, klikając przycisk „Resetuj”.</value>
+  </data>
+  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
+    <value>Froststrap nie ma uprawnień do zapisu w wybranej przez Ciebie lokalizacji instalacji. Wybierz inną lokalizację.</value>
   </data>
   <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>Folder, w którym chcesz zainstalować Froststrap, już istnieje i NIE jest pusty. Zdecydowanie zaleca się instalację Froststrap w osobnym, niezależnym folderze.
+    <value>Folder, który wybrałeś do instalacji Froststrap, już istnieje i NIE jest pusty. Zdecydowanie zaleca się zainstalowanie Froststrap w osobnym, niezależnym folderze.
 
-Sugerowana jest zmiana lokalizacji na następującą:
+Zaleca się zmianę lokalizacji na następującą:
 {0}
 
-Czy chcesz przejść do sugerowanej lokalizacji?
+Czy chcesz zmienić lokalizację na sugerowaną?
 Wybranie opcji „Nie” spowoduje zignorowanie tego ostrzeżenia i kontynuowanie instalacji.</value>
     <comment>{0} is a file path</comment>
   </data>
   <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Musisz ustawić miejsce instalacji</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrap nie ma uprawnień do zapisu w wybranym miejscu instalacji. Proszę wybrać inne miejsce.</value>
+    <value>Należy określić lokalizację instalacji</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
-    <value>Śledzenie aktywności</value>
+    <value>Monitorowanie aktywności</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Description" xml:space="preserve">
-    <value>Umożliwia każdemu dołączenie do gry, w której aktualnie się znajdujesz, poprzez Twój profil Discord.</value>
+    <value>Umożliwia każdemu dołączenie do gry, w którą aktualnie grasz, za pośrednictwem Twojego profilu na Discordzie.</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
-    <value>Zezwól na dołączenie do aktywności</value>
+    <value>Zezwól na dołączanie do aktywności</value>
   </data>
-  <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
-    <value>Pokazuje konto Roblox, na którym grasz, na twoim profilu Discord.</value>
+  <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
+    <value>Włącza lub wyłącza niektóre wbudowane funkcje serwisu Roblox.</value>
   </data>
-  <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
-    <value>Pokaż konto Roblox</value>
+  <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
+    <value>Wyłącz funkcje Roblox</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
+    <value>Wyłącza funkcję robiania zrzutów ekranu w Roblox. Uwaga: Gdy ta funkcja jest włączona, kombinacja klawiszy skrótowych przestaje działać.</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
+    <value>Wyłącz zrzuty ekranu w Roblox</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
+    <value>Wyłącza funkcję nagrywania w Roblox. Uwaga: Gdy ta funkcja jest włączona, kombinacja klawiszy skrótowych przestaje działać.</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Title" xml:space="preserve">
+    <value>Wyłącz nagrywanie w Roblox</value>
   </data>
   <data name="Menu.Integrations.Custom.AppLocation" xml:space="preserve">
-    <value>Miejsce instalacji</value>
+    <value>Miejsce zastosowania</value>
   </data>
   <data name="Menu.Integrations.Custom.AutoClose" xml:space="preserve">
-    <value>Automatycznie zamknij, kiedy Roblox zostanie zamknięty</value>
+    <value>Automatyczne zamykanie po zamknięciu Roblox</value>
+  </data>
+  <data name="Menu.Integrations.Custom.AutoCloseOnGame" xml:space="preserve">
+    <value>Automatyczne zamykanie po zamknięciu gry</value>
   </data>
   <data name="Menu.Integrations.Custom.Description" xml:space="preserve">
-    <value>Tutaj możesz automatycznie uruchamiać inne programy wraz z Roblox.</value>
+    <value>Uruchamiaj dodatkowe programy automatycznie za pomocą Roblox.</value>
+  </data>
+  <data name="Menu.Integrations.Custom.GameID" xml:space="preserve">
+    <value>ID gry</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs" xml:space="preserve">
-    <value>Parametry uruchomienia</value>
+    <value>Argumenty uruchamiania</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs.Placeholder" xml:space="preserve">
-    <value>Roblox jest uruchomiony!</value>
+    <value>Roblox już działa!</value>
   </data>
   <data name="Menu.Integrations.Custom.NewIntegration" xml:space="preserve">
-    <value>Nowa wtyczka</value>
+    <value>Nowa integracja</value>
   </data>
   <data name="Menu.Integrations.Custom.NoneSelected" xml:space="preserve">
-    <value>Nie wybrano wtyczki. Wybierz lub dodaj nową</value>
+    <value>Nie wybrano żadnej integracji. Wybierz jedną lub dodaj nową.</value>
+  </data>
+  <data name="Menu.Integrations.Custom.SpecifyGame" xml:space="preserve">
+    <value>Uruchom w konkretnej grze</value>
   </data>
   <data name="Menu.Integrations.Custom.Title" xml:space="preserve">
-    <value>Niestandardowa wtyczka</value>
+    <value>Integracje niestandardowe</value>
+  </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Description" xml:space="preserve">
+    <value>Wyświetla niestandardowy komunikat o stanie zamiast domyślnego komunikatu „Odtwarzanie Roblox”.</value>
+  </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Title" xml:space="preserve">
+    <value>Niestandardowe wyświetlanie statusu</value>
   </data>
   <data name="Menu.Integrations.Description" xml:space="preserve">
-    <value>Konfiguruj dodatkową funkcjonalność do użytku w Roblox.</value>
+    <value>Skonfiguruj dodatkowe funkcje, które będą uzupełniać platformę Roblox.</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Description" xml:space="preserve">
-    <value>Roblox zostanie całkowicie zamknięty, gdy opuścisz grę, zamiast wracać do aplikacji. [Zniszczy kilka rzeczy!]({0})</value>
+    <value>Aplikacja Roblox zostanie całkowicie zamknięta, gdy wyjdziesz z gry, zamiast powrócić do aplikacji. [Może to spowodować pewne problemy!]({0})</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Title" xml:space="preserve">
-    <value>Nie wychodź do aplikacji pulpitowej</value>
+    <value>Podobne do wersji na komputery stacjonarne</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Description" xml:space="preserve">
+    <value>Podczas uruchamiania Roblox otwiera określone okno po dwukrotnym kliknięciu ikony Froststrap w zasobniku systemowym.</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
+    <value>Działanie po dwukrotnym kliknięciu</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
-    <value>Pozwala Froststrap wykryć, w jaką grę na Roblox grasz. Niektóre funkcje mogą tego wymagać.</value>
+    <value>Umożliwia aplikacji Froststrap wykrycie, w jaką grę Roblox aktualnie grasz. Niektóre funkcje mogą tego wymagać.</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Title" xml:space="preserve">
     <value>Włącz śledzenie aktywności</value>
   </data>
+  <data name="Menu.Integrations.FroststrapRPC.Description" xml:space="preserve">
+    <value>Włącz tę opcję, aby w Twoim profilu na Discordzie wyświetlał się niestandardowy komunikat RPC „Playing Froststrap”, gdy aplikacja jest otwarta.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistory.Description" xml:space="preserve">
+    <value>Wyświetla grę, w którą grałeś podczas tej sesji, i umożliwia ponowne dołączenie do niej.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
+    <value>Wyświetl historię gier, aby szybko ponownie dołączyć do swojego serwera.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
+    <value>Menu historii gry</value>
+  </data>
+  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
+    <value>Funkcja Multi-Instancing jest podatna na awarie. Nie będziemy udzielać pomocy technicznej w przypadku problemów związanych z Multi-Instancing, ponieważ Roblox aktywnie wprowadza środki mające na celu uniemożliwienie jej działania. Nie możemy i nie będziemy próbować obejść tych zabezpieczeń.</value>
+  </data>
+  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
+    <value>Wyświetla informacje o dołączeniu/opuszczeniu gry przez graczy oraz wiadomości. Działa wyłącznie z [usługą czatu tekstowego](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
+  </data>
+  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
+    <value>Menu „Dzienniki”</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
+    <value>Wyświetla łączny czas gry oraz czas trwania bieżącej sesji podczas przebywania w grze lub w miejscu w Studio.</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
+    <value>Licznik czasu zabawy</value>
+  </data>
+  <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
+    <value>W trakcie gry będziesz mógł sprawdzić, gdzie znajduje się Twój serwer, korzystając z serwisu [ipinfo.io](https://ipinfo.io).</value>
+  </data>
+  <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
+    <value>Sprawdź lokalizację serwera</value>
+  </data>
   <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
-    <value>Ta funkcja wymaga włączonej opcji śledzenia aktywności oraz zainstalowanej i uruchomionej aplikacji Discord. [Dowiedz się więcej]({0}).</value>
+    <value>Ta funkcja wymaga włączenia śledzenia aktywności oraz zainstalowania i uruchomienia aplikacji Discord na komputerze. [Dowiedz się więcej]({0}).</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
+    <value>Wyświetla konto Roblox, z którego korzystasz podczas gry, w Twoim profilu na Discordzie.</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
+    <value>Pokaż konto Roblox</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
-    <value>Gra na Roblox, w którą grasz, będzie pokazywana na twoim profilu na Discord. [Coś nie tak?]({0})</value>
+    <value>Gra Roblox, w którą grasz, zostanie wyświetlona na Twoim profilu Discord. [Nie działa?]({0})</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
     <value>Pokaż aktywność w grze</value>
   </data>
-  <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
-    <value>Podczas rozgrywki, możesz zobaczyć, gdzie znajduje się serwer, na którym grasz za pośrednictwem [ipinfo.io]({0}).</value>
-  </data>
-  <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
-    <value>Pokaż położenie serwera</value>
-  </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
-    <value>Wtyczki</value>
+    <value>Integracje</value>
+  </data>
+  <data name="Menu.Load" xml:space="preserve">
+    <value>Załaduj</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Zarządzaj i stosuj modyfikacje plików w kliencie gry Roblox.</value>
+    <value>Zarządzaj modyfikacjami plików i stosuj je w kliencie gry Roblox.</value>
   </data>
   <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Zobacz informacje o zarządzaniu i tworzeniu modów.</value>
+    <value>Zobacz informacje na temat zarządzania modami i ich tworzenia.</value>
     <comment>Title is Common.Help</comment>
+  </data>
+  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+    <value>Wszystko, czego potrzebujesz do zarządzania kursorami.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+    <value>Funkcje niestandardowego kursora</value>
+  </data>
+  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+    <value>Skonfiguruj parametry aplikacji, takie jak sposób skalowania DPI oraz [optymalizacje trybu pełnoekranowego]({0}).</value>
+  </data>
+  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+    <value>Zarządzaj ustawieniami zgodności</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+    <value>Wybierz kursor...</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+    <value>Korzystaj z własnych kursorów myszy w Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+    <value>Usuń niestandardowy kursor</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+    <value>Niestandardowy kursor</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
+    <value>Zastosuj zestaw</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+    <value>Przygotuj kilka zestawów kursorów do natychmiastowego użycia.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
+    <value>Zestaw eksportowy</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
+    <value>Pobierz Zestaw</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
+    <value>Zestaw importowy</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
+    <value>Nie wybrano żadnego zestawu niestandardowych kursorów.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+    <value>Niestandardowy zestaw kursorów</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+    <value>Wybierz dźwięk...</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+    <value>Zastępuje dźwięk śmierci własnym plikiem audio.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+    <value>Usuń niestandardowy dźwięk śmierci</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+    <value>Indywidualny dźwięk śmierci</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Wybierz czcionkę...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
-    <value>Rozmiar czcionki można dostosować w zakładce ustawienia silnika.</value>
+    <value>Ustawia wybraną niestandardową czcionkę w Roblox.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
     <value>Wybrany plik nie wydaje się być prawidłowym plikiem czcionki.</value>
@@ -760,521 +1998,252 @@ Wybranie opcji „Nie” spowoduje zignorowanie tego ostrzeżenia i kontynuowani
     <value>Usuń zastosowaną czcionkę</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
-    <value>Zastosuj niestandardową czcionkę</value>
+    <value>Niestandardowa czcionka do gier</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+    <value>Wybierz ShiftLock...</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+    <value>Korzystaj z własnego Shiftlocka w Robloxie.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+    <value>Usuń niestandardową blokadę zmiany biegów</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+    <value>Niestandardowy Shiftlock</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
+    <value>Dodaj kolor z gradientem</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
+    <value>Opcje generowania modułów</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
+    <value>Kolorowe kursory</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
+    <value>Koło emotikonów kolorowych</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
+    <value>Kursor Color Shiftlock</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
+    <value>Kolorowe ikony czatu głosowego</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
+    <value>Kąt nachylenia:</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
+    <value>Kolory gradientowe</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
+    <value>Szybkie działania</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
+    <value>Skopiuj do folderu „Mods”</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
+    <value>Tryb generowania</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
+    <value>Niestandardowe logo Roblox</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
+    <value>Podgląd arkusza sprite'ów</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
+    <value>Podgląd pojedynczego sprite’a</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
+    <value>Niestandardowy wskaźnik ładowania</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
+    <value>Generator modów</value>
   </data>
   <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Tutaj zarządzaj modami.</value>
+    <value>Tutaj możesz zarządzać własnymi modami do Roblox.</value>
   </data>
   <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Otwórz folder z modami</value>
+    <value>Otwórz folder „Mods”</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
-    <value>Wybierz jakich emotikonów Roblox ma używać.</value>
+    <value>Wybierz, jakiego rodzaju emoji ma używać Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+    <value>W tej chwili nie można zastosować modyfikacji emoji.</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
-    <value>Preferowany wygląd emotikonów</value>
+    <value>Preferowany typ emoji</value>
   </data>
   <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
-    <value>Wybierz, między dwoma klasycznymi kursorami.</value>
+    <value>Wybierz jedną z wielu kursorów Roblox.</value>
   </data>
   <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
-    <value>Kursor myszki</value>
+    <value>Kursor myszy</value>
   </data>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
-    <value>Przywróć stare tło edytora awataru, które było używane w aplikacji Roblox przed 2020 rokiem.</value>
+    <value>Przywróćcie stare tło edytora awatarów, które było używane w aplikacji Roblox przed 2020 rokiem.</value>
   </data>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
-    <value>Użyj starego tła edytora awatara</value>
+    <value>Użyj tła ze starego edytora awatarów</value>
   </data>
   <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Próba przywrócenia z powrotem klasycznych dźwięków postaci, które były używane przed rokiem 2014.</value>
+    <value>Próba przybliżonego przywrócenia dźwięków postaci używanych przed 2014 rokiem.</value>
   </data>
   <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Dodaj klasyczne dźwięki postaci</value>
+    <value>Emulowanie dawnych dźwięków postaci</value>
   </data>
   <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Przynieś z powrotem klasyczny dźwięk śmierci 'oof'.</value>
+    <value>Przywróćmy klasyczny odgłos śmierci „oof”.</value>
   </data>
   <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Użyj klasycznego dźwięku śmierci</value>
+    <value>Użyj dźwięku „Old Death”</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Mody</value>
+    <value>Modyfikacje</value>
   </data>
   <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Kliknij, aby zobaczyć więcej informacji o tej opcji.</value>
+    <value>Kliknij, aby uzyskać więcej informacji na temat tej opcji.</value>
+  </data>
+  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
+    <value>Wyczyść listę serwerów</value>
+  </data>
+  <data name="Menu.RegionSelector.Description" xml:space="preserve">
+    <value>Łatwo dołączaj do serwerów w Twojej okolicy, korzystając z wybranego konta w Menedżerze kont. Wykorzystuje [interfejsy API RoValra]({0}), [obowiązuje polityka prywatności RoValra.]({0}/privacy)</value>
+  </data>
+  <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
+    <value>Wpisz identyfikator miejsca lub nazwę gry...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
+    <value>Pobierz więcej</value>
+  </data>
+  <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
+    <value>Rozmiar serwera:</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
+    <value>Dołącz</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
+    <value>Gracze</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
+    <value>Identyfikator serwera</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
+    <value>Czas działania serwera</value>
+  </data>
+  <data name="Menu.RegionSelector.Title" xml:space="preserve">
+    <value>Wybór regionu</value>
+  </data>
+  <data name="Menu.Restart" xml:space="preserve">
+    <value>Uruchom ponownie</value>
   </data>
   <data name="Menu.Save" xml:space="preserve">
     <value>Zapisz</value>
   </data>
+  <data name="Menu.SaveAndInstall" xml:space="preserve">
+    <value>Zapisz i zainstaluj</value>
+  </data>
+  <data name="Menu.SaveAndLaunch" xml:space="preserve">
+    <value>Zapisz i uruchom</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
-    <value>Zmiany zostaną wprowadzone, kiedy otworzysz Roblox ponownie.</value>
+    <value>Zmiany zaczną obowiązywać przy następnym uruchomieniu Roblox.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>Ustawienia zostały zapisane!</value>
   </data>
-  <data name="Menu.Title" xml:space="preserve">
-    <value>Ustawienia Froststrap</value>
+  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
+    <value>Utwórz skrót do gry</value>
   </data>
-  <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
-    <value>Wybierz preferowany język</value>
+  <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
+    <value>Dzięki temu możesz tworzyć skróty, które umożliwiają szybkie dołączanie do konkretnych gier.</value>
   </data>
-  <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
-    <value>Wybierz język przed kontynuowaniem instalacji.</value>
+  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
+    <value>Wybierz skrót, aby go edytować.</value>
   </data>
-  <data name="Menu.Appearance.Language.Title" xml:space="preserve">
-    <value>Język</value>
+  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
+    <value>Użyj ikony gry</value>
   </data>
-  <data name="Menu.Appearance.Language.Description" xml:space="preserve">
-    <value>Ponowne uruchomienie aplikacji jest wymagane, aby zmiany zostały zastosowane.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Zezwól na użycie nieobsługiwanych języków</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Dotyczy tylko gier uruchamianych ze strony Roblox.</value>
-  </data>
-  <data name="Enums.FlagPresets.InGameMenuVersion.V4Chrome" xml:space="preserve">
-    <value>2024 (Wersja 4 + Nowy interfejs gry)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.Rendering" xml:space="preserve">
-    <value>Renderowanie i grafika</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.Categories.UserInterface" xml:space="preserve">
-    <value>Układ i interfejs użytkownika</value>
-  </data>
-  <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
-    <value>Zezwól Froststrap'owi na zarządzanie Fast Flagami</value>
-  </data>
-  <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
-    <value>Wyłączenie tego zapobiegnie zastosowaniu jakichkolwiek ustawień skonfigurowanych tutaj do Roblox.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
-    <value>Jakość antyaliasingu (MSAA)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePostFX.Title" xml:space="preserve">
-    <value>Wyłącz efekty post-processingu</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Title" xml:space="preserve">
-    <value>Wyłącz pasek tytułowy w trybie pełnoekranowym</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FullscreenTitlebar.Description" xml:space="preserve">
-    <value>Wyłącza pasek tytułowy, gdy przesuwasz mysz na górę ekranu.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Jakość tekstur</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Poziom 0 (najniższy)</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Poziom 1</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Poziom 2</value>
-  </data>
-  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Poziom 3 (najwyższy)</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisablePlayerShadows.Title" xml:space="preserve">
-    <value>Wyłącz cienie graczy</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Title" xml:space="preserve">
-    <value>Rozmiar czcionki</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.FontPadding.Description" xml:space="preserve">
-    <value>Domyślna wartość to 1. Dostosuj, jeśli używasz niestandardowej czcionki.</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.DisableTerrainTextures.Title" xml:space="preserve">
-    <value>Wyłącz tekstury terenu</value>
-  </data>
-  <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
-    <value>Froststrap nie może pobrać Roblox</value>
-  </data>
-  <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
-    <value>Roblox nie może być pobrane w tym momencie. Więcej informacji znajdziesz na tej stronie: {0}</value>
-    <comment>{0} is a URL</comment>
-  </data>
-  <data name="Common.ImportFromFile" xml:space="preserve">
-    <value>Importuj z pliku</value>
-  </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>Pliki JSON</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>Wpis dla '{0}' jest nieprawidłowy, ponieważ wartość musi być albo 'True' (prawda), albo 'False' (fałsz)</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>Wpis dla '{0}' jest nieprawidłowy, ponieważ wartość musi być liczbą</value>
-  </data>
-  <data name="Logger.NoWriteMode" xml:space="preserve">
-    <value>Plik dziennika nie zostanie zapisany dla tego uruchomienia, ponieważ Froststrap nie może zapisać do folderu '{0}'</value>
-  </data>
-  <data name="Common.Default" xml:space="preserve">
-    <value>Domyślne</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automatyczne</value>
-  </data>
-  <data name="Common.SystemDefault" xml:space="preserve">
-    <value>Domyślne ustawienie systemowe</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>Wpis '{0}' nie jest prawidłowy, ponieważ filtr miejsca nie jest sformatowany poprawnie.</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Instalator Froststrap</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Witaj</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Zainstaluj</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Ukończenie</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Wstecz</value>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Dalej</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Dziękujemy za pobranie Froststrap!
-
-Jedynymi oficjalnymi stronami internetowymi do pobrania Froststrap to {0} i {1}, więc potwierdź, że na pewno zainstalowałeś program z jednego z powyżej wymienionych źródeł.
-
-Instalacja nie zajmie długo, i będziesz mógł skonfigurować wszystkie ustawienia dopiero po procesie instalacji.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Kliknij „Dalej”, aby kontynuować.</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Próbujesz zainstalować wersję {0}, natomiast najnowsza dostępna wersja to {1}. Czy chcesz ją pobrać?</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Wybierz folder instalacji</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox zostanie zainstalowany w tym folderze. Zmień, jeśli preferujesz zainstalować wszystkie gry na oddzielny dysk. W przeciwnym wypadku zalecamy zachowanie tego w obecnej postaci.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Znaleziono istniejące dane. Twoje mody i ustawienia zostaną przywrócone.</value>
-  </data>
-  <data name="Common.Shortcuts" xml:space="preserve">
-    <value>Skróty</value>
-  </data>
-  <data name="Common.Shortcuts.Desktop" xml:space="preserve">
-    <value>Ikona na pulpicie</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Ikona w Menu Start</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Instalacja Froststrap powiodła się.
-
-Roblox nie został jeszcze zainstalowany, co powinno nastąpić po pierwszym uruchomieniu Froststrap. Jednak zanim to zrobisz, powinieneś najpierw skonfigurować ustawienia w Froststrap.
-
-Zalecane jest unikanie używania skrótu „Roblox Player” do uruchomienia Roblox, ponieważ ten nie uruchamia Froststrap. Jeżeli nie widzisz Froststrap podczas uruchamiania ze strony internetowej, zwyczajnie uruchom Roblox z Froststrap jeden raz z pulpitu, aby to naprawić.
-
-Co chciałbyś teraz zrobić?</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Skonfiguruj ustawienia Froststrap</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Dostosuj, korzystając ze wszystkich dostępnych funkcji</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Zainstaluj i uruchom Roblox</value>
-  </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Przeniesie cię do aplikacji, kiedy wszystko będzie już gotowe</value>
-  </data>
-  <data name="Uninstaller.Title" xml:space="preserve">
-    <value>Odinstaluj Froststrap</value>
-  </data>
-  <data name="Uninstaller.Text" xml:space="preserve">
-    <value>Odinstalowywanie usunie Froststrap z twojego systemu i automatycznie skonfiguruje domyślny launcher Roblox, jeśli ten nadal jest zainstalowany.
-
-Jeśli odinstalowujesz lub instalujesz ponownie, ponieważ masz problemy z Roblox, w pierwszej kolejności przeczytaj [tę stronę pomocy]({0}).
-
-Proces odinstalowania może w pełni nie oczyścić danych programu i zostawić pliki w miejscu, gdzie Froststrap został zainstalowany. W takim przypadku zalecane jest ręczne usunięcie pozostałości gdziekolwiek twoja instalacja Froststrap się znajdywała.
-
-Froststrap był zainstalowany na "{1}".</value>
-  </data>
-  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>Zachowaj moje ustawienia i mody</value>
-  </data>
-  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>Będą one przechowane tam, gdzie Froststrap był zainstalowany i przywrócone automatycznie po ponownej instalacji.</value>
-  </data>
-  <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>Odinstaluj</value>
-  </data>
-  <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
-    <value>Uruchom Roblox</value>
-  </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Skonfiguruj ustawienia</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Masz problem?</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Zobacz naszą stronę wiki, aby uzyskać pomoc</value>
-  </data>
-  <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
-    <value>Obecnie nie masz zainstalowanego WebView2. Bez tego, niektóre funkcje Roblox nie będą działać poprawnie, przykładowo aplikacja. Czy chcesz to pobrać teraz?</value>
-  </data>
-  <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
-    <value>Froststrap nie mógł utworzyć skrótów na pulpicie i w Menu Start. Spróbuj utworzyć je później w ustawieniach.</value>
-  </data>
-  <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Sprawdź [Froststrap Wiki]({0}), aby upewnić się, czy twój problem nie został już rozwiązany.
-
-Jeśli nie, zgłoś problem twórcom tego „fork”-a. Podkreślamy, aby NIE zgłaszać tego na oficjalnego GitHub'a, gdyż nie jest to oficjalna wersja programu i nie jesteśmy za nią odpowiedzialni.</value>
-    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>To są ogólne skróty, które otwierają menu uruchamiania z wieloma opcjami. Skróty do konkretnych funkcji można utworzyć później w ustawieniach.</value>
+  <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
+    <value>Skróty w grze</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
-    <value>Skonfiguruj, w jaki sposób możesz łatwo uruchomić Froststrap.</value>
+    <value>Skonfiguruj sposób, w jaki można łatwo uruchomić Froststrap.</value>
+  </data>
+  <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
+    <value>Umożliwia korzystanie z zestawu ikon Roblox firmy Froststrap do tworzenia skrótów. [Zobacz, jak to zrobić.]({0})</value>
+  </data>
+  <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
+    <value>Wyodrębnij ikony Roblox do folderu</value>
+  </data>
+  <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
+    <value>Utwórz skróty umożliwiające szybki dostęp do określonych funkcji. Wszystkie zostaną umieszczone na pulpicie.</value>
+  </data>
+  <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
+    <value>Funkcja</value>
+  </data>
+  <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
+    <value>Oto skróty klawiszowe, które wyświetlają menu uruchamiania z wieloma opcjami.</value>
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Ogólne</value>
   </data>
-  <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
-    <value>To są skróty, które otwierają menu uruchamiania z wieloma opcjami.</value>
+  <data name="Menu.TestMode" xml:space="preserve">
+    <value>Tryb testowy</value>
+    <comment>See the prompt for more context</comment>
   </data>
-  <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
-    <value>Funkcje</value>
+  <data name="Menu.TestMode.Prompt" xml:space="preserve">
+    <value>Tryb testowy ułatwia stopniowe sprawdzanie, jak wybrane ustawienia wpływają na działanie Roblox. 
+
+Gdy tryb ten jest włączony, po zamknięciu okna Ustawień automatycznie uruchamia się Roblox, a po zamknięciu Roblox ponownie otwiera się okno Ustawień — cykl ten powtarza się, dopóki nie wyłączysz tej funkcji.
+
+Czy chcesz włączyć tryb testowy?</value>
   </data>
-  <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
-    <value>Utwórz skróty szybkiego dostępu dla konkretnych funkcji. Wszystkie z nich zostaną umieszczone na pulpicie.</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
-    <value>Połączono z serwerem prywatnym</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
-    <value>Połączono z serwerem zarezerwowanym</value>
-  </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
-    <value>Modyfikacja emotikonów nie może być w tej chwili zastosowana.</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Proszę poczekać na zakończenie instalacji.</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
-    <value>Proszę poczekać na zakończenie odinstalowywania.</value>
-  </data>
-  <data name="About.Title" xml:space="preserve">
-    <value>O Froststrap</value>
-  </data>
-  <data name="About.Licenses.Title" xml:space="preserve">
-    <value>Licencje</value>
-    <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Tłumacze</value>
+  <data name="Menu.Title" xml:space="preserve">
+    <value>Ustawienia Froststrap</value>
   </data>
   <data name="Menu.UnsavedChanges" xml:space="preserve">
     <value>Masz niezapisane zmiany. Czy na pewno chcesz zamknąć bez zapisywania?</value>
   </data>
-  <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
-    <value>Wersja Froststrap, którą uruchomiłeś, jest starsza niż aktualnie zainstalowana wersja. Mogą wystąpić problemy i twoje ustawienia mogą zostać zmienione. Ponowna instalacja jest zalecana.
-
-Czy jesteś pewien, że chcesz kontynuować?</value>
+  <data name="Menu_CommunityMods_Title" xml:space="preserve">
+    <value>Modyfikacje społecznościowe</value>
   </data>
-  <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
-    <value>Roblox nie został uruchomiony.</value>
+  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
+    <value>Zapisz bieżące flagi</value>
   </data>
-  <data name="Dialog.PlayerError.Crash" xml:space="preserve">
-    <value>Roblox uległ awarii.</value>
+  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
+    <value>Szybkie zapisywanie i wczytywanie profili flag.</value>
   </data>
-  <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
-    <value>Aby dowiedzieć się, dlaczego może to się zdarzyć i jak można to rozwiązać, proszę przeczytaj [ten artykuł pomocy] ({0}).
-
-Sprawdź, czy Roblox współpracuje z [oryginalnym programem uruchamiającym]({1}). Jeśli nie, to nie jest to problem Froststrap. Jeśli tak, odnieś się do artykułu pomocy.</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>Nie można załadować danych z powodu błędu sieciowego.</value>
-  </data>
-  <data name="Common.Loading" xml:space="preserve">
-    <value>Ładowanie, proszę czekać...</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Wspierający</value>
-  </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>To są osoby, które wspierali Froststrap przez Ko-fi. Ogromne podziękowania dla wszystkich tutaj!
-Każda osoba jest tutaj uszeregowana według swojego ogólnego zobowiązania.</value>
-  </data>
-  <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
-    <value>Twoje ustawienia nie mogły zostać zapisane. Zostały zresetowane do domyślnej konfiguracji.</value>
-  </data>
-  <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
-    <value>Twoje Fast Flagi nie mogły zostać zapisane. Zostały zresetowane do domyślnej konfiguracji.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
-    <value>Historia rozgrywek</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
-    <value>Zagraj ponownie</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Gra, w którą obecnie grasz, nie zostanie pokazana na twoim profilu Discord, ponieważ próba załadowania informacji o grze nie powiodła się.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
-    <value>Historia gier jest zapisywana tylko dla bieżącej rozgrywki. Gry pojawią się tutaj, gdy je opuścisz lub zostaniesz w nich przeniesiony. Nie wszystkie serwery będą mogły cię połączyć ponownie.</value>
-  </data>
-  <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
-    <value>Próba ustalenia położenia serwera nie powiodła się. Możliwe, że dołączasz do gier zbyt szybko.</value>
-  </data>
-  <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
-    <value>Spróbuj ponownie później.</value>
-  </data>
-  <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
-    <value>Podczas tego uruchomienia, Roblox nie będzie sprawdzony pod kątem aktualizacji, a zmiany w modach nie zostaną zastosowane.</value>
-  </data>
-  <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
-    <value>Roblox wymaga zainstalowania lub zaktualizowania zaś Froststrap nie może kontynuować działania.</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap został już zainstalowany w tym folderze wcześniej i jest nadal tam obecny, lecz instalator nie może nadpisać starego pliku .exe.
-Prosimy ręcznie usunąć Froststrap.exe z folderu instalacji lub spróbuj ponownie uruchomić system, a następnie spróbuj instalację ponownie.</value>
-  </data>
-  <data name="Common.NotAvailable" xml:space="preserve">
-    <value>Niedostępne</value>
-  </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
-    <value>Zarządzaj ustawieniami zgodności</value>
-  </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
-    <value>Skonfiguruj parametry aplikacji, takie jak zachowanie skalowania DPI, czy [optymalizacja pełnoekranowa]({0}).</value>
-  </data>
-  <data name="Common.RobloxNotInstalled" xml:space="preserve">
-    <value>Roblox nie został jeszcze zainstalowany na tym urządzeniu. Prosimy uruchomić Roblox przy użyciu Froststrap, zanim spróbujesz użyć tej opcji.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Czy jesteś pewien, że chcesz wstrzymać instalację?</value>
-  </data>
-  <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
-    <value>Nie udało się zapisać {0}: {1}</value>
-  </data>
-  <data name="Dialog.IconLoadFailed" xml:space="preserve">
-    <value>Wybrana ikona launchera nie może być załadowana.
-
-{0}</value>
-    <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
-    <value>Wypakuj ikony Roblox do folderu</value>
-  </data>
-  <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
-    <value>Umożliwia używanie szerokiej selekcji różnych ikonek Roblox dla twoich skrótów na pulpicie. [Więcej]({0})</value>
-  </data>
-  <data name="Dialog.RegistryWriteError" xml:space="preserve">
-    <value>Froststrap nie jest w stanie zapisać ustawień do rejestru systemu Windows, co powoduje problemy. Sprawdź, czy nie ma czegoś (m.in. programy antywirusowe), co mogłoby ograniczać działanie Froststrap.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Miesięcznie</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Jednorazowo</value>
-  </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>Analityka</value>
-  </data>
-  <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
-    <value>Zresetuj wszystko do ustawień domyślnych</value>
-  </data>
-  <data name="Dialog.Exception.Report" xml:space="preserve">
-    <value>Zgłoszenie błędu</value>
-  </data>
-  <data name="Menu.TestMode" xml:space="preserve">
-    <value>Tryb testowania</value>
-    <comment>See the prompt for more context</comment>
-  </data>
-  <data name="Menu.TestMode.Prompt" xml:space="preserve">
-    <value>Tryb testowania ułatwia wielokrotne przetestowanie tego, w jaki sposób twoje ustawienia wpływają na rozgrywkę.
-
-Podczas gdy jest to włączone, automatycznie uruchomi Roblox po zamknięciu ustawień, a po zamknięciu Roblox ponownie otworzy ustawienia i w nieskończoność, póki nie wyłączysz opcji.
-
-Czy chcesz włączyć tryb testowania?</value>
-  </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Wszystkie tłumaczenia Froststrap są tworzone wspólnie przez społeczność za pośrednictwem platformy [Crowdin]({0}). Wszyscy wymienieni tutaj hojnie wykorzystali swój czas i wysiłek, aby pomóc zlokalizować Froststrap. Wręczamy najserdeczniejsze podziękowania!</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Zainstaluj</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
+  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
+    <value>Profile Fast Flag</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikony</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
   </data>
-  <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
-    <value>Uruchom Roblox Studio</value>
+  <data name="TranslationTesting.Test" xml:space="preserve">
+    <value>Ten ciąg znaków służy do testowania automatycznego tłumaczenia, proszę go zignorować.</value>
   </data>
-  <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>Wersja {0}</value>
+  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
+    <value>Zostaną one zachowane w miejscu, w którym zainstalowano program Froststrap, i zostaną automatycznie przywrócone po ponownej instalacji.</value>
   </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap próbował zaktualizować Roblox, ale nie może, ponieważ pliki Roblox są w użyciu.
+  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
+    <value>Zachowaj moje ustawienia i modyfikacje</value>
+  </data>
+  <data name="Uninstaller.Text" xml:space="preserve">
+    <value>Odinstalowanie spowoduje usunięcie programu Froststrap z systemu oraz automatyczną rekonfigurację domyślnego programu uruchamiającego Roblox, o ile jest on nadal zainstalowany.
 
-Proszę, zamknij wszystkie aplikacje, które mogą używać plików Roblox i uruchom aplikacje ponownie.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
+Jeśli odinstalowujesz lub ponownie instalujesz program z powodu problemów z Roblox, przeczytaj najpierw [tę stronę pomocy]({0}).
+
+Proces odinstalowywania może nie usunąć wszystkich pozostałości, więc może być konieczne ręczne usunięcie pozostałych plików z lokalizacji, w której był zainstalowany Froststrap.
+
+Froststrap został zainstalowany w lokalizacji „{1}”.</value>
   </data>
-  <data name="FileTypes.ZipArchive" xml:space="preserve">
-    <value>Archiwum zip</value>
-    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
+  <data name="Uninstaller.Title" xml:space="preserve">
+    <value>Odinstaluj Froststrap</value>
   </data>
-  <data name="Common.Export" xml:space="preserve">
-    <value>Eksportuj</value>
-    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Dialog.Connectivity.Preventing" xml:space="preserve">
-    <value>Coś prawdopodobnie uniemożliwia aplikacji połączenia się do internetu.</value>
-  </data>
-  <data name="Dialog.Connectivity.TimedOut" xml:space="preserve">
-    <value>Połączenie zostało przerwane, co może wskazywać na słabe połączenie internetowe lub zablokowanie przez zaporę sieciową.</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Menu.Channel.Description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.Channel" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Menu.ChannelChanger.Description" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.Version" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Common.VersionGuid" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Menu.Channel.RobloxUpgrades" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>Pobieranie najnowszej wersji Froststrap...</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Skonfiguruj ustawienia związane z zachowaniem Froststrap.</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Włącz anonimowe wysyłanie danych analitycznych</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Jest to anonimowe i w pełni bezpieczne, obiecujemy! Jest to nawet do sprawdzenia w naszym kodzie źródłowym. By poznać, jakie dane zbieramy i dlaczego, zobacz naszą [politykę prywatności]({0}).</value>
+  <data name="Uninstaller.Uninstall" xml:space="preserve">
+    <value>Odinstaluj</value>
   </data>
 </root>

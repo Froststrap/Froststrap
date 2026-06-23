@@ -118,2092 +118,2131 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About.Licenses.Title" xml:space="preserve">
-    <value>Licenties</value>
+    <value>Licencie</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
   <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Dit zijn de mensen die Froststrap via Ko-fi hebben gesteund. Hartelijk dank aan iedereen hier!
-Iedereen op deze lijst is gerangschikt op basis van het totale gedoneerde bedrag.</value>
+    <value>Toto sú ľudia, ktorí podporili Froststrap prostredníctvom Ko-fi. Všetkým tu prítomným patrí obrovské poďakovanie!
+Každý z nich je zoradený podľa celkovej výšky príspevku.</value>
   </data>
   <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Maandelijks</value>
+    <value>Mesačne</value>
   </data>
   <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Eenmalig</value>
+    <value>Jednorazový</value>
   </data>
   <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Aanhangers van Froststrap</value>
+    <value>Prívrženci hnutia Froststrap</value>
   </data>
   <data name="About.Title" xml:space="preserve">
-    <value>Over Froststrap</value>
+    <value>O spoločnosti Froststrap</value>
   </data>
   <data name="About.Translators.Description" xml:space="preserve">
-    <value>Alle vertalingen van Froststrap worden via [Crowdin]({0}) via crowdsourcing gerealiseerd. Alle hier genoemde personen hebben vrijwillig hun tijd en moeite ingezet om Froststrap te lokaliseren. Hartelijk dank aan iedereen!</value>
+    <value>Všetky preklady projektu Froststrap vznikajú prostredníctvom crowdsourcingu cez [Crowdin]({0}). Všetci tu uvedení ľudia veľkoryso venovali svoj čas a úsilie na pomoc pri lokalizácii projektu Froststrap. Všetkým tu prítomným patrí obrovské poďakovanie!</value>
   </data>
   <data name="About.Translators.Title" xml:space="preserve">
-    <value>Vertalers</value>
+    <value>Prekladatelia</value>
   </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
-    <value>De locatie van de server kon niet worden opgevraagd. Mogelijk sluit je te snel aan bij spellen.</value>
+    <value>Nepodarilo sa zistiť polohu servera. Možno sa pripájate do hier príliš rýchlo.</value>
   </data>
   <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Je huidige game wordt niet weergegeven in je Discord-status, omdat er een fout is opgetreden bij het laden van de game-informatie.</value>
+    <value>Tvoja aktuálna hra sa nezobrazí v tvojom stave na Discorde, pretože pri načítavaní informácií o hre došlo k chybe.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
-    <value>Roblox biedt geen ondersteuning meer voor Windows 7 of 8.1. Als je Roblox wilt blijven spelen, moet je upgraden naar Windows 10 of een nieuwere versie.</value>
+    <value>Roblox už nepodporuje systémy Windows 7 ani 8.1. Ak chcete naďalej hrať Roblox, prejdite na systém Windows 10 alebo novší.</value>
   </data>
   <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
-    <value>Het kanaal waarop je je momenteel bevindt ({0}) is nu afgesloten voor openbaar gebruik. Je wordt nu doorgestuurd naar het standaardkanaal ({1}).</value>
+    <value>Kanál, na ktorom sa momentálne nachádzate ({0}), bol obmedzený pre verejné používanie. Teraz budete na predvolenom kanáli ({1}).</value>
   </data>
   <data name="Bootstrapper.AutoUpdateFailed" xml:space="preserve">
-    <value>Froststrap kon niet automatisch worden bijgewerkt naar versie {0}. Werk het programma handmatig bij door het vanaf de website te downloaden en uit te voeren.</value>
+    <value>Program Froststrap sa nepodarilo automaticky aktualizovať na verziu {0}. Aktualizujte ho prosím ručne tak, že si ho stiahnete z webovej stránky a spustíte.</value>
   </data>
   <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
-    <value>Roblox probeert je kanaal in te stellen op {0}, maar je huidige voorkeurskanaal is {1}.
+    <value>Roblox sa pokúša nastaviť váš kanál na {0}, avšak váš aktuálny preferovaný kanál je {1}.
 
 
-Wil je je voorkeurskanaal wijzigen naar {0}?</value>
+Chcete zmeniť svoj preferovaný kanál na {0}?</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
-    <value>Roblox is momenteel actief. Als je nog een exemplaar start, wordt het huidige exemplaar gesloten. Weet je zeker dat je wilt doorgaan met het starten?</value>
+    <value>Roblox je momentálne spustený a spustením ďalšej inštancie sa táto zatvorí. Naozaj chcete pokračovať v spúšťaní?</value>
   </data>
   <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Ansel wordt niet ondersteund.
-Je kunt Bloxshade niet langer gebruiken in combinatie met Froststrap.</value>
+    <value>Ansel nie je podporovaný.
+Bloxshade už nemožno používať spolu s Froststrapom.</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>Het kanaal waarop je je momenteel bevindt ({0}) is verouderd en lijkt geen updates meer te ontvangen.\n
-Wil je overschakelen naar het standaardkanaal ({1})?</value>
+    <value>Kanál, na ktorom sa momentálne nachádzate ({0}), je neaktuálny a zdá sa, že už nedostáva aktualizácie.\n
+Chcete prejsť na predvolený kanál ({1})?</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
-    <value>Upgrades zijn uitgeschakeld omdat de client ontbreekt.
-    Om problemen te voorkomen, wordt er doorgegaan met de upgrade.</value>
+    <value>Aktualizácie boli deaktivované kvôli chýbajúcemu klientovi.
+    Aby sa predišlo problémom, aktualizácia bude pokračovať.</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
-    <value>Laat Froststrap bepalen bij welke servers je je aansluit. Er wordt voorrang gegeven aan de server die het dichtst bij jou ligt.</value>
+    <value>Nechajte aplikáciu Froststrap rozhodnúť, ku ktorým serverom sa pripojíte. Uprednostňuje server, ktorý je od vás najblíž.</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
-    <value>Het lijkt erop dat een vriend dit spel op dit moment aan het spelen is. Wil je meedoen?</value>
+    <value>Vyzerá to, že táto hra práve hrá nejaký tvoj priateľ. Chceš sa k nemu pridať?</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>Kiest willekeurig een server uit de lijst met optimale servers.</value>
+    <value>Náhodne vyberie server zo zoznamu optimálnych serverov.</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>De BetterMatchmaking-server willekeurig toewijzen</value>
+    <value>Náhodné priradenie na serveri BetterMatchmaking</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
-    <value>BetterMatchmaking inschakelen</value>
+    <value>Aktivovať funkciu BetterMatchmaking</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Er ontbreekt mogelijk bepaalde inhoud. Voer in de instellingen een geforceerde herinstallatie van Roblox uit om dit te verhelpen.</value>
+    <value>Niektoré obsahy môžu chýbať. Na vyriešenie tohto problému vynúťte v nastaveniach preinštalovanie aplikácie Roblox.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
-    <value>Het is niet gelukt om alle bestanden uit te pakken</value>
+    <value>Nepodarilo sa rozbaliť všetky súbory</value>
   </data>
   <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap heeft geprobeerd Roblox te updaten, maar dat lukt niet omdat de bestanden van Roblox nog in gebruik zijn.
+    <value>Froststrap sa pokúsil aktualizovať Roblox, ale nemôže, pretože súbory Robloxu sú stále v používaní.
 
-Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox en start het programma opnieuw op.</value>
+Zatvorte, prosím, všetky aplikácie, ktoré môžu používať súbory Robloxu, a spustite ho znovu.</value>
     <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
   </data>
   <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Je moet Froststrap eerst installeren voordat je het kunt verwijderen.</value>
+    <value>Pred odinštalovaním musíte najskôr nainštalovať Froststrap.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
-    <value>Het opslaan van {0} is mislukt: {1}</value>
+    <value>Uloženie {0} sa nepodarilo: {1}</value>
   </data>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
-    <value>Niet alle aanpassingen zullen in de huidige release aanwezig zijn.</value>
+    <value>Nie všetky úpravy budú súčasťou aktuálnej verzie.</value>
   </data>
   <data name="Bootstrapper.ModificationsFailed.Title" xml:space="preserve">
-    <value>Het is niet gelukt om alle wijzigingen toe te passen</value>
+    <value>Nepodarilo sa uplatniť všetky zmeny</value>
   </data>
   <data name="Bootstrapper.NotEnoughSpace" xml:space="preserve">
-    <value>Froststrap heeft onvoldoende schijfruimte om Roblox te downloaden en te installeren. Maak wat schijfruimte vrij en probeer het opnieuw.</value>
+    <value>Froststrap nemá dostatok miesta na disku na stiahnutie a inštaláciu Robloxu. Uvoľnite prosím trochu miesta na disku a skúste to znova.</value>
   </data>
   <data name="Bootstrapper.Status.ApplyingModifications" xml:space="preserve">
-    <value>Roblox-modificaties toepassen...</value>
+    <value>Prebieha inštalácia modifikácií pre Roblox...</value>
   </data>
   <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
-    <value>De Roblox-upgrade annuleren.</value>
+    <value>Zrušenie aktualizácie Roblox.</value>
   </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
-    <value>{product} configureren...</value>
+    <value>Nastavovanie {product}...</value>
   </data>
   <data name="Bootstrapper.Status.Connecting" xml:space="preserve">
-    <value>Verbinding maken met Roblox...</value>
+    <value>Pripájanie k Robloxu...</value>
   </data>
   <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
-    <value>Downloaden</value>
+    <value>Sťahovanie</value>
   </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
-    <value>Uittrekken</value>
+    <value>Extrahovanie</value>
   </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
-    <value>{product} wordt geïnstalleerd...</value>
+    <value>Inštalácia {product}...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
-    <value>WebView2 wordt geïnstalleerd, even geduld a.u.b...</value>
+    <value>Inštalácia WebView2, prosím, počkajte...</value>
   </data>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
-    <value>links</value>
+    <value>vľavo</value>
   </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
-    <value>{product} wordt gestart...</value>
+    <value>Spúšťam {product}...</value>
     <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
-    <value>{product} wordt bijgewerkt...</value>
+    <value>Aktualizácia {produktu}...</value>
   </data>
   <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>De nieuwste Froststrap downloaden...</value>
+    <value>Stiahnutie najnovšej verzie programu Froststrap...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
-    <value>Wachten op gegevens...</value>
+    <value>Čakám na údaje...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingOtherInstances" xml:space="preserve">
-    <value>Wachten op andere instanties...</value>
+    <value>Čaká sa na ďalšie inštancie...</value>
   </data>
   <data name="Bootstrapper.StylePreview.ImageCancel" xml:space="preserve">
-    <value>Voorbeeld van de stijl - Klik op de X-knop rechtsboven om te sluiten</value>
+    <value>Náhľad štýlu – kliknutím na tlačidlo X v pravom hornom rohu okno zatvoríte</value>
     <comment>Text for style previews that use an X button. Currently only applies to Byfron</comment>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
-    <value>Voorbeeld van de stijl - Klik op ‘Annuleren’ om te sluiten</value>
+    <value>Náhľad štýlu – kliknutím na „Zrušiť“ zatvoríte</value>
     <comment>Text for style previews that use text button that says "Cancel"</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
-    <value>Froststrap is succesvol verwijderd</value>
+    <value>Program Froststrap bol úspešne odinštalovaný</value>
   </data>
   <data name="Bootstrapper.Uninstall.RobloxRunning" xml:space="preserve">
-    <value>Roblox is momenteel actief, maar moet worden afgesloten voordat je Froststrap kunt verwijderen. Wil je Roblox nu afsluiten?</value>
+    <value>Roblox je momentálne spustený, ale pred odinštalovaním aplikácie Froststrap je potrebné ho zatvoriť. Chcete teraz zatvoriť Roblox?</value>
   </data>
   <data name="Bootstrapper.WMFNotFound" xml:space="preserve">
-    <value>Voor Roblox zijn Windows Media Foundation-componenten vereist. Het lijkt erop dat je deze niet hebt, waarschijnlijk omdat je een N-editie van Windows gebruikt. Installeer deze eerst en start Roblox daarna op.</value>
+    <value>Roblox vyžaduje použitie komponentov Windows Media Foundation. Zdá sa, že vám chýbajú, pravdepodobne preto, že používate verziu Windows s označením „N“. Najskôr ich nainštalujte a až potom spustite Roblox.</value>
   </data>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
-    <value>Je hebt momenteel de WebView2-runtime niet geïnstalleerd. Zonder deze runtime werken sommige Roblox-functies niet naar behoren, zoals de desktop-app. Wil je deze nu downloaden?</value>
+    <value>V súčasnosti nemáte nainštalované prostredie WebView2. Niektoré funkcie Robloxu bez neho nebudú fungovať správne, napríklad aplikácia pre počítače. Chcete si ho stiahnuť teraz?</value>
   </data>
   <data name="Common.AddSingle" xml:space="preserve">
-    <value>Enkel toevoegen</value>
+    <value>Pridať jeden</value>
+  </data>
+  <data name="Common.Analytics" xml:space="preserve">
+    <value>Analytika</value>
   </data>
   <data name="Common.Automatic" xml:space="preserve">
-    <value>Automatisch</value>
+    <value>Automatický</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
-    <value>Bladeren</value>
+    <value>Prehliadať</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
-    <value>Annuleren</value>
+    <value>Zrušiť</value>
   </data>
   <data name="Common.Channel" xml:space="preserve">
-    <value>Kanaal</value>
+    <value>Kanál</value>
   </data>
   <data name="Common.Choose" xml:space="preserve">
-    <value>Kies</value>
+    <value>Vyberte si</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
-    <value>Sluiten</value>
+    <value>Zatvoriť</value>
   </data>
   <data name="Common.Color" xml:space="preserve">
-    <value>Kleur</value>
+    <value>Farba</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
-    <value>Alles kopiëren</value>
+    <value>Kopírovať všetko</value>
   </data>
   <data name="Common.CreateNew" xml:space="preserve">
-    <value>Nieuw aanmaken</value>
+    <value>Vytvoriť nový</value>
   </data>
   <data name="Common.Custom" xml:space="preserve">
-    <value>Op maat</value>
+    <value>Na mieru</value>
   </data>
   <data name="Common.Debug" xml:space="preserve">
-    <value>Foutopsporing</value>
+    <value>Ladění</value>
   </data>
   <data name="Common.DebugMenu" xml:space="preserve">
-    <value>Debug-menu</value>
+    <value>Ponuka ladenia</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
-    <value>Standaard</value>
+    <value>Predvolené nastavenie</value>
   </data>
   <data name="Common.Delete" xml:space="preserve">
-    <value>Verwijderen</value>
+    <value>Odstrániť</value>
   </data>
   <data name="Common.DeleteAll" xml:space="preserve">
-    <value>Alles verwijderen</value>
+    <value>Odstrániť všetko</value>
   </data>
   <data name="Common.Deployment" xml:space="preserve">
-    <value>Implementatie</value>
+    <value>Nasadenie</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
-    <value>Gehandicapt</value>
+    <value>Znevýhodnení</value>
+  </data>
+  <data name="Common.DiscordRichPresence" xml:space="preserve">
+    <value>Rozšírené funkcie v Discord</value>
   </data>
   <data name="Common.Edit" xml:space="preserve">
-    <value>Bewerken</value>
+    <value>Upraviť</value>
   </data>
   <data name="Common.Experimental" xml:space="preserve">
-    <value>Experimenteel</value>
-  </data>
-  <data name="Common.Export" xml:space="preserve">
-    <value>Exporteren</value>
-    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
+    <value>Experimentálne</value>
   </data>
   <data name="Common.FilterType" xml:space="preserve">
-    <value>Filtertype:</value>
+    <value>Typ filtra:</value>
   </data>
-  <data name="Common.Import" xml:space="preserve">
-    <value>Importeren</value>
+  <data name="Common.Help" xml:space="preserve">
+    <value>Pomoc</value>
   </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
-    <value>Importeren vanuit bestand</value>
+    <value>Importovať zo súboru</value>
   </data>
-  <data name="Common.ImportJson" xml:space="preserve">
-    <value>JSON importeren</value>
+  <data name="Common.LauncherType" xml:space="preserve">
+    <value>Typ: Spúšťač</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
-    <value>Bezig met laden, even geduld a.u.b...</value>
+    <value>Načítava sa, prosím, počkajte...</value>
   </data>
   <data name="Common.LookingFor" xml:space="preserve">
-    <value>Op zoek naar</value>
+    <value>Hľadám</value>
   </data>
   <data name="Common.Message" xml:space="preserve">
-    <value>Bericht</value>
+    <value>Správa</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
-    <value>Diversen</value>
+    <value>Rôzne</value>
+  </data>
+  <data name="Common.ModType" xml:space="preserve">
+    <value>Typ: Mod</value>
   </data>
   <data name="Common.Name" xml:space="preserve">
-    <value>Naam</value>
+    <value>Meno</value>
   </data>
   <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Terug</value>
+    <value>Späť</value>
   </data>
   <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Installeren</value>
+    <value>Inštalovať</value>
     <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
   </data>
   <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Volgende</value>
+    <value>Ďalej</value>
   </data>
   <data name="Common.NetworkError" xml:space="preserve">
-    <value>De gegevens konden niet worden geladen vanwege een netwerkfout.</value>
+    <value>Dáta sa nepodarilo načítať kvôli chybe siete.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
-    <value>Nieuw</value>
+    <value>Nové</value>
   </data>
   <data name="Common.No" xml:space="preserve">
-    <value>Nee</value>
+    <value>Nie</value>
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
-    <value>Niet beschikbaar</value>
+    <value>Nedostupné</value>
   </data>
   <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>Open het menu ‘Debug’</value>
+    <value>Otvoriť ponuku ladenia</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
-    <value>Logbestand openen</value>
+    <value>Otvoriť súbor protokolu</value>
   </data>
   <data name="Common.Performance" xml:space="preserve">
-    <value>Prestaties</value>
+    <value>Výkon</value>
   </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
-    <value>Vooraf ingestelde vlaggenlijsten</value>
+    <value>Prednastavené zoznamy vlajok</value>
   </data>
   <data name="Common.Presets" xml:space="preserve">
-    <value>Voorinstellingen</value>
+    <value>Prednastavenia</value>
   </data>
   <data name="Common.Profiles" xml:space="preserve">
-    <value>Profielen</value>
+    <value>Profily</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
-    <value>Kwaliteit</value>
+    <value>Kvalita</value>
   </data>
   <data name="Common.Recommended" xml:space="preserve">
-    <value>Aanbevolen</value>
+    <value>Odporúčané</value>
   </data>
   <data name="Common.Refresh" xml:space="preserve">
-    <value>Vernieuwen</value>
+    <value>Obnoviť</value>
   </data>
   <data name="Common.Remove" xml:space="preserve">
-    <value>Verwijderen</value>
+    <value>Odstrániť</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
-    <value>Naam wijzigen</value>
+    <value>Pomenovať</value>
   </data>
   <data name="Common.Reset" xml:space="preserve">
-    <value>Opnieuw instellen</value>
+    <value>Obnoviť</value>
     <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
-    <value>Roblox is nog niet geïnstalleerd. Start Roblox alstublieft minstens één keer via Froststrap voordat u deze optie probeert te gebruiken.</value>
+    <value>Roblox ešte nie je nainštalovaný. Predtým, ako sa pokúsite použiť túto možnosť, spustite prosím aspoň raz aplikáciu Roblox pomocou Froststrap.</value>
   </data>
   <data name="Common.Search" xml:space="preserve">
-    <value>Zoeken</value>
+    <value>Vyhľadávanie</value>
   </data>
   <data name="Common.SearchBy" xml:space="preserve">
-    <value>Zoeken op</value>
+    <value>Vyhľadávať podľa</value>
   </data>
   <data name="Common.Settings" xml:space="preserve">
-    <value>Instellingen</value>
+    <value>Nastavenia</value>
   </data>
   <data name="Common.Shortcuts" xml:space="preserve">
-    <value>Snelkoppelingen</value>
+    <value>Klávesové skratky</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
-    <value>Bureaubladpictogram</value>
+    <value>Ikona na ploche</value>
   </data>
   <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Pictogram in het Startmenu</value>
+    <value>Ikona v ponuke Štart</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Štúdia</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
-    <value>Systeemstandaard</value>
+    <value>Predvolené nastavenie systému</value>
   </data>
   <data name="Common.Template" xml:space="preserve">
-    <value>Sjabloon</value>
+    <value>Šablóna</value>
   </data>
   <data name="Common.Time" xml:space="preserve">
-    <value>Tijd</value>
+    <value>Čas</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
-    <value>Tijdstempel</value>
+    <value>Časová pečiatka</value>
+  </data>
+  <data name="Common.Type" xml:space="preserve">
+    <value>Typ</value>
   </data>
   <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>Onbekende status</value>
+    <value>Neznámy stav</value>
   </data>
   <data name="Common.UserId" xml:space="preserve">
-    <value>Gebruikers-ID</value>
+    <value>ID používateľa</value>
   </data>
   <data name="Common.Username" xml:space="preserve">
-    <value>Gebruikersnaam</value>
+    <value>Používateľské meno</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
-    <value>Waarde</value>
+    <value>Hodnota</value>
   </data>
   <data name="Common.Version" xml:space="preserve">
-    <value>Versie</value>
+    <value>Verzia</value>
   </data>
   <data name="Common.VersionGuid" xml:space="preserve">
-    <value>Versie-ID</value>
+    <value>ID verzie</value>
   </data>
   <data name="Common.Warning" xml:space="preserve">
-    <value>Waarschuwing</value>
+    <value>Upozornenie</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
-    <value>Ja</value>
+    <value>Áno</value>
   </data>
   <data name="Common_FastFlags" xml:space="preserve">
-    <value>Snelle vlaggen-editor</value>
+    <value>Rýchly editor vlajok</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
-    <value>Roblox sluiten</value>
+    <value>Zatvoriť Roblox</value>
   </data>
   <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Weet je zeker dat je Roblox wilt afsluiten? Hierdoor wordt het proces geforceerd beëindigd.</value>
+    <value>Naozaj chcete zatvoriť Roblox? Týmto sa proces násilne ukončí.</value>
   </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
-    <value>Deeplink van uitnodiging kopiëren</value>
+    <value>Skopírovať deeplink pozvánky</value>
   </data>
   <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>Geschiedenis wissen</value>
+    <value>Vymazať históriu</value>
   </data>
   <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>Taak-ID kopiëren</value>
+    <value>Skopírovať ID úlohy</value>
   </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
-    <value>De spelgeschiedenis wordt alleen bijgehouden voor je huidige Roblox-sessie. Spellen verschijnen hier zodra je ze verlaat of je erin teleporteert. Je kunt niet bij alle servers opnieuw aansluiten.</value>
+    <value>História hier sa zaznamenáva iba pre vašu aktuálnu reláciu v Roblox. Hry sa tu zobrazia v momente, keď ich opustíte alebo sa v nich teleportujete. Nie na všetky servery sa bude dať opäť pripojiť.</value>
   </data>
   <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>Nog geen spelgeschiedenis{0}{0}Speel een paar spellen mee om ze hier te kunnen zien!</value>
+    <value>Zatiaľ žiadna história hier{0}{0}Zahrajte si nejaké hry, aby sa tu zobrazili!</value>
   </data>
   <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>Vernieuwen</value>
+    <value>Obnoviť</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
+    <value>Zaregistrovať sa znova</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
-    <value>Spelgeschiedenis</value>
+    <value>História hry</value>
   </data>
   <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>Menu 'Logbestanden'</value>
+    <value>Ponuka protokolov</value>
   </data>
   <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>Toont recent verzonden berichten van spelers.</value>
+    <value>Zobrazuje správy, ktoré hráči nedávno odoslali.</value>
   </data>
   <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>Berichtlogboeken</value>
+    <value>Protokoly správ</value>
   </data>
   <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>Spelerslogboeken</value>
+    <value>Záznamy hráčov</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
-    <value>Locatie: {0}
-Uptime: {1}</value>
+    <value>Poloha: {0}
+Doba prevádzky: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
-    <value>Instantie-ID kopiëren</value>
+    <value>Skopírovať ID inštancie</value>
   </data>
   <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
-    <value>Instantie-ID</value>
+    <value>ID inštancie</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
-    <value>Locatie</value>
+    <value>Poloha</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Locatie: {0}
-Klik hier voor meer informatie</value>
+    <value>Miesto: {0}
+Kliknite pre viac informácií</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
-    <value>Verbonden met een privéserver</value>
+    <value>Pripojené k súkromnému serveru</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
-    <value>Verbonden met een openbare server</value>
+    <value>Pripojené k verejnému serveru</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
-    <value>Verbonden met een Reserved-server</value>
+    <value>Pripojené k serveru Reserved</value>
   </data>
   <data name="ContextMenu.ServerInformation.Title" xml:space="preserve">
-    <value>Servergegevens</value>
+    <value>Informácie o serveri</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
+    <value>Doba prevádzky</value>
   </data>
   <data name="CustomTheme.Add.Errors.FileNotZip" xml:space="preserve">
-    <value>Het bestand moet een ZIP-bestand zijn</value>
+    <value>Súbor musí byť vo formáte ZIP</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameEmpty" xml:space="preserve">
-    <value>De naam mag niet leeg zijn</value>
+    <value>Pole „Meno“ nesmie zostať prázdne</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameIllegalCharacters" xml:space="preserve">
-    <value>De naam bevat ongeldige tekens</value>
+    <value>Názov obsahuje neplatné znaky</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameReserved" xml:space="preserve">
-    <value>Deze naam kan niet worden gebruikt</value>
+    <value>Toto meno sa nedá použiť</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameTaken" xml:space="preserve">
-    <value>De naam is al in gebruik</value>
+    <value>Toto meno je už obsadené</value>
   </data>
   <data name="CustomTheme.Add.Errors.Unknown" xml:space="preserve">
-    <value>Onbekende fout</value>
+    <value>Neznáma chyba</value>
   </data>
   <data name="CustomTheme.Add.Errors.ZipInvalidData" xml:space="preserve">
-    <value>Ongeldig of beschadigd ZIP-bestand</value>
+    <value>Neplatný alebo poškodený súbor ZIP</value>
   </data>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
-    <value>Het themabestand kon niet worden gevonden in het ZIP-bestand</value>
+    <value>V súbore ZIP sa nepodarilo nájsť súbor s motívom</value>
   </data>
   <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>Aangepast thema toevoegen</value>
+    <value>Pridať vlastnú šablónu</value>
   </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
-    <value>Aangepast thema {0}</value>
+    <value>Vlastná šablóna {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
   </data>
   <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
-    <value>Wilt u de wijzigingen in {0} opslaan?</value>
+    <value>Uložiť zmeny v {0}?</value>
   </data>
   <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
-    <value>Het voorbeelduitzicht van het thema is mislukt: {0}</value>
+    <value>Nepodarilo sa zobraziť náhľad motívu: {0}</value>
   </data>
   <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
-    <value>Thema-map openen</value>
+    <value>Otvoriť adresár s témami</value>
   </data>
   <data name="CustomTheme.Editor.Preview" xml:space="preserve">
-    <value>Voorbeeld</value>
+    <value>Náhľad</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
-    <value>Opslaan</value>
+    <value>Uložiť</value>
   </data>
   <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>Er is een fout opgetreden bij het opslaan van je thema.</value>
+    <value>Pri ukladaní vašej šablóny došlo k chybe.</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>Het thema is succesvol opgeslagen!</value>
+    <value>Téma bola úspešne uložená!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
-    <value>Je thema is opgeslagen!</value>
+    <value>Vaša téma bola uložená!</value>
   </data>
   <data name="CustomTheme.Editor.Title" xml:space="preserve">
-    <value>"{0}" bewerken</value>
+    <value>Úprava „{0}“</value>
   </data>
   <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
-    <value>Het aangepaste dialoogvenster is al geïnitialiseerd</value>
+    <value>Vlastné dialógové okno už bolo inicializované</value>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeBlacklistedUriScheme" xml:space="preserve">
-    <value>{0}.{1} maakt gebruik van het op de zwarte lijst geplaatste schema {2}</value>
+    <value>{0}.{1} využíva schému {2}, ktorá je na čiernej listine</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the URI scheme (e.g. http)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeConversionError" xml:space="preserve">
-    <value>{0} bevat een ongeldige {1}: {2}</value>
+    <value>{0} má neplatný {1}: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeInvalidType" xml:space="preserve">
-    <value>{0}.{1} is geen geldige {2}</value>
+    <value>{0}.{1} nie je platný {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMissing" xml:space="preserve">
-    <value>Bij element {0} ontbreekt het attribuut {1}</value>
+    <value>Prvku {0} chýba atribút {1}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMissingChild" xml:space="preserve">
-    <value>{0}.{1} mist een onderliggend element</value>
+    <value>V {0}.{1} chýba podprvok</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMultipleChildren" xml:space="preserve">
-    <value>{0}.{1} kan slechts één kind hebben</value>
+    <value>{0}.{1} môže mať iba jedno dieťa</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMultipleDefinitions" xml:space="preserve">
-    <value>Er kan slechts één {1} worden gedefinieerd voor {0}</value>
+    <value>Pre {0} môže byť definovaný len jeden {1}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMustBeLargerThanMin" xml:space="preserve">
-    <value>{0}.{1} moet groter zijn dan {2}</value>
+    <value>{0}.{1} musí byť väčšie ako {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax" xml:space="preserve">
-    <value>{0}.{1} moet kleiner zijn dan {2}</value>
+    <value>{0}.{1} musí byť menšie ako {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeParseError" xml:space="preserve">
-    <value>{0}.{1} kon niet worden geparseerd tot een {2}</value>
+    <value>{0}.{1} sa nepodarilo analyzovať na {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseErrorNull" xml:space="preserve">
+    <value>{0}.{1} {2} je prázdna hodnota</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
-    <value>{0} kan geen kind van {1} hebben</value>
+    <value>{0} nemôže mať dieťa s {1}</value>
     <comment>{0} and {1} are element names (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
-    <value>{0} kan slechts één kind hebben</value>
+    <value>{0} môže mať len jedno dieťa</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementTypeCreationFailed" xml:space="preserve">
-    <value>{0} kon {1} niet aanmaken: {2}</value>
+    <value>{0} sa nepodarilo vytvoriť {1}: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
   <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>Er is geprobeerd een ongeldige WindowBackdropType te gebruiken: {0}</value>
+    <value>Pokúsili ste sa použiť neplatný typ WindowBackdropType: {0}</value>
   </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
-    <value>De XML-root van het thema is niet {0}</value>
+    <value>Koreňový uzol XML témy nie je {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.NoThemeSelected" xml:space="preserve">
-    <value>Er is geen aangepast thema geselecteerd</value>
+    <value>Nebola vybraná žiadna vlastná šablóna</value>
   </data>
   <data name="CustomTheme.Errors.SetupFailed" xml:space="preserve">
-    <value>Het instellen van de aangepaste bootstrapper is mislukt: {0}.
-Er wordt nu standaard {1} gebruikt.</value>
+    <value>Nepodarilo sa nastaviť vlastný bootstrapper: {0}.
+Použije sa predvolená hodnota {1}.</value>
     <comment>{0} is the error reason, {1} is the theme name (e.g. Froststrap (Classic))</comment>
   </data>
   <data name="CustomTheme.Errors.TooManyElements" xml:space="preserve">
-    <value>Aangepaste bootstrappers mogen maximaal {0} elementen bevatten; er zijn er {1}</value>
+    <value>Vlastné bootstrappy môžu obsahovať maximálne {0} prvkov, získaných bolo {1}</value>
     <comment>{0} and {1} are numbers</comment>
   </data>
   <data name="CustomTheme.Errors.UnknownElement" xml:space="preserve">
-    <value>Onbekend element {0}</value>
+    <value>Neznámy prvok {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
-    <value>{0} Onbekend {1} '{2}'</value>
+    <value>{0} Neznáme {1} „{2}“</value>
     <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
-    <value>{0} is geen getal</value>
+    <value>Verzia {0} nie je číslo</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
-    <value>{0} versie {1} wordt niet herkend</value>
+    <value>Verzia {0} {1} nie je rozpoznaná</value>
     <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
-    <value>De versie {0} is niet ingesteld</value>
+    <value>Verzia {0} nie je nastavená</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotSupported" xml:space="preserve">
-    <value>{0} versie {1} wordt niet langer ondersteund</value>
+    <value>Verzia {0} {1} už nie je podporovaná</value>
     <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
   </data>
   <data name="CustomTheme.Errors.XMLParseFailed" xml:space="preserve">
-    <value>Het themabestand kon niet worden geparseerd: {0}</value>
+    <value>Nepodarilo sa analyzovať súbor šablóny: {0}</value>
   </data>
   <data name="CustomTheme.Templates.Blank.MoreExamples" xml:space="preserve">
-    <value>Voorbeelden van aangepaste bootstrappers zijn te vinden op {0}</value>
+    <value>Príklady vlastných bootstrapperov nájdete na {0}</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
-    <value>Plaats hier UI-elementen</value>
+    <value>Sem vložte prvky používateľského rozhrania</value>
   </data>
   <data name="CustomTheme.Templates.Simple.MoreExamples" xml:space="preserve">
-    <value>Bekijk meer voorbeelden van op maat gemaakte bootstrappers op {0}</value>
+    <value>Ďalšie príklady vlastných bootstrapperov nájdete na {0}</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
-    <value>Vlag 'Snel' toevoegen</value>
+    <value>Pridať vlajku „Rýchlo“</value>
   </data>
   <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Wacht even tot de installatie is voltooid.</value>
+    <value>Počkajte, prosím, kým sa inštalácia dokončí.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
-    <value>Wacht even tot het verwijderen is voltooid.</value>
+    <value>Počkajte, kým sa odinštalovanie dokončí.</value>
   </data>
   <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
-    <value>Froststrap biedt geen ondersteuning meer voor Bloxshade.
-Ga voor meer informatie naar de Discord-server van Bloxshade.</value>
+    <value>Froststrap už nepodporuje Bloxshade.
+Ďalšie informácie nájdete na Discordovom serveri Bloxshade.</value>
+  </data>
+  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
+    <value>Prepáčte</value>
   </data>
   <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
-    <value>Froststrap kon geen snelkoppelingen aanmaken voor het bureaublad en het Startmenu. Probeer deze later via de instellingen aan te maken.</value>
+    <value>Froststrap nedokázal vytvoriť skratky na pracovnej ploche a v ponuke Štart. Skúste ich vytvoriť neskôr prostredníctvom nastavení.</value>
   </data>
   <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
-    <value>Er kon geen verbinding worden gemaakt, wat waarschijnlijk wijst op een slechte internetverbinding of een blokkering door een firewall. Als je verbinding in orde is, controleer dan of je antivirusprogramma Froststrap niet blokkeert.</value>
+    <value>Nepodarilo sa nadviazať spojenie, čo pravdepodobne znamená slabé internetové pripojenie alebo blokovanie bránou firewall. Ak je vaše pripojenie v poriadku, skontrolujte, či váš antivírusový program neblokuje aplikáciu Froststrap.</value>
   </data>
   <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
-    <value>BetterMatchmaking wordt voor deze sessie uitgeschakeld.</value>
+    <value>Funkcia BetterMatchmaking bude počas tejto relácie deaktivovaná.</value>
   </data>
   <data name="Dialog.Connectivity.MoreInfo" xml:space="preserve">
-    <value>Meer informatie:</value>
+    <value>Ďalšie informácie:</value>
   </data>
   <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
-    <value>Roblox is momenteel mogelijk niet beschikbaar. Zie {0} voor meer informatie.</value>
+    <value>Roblox momentálne možno nefunguje. Ďalšie informácie nájdete na {0}.</value>
   </data>
   <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
-    <value>Omdat Roblox moet worden geïnstalleerd of bijgewerkt, kan Froststrap niet verdergaan.</value>
+    <value>Keďže je potrebné nainštalovať alebo aktualizovať Roblox, aplikácia Froststrap nemôže pokračovať.</value>
   </data>
   <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
-    <value>Bij deze lancering wordt Roblox niet gecontroleerd op updates en worden wijzigingen aan mods niet doorgevoerd.</value>
+    <value>Pri tomto spustení sa nebude kontrolovať, či sú k dispozícii aktualizácie pre Roblox, a zmeny v modoch sa neuplatnia.</value>
   </data>
   <data name="Dialog.Connectivity.Title" xml:space="preserve">
-    <value>Verbindingsfout</value>
+    <value>Chyba pripojenia</value>
   </data>
   <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
-    <value>Probeer het later nog eens.</value>
+    <value>Skúste to prosím neskôr.</value>
   </data>
   <data name="Dialog.Connectivity.UnableToConnect" xml:space="preserve">
-    <value>Froststrap kan geen verbinding maken met {0}</value>
+    <value>Froststrap sa nedokáže pripojiť k {0}</value>
     <comment>{0} is the name of a service (i.e. Roblox, GitHub)</comment>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
-    <value>Froststrap kan Roblox niet downloaden</value>
+    <value>Froststrap nedokáže stiahnuť Roblox</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
-    <value>Roblox kan op dit moment niet worden gedownload. Lees de volgende helppagina voor meer informatie: {0}</value>
+    <value>Hru Roblox momentálne nie je možné stiahnuť. Prečítajte si prosím nasledujúcu stránku s pomocou, kde nájdete ďalšie informácie: {0}</value>
     <comment>{0} is a URL</comment>
   </data>
   <data name="Dialog.Exception.CopyLogContents" xml:space="preserve">
-    <value>De inhoud van het logboek kopiëren</value>
+    <value>Skopírovať obsah protokolu</value>
   </data>
   <data name="Dialog.Exception.Info.1" xml:space="preserve">
-    <value>Er is een uitzondering opgetreden tijdens het uitvoeren van Froststrap/Froststrap</value>
+    <value>Pri spúšťaní programu Froststrap/Froststrap došlo k výnimke</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Kijk eerst op de [Froststrap Wiki]({0}) om te zien of er al een oplossing voor dit probleem is gevonden.
+    <value>Najskôr skontrolujte [Froststrap Wiki]({0}), či už nebol tento problém vyriešený.
 
-Zo niet, meld deze uitzondering dan via een [GitHub-issue]({1}) en voeg daarbij een kopie van het logbestand toe dat is aangemaakt.</value>
+Ak nie, nahláste prosím túto výnimku prostredníctvom [GitHub issue]({1}) spolu s kópiou vytvoreného súboru protokolu.</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Kijk eerst op de [Froststrap Wiki]({0}) om te zien of er al een oplossing voor dit probleem is gevonden.
+    <value>Najskôr skontrolujte [Froststrap Wiki]({0}), či už nebol tento problém vyriešený opravou.
 
-Zo niet, meld deze uitzondering dan aan de beheerders van deze fork. Meld dit NIET via de GitHub-issues van Froststrap, aangezien dit een onofficiële build is.</value>
+Ak nie, nahláste prosím túto výnimku správcom tohto forku. NENAHLASUJTE to do sekcie „Issues“ na GitHub-e projektu Froststrap, keďže ide o neoficiálnu verziu.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
-    <value>Uitzondering melden</value>
+    <value>Nahlásiť výnimku</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
-    <value>Froststrap-uitzondering</value>
+    <value>Výnimka Froststrap</value>
   </data>
   <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>Versie {0}</value>
+    <value>Verzia {0}</value>
   </data>
   <data name="Dialog.IconLoadFailed" xml:space="preserve">
-    <value>Het geselecteerde bootstrapper-pictogram kon niet worden geladen.
+    <value>Vybranú ikonu bootstrapperu sa nepodarilo načítať.
 
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
   <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
-    <value>Kies de gewenste taal</value>
+    <value>Vyberte si preferovaný jazyk</value>
   </data>
   <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
-    <value>Kies een taal voordat u doorgaat met de installatie.
-Het is mogelijk dat sommige tekst niet in de gewenste taal is vertaald.</value>
+    <value>Pred pokračovaním v inštalácii si vyberte jazyk.
+Niektoré texty nemusia byť preložené do vášho preferovaného jazyka.</value>
   </data>
   <data name="Dialog.PlayerError.Crash" xml:space="preserve">
-    <value>Roblox is gecrasht.</value>
+    <value>Hra Roblox sa zrútila.</value>
   </data>
   <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
-    <value>Roblox kon niet worden gestart.</value>
+    <value>Hra Roblox sa nepodarilo spustiť.</value>
   </data>
   <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
-    <value>Lees [dit helpartikel]({0}) voor meer informatie over de mogelijke oorzaken hiervan en hoe je dit kunt oplossen.
+    <value>Informácie o tom, prečo k tomu môže dochádzať a ako tento problém vyriešiť, nájdete v [tomto článku v nápovede]({0}).
 
-Controleer of Roblox werkt met [de originele launcher]({1}). Als dat niet het geval is, ligt het probleem niet bij Froststrap. Als het wel werkt, raadpleeg dan het helpartikel.</value>
+Skontrolujte, či Roblox funguje s [pôvodným spúšťačom]({1}). Ak nie, nejde o problém súvisiaci s Froststrapom. Ak áno, pozrite si článok v nápovede.</value>
   </data>
   <data name="Dialog.RegistryWriteError" xml:space="preserve">
-    <value>Froststrap kan geen gegevens naar het Windows-register schrijven. Waarschijnlijk veroorzaakt een antivirusprogramma storingen. Controleer of er niets is dat de werking van Froststrap belemmert.</value>
+    <value>Froststrap nemôže zapisovať do registru systému Windows. Pravdepodobne to spôsobuje antivírusový program, ktorý zasahuje do činnosti aplikácie a spôsobuje problémy. Skontrolujte, či nie je nainštalovaný žiadny program, ktorý by obmedzoval fungovanie aplikácie Froststrap.</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
-    <value>Eind 2015</value>
+    <value>Koniec roka 2015</value>
   </data>
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
-    <value>Nep-Byfron (~2023)</value>
+    <value>Falošný Byfron (~2023)</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
+    <value>Froststrap (klasická verzia)</value>
   </data>
   <data name="Enums.BootstrapperStyle.CustomDialog" xml:space="preserve">
-    <value>Op maat</value>
+    <value>Na mieru</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
-    <value>Froststrap (glas)</value>
+    <value>Froststrap (sklo)</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
-    <value>Froststrap (ondoorzichtig)</value>
+    <value>Froststrap (nepriehľadný)</value>
   </data>
   <data name="Enums.CleanerOptions.Never" xml:space="preserve">
-    <value>Nooit</value>
+    <value>Nikdy</value>
   </data>
   <data name="Enums.CleanerOptions.OneDay" xml:space="preserve">
-    <value>Na 1 dag</value>
+    <value>Po 1 dni</value>
   </data>
   <data name="Enums.CleanerOptions.OneMonth" xml:space="preserve">
-    <value>Na 1 maand</value>
+    <value>Po 1 mesiaci</value>
   </data>
   <data name="Enums.CleanerOptions.OneWeek" xml:space="preserve">
-    <value>Na 1 week</value>
+    <value>Po 1 týždni</value>
   </data>
   <data name="Enums.CleanerOptions.TwoMonths" xml:space="preserve">
-    <value>Na 2 maanden</value>
+    <value>Po 2 mesiacoch</value>
   </data>
   <data name="Enums.CopyFormatMode.Format1" xml:space="preserve">
-    <value>Standaard</value>
+    <value>Predvolené nastavenie</value>
   </data>
   <data name="Enums.CopyFormatMode.Format2" xml:space="preserve">
-    <value>Aanbevolen</value>
+    <value>Odporúčané</value>
   </data>
   <data name="Enums.CopyFormatMode.Format3" xml:space="preserve">
-    <value>Alfabetisch</value>
+    <value>Abecedne</value>
   </data>
   <data name="Enums.CopyFormatMode.Format4" xml:space="preserve">
-    <value>Aflopend op lengte</value>
+    <value>Zoradené podľa dĺžky</value>
   </data>
   <data name="Enums.CursorType.BlackAndWhiteDot" xml:space="preserve">
-    <value>Zwart-witte stippen</value>
+    <value>Čierno-biela bodka</value>
   </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
-    <value>~2006 (Cartoonachtig)</value>
+    <value>~2006 (kreslený štýl)</value>
   </data>
   <data name="Enums.CursorType.PurpleCross" xml:space="preserve">
-    <value>Paars kruis</value>
+    <value>Fialový kríž</value>
   </data>
   <data name="Enums.CustomThemeTemplate.Blank" xml:space="preserve">
-    <value>Leeg</value>
+    <value>Prázdne</value>
   </data>
   <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
-    <value>Eenvoudig</value>
+    <value>Jednoduché</value>
   </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
-    <value>Standaard (Twemoji)</value>
+    <value>Predvolené (Twemoji)</value>
   </data>
   <data name="Enums.FlagPresets.RenderingMode.Vulkan" xml:space="preserve">
-    <value>Vulkaan</value>
+    <value>Vulkán</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Niveau 0 (laagste)</value>
+    <value>Úroveň 0 (najnižšia)</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Niveau 1 (Laag)</value>
+    <value>Úroveň 1 (nízka)</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Niveau 2 (gemiddeld)</value>
+    <value>Úroveň 2 (stredná)</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Niveau 3 (hoogste)</value>
+    <value>Úroveň 3 (najvyššia)</value>
   </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
-    <value>Privéserver</value>
+    <value>Súkromný server</value>
   </data>
   <data name="Enums.ServerType.Public" xml:space="preserve">
-    <value>Openbare server</value>
+    <value>Verejný server</value>
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
-    <value>Gereserveerde server</value>
+    <value>Vyhradený server</value>
   </data>
   <data name="Enums.Theme.Blue" xml:space="preserve">
-    <value>Blauw</value>
+    <value>Modrá</value>
   </data>
   <data name="Enums.Theme.Dark" xml:space="preserve">
-    <value>Donker</value>
+    <value>Tma</value>
   </data>
   <data name="Enums.Theme.Green" xml:space="preserve">
-    <value>Groen</value>
+    <value>Zelená</value>
   </data>
   <data name="Enums.Theme.Light" xml:space="preserve">
-    <value>Licht</value>
+    <value>Svetlo</value>
   </data>
   <data name="Enums.Theme.Orange" xml:space="preserve">
-    <value>Oranje</value>
+    <value>Oranžová</value>
   </data>
   <data name="Enums.Theme.Pink" xml:space="preserve">
-    <value>Roze</value>
+    <value>Ružová</value>
   </data>
   <data name="Enums.Theme.Purple" xml:space="preserve">
-    <value>Paars</value>
+    <value>Fialová</value>
   </data>
   <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON-bestanden</value>
+    <value>Súbory JSON</value>
     <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
   </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
-    <value>Zip-archief</value>
+    <value>Archív ZIP</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
-    <value>Froststrap is bijgewerkt naar versie {0}</value>
+    <value>Froststrap bol aktualizovaný na verziu {0}</value>
   </data>
   <data name="InstallChecker.VersionDifferentThanInstalled" xml:space="preserve">
-    <value>De versie van Froststrap die u hebt gestart, verschilt van de versie die momenteel is geïnstalleerd.
-Wilt u de momenteel geïnstalleerde versie upgraden?</value>
+    <value>Verzia Froststrapu, ktorú ste spustili, sa líši od verzie, ktorú máte momentálne nainštalovanú.
+Chcete aktualizovať svoju aktuálne nainštalovanú verziu?</value>
   </data>
   <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
-    <value>De versie van Froststrap die je hebt gestart, is ouder dan de versie die momenteel is geïnstalleerd.
-Er kunnen problemen optreden en je instellingen kunnen worden gewijzigd. Het wordt aanbevolen om het programma opnieuw te installeren.
-Weet je zeker dat je door wilt gaan?</value>
+    <value>Verzia Froststrap, ktorú ste spustili, je staršia ako verzia, ktorú máte momentálne nainštalovanú.
+Môžu nastať problémy a vaše nastavenia sa môžu zmeniť. Odporúča sa preinštalovať.
+Naozaj chcete pokračovať?</value>
   </data>
   <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Start Roblox op zodra alles is geïnstalleerd en geconfigureerd</value>
+    <value>Po dokončení inštalácie a konfigurácie spustí aplikáciu Roblox</value>
   </data>
   <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Roblox installeren en starten</value>
+    <value>Inštalácia a spustenie hry Roblox</value>
   </data>
   <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Bekijk en pas alle functies en instellingen aan die Froststrap te bieden heeft</value>
+    <value>Prezrite si a upravte všetky funkcie a nastavenia, ktoré Froststrap ponúka</value>
   </data>
   <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>De instellingen van Froststrap configureren</value>
+    <value>Nastavenie programu Froststrap</value>
   </data>
   <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap is succesvol geïnstalleerd.
+    <value>Froststrap bol úspešne nainštalovaný.
 
-Roblox is echter nog niet geïnstalleerd. Dit gebeurt wanneer je Roblox voor het eerst via Froststrap start. Voordat je met de installatie begint, kun je eventueel eerst de instellingen van Froststrap configureren.
+Roblox však ešte nie je nainštalovaný. Nainštaluje sa pri prvom spustení Robloxu prostredníctvom Froststrapu. Pred inštaláciou si možno budete chcieť najskôr nakonfigurovať nastavenia Froststrapu.
 
-Belangrijke opmerking: Gebruik de snelkoppeling ‘Roblox Player’ niet om Roblox te starten, aangezien Froststrap Roblox dan niet kan starten vanwege conflicten. Als je niet ziet dat Froststrap wordt gestart wanneer je Roblox via de Roblox-website opent, start je Roblox dan eenmaal via de desktop-applicatie met Froststrap om dit probleem op te lossen.
+Dôležitá poznámka: Na spustenie Roblox nepoužívajte skratku „Roblox Player“, pretože Froststrap nebude môcť spustiť Roblox kvôli konfliktom. Ak sa pri spúšťaní z webovej stránky Roblox nezobrazí spustenie aplikácie Froststrap, jednoducho raz spustite Roblox s aplikáciou Froststrap z aplikácie na ploche, čím tento problém vyriešite.
 
-Wat wil je doen?</value>
+Čo by ste chceli urobiť?</value>
   </data>
   <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Voltooiing</value>
+    <value>Dokončenie</value>
   </data>
   <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Het importeren van de Froststrap-instellingen is mislukt.
+    <value>Import nastavení Froststrap sa nepodaril.
 
 {0}</value>
   </data>
   <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Instellingen importeren vanuit Froststrap</value>
+    <value>Načítať nastavenia z Froststrap</value>
   </data>
   <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap is eerder op deze locatie geïnstalleerd en is nog steeds aanwezig, maar het installatieprogramma kan het oude uitvoerbare bestand niet overschrijven. 
+    <value>Froststrap už bol v tejto zložke nainštalovaný a stále sa tam nachádza, inštalačný program však nemôže prepísať starý spustiteľný súbor. 
 
-Verwijder Froststrap.exe handmatig uit de installatiemap of start uw systeem opnieuw op, en probeer de installatie daarna nogmaals.</value>
+Prosím, ručne odstráňte súbor Froststrap.exe z inštalačnej zložky alebo skúste reštartovať systém a potom inštaláciu zopakujte.</value>
   </data>
   <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Er zijn bestaande gegevens gevonden. Je mods en instellingen worden hersteld.</value>
+    <value>Našli sa existujúce údaje. Vaše modifikácie a nastavenia budú obnovené.</value>
   </data>
   <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox wordt ook in dit pad geïnstalleerd. Pas dit aan als je al je games liever op een aparte schijf wilt installeren. Anders wordt aangeraden om dit zo te laten staan.</value>
+    <value>Roblox sa nainštaluje aj do tohto adresára. Zmeňte toto nastavenie, ak chcete všetky hry inštalovať na samostatný disk. V opačnom prípade odporúčame ponechať toto nastavenie bez zmien.</value>
   </data>
   <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Kies waar je het wilt installeren</value>
+    <value>Vyberte miesto inštalácie</value>
   </data>
   <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Dit zijn algemene sneltoetsen waarmee je een startmenu met verschillende opties opent. Sneltoetsen voor specifieke functies kun je later in de instellingen instellen.</value>
+    <value>Ide o všeobecné klávesové skratky, ktoré vyvolajú ponuku spustenia s viacerými možnosťami. Klávesové skratky pre konkrétne funkcie je možné vytvoriť neskôr v nastaveniach.</value>
   </data>
   <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Installeren</value>
+    <value>Inštalovať</value>
     <comment>Refers to "Install" as a verb</comment>
   </data>
   <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>Er is geen bootstrapper-installatie gevonden.</value>
+    <value>Nebola nájdená žiadna inštalácia programu Bootstrapper.</value>
   </data>
   <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Weet je zeker dat je de installatie wilt annuleren?</value>
+    <value>Naozaj chcete zrušiť inštaláciu?</value>
+  </data>
+  <data name="Installer.Title" xml:space="preserve">
+    <value>Inštalačný program Froststrap</value>
   </data>
   <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Bedankt voor het downloaden van Froststrap. 
+    <value>Ďakujeme za stiahnutie programu Froststrap. 
 
-De enige officiële bron om Froststrap te downloaden is {0}, dus controleer alstublieft of u het programma inderdaad via de officiële bron hebt gedownload.
+Jediným oficiálnym zdrojom na stiahnutie programu Froststrap je {0}, preto prosím skontrolujte, či ste ho stiahli práve z tohto oficiálneho zdroja.
 
-Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u alle instellingen van Froststrap configureren.</value>
+Inštalácia bude rýchla a jednoduchá a po jej dokončení budete môcť nakonfigurovať všetky nastavenia programu Froststrap.</value>
     <comment>{0} and {1} are URLs</comment>
   </data>
   <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Klik op 'Volgende' om door te gaan.</value>
+    <value>Ak chcete pokračovať, kliknite na tlačidlo „Ďalej“.</value>
   </data>
   <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Welkom</value>
+    <value>Vitajte</value>
   </data>
   <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Je probeert versie {0} van Froststrap te installeren, maar de nieuwste beschikbare versie is {1}. Wil je deze downloaden?</value>
+    <value>Snažíte sa nainštalovať verziu {0} programu Froststrap, najnovšia dostupná verzia je však {1}. Chcete si ju stiahnuť?</value>
   </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
-    <value>Je Fast Flags konden niet worden geladen. Ze zijn teruggezet naar de standaardconfiguratie.</value>
+    <value>Vaše rýchle vlajky sa nepodarilo načítať. Boli obnovené na predvolené nastavenia.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
-    <value>Je instellingen konden niet worden geladen. Ze zijn teruggezet naar de standaardconfiguratie.</value>
+    <value>Vaše nastavenia sa nepodarilo načítať. Boli obnovené na predvolené nastavenia.</value>
   </data>
   <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Instellingen configureren</value>
+    <value>Nastaviť parametre</value>
   </data>
   <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>Word lid van onze Discord-server</value>
+    <value>Pripojte sa k nášmu serveru na Discorde</value>
     <comment>Call-to-action button</comment>
   </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
-    <value>Start Roblox</value>
+    <value>Spustiť Roblox</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
-    <value>Start Roblox Studio</value>
+    <value>Spustiť Roblox Studio</value>
   </data>
   <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Raadpleeg de Wiki voor hulp</value>
+    <value>Pomoc nájdete na Wiki</value>
   </data>
   <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Heb je een probleem?</value>
+    <value>Máte nejaký problém?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
-    <value>Er wordt geen logbestand aangemaakt voor deze start, omdat Froststrap geen gegevens kan schrijven naar de map op '{0}'</value>
+    <value>Pri tomto spustení sa nezapíše žiadny protokolový súbor, pretože Froststrap nemôže zapisovať do priečinka „{0}“</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
-    <value>Bijdragers</value>
+    <value>Prispievatelia</value>
+  </data>
+  <data name="Menu.About.Contributors.Code" xml:space="preserve">
+    <value>Kód</value>
   </data>
   <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
-    <value>Bijdragers</value>
+    <value>Prispievatelia</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>Dit zijn alle mensen die een opmerkelijke bijdrage hebben geleverd aan Froststrap en Froststrap, en die deze projecten hebben gevormd tot wat ze nu zijn.</value>
+    <value>Toto sú všetci ľudia, ktorí významne prispeli k projektom Froststrap a Froststrap a pomohli ich formovať do podoby, akú majú dnes.</value>
   </data>
   <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
-    <value>Inspiratiebronnen</value>
+    <value>Inšpirácie</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>Een Fishstrap/Froststrap-vork.</value>
+    <value>Vidlica typu Fishstrap/Froststrap.</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
-    <value>Discord-server</value>
+    <value>Server Discord</value>
   </data>
   <data name="Menu.About.GithubRepository" xml:space="preserve">
-    <value>GitHub-repository</value>
+    <value>Repozitár GitHub</value>
   </data>
   <data name="Menu.About.HelpInformation" xml:space="preserve">
-    <value>Hulp en informatie</value>
+    <value>Pomoc a informácie</value>
   </data>
   <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>Licenties</value>
+    <value>Licencie</value>
   </data>
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
-    <value>Apache-licentie 2.0</value>
+    <value>Licencia Apache 2.0</value>
   </data>
   <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD-licentie met twee clausules</value>
+    <value>Dvojčlenná licencia BSD</value>
   </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
-    <value>MIT-licentie</value>
+    <value>Licencia MIT</value>
   </data>
   <data name="Menu.About.ReportIssue" xml:space="preserve">
-    <value>Een probleem melden</value>
+    <value>Nahlásiť problém</value>
   </data>
   <data name="Menu.About.Title" xml:space="preserve">
-    <value>Over</value>
+    <value>O nás</value>
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
-    <value>Versie {0}</value>
+    <value>Verzia {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
   <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>Accountmanager</value>
+    <value>Manažér účtov</value>
   </data>
   <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>Instellingen opgeslagen. Je kunt dit venster nu sluiten</value>
+    <value>Nastavenia boli uložené. Teraz môžete toto okno zavrieť.</value>
   </data>
   <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Alle bestanden</value>
+    <value>Všetky súbory</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
-    <value>Houd er rekening mee dat niet al je wijzigingen onmiddellijk van kracht worden, totdat je alle momenteel geopende Roblox-instanties hebt gesloten.</value>
+    <value>Upozorňujeme, že nie všetky vaše zmeny sa uplatnia okamžite, pokiaľ nezatvoríte všetky aktuálne otvorené inštancie Robloxu.</value>
   </data>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
-    <value>Froststrap is al actief</value>
+    <value>Froststrap už beží</value>
   </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
-    <value>Pas de bootstrapper van Froststrap aan met behulp van een breed scala aan opties.</value>
+    <value>Prispôsobte si bootstrapper projektu Froststrap pomocou širokej škály možností.</value>
   </data>
   <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>Pas de downloadstring aan. {0} is de naam van het pakket, {1} is de grootte van de gedownloade pakketten en {2} is de totale grootte van de pakketten.</value>
+    <value>Zmeňte reťazec pre sťahovanie. {0} je názov balíka, {1} je veľkosť stiahnutých balíkov a {2} je celková veľkosť balíkov.</value>
   </data>
   <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>Downloadstatus van Bootstrapper</value>
+    <value>Stav sťahovania programu Bootstrapper</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
-    <value>Pas Froststrap-thema’s eenvoudig aan met voorinstellingen of creëer je eigen unieke look.</value>
+    <value>Šablóny Froststrap si môžete ľahko prispôsobiť pomocou predvolieb alebo si vytvoriť vlastný jedinečný vzhľad.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
-    <value>App-thema’s</value>
+    <value>Motívy aplikácií</value>
   </data>
   <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Kies een aangepast lettertype om het standaardlettertype van de gebruikersinterface van Froststrap te overschrijven.</value>
+    <value>Vyberte vlastné písmo, ktorým nahradíte predvolené písmo používateľského rozhrania Froststrap.</value>
   </data>
   <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>Aangepast lettertype voor de app</value>
+    <value>Vlastné písmo aplikácie</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
-    <value>Het verwijderen van het aangepaste thema {0} is mislukt: {1}</value>
+    <value>Nepodarilo sa odstrániť vlastnú tému {0}: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
-    <value>Er is geen aangepast thema geselecteerd.</value>
+    <value>Nebola vybraná žiadna vlastná šablóna.</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>Het hernoemen van het aangepaste thema {0} is mislukt: {1}</value>
+    <value>Nepodarilo sa premenovať vlastnú tému {0} na {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>Configureer diverse andere aanpasbare bootstrapper-opties.</value>
+    <value>Nakonfigurujte ďalšie rôzne prispôsobiteľné možnosti spúšťacieho skriptu.</value>
   </data>
   <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>Maatwerk</value>
+    <value>Prispôsobenie</value>
   </data>
   <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>Het moet een .ico-bestand met meerdere afmetingen zijn, variërend van 16px tot 128px. Stel het pictogram in op 'Aangepast' om het te gebruiken.</value>
+    <value>Musí ísť o súbor .ico s viacerými rozmermi v rozmedzí od 16px do 128px. Ak ju chcete použiť, nastavte ikonu na „Vlastná“.</value>
   </data>
   <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>Aangepast pictogram</value>
+    <value>Vlastná ikona</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
-    <value>De tekst die als titel van de bootstrapper wordt weergegeven.</value>
+    <value>Text, ktorý sa zobrazuje ako názov bootstrappera.</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
-    <value>Titel</value>
+    <value>Názov</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
-    <value>Stel in hoe Froststrap eruit moet zien.</value>
+    <value>Nastavte vzhľad aplikácie Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
-    <value>Kies welk pictogram Froststrap moet gebruiken.</value>
+    <value>Vyberte, ktorú ikonu má Froststrap používať.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
-    <value>Pictogram</value>
+    <value>Ikona</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
-    <value>Er is een herstart nodig om de wijzigingen door te voeren. Het is mogelijk dat sommige tekst niet naar de gewenste taal is vertaald.</value>
+    <value>Aby sa zmeny uplatnili, je potrebné vykonať reštart. Niektoré texty sa možno nepreložia do preferovaného jazyka.</value>
   </data>
   <data name="Menu.Appearance.Language.Title" xml:space="preserve">
-    <value>Taal</value>
+    <value>Jazyk</value>
   </data>
   <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
-    <value>Kies een stijl voor het startscherm. Let op: het donkere thema wordt niet ondersteund voor Legacy of Vista. Ga voor meer aangepaste launchers naar de officiële Froststrap Discord-server.</value>
+    <value>Vyberte si štýl úvodnej obrazovky. Poznámka: Tmavá téma nie je podporovaná v systémoch Legacy ani Vista. Ak hľadáte ďalšie prispôsobiteľné spúšťače, navštívte oficiálny server Froststrap na Discorde.</value>
   </data>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
-    <value>Bootstrapper-stijl</value>
+    <value>Štýl „bootstrapper“</value>
   </data>
   <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>Pas de volgorde van de navigatiemenu-items naar wens aan. De wijzigingen worden automatisch opgeslagen.</value>
+    <value>Zmeňte poradie položiek v navigačnom menu podľa svojich preferencií. Zmeny sa uložia automaticky.</value>
   </data>
   <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>Vergrendelingsopdracht</value>
+    <value>Zámok na objednávku</value>
   </data>
   <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>Een stap naar beneden</value>
+    <value>Presunúť nižšie</value>
   </data>
   <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>Een stapje hoger</value>
+    <value>Postúpiť vyššie</value>
   </data>
   <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>Terugzetten naar standaardinstellingen</value>
+    <value>Obnoviť predvolené nastavenia</value>
   </data>
   <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>Menu-aanpassing</value>
+    <value>Nastavenie ponuky</value>
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
-    <value>Voorbeeld</value>
+    <value>Náhľad</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
-    <value>Uiterlijk</value>
+    <value>Vzhľad</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
-    <value>Kies een achtergrondeffect voor het venster. Hiervoor is een donker thema vereist en moet de app opnieuw worden opgestart. Opmerking: Mica werkt alleen op Windows 11.</value>
+    <value>Vyberte si efekt pozadia okna. Vyžaduje tmavú tému a reštart aplikácie. Poznámka: Mica funguje iba v systéme Windows 11.</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
-    <value>Achtergrond voor het raam</value>
+    <value>Pozadie okna</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
-    <value>Biedt toegang tot de Roblox-API’s via je authenticatiecookie. [Waar krijgt Froststrap toegang toe?]({0})</value>
+    <value>Umožňuje prístup k rozhraniam API služby Roblox pomocou vášho autentifikačného súboru cookie. [K čomu bude mať Froststrap prístup?]({0})</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
-    <value>Rechten voor Froststrap-accounts</value>
+    <value>Oprávnenia účtu Froststrap</value>
   </data>
   <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>Voor shaders is Ansel-ondersteuning vereist.</value>
+    <value>Pre shadery je potrebná podpora Ansel.</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
-    <value>Froststrap controleert automatisch of er een stabiele versie beschikbaar is en werkt zichzelf bij wanneer Roblox wordt gestart.</value>
+    <value>Froststrap sa pri spustení Robloxu automaticky skontroluje a aktualizuje na stabilnú verziu.</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
-    <value>Froststrap automatisch bijwerken</value>
+    <value>Automatická aktualizácia programu Froststrap</value>
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
-    <value>Werk Roblox op de achtergrond bij in plaats van te wachten. Niet aanbevolen bij trage internetverbindingen. Er is minimaal 3 GB vrije opslagruimte nodig om deze functie te kunnen gebruiken.</value>
+    <value>Aktualizujte Roblox na pozadí namiesto čakania. Neodporúča sa pri pomalých sieťach. Na fungovanie tejto funkcie je potrebných minimálne 3 GB voľného úložného priestoru.</value>
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
-    <value>Achtergrondupdates</value>
+    <value>Aktualizácie pozadia</value>
   </data>
   <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>Kanaal</value>
+    <value>Kanál</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
-    <value>Sluit het proces RobloxCrashHandler.exe automatisch bij het opstarten om wat systeembronnen vrij te maken.</value>
+    <value>Pri spustení automaticky ukončí proces RobloxCrashHandler.exe, čím uvoľní časť systémových prostriedkov.</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
-    <value>Crash-handler sluiten</value>
+    <value>Zatvoriť modul na spracovanie chýb</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>Voorkomt dat je huidige spel wordt afgesloten wanneer je per ongeluk een andere Roblox-instantie start.</value>
+    <value>Zabraňuje ukončeniu vašej aktuálnej hry v prípade, že omylom spustíte ďalšiu inštanciu Robloxu.</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
-    <value>Bevestiging van het opstarten van de instantie</value>
+    <value>Potvrdenie spustenia inštancie</value>
   </data>
   <data name="Menu.Behaviour.Description" xml:space="preserve">
-    <value>Stel in wat Froststrap moet doen bij het opstarten van Roblox.</value>
+    <value>Nastavte, čo má Froststrap robiť pri spustení Robloxu.</value>
   </data>
   <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>Als deze optie is ingeschakeld, worden alle animaties in de app uitgeschakeld. De app moet opnieuw worden opgestart.</value>
+    <value>Ak je táto funkcia zapnutá, vypnú sa všetky animácie v aplikácii. Je potrebné reštartovať aplikáciu.</value>
   </data>
   <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>Animaties uitschakelen</value>
+    <value>Vypnúť animácie</value>
   </data>
   <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Schakelt hardwareversnelling alleen in Froststrap uit. Opmerking: Je moet de toepassing opnieuw opstarten om het effect te zien.</value>
+    <value>Vypne hardvérovú akceleráciu iba v programe Froststrap. Poznámka: Aby ste mohli vidieť akékoľvek zmeny, musíte aplikáciu reštartovať.</value>
   </data>
   <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>Hardwareversnelling uitschakelen</value>
+    <value>Vypnúť hardvérovú akceleráciu</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Dit geldt alleen voor games die via de Roblox-website worden gestart.</value>
+    <value>Platí len pre hry spustené z webovej stránky Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Niet-ondersteunde talen toestaan</value>
+    <value>Povoliť nepodporované jazyky</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
-    <value>Bij de volgende keer opstarten wordt Roblox opnieuw geïnstalleerd.</value>
+    <value>Pri ďalšom spustení sa vykoná čistá inštalácia aplikácie Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
-    <value>Roblox opnieuw installeren</value>
+    <value>Vynútiť preinštalovanie Robloxu</value>
   </data>
   <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Hiermee kunnen meerdere Roblox-instanties tegelijkertijd worden geopend. Dit kan problemen veroorzaken met de desktop-app.</value>
+    <value>Umožňuje súčasné otvorenie viacerých inštancií Robloxu. Môže spôsobiť problémy s desktopovou aplikáciou.</value>
   </data>
   <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Starten van meerdere instanties</value>
+    <value>Spúšťanie viacerých inštancií</value>
   </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Zorgt ervoor dat de pictogrammen in de taakbalk en de bovenste balk van Roblox weer worden weergegeven zoals in oudere versies. Werkt mogelijk niet als het opstarten van Roblox te lang duurt.</value>
+    <value>Obnoví ikony na paneli úloh a hornom paneli v hre Roblox do podoby zo starších verzií. Môže nefungovať, ak sa hra Roblox spúšťa príliš dlho.</value>
   </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Pictogram op de taakbalk</value>
+    <value>Ikona na hlavnom paneli</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
-    <value>Hiermee stel je de CPU-prioriteit voor Roblox in.</value>
+    <value>Nastaví prioritu procesora pre aplikáciu Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
-    <value>Roblox-procesprioriteit</value>
+    <value>Priorita procesov v Roblox</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
-    <value>Wist automatisch oude gegevens om ruimte vrij te maken. Oorspronkelijk gemaakt door Fishstrap.</value>
+    <value>Automaticky odstraňuje staré údaje, aby uvoľnil miesto. Pôvodne vytvoril Fishstrap.</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Title" xml:space="preserve">
-    <value>Froststrap-reiniger</value>
+    <value>Čistič mrazových pásov</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Age.Description" xml:space="preserve">
-    <value>Bestanden die ouder zijn dan de ingestelde termijn worden verwijderd.</value>
+    <value>Súbory staršie ako stanovená doba budú vymazané.</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Age.Title" xml:space="preserve">
-    <value>Schema voor het verwijderen van bestanden</value>
+    <value>Harmonogram mazania súborov</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Cache.Description" xml:space="preserve">
-    <value>Oude downloads worden verwijderd.</value>
+    <value>Staré súbory na stiahnutie budú vymazané.</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
-    <value>Froststrap-logbestanden worden verwijderd.</value>
+    <value>Protokoly Froststrap budú vymazané.</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
-    <value>Froststrap-logbestanden</value>
+    <value>Záznamy Froststrap</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>Froststrap-logbestanden worden verwijderd.</value>
+    <value>Protokoly Froststrap budú vymazané.</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>Froststrap-logbestanden</value>
+    <value>Záznamy Froststrap</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
-    <value>Oude logbestanden worden verwijderd.</value>
+    <value>Staré súbory protokolov budú vymazané.</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
-    <value>Menu 'Logbestanden'</value>
+    <value>Ponuka protokolov</value>
   </data>
   <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
-    <value>Exportinstellingen</value>
+    <value>Nastavenia exportu</value>
   </data>
   <data name="Menu.BottomButtons.ImportSettings" xml:space="preserve">
-    <value>Instellingen importeren</value>
+    <value>Nastavenia importu</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
-    <value>Instellingen terugzetten naar standaardinstellingen</value>
+    <value>Obnoviť predvolené nastavenia</value>
   </data>
   <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Froststrap verwijderen</value>
+    <value>Odinštalovať Froststrap</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
-    <value>Automatisch wijzigen</value>
+    <value>Zmeniť automaticky</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Description" xml:space="preserve">
-    <value>Roblox of Froststrap kan proberen je voorkeurskanaal te wijzigen.</value>
+    <value>Roblox alebo Froststrap sa môžu pokúsiť zmeniť váš preferovaný kanál.</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Ignore" xml:space="preserve">
-    <value>Blijf altijd hetzelfde</value>
+    <value>Nikdy sa nemeni</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Prompt" xml:space="preserve">
-    <value>Altijd stipt</value>
+    <value>Vždy rýchlo</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
-    <value>Automatische kanaalwisseling</value>
+    <value>Akcia automatického prepínania kanálov</value>
   </data>
   <data name="Menu.Channel.Description" xml:space="preserve">
-    <value>Pas de implementatie- en installatie-instellingen voor Roblox en Froststrap aan.</value>
+    <value>Zmeňte nastavenia nasadenia a inštalácie pre Roblox a Froststrap.</value>
   </data>
   <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Stel in welk domein Roblox en Froststrap zullen gebruiken. Voer alleen vertrouwde domeinen in.</value>
+    <value>Nastavte, akú doménu budú používať Roblox a Froststrap. Zadávajte iba dôveryhodné domény.</value>
   </data>
   <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>Roblox-domein</value>
+    <value>Doména Roblox</value>
   </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
-    <value>Roblox-upgrades</value>
+    <value>Vylepšenia v hre Roblox</value>
   </data>
   <data name="Menu.Channel.RobloxUpgrades.Description" xml:space="preserve">
-    <value>Als deze optie is uitgeschakeld, wordt de Roblox-client niet bijgewerkt naar nieuwere versies.</value>
+    <value>Ak je táto funkcia vypnutá, klient Roblox sa nebude aktualizovať na novšie verzie.</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
-    <value>Overstap van versie-xxx naar installatiemappen op basis van BinaryType; dit heeft alleen gevolgen voor Studio op Linux.</value>
+    <value>Prechod z inštalačných adresárov typu „verzia-xxx“ na adresáre typu „BinaryType“ sa týka iba programu Studio v systéme Linux.</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
-    <value>Statische map</value>
+    <value>Statický adresár</value>
   </data>
   <data name="Menu.Channel.Switcher.Fetching" xml:space="preserve">
-    <value>De meest recente informatie over de implementatie wordt opgehaald, even geduld a.u.b...</value>
+    <value>Načítavajú sa najnovšie informácie o nasadení, prosím, počkajte...</value>
   </data>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
-    <value>Het opgegeven kanaal bestaat niet of is privé</value>
+    <value>Uvedený kanál buď neexistuje, alebo je súkromný</value>
   </data>
   <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Zorg ervoor dat Froststrap de versie met een specifieke hash downloadt. Wijzig dit niet als je geen idee hebt wat dit doet.</value>
+    <value>Vynútiť, aby si Froststrap stiahol verziu s konkrétnym hash. Ak neviete, na čo to slúži, prosím, nemenia to.</value>
   </data>
   <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>Versie-hash</value>
+    <value>Hash verzie</value>
   </data>
   <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>Beschikbare kanalen</value>
+    <value>Dostupné kanály</value>
   </data>
   <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Zoekt de meeste beschikbare kanalen af om te gebruiken.</value>
+    <value>Vyhľadáva väčšinu dostupných kanálov, ktoré je možné využiť.</value>
   </data>
   <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>Hiermee stel je het implementatiekanaal in. Wijzig dit alleen als je weet wat je doet!</value>
+    <value>Nastaví kanál nasadenia. Nezmeňujte to, pokiaľ neviete, čo robíte!</value>
   </data>
   <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>Start de app opnieuw op om de animaties uit te schakelen.</value>
+    <value>Aby sa animácie deaktivovali, reštartujte prosím aplikáciu.</value>
   </data>
   <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>Start de app opnieuw op om de hardwareversnelling uit te schakelen en de wijziging door te voeren.</value>
+    <value>Prosím, reštartujte aplikáciu, aby sa hardvérová akcelerácia deaktivovala a zmeny nadobudli platnosť.</value>
   </data>
   <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>Spelerslogboeken</value>
+    <value>Záznamy hráčov</value>
   </data>
   <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>Geeft weer welke spelers de server waarop je je bevindt verlaten of erbij komen.</value>
+    <value>Zobrazuje hráčov, ktorí opúšťajú alebo sa pripájajú k serveru, na ktorom sa nachádzate.</value>
   </data>
   <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Hiermee kun je aangepaste mods installeren vanuit de Bootstrapper.</value>
+    <value>Umožňuje inštalovať vlastné mody z Bootstrapperu.</value>
   </data>
   <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>Aangepaste mods</value>
+    <value>Vlastné modifikácie</value>
   </data>
   <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>Logbestanden wissen</value>
+    <value>Vymazať protokoly</value>
   </data>
   <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>Geselecteerde tekst kopiëren</value>
+    <value>Kopírovať výber</value>
   </data>
   <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>Exportlogboeken</value>
+    <value>Protokoly exportu</value>
   </data>
   <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>Map ‘Logs’ openen</value>
+    <value>Otvoriť priečinok s protokolmi</value>
   </data>
   <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>Logs vernieuwen</value>
+    <value>Obnoviť protokoly</value>
   </data>
   <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>Zoeklogboeken</value>
+    <value>Protokoly vyhľadávania</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
-    <value>Dit kanaal is verouderd en wordt waarschijnlijk niet meer bijgewerkt. Gebruik alstublieft een ander kanaal.</value>
+    <value>Tento kanál je neaktuálny a pravdepodobne sa už neaktualizuje. Použite prosím iný kanál.</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
-    <value>Snel inloggen</value>
+    <value>Rýchle prihlásenie</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
-    <value>Nieuw toevoegen</value>
+    <value>Pridať nový</value>
   </data>
   <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>Geavanceerde instellingen</value>
+    <value>Pokročilé nastavenia</value>
   </data>
   <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>JSON-import-ID</value>
+    <value>Importovať ID v formáte JSON</value>
   </data>
   <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>Toevoegen met ID</value>
+    <value>Pridať s ID</value>
   </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
-    <value>Er bestaat al een vermelding voor deze vlagnaam.</value>
+    <value>Záznam s týmto názvom vlajky už existuje.</value>
   </data>
   <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Terug</value>
+    <value>Späť</value>
   </data>
   <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Als je dit verkeerd gebruikt, kan dit leiden tot instabiliteit of onverwachte gebeurtenissen.</value>
+    <value>Nesprávne použitie tejto funkcie môže viesť k nestabilite alebo k neočakávaným udalostiam.</value>
     <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
   </data>
   <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Wees voorzichtig bij het gebruik.</value>
+    <value>Používajte s opatrnosťou.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
-    <value>Schone lijst</value>
+    <value>Zoznam čistých položiek</value>
   </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
-    <value>Voor sommige vlaggen die u probeert te importeren, zijn al waarden ingesteld. Wilt u de huidige waarden overschrijven met de waarden die in de import zijn gedefinieerd?
+    <value>Niektoré z príznakov, ktoré sa snažíte importovať, už majú nastavené hodnoty. Chcete ich aktuálne hodnoty prepísať hodnotami definovanými v importe?
 
-Er zijn {0} conflicterende vlagdefinities:
+Existuje {0} konfliktných definícií príznakov:
 {1}</value>
     <comment>{0} is a number, {1} is a comma-separated list</comment>
   </data>
   <data name="Menu.FastFlagEditor.DeleteSelected" xml:space="preserve">
-    <value>Geselecteerde items verwijderen</value>
+    <value>Odstrániť vybrané</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Beheer hier je FastFlags. Bekijk meer functies in de geavanceerde instellingen.</value>
+    <value>Svoje FastFlags môžete spravovať tu. Ďalšie funkcie nájdete v časti „Pokročilé nastavenia“.</value>
   </data>
   <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>Alleen .json- en .txt-bestanden worden ondersteund</value>
+    <value>Podporované sú iba súbory s príponami .json a .txt</value>
   </data>
   <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 Plaats hier je JSON- of TXT-bestand</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
-    <value>JSON exporteren</value>
+    <value>📂 Vložte sem svoj súbor JSON alebo TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>Wilt u vooraf ingestelde FFlags opnemen?</value>
+    <value>Chceli by ste zahrnúť prednastavené FFlags?</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, aangezien de waarde een booleaanse waarde moet zijn (ofwel 'True', ofwel 'False')</value>
+    <value>Záznam pre „{0}“ nie je platný, pretože hodnota musí byť logická (buď „True“, alebo „False“)</value>
     <comment>Do not translate 'True' and 'False', those must stay in English</comment>
   </data>
   <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, omdat de naam alleen letters, cijfers en onderstrepingstekens mag bevatten</value>
+    <value>Záznam pre „{0}“ nie je platný, pretože názov môže obsahovať iba písmená, čísla a podčiarknutia</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
-    <value>De JSON die je hebt ingevoerd, lijkt niet geldig te zijn. Controleer deze nogmaals en probeer het opnieuw.
+    <value>Zdá sa, že zadaný JSON nie je platný. Skontrolujte ho, prosím, a skúste to znova.
 
-Meer informatie:
+Ďalšie informácie:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
   <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, aangezien de waarde een geheel getal moet zijn</value>
+    <value>Záznam pre „{0}“ nie je platný, pretože hodnota musí byť celé číslo</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig omdat het plaatsfilter niet correct is opgemaakt.</value>
+    <value>Záznam pre „{0}“ nie je platný, pretože filter miesta nie je správne naformátovaný.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, omdat de naam moet beginnen met FFlag, DFInt, enz.</value>
+    <value>Záznam pre „{0}“ nie je platný, pretože názov musí začínať predponou FFlag, DFInt atď.</value>
   </data>
   <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Naar het klembord gekopieerd.</value>
+    <value>Skopírované do schránky.</value>
   </data>
   <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Het lijkt erop dat je een zeer omvangrijke configuratie importeert. Je dient alleen configuraties te importeren die je volledig begrijpt. Plak GEEN configuraties van anderen klakkeloos in. Als je doorgaat, zul je hoogstwaarschijnlijk te maken krijgen met stabiliteitsproblemen en onverwachte wijzigingen.
+    <value>Zdá sa, že importujete veľmi rozsiahlu konfiguráciu. Mali by ste importovať iba také konfigurácie, ktorým úplne rozumiete. NEVKLADAJTE naslepo konfigurácie vytvorené inými ľuďmi. Ak budete pokračovať, s veľkou pravdepodobnosťou sa stretnete s problémami so stabilitou a neočakávanými zmenami.
 
-Weet je zeker dat je wilt doorgaan?</value>
+Naozaj chcete pokračovať?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
-    <value>Wauw, dit is zo leeg! Zullen we er een FastFlag aan toevoegen?</value>
+    <value>Páni, tu je to také prázdne! Čo tak pridať FastFlag?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
-    <value>Vlagprofielen</value>
+    <value>Profily vlajok</value>
   </data>
   <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>Zoeken</value>
+    <value>Vyhľadávanie</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
-    <value>Vooraf ingestelde vlaggen weergeven</value>
+    <value>Zobraziť prednastavené vlajky</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
+    <value>Editor FastFlag</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Terug</value>
+    <value>Vrátiť sa späť</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Ik weet wat ik doe</value>
+    <value>Viem, čo robím</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Weet je wel wat je aan het doen bent?</value>
+    <value>Vieš, čo robíš?</value>
   </data>
   <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Fast Flags zijn uiterst krachtig, aangezien ze uitsluitend bedoeld zijn voor gebruik door Roblox-ontwikkelaars. Hoewel ze erg nuttig kunnen zijn, kan het handmatig configureren ervan ernstige problemen met de stabiliteit en functionaliteit veroorzaken. Gebruik de editor NIET als je niet zeker weet wat je doet.
+    <value>Rýchle príkazy sú mimoriadne výkonné, keďže sú určené výhradne pre inžinierov spoločnosti Roblox. Hoci môžu byť veľmi užitočné, ich ručné nastavovanie môže spôsobiť vážne problémy so stabilitou a funkčnosťou. Nepoužívajte tento editor, ak si nie ste istí, čo robíte.
 
-Gebruik dit NIET om grote „flaglijsten“ te importeren die door anderen zijn gemaakt en die beloven de prestaties te verbeteren of iets dergelijks. Deze lijsten zijn onderhevig aan de eerder genoemde problemen en zullen voor jou problemen veroorzaken, aangezien je niet volledig op de hoogte bent van wat ze precies wijzigen. Als je dat van plan was, GA DAN TERUG.</value>
+NEPOUŽÍVAJTE tento nástroj na importovanie rozsiahlych „zoznamov vlajok“ vytvorených inými ľuďmi, ktoré sľubujú zlepšenie výkonu alebo podobné veci. Tieto zoznamy sú náchylné na spomínané problémy a spôsobia vám ťažkosti, pretože nebudete mať úplný prehľad o tom, čo vlastne menia. Ak ste sa chystali tak urobiť, VRÁŤTE SA SPÄŤ.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
-    <value>Bepaal hoe bepaalde parameters en functies van de Roblox-engine worden geconfigureerd.</value>
+    <value>Ovládajte nastavenie konkrétnych parametrov a funkcií enginu Roblox.</value>
   </data>
   <data name="Menu.FastFlags.Editor.Description" xml:space="preserve">
-    <value>Beheer je eigen Fast Flags. Wees voorzichtig bij het gebruik.</value>
+    <value>Spravujte si svoje vlastné rýchle vlajky. Používajte s opatrnosťou.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
   <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Lees meer over Fast Flags, wat deze voorinstellingen doen en hoe je ze kunt gebruiken.</value>
+    <value>Zistite viac o funkcii Fast Flags, o tom, na čo slúžia tieto prednastavenia a ako ich používať.</value>
     <comment>Title is Common.Help</comment>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
-    <value>Als je deze optie uitschakelt, wordt niets van wat hier is geconfigureerd toegepast op Roblox.</value>
+    <value>Ak túto možnosť deaktivujete, žiadne nastavenia uvedené v tejto časti sa v hre Roblox neuplatnia.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
-    <value>Froststrap toestaan om FastFlags te beheren</value>
+    <value>Povoliť programu Froststrap správu FastFlags</value>
   </data>
   <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Stel de grafische en prestatie-instellingen voor de Roblox-engine in.</value>
+    <value>Nastavte vizuálne a výkonnostné nastavenia pre herný engine Roblox.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
-    <value>Roblox past de weergavekwaliteit aan, afhankelijk van hoe je scherm in Windows is geschaald.</value>
+    <value>Roblox znižuje kvalitu vykresľovania v závislosti od toho, ako je váš displej zväčšený v systéme Windows.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
-    <value>De weergavekwaliteit behouden bij het schalen van het scherm</value>
+    <value>Zachovanie kvality vykresľovania pri zmenšovaní obrazovky</value>
   </data>
   <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
-    <value>Hiermee wordt de lucht in het spel veranderd in een effen grijze kleur. Let op: dit werkt niet in spellen waarin de ontwikkelaar een aangepaste skybox heeft toegevoegd.</value>
+    <value>Zmení oblohu v hre na jednoliatu šedú farbu. Poznámka: Táto funkcia nebude fungovať v hrách, v ktorých vývojár pridal vlastný skybox.</value>
   </data>
   <data name="Menu.FastFlags.Presets.GraySky.Title" xml:space="preserve">
-    <value>Grijze lucht</value>
+    <value>Sivá obloha</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Description" xml:space="preserve">
-    <value>Pas de kwaliteit van de mesh aan om de prestaties of de weergave te verbeteren.</value>
+    <value>Upravujte kvalitu textúry, aby ste zlepšili výkon alebo grafiku.</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
-    <value>Sleep om de detailgraad van de mesh aan te passen voor betere prestaties of een hogere kwaliteit.</value>
+    <value>Preťahovaním nastavte úroveň detailov textúry s ohľadom na výkon alebo kvalitu.</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Title" xml:space="preserve">
-    <value>Details van het gaas</value>
+    <value>Podrobnosti o sieti</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
-    <value>Hogere MSAA-niveaus verminderen gekartelde randen, maar kunnen de prestaties beïnvloeden.</value>
+    <value>Vyššie hodnoty MSAA znižujú zubaté okraje, môžu však ovplyvniť výkon.</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
-    <value>Anti-aliasing-kwaliteit (MSAA)</value>
+    <value>Kvalita vyhladzovania (MSAA)</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
-    <value>Hiermee wordt de grafische kwaliteit vastgezet op een geselecteerd niveau. Opmerking: als deze instelling is ingeschakeld, heeft de grafische schuifbalk in het Roblox-menu alleen invloed op de weergaveafstand in een spel.</value>
+    <value>Upevní kvalitu grafiky na zvolenú úroveň. Poznámka: Ak je toto nastavenie zapnuté, posuvník grafiky v ponuke Robloxu bude ovplyvňovať iba vzdialenosť vykresľovania v hre.</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
-    <value>Grafische kwaliteit overschrijven</value>
+    <value>Prepísanie úrovne kvality grafiky</value>
   </data>
   <data name="Menu.FastFlags.Presets.PauseVoxelizer.Description" xml:space="preserve">
-    <value>Schakelt 'baked shadows' uit om de prestaties te verbeteren, maar dit kan in sommige games tot verlichtingsproblemen leiden.</value>
+    <value>Vypne predrenderované tiene s cieľom zvýšiť výkon, v niektorých hrách to však môže spôsobiť problémy s osvetlením.</value>
   </data>
   <data name="Menu.FastFlags.Presets.PauseVoxelizer.Title" xml:space="preserve">
-    <value>Voxelizer pauzeren</value>
+    <value>Pozastaviť Voxelizer</value>
   </data>
   <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
-    <value>Verwijdert de standaardgrastexturen van Roblox. Opmerking: deze instelling heeft geen invloed op aangepaste grastexturen die door afzonderlijke spellen worden gebruikt.</value>
+    <value>Odstráni predvolené textúry trávy v hre Roblox. Poznámka: Toto nastavenie nemá vplyv na vlastné textúry trávy používané v jednotlivých hrách.</value>
   </data>
   <data name="Menu.FastFlags.Presets.RemoveGrass.Title" xml:space="preserve">
-    <value>Gras uitschakelen</value>
+    <value>Vypnúť trávu</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Description" xml:space="preserve">
-    <value>Stel de weergave-API in die voor Roblox wordt gebruikt. Opmerking: druk op Alt + Enter om de exclusieve volledig-schermmodus te activeren wanneer je Direct3D als weergave-API gebruikt.</value>
+    <value>Nastavte renderovacie rozhranie používané pre Roblox. Poznámka: Ak používate Direct3D ako renderovacie rozhranie, stlačením klávesov Alt + Enter prejdete do exkluzívneho režimu celej obrazovky.</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
-    <value>Weergavemodus</value>
+    <value>Režim vykresľovania</value>
   </data>
   <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
-    <value>Pas de textuurkwaliteit voor games aan. Opmerking: deze instelling heeft ook invloed op de GUI en de UI.</value>
+    <value>Nastavte kvalitu textúr pre hry. Poznámka: Toto nastavenie ovplyvňuje aj grafické rozhranie (GUI) a používateľské rozhranie (UI).</value>
   </data>
   <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Textuurkwaliteit</value>
+    <value>Kvalita textúry</value>
   </data>
   <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
-    <value>Alles terugzetten naar de standaardinstellingen</value>
+    <value>Obnoviť všetky nastavenia na predvolené hodnoty</value>
   </data>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
-    <value>FastFlag-instellingen</value>
+    <value>Nastavenia FastFlag</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Voeg automatisch de Alt+Enter FastFlag toe bij het opstarten van Froststrap.</value>
+    <value>Pri spustení aplikácie Froststrap automaticky pridať rýchlu značku Alt+Enter.</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Alt handmatig gebruiken</value>
+    <value>Ručné použitie klávesy Alt</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>Kies het formaat voor het kopiëren van JSON.</value>
+    <value>Vyberte formát na kopírovanie JSON.</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>Opmaak kopiëren</value>
+    <value>Kopírovať formát</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Kopieert geselecteerde vlaggen als JSON met behulp van het gekozen kopieerformaat wanneer je op Ctrl+C drukt.</value>
+    <value>Pri stlačení klávesovej skratky Ctrl+C skopíruje vybrané vlajky vo formáte JSON podľa zvoleného formátu kopírovania.</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C JSON-formaat</value>
+    <value>Ctrl+C Formát JSON</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>Schakel de kolom ‘Preset’ in de FastFlag-instellingen in voor FastFlags die kunnen worden in- en uitgeschakeld.</value>
+    <value>V nastaveniach FastFlag zapnite stĺpec „Predvolby“ pre prepínateľné FastFlags.</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>Vooraf ingestelde kolom</value>
+    <value>Prednastavený stĺpec</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>Geef het totale aantal vlaggen weer in de FastFlag Editor.</value>
+    <value>Zobraziť celkový počet vlajok v editore FastFlag.</value>
   </data>
   <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>Aantal vlaggen</value>
+    <value>Počet vlajok</value>
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
-    <value>FF-vlaggen wissen</value>
+    <value>Vymazať FFlags</value>
   </data>
   <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Lettertypebestanden</value>
+    <value>Súbory písem</value>
   </data>
   <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Het is anoniem en er zit niets kwaadaardigs achter, dat beloof ik. Voor meer informatie over welke gegevens Froststrap verzamelt en waarom, zie het [privacybeleid]({0}) van Froststrap.</value>
+    <value>Je to anonymné a nie je v tom nič zlé, sľubujem. Ak chcete zistiť, aké údaje Froststrap zhromažďuje a prečo, pozrite si [zásady ochrany osobných údajov]({0}) služby Froststrap.</value>
   </data>
   <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Het verzenden van analysegegevens naar Froststrap inschakelen</value>
+    <value>Povoliť odosielanie analytických údajov do Froststrap</value>
   </data>
   <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Configureer opties die betrekking hebben op het gedrag van Froststrap zelf.</value>
+    <value>Nastavte možnosti týkajúce sa samotného správania sa Froststrapu.</value>
   </data>
   <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>Verzamel informatie die je online kunt uploaden om een probleem dat je hebt op te lossen.</value>
+    <value>Získajte informácie, ktoré je možné nahrať online, aby ste mohli vyriešiť problém, s ktorým sa stretávate.</value>
   </data>
   <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>Configuratie van Froststrap</value>
+    <value>Konfigurácia Froststrap</value>
     <comment>Label that appears next to a checkbox</comment>
   </data>
   <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>Alle Froststrap-logbestanden</value>
+    <value>Všetky záznamy o Froststrapovi</value>
     <comment>Label that appears next to a checkbox</comment>
   </data>
   <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
-    <value>Diagnostische gegevens exporteren</value>
+    <value>Export diagnostických údajov</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
-    <value>Pas de instellingen in het spel aan via een handig menu.</value>
+    <value>Nastavenia v hre môžete zmeniť prostredníctvom prehľadného menu.</value>
   </data>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
-    <value>Voorkom dat Roblox de algemene instellingen overschrijft.</value>
+    <value>Zabráňte tomu, aby Roblox prepisoval globálne nastavenia.</value>
   </data>
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
-    <value>Instellen als alleen-lezen</value>
+    <value>Nastaviť ako len na čítanie</value>
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
-    <value>Algemene instellingen</value>
+    <value>Všeobecné nastavenia</value>
   </data>
   <data name="Menu.Help.Title" xml:space="preserve">
-    <value>Hulp</value>
+    <value>Pomoc</value>
   </data>
   <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Pictogrambestanden</value>
+    <value>Súbory ikon</value>
   </data>
   <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Froststrap kan hier niet worden geïnstalleerd. Kies een andere locatie of gebruik de standaardlocatie door op de resetknop te klikken.</value>
+    <value>Froststrap sa tu nedá nainštalovať. Vyberte si prosím iné umiestnenie alebo použite predvolené umiestnenie kliknutím na tlačidlo „Reset“.</value>
   </data>
   <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrap heeft geen schrijftoegang tot de door u gekozen installatielocatie. Kies alstublieft een andere locatie.</value>
+    <value>Froststrap nemá prístup na zápis do umiestnenia inštalácie, ktoré ste vybrali. Vyberte prosím iné umiestnenie.</value>
   </data>
   <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>De map waarin u Froststrap wilt installeren, bestaat al en is NIET leeg. Het wordt ten zeerste aanbevolen om Froststrap in een eigen, afzonderlijke map te installeren.
+    <value>Zložka, ktorú ste vybrali na inštaláciu Froststrapu, už existuje a NIE JE prázdna. Dôrazne odporúčame nainštalovať Froststrap do vlastnej samostatnej zložky.
 
-Het wordt aangeraden om naar de volgende locatie over te schakelen:
+Odporúča sa zmeniť umiestnenie na nasledujúce:
 {0}
 
-Wilt u overschakelen naar de voorgestelde locatie?
-Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installatie voortgezet.</value>
+Chcete zmeniť umiestnenie na odporúčané?
+Ak zvolíte „Nie“, toto varovanie sa ignoruje a inštalácia bude pokračovať.</value>
     <comment>{0} is a file path</comment>
   </data>
   <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Je moet een installatielocatie instellen</value>
+    <value>Musíte nastaviť umiestnenie inštalácie</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
-    <value>Activiteiten bijhouden</value>
+    <value>Sledovanie aktivity</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Description" xml:space="preserve">
-    <value>Hiermee kan iedereen via je Discord-profiel meedoen aan het spel waarin je op dat moment zit.</value>
+    <value>Umožňuje komukoľvek pripojiť sa k hre, v ktorej sa práve nachádzate, prostredníctvom vášho profilu na Discorde.</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
-    <value>Deelname aan activiteiten toestaan</value>
+    <value>Povoliť pripájanie sa k aktivite</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
-    <value>Schakelt bepaalde ingebouwde Roblox-functies in of uit.</value>
+    <value>Zapína alebo vypína určité vstavané funkcie Robloxu.</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
-    <value>Roblox-functies uitschakelen</value>
+    <value>Deaktivovať funkcie Robloxu</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
-    <value>Schakelt de screenshotfunctie van Roblox uit. Opmerking: wanneer deze functie is ingeschakeld, werkt de sneltoetscombinatie niet meer.</value>
+    <value>Deaktivuje funkciu vytvárania snímok obrazovky v hre Roblox. Poznámka: Ak je táto funkcia zapnutá, kombinácia klávesových skratiek už nebude fungovať.</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
-    <value>Screenshots in Roblox uitschakelen</value>
+    <value>Zakázať snímky obrazovky v hre Roblox</value>
   </data>
   <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
-    <value>Schakelt de opnamefunctie van Roblox uit. Opmerking: wanneer deze functie is ingeschakeld, werkt de sneltoetscombinatie niet meer.</value>
+    <value>Vypne funkciu nahrávania v hre Roblox. Poznámka: Ak je táto funkcia zapnutá, kombinácia klávesových skratiek už nebude fungovať.</value>
   </data>
   <data name="Menu.Integrations.BlockVideoRecording.Title" xml:space="preserve">
-    <value>Roblox-opname uitschakelen</value>
+    <value>Vypnúť nahrávanie v Roblox</value>
   </data>
   <data name="Menu.Integrations.Custom.AppLocation" xml:space="preserve">
-    <value>Locatie van de toepassing</value>
+    <value>Miesto použitia</value>
   </data>
   <data name="Menu.Integrations.Custom.AutoClose" xml:space="preserve">
-    <value>Automatisch sluiten wanneer Roblox wordt afgesloten</value>
+    <value>Automatické zatvorenie pri ukončení aplikácie Roblox</value>
   </data>
   <data name="Menu.Integrations.Custom.AutoCloseOnGame" xml:space="preserve">
-    <value>Automatisch sluiten wanneer het spel wordt afgesloten</value>
+    <value>Automatické zatvorenie po ukončení hry</value>
   </data>
   <data name="Menu.Integrations.Custom.Description" xml:space="preserve">
-    <value>Start automatisch extra programma's met Roblox.</value>
+    <value>Pomocou Robloxu automaticky spúšťajte ďalšie programy.</value>
   </data>
   <data name="Menu.Integrations.Custom.GameID" xml:space="preserve">
-    <value>Spel-ID</value>
+    <value>ID hry</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs" xml:space="preserve">
-    <value>Startargumenten</value>
+    <value>Argumenty spustenia</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs.Placeholder" xml:space="preserve">
-    <value>Roblox draait!</value>
+    <value>Roblox už beží!</value>
   </data>
   <data name="Menu.Integrations.Custom.NewIntegration" xml:space="preserve">
-    <value>Nieuwe integratie</value>
+    <value>Nová integrácia</value>
   </data>
   <data name="Menu.Integrations.Custom.NoneSelected" xml:space="preserve">
-    <value>Er is geen integratie geselecteerd. Selecteer er een of voeg een nieuwe toe.</value>
+    <value>Nebola vybraná žiadna integrácia. Vyberte prosím jednu alebo pridajte novú.</value>
   </data>
   <data name="Menu.Integrations.Custom.SpecifyGame" xml:space="preserve">
-    <value>Een specifiek spel spelen</value>
+    <value>Spustiť v konkrétnej hre</value>
   </data>
   <data name="Menu.Integrations.Custom.Title" xml:space="preserve">
-    <value>Aangepaste integraties</value>
+    <value>Vlastné integrácie</value>
   </data>
   <data name="Menu.Integrations.CustomStatusDisplay.Description" xml:space="preserve">
-    <value>Geeft een aangepast statusbericht weer in plaats van het standaardbericht ‘Roblox wordt afgespeeld’.</value>
+    <value>Zobrazí vlastnú stavovú správu namiesto predvolenej správy „Prehraje sa Roblox“.</value>
   </data>
   <data name="Menu.Integrations.CustomStatusDisplay.Title" xml:space="preserve">
-    <value>Aangepaste statusweergave</value>
+    <value>Vlastné zobrazenie stavu</value>
   </data>
   <data name="Menu.Integrations.Description" xml:space="preserve">
-    <value>Configureer extra functionaliteit als aanvulling op Roblox.</value>
+    <value>Nakonfigurujte doplnkové funkcie, ktoré budú fungovať spolu s Robloxom.</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Description" xml:space="preserve">
-    <value>Roblox wordt volledig afgesloten wanneer je een spel verlaat in plaats van terug te gaan naar de app. [Dit kan tot storingen leiden!]({0})</value>
+    <value>Aplikácia Roblox sa úplne zatvorí, keď opustíte hru namiesto toho, aby ste sa vrátili do aplikácie. [Niektoré funkcie nebudú fungovať!]({0})</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Title" xml:space="preserve">
-    <value>Dicht bij het bureaublad</value>
+    <value>Blízko k pracovnej ploche</value>
   </data>
   <data name="Menu.Integrations.DoubleClickAction.Description" xml:space="preserve">
-    <value>Er wordt een specifiek venster geopend wanneer je tijdens het opstarten van Roblox dubbelklikt op Froststrap in het systeemvak.</value>
+    <value>Pri spúšťaní Robloxu otvorí konkrétne okno, ak dvakrát kliknete na ikonu Froststrap v systémovej lište.</value>
   </data>
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
-    <value>Dubbelklikactie</value>
+    <value>Akcia pri dvojitom kliknutí</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
-    <value>Hiermee kan Froststrap detecteren welk Roblox-spel je speelt. Voor bepaalde functies kan dit nodig zijn.</value>
+    <value>Umožňuje aplikácii Froststrap zistiť, ktorú hru na Roblox práve hráte. Niektoré funkcie to môžu vyžadovať.</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Title" xml:space="preserve">
-    <value>Activiteitenregistratie inschakelen</value>
+    <value>Zapnúť sledovanie aktivity</value>
   </data>
   <data name="Menu.Integrations.FroststrapRPC.Description" xml:space="preserve">
-    <value>Schakel deze optie in om een aangepaste RPC ‘Playing Froststrap’ in je Discord-profiel weer te geven zolang de app geopend is.</value>
+    <value>Túto funkciu zapnite, aby sa vo vašom profile na Discorde zobrazoval vlastný RPC „Playing Froststrap“, pokiaľ je aplikácia otvorená.</value>
   </data>
   <data name="Menu.Integrations.GameHistory.Description" xml:space="preserve">
-    <value>Geeft het spel weer dat je tijdens deze sessie hebt gespeeld en biedt je de mogelijkheid om weer mee te doen.</value>
+    <value>Zobrazuje hru, ktorú ste hrali v tejto relácii, a umožňuje vám opäť sa k nej pripojiť.</value>
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
-    <value>Bekijk je spelgeschiedenis om snel weer op je server in te loggen.</value>
+    <value>Zobraziť históriu hier, aby ste sa mohli rýchlo opäť pripojiť k svojmu serveru.</value>
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
-    <value>Menu ‘Spelgeschiedenis’</value>
+    <value>Ponuka histórie hry</value>
   </data>
   <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Multi-Instancing is gevoelig voor storingen. We bieden geen ondersteuning bij problemen met Multi-Instancing, aangezien Roblox actief maatregelen neemt om ervoor te zorgen dat het niet werkt. We kunnen en zullen niet proberen deze maatregelen te omzeilen.</value>
+    <value>Funkcia Multi-Instancing je náchylná na poruchy. Nebudeme poskytovať podporu pri problémoch s funkciou Multi-Instancing, keďže spoločnosť Roblox aktívne zavádza opatrenia, ktoré majú zabrániť jej fungovaniu. Nemôžeme a ani sa nebudeme pokúšať tieto opatrenia obísť.</value>
   </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>Geeft weer wanneer spelers toetreden of vertrekken, en toont berichten. Werkt alleen met [de tekstchatservice](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
+    <value>Zobrazuje prihlásenia a odhlásenia hráčov a správy. Funguje iba so službou [textového chatu](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>Menu 'Logbestanden'</value>
+    <value>Ponuka protokolov</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
-    <value>Geeft je totale speeltijd en de huidige sessietijd weer terwijl je in een spel of in Studio bent.</value>
+    <value>Zobrazuje celkový čas hrania a čas aktuálnej relácie, keď ste v hre alebo v priestore Studio.</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
-    <value>Speeltijdteller</value>
+    <value>Počítadlo hracieho času</value>
   </data>
   <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
-    <value>Als je in het spel bent, kun je via [ipinfo.io](https://ipinfo.io) zien waar je server zich bevindt.</value>
+    <value>Keď budete v hre, budete môcť zistiť, kde sa nachádza váš server, prostredníctvom stránky [ipinfo.io](https://ipinfo.io).</value>
   </data>
   <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
-    <value>Locatie van de query-server</value>
+    <value>Zistiť umiestnenie servera</value>
   </data>
   <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
-    <value>Voor deze functie moet het bijhouden van activiteiten zijn ingeschakeld en moet de Discord-desktopapp zijn geïnstalleerd en actief zijn. [Meer informatie]({0}).</value>
+    <value>Táto funkcia vyžaduje, aby bolo zapnuté sledovanie aktivity a aby bola nainštalovaná a spustená desktopová aplikácia Discord. [Viac informácií]({0}).</value>
   </data>
   <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
-    <value>Geeft op je Discord-profiel het Roblox-account weer waarmee je speelt.</value>
+    <value>Zobrazuje účet Roblox, s ktorým hráš, vo tvojom profile na Discorde.</value>
   </data>
   <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
-    <value>Roblox-account weergeven</value>
+    <value>Zobraziť účet Roblox</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
-    <value>De Roblox-game die je speelt, wordt weergegeven op je Discord-profiel. [Werkt het niet?]({0})</value>
+    <value>Hra Roblox, ktorú práve hráte, sa zobrazí vo vašom profile na Discorde. [Nefunguje to?]({0})</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
-    <value>Spelactiviteit weergeven</value>
+    <value>Zobraziť aktivitu v hre</value>
   </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
-    <value>Integraties</value>
+    <value>Integrácie</value>
   </data>
   <data name="Menu.Load" xml:space="preserve">
-    <value>Laden</value>
+    <value>Načítať</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Bestandsaanpassingen voor de Roblox-gameclient beheren en toepassen.</value>
+    <value>Spravujte a aplikujte úpravy súborov na herný klient Roblox.</value>
   </data>
   <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Lees meer over het beheren en maken van mods.</value>
+    <value>Pozrite si informácie o spravovaní a vytváraní modov.</value>
     <comment>Title is Common.Help</comment>
   </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
-    <value>Alles wat je nodig hebt om je cursors te beheren.</value>
+    <value>Všetko, čo potrebujete na správu kurzorov.</value>
   </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
-    <value>Aangepaste cursorfuncties</value>
+    <value>Funkcie vlastného kurzora</value>
   </data>
   <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
-    <value>Stel de applicatieparameters in, zoals het DPI-schaalgedrag en [optimalisaties voor volledig scherm]({0}).</value>
+    <value>Nastavte parametre aplikácie, ako je správanie škálovania DPI a [optimalizácie pre režim celej obrazovky]({0}).</value>
   </data>
   <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
-    <value>Compatibiliteitsinstellingen beheren</value>
+    <value>Správa nastavení kompatibility</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
-    <value>Kies cursor...</value>
+    <value>Vyberte kurzor...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
-    <value>Gebruik je eigen muiscursors in Roblox.</value>
+    <value>V hre Roblox môžete používať vlastné kurzory myši.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
-    <value>Aangepaste cursor verwijderen</value>
+    <value>Odstrániť vlastný kurzor</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
-    <value>Aangepaste cursor</value>
+    <value>Vlastný kurzor</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>Set toepassen</value>
+    <value>Použiť sadu</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
-    <value>Zorg dat je meerdere cursorsets bij de hand hebt om te gebruiken.</value>
+    <value>Majte pripravených viacero sád kurzorov na okamžité použitie.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>Exportset</value>
+    <value>Sada pre export</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>Haal Set</value>
+    <value>Načítanie Nastavenie</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>Importset</value>
+    <value>Importovať sadu</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>Er is geen aangepaste cursorset geselecteerd.</value>
+    <value>Nie je vybraná žiadna vlastná sada kurzorov.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
-    <value>Aangepaste cursorset</value>
+    <value>Vlastná sada kurzorov</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
-    <value>Kies 'Geluid'...</value>
+    <value>Vyberte zvuk...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
-    <value>Vervangt het geluid bij overlijden door je eigen audio.</value>
+    <value>Nahradí zvuk smrti vaším vlastným zvukovým súborom.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
-    <value>Aangepast sterfgeluid verwijderen</value>
+    <value>Odstrániť vlastný zvuk smrti</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
-    <value>Aangepast overlijdensgeluid</value>
+    <value>Vlastný zvuk smrti</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
-    <value>Lettertype kiezen...</value>
+    <value>Vyberte písmo...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
-    <value>Stelt het gekozen aangepaste lettertype in Roblox in.</value>
+    <value>Nastaví zvolené vlastné písmo v hre Roblox.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>Het bestand dat u hebt gekozen, lijkt geen geldig lettertypebestand te zijn.</value>
+    <value>Zdá sa, že súbor, ktorý ste vybrali, nie je platným súborom písma.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
-    <value>Toegepast lettertype verwijderen</value>
+    <value>Odstrániť použité písmo</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
-    <value>Aangepast lettertype voor het spel</value>
+    <value>Vlastné písmo pre hru</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
-    <value>Kies ShiftLock...</value>
+    <value>Vyberte ShiftLock...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
-    <value>Gebruik je eigen Shiftlock in Roblox.</value>
+    <value>Používajte svoj vlastný Shiftlock v hre Roblox.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
-    <value>Aangepaste Shiftlock verwijderen</value>
+    <value>Odstrániť vlastný Shiftlock</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
-    <value>Shiftlock op maat</value>
+    <value>Vlastný Shiftlock</value>
   </data>
   <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>Kleurverloop toevoegen</value>
+    <value>Pridať farebný prechod</value>
   </data>
   <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Opties voor het genereren van modellen</value>
+    <value>Možnosti generovania modov</value>
   </data>
   <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>Kleuren cursors</value>
+    <value>Farebné kurzory</value>
   </data>
   <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>Kleurenwiel voor emotes</value>
+    <value>Farebné koleso emócií</value>
   </data>
   <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>Cursor met kleurverandering en vergrendeling</value>
+    <value>Kurzor Color Shiftlock</value>
   </data>
   <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>Kleurrijke pictogrammen voor voicechat</value>
+    <value>Farebné ikony hlasového chatu</value>
   </data>
   <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>Hellinghoek:</value>
+    <value>Uhol sklonu:</value>
   </data>
   <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>Verloopkleuren</value>
+    <value>Farby s prechodom</value>
   </data>
   <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>Snelle acties</value>
+    <value>Rýchle akcie</value>
   </data>
   <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Kopieer naar de map Mods</value>
+    <value>Skopíruj do priečinka Mods</value>
   </data>
   <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
-    <value>Genereren-modus</value>
+    <value>Režim generovania</value>
   </data>
   <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>Aangepast Roblox-logo</value>
+    <value>Vlastné logo Roblox</value>
   </data>
   <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>Voorbeeld van een sprite-sheet</value>
+    <value>Náhľad sprite listu</value>
   </data>
   <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>Voorbeeld van één sprite</value>
+    <value>Náhľad jedného spritu</value>
   </data>
   <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>Aangepaste laadindicator</value>
+    <value>Vlastné indikátory načítavania</value>
   </data>
   <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
-    <value>Tegen Generator</value>
+    <value>Generátor modov</value>
   </data>
   <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Beheer hier je eigen Roblox-mods.</value>
+    <value>Tu môžete spravovať vlastné mody pre Roblox.</value>
   </data>
   <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Open de map ‘Mods’</value>
+    <value>Otvoriť priečinok „Mods“</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
-    <value>Kies welk type emoji Roblox moet gebruiken.</value>
+    <value>Vyberte, aký typ emodži má Roblox používať.</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
-    <value>De emoji-mod kan op dit moment niet worden toegepast.</value>
+    <value>Modul emoji momentálne nie je možné použiť.</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
-    <value>Voorkeurssoort emoji</value>
+    <value>Preferovaný typ emodži</value>
   </data>
   <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
-    <value>Kies of je meerdere Roblox-cursors wilt gebruiken.</value>
+    <value>Vyberte si, či chcete používať viac kurzorov pre Roblox.</value>
   </data>
   <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
-    <value>Muisaanwijzer</value>
+    <value>Kurzor myši</value>
   </data>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
-    <value>Breng de oude achtergrond van de avatar-editor terug die vóór 2020 in de Roblox-app werd gebruikt.</value>
+    <value>Obnovte staré pozadie editora avatarov, ktoré sa v aplikácii Roblox používalo pred rokom 2020.</value>
   </data>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
-    <value>Achtergrond van de oude avatar-editor gebruiken</value>
+    <value>Použiť staré pozadie v editore avatarov</value>
   </data>
   <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Een poging om de geluiden van de personages die vóór 2014 werden gebruikt, grofweg terug te brengen.</value>
+    <value>Pokús o približné obnovenie zvukov postáv, ktoré sa používali pred rokom 2014.</value>
   </data>
   <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Oude karaktergeluiden nabootsen</value>
+    <value>Napodobňovanie zvukov starých postáv</value>
   </data>
   <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Laat het klassieke 'oof'-doodsgeluid weer terugkomen.</value>
+    <value>Vráťte späť ten klasický zvuk smrti „oof“.</value>
   </data>
   <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Gebruik 'Old Death Sound'</value>
+    <value>Použi zvuk „Old Death“</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Modifikácie</value>
   </data>
   <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Klik hier voor meer informatie over deze optie.</value>
+    <value>Kliknite sem pre viac informácií o tejto možnosti.</value>
   </data>
   <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>Serverlijst wissen</value>
+    <value>Vymazať zoznam serverov</value>
   </data>
   <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Maak eenvoudig verbinding met servers bij jou in de buurt via het geselecteerde account in Account Manager. Maakt gebruik van [de API’s van RoValra]({0}), [het privacybeleid van RoValra is van toepassing.]({0}/privacy)</value>
+    <value>Pomocou vybraného účtu v Správcovi účtov sa môžete ľahko pripojiť k serverom vo vašom okolí. Využívajú sa [API služby RoValra]({0}), [platia zásady ochrany osobných údajov služby RoValra.]({0}/privacy)</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
-    <value>Voer de plaats-ID of de naam van het spel in...</value>
+    <value>Zadajte ID miesta alebo názov hry...</value>
   </data>
   <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
-    <value>Meer laden</value>
+    <value>Načítať viac</value>
   </data>
   <data name="Menu.RegionSelector.Region" xml:space="preserve">
-    <value>Regio:</value>
+    <value>Región:</value>
   </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
-    <value>Servergrootte:</value>
+    <value>Veľkosť servera:</value>
   </data>
   <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>Doe mee</value>
+    <value>Pripojte sa</value>
   </data>
   <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>Spelers</value>
+    <value>Hráči</value>
   </data>
   <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
-    <value>Regio</value>
+    <value>Región</value>
   </data>
   <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>Server-ID</value>
+    <value>ID servera</value>
   </data>
   <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>Beschikbaarheid van de server</value>
+    <value>Dostupnosť servera</value>
   </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
-    <value>Regioselectie</value>
+    <value>Výber regiónu</value>
   </data>
   <data name="Menu.Restart" xml:space="preserve">
-    <value>Opnieuw starten</value>
+    <value>Reštartovať</value>
   </data>
   <data name="Menu.Save" xml:space="preserve">
-    <value>Opslaan</value>
+    <value>Uložiť</value>
   </data>
   <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>Opslaan en installeren</value>
+    <value>Uložiť a nainštalovať</value>
   </data>
   <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>Opslaan en starten</value>
+    <value>Uložiť a spustiť</value>
   </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
-    <value>De wijzigingen worden van kracht zodra je Roblox de volgende keer opstart.</value>
+    <value>Zmeny nadobudnú platnosť pri najbližšom spustení aplikácie Roblox.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
-    <value>Instellingen opgeslagen!</value>
+    <value>Nastavenia boli uložené!</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>Snelkoppeling naar het spel maken</value>
+    <value>Vytvoriť skratku na hru</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
-    <value>Hiermee kun je snelkoppelingen maken waarmee je snel aan bepaalde spellen kunt deelnemen.</value>
+    <value>Vďaka tomu si môžete vytvoriť skratky, pomocou ktorých sa rýchlo pripojíte ku konkrétnym hrám.</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>Kies een snelkoppeling om deze te bewerken.</value>
+    <value>Vyberte skratku, ktorú chcete upraviť.</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>Gebruik het spelpictogram</value>
+    <value>Použiť ikonu hry</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
-    <value>Sneltoetsen voor games</value>
+    <value>Klávesové skratky v hre</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
-    <value>Stel in hoe Froststrap snel kan worden gestart.</value>
+    <value>Nastavte, ako sa dá aplikácia Froststrap ľahko spustiť.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
-    <value>Hiermee kun je de Roblox-pictogrammen uit het assortiment van Froststrap gebruiken voor je snelkoppelingen. [Bekijk hoe.]({0})</value>
+    <value>Umožňuje vám používať sadu ikon Roblox od Froststrap pre vaše skratky. [Pozrite si, ako na to.]({0})</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
-    <value>Roblox-pictogrammen naar map kopiëren</value>
+    <value>Extrahovať ikony Roblox do priečinka</value>
   </data>
   <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
-    <value>Maak snelkoppelingen aan om snel toegang te krijgen tot bepaalde functies. Deze worden allemaal op het bureaublad geplaatst.</value>
+    <value>Vytvorte si skratky pre rýchly prístup k určitým funkciám. Všetky budú umiestnené na pracovnej ploche.</value>
   </data>
   <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
-    <value>Functie</value>
+    <value>Funkcia</value>
   </data>
   <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
-    <value>Dit zijn de sneltoetsen waarmee je het Launch Menu met meerdere opties kunt openen.</value>
+    <value>Toto sú klávesové skratky, ktoré vyvolajú ponuku spustenia s viacerými možnosťami.</value>
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
-    <value>Algemeen</value>
+    <value>Všeobecné informácie</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
-    <value>Testmodus</value>
+    <value>Testovací režim</value>
     <comment>See the prompt for more context</comment>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
-    <value>Met de testmodus kun je gemakkelijker stap voor stap testen hoe je instellingen van invloed zijn op Roblox. 
+    <value>Testovací režim uľahčuje postupné testovanie toho, ako vaše nastavenia ovplyvňujú fungovanie Robloxu. 
 
-Zolang deze modus is ingeschakeld, wordt Roblox automatisch gestart nadat je de instellingen hebt gesloten, en worden de instellingen opnieuw geopend nadat je Roblox hebt gesloten. Dit proces herhaalt zich totdat je de modus uitschakelt.
+Ak je táto funkcia zapnutá, po zatvorení nastavení sa automaticky spustí Roblox a po zatvorení Robloxu sa opäť otvoria nastavenia – tento cyklus sa bude opakovať, kým túto funkciu nevypnete.
 
-Wil je de testmodus inschakelen?</value>
+Chcete zapnúť testovací režim?</value>
   </data>
   <data name="Menu.Title" xml:space="preserve">
-    <value>Instellingen voor Froststrap</value>
+    <value>Nastavenia Froststrap</value>
   </data>
   <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>Je hebt wijzigingen die nog niet zijn opgeslagen. Weet je zeker dat je wilt sluiten zonder op te slaan?</value>
+    <value>Máte neuložené zmeny. Naozaj chcete okno zavrieť bez uloženia?</value>
   </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Community-mods</value>
+    <value>Modifikácie komunity</value>
   </data>
   <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Huidige vlaggen opslaan</value>
+    <value>Uložiť aktuálne vlajky</value>
   </data>
   <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Snel vlagprofielen opslaan en laden.</value>
+    <value>Ukladajte a načítavajte profily rýchlych vlajok.</value>
   </data>
   <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Profielen van Fast Flag</value>
+    <value>Profily rýchlych vlajok</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
-    <value>Pictogrammen</value>
+    <value>Ikony</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
   </data>
   <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Deze tekst is bedoeld om de automatische vertaling te testen; negeer deze alstublieft.</value>
+    <value>Tento reťazec slúži na testovanie automatického prekladu, prosím, ignorujte ho.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>Ze worden bewaard op de plek waar Froststrap was geïnstalleerd en worden bij een herinstallatie automatisch hersteld.</value>
+    <value>Budú uložené na mieste, kde bol nainštalovaný program Froststrap, a pri opätovnej inštalácii sa automaticky obnovia.</value>
   </data>
   <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>Mijn instellingen en aanpassingen behouden</value>
+    <value>Zachovať moje nastavenia a modifikácie</value>
   </data>
   <data name="Uninstaller.Text" xml:space="preserve">
-    <value>Door het programma te verwijderen, wordt Froststrap van je systeem verwijderd en wordt de standaard Roblox-launcher automatisch opnieuw geconfigureerd, als deze nog geïnstalleerd is.
+    <value>Odinštalovaním sa z vášho systému odstráni aplikácia Froststrap a automaticky sa prekonfiguruje predvolený spúšťač Roblox, ak je stále nainštalovaný.
 
-Als je het programma verwijdert of opnieuw installeert omdat je problemen ondervindt met Roblox, lees dan eerst [deze helppagina]({0}).
+Ak odinštalujete alebo preinštalujete program kvôli problémom s Robloxom, najskôr si prečítajte [túto stránku pomoci]({0}).
 
-Het is mogelijk dat het verwijderingsproces niet alle bestanden volledig verwijdert, dus moet je eventueel handmatig de overgebleven bestanden verwijderen op de locatie waar Froststrap was geïnstalleerd.
+Proces odinštalovania nemusí byť schopný úplne odstrániť všetky stopy, preto môže byť potrebné ručne odstrániť zvyšné súbory z miesta, kde bol nainštalovaný program Froststrap.
 
-Froststrap was geïnstalleerd in "{1}".</value>
+Program Froststrap bol nainštalovaný v adresári „{1}“.</value>
   </data>
   <data name="Uninstaller.Title" xml:space="preserve">
-    <value>Froststrap verwijderen</value>
+    <value>Odinštalovať Froststrap</value>
   </data>
   <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>Verwijderen</value>
+    <value>Odinštalovať</value>
   </data>
 </root>

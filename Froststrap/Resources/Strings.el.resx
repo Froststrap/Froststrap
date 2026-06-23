@@ -1,0 +1,2258 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About.Licenses.Title" xml:space="preserve">
+    <value>Άδειες χρήσης</value>
+    <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
+  </data>
+  <data name="About.Supporters.Description" xml:space="preserve">
+    <value>Αυτοί είναι οι άνθρωποι που έχουν υποστηρίξει το Froststrap μέσω του Ko-fi. Ένα τεράστιο ευχαριστώ σε όλους εδώ!
+Κάθε άτομο εδώ κατατάσσεται με βάση το συνολικό ποσό της συνεισφοράς του.</value>
+  </data>
+  <data name="About.Supporters.Monthly" xml:space="preserve">
+    <value>Μηνιαία</value>
+  </data>
+  <data name="About.Supporters.OneOff" xml:space="preserve">
+    <value>Μια φορά</value>
+  </data>
+  <data name="About.Supporters.Title" xml:space="preserve">
+    <value>Υποστηρικτές του Froststrap</value>
+  </data>
+  <data name="About.Title" xml:space="preserve">
+    <value>Σχετικά με το Froststrap</value>
+  </data>
+  <data name="About.Translators.Description" xml:space="preserve">
+    <value>Όλες οι μεταφράσεις του Froststrap πραγματοποιούνται μέσω της πλατφόρμας [Crowdin]({0}). Όλοι όσοι αναφέρονται εδώ είναι άτομα που αφιέρωσαν γενναιόδωρα τον χρόνο και τις προσπάθειές τους για να βοηθήσουν στην τοπική προσαρμογή του Froststrap. Ένα τεράστιο ευχαριστώ σε όλους!</value>
+  </data>
+  <data name="About.Translators.Title" xml:space="preserve">
+    <value>Μεταφραστές</value>
+  </data>
+  <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η αναζήτηση της τοποθεσίας του διακομιστή. Ίσως συμμετέχετε σε παιχνίδια πολύ γρήγορα.</value>
+  </data>
+  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
+    <value>Το παιχνίδι που παίζεις αυτή τη στιγμή δεν θα εμφανίζεται στην κατάσταση παρουσίας σου στο Discord, επειδή παρουσιάστηκε σφάλμα κατά τη φόρτωση των πληροφοριών του παιχνιδιού.</value>
+  </data>
+  <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
+    <value>Το Roblox δεν υποστηρίζει πλέον τα Windows 7 ή 8.1. Για να συνεχίσετε να παίζετε το Roblox, παρακαλούμε να πραγματοποιήσετε αναβάθμιση στα Windows 10 ή σε νεότερη έκδοση.</value>
+  </data>
+  <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
+    <value>Η ομάδα στην οποία βρίσκεστε αυτή τη στιγμή ({0}) δεν είναι πλέον διαθέσιμη στο κοινό. Θα μεταφερθείτε τώρα στην προεπιλεγμένη ομάδα ({1}).</value>
+  </data>
+  <data name="Bootstrapper.AutoUpdateFailed" xml:space="preserve">
+    <value>Το Froststrap δεν μπόρεσε να ενημερωθεί αυτόματα στην έκδοση {0}. Παρακαλούμε να το ενημερώσετε χειροκίνητα, κατεβάζοντάς το και εκτελώντας το από τον ιστότοπο.</value>
+  </data>
+  <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
+    <value>Το Roblox προσπαθεί να ορίσει το κανάλι σου στο {0}, ωστόσο το τρέχον προτιμώμενο κανάλι σου είναι το {1}.
+
+
+Θέλεις να αλλάξεις το προτιμώμενο κανάλι σου στο {0};</value>
+  </data>
+  <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
+    <value>Το Roblox εκτελείται αυτή τη στιγμή και η εκκίνηση μιας νέας παρουσίας θα το κλείσει. Είστε σίγουροι ότι θέλετε να συνεχίσετε την εκκίνηση;</value>
+  </data>
+  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
+    <value>Το Ansel δεν υποστηρίζεται.
+Δεν μπορείτε πλέον να χρησιμοποιήσετε το Bloxshade με το Froststrap.</value>
+  </data>
+  <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
+    <value>Το κανάλι στο οποίο βρίσκεστε αυτή τη στιγμή ({0}) είναι παλιό και φαίνεται ότι δεν λαμβάνει πλέον ενημερώσεις.\n
+Θέλετε να μεταβείτε στο προεπιλεγμένο κανάλι ({1}) ;</value>
+  </data>
+  <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
+    <value>Οι αναβαθμίσεις απενεργοποιήθηκαν λόγω απουσίας του προγράμματος-πελάτη.
+    Για να αποφευχθούν προβλήματα, η διαδικασία αναβάθμισης θα συνεχιστεί.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>Αφήστε το Froststrap να αποφασίσει σε ποιους διακομιστές θα συνδεθείτε. Δίνει προτεραιότητα στον διακομιστή που βρίσκεται πιο κοντά σε εσάς.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>Φαίνεται ότι ένας φίλος παίζει αυτό το παιχνίδι αυτή τη στιγμή. Θέλεις να παίξεις μαζί του;</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
+    <value>Επιλέγει τυχαία τον διακομιστή από τη λίστα των βέλτιστων διακομιστών.</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
+    <value>Τυχαιοποίηση του διακομιστή BetterMatchmaking</value>
+  </data>
+  <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>Ενεργοποίηση της λειτουργίας BetterMatchmaking</value>
+  </data>
+  <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
+    <value>Ενδέχεται να λείπει κάποιο περιεχόμενο. Για να διορθώσετε αυτό το πρόβλημα, πραγματοποιήστε αναγκαστική επανεγκατάσταση του Roblox από τις ρυθμίσεις.</value>
+  </data>
+  <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η εξαγωγή όλων των αρχείων</value>
+  </data>
+  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
+    <value>Το Froststrap προσπάθησε να αναβαθμίσει το Roblox, αλλά δεν μπορεί, καθώς τα αρχεία του Roblox βρίσκονται ακόμα σε χρήση.
+
+Παρακαλούμε κλείστε τυχόν εφαρμογές που ενδέχεται να χρησιμοποιούν τα αρχεία του Roblox και επανεκκινήστε το πρόγραμμα.</value>
+    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
+  </data>
+  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
+    <value>Πρέπει πρώτα να εγκαταστήσετε το Froststrap πριν προχωρήσετε στην απεγκατάσταση.</value>
+  </data>
+  <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η αποθήκευση του {0}: {1}</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
+    <value>Δεν θα περιλαμβάνονται όλες οι τροποποιήσεις στην τρέχουσα έκδοση.</value>
+  </data>
+  <data name="Bootstrapper.ModificationsFailed.Title" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η εφαρμογή όλων των αλλαγών</value>
+  </data>
+  <data name="Bootstrapper.NotEnoughSpace" xml:space="preserve">
+    <value>Το Froststrap δεν διαθέτει αρκετό χώρο στο δίσκο για τη λήψη και την εγκατάσταση του Roblox. Παρακαλώ, ελευθερώστε λίγο χώρο στο δίσκο και δοκιμάστε ξανά.</value>
+  </data>
+  <data name="Bootstrapper.Status.ApplyingModifications" xml:space="preserve">
+    <value>Εφαρμογή τροποποιήσεων του Roblox...</value>
+  </data>
+  <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
+    <value>Ακύρωση αναβάθμισης στο Roblox.</value>
+  </data>
+  <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
+    <value>Ρύθμιση παραμέτρων του {product}...</value>
+  </data>
+  <data name="Bootstrapper.Status.Connecting" xml:space="preserve">
+    <value>Σύνδεση με το Roblox...</value>
+  </data>
+  <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
+    <value>Λήψη</value>
+  </data>
+  <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
+    <value>Εξαγωγή</value>
+  </data>
+  <data name="Bootstrapper.Status.Installing" xml:space="preserve">
+    <value>Εγκατάσταση του {product}...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
+    <value>Εγκατάσταση του WebView2, παρακαλώ περιμένετε...</value>
+  </data>
+  <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
+    <value>αριστερά</value>
+  </data>
+  <data name="Bootstrapper.Status.Starting" xml:space="preserve">
+    <value>Έναρξη {product}...</value>
+    <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
+  </data>
+  <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
+    <value>Αναβάθμιση του {product}...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
+    <value>Λήψη της πιο πρόσφατης έκδοσης του Froststrap...</value>
+  </data>
+  <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
+    <value>Αναμονή για δεδομένα...</value>
+  </data>
+  <data name="Bootstrapper.Status.WaitingOtherInstances" xml:space="preserve">
+    <value>Αναμονή για άλλες περιπτώσεις...</value>
+  </data>
+  <data name="Bootstrapper.StylePreview.ImageCancel" xml:space="preserve">
+    <value>Προεπισκόπηση στυλ - Κάντε κλικ στο κουμπί «X» στην επάνω δεξιά γωνία για να κλείσετε</value>
+    <comment>Text for style previews that use an X button. Currently only applies to Byfron</comment>
+  </data>
+  <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
+    <value>Προεπισκόπηση στυλ - Κάντε κλικ στο «Ακύρωση» για να κλείσετε</value>
+    <comment>Text for style previews that use text button that says "Cancel"</comment>
+  </data>
+  <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
+    <value>Το Froststrap απεγκαταστάθηκε με επιτυχία</value>
+  </data>
+  <data name="Bootstrapper.Uninstall.RobloxRunning" xml:space="preserve">
+    <value>Το Roblox εκτελείται αυτή τη στιγμή, αλλά πρέπει να κλείσει πριν από την απεγκατάσταση του Froststrap. Θέλετε να κλείσετε το Roblox τώρα;</value>
+  </data>
+  <data name="Bootstrapper.WMFNotFound" xml:space="preserve">
+    <value>Το Roblox απαιτεί τη χρήση στοιχείων του Windows Media Foundation. Φαίνεται ότι δεν τα έχετε εγκατεστημένα, πιθανώς επειδή χρησιμοποιείτε μια έκδοση N των Windows. Παρακαλώ εγκαταστήστε τα πρώτα και, στη συνέχεια, εκκινήστε το Roblox.</value>
+  </data>
+  <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
+    <value>Προς το παρόν δεν έχετε εγκαταστήσει το περιβάλλον εκτέλεσης WebView2. Ορισμένες λειτουργίες του Roblox δεν θα λειτουργούν σωστά χωρίς αυτό, όπως για παράδειγμα η εφαρμογή για υπολογιστή. Θέλετε να το κατεβάσετε τώρα;</value>
+  </data>
+  <data name="Common.AddSingle" xml:space="preserve">
+    <value>Προσθήκη μεμονωμένου</value>
+  </data>
+  <data name="Common.Analytics" xml:space="preserve">
+    <value>Αναλυτικά στοιχεία</value>
+  </data>
+  <data name="Common.Automatic" xml:space="preserve">
+    <value>Αυτόματο</value>
+  </data>
+  <data name="Common.Browse" xml:space="preserve">
+    <value>Περιήγηση</value>
+  </data>
+  <data name="Common.Cancel" xml:space="preserve">
+    <value>Ακύρωση</value>
+  </data>
+  <data name="Common.Channel" xml:space="preserve">
+    <value>Κανάλι</value>
+  </data>
+  <data name="Common.Choose" xml:space="preserve">
+    <value>Επιλέξτε</value>
+  </data>
+  <data name="Common.Close" xml:space="preserve">
+    <value>Κλείσιμο</value>
+  </data>
+  <data name="Common.Color" xml:space="preserve">
+    <value>Χρώμα</value>
+  </data>
+  <data name="Common.CopyAll" xml:space="preserve">
+    <value>Αντιγραφή όλων</value>
+  </data>
+  <data name="Common.CreateNew" xml:space="preserve">
+    <value>Δημιουργία νέου</value>
+  </data>
+  <data name="Common.Custom" xml:space="preserve">
+    <value>Προσαρμοσμένο</value>
+  </data>
+  <data name="Common.Debug" xml:space="preserve">
+    <value>Εντοπισμός σφαλμάτων</value>
+  </data>
+  <data name="Common.DebugMenu" xml:space="preserve">
+    <value>Μενού εντοπισμού σφαλμάτων</value>
+  </data>
+  <data name="Common.Default" xml:space="preserve">
+    <value>Προεπιλογή</value>
+  </data>
+  <data name="Common.Delete" xml:space="preserve">
+    <value>Διαγραφή</value>
+  </data>
+  <data name="Common.DeleteAll" xml:space="preserve">
+    <value>Διαγραφή όλων</value>
+  </data>
+  <data name="Common.Deployment" xml:space="preserve">
+    <value>Εγκατάσταση</value>
+  </data>
+  <data name="Common.Disabled" xml:space="preserve">
+    <value>Άτομα με αναπηρία</value>
+  </data>
+  <data name="Common.DiscordRichPresence" xml:space="preserve">
+    <value>Πλούσια παρουσία στο Discord</value>
+  </data>
+  <data name="Common.Edit" xml:space="preserve">
+    <value>Επεξεργασία</value>
+  </data>
+  <data name="Common.Experimental" xml:space="preserve">
+    <value>Πειραματικό</value>
+  </data>
+  <data name="Common.Export" xml:space="preserve">
+    <value>Εξαγωγή</value>
+    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
+  </data>
+  <data name="Common.FilterType" xml:space="preserve">
+    <value>Τύπος φίλτρου:</value>
+  </data>
+  <data name="Common.Help" xml:space="preserve">
+    <value>Βοήθεια</value>
+  </data>
+  <data name="Common.Import" xml:space="preserve">
+    <value>Εισαγωγή</value>
+  </data>
+  <data name="Common.ImportFromFile" xml:space="preserve">
+    <value>Εισαγωγή από αρχείο</value>
+  </data>
+  <data name="Common.ImportJson" xml:space="preserve">
+    <value>Εισαγωγή JSON</value>
+  </data>
+  <data name="Common.LauncherType" xml:space="preserve">
+    <value>Τύπος: Εφαρμογή εκκίνησης</value>
+  </data>
+  <data name="Common.Loading" xml:space="preserve">
+    <value>Φόρτωση, παρακαλώ περιμένετε...</value>
+  </data>
+  <data name="Common.LookingFor" xml:space="preserve">
+    <value>Ψάχνω για</value>
+  </data>
+  <data name="Common.Message" xml:space="preserve">
+    <value>Μήνυμα</value>
+  </data>
+  <data name="Common.Miscellaneous" xml:space="preserve">
+    <value>Διάφορα</value>
+  </data>
+  <data name="Common.ModType" xml:space="preserve">
+    <value>Τύπος: Mod</value>
+  </data>
+  <data name="Common.Name" xml:space="preserve">
+    <value>Όνομα</value>
+  </data>
+  <data name="Common.Navigation.Back" xml:space="preserve">
+    <value>Πίσω</value>
+  </data>
+  <data name="Common.Navigation.Install" xml:space="preserve">
+    <value>Εγκατάσταση</value>
+    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
+  </data>
+  <data name="Common.Navigation.Next" xml:space="preserve">
+    <value>Επόμενο</value>
+  </data>
+  <data name="Common.NetworkError" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση των δεδομένων λόγω σφάλματος δικτύου.</value>
+  </data>
+  <data name="Common.New" xml:space="preserve">
+    <value>Νέο</value>
+  </data>
+  <data name="Common.No" xml:space="preserve">
+    <value>Όχι</value>
+  </data>
+  <data name="Common.NotAvailable" xml:space="preserve">
+    <value>Δεν διατίθεται</value>
+  </data>
+  <data name="Common.OpenDebugMenu" xml:space="preserve">
+    <value>Άνοιγμα του μενού «Debug»</value>
+  </data>
+  <data name="Common.OpenLogFile" xml:space="preserve">
+    <value>Άνοιγμα αρχείου καταγραφής</value>
+  </data>
+  <data name="Common.Performance" xml:space="preserve">
+    <value>Απόδοση</value>
+  </data>
+  <data name="Common.PresetFlagLists" xml:space="preserve">
+    <value>Προκαθορισμένοι κατάλογοι σημαίας</value>
+  </data>
+  <data name="Common.Presets" xml:space="preserve">
+    <value>Προεπιλογές</value>
+  </data>
+  <data name="Common.Profiles" xml:space="preserve">
+    <value>Προφίλ</value>
+  </data>
+  <data name="Common.Quality" xml:space="preserve">
+    <value>Ποιότητα</value>
+  </data>
+  <data name="Common.Recommended" xml:space="preserve">
+    <value>Συνιστάται</value>
+  </data>
+  <data name="Common.Refresh" xml:space="preserve">
+    <value>Ανανέωση</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Κατάργηση</value>
+  </data>
+  <data name="Common.Rename" xml:space="preserve">
+    <value>Μετονομασία</value>
+  </data>
+  <data name="Common.Reset" xml:space="preserve">
+    <value>Επαναφορά</value>
+    <comment>In the context of resetting something to a default value</comment>
+  </data>
+  <data name="Common.RobloxNotInstalled" xml:space="preserve">
+    <value>Το Roblox δεν έχει εγκατασταθεί ακόμα. Παρακαλούμε εκκινήστε το Roblox χρησιμοποιώντας το Froststrap τουλάχιστον μία φορά πριν προσπαθήσετε να χρησιμοποιήσετε αυτήν την επιλογή.</value>
+  </data>
+  <data name="Common.Search" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="Common.SearchBy" xml:space="preserve">
+    <value>Αναζήτηση κατά</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Ρυθμίσεις</value>
+  </data>
+  <data name="Common.Shortcuts" xml:space="preserve">
+    <value>Συντομεύσεις</value>
+  </data>
+  <data name="Common.Shortcuts.Desktop" xml:space="preserve">
+    <value>Εικονίδιο επιφάνειας εργασίας</value>
+  </data>
+  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
+    <value>Εικονίδιο του μενού «Έναρξη»</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Μελέτη</value>
+  </data>
+  <data name="Common.SystemDefault" xml:space="preserve">
+    <value>Προεπιλογή συστήματος</value>
+  </data>
+  <data name="Common.Template" xml:space="preserve">
+    <value>Πρότυπο</value>
+  </data>
+  <data name="Common.Time" xml:space="preserve">
+    <value>Ώρα</value>
+  </data>
+  <data name="Common.Timestamp" xml:space="preserve">
+    <value>Χρονοσήμανση</value>
+  </data>
+  <data name="Common.Type" xml:space="preserve">
+    <value>Τύπος</value>
+  </data>
+  <data name="Common.UnknownStatus" xml:space="preserve">
+    <value>Άγνωστη κατάσταση</value>
+  </data>
+  <data name="Common.UserId" xml:space="preserve">
+    <value>Αριθμός χρήστη</value>
+  </data>
+  <data name="Common.Username" xml:space="preserve">
+    <value>Όνομα χρήστη</value>
+  </data>
+  <data name="Common.Value" xml:space="preserve">
+    <value>Τιμή</value>
+  </data>
+  <data name="Common.Version" xml:space="preserve">
+    <value>Έκδοση</value>
+  </data>
+  <data name="Common.VersionGuid" xml:space="preserve">
+    <value>Κωδικός έκδοσης</value>
+  </data>
+  <data name="Common.Warning" xml:space="preserve">
+    <value>Προειδοποίηση</value>
+  </data>
+  <data name="Common.Yes" xml:space="preserve">
+    <value>Ναι</value>
+  </data>
+  <data name="Common_FastFlags" xml:space="preserve">
+    <value>Γρήγορος επεξεργαστής σημαιών</value>
+  </data>
+  <data name="ContextMenu.CloseRoblox" xml:space="preserve">
+    <value>Κλείσιμο του Roblox</value>
+  </data>
+  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
+    <value>Είσαι σίγουρος ότι θέλεις να κλείσεις το Roblox; Αυτό θα τερματίσει αναγκαστικά τη διαδικασία.</value>
+  </data>
+  <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
+    <value>Αντιγραφή του deeplink της πρόσκλησης</value>
+  </data>
+  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
+    <value>Εκκαθάριση ιστορικού</value>
+  </data>
+  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
+    <value>Αντιγραφή κωδικού εργασίας</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
+    <value>Το ιστορικό των παιχνιδιών καταγράφεται μόνο για την τρέχουσα συνεδρία σου στο Roblox. Τα παιχνίδια θα εμφανίζονται εδώ καθώς τα εγκαταλείπεις ή μεταφέρεσαι τηλεμεταφορικά μέσα σε αυτά. Δεν θα είναι δυνατή η επανένταξη σε όλους τους διακομιστές.</value>
+  </data>
+  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
+    <value>Δεν υπάρχει ακόμα ιστορικό παιχνιδιών{0}{0}Πάρε μέρος σε μερικά παιχνίδια για να τα δεις εδώ!</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
+    <value>Ανανέωση</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
+    <value>Επανένταξη</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
+    <value>Ιστορικό παιχνιδιών</value>
+  </data>
+  <data name="ContextMenu.Logs.Title" xml:space="preserve">
+    <value>Μενού καταγραφών</value>
+  </data>
+  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
+    <value>Εμφανίζει τα μηνύματα που έστειλαν πρόσφατα οι παίκτες.</value>
+  </data>
+  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
+    <value>Αρχεία καταγραφής μηνυμάτων</value>
+  </data>
+  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
+    <value>Αρχεία καταγραφής παικτών</value>
+  </data>
+  <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
+    <value>Τοποθεσία: {0}
+Χρόνος λειτουργίας: {1}</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
+    <value>Αντιγραφή αναγνωριστικού παρουσίας</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
+    <value>Αναγνωριστικό παρουσίας</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
+    <value>Τοποθεσία</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
+    <value>Τοποθεσία: {0}
+Κάντε κλικ για περισσότερες πληροφορίες</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
+    <value>Συνδεδεμένος σε ιδιωτικό διακομιστή</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
+    <value>Συνδεδεμένος σε δημόσιο διακομιστή</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
+    <value>Συνδεδεμένος σε έναν διακομιστή Reserved</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Title" xml:space="preserve">
+    <value>Πληροφορίες διακομιστή</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Type" xml:space="preserve">
+    <value>Τύπος</value>
+  </data>
+  <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
+    <value>Χρόνος λειτουργίας</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.FileNotZip" xml:space="preserve">
+    <value>Το αρχείο πρέπει να είναι σε μορφή ZIP</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameEmpty" xml:space="preserve">
+    <value>Το όνομα δεν μπορεί να είναι κενό</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameIllegalCharacters" xml:space="preserve">
+    <value>Το όνομα περιέχει μη επιτρεπόμενους χαρακτήρες</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameReserved" xml:space="preserve">
+    <value>Το όνομα δεν μπορεί να χρησιμοποιηθεί</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.NameTaken" xml:space="preserve">
+    <value>Το όνομα χρησιμοποιείται ήδη</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.Unknown" xml:space="preserve">
+    <value>Άγνωστο σφάλμα</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipInvalidData" xml:space="preserve">
+    <value>Μη έγκυρο ή κατεστραμμένο αρχείο ZIP</value>
+  </data>
+  <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
+    <value>Δεν εντοπίστηκε το αρχείο θέματος στο αρχείο ZIP</value>
+  </data>
+  <data name="CustomTheme.Add.Title" xml:space="preserve">
+    <value>Προσθήκη προσαρμοσμένου θέματος</value>
+  </data>
+  <data name="CustomTheme.DefaultName" xml:space="preserve">
+    <value>Προσαρμοσμένο θέμα {0}</value>
+    <comment>{0} is a string (e.g. '1', '1-1234')</comment>
+  </data>
+  <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
+    <value>Να αποθηκευτούν οι αλλαγές στο {0};</value>
+  </data>
+  <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η προεπισκόπηση του θέματος: {0}</value>
+  </data>
+  <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
+    <value>Άνοιγμα καταλόγου θεμάτων</value>
+  </data>
+  <data name="CustomTheme.Editor.Preview" xml:space="preserve">
+    <value>Προεπισκόπηση</value>
+  </data>
+  <data name="CustomTheme.Editor.Save" xml:space="preserve">
+    <value>Αποθήκευση</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
+    <value>Παρουσιάστηκε σφάλμα κατά την αποθήκευση του θέματος σας.</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
+    <value>Το θέμα αποθηκεύτηκε με επιτυχία!</value>
+  </data>
+  <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
+    <value>Το θέμα σας αποθηκεύτηκε!</value>
+  </data>
+  <data name="CustomTheme.Editor.Title" xml:space="preserve">
+    <value>Επεξεργασία του «{0}»</value>
+  </data>
+  <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
+    <value>Το προσαρμοσμένο παράθυρο διαλόγου έχει ήδη αρχικοποιηθεί</value>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeBlacklistedUriScheme" xml:space="preserve">
+    <value>Το {0}.{1} χρησιμοποιεί το σχήμα {2} που περιλαμβάνεται στη μαύρη λίστα</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the URI scheme (e.g. http)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeConversionError" xml:space="preserve">
+    <value>Το {0} έχει μη έγκυρο {1}: {2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeInvalidType" xml:space="preserve">
+    <value>Το {0}.{1} δεν είναι έγκυρο {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissing" xml:space="preserve">
+    <value>Στο στοιχείο {0} λείπει το χαρακτηριστικό {1}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMissingChild" xml:space="preserve">
+    <value>Στο {0}.{1} λείπει το υποστοιχείο του</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleChildren" xml:space="preserve">
+    <value>Το {0}.{1} μπορεί να έχει μόνο ένα παιδί</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMultipleDefinitions" xml:space="preserve">
+    <value>Μπορεί να οριστεί μόνο ένα {1} για το {0}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeLargerThanMin" xml:space="preserve">
+    <value>Το {0}.{1} πρέπει να είναι μεγαλύτερο από το {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax" xml:space="preserve">
+    <value>Το {0}.{1} πρέπει να είναι μικρότερο από το {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseError" xml:space="preserve">
+    <value>Το {0}.{1} δεν ήταν δυνατό να αναλυθεί σε {2}</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementAttributeParseErrorNull" xml:space="preserve">
+    <value>{0}.{1} {2} είναι μηδενικό</value>
+    <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
+    <value>Το {0} δεν μπορεί να έχει ένα στοιχείο της κατηγορίας {1}</value>
+    <comment>{0} and {1} are element names (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
+    <value>Το {0} μπορεί να έχει μόνο ένα παιδί</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.ElementTypeCreationFailed" xml:space="preserve">
+    <value>{0} δεν κατάφερε να δημιουργήσει το {1}: {2}</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
+  </data>
+  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
+    <value>Προσπάθησε να χρησιμοποιήσει μη έγκυρο WindowBackdropType: {0}</value>
+  </data>
+  <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
+    <value>Η ρίζα του XML του θέματος δεν είναι {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.NoThemeSelected" xml:space="preserve">
+    <value>Δεν έχει επιλεγεί προσαρμοσμένο θέμα</value>
+  </data>
+  <data name="CustomTheme.Errors.SetupFailed" xml:space="preserve">
+    <value>Αποτυχία ρύθμισης του προσαρμοσμένου προγράμματος εκκίνησης: {0}.
+Χρήση της προεπιλογής {1}.</value>
+    <comment>{0} is the error reason, {1} is the theme name (e.g. Froststrap (Classic))</comment>
+  </data>
+  <data name="CustomTheme.Errors.TooManyElements" xml:space="preserve">
+    <value>Τα προσαρμοσμένα bootstrappers μπορούν να έχουν το πολύ {0} στοιχεία, ενώ έχουν {1}</value>
+    <comment>{0} and {1} are numbers</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownElement" xml:space="preserve">
+    <value>Άγνωστο στοιχείο {0}</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
+    <value>{0} Άγνωστο {1} «{2}»</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
+    <value>Η έκδοση {0} δεν είναι αριθμός</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
+    <value>Η έκδοση {0} {1} δεν αναγνωρίζεται</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
+    <value>Η έκδοση {0} δεν έχει οριστεί</value>
+    <comment>{0} is the element name (e.g. Button)</comment>
+  </data>
+  <data name="CustomTheme.Errors.VersionNotSupported" xml:space="preserve">
+    <value>Η έκδοση {0} {1} δεν υποστηρίζεται πλέον</value>
+    <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
+  </data>
+  <data name="CustomTheme.Errors.XMLParseFailed" xml:space="preserve">
+    <value>Αποτυχία ανάλυσης του αρχείου θέματος: {0}</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.MoreExamples" xml:space="preserve">
+    <value>Παραδείγματα προσαρμοσμένων προγραμμάτων εκκίνησης μπορείτε να βρείτε στο {0}</value>
+  </data>
+  <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
+    <value>Τοποθετήστε εδώ τα στοιχεία της διεπαφής χρήστη</value>
+  </data>
+  <data name="CustomTheme.Templates.Simple.MoreExamples" xml:space="preserve">
+    <value>Δείτε περισσότερα παραδείγματα προσαρμοσμένων bootstrapper στο {0}</value>
+  </data>
+  <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
+    <value>Προσθήκη σήματος «Γρήγορο»</value>
+  </data>
+  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
+    <value>Παρακαλώ περιμένετε μέχρι να ολοκληρωθεί η εγκατάσταση.</value>
+  </data>
+  <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
+    <value>Παρακαλώ περιμένετε μέχρι να ολοκληρωθεί η απεγκατάσταση.</value>
+  </data>
+  <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
+    <value>Το Froststrap δεν υποστηρίζει πλέον το Bloxshade.
+Για περισσότερες πληροφορίες, εγγραφείτε στον διακομιστή Discord του Bloxshade.</value>
+  </data>
+  <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
+    <value>Συγγνώμη</value>
+  </data>
+  <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
+    <value>Το Froststrap δεν μπόρεσε να δημιουργήσει συντομεύσεις για την επιφάνεια εργασίας και το μενού «Έναρξη». Δοκιμάστε να τις δημιουργήσετε αργότερα μέσω των ρυθμίσεων.</value>
+  </data>
+  <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η σύνδεση, κάτι που πιθανώς υποδηλώνει κακή σύνδεση στο διαδίκτυο ή αποκλεισμό από το τείχος προστασίας. Εάν η σύνδεσή σας είναι εντάξει, βεβαιωθείτε ότι το πρόγραμμα προστασίας από ιούς δεν εμποδίζει τη λειτουργία του Froststrap.</value>
+  </data>
+  <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
+    <value>Η λειτουργία BetterMatchmaking θα απενεργοποιηθεί για αυτή τη συνεδρία.</value>
+  </data>
+  <data name="Dialog.Connectivity.MoreInfo" xml:space="preserve">
+    <value>Περισσότερες πληροφορίες:</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
+    <value>Το Roblox ενδέχεται να μην λειτουργεί αυτή τη στιγμή. Δείτε το {0} για περισσότερες πληροφορίες.</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
+    <value>Επειδή το Roblox πρέπει να εγκατασταθεί ή να ενημερωθεί, το Froststrap δεν μπορεί να συνεχίσει.</value>
+  </data>
+  <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
+    <value>Σε αυτή την έκδοση, το Roblox δεν θα ελέγχεται για ενημερώσεις και οι αλλαγές στα mods δεν θα εφαρμοστούν.</value>
+  </data>
+  <data name="Dialog.Connectivity.Title" xml:space="preserve">
+    <value>Σφάλμα σύνδεσης</value>
+  </data>
+  <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
+    <value>Παρακαλώ δοκιμάστε ξανά αργότερα.</value>
+  </data>
+  <data name="Dialog.Connectivity.UnableToConnect" xml:space="preserve">
+    <value>Το Froststrap δεν μπορεί να συνδεθεί με το {0}</value>
+    <comment>{0} is the name of a service (i.e. Roblox, GitHub)</comment>
+  </data>
+  <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
+    <value>Το Froststrap δεν μπορεί να κατεβάσει το Roblox</value>
+  </data>
+  <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
+    <value>Δεν είναι δυνατή η λήψη του Roblox αυτή τη στιγμή. Για περισσότερες πληροφορίες, διαβάστε την ακόλουθη σελίδα βοήθειας: {0}</value>
+    <comment>{0} is a URL</comment>
+  </data>
+  <data name="Dialog.Exception.CopyLogContents" xml:space="preserve">
+    <value>Αντιγραφή περιεχομένου αρχείου καταγραφής</value>
+  </data>
+  <data name="Dialog.Exception.Info.1" xml:space="preserve">
+    <value>Παρουσιάστηκε σφάλμα κατά την εκτέλεση του Froststrap/Froststrap</value>
+  </data>
+  <data name="Dialog.Exception.Info.2" xml:space="preserve">
+    <value>Ελέγξτε πρώτα το [Froststrap Wiki]({0}) για να δείτε αν αυτό το πρόβλημα έχει ήδη επιλυθεί.
+
+Εάν όχι, παρακαλούμε να αναφέρετε αυτή την εξαίρεση μέσω ενός [GitHub issue]({1}) μαζί με ένα αντίγραφο του αρχείου καταγραφής που δημιουργήθηκε.</value>
+  </data>
+  <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
+    <value>Ελέγξτε πρώτα το [Froststrap Wiki]({0}) για να δείτε αν αυτό το πρόβλημα έχει ήδη επιλυθεί.
+
+Εάν όχι, παρακαλούμε να αναφέρετε αυτή την εξαίρεση στους διαχειριστές αυτού του fork. ΜΗΝ το αναφέρετε στα issues του Froststrap στο GitHub, καθώς πρόκειται για μια ανεπίσημη έκδοση.</value>
+    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
+  </data>
+  <data name="Dialog.Exception.Report" xml:space="preserve">
+    <value>Αναφορά εξαίρεσης</value>
+  </data>
+  <data name="Dialog.Exception.Title" xml:space="preserve">
+    <value>Εξαίρεση Froststrap</value>
+  </data>
+  <data name="Dialog.Exception.Version" xml:space="preserve">
+    <value>Έκδοση {0}</value>
+  </data>
+  <data name="Dialog.IconLoadFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση του εικονιδίου του προγράμματος εκκίνησης που επιλέξατε.
+
+{0}</value>
+    <comment>{0} is an exception message</comment>
+  </data>
+  <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
+    <value>Επιλέξτε τη γλώσσα που προτιμάτε</value>
+  </data>
+  <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
+    <value>Επιλέξτε μια γλώσσα πριν συνεχίσετε με την εγκατάσταση.
+Ενδέχεται κάποια κείμενα να μην έχουν μεταφραστεί στη γλώσσα που έχετε επιλέξει.</value>
+  </data>
+  <data name="Dialog.PlayerError.Crash" xml:space="preserve">
+    <value>Το Roblox έπεσε.</value>
+  </data>
+  <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
+    <value>Το Roblox δεν μπόρεσε να ξεκινήσει.</value>
+  </data>
+  <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
+    <value>Για πληροφορίες σχετικά με τους πιθανούς λόγους που μπορεί να συμβαίνει αυτό και τον τρόπο επίλυσης του προβλήματος, διαβάστε [αυτό το άρθρο βοήθειας]({0}).
+
+Ελέγξτε αν το Roblox λειτουργεί με [το αρχικό πρόγραμμα εκκίνησης]({1}). Αν δεν λειτουργεί, τότε δεν πρόκειται για πρόβλημα του Froststrap. Αν λειτουργεί, ανατρέξτε στο άρθρο βοήθειας.</value>
+  </data>
+  <data name="Dialog.RegistryWriteError" xml:space="preserve">
+    <value>Το Froststrap δεν μπορεί να εγγράψει στο Μητρώο των Windows. Πιθανώς κάποιο πρόγραμμα προστασίας από ιούς παρεμβαίνει και προκαλεί προβλήματα. Παρακαλούμε ελέγξτε για να βεβαιωθείτε ότι δεν υπάρχει κάτι που να περιορίζει τη λειτουργία του Froststrap.</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
+    <value>Τέλη του 2015</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
+    <value>Πλαστό Byfron (~2023)</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
+    <value>Froststrap (Κλασική έκδοση)</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.CustomDialog" xml:space="preserve">
+    <value>Προσαρμοσμένο</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
+    <value>Froststrap (Γυαλί)</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
+    <value>Froststrap (Αδιαφανές)</value>
+  </data>
+  <data name="Enums.CleanerOptions.Never" xml:space="preserve">
+    <value>Ποτέ</value>
+  </data>
+  <data name="Enums.CleanerOptions.OneDay" xml:space="preserve">
+    <value>Μετά από 1 ημέρα</value>
+  </data>
+  <data name="Enums.CleanerOptions.OneMonth" xml:space="preserve">
+    <value>Μετά από 1 μήνα</value>
+  </data>
+  <data name="Enums.CleanerOptions.OneWeek" xml:space="preserve">
+    <value>Μετά από 1 εβδομάδα</value>
+  </data>
+  <data name="Enums.CleanerOptions.TwoMonths" xml:space="preserve">
+    <value>Μετά από 2 μήνες</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format1" xml:space="preserve">
+    <value>Προεπιλογή</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format2" xml:space="preserve">
+    <value>Συνιστάται</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format3" xml:space="preserve">
+    <value>Αλφαβητικά</value>
+  </data>
+  <data name="Enums.CopyFormatMode.Format4" xml:space="preserve">
+    <value>Κατάταξη κατά μήκος</value>
+  </data>
+  <data name="Enums.CursorType.BlackAndWhiteDot" xml:space="preserve">
+    <value>Μαύρο και άσπρο με κουκκίδες</value>
+  </data>
+  <data name="Enums.CursorType.From2006" xml:space="preserve">
+    <value>~2006 (Στυλ καρτούν)</value>
+  </data>
+  <data name="Enums.CursorType.PurpleCross" xml:space="preserve">
+    <value>Μωβ Σταυρός</value>
+  </data>
+  <data name="Enums.CustomThemeTemplate.Blank" xml:space="preserve">
+    <value>Κενό</value>
+  </data>
+  <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
+    <value>Απλό</value>
+  </data>
+  <data name="Enums.EmojiType.Default" xml:space="preserve">
+    <value>Προεπιλογή (Twemoji)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
+    <value>Επίπεδο 0 (Χαμηλότερο)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
+    <value>Επίπεδο 1 (Χαμηλό)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
+    <value>Επίπεδο 2 (Μεσαίο)</value>
+  </data>
+  <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
+    <value>Επίπεδο 3 (Υψηλότερο)</value>
+  </data>
+  <data name="Enums.ServerType.Private" xml:space="preserve">
+    <value>Ιδιωτικός διακομιστής</value>
+  </data>
+  <data name="Enums.ServerType.Public" xml:space="preserve">
+    <value>Δημόσιος διακομιστής</value>
+  </data>
+  <data name="Enums.ServerType.Reserved" xml:space="preserve">
+    <value>Αποκλειστικός διακομιστής</value>
+  </data>
+  <data name="Enums.Theme.Blue" xml:space="preserve">
+    <value>Μπλε</value>
+  </data>
+  <data name="Enums.Theme.Dark" xml:space="preserve">
+    <value>Σκοτεινό</value>
+  </data>
+  <data name="Enums.Theme.Green" xml:space="preserve">
+    <value>Πράσινο</value>
+  </data>
+  <data name="Enums.Theme.Light" xml:space="preserve">
+    <value>Φως</value>
+  </data>
+  <data name="Enums.Theme.Orange" xml:space="preserve">
+    <value>Πορτοκαλί</value>
+  </data>
+  <data name="Enums.Theme.Pink" xml:space="preserve">
+    <value>Ροζ</value>
+  </data>
+  <data name="Enums.Theme.Purple" xml:space="preserve">
+    <value>Μωβ</value>
+  </data>
+  <data name="FileTypes.JSONFiles" xml:space="preserve">
+    <value>Αρχεία JSON</value>
+    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
+  </data>
+  <data name="FileTypes.ZipArchive" xml:space="preserve">
+    <value>Αρχείο ZIP</value>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
+  </data>
+  <data name="InstallChecker.Updated" xml:space="preserve">
+    <value>Το Froststrap έχει αναβαθμιστεί στην έκδοση v{0}</value>
+  </data>
+  <data name="InstallChecker.VersionDifferentThanInstalled" xml:space="preserve">
+    <value>Η έκδοση του Froststrap που ξεκινήσατε είναι διαφορετική από την έκδοση που έχετε εγκατεστημένη αυτή τη στιγμή.
+Θέλετε να αναβαθμίσετε την έκδοση που έχετε εγκατεστημένη αυτή τη στιγμή;</value>
+  </data>
+  <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
+    <value>Η έκδοση του Froststrap που ξεκινήσατε είναι παλαιότερη από την έκδοση που έχετε εγκατεστημένη αυτή τη στιγμή.
+Ενδέχεται να προκύψουν προβλήματα και οι ρυθμίσεις σας να αλλάξουν. Συνιστάται η επανεγκατάσταση.
+Είστε σίγουροι ότι θέλετε να συνεχίσετε;</value>
+  </data>
+  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
+    <value>Ανοίγει το Roblox μόλις ολοκληρωθεί η εγκατάσταση και η ρύθμιση όλων των στοιχείων</value>
+  </data>
+  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
+    <value>Εγκατάσταση και εκκίνηση του Roblox</value>
+  </data>
+  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
+    <value>Δείτε και προσαρμόστε όλες τις λειτουργίες και τις ρυθμίσεις που προσφέρει το Froststrap</value>
+  </data>
+  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
+    <value>Ρύθμιση των παραμέτρων του Froststrap</value>
+  </data>
+  <data name="Installer.Completion.Text" xml:space="preserve">
+    <value>Το Froststrap εγκαταστάθηκε με επιτυχία.
+
+Ωστόσο, το Roblox δεν έχει εγκατασταθεί ακόμα. Θα εγκατασταθεί όταν ξεκινήσετε το Roblox με το Froststrap για πρώτη φορά. Πριν από την εγκατάσταση, ίσως θέλετε να ρυθμίσετε πρώτα τις παραμέτρους του Froststrap.
+
+Σημαντική σημείωση: Μην χρησιμοποιείτε τη συντόμευση «Roblox Player» για να ξεκινήσετε το Roblox, καθώς το Froststrap δεν θα μπορεί να ξεκινήσει το Roblox λόγω συγκρούσεων. Εάν δεν δείτε το Froststrap να ξεκινά κατά την εκκίνηση από τον ιστότοπο του Roblox, απλώς ξεκινήστε το Roblox με το Froststrap μία φορά από την εφαρμογή της επιφάνειας εργασίας για να επιλύσετε αυτό το πρόβλημα.
+
+Τι θέλετε να κάνετε;</value>
+  </data>
+  <data name="Installer.Completion.Title" xml:space="preserve">
+    <value>Ολοκλήρωση</value>
+  </data>
+  <data name="Installer.FailedToImportSettings" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η εισαγωγή των ρυθμίσεων του Froststrap.
+
+{0}</value>
+  </data>
+  <data name="Installer.ImportSettings" xml:space="preserve">
+    <value>Εισαγωγή ρυθμίσεων από το Froststrap</value>
+  </data>
+  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
+    <value>Το Froststrap έχει εγκατασταθεί προηγουμένως σε αυτή τη θέση και εξακολουθεί να υπάρχει, ωστόσο το πρόγραμμα εγκατάστασης δεν μπορεί να αντικαταστήσει το παλιό εκτελέσιμο αρχείο.
+
+Παρακαλούμε διαγράψτε χειροκίνητα το αρχείο Froststrap.exe από τη θέση εγκατάστασης ή δοκιμάστε να επανεκκινήσετε το σύστημά σας και, στη συνέχεια, επαναλάβετε την εγκατάσταση.</value>
+  </data>
+  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
+    <value>Εντοπίστηκαν υπάρχοντα δεδομένα. Οι τροποποιήσεις και οι ρυθμίσεις σας θα αποκατασταθούν.</value>
+  </data>
+  <data name="Installer.Install.Location.Text" xml:space="preserve">
+    <value>Το Roblox θα εγκατασταθεί επίσης σε αυτή τη διαδρομή. Αλλάξτε την αν προτιμάτε να εγκαταστήσετε όλα τα παιχνίδια σας σε ξεχωριστό δίσκο. Διαφορετικά, συνιστάται να την αφήσετε όπως είναι.</value>
+  </data>
+  <data name="Installer.Install.Location.Title" xml:space="preserve">
+    <value>Επιλέξτε πού θέλετε να γίνει η εγκατάσταση</value>
+  </data>
+  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
+    <value>Αυτές είναι γενικές συντομεύσεις που εμφανίζουν ένα μενού εκκίνησης με πολλαπλές επιλογές. Οι συντομεύσεις για συγκεκριμένες λειτουργίες μπορούν να δημιουργηθούν αργότερα στις ρυθμίσεις.</value>
+  </data>
+  <data name="Installer.Install.Title" xml:space="preserve">
+    <value>Εγκατάσταση</value>
+    <comment>Refers to "Install" as a verb</comment>
+  </data>
+  <data name="Installer.InstallationNotFound" xml:space="preserve">
+    <value>Δεν εντοπίστηκε καμία εγκατάσταση του bootstrapper.</value>
+  </data>
+  <data name="Installer.ShouldCancel" xml:space="preserve">
+    <value>Είστε σίγουροι ότι θέλετε να ακυρώσετε την εγκατάσταση;</value>
+  </data>
+  <data name="Installer.Title" xml:space="preserve">
+    <value>Πρόγραμμα εγκατάστασης Froststrap</value>
+  </data>
+  <data name="Installer.Welcome.MainText" xml:space="preserve">
+    <value>Σας ευχαριστούμε που κατεβάσατε το Froststrap. 
+
+Η μόνη επίσημη πηγή από την οποία μπορείτε να κατεβάσετε το Froststrap είναι το {0}, οπότε παρακαλούμε βεβαιωθείτε ότι το έχετε κατεβάσει από την επίσημη πηγή.
+
+Η διαδικασία εγκατάστασης θα είναι γρήγορη και απλή, και θα μπορείτε να ρυθμίσετε όλες τις παραμέτρους του Froststrap μετά την εγκατάσταση.</value>
+    <comment>{0} and {1} are URLs</comment>
+  </data>
+  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
+    <value>Παρακαλώ κάντε κλικ στο «Επόμενο» για να συνεχίσετε.</value>
+  </data>
+  <data name="Installer.Welcome.Title" xml:space="preserve">
+    <value>Καλώς ήρθατε</value>
+  </data>
+  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
+    <value>Προσπαθείτε να εγκαταστήσετε την έκδοση {0} του Froststrap, αλλά η πιο πρόσφατη διαθέσιμη έκδοση είναι η {1}. Θέλετε να την κατεβάσετε;</value>
+  </data>
+  <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση των Fast Flags σας. Έχουν επαναφερθεί στην προεπιλεγμένη ρύθμιση.</value>
+  </data>
+  <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση των ρυθμίσεών σας. Έχουν επαναφερθεί στις προεπιλεγμένες ρυθμίσεις.</value>
+  </data>
+  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
+    <value>Προσαρμογή ρυθμίσεων</value>
+  </data>
+  <data name="LaunchMenu.Discord" xml:space="preserve">
+    <value>Ελάτε στον διακομιστή μας στο Discord</value>
+    <comment>Call-to-action button</comment>
+  </data>
+  <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
+    <value>Εκκίνηση του Roblox</value>
+  </data>
+  <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
+    <value>Εκκίνηση του Roblox Studio</value>
+  </data>
+  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
+    <value>Δείτε το Wiki για βοήθεια</value>
+  </data>
+  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
+    <value>Αντιμετωπίζετε κάποιο πρόβλημα;</value>
+  </data>
+  <data name="Logger.NoWriteMode" xml:space="preserve">
+    <value>Δεν θα δημιουργηθεί αρχείο καταγραφής για αυτήν την εκκίνηση, καθώς το Froststrap δεν μπορεί να εγγράψει στον φάκελο «{0}»</value>
+  </data>
+  <data name="Menu.About.Contributors" xml:space="preserve">
+    <value>Συνεισφέροντες</value>
+  </data>
+  <data name="Menu.About.Contributors.Code" xml:space="preserve">
+    <value>Κώδικας</value>
+  </data>
+  <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
+    <value>Συνεισφέροντες</value>
+  </data>
+  <data name="Menu.About.Contributors.Description" xml:space="preserve">
+    <value>Αυτοί είναι όλοι οι άνθρωποι που έχουν συμβάλει σημαντικά στα έργα Froststrap και Froststrap, διαμορφώνοντάς τα σε αυτό που είναι σήμερα.</value>
+  </data>
+  <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
+    <value>Πηγές έμπνευσης</value>
+  </data>
+  <data name="Menu.About.Description" xml:space="preserve">
+    <value>Ένα πιρούνι τύπου Fishstrap/Froststrap.</value>
+  </data>
+  <data name="Menu.About.DiscordServer" xml:space="preserve">
+    <value>Διακομιστής Discord</value>
+  </data>
+  <data name="Menu.About.GithubRepository" xml:space="preserve">
+    <value>Αποθετήριο GitHub</value>
+  </data>
+  <data name="Menu.About.HelpInformation" xml:space="preserve">
+    <value>Βοήθεια και πληροφορίες</value>
+  </data>
+  <data name="Menu.About.Licenses" xml:space="preserve">
+    <value>Άδειες χρήσης</value>
+  </data>
+  <data name="Menu.About.Licenses.Apache" xml:space="preserve">
+    <value>Άδεια χρήσης Apache 2.0</value>
+  </data>
+  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
+    <value>Άδεια χρήσης BSD 2 ρητρών</value>
+  </data>
+  <data name="Menu.About.Licenses.MIT" xml:space="preserve">
+    <value>Άδεια MIT</value>
+  </data>
+  <data name="Menu.About.ReportIssue" xml:space="preserve">
+    <value>Αναφορά προβλήματος</value>
+  </data>
+  <data name="Menu.About.Title" xml:space="preserve">
+    <value>Σχετικά με</value>
+  </data>
+  <data name="Menu.About.Version" xml:space="preserve">
+    <value>Έκδοση {0}</value>
+    <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+  </data>
+  <data name="Menu.AccountManager.Title" xml:space="preserve">
+    <value>Υπεύθυνος Λογαριασμών</value>
+  </data>
+  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
+    <value>Οι ρυθμίσεις αποθηκεύτηκαν. Μπορείτε πλέον να κλείσετε αυτό το παράθυρο</value>
+  </data>
+  <data name="Menu.AllFiles" xml:space="preserve">
+    <value>Όλα τα αρχεία</value>
+  </data>
+  <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
+    <value>Παρακαλώ λάβετε υπόψη ότι δεν θα εφαρμοστούν αμέσως όλες οι αλλαγές σας, μέχρι να κλείσετε όλες τις τρέχουσες ανοιχτές εφαρμογές του Roblox.</value>
+  </data>
+  <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
+    <value>Το Froststrap εκτελείται ήδη</value>
+  </data>
+  <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
+    <value>Προσαρμόστε το πρόγραμμα εκκίνησης του Froststrap χρησιμοποιώντας μια μεγάλη ποικιλία επιλογών.</value>
+  </data>
+  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
+    <value>Αλλαγή της συμβολοσειράς λήψης. Το {0} είναι το όνομα του πακέτου, το {1} είναι το μέγεθος των πακέτων που έχουν ληφθεί και το {2} είναι το συνολικό μέγεθος των πακέτων.</value>
+  </data>
+  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
+    <value>Κατάσταση λήψης του Bootstrapper</value>
+  </data>
+  <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
+    <value>Προσαρμόστε εύκολα τα θέματα του Froststrap χρησιμοποιώντας τις προεπιλογές ή δημιουργήστε τη δική σας μοναδική εμφάνιση.</value>
+  </data>
+  <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
+    <value>Θέματα εφαρμογών</value>
+  </data>
+  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
+    <value>Επιλέξτε μια προσαρμοσμένη γραμματοσειρά για να αντικαταστήσετε την προεπιλεγμένη γραμματοσειρά του περιβάλλοντος χρήστη του Froststrap.</value>
+  </data>
+  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
+    <value>Προσαρμοσμένη γραμματοσειρά εφαρμογής</value>
+  </data>
+  <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η διαγραφή του προσαρμοσμένου θέματος {0}: {1}</value>
+  </data>
+  <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
+    <value>Δεν έχει επιλεγεί κανένα προσαρμοσμένο θέμα.</value>
+  </data>
+  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
+    <value>Δεν κατέστη δυνατή η μετονομασία του προσαρμοσμένου θέματος {0}: {1}</value>
+  </data>
+  <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
+    <value>Ρυθμίστε άλλες διάφορες παραμέτρους του προγράμματος εκκίνησης που μπορούν να προσαρμοστούν.</value>
+  </data>
+  <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
+    <value>Προσαρμογή</value>
+  </data>
+  <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
+    <value>Πρέπει να είναι ένα αρχείο .ico με πολλαπλά μεγέθη, από 16px έως 128px. Ορίστε το εικονίδιο ως «Προσαρμοσμένο» για να το χρησιμοποιήσετε.</value>
+  </data>
+  <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
+    <value>Προσαρμοσμένο εικονίδιο</value>
+  </data>
+  <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
+    <value>Το κείμενο που εμφανίζεται ως τίτλος του προγράμματος εκκίνησης.</value>
+  </data>
+  <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
+    <value>Τίτλος</value>
+  </data>
+  <data name="Menu.Appearance.Description" xml:space="preserve">
+    <value>Ρυθμίστε την εμφάνιση του Froststrap.</value>
+  </data>
+  <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
+    <value>Επιλέξτε ποιο εικονίδιο θα πρέπει να χρησιμοποιεί το Froststrap.</value>
+  </data>
+  <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
+    <value>Εικονίδιο</value>
+  </data>
+  <data name="Menu.Appearance.Language.Description" xml:space="preserve">
+    <value>Για να εφαρμοστούν οι αλλαγές, απαιτείται επανεκκίνηση. Ενδέχεται κάποιο κείμενο να μην έχει μεταφραστεί στη γλώσσα της προτίμησής σας.</value>
+  </data>
+  <data name="Menu.Appearance.Language.Title" xml:space="preserve">
+    <value>Γλώσσα</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
+    <value>Επιλέξτε ένα στυλ οθόνης εκκίνησης. Σημείωση: Το σκούρο θέμα δεν υποστηρίζεται στα συστήματα Legacy ή Vista. Για περισσότερες επιλογές εξατομικευμένων προγραμμάτων εκκίνησης, επισκεφθείτε τον επίσημο διακομιστή Discord του Froststrap.</value>
+  </data>
+  <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
+    <value>Στυλ «Bootstrapper»</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
+    <value>Αναδιατάξτε τα στοιχεία του μενού πλοήγησης σύμφωνα με τις προτιμήσεις σας. Οι αλλαγές θα αποθηκευτούν αυτόματα.</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
+    <value>Κλείδωμα παραγγελίας</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
+    <value>Μετακίνηση προς τα κάτω</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
+    <value>Ανεβείτε</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
+    <value>Επαναφορά στις προεπιλεγμένες ρυθμίσεις</value>
+  </data>
+  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
+    <value>Προσαρμογή μενού</value>
+  </data>
+  <data name="Menu.Appearance.Preview" xml:space="preserve">
+    <value>Προεπισκόπηση</value>
+  </data>
+  <data name="Menu.Appearance.Title" xml:space="preserve">
+    <value>Εμφάνιση</value>
+  </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
+    <value>Επιλέξτε ένα εφέ φόντου παραθύρου. Απαιτείται σκοτεινό θέμα και επανεκκίνηση της εφαρμογής. Σημείωση: Το Mica λειτουργεί μόνο στα Windows 11.</value>
+  </data>
+  <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
+    <value>Φόντο παραθύρου</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
+    <value>Παρέχει πρόσβαση στα API του Roblox χρησιμοποιώντας το cookie πιστοποίησής σας. [Σε τι θα έχει πρόσβαση το Froststrap;]({0})</value>
+  </data>
+  <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
+    <value>Δικαιώματα λογαριασμού Froststrap</value>
+  </data>
+  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
+    <value>Για τους shaders απαιτείται υποστήριξη Ansel.</value>
+  </data>
+  <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
+    <value>Το Froststrap θα ελέγχει αυτόματα και θα ενημερώνεται σε μια σταθερή έκδοση κατά την εκκίνηση του Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
+    <value>Αυτόματη ενημέρωση του Froststrap</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
+    <value>Ενημερώστε το Roblox στο παρασκήνιο αντί να περιμένετε. Δεν συνιστάται για αργές συνδέσεις. Απαιτούνται τουλάχιστον 3 GB ελεύθερου χώρου αποθήκευσης για να λειτουργήσει αυτή η λειτουργία.</value>
+  </data>
+  <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
+    <value>Ενημερώσεις σχετικά με το ιστορικό</value>
+  </data>
+  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
+    <value>Κανάλι</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
+    <value>Κλείνει αυτόματα τη διαδικασία RobloxCrashHandler.exe κατά την εκκίνηση, προκειμένου να ελευθερωθεί μέρος της χρήσης του συστήματος.</value>
+  </data>
+  <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
+    <value>Κλείσιμο του προγράμματος διαχείρισης σφαλμάτων</value>
+  </data>
+  <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
+    <value>Αποτρέπει το κλείσιμο του τρέχοντος παιχνιδιού σας σε περίπτωση που ξεκινήσετε κατά λάθος μια άλλη παρουσία του Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
+    <value>Επιβεβαίωση εκκίνησης παρουσίας</value>
+  </data>
+  <data name="Menu.Behaviour.Description" xml:space="preserve">
+    <value>Ρυθμίστε τις ενέργειες που θα εκτελεί το Froststrap κατά την εκκίνηση του Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
+    <value>Όταν ενεργοποιηθεί, θα απενεργοποιήσει όλες τις κινούμενες εικόνες μέσα στην εφαρμογή. Απαιτείται επανεκκίνηση της εφαρμογής.</value>
+  </data>
+  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
+    <value>Απενεργοποίηση κινούμενων εικόνων</value>
+  </data>
+  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
+    <value>Απενεργοποιεί την επιτάχυνση υλικού μόνο στο Froststrap. Σημείωση: Πρέπει να επανεκκινήσετε την εφαρμογή για να δείτε τα αποτελέσματα.</value>
+  </data>
+  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
+    <value>Απενεργοποίηση της επιτάχυνσης υλικού</value>
+  </data>
+  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
+    <value>Ισχύει μόνο για παιχνίδια που ξεκινούν από τον ιστότοπο του Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
+    <value>Να επιτρέπονται οι μη υποστηριζόμενες γλώσσες</value>
+  </data>
+  <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
+    <value>Κατά την επόμενη εκκίνηση θα πραγματοποιηθεί μια «καθαρή» εγκατάσταση του Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
+    <value>Επιβολή επανεγκατάστασης του Roblox</value>
+  </data>
+  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
+    <value>Επιτρέπει το ταυτόχρονο άνοιγμα περισσότερων από μιας εφαρμογών Roblox. Ενδέχεται να προκαλέσει προβλήματα με την εφαρμογή για υπολογιστή.</value>
+  </data>
+  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
+    <value>Εκκίνηση πολλαπλών παρουσιών</value>
+  </data>
+  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
+    <value>Επαναφέρει τα εικονίδια της γραμμής εργασιών και της επάνω γραμμής του Roblox σε παλαιότερες εκδόσεις. Ενδέχεται να μην λειτουργήσει αν το Roblox αργεί πολύ να ξεκινήσει.</value>
+  </data>
+  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
+    <value>Εικονίδιο στη γραμμή εργασιών</value>
+  </data>
+  <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
+    <value>Επιλέγει την προτεραιότητα της CPU για το Roblox.</value>
+  </data>
+  <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
+    <value>Προτεραιότητα διεργασιών στο Roblox</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
+    <value>Διαγράφει αυτόματα παλιά δεδομένα για να ελευθερώσει χώρο. Δημιουργήθηκε αρχικά από τον Fishstrap.</value>
+  </data>
+  <data name="Menu.Bootstrapper.CleanUp.Title" xml:space="preserve">
+    <value>Καθαριστικό Froststrap</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Description" xml:space="preserve">
+    <value>Τα αρχεία που είναι παλαιότερα από το καθορισμένο χρονικό διάστημα θα διαγραφούν.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Age.Title" xml:space="preserve">
+    <value>Πρόγραμμα διαγραφής αρχείων</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Description" xml:space="preserve">
+    <value>Οι παλιές λήψεις θα διαγραφούν.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Cache.Title" xml:space="preserve">
+    <value>Προσωρινή μνήμη</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
+    <value>Τα αρχεία καταγραφής του Froststrap θα διαγραφούν.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
+    <value>Αρχεία καταγραφής Froststrap</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
+    <value>Τα αρχεία καταγραφής του Froststrap θα διαγραφούν.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
+    <value>Αρχεία καταγραφής Froststrap</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
+    <value>Τα παλιά αρχεία καταγραφής θα διαγραφούν.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
+    <value>Μενού καταγραφών</value>
+  </data>
+  <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
+    <value>Ρυθμίσεις εξαγωγής</value>
+  </data>
+  <data name="Menu.BottomButtons.ImportSettings" xml:space="preserve">
+    <value>Εισαγωγή ρυθμίσεων</value>
+  </data>
+  <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
+    <value>Επαναφορά των ρυθμίσεων στις προεπιλεγμένες τιμές</value>
+  </data>
+  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
+    <value>Απεγκατάσταση του Froststrap</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
+    <value>Αυτόματη αλλαγή</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Description" xml:space="preserve">
+    <value>Το Roblox ή το Froststrap ενδέχεται να προσπαθήσουν να αλλάξουν το κανάλι που έχετε επιλέξει.</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Ignore" xml:space="preserve">
+    <value>Μην αλλάξεις ποτέ</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Prompt" xml:space="preserve">
+    <value>Πάντα έγκαιρα</value>
+  </data>
+  <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
+    <value>Λειτουργία αυτόματης αλλαγής καναλιού</value>
+  </data>
+  <data name="Menu.Channel.Description" xml:space="preserve">
+    <value>Αλλάξτε τις ρυθμίσεις ανάπτυξης και εγκατάστασης για το Roblox και το Froststrap.</value>
+  </data>
+  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
+    <value>Ορίστε ποιο domain θα χρησιμοποιούν το Roblox και το Froststrap. Εισάγετε μόνο αξιόπιστα domain.</value>
+  </data>
+  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
+    <value>Το domain του Roblox</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
+    <value>Αναβαθμίσεις Roblox</value>
+  </data>
+  <data name="Menu.Channel.RobloxUpgrades.Description" xml:space="preserve">
+    <value>Όταν είναι απενεργοποιημένη, η εφαρμογή Roblox δεν θα ενημερωθεί σε νεότερες εκδόσεις.</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
+    <value>Μετάβαση από τους καταλόγους εγκατάστασης τύπου «version-xxx» σε καταλόγους εγκατάστασης βάσει του BinaryType· αφορά μόνο το Studio σε Linux.</value>
+  </data>
+  <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
+    <value>Στατικός κατάλογος</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Fetching" xml:space="preserve">
+    <value>Ανακτώνται οι πιο πρόσφατες πληροφορίες ανάπτυξης, παρακαλώ περιμένετε...</value>
+  </data>
+  <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
+    <value>Το κανάλι που καθορίσατε είτε δεν υπάρχει είτε είναι ιδιωτικό</value>
+  </data>
+  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
+    <value>Αναγκάστε το Froststrap να κατεβάσει την έκδοση με συγκεκριμένο hash. Παρακαλώ μην το αλλάξετε αν δεν έχετε ιδέα τι κάνει αυτό.</value>
+  </data>
+  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
+    <value>Κωδικός έκδοσης</value>
+  </data>
+  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
+    <value>Διαθέσιμα κανάλια</value>
+  </data>
+  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
+    <value>Σαρώνει την πλειονότητα των διαθέσιμων καναλιών για χρήση.</value>
+  </data>
+  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
+    <value>Ορίζει το κανάλι ανάπτυξης. Μην το αλλάξετε, εκτός αν ξέρετε τι κάνετε!</value>
+  </data>
+  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
+    <value>Παρακαλώ, επανεκκινήστε την εφαρμογή για να απενεργοποιηθούν οι κινούμενες εικόνες.</value>
+  </data>
+  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
+    <value>Παρακαλώ, επανεκκινήστε την εφαρμογή για να απενεργοποιηθεί η επιτάχυνση υλικού και να εφαρμοστούν οι αλλαγές.</value>
+  </data>
+  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
+    <value>Αρχεία καταγραφής παικτών</value>
+  </data>
+  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
+    <value>Εμφανίζει τους παίκτες που αποχωρούν ή εισέρχονται στον διακομιστή στον οποίο βρίσκεστε.</value>
+  </data>
+  <data name="Menu.CustomMods.Description" xml:space="preserve">
+    <value>Σας επιτρέπει να εγκαταστήσετε προσαρμοσμένα mods από το Bootstrapper.</value>
+  </data>
+  <data name="Menu.CustomMods.Title" xml:space="preserve">
+    <value>Προσαρμοσμένες τροποποιήσεις</value>
+  </data>
+  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
+    <value>Εκκαθάριση αρχείων καταγραφής</value>
+  </data>
+  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
+    <value>Αντιγραφή επιλεγμένων</value>
+  </data>
+  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
+    <value>Εξαγωγή αρχείων καταγραφής</value>
+  </data>
+  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
+    <value>Άνοιγμα του φακέλου «Logs»</value>
+  </data>
+  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
+    <value>Ανανέωση αρχείων καταγραφής</value>
+  </data>
+  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
+    <value>Αρχεία καταγραφής αναζήτησης</value>
+  </data>
+  <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
+    <value>Αυτό το κανάλι είναι παλιό και πιθανότατα δεν ενημερώνεται πλέον. Παρακαλούμε χρησιμοποιήστε κάποιο άλλο κανάλι.</value>
+  </data>
+  <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
+    <value>Γρήγορη σύνδεση</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
+    <value>Προσθήκη νέου</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
+    <value>Προηγμένες ρυθμίσεις</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
+    <value>Εισαγωγή αναγνωριστικού JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
+    <value>Προσθήκη με αναγνωριστικό</value>
+  </data>
+  <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
+    <value>Υπάρχει ήδη μια καταχώριση για αυτό το όνομα σημαίας.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
+    <value>Πίσω</value>
+  </data>
+  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
+    <value>Η κακή χρήση αυτού του στοιχείου μπορεί να οδηγήσει σε αστάθεια ή σε απρόβλεπτα συμβάντα.</value>
+    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
+  </data>
+  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
+    <value>Να χρησιμοποιείται με προσοχή.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
+    <value>Καθαρή λίστα</value>
+  </data>
+  <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
+    <value>Ορισμένες από τις σημαίες που προσπαθείτε να εισαγάγετε έχουν ήδη ορισμένες τιμές. Θέλετε να αντικαταστήσετε τις τρέχουσες τιμές τους με αυτές που ορίζονται στην εισαγωγή;
+
+Υπάρχουν {0} ορισμοί σημαίας που παρουσιάζουν σύγκρουση:
+{1}</value>
+    <comment>{0} is a number, {1} is a comma-separated list</comment>
+  </data>
+  <data name="Menu.FastFlagEditor.DeleteSelected" xml:space="preserve">
+    <value>Διαγραφή επιλεγμένων</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
+    <value>Διαχειριστείτε τα FastFlags σας εδώ. Δείτε περισσότερες λειτουργίες στις «Σύνθετες ρυθμίσεις».</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
+    <value>Υποστηρίζονται μόνο αρχεία με επέκταση .json και .txt</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
+    <value>📂 Ανεβάστε εδώ το αρχείο JSON ή TXT σας</value>
+  </data>
+  <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
+    <value>Εξαγωγή JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
+    <value>Θα θέλατε να συμπεριλάβετε προκαθορισμένα FFlags;</value>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
+    <value>Η καταχώριση για το «{0}» δεν είναι έγκυρη, καθώς η τιμή πρέπει να είναι λογική τιμή (είτε «True» είτε «False»)</value>
+    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
+    <value>Η καταχώριση για το «{0}» δεν είναι έγκυρη, καθώς το όνομα μπορεί να περιέχει μόνο γράμματα, αριθμούς και κάτω παύλες</value>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
+    <value>Το JSON που εισάγατε δεν φαίνεται να είναι έγκυρο. Παρακαλώ, ελέγξτε το ξανά και δοκιμάστε πάλι.
+
+Περισσότερες πληροφορίες:
+{0}</value>
+    <comment>{0} is an exception message</comment>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
+    <value>Η καταχώριση για το «{0}» δεν είναι έγκυρη, καθώς η τιμή πρέπει να είναι ακέραιος αριθμός</value>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
+    <value>Η καταχώριση για το «{0}» δεν είναι έγκυρη, καθώς το φίλτρο θέσης δεν έχει τη σωστή μορφή.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
+    <value>Η καταχώριση για το «{0}» δεν είναι έγκυρη, καθώς το όνομα πρέπει να ξεκινά με FFlag, DFInt κ.λπ.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
+    <value>Αντιγράφηκε στο πρόχειρο.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
+    <value>Φαίνεται ότι εισάγετε μια πολύ μεγάλη ρύθμιση. Θα πρέπει να εισάγετε μόνο ρυθμίσεις τις οποίες κατανοείτε πλήρως. ΜΗΝ αντιγράφετε τυφλά ρυθμίσεις που έχουν δημιουργήσει άλλοι. Αν συνεχίσετε, είναι πολύ πιθανό να αντιμετωπίσετε προβλήματα σταθερότητας και απρόσμενες αλλαγές.
+
+Είστε σίγουροι ότι θέλετε να συνεχίσετε;</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
+    <value>Πω πω, είναι τόσο άδειο εδώ! Τι λέτε να προσθέσουμε ένα FastFlag;</value>
+  </data>
+  <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
+    <value>Προφίλ σημαιών</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
+    <value>Εμφάνιση προκαθορισμένων σημαιών</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
+    <value>Επεξεργαστής FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
+    <value>Επιστροφή</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
+    <value>Ξέρω τι κάνω</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
+    <value>Ξέρεις τι κάνεις;</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
+    <value>Οι «Fast Flags» είναι εξαιρετικά ισχυρές, καθώς προορίζονται αποκλειστικά για χρήση από τους μηχανικούς του Roblox. Αν και μπορούν να είναι πολύ χρήσιμες, η χειροκίνητη ρύθμισή τους μπορεί να προκαλέσει σοβαρά προβλήματα σταθερότητας και λειτουργικότητας. ΜΗΝ χρησιμοποιείτε τον επεξεργαστή αν δεν είστε σίγουροι για το τι κάνετε.
+
+ΜΗΝ το χρησιμοποιείτε για να εισαγάγετε μεγάλες «λίστες παραμέτρων» που έχουν δημιουργηθεί από άλλους και υπόσχονται βελτίωση της απόδοσης ή κάτι παρόμοιο. Αυτές οι λίστες ενέχουν τα προαναφερθέντα προβλήματα και θα σας δημιουργήσουν δυσκολίες, καθώς δεν θα γνωρίζετε πλήρως τι ακριβώς αλλάζουν. Αν είχατε σκοπό να το κάνετε αυτό, ΕΠΙΣΤΡΕΨΤΕ ΠΙΣΩ.</value>
+  </data>
+  <data name="Menu.FastFlags.Description" xml:space="preserve">
+    <value>Ελέγξτε τον τρόπο ρύθμισης συγκεκριμένων παραμέτρων και λειτουργιών του κινητήρα του Roblox.</value>
+  </data>
+  <data name="Menu.FastFlags.Editor.Description" xml:space="preserve">
+    <value>Διαχειριστείτε τα δικά σας Fast Flags. Χρησιμοποιήστε τα με προσοχή.</value>
+    <comment>Title is Menu.FastFlagEditor.Title</comment>
+  </data>
+  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
+    <value>Μάθετε περισσότερα για το Fast Flags, τι κάνουν αυτές οι προεπιλογές και πώς να τις χρησιμοποιήσετε.</value>
+    <comment>Title is Common.Help</comment>
+  </data>
+  <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
+    <value>Αν απενεργοποιήσετε αυτή τη ρύθμιση, οι παραμέτρους που έχουν οριστεί εδώ δεν θα εφαρμοστούν στο Roblox.</value>
+  </data>
+  <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
+    <value>Να επιτρέπεται στο Froststrap να διαχειρίζεται τα FastFlags</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
+    <value>Προσαρμόστε τις ρυθμίσεις γραφικών και απόδοσης για τον κινητήρα του Roblox.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
+    <value>Το Roblox μειώνει την ποιότητα της απεικόνισης ανάλογα με τον τρόπο κλιμάκωσης της οθόνης σας στα Windows.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
+    <value>Διατήρηση της ποιότητας απόδοσης με την κλιμάκωση της οθόνης</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
+    <value>Αλλάζει το χρώμα του ουρανού του παιχνιδιού σε ομοιόμορφο γκρι. Σημείωση: Αυτό δεν θα λειτουργήσει σε παιχνίδια στα οποία ο προγραμματιστής έχει προσθέσει ένα προσαρμοσμένο skybox.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.GraySky.Title" xml:space="preserve">
+    <value>Γκρίζος ουρανός</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Description" xml:space="preserve">
+    <value>Ρυθμίστε την ποιότητα του πλέγματος για να βελτιώσετε την απόδοση ή την οπτική ποιότητα.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
+    <value>Σύρετε για να ρυθμίσετε τη λεπτομέρεια του πλέγματος, ανάλογα με τις ανάγκες σας για απόδοση ή ποιότητα.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.LowPolyMeshes.Title" xml:space="preserve">
+    <value>Λεπτομέρειες πλέγματος</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
+    <value>Τα υψηλότερα επίπεδα MSAA μειώνουν τις τραχιές άκρες, αλλά ενδέχεται να επηρεάσουν την απόδοση.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
+    <value>Ποιότητα εξομάλυνσης (MSAA)</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
+    <value>Κλειδώνει την ποιότητα γραφικών σε ένα επιλεγμένο επίπεδο. Σημείωση: Όταν αυτή η ρύθμιση είναι ενεργοποιημένη, το ρυθμιστικό γραφικών στο μενού του Roblox επηρεάζει μόνο την απόσταση απόδοσης σε ένα παιχνίδι.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
+    <value>Παράκαμψη επιπέδου ποιότητας γραφικών</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Description" xml:space="preserve">
+    <value>Απενεργοποιεί τις προ-υπολογισμένες σκιές για να βελτιώσει την απόδοση, αλλά ενδέχεται να προκαλέσει προβλήματα φωτισμού σε ορισμένα παιχνίδια.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.PauseVoxelizer.Title" xml:space="preserve">
+    <value>Παύση του Voxelizer</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
+    <value>Αφαιρεί τις προεπιλεγμένες υφές γρασιδιού του Roblox. Σημείωση: Αυτή η ρύθμιση δεν επηρεάζει τις προσαρμοσμένες υφές γρασιδιού που χρησιμοποιούνται από μεμονωμένα παιχνίδια.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RemoveGrass.Title" xml:space="preserve">
+    <value>Απενεργοποίηση χόρτου</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RenderingMode.Description" xml:space="preserve">
+    <value>Ρυθμίστε το API απόδοσης που χρησιμοποιείται για το Roblox. Σημείωση: Πατήστε Alt + Enter για να εισέλθετε σε αποκλειστική πλήρη οθόνη όταν χρησιμοποιείτε το Direct3D ως API απόδοσης.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
+    <value>Λειτουργία απόδοσης</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
+    <value>Προσαρμόστε την ποιότητα της υφής στα παιχνίδια. Σημείωση: Αυτή η ρύθμιση επηρεάζει επίσης το GUI και το UI.</value>
+  </data>
+  <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
+    <value>Ποιότητα υφής</value>
+  </data>
+  <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
+    <value>Επαναφορά όλων των ρυθμίσεων στις προεπιλεγμένες τιμές</value>
+  </data>
+  <data name="Menu.FastFlags.Title" xml:space="preserve">
+    <value>Ρυθμίσεις FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
+    <value>Να προστίθεται αυτόματα το FastFlag Alt+Enter κατά την εκκίνηση του Froststrap.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
+    <value>Χρήση του Alt χειροκίνητα</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
+    <value>Επιλέξτε τη μορφή για την αντιγραφή του JSON.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
+    <value>Αντιγραφή μορφής</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
+    <value>Αντιγράφει τις επιλεγμένες σημαίες σε μορφή JSON, χρησιμοποιώντας την επιλεγμένη μορφή αντιγραφής, όταν πατηθεί το συνδυασμό πλήκτρων Ctrl+C.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
+    <value>Ctrl+C Μορφή JSON</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
+    <value>Ενεργοποιήστε τη στήλη «Προεπιλογές» για τα FastFlags που μπορούν να ενεργοποιηθούν/απενεργοποιηθούν στις Ρυθμίσεις FastFlag.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
+    <value>Προκαθορισμένη στήλη</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
+    <value>Εμφάνιση του συνολικού αριθμού σημαιών στο FastFlag Editor.</value>
+  </data>
+  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
+    <value>Αριθμός σημαιών</value>
+  </data>
+  <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
+    <value>Εκκαθάριση FFlags</value>
+  </data>
+  <data name="Menu.FontFiles" xml:space="preserve">
+    <value>Αρχεία γραμματοσειρών</value>
+  </data>
+  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
+    <value>Είναι ανώνυμο και δεν κρύβει τίποτα κακό, το υπόσχομαι. Για να μάθετε τι συλλέγει το Froststrap και για ποιο λόγο, ανατρέξτε στην [πολιτική απορρήτου]({0}) του Froststrap.</value>
+  </data>
+  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
+    <value>Ενεργοποίηση αποστολής αναλυτικών στοιχείων στο Froststrap</value>
+  </data>
+  <data name="Menu.Froststrap.Description" xml:space="preserve">
+    <value>Ρυθμίστε τις επιλογές που αφορούν τη λειτουργία του Froststrap.</value>
+  </data>
+  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
+    <value>Συγκεντρώστε πληροφορίες που μπορούν να αναρτηθούν στο διαδίκτυο, προκειμένου να επιλύσετε ένα πρόβλημα που αντιμετωπίζετε.</value>
+  </data>
+  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
+    <value>Ρυθμίσεις του Froststrap</value>
+    <comment>Label that appears next to a checkbox</comment>
+  </data>
+  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
+    <value>Όλα τα αρχεία καταγραφής του Froststrap</value>
+    <comment>Label that appears next to a checkbox</comment>
+  </data>
+  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
+    <value>Εξαγωγή δεδομένων διάγνωσης</value>
+  </data>
+  <data name="Menu.GBSEditor.Description" xml:space="preserve">
+    <value>Αλλάξτε τις ρυθμίσεις του παιχνιδιού από ένα εύχρηστο μενού.</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
+    <value>Αποτρέψτε το Roblox από το να παρακάμψει τις γενικές ρυθμίσεις.</value>
+  </data>
+  <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
+    <value>Ορισμός ως «Μόνο για ανάγνωση»</value>
+  </data>
+  <data name="Menu.GlobalSettings.Title" xml:space="preserve">
+    <value>Γενικές ρυθμίσεις</value>
+  </data>
+  <data name="Menu.Help.Title" xml:space="preserve">
+    <value>Βοήθεια</value>
+  </data>
+  <data name="Menu.IconFiles" xml:space="preserve">
+    <value>Αρχεία εικονιδίων</value>
+  </data>
+  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
+    <value>Το Froststrap δεν μπορεί να εγκατασταθεί εδώ. Παρακαλώ επιλέξτε μια διαφορετική θέση ή χρησιμοποιήστε την προεπιλεγμένη θέση κάνοντας κλικ στο κουμπί επαναφοράς.</value>
+  </data>
+  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
+    <value>Το Froststrap δεν διαθέτει δικαιώματα εγγραφής στη θέση εγκατάστασης που έχετε επιλέξει. Παρακαλώ επιλέξτε άλλη θέση.</value>
+  </data>
+  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
+    <value>Ο φάκελος που επιλέξατε για την εγκατάσταση του Froststrap υπάρχει ήδη και ΔΕΝ είναι άδειος. Συνιστάται ανεπιφύλακτα η εγκατάσταση του Froststrap σε δικό του, ανεξάρτητο φάκελο.
+
+Προτείνεται να αλλάξετε τη θέση εγκατάστασης στην ακόλουθη:
+{0}
+
+Θέλετε να αλλάξετε τη θέση εγκατάστασης στην προτεινόμενη;
+Εάν επιλέξετε «Όχι», η προειδοποίηση αυτή θα αγνοηθεί και η εγκατάσταση θα συνεχιστεί.</value>
+    <comment>{0} is a file path</comment>
+  </data>
+  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
+    <value>Πρέπει να ορίσετε μια θέση εγκατάστασης</value>
+  </data>
+  <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
+    <value>Παρακολούθηση δραστηριότητας</value>
+  </data>
+  <data name="Menu.Integrations.AllowActivityJoining.Description" xml:space="preserve">
+    <value>Επιτρέπει σε οποιονδήποτε να συμμετάσχει στο παιχνίδι στο οποίο βρίσκεστε αυτή τη στιγμή μέσω του προφίλ σας στο Discord.</value>
+  </data>
+  <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
+    <value>Να επιτρέπεται η συμμετοχή σε δραστηριότητες</value>
+  </data>
+  <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
+    <value>Ενεργοποιεί ή απενεργοποιεί ορισμένες ενσωματωμένες λειτουργίες του Roblox.</value>
+  </data>
+  <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
+    <value>Απενεργοποίηση λειτουργιών του Roblox</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
+    <value>Απενεργοποιεί τη λειτουργία λήψης στιγμιότυπων οθόνης του Roblox. Σημείωση: Όταν αυτή η λειτουργία είναι ενεργοποιημένη, ο συνδυασμός πλήκτρων δεν θα λειτουργεί πλέον.</value>
+  </data>
+  <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
+    <value>Απενεργοποίηση των στιγμιότυπων οθόνης στο Roblox</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
+    <value>Απενεργοποιεί τη λειτουργία εγγραφής του Roblox. Σημείωση: Όταν αυτή η λειτουργία είναι ενεργοποιημένη, ο συνδυασμός πλήκτρων συντόμευσης δεν θα λειτουργεί πλέον.</value>
+  </data>
+  <data name="Menu.Integrations.BlockVideoRecording.Title" xml:space="preserve">
+    <value>Απενεργοποίηση της εγγραφής στο Roblox</value>
+  </data>
+  <data name="Menu.Integrations.Custom.AppLocation" xml:space="preserve">
+    <value>Τόπος υποβολής αιτήσεων</value>
+  </data>
+  <data name="Menu.Integrations.Custom.AutoClose" xml:space="preserve">
+    <value>Αυτόματο κλείσιμο όταν κλείνει το Roblox</value>
+  </data>
+  <data name="Menu.Integrations.Custom.AutoCloseOnGame" xml:space="preserve">
+    <value>Αυτόματο κλείσιμο όταν κλείνει το παιχνίδι</value>
+  </data>
+  <data name="Menu.Integrations.Custom.Description" xml:space="preserve">
+    <value>Εκκινήστε αυτόματα επιπλέον προγράμματα με το Roblox.</value>
+  </data>
+  <data name="Menu.Integrations.Custom.GameID" xml:space="preserve">
+    <value>Αριθμός παιχνιδιού</value>
+  </data>
+  <data name="Menu.Integrations.Custom.LaunchArgs" xml:space="preserve">
+    <value>Παράμετροι εκκίνησης</value>
+  </data>
+  <data name="Menu.Integrations.Custom.LaunchArgs.Placeholder" xml:space="preserve">
+    <value>Το Roblox λειτουργεί!</value>
+  </data>
+  <data name="Menu.Integrations.Custom.NewIntegration" xml:space="preserve">
+    <value>Νέα ενσωμάτωση</value>
+  </data>
+  <data name="Menu.Integrations.Custom.NoneSelected" xml:space="preserve">
+    <value>Δεν έχει επιλεγεί καμία ενσωμάτωση. Παρακαλώ επιλέξτε ή προσθέστε μια νέα.</value>
+  </data>
+  <data name="Menu.Integrations.Custom.SpecifyGame" xml:space="preserve">
+    <value>Εκτέλεση σε ένα συγκεκριμένο παιχνίδι</value>
+  </data>
+  <data name="Menu.Integrations.Custom.Title" xml:space="preserve">
+    <value>Προσαρμοσμένες ενσωματώσεις</value>
+  </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Description" xml:space="preserve">
+    <value>Εμφανίζει ένα προσαρμοσμένο μήνυμα κατάστασης αντί του προεπιλεγμένου μηνύματος «Playing Roblox».</value>
+  </data>
+  <data name="Menu.Integrations.CustomStatusDisplay.Title" xml:space="preserve">
+    <value>Προσαρμοσμένη εμφάνιση κατάστασης</value>
+  </data>
+  <data name="Menu.Integrations.Description" xml:space="preserve">
+    <value>Ρυθμίστε πρόσθετες λειτουργίες που θα συμπληρώνουν το Roblox.</value>
+  </data>
+  <data name="Menu.Integrations.DesktopApp.Description" xml:space="preserve">
+    <value>Το Roblox θα κλείσει εντελώς όταν βγείτε από ένα παιχνίδι, αντί να επιστρέψετε στην εφαρμογή. [Θα προκαλέσει κάποια προβλήματα!]({0})</value>
+  </data>
+  <data name="Menu.Integrations.DesktopApp.Title" xml:space="preserve">
+    <value>Κοντά στην επιφάνεια εργασίας</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Description" xml:space="preserve">
+    <value>Ανοίγει ένα συγκεκριμένο παράθυρο όταν κάνετε διπλό κλικ στο Froststrap στη γραμμή εργασιών κατά την εκκίνηση του Roblox.</value>
+  </data>
+  <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
+    <value>Ενέργεια με διπλό κλικ</value>
+  </data>
+  <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
+    <value>Επιτρέπει στο Froststrap να αναγνωρίσει ποιο παιχνίδι του Roblox παίζετε. Ορισμένες λειτουργίες ενδέχεται να το απαιτούν.</value>
+  </data>
+  <data name="Menu.Integrations.EnableActivityTracking.Title" xml:space="preserve">
+    <value>Ενεργοποίηση παρακολούθησης δραστηριότητας</value>
+  </data>
+  <data name="Menu.Integrations.FroststrapRPC.Description" xml:space="preserve">
+    <value>Ενεργοποιήστε αυτή τη ρύθμιση για να εμφανίζεται ένα προσαρμοσμένο RPC με το μήνυμα «Playing Froststrap» στο προφίλ σας στο Discord, όσο η εφαρμογή είναι ανοιχτή.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistory.Description" xml:space="preserve">
+    <value>Εμφανίζει το παιχνίδι στο οποίο έχετε παίξει κατά τη διάρκεια αυτής της συνεδρίας και σας επιτρέπει να επανέλθετε σε αυτό.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
+    <value>Δείτε το ιστορικό παιχνιδιών για να επανέλθετε γρήγορα στον διακομιστή σας.</value>
+  </data>
+  <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
+    <value>Μενού ιστορικού παιχνιδιών</value>
+  </data>
+  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
+    <value>Η λειτουργία «Multi-Instancing» είναι επιρρεπής σε σφάλματα. Δεν θα παρέχουμε υποστήριξη για προβλήματα που σχετίζονται με τη λειτουργία «Multi-Instancing», καθώς η Roblox λαμβάνει ενεργά μέτρα για να διασφαλίσει ότι δεν θα λειτουργεί. Δεν μπορούμε και δεν θα επιχειρήσουμε να παρακάμψουμε αυτά τα μέτρα.</value>
+  </data>
+  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
+    <value>Εμφανίζει τις εισόδους/εξόδους των παικτών και τα μηνύματα. Λειτουργεί μόνο με την [υπηρεσία κειμενικής συνομιλίας](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
+  </data>
+  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
+    <value>Μενού καταγραφών</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
+    <value>Εμφανίζει τον συνολικό χρόνο παιχνιδιού και τη διάρκεια της τρέχουσας συνεδρίας, όταν βρίσκεστε σε ένα παιχνίδι ή σε ένα χώρο του Studio.</value>
+  </data>
+  <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
+    <value>Μετρητής χρόνου παιχνιδιού</value>
+  </data>
+  <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
+    <value>Όταν βρίσκεστε μέσα στο παιχνίδι, θα μπορείτε να δείτε πού βρίσκεται ο διακομιστής σας μέσω του [ipinfo.io](https://ipinfo.io).</value>
+  </data>
+  <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
+    <value>Ερώτηση για την τοποθεσία του διακομιστή</value>
+  </data>
+  <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
+    <value>Για να χρησιμοποιήσετε αυτή τη λειτουργία, πρέπει να είναι ενεργοποιημένη η παρακολούθηση δραστηριότητας και να είναι εγκατεστημένη και σε λειτουργία η εφαρμογή Discord για υπολογιστή. [Μάθετε περισσότερα]({0}).</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
+    <value>Εμφανίζει τον λογαριασμό Roblox με τον οποίο παίζεις στο προφίλ σου στο Discord.</value>
+  </data>
+  <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
+    <value>Εμφάνιση λογαριασμού Roblox</value>
+  </data>
+  <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
+    <value>Το παιχνίδι Roblox που παίζεις θα εμφανίζεται στο προφίλ σου στο Discord. [Δεν λειτουργεί;]({0})</value>
+  </data>
+  <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
+    <value>Εμφάνιση δραστηριότητας παιχνιδιού</value>
+  </data>
+  <data name="Menu.Integrations.Title" xml:space="preserve">
+    <value>Ενσωματώσεις</value>
+  </data>
+  <data name="Menu.Load" xml:space="preserve">
+    <value>Φόρτωση</value>
+  </data>
+  <data name="Menu.Mods.Description" xml:space="preserve">
+    <value>Διαχείριση και εφαρμογή τροποποιήσεων αρχείων στον πελάτη παιχνιδιού Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Help.Description" xml:space="preserve">
+    <value>Δείτε πληροφορίες σχετικά με τη διαχείριση και τη δημιουργία mods.</value>
+    <comment>Title is Common.Help</comment>
+  </data>
+  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+    <value>Όλα όσα χρειάζεστε για τη διαχείριση των δρομέων σας.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+    <value>Λειτουργίες προσαρμοσμένου δρομέα</value>
+  </data>
+  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+    <value>Ρυθμίστε τις παραμέτρους της εφαρμογής, όπως τη συμπεριφορά κλιμάκωσης DPI και τις [βελτιστοποιήσεις πλήρους οθόνης]({0}).</value>
+  </data>
+  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+    <value>Διαχείριση ρυθμίσεων συμβατότητας</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+    <value>Επιλογή δρομέα...</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+    <value>Χρησιμοποιήστε τους δικούς σας δείκτες ποντικιού στο Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+    <value>Κατάργηση προσαρμοσμένου δρομέα</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+    <value>Προσαρμοσμένος δρομέας</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
+    <value>Εφαρμογή σετ</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+    <value>Να έχετε έτοιμα προς χρήση πολλά σετ δρομέων.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
+    <value>Σύνολο εξαγωγής</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
+    <value>Λήψη Ρύθμιση</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
+    <value>Σύνολο εισαγωγών</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
+    <value>Δεν έχει επιλεγεί κανένα προσαρμοσμένο σετ δρομέα.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+    <value>Προσαρμοσμένο σετ δρομέων</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+    <value>Επιλέξτε ήχο...</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+    <value>Αντικαθιστά τον ήχο θανάτου με δικό σου αρχείο ήχου.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+    <value>Κατάργηση του προσαρμοσμένου ήχου θανάτου</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+    <value>Προσαρμοσμένος ήχος θανάτου</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+    <value>Επιλογή γραμματοσειράς...</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+    <value>Ορίζει την επιλεγμένη προσαρμοσμένη γραμματοσειρά στο Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
+    <value>Το αρχείο που επιλέξατε δεν φαίνεται να είναι έγκυρο αρχείο γραμματοσειράς.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+    <value>Κατάργηση της εφαρμοσμένης γραμματοσειράς</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+    <value>Προσαρμοσμένη γραμματοσειρά παιχνιδιού</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+    <value>Επιλέξτε το ShiftLock...</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+    <value>Χρησιμοποίησε το δικό σου Shiftlock στο Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+    <value>Αφαίρεση του Custom Shiftlock</value>
+  </data>
+  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+    <value>Προσαρμοσμένο Shiftlock</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
+    <value>Προσθήκη χρωματικής διαβάθμισης</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
+    <value>Επιλογές δημιουργίας τροποποιήσεων</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
+    <value>Έγχρωμοι δείκτες</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
+    <value>Τροχός χρωμάτων για emote</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
+    <value>Δείκτης Shiftlock με αλλαγή χρώματος</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
+    <value>Έγχρωμα εικονίδια φωνητικής συνομιλίας</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
+    <value>Γωνία κλίσης:</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
+    <value>Χρώματα με διαβάθμιση</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
+    <value>Γρήγορες ενέργειες</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
+    <value>Αντιγραφή στο φάκελο «Mods»</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
+    <value>Λειτουργία δημιουργίας</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
+    <value>Προσαρμοσμένο λογότυπο Roblox</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
+    <value>Προεπισκόπηση φύλλου Sprite</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
+    <value>Προεπισκόπηση μεμονωμένου σπράιτ</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
+    <value>Προσαρμοσμένος δείκτης φόρτωσης</value>
+  </data>
+  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
+    <value>Γεννήτρια Mod</value>
+  </data>
+  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
+    <value>Διαχειριστείτε εδώ τα προσαρμοσμένα mods του Roblox.</value>
+  </data>
+  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
+    <value>Άνοιγμα του φακέλου «Mods»</value>
+  </data>
+  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+    <value>Επιλέξτε ποιο είδος emoji πρέπει να χρησιμοποιεί το Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+    <value>Η τροποποίηση emoji δεν μπορεί να εφαρμοστεί αυτή τη στιγμή.</value>
+  </data>
+  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+    <value>Προτιμώμενος τύπος emoji</value>
+  </data>
+  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+    <value>Επιλέξτε αν θέλετε να χρησιμοποιήσετε πολλαπλούς δείκτες Roblox.</value>
+  </data>
+  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+    <value>Δείκτης ποντικιού</value>
+  </data>
+  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+    <value>Επαναφέρετε το παλιό φόντο του επεξεργαστή avatar που χρησιμοποιούνταν στην εφαρμογή Roblox πριν από το 2020.</value>
+  </data>
+  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+    <value>Χρήση του παλιού φόντου του επεξεργαστή προφίλ</value>
+  </data>
+  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
+    <value>Μια προσπάθεια να αναπαραχθούν κατά προσέγγιση οι ήχοι των χαρακτήρων που χρησιμοποιούνταν πριν από το 2014.</value>
+  </data>
+  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
+    <value>Προσομοίωση παλαιών ήχων χαρακτήρων</value>
+  </data>
+  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
+    <value>Επαναφέρετε τον κλασικό ήχο θανάτου «oof».</value>
+  </data>
+  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
+    <value>Χρησιμοποίησε το «Old Death Sound»</value>
+  </data>
+  <data name="Menu.MoreInfo" xml:space="preserve">
+    <value>Κάντε κλικ για περισσότερες πληροφορίες σχετικά με αυτή την επιλογή.</value>
+  </data>
+  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
+    <value>Εκκαθάριση λίστας διακομιστών</value>
+  </data>
+  <data name="Menu.RegionSelector.Description" xml:space="preserve">
+    <value>Συνδεθείτε εύκολα σε διακομιστές κοντά σας χρησιμοποιώντας τον επιλεγμένο λογαριασμό στο Account Manager. Χρησιμοποιεί τα [API της RoValra]({0}), [ισχύει η πολιτική απορρήτου της RoValra.]({0}/privacy)</value>
+  </data>
+  <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
+    <value>Εισάγετε τον κωδικό τοποθεσίας ή το όνομα του παιχνιδιού...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
+    <value>Φόρτωση περισσότερων</value>
+  </data>
+  <data name="Menu.RegionSelector.Region" xml:space="preserve">
+    <value>Περιοχή:</value>
+  </data>
+  <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
+    <value>Μέγεθος διακομιστή:</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
+    <value>Γίνετε μέλος</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
+    <value>Παίκτες</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
+    <value>Περιοχή</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
+    <value>Αναγνωριστικό διακομιστή</value>
+  </data>
+  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
+    <value>Χρόνος λειτουργίας του διακομιστή</value>
+  </data>
+  <data name="Menu.RegionSelector.Title" xml:space="preserve">
+    <value>Επιλογή περιοχής</value>
+  </data>
+  <data name="Menu.Restart" xml:space="preserve">
+    <value>Επανεκκίνηση</value>
+  </data>
+  <data name="Menu.Save" xml:space="preserve">
+    <value>Αποθήκευση</value>
+  </data>
+  <data name="Menu.SaveAndInstall" xml:space="preserve">
+    <value>Αποθήκευση και εγκατάσταση</value>
+  </data>
+  <data name="Menu.SaveAndLaunch" xml:space="preserve">
+    <value>Αποθήκευση και εκκίνηση</value>
+  </data>
+  <data name="Menu.SettingsSaved.Message" xml:space="preserve">
+    <value>Οι αλλαγές θα τεθούν σε ισχύ την επόμενη φορά που θα ανοίξετε το Roblox.</value>
+  </data>
+  <data name="Menu.SettingsSaved.Title" xml:space="preserve">
+    <value>Οι ρυθμίσεις αποθηκεύτηκαν!</value>
+  </data>
+  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
+    <value>Δημιουργία συντόμευσης παιχνιδιού</value>
+  </data>
+  <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
+    <value>Αυτό σας επιτρέπει να δημιουργείτε συντομεύσεις, χάρη στις οποίες μπορείτε να συμμετέχετε γρήγορα σε συγκεκριμένα παιχνίδια.</value>
+  </data>
+  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
+    <value>Επιλέξτε μια συντόμευση για να την επεξεργαστείτε.</value>
+  </data>
+  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
+    <value>Χρήση εικονιδίου παιχνιδιού</value>
+  </data>
+  <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
+    <value>Συντομεύσεις παιχνιδιού</value>
+  </data>
+  <data name="Menu.Shortcuts.Description" xml:space="preserve">
+    <value>Ρυθμίστε τον τρόπο με τον οποίο το Froststrap μπορεί να ξεκινήσει εύκολα.</value>
+  </data>
+  <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
+    <value>Σας επιτρέπει να χρησιμοποιήσετε τη συλλογή εικονιδίων Roblox του Froststrap για τις συντομεύσεις σας. [Δείτε πώς.]({0})</value>
+  </data>
+  <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
+    <value>Αποθήκευση εικονιδίων Roblox σε φάκελο</value>
+  </data>
+  <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
+    <value>Δημιουργήστε συντομεύσεις για γρήγορη πρόσβαση σε συγκεκριμένες λειτουργίες. Όλες αυτές θα τοποθετηθούν στην επιφάνεια εργασίας.</value>
+  </data>
+  <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
+    <value>Λειτουργία</value>
+  </data>
+  <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
+    <value>Αυτές είναι οι συντομεύσεις που εμφανίζουν το μενού εκκίνησης με πολλαπλές επιλογές.</value>
+  </data>
+  <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
+    <value>Γενικά</value>
+  </data>
+  <data name="Menu.TestMode" xml:space="preserve">
+    <value>Λειτουργία δοκιμής</value>
+    <comment>See the prompt for more context</comment>
+  </data>
+  <data name="Menu.TestMode.Prompt" xml:space="preserve">
+    <value>Η Λειτουργία δοκιμής σας διευκολύνει να ελέγχετε επαναληπτικά πώς οι ρυθμίσεις σας επηρεάζουν το Roblox. 
+
+Όσο είναι ενεργοποιημένη, θα εκκινεί αυτόματα το Roblox μετά το κλείσιμο των Ρυθμίσεων και θα ανοίγει ξανά τις Ρυθμίσεις μετά το κλείσιμο του Roblox, σε έναν κύκλο μέχρι να την απενεργοποιήσετε.
+
+Θέλετε να ενεργοποιήσετε τη Λειτουργία δοκιμής;</value>
+  </data>
+  <data name="Menu.Title" xml:space="preserve">
+    <value>Ρυθμίσεις Froststrap</value>
+  </data>
+  <data name="Menu.UnsavedChanges" xml:space="preserve">
+    <value>Έχετε αλλαγές που δεν έχουν αποθηκευτεί. Είστε σίγουροι ότι θέλετε να κλείσετε χωρίς να αποθηκεύσετε;</value>
+  </data>
+  <data name="Menu_CommunityMods_Title" xml:space="preserve">
+    <value>Τροποποιήσεις της κοινότητας</value>
+  </data>
+  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
+    <value>Αποθήκευση των τρεχουσών σημαίας</value>
+  </data>
+  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
+    <value>Αποθήκευση και φόρτωση προφίλ σημαίας με γρήγορο τρόπο.</value>
+  </data>
+  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
+    <value>Προφίλ Fast Flag</value>
+  </data>
+  <data name="Paths.Icons" xml:space="preserve">
+    <value>Εικονίδια</value>
+    <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="TranslationTesting.Test" xml:space="preserve">
+    <value>Αυτή η συμβολοσειρά έχει δημιουργηθεί για να δοκιμαστεί η αυτόματη μετάφραση· παρακαλώ αγνοήστε την.</value>
+  </data>
+  <data name="Uninstaller.KeepData.Description" xml:space="preserve">
+    <value>Θα παραμείνουν στον χώρο όπου είχε εγκατασταθεί το Froststrap και θα αποκατασταθούν αυτόματα σε περίπτωση επανεγκατάστασης.</value>
+  </data>
+  <data name="Uninstaller.KeepData.Label" xml:space="preserve">
+    <value>Διατήρηση των ρυθμίσεων και των τροποποιήσεών μου</value>
+  </data>
+  <data name="Uninstaller.Text" xml:space="preserve">
+    <value>Η απεγκατάσταση θα αφαιρέσει το Froststrap από το σύστημά σας και θα επαναρυθμίσει αυτόματα το προεπιλεγμένο πρόγραμμα εκκίνησης του Roblox, εφόσον αυτό εξακολουθεί να είναι εγκατεστημένο.
+
+Εάν προβαίνετε σε απεγκατάσταση ή επανεγκατάσταση επειδή αντιμετωπίζετε προβλήματα με το Roblox, διαβάστε πρώτα [αυτή τη σελίδα βοήθειας]({0}).
+
+Η διαδικασία απεγκατάστασης ενδέχεται να μην καταφέρει να καθαρίσει πλήρως τα αρχεία, οπότε ίσως χρειαστεί να διαγράψετε χειροκίνητα τα αρχεία που έχουν απομείνει στον φάκελο όπου ήταν εγκατεστημένο το Froststrap.
+
+Το Froststrap ήταν εγκατεστημένο στο "{1}".</value>
+  </data>
+  <data name="Uninstaller.Title" xml:space="preserve">
+    <value>Απεγκατάσταση του Froststrap</value>
+  </data>
+  <data name="Uninstaller.Uninstall" xml:space="preserve">
+    <value>Απεγκατάσταση</value>
+  </data>
+</root>
