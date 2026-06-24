@@ -1329,12 +1329,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Robloxi uuesti paigaldamine</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Võimaldab avada korraga rohkem kui ühe Roblox-i instantsi. Võib põhjustada probleeme töölaua rakendusega.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Mitme instantsi käivitamine</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Taastab Robloxi tegumiriba ja ülemise riba ikoonid vanemate versioonide kujule. Võib mitte töötada, kui Robloxi käivitamine võtab liiga kaua aega.</value>
   </data>
@@ -1882,9 +1876,6 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Mängu ajaloo menüü</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Multi-Instancing on tõrgetele altis. Me ei paku tuge Multi-Instancinguga seotud probleemide puhul, kuna Roblox võtab aktiivselt kasutusele meetmeid, et tagada selle toimimise takistamine. Me ei saa ega kavatse neid meetmeid ümber minna.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Näitab mängijate liitumisi ja lahkumisi ning sõnumeid. Töötab ainult koos [tekstivestlusteenusega](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2230,9 +2221,6 @@ Kas soovid testrežiimi sisse lülitada?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoonid</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>See tekst on mõeldud automaatse tõlke testimiseks, palun jätke see tähelepanuta.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Need säilitatakse kohas, kuhu Froststrap paigaldati, ning taastatakse automaatselt uuesti paigaldamisel.</value>

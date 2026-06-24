@@ -1322,12 +1322,6 @@ Inštalácia bude rýchla a jednoduchá a po jej dokončení budete môcť nakon
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Vynútiť preinštalovanie Robloxu</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Umožňuje súčasné otvorenie viacerých inštancií Robloxu. Môže spôsobiť problémy s desktopovou aplikáciou.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Spúšťanie viacerých inštancií</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Obnoví ikony na paneli úloh a hornom paneli v hre Roblox do podoby zo starších verzií. Môže nefungovať, ak sa hra Roblox spúšťa príliš dlho.</value>
   </data>
@@ -1872,9 +1866,6 @@ Ak zvolíte „Nie“, toto varovanie sa ignoruje a inštalácia bude pokračova
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Ponuka histórie hry</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Funkcia Multi-Instancing je náchylná na poruchy. Nebudeme poskytovať podporu pri problémoch s funkciou Multi-Instancing, keďže spoločnosť Roblox aktívne zavádza opatrenia, ktoré majú zabrániť jej fungovaniu. Nemôžeme a ani sa nebudeme pokúšať tieto opatrenia obísť.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Zobrazuje prihlásenia a odhlásenia hráčov a správy. Funguje iba so službou [textového chatu](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2220,9 +2211,6 @@ Chcete zapnúť testovací režim?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikony</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Tento reťazec slúži na testovanie automatického prekladu, prosím, ignorujte ho.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Budú uložené na mieste, kde bol nainštalovaný program Froststrap, a pri opätovnej inštalácii sa automaticky obnovia.</value>

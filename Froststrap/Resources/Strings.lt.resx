@@ -1350,12 +1350,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Priversti iš naujo įdiegti „Roblox“</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Leidžia vienu metu atidaryti daugiau nei vieną „Roblox“ egzempliorių. Tai gali sukelti problemų su darbalaukio programa.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Daugiakartinis paleidimas</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Grąžina „Roblox“ užduočių juostos ir viršutinės juostos piktogramas į ankstesnes versijas. Gali neveikti, jei „Roblox“ paleidimas užtrunka pernelyg ilgai.</value>
   </data>
@@ -1912,9 +1906,6 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Žaidimo istorijos meniu</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Daugialypio instancavimo funkcija yra linkusi sutrikti. Mes neteiksime pagalbos sprendžiant su daugialypio instancavimo susijusias problemas, nes „Roblox“ aktyviai diegia priemones, užtikrinančias, kad ši funkcija neveiktų. Mes negalime ir nebandysime apeiti šių priemonių.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Rodo, kai žaidėjas prisijungia ar atsijungia, taip pat rodo pranešimus. Veikia tik su [teksto pokalbių paslauga](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2260,9 +2251,6 @@ Ar norite įjungti bandymo režimą?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Piktogramos</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Ši eilutė skirta automatinio vertimo testavimui, prašome į ją nekreipti dėmesio.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Jie bus išsaugoti toje vietoje, kurioje buvo įdiegta „Froststrap“, ir bus automatiškai atkurti ją įdiegus iš naujo.</value>

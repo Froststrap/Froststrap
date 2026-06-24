@@ -1335,12 +1335,6 @@ Roblox обаче все още не е инсталиран. Той ще бъд
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Принудително преинсталиране на Roblox</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Позволява едновременното отваряне на повече от един екземпляр на Roblox. Може да предизвика проблеми с приложението за настолни компютри.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Стартиране на множество инстанции</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Връща иконите на лентата с задачи и горната лента на Roblox към по-старите версии. Възможно е да не работи, ако стартирането на Roblox отнема прекалено много време.</value>
   </data>
@@ -1891,9 +1885,6 @@ Roblox обаче все още не е инсталиран. Той ще бъд
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Меню „История на играта“</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Функцията „Multi-Instancing“ често дава грешки. Няма да предоставяме поддръжка при проблеми, свързани с „Multi-Instancing“, тъй като Roblox активно въвежда мерки, за да гарантира, че тя не работи. Не можем и няма да се опитваме да заобикаляме тези мерки.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Показва кога играчите се присъединяват/напускат, както и съобщенията. Работи само с [услугата за текстов чат](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2239,9 +2230,6 @@ Roblox обаче все още не е инсталиран. Той ще бъд
   <data name="Paths.Icons" xml:space="preserve">
     <value>Икони</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Този текст е създаден с цел тестване на автоматичния превод, моля, не му обръщайте внимание.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Те ще бъдат запазени на мястото, където е бил инсталиран Froststrap, и автоматично ще бъдат възстановени при повторна инсталация.</value>

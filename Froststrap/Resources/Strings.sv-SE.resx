@@ -1303,12 +1303,6 @@ Installationsprocessen går snabbt och enkelt, och du kommer att kunna konfigure
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Tvinga ominstallation av Roblox</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Gör det möjligt att ha flera Roblox-instanser öppna samtidigt. Kan orsaka problem med skrivbordsappen.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Start av flera instanser</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Återställer ikonerna i Roblox aktivitetsfält och övre fält till tidigare versioner. Fungerar eventuellt inte om det tar för lång tid för Roblox att starta.</value>
   </data>
@@ -1853,9 +1847,6 @@ Om du väljer ”Nej” ignoreras denna varning och installationen fortsätter.<
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menyn för spelhistorik</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Multi-Instancing är benäget att sluta fungera. Vi kommer inte att erbjuda support för problem med Multi-Instancing, eftersom Roblox aktivt inför åtgärder för att se till att det inte fungerar. Vi kan inte och kommer inte att försöka kringgå dessa åtgärder.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Visar när spelare ansluter sig eller lämnar spelet samt meddelanden. Fungerar endast med [textchattjänsten](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2192,9 +2183,6 @@ Vill du aktivera testläget?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoner</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Den här strängen är avsedd för att testa automatisk översättning, så bortse gärna från den.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>De kommer att sparas på den plats där Froststrap installerades och återställs automatiskt vid en ny installation.</value>

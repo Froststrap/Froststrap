@@ -871,8 +871,14 @@ Sprawdź, czy Roblox działa z [oryginalnym programem uruchamiającym]({1}). Je�
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
     <value>Podróbka Byfronu (~2023)</value>
   </data>
+  <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
+    <value>Froststrap (klasyczny)</value>
+  </data>
   <data name="Enums.BootstrapperStyle.CustomDialog" xml:space="preserve">
     <value>Niestandardowe</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
+    <value>Froststrap (szkło)</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
     <value>Froststrap (nieprzezroczysty)</value>
@@ -1322,12 +1328,6 @@ Proces instalacji będzie szybki i prosty, a po jej zakończeniu będzie można 
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Wymuś ponowną instalację Roblox</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Umożliwia jednoczesne otwarcie więcej niż jednej instancji Roblox. Może powodować problemy z aplikacją komputerową.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Uruchamianie wielu instancji</value>
   </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Przywraca ikony na pasku zadań i górnym pasku Roblox do wyglądu z poprzednich wersji. Może nie działać, jeśli uruchamianie Roblox trwa zbyt długo.</value>
@@ -1879,9 +1879,6 @@ Wybranie opcji „Nie” spowoduje zignorowanie tego ostrzeżenia i kontynuowani
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menu historii gry</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Funkcja Multi-Instancing jest podatna na awarie. Nie będziemy udzielać pomocy technicznej w przypadku problemów związanych z Multi-Instancing, ponieważ Roblox aktywnie wprowadza środki mające na celu uniemożliwienie jej działania. Nie możemy i nie będziemy próbować obejść tych zabezpieczeń.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Wyświetla informacje o dołączeniu/opuszczeniu gry przez graczy oraz wiadomości. Działa wyłącznie z [usługą czatu tekstowego](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2221,9 +2218,6 @@ Czy chcesz włączyć tryb testowy?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikony</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Ten ciąg znaków służy do testowania automatycznego tłumaczenia, proszę go zignorować.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Zostaną one zachowane w miejscu, w którym zainstalowano program Froststrap, i zostaną automatycznie przywrócone po ponownej instalacji.</value>

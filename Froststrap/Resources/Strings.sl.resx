@@ -1329,12 +1329,6 @@ Postopek namestitve bo hiter in preprost, po namestitvi pa boste lahko nastavili
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Prisilna ponovna namestitev Roblox</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Omogoča hkratno odpiranje več primerov Roblox. Lahko povzroči težave z namizno aplikacijo.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Zagon več primerkov</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Ikone na opravilni vrstici in zgornji vrstici programa Roblox se vrnejo na videz iz starejših različic. Morda ne bo delovalo, če se Roblox preveč dolgo zaganjal.</value>
   </data>
@@ -1885,9 +1879,6 @@ Ali želite izbrati priporočeno lokacijo?
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Meni zgodovine igre</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Funkcija »Multi-Instancing« je nagnjena k napakam. Za težave, povezane s funkcijo »Multi-Instancing«, ne bomo nudili podpore, saj Roblox aktivno uvaja ukrepe, s katerimi preprečuje njeno delovanje. Teh ukrepov ne moremo in ne bomo poskušali zaobiti.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Prikaže, kdaj se igralci pridružijo ali zapustijo igro, ter sporočila. Deluje le s [storitev za besedilni klepet](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2233,9 +2224,6 @@ Ali želite omogočiti testni način?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikone</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Ta niz je namenjen preizkušanju avtomatskega prevajanja, prosim, ga prezrite.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Shranjeni bodo na mestu, kjer je bil nameščen program Froststrap, in se bodo ob ponovni namestitvi samodejno obnovili.</value>

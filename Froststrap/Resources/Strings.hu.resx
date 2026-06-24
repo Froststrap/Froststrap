@@ -1322,12 +1322,6 @@ A telepítési folyamat gyors és egyszerű lesz, és a telepítés után beáll
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>A Roblox újratelepítésének kényszerítése</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Lehetővé teszi, hogy egyszerre több Roblox-példány is megnyíljon. Ez problémákat okozhat az asztali alkalmazás működésében.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Több példány indítása</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Visszaállítja a Roblox tálcáján és felső sávján található ikonokat a korábbi verziók állapotába. Előfordulhat, hogy nem működik, ha a Roblox indítása túl sokáig tart.</value>
   </data>
@@ -1875,9 +1869,6 @@ A „Nem” választás esetén a rendszer figyelmen kívül hagyja ezt a figyel
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Játéktörténet menü</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>A több példányos futtatás hajlamos a meghibásodásra. A több példányos futtatással kapcsolatos problémákra nem nyújtunk támogatást, mivel a Roblox folyamatosan új intézkedéseket vezet be annak érdekében, hogy ez a funkció ne működjön. Nem tudjuk és nem is fogjuk megkísérelni ezeknek az intézkedéseknek a kijátszását.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Megjeleníti a játékosok csatlakozásait/kilépéseit és az üzeneteket. Csak a [szöveges csevegőszolgáltatással](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837) működik.</value>
   </data>
@@ -2223,9 +2214,6 @@ Szeretnéd engedélyezni a Tesztmódot?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikonok</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Ez a szöveg az automatikus fordítás tesztelésére szolgál, kérjük, ne vegyék figyelembe.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ezeket a Froststrap telepítésének helyén tárolják, és újratelepítéskor automatikusan visszaállnak.</value>

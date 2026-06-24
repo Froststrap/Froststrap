@@ -351,6 +351,9 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.FilterType" xml:space="preserve">
     <value>Filtertype:</value>
   </data>
+  <data name="Common.Help" xml:space="preserve">
+    <value>Hulp</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importeren</value>
   </data>
@@ -517,6 +520,9 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   </data>
   <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
     <value>Vernieuwen</value>
+  </data>
+  <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
+    <value>Opnieuw lid worden</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>Spelgeschiedenis</value>
@@ -1018,6 +1024,9 @@ Verwijder Froststrap.exe handmatig uit de installatiemap of start uw systeem opn
   <data name="Installer.ShouldCancel" xml:space="preserve">
     <value>Weet je zeker dat je de installatie wilt annuleren?</value>
   </data>
+  <data name="Installer.Title" xml:space="preserve">
+    <value>Froststrap-installatieprogramma</value>
+  </data>
   <data name="Installer.Welcome.MainText" xml:space="preserve">
     <value>Bedankt voor het downloaden van Froststrap. 
 
@@ -1126,6 +1135,9 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Pas de bootstrapper van Froststrap aan met behulp van een breed scala aan opties.</value>
+  </data>
+  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
+    <value>Zelfstarter</value>
   </data>
   <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
     <value>Pas de downloadstring aan. {0} is de naam van het pakket, {1} is de grootte van de gedownloade pakketten en {2} is de totale grootte van de pakketten.</value>
@@ -1286,12 +1298,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Roblox opnieuw installeren</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Hiermee kunnen meerdere Roblox-instanties tegelijkertijd worden geopend. Dit kan problemen veroorzaken met de desktop-app.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Starten van meerdere instanties</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Zorgt ervoor dat de pictogrammen in de taakbalk en de bovenste balk van Roblox weer worden weergegeven zoals in oudere versies. Werkt mogelijk niet als het opstarten van Roblox te lang duurt.</value>
   </data>
@@ -1303,6 +1309,9 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
     <value>Roblox-procesprioriteit</value>
+  </data>
+  <data name="Menu.Behaviour.Title" xml:space="preserve">
+    <value>Zelfstarter</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Wist automatisch oude gegevens om ruimte vrij te maken. Oorspronkelijk gemaakt door Fishstrap.</value>
@@ -1836,9 +1845,6 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menu ‘Spelgeschiedenis’</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Multi-Instancing is gevoelig voor storingen. We bieden geen ondersteuning bij problemen met Multi-Instancing, aangezien Roblox actief maatregelen neemt om ervoor te zorgen dat het niet werkt. We kunnen en zullen niet proberen deze maatregelen te omzeilen.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Geeft weer wanneer spelers toetreden of vertrekken, en toont berichten. Werkt alleen met [de tekstchatservice](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2181,9 +2187,6 @@ Wil je de testmodus inschakelen?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Pictogrammen</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Deze tekst is bedoeld om de automatische vertaling te testen; negeer deze alstublieft.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ze worden bewaard op de plek waar Froststrap was geïnstalleerd en worden bij een herinstallatie automatisch hersteld.</value>

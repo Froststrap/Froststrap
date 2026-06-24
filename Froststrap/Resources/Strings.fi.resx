@@ -1326,12 +1326,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Pakota Robloxin uudelleenasennus</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Mahdollistaa useamman kuin yhden Roblox-istunnon avaamisen samanaikaisesti. Saattaa aiheuttaa ongelmia työpöytäsovelluksen kanssa.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Usean instanssin käynnistäminen</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Palauttaa Robloxin tehtäväpalkin ja yläpalkin kuvakkeet vanhempiin versioihin. Ei välttämättä toimi, jos Robloxin käynnistyminen kestää liian kauan.</value>
   </data>
@@ -1882,9 +1876,6 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Pelin historia -valikko</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Multi-Instancing-toiminto on altis toimintahäiriöille. Emme tarjoa tukea Multi-Instancing-toimintoon liittyvissä ongelmissa, sillä Roblox lisää aktiivisesti toimenpiteitä varmistaakseen, ettei se toimi. Emme voi emmekä aio yrittää kiertää näitä toimenpiteitä.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Näyttää pelaajien liittymiset ja poistumiset sekä viestit. Toimii vain [tekstikeskustelupalvelun](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837) kanssa.</value>
   </data>
@@ -2230,9 +2221,6 @@ Haluatko ottaa testitilan käyttöön?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Kuvakkeet</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Tämä teksti on tarkoitettu automaattisen käännöksen testaamiseen, joten älä ota sitä huomioon.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ne säilytetään siinä paikassa, johon Froststrap asennettiin, ja ne palautetaan automaattisesti, kun ohjelma asennetaan uudelleen.</value>

@@ -1326,12 +1326,6 @@ El proceso de instalación será rápido y sencillo, y podrás configurar todos 
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Forzar la reinstalación de Roblox</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Permite abrir más de una instancia de Roblox al mismo tiempo. Puede provocar problemas con la aplicación de escritorio.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Inicio de múltiples instancias</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Restablece los iconos de la barra de tareas y la barra superior de Roblox a las versiones anteriores. Es posible que no funcione si Roblox tarda demasiado en iniciarse.</value>
   </data>
@@ -1885,9 +1879,6 @@ Si seleccionas «No», se ignorará esta advertencia y continuará la instalaci�
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menú de historial de partidas</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>La función «Multi-Instancing» tiende a fallar. No ofreceremos asistencia técnica para los problemas relacionados con «Multi-Instancing», ya que Roblox está tomando medidas de forma activa para asegurarse de que no funcione. No podemos ni vamos a intentar eludir estas medidas.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Muestra las entradas y salidas de los jugadores, así como los mensajes. Solo funciona con el [servicio de chat de texto](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2227,9 +2218,6 @@ Mientras esté activado, se iniciará automáticamente Roblox al cerrar los ajus
   <data name="Paths.Icons" xml:space="preserve">
     <value>Iconos</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Esta cadena se ha creado para probar la traducción automática; por favor, ignórala.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Se conservarán en la ubicación donde se instaló Froststrap y se restaurarán automáticamente al volver a instalarlo.</value>

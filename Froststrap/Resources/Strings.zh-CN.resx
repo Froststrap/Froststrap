@@ -1341,12 +1341,6 @@
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>强制重新安装 Roblox</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>允许同时打开多个 Roblox 实例。可能会导致桌面应用出现问题。</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>多实例启动</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>将 Roblox 任务栏和顶部栏图标恢复为旧版本样式。如果 Roblox 启动时间过长，此功能可能无法正常工作。</value>
   </data>
@@ -1900,9 +1894,6 @@
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>游戏历史记录菜单</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>多实例功能容易出现故障。对于多实例相关的问题，我们将不予提供支持，因为 Roblox 正在积极采取措施以确保该功能无法正常运行。我们无法也不打算尝试绕过这些措施。</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>显示玩家加入/离开及消息。仅支持 [文字聊天服务](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837)。</value>
   </data>
@@ -2245,9 +2236,6 @@
   <data name="Paths.Icons" xml:space="preserve">
     <value>图标</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>此字符串仅用于测试自动翻译功能，请忽略。</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>它们将保存在安装 Froststrap 的位置，并在重新安装时自动恢复。</value>

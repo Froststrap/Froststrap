@@ -332,6 +332,9 @@ Silakan tutup semua aplikasi yang mungkin sedang menggunakan berkas-berkas Roblo
   <data name="Common.Disabled" xml:space="preserve">
     <value>Cacat</value>
   </data>
+  <data name="Common.DiscordRichPresence" xml:space="preserve">
+    <value>Fitur Rich Presence di Discord</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Sunting</value>
   </data>
@@ -432,6 +435,10 @@ Silakan tutup semua aplikasi yang mungkin sedang menggunakan berkas-berkas Roblo
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Ganti Nama</value>
+  </data>
+  <data name="Common.Reset" xml:space="preserve">
+    <value>Atur Ulang</value>
+    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox belum terpasang. Silakan jalankan Roblox menggunakan Froststrap setidaknya sekali sebelum mencoba menggunakan opsi ini.</value>
@@ -1148,6 +1155,9 @@ Proses pemasangan ini akan berlangsung cepat dan mudah, dan Anda akan dapat meng
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Sesuaikan bootstrapper Froststrap menggunakan beragam pilihan.</value>
   </data>
+  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
+    <value>Pengusaha yang memulai usaha dengan modal sendiri</value>
+  </data>
   <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
     <value>Ubah string unduhan. {0} adalah nama paket, {1} adalah ukuran paket yang diunduh, dan {2} adalah ukuran total paket.</value>
   </data>
@@ -1307,12 +1317,6 @@ Proses pemasangan ini akan berlangsung cepat dan mudah, dan Anda akan dapat meng
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Memaksa Pemasangan Ulang Roblox</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Memungkinkan lebih dari satu instance Roblox dibuka secara bersamaan. Hal ini mungkin menyebabkan masalah pada aplikasi desktop.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Peluncuran Multi-Instan</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Mengembalikan ikon bilah tugas dan bilah atas Roblox ke versi sebelumnya. Mungkin tidak berfungsi jika Roblox membutuhkan waktu terlalu lama untuk dibuka.</value>
   </data>
@@ -1324,6 +1328,9 @@ Proses pemasangan ini akan berlangsung cepat dan mudah, dan Anda akan dapat meng
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
     <value>Prioritas Proses Roblox</value>
+  </data>
+  <data name="Menu.Behaviour.Title" xml:space="preserve">
+    <value>Pengusaha yang memulai usaha dengan modal sendiri</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Secara otomatis menghapus data lama untuk mengosongkan ruang penyimpanan. Awalnya dibuat oleh Fishstrap.</value>
@@ -1857,9 +1864,6 @@ Jika memilih 'Tidak', peringatan ini akan diabaikan dan proses instalasi akan di
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menu Riwayat Permainan</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Fitur Multi-Instancing rentan mengalami gangguan. Kami tidak akan memberikan dukungan untuk masalah yang terkait dengan Multi-Instancing, karena Roblox secara aktif menerapkan langkah-langkah untuk memastikan fitur tersebut tidak berfungsi. Kami tidak dapat dan tidak akan mencoba untuk mengelak dari langkah-langkah tersebut.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Menampilkan saat pemain bergabung/keluar serta pesan-pesan. Hanya berfungsi dengan [layanan obrolan teks](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2077,6 +2081,9 @@ Jika memilih 'Tidak', peringatan ini akan diabaikan dan proses instalasi akan di
   <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
     <value>Gunakan Suara Kematian Lama</value>
   </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Modifikasi</value>
+  </data>
   <data name="Menu.MoreInfo" xml:space="preserve">
     <value>Klik di sini untuk informasi lebih lanjut mengenai opsi ini.</value>
   </data>
@@ -2199,9 +2206,6 @@ Apakah Anda ingin mengaktifkan Mode Uji?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikon</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Teks ini dibuat untuk menguji terjemahan otomatis, mohon diabaikan.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>File-file tersebut akan disimpan di tempat di mana Froststrap diinstal, dan akan dipulihkan secara otomatis saat diinstal ulang.</value>
