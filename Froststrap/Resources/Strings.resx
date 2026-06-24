@@ -1571,6 +1571,6 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>left</value>
   </data>
   <data name="Test.For.Translation" xml:space="preserve">
-    <value>Test For Translation</value>
+    <value>Test For Translation.</value>
   </data>
 </root>

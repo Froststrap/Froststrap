@@ -4177,7 +4177,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test For Translation.
+        ///   Looks up a localized string similar to Test For Translation..
         /// </summary>
         public static string Test_For_Translation {
             get {
