@@ -240,8 +240,14 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>V súčasnosti nemáte nainštalované prostredie WebView2. Niektoré funkcie Robloxu bez neho nebudú fungovať správne, napríklad aplikácia pre počítače. Chcete si ho stiahnuť teraz?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Pridať</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Pridať jeden</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Uhol</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Prehliadať</value>
@@ -251,6 +257,12 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Zatvoriť</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Výber farieb</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Kopírovať</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopírovať všetko</value>
@@ -273,6 +285,9 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Nasadenie</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Popis</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Znevýhodnení</value>
   </data>
@@ -282,8 +297,26 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.Edit" xml:space="preserve">
     <value>Upraviť</value>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Rýchly editor vlajok</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Hra</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Náhľad glyfu</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Šestnástkový kód</value>
+  </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importovať zo súboru</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Inštalovať</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Spustenie</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Načítava sa, prosím, počkajte...</value>
@@ -309,6 +342,9 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Výkon</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Hráč</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Prednastavené zoznamy vlajok</value>
   </data>
@@ -330,11 +366,23 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Vyhľadávanie</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>ID servera</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Nastavenia</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Klávesové skratky</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Ikona na ploche</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Triezvy</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Štúdia</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Predvolené nastavenie systému</value>
@@ -344,6 +392,12 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Časová pečiatka</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Spolu</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Aktualizácia</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Hodnota</value>
@@ -356,9 +410,6 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Áno</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Rýchly editor vlajok</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Zatvoriť Roblox</value>
@@ -809,6 +860,15 @@ Naozaj chcete pokračovať?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Pri tomto spustení sa nezapíše žiadny protokolový súbor, pretože Froststrap nemôže zapisovať do priečinka „{0}“</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Informácie o zostavení</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Hash revízie</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Záznam o odovzdaní</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Prispievatelia</value>
   </data>
@@ -1044,6 +1104,27 @@ Naozaj chcete pokračovať?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Uvedený kanál buď neexistuje, alebo je súkromný</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Vyberte farbu</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Informácie o modeli</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Modifikácie komunity</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Zavrieť štúdio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Pozorný pozorovateľ</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Údaje o aktivite nie sú k dispozícii.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Pripojte sa k Best Region (Auto)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Tento kanál je neaktuálny a pravdepodobne sa už neaktualizuje. Použite prosím iný kanál.</value>
   </data>
@@ -1093,6 +1174,9 @@ Existuje {0} konfliktných definícií príznakov:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editor FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Uložiť aktuálne vlajky</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Ovládajte nastavenie konkrétnych parametrov a funkcií enginu Roblox.</value>
@@ -1172,6 +1256,15 @@ Existuje {0} konfliktných definícií príznakov:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Vymazať FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Ukladajte a načítavajte profily rýchlych vlajok.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Nenašli sa žiadne profily</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Profily rýchlych vlajok</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Nastavenia v hre môžete zmeniť prostredníctvom prehľadného menu.</value>
@@ -1317,6 +1410,39 @@ Existuje {0} konfliktných definícií príznakov:
   <data name="Menu.Load" xml:space="preserve">
     <value>Načítať</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Zadajte, prosím, súbor cookie.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Otvorte stránku Roblox.com vo svojom prehliadači a prihláste sa</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Stlačte kláves F12, aby ste otvorili vývojárske nástroje</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Kliknite na kartu „Aplikácie“ (Chrome) alebo „Úložisko“ (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Rozbaľte položku „Cookies“ a vyberte „https://www.roblox.com“</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Nájdite súbor cookie s názvom „ROBLOSECURITY“</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Dvojkliknite na stĺpec „Hodnota“ a skopírujte ho</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Vložte hodnotu do poľa vyššie</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>„Neplatný súbor cookie. Skontrolujte ho a skúste to znova.“</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Vložte svoj súbor cookie s príponou .ROBLOSECURITY</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Ručné prihlásenie</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Spravujte a aplikujte úpravy súborov na herný klient Roblox.</value>
   </data>
@@ -1407,6 +1533,24 @@ Existuje {0} konfliktných definícií príznakov:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Použiť staré pozadie v editore avatarov</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Prihlásenie bolo zrušené.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Prihlásenie bolo úspešné! Ukončujem...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Skopírujte tento kód a vložte ho na stránku [Rýchle prihlásenie]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Zariadenie je prepojené – schvaľuje sa prihlásenie...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Časový limit prihlásenia vypršal.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Čaká sa na rýchle prihlásenie...\nAplikácia toto okno zatvorí po dokončení prihlásenia.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Zadajte ID miesta alebo názov hry...</value>
   </data>
@@ -1475,24 +1619,9 @@ Chcete zapnúť testovací režim?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Nastavenia Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Modifikácie komunity</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Uložiť aktuálne vlajky</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Ukladajte a načítavajte profily rýchlych vlajok.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Profily rýchlych vlajok</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikony</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Test pre preklad.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Budú uložené na mieste, kde bol nainštalovaný program Froststrap, a pri opätovnej inštalácii sa automaticky obnovia.</value>

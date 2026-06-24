@@ -240,8 +240,14 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Şu anda WebView2 çalışma zamanı ortamı yüklü değil. Masaüstü uygulaması gibi bazı Roblox özellikleri, bu ortam olmadan düzgün çalışmayacaktır. Şimdi indirmek ister misiniz?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Ekle</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Tekli ekle</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Açı</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Göz at</value>
@@ -252,6 +258,12 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.Close" xml:space="preserve">
     <value>Kapat</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Renk Seçici</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Kopyala</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Tümünü Kopyala</value>
   </data>
@@ -260,6 +272,9 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Özel</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>Derin bağlantı</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Varsayılan</value>
@@ -272,6 +287,9 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Dağıtım</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Açıklama</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Engelli</value>
@@ -286,6 +304,18 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
     <value>Dışa Aktar</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Hızlı Bayrak Düzenleyici</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Oyun</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Glif Önizlemesi</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Onaltılık Kod</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>İthalat</value>
   </data>
@@ -294,6 +324,12 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON İçe Aktarma</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Yükle</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Başlat</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Yükleniyor, lütfen bekleyin...</value>
@@ -319,6 +355,9 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Performans</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Oyuncu</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Önceden Ayarlanmış Bayrak Listeleri</value>
   </data>
@@ -340,11 +379,23 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Arama</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Sunucu Kimliği</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Kısayollar</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Masaüstü Simgesi</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Ayık</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Çalışma</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Sistem varsayılanı</value>
@@ -354,6 +405,12 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Zaman damgası</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Toplam</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Güncelleme</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Değer</value>
@@ -366,9 +423,6 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Evet</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Hızlı Bayrak Düzenleyici</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Roblox'u kapat</value>
@@ -819,6 +873,12 @@ Devam etmek istediğinizden emin misiniz?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Froststrap, '{0}' konumundaki klasöre yazamadığı için bu başlatma işlemi için herhangi bir günlük dosyası oluşturulmayacaktır</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Yapım Bilgileri</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Değişiklik Kaydı</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Katkıda Bulunanlar</value>
   </data>
@@ -1063,6 +1123,27 @@ Devam etmek istediğinizden emin misiniz?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Belirtilen kanal ya mevcut değil ya da özel bir kanal</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Renk Seç</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Mod Bilgisi</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Topluluk Modları</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Stüdyoyu Kapat</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Yakından Takip Eden</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Etkinlik verisi bulunmamaktadır.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Best Region (Otomobil) grubuna katılın</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Bu kanal güncelliğini yitirmiştir ve muhtemelen artık güncellenmemektedir. Lütfen başka bir kanal kullanın.</value>
   </data>
@@ -1115,6 +1196,9 @@ Daha fazla bilgi:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag Düzenleyici</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Mevcut bayrakları kaydet</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Roblox motorunun belirli parametrelerinin ve özelliklerinin nasıl yapılandırılacağını kontrol edin.</value>
@@ -1194,6 +1278,15 @@ Daha fazla bilgi:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlag'leri Temizle</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Hızlı bayrak profillerini kaydedin ve yükleyin.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Profil Bulunamadı</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Hızlı Bayrak Profilleri</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Oyun içi ayarları kullanışlı bir menüden değiştirin.</value>
@@ -1339,6 +1432,39 @@ Daha fazla bilgi:
   <data name="Menu.Load" xml:space="preserve">
     <value>Yükle</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Lütfen bir çerez girin.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Tarayıcınızda Roblox.com adresini açın ve oturum açın</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Geliştirici Araçlarını açmak için F12 tuşuna basın</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>“Uygulama” sekmesine (Chrome) veya “Depolama” sekmesine (Firefox) tıklayın</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>“Çerezler” seçeneğini genişletin ve “https://www.roblox.com” seçeneğini seçin</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>'ROBLOSECURITY' çerezini bulun</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>“Değer” sütununa çift tıklayın ve kopyalayın</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Değeri yukarıdaki kutuya yapıştırın</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Geçersiz çerez. Lütfen kontrol edip tekrar deneyin.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>.ROBLOSECURITY çerezinizi yapıştırın</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Manuel Oturum Açma</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox Oyun İstemcisi’ndeki dosya modlarını yönetin ve uygulayın.</value>
   </data>
@@ -1429,6 +1555,24 @@ Daha fazla bilgi:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Eski Avatar Düzenleyicisi Arka Planını Kullan</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Giriş İptal Edildi.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Giriş işlemi tamamlandı! Kapatılıyor...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Bu kodu kopyalayın ve [Hızlı Giriş Sayfası]({0})'ya yapıştırın.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Cihaz bağlandı - oturum açma işlemi onaylanıyor...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Oturum açma süresi doldu.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Hızlı Oturum Açma işlemi bekleniyor...\nOturum açma işlemi tamamlandığında uygulama bu pencereyi kapatacaktır.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Yer Kimliğini veya Oyun Adını girin...</value>
   </data>
@@ -1494,24 +1638,9 @@ Test Modu’nu etkinleştirmek ister misiniz?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap Ayarları</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Topluluk Modları</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Mevcut bayrakları kaydet</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Hızlı bayrak profillerini kaydedin ve yükleyin.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Hızlı Bayrak Profilleri</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Simgeler</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Çeviri Testi.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Bunlar, Froststrap’ın kurulduğu yerde saklanacak ve yeniden kurulumda otomatik olarak geri yüklenecektir.</value>

@@ -240,8 +240,14 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Saat ini, runtime WebView2 belum terpasang di perangkat Anda. Beberapa fitur Roblox tidak akan berfungsi dengan baik tanpa runtime tersebut, seperti aplikasi desktop. Apakah Anda ingin mengunduhnya sekarang?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Tambahkan</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Tambahkan satu</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Sudut</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Jelajahi</value>
@@ -252,6 +258,12 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Close" xml:space="preserve">
     <value>Tutup</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Pemilih Warna</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Salin</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Salin Semua</value>
   </data>
@@ -261,6 +273,9 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Custom" xml:space="preserve">
     <value>Kustom</value>
   </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>Tautan langsung</value>
+  </data>
   <data name="Common.Delete" xml:space="preserve">
     <value>Hapus</value>
   </data>
@@ -269,6 +284,9 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   </data>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Penerapan</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Deskripsi</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Cacat</value>
@@ -283,6 +301,18 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
     <value>Ekspor</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Editor Bendera Cepat</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Permainan</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Pratinjau Glyph</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Kode Hex</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Impor</value>
   </data>
@@ -291,6 +321,12 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>Impor JSON</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Pasang</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Peluncuran</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Sedang dimuat, mohon tunggu...</value>
@@ -316,6 +352,9 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Kinerja</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Pemain</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Daftar Bendera yang Telah Ditetapkan</value>
   </data>
@@ -337,17 +376,32 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Cari</value>
   </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Pintasan</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Ikon Desktop</value>
   </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Sadar</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Studi</value>
+  </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Pengaturan default sistem</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Cap waktu</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Jumlah</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Pembaruan</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Nilai</value>
@@ -360,9 +414,6 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Ya</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Editor Bendera Cepat</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Tutup Roblox</value>
@@ -807,6 +858,15 @@ Apakah Anda yakin ingin melanjutkan?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Tidak akan ada berkas log yang dibuat untuk proses peluncuran ini karena Froststrap tidak dapat menulis ke folder di '{0}'</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Informasi Pembuatan</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Hash Komit</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Referensi Komit</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Kontributor</value>
   </data>
@@ -1048,6 +1108,27 @@ Apakah Anda yakin ingin melanjutkan?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Saluran yang disebutkan tersebut tidak ada atau bersifat pribadi</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Pilih Warna</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Informasi Model</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Mod Komunitas</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Tutup Studio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Pengamat Cermat</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Tidak ada data aktivitas yang tersedia.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Bergabunglah dengan Best Region (Otomotif)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Saluran ini sudah ketinggalan zaman, dan kemungkinan besar tidak lagi diperbarui. Silakan gunakan saluran lain.</value>
   </data>
@@ -1100,6 +1181,9 @@ Informasi lebih lanjut:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editor FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Simpan pengaturan bendera saat ini</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Mengatur konfigurasi parameter dan fitur tertentu pada mesin Roblox.</value>
@@ -1179,6 +1263,15 @@ Informasi lebih lanjut:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Hapus FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Simpan dan muat profil bendera dengan cepat.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Tidak Ditemukan Profil</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Profil Bendera Cepat</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Ubah pengaturan dalam game melalui menu yang praktis.</value>
@@ -1321,6 +1414,36 @@ Informasi lebih lanjut:
   <data name="Menu.Load" xml:space="preserve">
     <value>Muat</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Silakan masukkan cookie.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Buka Roblox.com di peramban Anda, lalu masuk</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Tekan F12 untuk membuka Alat Pengembang</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Klik tab 'Aplikasi' (Chrome) atau tab 'Penyimpanan' (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Buka menu 'Cookies' dan pilih 'https://www.roblox.com'</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Temukan cookie 'ROBLOSECURITY'</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Klik dua kali kolom 'Nilai' dan salinlah</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Tempelkan nilainya di kotak di atas</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Cookie tidak valid. Silakan periksa dan coba lagi."</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Tempelkan cookie .ROBLOSECURITY Anda</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Mengelola dan menerapkan modifikasi berkas pada Klien Game Roblox.</value>
   </data>
@@ -1411,6 +1534,24 @@ Informasi lebih lanjut:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Gunakan Latar Belakang Editor Avatar Lama</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Masuk Dibatalkan.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Proses masuk telah selesai! Sedang ditutup...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Salin kode ini dan tempelkan di [Halaman Masuk Cepat]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Perangkat telah terhubung - sedang memproses persetujuan masuk...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Waktu masuk telah habis.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Menunggu Proses Masuk Cepat...\nAplikasi akan menutup jendela ini setelah proses masuk selesai.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Masukkan ID Tempat atau Nama Game...</value>
   </data>
@@ -1479,24 +1620,9 @@ Apakah Anda ingin mengaktifkan Mode Uji?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Pengaturan Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Mod Komunitas</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Simpan pengaturan bendera saat ini</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Simpan dan muat profil bendera dengan cepat.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Profil Bendera Cepat</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikon</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Uji Terjemahan.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>File-file tersebut akan disimpan di tempat di mana Froststrap diinstal, dan akan dipulihkan secara otomatis saat diinstal ulang.</value>

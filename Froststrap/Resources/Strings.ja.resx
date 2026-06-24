@@ -240,8 +240,14 @@
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>現在、WebView2ランタイムがインストールされていません。これがないと、デスクトップアプリなど、Robloxの一部の機能が正常に動作しません。今すぐダウンロードしますか？</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>追加</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>シングルを追加</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>角度</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>閲覧する</value>
@@ -252,6 +258,12 @@
   <data name="Common.Close" xml:space="preserve">
     <value>閉じる</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>カラーピッカー</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>すべてコピー</value>
   </data>
@@ -260,6 +272,9 @@
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>カスタム</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>ディープリンク</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>デフォルト</value>
@@ -272,6 +287,9 @@
   </data>
   <data name="Common.Deployment" xml:space="preserve">
     <value>展開</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>説明</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>無効</value>
@@ -286,6 +304,18 @@
     <value>エクスポート</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>高速フラグエディタ</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>ゲーム</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>グリフのプレビュー</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>16進コード</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>インポート</value>
   </data>
@@ -294,6 +324,12 @@
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSONのインポート</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>インストール</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>リリース</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>読み込み中、しばらくお待ちください...</value>
@@ -319,6 +355,9 @@
   <data name="Common.Performance" xml:space="preserve">
     <value>パフォーマンス</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>プレイヤー</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>プリセットフラグ一覧</value>
   </data>
@@ -340,11 +379,23 @@
   <data name="Common.Search" xml:space="preserve">
     <value>検索</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>サーバーID</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>ショートカット</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>デスクトップアイコン</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>冷静</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>スタジオ</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>システムのデフォルト設定</value>
@@ -354,6 +405,12 @@
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>タイムスタンプ</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>合計</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>更新</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>値</value>
@@ -366,9 +423,6 @@
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>はい</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>高速フラグエディタ</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Robloxを閉じる</value>
@@ -828,6 +882,15 @@
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Froststrap は '{0}' のフォルダに書き込みができないため、今回の起動に関するログファイルは作成されません。</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>ビルド情報</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>コミットハッシュ</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>コミット参照</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>寄稿者</value>
   </data>
@@ -1069,6 +1132,27 @@
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>指定されたチャンネルは存在しないか、非公開です</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>色を選択</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>モデル情報</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>コミュニティのモデレーター</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>スタジオを閉じる</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>注視者</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>利用状況のデータはありません。</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>「ベスト・リージョン（自動車）」に参加する</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>このチャンネルは情報が古くなっており、おそらく更新されなくなっていると思われます。別のチャンネルをご利用ください。</value>
   </data>
@@ -1121,6 +1205,9 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag エディタ</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>現在のフラグを保存する</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Robloxエンジンの特定のパラメータや機能の設定方法を制御します。</value>
@@ -1200,6 +1287,15 @@
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlagをクリアする</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>フラグプロファイルを素早く保存・読み込みできます。</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>プロフィールが見つかりませんでした</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Fast Flagのプロファイル</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>便利なメニューからゲーム内の設定を変更できます。</value>
@@ -1345,6 +1441,39 @@
   <data name="Menu.Load" xml:space="preserve">
     <value>読み込み</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>クッキーを入力してください。</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>ブラウザで Roblox.com を開き、ログインしてください</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>F12 キーを押して開発者ツールを開きます</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>「アプリケーション」タブ（Chrome）または「ストレージ」タブ（Firefox）をクリックしてください</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>「Cookies」を展開し、「https://www.roblox.com」を選択します</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>「ROBLOSECURITY」というクッキーを探してください</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>「値」列をダブルクリックして、その内容をコピーします</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>上のボックスに値を貼り付けてください</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>「クッキーが無効です。確認の上、もう一度お試しください。」</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>.ROBLOSECURITY クッキーを貼り付けてください</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>手動ログイン</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Robloxゲームクライアントのファイルモッドを管理・適用します。</value>
   </data>
@@ -1435,6 +1564,24 @@
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>旧アバターエディタの背景を使用する</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>サインインがキャンセルされました。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>ログイン完了！ 終了します...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>このコードをコピーして、[クイックサインインページ]({0})に貼り付けてください。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>デバイスが連携されました - ログインの承認中...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>サインインのタイムアウトが発生しました。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>クイックサインインを待機中...\nサインインが完了すると、アプリはこのウィンドウを閉じます。</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>場所IDまたはゲーム名を入力してください...</value>
   </data>
@@ -1503,24 +1650,9 @@
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap の設定</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>コミュニティのモデレーター</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>現在のフラグを保存する</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>フラグプロファイルを素早く保存・読み込みできます。</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Fast Flagのプロファイル</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>アイコン</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>翻訳テスト。</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>これらは、Froststrapがインストールされていた場所に保存され、再インストール時に自動的に復元されます。</value>

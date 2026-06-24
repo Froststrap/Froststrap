@@ -240,8 +240,14 @@ Deseja mudar para o canal predefinido ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>De momento, não tem o runtime do WebView2 instalado. Algumas funcionalidades do Roblox não funcionarão corretamente sem ele, como, por exemplo, a aplicação para computador. Gostaria de o descarregar agora?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Adicionar</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Adicionar um único</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Ângulo</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Navegar</value>
@@ -251,6 +257,12 @@ Deseja mudar para o canal predefinido ({1})?</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Fechar</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Seletor de cores</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Copiar</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Copiar tudo</value>
@@ -273,6 +285,9 @@ Deseja mudar para o canal predefinido ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Implementação</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Descrição</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Desativado</value>
   </data>
@@ -283,6 +298,18 @@ Deseja mudar para o canal predefinido ({1})?</value>
     <value>Exportar</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Editor Rápido de Bandeiras</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Jogo</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Pré-visualização do glifo</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Código hexadecimal</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importar</value>
   </data>
@@ -291,6 +318,12 @@ Deseja mudar para o canal predefinido ({1})?</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>Importar JSON</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Instalar</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Lançamento</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>A carregar, por favor aguarde...</value>
@@ -316,6 +349,9 @@ Deseja mudar para o canal predefinido ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Desempenho</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Jogador</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Listas de bandeiras predefinidas</value>
   </data>
@@ -337,11 +373,23 @@ Deseja mudar para o canal predefinido ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Pesquisar</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>ID do servidor</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Definições</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Atalhos</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Ícone do ambiente de trabalho</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Sóbrio</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Estúdio</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Predefinição do sistema</value>
@@ -351,6 +399,9 @@ Deseja mudar para o canal predefinido ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Data e hora</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Atualização</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Valor</value>
@@ -363,9 +414,6 @@ Deseja mudar para o canal predefinido ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Sim</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Editor Rápido de Bandeiras</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Fechar o Roblox</value>
@@ -816,6 +864,15 @@ Tem a certeza de que quer continuar?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Não será criado nenhum ficheiro de registo para esta execução, uma vez que o Froststrap não consegue escrever na pasta «{0}»</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Informações sobre a compilação</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Hash da submissão</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Referência de commit</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Colaboradores</value>
   </data>
@@ -1057,6 +1114,27 @@ Tem a certeza de que quer continuar?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>O canal indicado não existe ou é privado</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Selecionar cor</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Informações sobre o modelo</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Mods da comunidade</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Fechar o estúdio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Observador Atento</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Não há dados de atividade disponíveis.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Junte-se à Best Region (Auto)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Este canal está desatualizado e, provavelmente, já não está a ser atualizado. Por favor, utilize outro canal.</value>
   </data>
@@ -1109,6 +1187,9 @@ Mais informações:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editor FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Guardar as configurações atuais</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlar a forma como determinados parâmetros e funcionalidades do motor do Roblox são configurados.</value>
@@ -1188,6 +1269,15 @@ Mais informações:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Limpar FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Guardar e carregar rapidamente perfis de sinalizadores.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Não foram encontrados perfis</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Perfis Fast Flag</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Altere as definições do jogo a partir de um menu prático.</value>
@@ -1333,6 +1423,39 @@ Mais informações:
   <data name="Menu.Load" xml:space="preserve">
     <value>Carregar</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Por favor, introduza um cookie.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Abre o Roblox.com no teu navegador e inicia sessão</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Prima F12 para abrir as Ferramentas do Desenvolvedor</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Clique no separador «Aplicações» (Chrome) ou no separador «Armazenamento» (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Expanda «Cookies» e selecione «https://www.roblox.com»</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Encontre o cookie «ROBLOSECURITY»</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Clique duas vezes na coluna «Valor» e copie-a</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Cole o valor na caixa acima</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Cookie inválido. Por favor, verifique e tente novamente.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Cole o seu cookie .ROBLOSECURITY</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Início de sessão manual</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Gerir e aplicar modificações aos ficheiros do Cliente do Jogo Roblox.</value>
   </data>
@@ -1423,6 +1546,24 @@ Mais informações:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Utilizar o fundo do antigo editor de avatares</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Início de sessão cancelado.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Início de sessão concluído! A fechar...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Copie este código e cole-o na [Página de início de sessão rápido]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Dispositivo associado – a aprovar o início de sessão...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>O tempo de espera da sessão expirou.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>A aguardar o início de sessão rápido...\nA aplicação irá fechar esta janela assim que o início de sessão estiver concluído.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Introduza o ID do local ou o nome do jogo...</value>
   </data>
@@ -1491,24 +1632,9 @@ Gostarias de ativar o Modo de Teste?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Definições do Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Mods da comunidade</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Guardar as configurações atuais</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Guardar e carregar rapidamente perfis de sinalizadores.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Perfis Fast Flag</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ícones</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Teste de tradução.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Serão mantidos no local onde o Froststrap foi instalado e serão automaticamente restaurados numa reinstalação.</value>

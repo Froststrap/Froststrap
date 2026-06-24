@@ -240,8 +240,14 @@
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>В момента нямате инсталирана средата за изпълнение WebView2. Без нея някои функции на Roblox няма да работят правилно, като например приложението за настолни компютри. Искате ли да я изтеглите сега?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Добави</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Добави единичен</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Ъгъл</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Разглеждане</value>
@@ -252,6 +258,12 @@
   <data name="Common.Close" xml:space="preserve">
     <value>Затвори</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Избор на цвят</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Копирай</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Копирай всичко</value>
   </data>
@@ -260,6 +272,9 @@
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>По избор</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>Диплинк</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>По подразбиране</value>
@@ -272,6 +287,9 @@
   </data>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Разгръщане</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Описание</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>С увреждания</value>
@@ -286,6 +304,18 @@
     <value>Износ</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Бърз редактор на знамена</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Игра</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Преглед на глифа</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Шестнадесетичен код</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Импорт</value>
   </data>
@@ -294,6 +324,12 @@
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>Импортиране на JSON</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Инсталиране</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Стартиране</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Зареждане, моля изчакайте...</value>
@@ -319,6 +355,9 @@
   <data name="Common.Performance" xml:space="preserve">
     <value>Производителност</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Играч</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Предварително зададени списъци със знамена</value>
   </data>
@@ -340,11 +379,23 @@
   <data name="Common.Search" xml:space="preserve">
     <value>Търсене</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Идентификационен номер на сървъра</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Бързи връзки</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Икона на работния плот</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Трезвен</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Студио</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Системни настройки по подразбиране</value>
@@ -354,6 +405,12 @@
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Времева отметка</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Общо</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Актуализация</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Стойност</value>
@@ -366,9 +423,6 @@
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Да</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Бърз редактор на знамена</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Затвори Roblox</value>
@@ -822,6 +876,15 @@
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>За това стартиране няма да бъде създаден лог файл, тъй като Froststrap не може да запише в папката „{0}“</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Информация за изграждането</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Хеш на комита</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Референция на комита</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Съавтори</value>
   </data>
@@ -1060,6 +1123,27 @@
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Посоченият канал или не съществува, или е частен</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Изберете цвят</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Информация за модата</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Модификации на общността</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Затвори студиото</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Внимателен наблюдател</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Няма налични данни за активността.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Присъединете се към „Best Region“ (Авто)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Този канал е остарял и вероятно вече не се актуализира. Моля, използвайте друг канал.</value>
   </data>
@@ -1112,6 +1196,9 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Редактор на FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Запази текущите флагове</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Управлявайте настройките на конкретни параметри и функции на двигателя на Roblox.</value>
@@ -1191,6 +1278,15 @@
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Изчистване на FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Запазване и бързо зареждане на профили на флагове.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Не бяха намерени профили</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Профили на „Fast Flag“</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Променете настройките в играта чрез удобно меню.</value>
@@ -1336,6 +1432,39 @@
   <data name="Menu.Load" xml:space="preserve">
     <value>Зареждане</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Моля, въведете „cookie“.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Отвори Roblox.com в браузъра си и влез в профила си</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Натиснете F12, за да отворите инструментите за разработчици</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Кликнете върху раздела „Приложения“ (Chrome) или „Хранилище“ (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Разгънете раздела „Cookies“ и изберете „https://www.roblox.com“</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Намерете бисквитката „ROBLOSECURITY“</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Кликнете два пъти върху колоната „Стойност“ и я копирайте</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Поставете стойността в полето по-горе</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Невалидна бисквитка. Моля, проверете и опитайте отново.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Поставете вашата бисквитка .ROBLOSECURITY</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Ръчно влизане</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Управление и прилагане на модификации на файлове към клиента на играта Roblox.</value>
   </data>
@@ -1426,6 +1555,24 @@
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Използване на стария фон на редактора за аватари</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Влизането беше отменено.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Влизането приключи! Затваряне...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Копирайте този код и го поставете в [Страницата за бързо влизане]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Устройството е свързано – одобряване на влизането...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Времето за влизане изтече.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Изчакване на бързо влизане...\nПриложението ще затвори този прозорец, след като влизането приключи.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Въведете идентификатора на мястото или името на играта...</value>
   </data>
@@ -1494,24 +1641,9 @@
   <data name="Menu.Title" xml:space="preserve">
     <value>Настройки на Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Модификации на общността</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Запази текущите флагове</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Запазване и бързо зареждане на профили на флагове.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Профили на „Fast Flag“</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Икони</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Тест за превод.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Те ще бъдат запазени на мястото, където е бил инсталиран Froststrap, и автоматично ще бъдат възстановени при повторна инсталация.</value>

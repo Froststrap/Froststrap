@@ -163,7 +163,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
     <value>Activează funcția BetterMatchmaking</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțați reinstalarea Roblox din setări.</value>
+    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțează reinstalarea Roblox din setări.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Nu s-au putut extrage toate fișierele</value>
@@ -240,8 +240,14 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>În prezent, nu ai instalat mediul de execuție WebView2. Anumite funcții ale Roblox nu vor funcționa corespunzător fără acesta, cum ar fi aplicația pentru desktop. Dorești să îl descarci acum?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Adăugare</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Adaugă un singur element</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Unghi</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Răsfoiește</value>
@@ -252,6 +258,12 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Close" xml:space="preserve">
     <value>Închide</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Selector de culori</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Copiere</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Copiază tot</value>
   </data>
@@ -260,6 +272,9 @@ Doriți să treceți la canalul implicit ({1})?</value>
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Personalizat</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>Link direct</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Implicit</value>
@@ -273,6 +288,9 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Implementare</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Descriere</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Persoane cu dizabilități</value>
   </data>
@@ -282,8 +300,26 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Edit" xml:space="preserve">
     <value>Editare</value>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Editor rapid de steaguri</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Joc</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Previzualizare glifă</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Cod hexazecimal</value>
+  </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Import din fișier</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Instalare</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Lansare</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Se încarcă, vă rugăm să așteptați...</value>
@@ -309,6 +345,9 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Performanță</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Jucător</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Liste prestabilite de steaguri</value>
   </data>
@@ -330,11 +369,23 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Căutare</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>ID-ul serverului</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Setări</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Comenzi rapide</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Pictogramă pe desktop</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Sobru</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Birou</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Setarea implicită a sistemului</value>
@@ -344,6 +395,9 @@ Doriți să treceți la canalul implicit ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Marcaj temporal</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Actualizare</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Valoare</value>
@@ -356,9 +410,6 @@ Doriți să treceți la canalul implicit ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Da</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Editor rapid de steaguri</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Închide Roblox</value>
@@ -503,7 +554,7 @@ Timp de funcționare: {1}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
-    <value>{0} nu poate avea un element de tip {1}</value>
+    <value>{0} nu poate avea un copil de tip {1}</value>
     <comment>{0} and {1} are element names (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
@@ -809,6 +860,15 @@ Sunteți sigur că doriți să continuați?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Nu se va crea niciun fișier jurnal pentru această lansare, deoarece Froststrap nu poate scrie în folderul de la „{0}”</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Informații despre construcție</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Hash-ul commit-ului</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Referință de confirmare</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Colaboratori</value>
   </data>
@@ -1044,6 +1104,27 @@ Sunteți sigur că doriți să continuați?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Canalul specificat fie nu există, fie este privat</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Alegeți culoarea</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Informații despre mod</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Moduri comunitare</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Închide Studio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Observator atent</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Nu sunt disponibile date privind activitatea.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Alătură-te Best Region (Auto)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Acest canal este învechit și, probabil, nu mai este actualizat. Vă rugăm să utilizați un alt canal.</value>
   </data>
@@ -1094,6 +1175,9 @@ Mai multe informații:
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editorul FastFlag</value>
   </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Salvează setările curente</value>
+  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlează modul în care sunt configurați anumiți parametri și funcții ale motorului Roblox.</value>
   </data>
@@ -1129,7 +1213,7 @@ Mai multe informații:
     <value>Detalii despre plasă</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
-    <value>Nivelurile mai ridicate de MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
+    <value>Nivelurile mai ridicate ale MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Calitatea anti-aliasingului (MSAA)</value>
@@ -1172,6 +1256,15 @@ Mai multe informații:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Șterge FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Salvați și încărcați rapid profilurile de steaguri.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Nu s-au găsit profiluri</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Profiluri rapide ale steagurilor</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Modifică setările din joc dintr-un meniu ușor de folosit.</value>
@@ -1317,6 +1410,39 @@ Mai multe informații:
   <data name="Menu.Load" xml:space="preserve">
     <value>Încărcare</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Vă rugăm să introduceți un cookie.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Deschide Roblox.com în browserul tău și conectează-te</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Apăsați tasta F12 pentru a deschide Instrumentele pentru dezvoltatori</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Faceți clic pe fila „Aplicații” (Chrome) sau pe fila „Spațiu de stocare” (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Desfă secțiunea „Cookies” și selectează „https://www.roblox.com”</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Găsește cookie-ul „ROBLOSECURITY”</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Faceți dublu clic pe coloana „Valoare” și copiați-o</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Lipiți valoarea în caseta de mai sus</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>„Cookie-ul nu este valid. Vă rugăm să verificați și să încercați din nou.”</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Lipiți cookie-ul .ROBLOSECURITY</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Autentificare manuală</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Gestionați și aplicați modificările de fișiere la clientul de joc Roblox.</value>
   </data>
@@ -1407,6 +1533,24 @@ Mai multe informații:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Utilizează fundalul vechi al editorului de avatare</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Autentificarea a fost anulată.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Autentificarea s-a finalizat! Se închide...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Copiați acest cod și lipiți-l în [Pagina de autentificare rapidă]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Dispozitiv conectat – se aprobă autentificarea...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>A expirat timpul de așteptare pentru autentificare.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Se așteaptă autentificarea rapidă...\nAplicația va închide această fereastră după finalizarea autentificării.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Introduceți ID-ul locației sau numele jocului...</value>
   </data>
@@ -1475,24 +1619,9 @@ Dorești să activezi Modul de testare?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Setări Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Moduri comunitare</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Salvează setările curente</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Salvați și încărcați rapid profilurile de steaguri.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Profiluri rapide ale steagurilor</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Icoane</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Test de traducere.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Acestea vor fi păstrate în locul în care a fost instalat Froststrap și vor fi restaurate automat la o reinstalare.</value>

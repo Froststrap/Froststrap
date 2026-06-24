@@ -240,8 +240,14 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Je hebt momenteel de WebView2-runtime niet geïnstalleerd. Zonder deze runtime werken sommige Roblox-functies niet naar behoren, zoals de desktop-app. Wil je deze nu downloaden?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Toevoegen</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Enkel toevoegen</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Hoek</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Bladeren</value>
@@ -251,6 +257,12 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sluiten</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Kleurkiezer</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Kopiëren</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Alles kopiëren</value>
@@ -273,6 +285,9 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Implementatie</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Beschrijving</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Gehandicapt</value>
   </data>
@@ -283,6 +298,18 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
     <value>Exporteren</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Snelle vlaggen-editor</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Spel</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Voorbeeld van het teken</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Hexadecimale code</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importeren</value>
   </data>
@@ -291,6 +318,12 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON importeren</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Installeren</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Lancering</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Bezig met laden, even geduld a.u.b...</value>
@@ -316,6 +349,9 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Prestaties</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Speler</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Vooraf ingestelde vlaggenlijsten</value>
   </data>
@@ -337,11 +373,20 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Zoeken</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Server-ID</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Snelkoppelingen</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Bureaubladpictogram</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Nuchter</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Systeemstandaard</value>
@@ -351,6 +396,9 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Tijdstempel</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Totaal</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Waarde</value>
@@ -363,9 +411,6 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Ja</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Snelle vlaggen-editor</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Roblox sluiten</value>
@@ -800,6 +845,15 @@ Weet je zeker dat je door wilt gaan?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Er wordt geen logbestand aangemaakt voor deze start, omdat Froststrap geen gegevens kan schrijven naar de map op '{0}'</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Bouwgegevens</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Commit-hash</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Commit-referentie</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Bijdragers</value>
   </data>
@@ -1038,6 +1092,27 @@ Weet je zeker dat je door wilt gaan?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Het opgegeven kanaal bestaat niet of is privé</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Kleur selecteren</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Informatie over mode</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Community-mods</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Sluit Studio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Nauwlettende waarnemer</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Er zijn geen activiteitsgegevens beschikbaar.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Word lid van Best Region (Auto)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Dit kanaal is verouderd en wordt waarschijnlijk niet meer bijgewerkt. Gebruik alstublieft een ander kanaal.</value>
   </data>
@@ -1087,6 +1162,9 @@ Meer informatie:
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Vooraf ingestelde vlaggen weergeven</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Huidige vlaggen opslaan</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Bepaal hoe bepaalde parameters en functies van de Roblox-engine worden geconfigureerd.</value>
@@ -1166,6 +1244,15 @@ Meer informatie:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FF-vlaggen wissen</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Snel vlagprofielen opslaan en laden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Er zijn geen profielen gevonden</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Profielen van Fast Flag</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Pas de instellingen in het spel aan via een handig menu.</value>
@@ -1311,6 +1398,39 @@ Meer informatie:
   <data name="Menu.Load" xml:space="preserve">
     <value>Laden</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Voer een cookie in.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Open Roblox.com in je browser en log in</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Druk op F12 om de ontwikkelaarstools te openen</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Klik op het tabblad 'Toepassingen' (Chrome) of 'Opslag' (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Vouw 'Cookies' uit en selecteer 'https://www.roblox.com'</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Zoek de 'ROBLOSECURITY'-cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Dubbelklik op de kolom 'Waarde' en kopieer deze</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Plak de waarde in het vak hierboven</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Ongeldige cookie. Controleer dit en probeer het opnieuw.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Plak je .ROBLOSECURITY-cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Handmatige aanmelding</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Bestandsaanpassingen voor de Roblox-gameclient beheren en toepassen.</value>
   </data>
@@ -1401,6 +1521,24 @@ Meer informatie:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Achtergrond van de oude avatar-editor gebruiken</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Aanmelding geannuleerd.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Inloggen voltooid! Wordt afgesloten...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Kopieer deze code en plak hem op de [pagina voor snel inloggen]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Apparaat gekoppeld – aanmelding wordt goedgekeurd...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>De tijdlimiet voor het inloggen is verstreken.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Wachten op snelle aanmelding...\nDe app sluit dit venster zodra de aanmelding is voltooid.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Voer de plaats-ID of de naam van het spel in...</value>
   </data>
@@ -1469,24 +1607,9 @@ Wil je de testmodus inschakelen?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Instellingen voor Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Community-mods</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Huidige vlaggen opslaan</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Snel vlagprofielen opslaan en laden.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Profielen van Fast Flag</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Pictogrammen</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Test voor vertaling.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ze worden bewaard op de plek waar Froststrap was geïnstalleerd en worden bij een herinstallatie automatisch hersteld.</value>

@@ -240,8 +240,14 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>WebView2-ajoympäristöä ei ole tällä hetkellä asennettuna. Jotkin Roblox-ominaisuudet, kuten työpöytäsovellus, eivät toimi kunnolla ilman sitä. Haluatko ladata sen nyt?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Lisää</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Lisää yksi</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Kulma</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Selaa</value>
@@ -251,6 +257,12 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sulje</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Värivalitsin</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Kopioi</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopioi kaikki</value>
@@ -273,6 +285,9 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Käyttöönotto</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Kuvaus</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Vammaiset</value>
   </data>
@@ -283,6 +298,18 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
     <value>Vienti</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Nopea lippueditori</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Peli</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Glyfien esikatselu</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Heksakoodi</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Tuonti</value>
   </data>
@@ -291,6 +318,12 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON-tuonti</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Asenna</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Käynnistys</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Ladataan, odota hetki...</value>
@@ -316,6 +349,9 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Suorituskyky</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Pelaaja</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Valmiit lippuluettelot</value>
   </data>
@@ -337,11 +373,23 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Haku</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Palvelimen tunnus</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Asetukset</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Pikakuvakkeet</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Työpöydän kuvake</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Selvä</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Tutkimus</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Järjestelmän oletusasetus</value>
@@ -351,6 +399,12 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Aikaleima</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Yhteensä</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Päivitys</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Arvo</value>
@@ -363,9 +417,6 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Kyllä</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Nopea lippueditori</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Sulje Roblox</value>
@@ -813,6 +864,15 @@ Haluatko varmasti jatkaa?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Tästä käynnistyksestä ei tallenneta lokitiedostoa, koska Froststrap ei pysty kirjoittamaan kansioon '{0}'</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Rakennustiedot</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Commit-hash</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Vahvista viite</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Tekijät</value>
   </data>
@@ -1051,6 +1111,27 @@ Haluatko varmasti jatkaa?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Määritettyä kanavaa ei ole olemassa tai se on yksityinen</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Valitse väri</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Tietoa mallista</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Yhteisön modit</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Sulje Studio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Tarkka tarkkailija</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Toimintatietoja ei ole saatavilla.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Liity Best Region (Auto) -palveluun</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Tämä kanava on vanhentunut, eikä sitä todennäköisesti enää päivitetä. Käytä toista kanavaa.</value>
   </data>
@@ -1103,6 +1184,9 @@ Lisätietoja:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag-editori</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Tallenna nykyiset liput</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Hallitse tiettyjen Roblox-moottorin parametrien ja ominaisuuksien asetuksia.</value>
@@ -1182,6 +1266,15 @@ Lisätietoja:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Tyhjennä FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Tallenna ja lataa nopeasti lippuprofiileja.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Profiileja ei löytynyt</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Nopeat lippuprofiilit</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Muokkaa pelin asetuksia kätevän valikon kautta.</value>
@@ -1327,6 +1420,39 @@ Lisätietoja:
   <data name="Menu.Load" xml:space="preserve">
     <value>Lataa</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Syötä eväste.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Avaa Roblox.com selaimessasi ja kirjaudu sisään</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Paina F12-näppäintä avataksesi kehittäjätyökalut</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Napsauta ”Sovellukset”-välilehteä (Chrome) tai ”Tallennustila”-välilehteä (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Avaa ”Evästeet” ja valitse ”https://www.roblox.com”</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Etsi ”ROBLOSECURITY”-eväste</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Kaksoisnapsauta ”Arvo”-saraketta ja kopioi se</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Liitä arvo yllä olevaan kenttään</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Eväste ei kelpaa. Tarkista asia ja yritä uudelleen.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Liitä .ROBLOSECURITY-evästeesi</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Manuaalinen kirjautuminen</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Hallitse ja asenna tiedostomuokkauksia Roblox-peliohjelmaan.</value>
   </data>
@@ -1417,6 +1543,24 @@ Lisätietoja:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Käytä vanhan avatar-editorin taustakuvaa</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Kirjautuminen peruutettu.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Kirjautuminen valmis! Suljetaan...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Kopioi tämä koodi ja liitä se [Pikakirjautumissivulle]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Laite on yhdistetty – kirjautumista hyväksytään...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Kirjautumisen aikakatkaisu.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Odotetaan pikatunnistautumista...\nSovellus sulkee tämän ikkunan, kun tunnistautuminen on valmis.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Kirjoita paikan tunnus tai pelin nimi...</value>
   </data>
@@ -1485,24 +1629,9 @@ Haluatko ottaa testitilan käyttöön?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap-asetukset</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Yhteisön modit</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Tallenna nykyiset liput</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Tallenna ja lataa nopeasti lippuprofiileja.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Nopeat lippuprofiilit</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Kuvakkeet</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Käännöstesti.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ne säilytetään siinä paikassa, johon Froststrap asennettiin, ja ne palautetaan automaattisesti, kun ohjelma asennetaan uudelleen.</value>

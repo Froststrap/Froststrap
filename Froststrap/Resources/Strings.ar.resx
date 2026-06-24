@@ -240,8 +240,14 @@
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>لا يوجد لديك حاليًا بيئة تشغيل WebView2 مثبتة. ولن تعمل بعض ميزات Roblox بشكل صحيح بدونها، مثل تطبيق سطح المكتب. هل ترغب في تنزيلها الآن؟</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>إضافة</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>إضافة أغنية منفردة</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>الزاوية</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>تصفح</value>
@@ -252,6 +258,12 @@
   <data name="Common.Close" xml:space="preserve">
     <value>إغلاق</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>محدد الألوان</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>نسخ</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>نسخ الكل</value>
   </data>
@@ -260,6 +272,9 @@
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>مخصص</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>رابط عميق</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>الافتراضي</value>
@@ -272,6 +287,9 @@
   </data>
   <data name="Common.Deployment" xml:space="preserve">
     <value>النشر</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>الوصف</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>ذوو الإعاقة</value>
@@ -286,6 +304,18 @@
     <value>تصدير</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>محرر الأعلام السريع</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>لعبة</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>معاينة الرموز</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>الرمز السداسي العشري</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>استيراد</value>
   </data>
@@ -294,6 +324,12 @@
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>استيراد JSON</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>تثبيت</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>الإطلاق</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>جاري التحميل، يرجى الانتظار...</value>
@@ -319,6 +355,9 @@
   <data name="Common.Performance" xml:space="preserve">
     <value>الأداء</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>اللاعب</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>قوائم الأعلام المعدة مسبقًا</value>
   </data>
@@ -340,11 +379,23 @@
   <data name="Common.Search" xml:space="preserve">
     <value>بحث</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>معرف الخادم</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>الاختصارات</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>أيقونة سطح المكتب</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>رصين</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>دراسة</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>الإعدادات الافتراضية للنظام</value>
@@ -354,6 +405,12 @@
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>الطابع الزمني</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>المجموع</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>تحديث</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>القيمة</value>
@@ -366,9 +423,6 @@
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>نعم</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>محرر الأعلام السريع</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>إغلاق Roblox</value>
@@ -837,6 +891,15 @@
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>لن يتم إنشاء ملف سجل لهذا التشغيل لأن Froststrap غير قادر على الكتابة في المجلد الموجود في '{0}'</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>معلومات البناء</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>تجزئة الالتزام</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>مرجع الالتزام</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>المساهمون</value>
   </data>
@@ -1081,6 +1144,27 @@
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>القناة المحددة إما غير موجودة أو خاصة</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>اختر اللون</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>معلومات عن الموضة</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>المشرفون المجتمعيون</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>إغلاق الاستوديو</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>المراقب الدقيق</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>لا توجد بيانات نشاط متاحة.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>انضم إلى «أفضل منطقة» (السيارات)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>هذه القناة قديمة، ومن المرجح أنها لم تعد تُحدَّث. يرجى استخدام قناة أخرى.</value>
   </data>
@@ -1133,6 +1217,9 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>محرر FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>حفظ الإشارات الحالية</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>التحكم في كيفية تكوين معلمات وميزات محرك Roblox المحددة.</value>
@@ -1212,6 +1299,15 @@
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>مسح FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>حفظ ملفات تعريف الإشارات وتحميلها بسرعة.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>لم يتم العثور على أي ملفات تعريف</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>ملفات تعريف Fast Flag</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>يمكنك تغيير إعدادات اللعبة من خلال قائمة سهلة الاستخدام.</value>
@@ -1357,6 +1453,39 @@
   <data name="Menu.Load" xml:space="preserve">
     <value>تحميل</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>يرجى إدخال ملف تعريف ارتباط.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>افتح موقع Roblox.com في متصفحك وقم بتسجيل الدخول</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>اضغط على المفتاح F12 لفتح «أدوات المطور»</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>انقر على علامة التبويب «التطبيقات» (في متصفح Chrome) أو علامة التبويب «التخزين» (في متصفح Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>قم بتوسيع قسم «ملفات تعريف الارتباط» واختر «https://www.roblox.com»</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>ابحث عن ملف تعريف الارتباط «ROBLOSECURITY»</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>انقر نقرًا مزدوجًا على عمود «القيمة» وانسخه</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>الصق القيمة في المربع أعلاه</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"ملف تعريف الارتباط غير صالح. يرجى التحقق من ذلك ومحاولة مرة أخرى.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>الصق ملف تعريف الارتباط .ROBLOSECURITY الخاص بك</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>تسجيل الدخول اليدوي</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>إدارة تعديلات الملفات وتطبيقها على عميل لعبة Roblox.</value>
   </data>
@@ -1447,6 +1576,24 @@
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>استخدام الخلفية القديمة لمحرر الصور الرمزية</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>تم إلغاء تسجيل الدخول.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>تم تسجيل الدخول! يتم إغلاق الصفحة...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>انسخ هذا الرمز والصقه في [صفحة تسجيل الدخول السريع]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>تم ربط الجهاز - الموافقة على تسجيل الدخول...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>انتهت مدة انتظار تسجيل الدخول.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>في انتظار تسجيل الدخول السريع...\nسيقوم التطبيق بإغلاق هذه النافذة عند اكتمال تسجيل الدخول.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>أدخل معرّف المكان أو اسم اللعبة...</value>
   </data>
@@ -1515,24 +1662,9 @@
   <data name="Menu.Title" xml:space="preserve">
     <value>إعدادات Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>المشرفون المجتمعيون</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>حفظ الإشارات الحالية</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>حفظ ملفات تعريف الإشارات وتحميلها بسرعة.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>ملفات تعريف Fast Flag</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>الرموز</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>اختبار للترجمة.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>سيتم الاحتفاظ بها في المكان الذي تم فيه تثبيت Froststrap، وستتم استعادتها تلقائيًا عند إعادة التثبيت.</value>

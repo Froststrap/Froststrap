@@ -240,8 +240,14 @@
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Προς το παρόν δεν έχετε εγκαταστήσει το περιβάλλον εκτέλεσης WebView2. Ορισμένες λειτουργίες του Roblox δεν θα λειτουργούν σωστά χωρίς αυτό, όπως για παράδειγμα η εφαρμογή για υπολογιστή. Θέλετε να το κατεβάσετε τώρα;</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Προσθήκη</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Προσθήκη μεμονωμένου</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Γωνία</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Περιήγηση</value>
@@ -251,6 +257,12 @@
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Κλείσιμο</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Επιλογέας χρωμάτων</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Αντιγραφή</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Αντιγραφή όλων</value>
@@ -273,6 +285,9 @@
   <data name="Common.Deployment" xml:space="preserve">
     <value>Εγκατάσταση</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Περιγραφή</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Άτομα με αναπηρία</value>
   </data>
@@ -286,6 +301,18 @@
     <value>Εξαγωγή</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Γρήγορος επεξεργαστής σημαιών</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Παιχνίδι</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Προεπισκόπηση γλυφικού</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Δεκαεξαδικός κώδικας</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Εισαγωγή</value>
   </data>
@@ -294,6 +321,12 @@
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>Εισαγωγή JSON</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Εγκατάσταση</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Έναρξη</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Φόρτωση, παρακαλώ περιμένετε...</value>
@@ -319,6 +352,9 @@
   <data name="Common.Performance" xml:space="preserve">
     <value>Απόδοση</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Παίκτης</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Προκαθορισμένοι κατάλογοι σημαίας</value>
   </data>
@@ -340,11 +376,23 @@
   <data name="Common.Search" xml:space="preserve">
     <value>Αναζήτηση</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Αναγνωριστικό διακομιστή</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Ρυθμίσεις</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Συντομεύσεις</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Εικονίδιο επιφάνειας εργασίας</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Νηφάλιος</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Μελέτη</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Προεπιλογή συστήματος</value>
@@ -354,6 +402,12 @@
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Χρονοσήμανση</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Σύνολο</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Ενημέρωση</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Τιμή</value>
@@ -366,9 +420,6 @@
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Ναι</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Γρήγορος επεξεργαστής σημαιών</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Κλείσιμο του Roblox</value>
@@ -816,6 +867,15 @@
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Δεν θα δημιουργηθεί αρχείο καταγραφής για αυτήν την εκκίνηση, καθώς το Froststrap δεν μπορεί να εγγράψει στον φάκελο «{0}»</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Πληροφορίες κατασκευής</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Κωδικός καταχώρησης</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Αναφορά υποβολής</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Συνεισφέροντες</value>
   </data>
@@ -1054,6 +1114,27 @@
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Το κανάλι που καθορίσατε είτε δεν υπάρχει είτε είναι ιδιωτικό</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Επιλογή χρώματος</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Πληροφορίες για τη μόδα</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Τροποποιήσεις της κοινότητας</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Κλείσιμο στούντιο</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Προσεκτικός παρατηρητής</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Δεν υπάρχουν διαθέσιμα δεδομένα δραστηριότητας.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Γίνετε μέλος της Best Region (Auto)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Αυτό το κανάλι είναι παλιό και πιθανότατα δεν ενημερώνεται πλέον. Παρακαλούμε χρησιμοποιήστε κάποιο άλλο κανάλι.</value>
   </data>
@@ -1106,6 +1187,9 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Επεξεργαστής FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Αποθήκευση των τρεχουσών σημαίας</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Ελέγξτε τον τρόπο ρύθμισης συγκεκριμένων παραμέτρων και λειτουργιών του κινητήρα του Roblox.</value>
@@ -1185,6 +1269,15 @@
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Εκκαθάριση FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Αποθήκευση και φόρτωση προφίλ σημαίας με γρήγορο τρόπο.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Δεν βρέθηκαν προφίλ</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Προφίλ Fast Flag</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Αλλάξτε τις ρυθμίσεις του παιχνιδιού από ένα εύχρηστο μενού.</value>
@@ -1330,6 +1423,39 @@
   <data name="Menu.Load" xml:space="preserve">
     <value>Φόρτωση</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε ένα μπισκότο.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Άνοιξε το Roblox.com στον περιηγητή σου και συνδέσου</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Πατήστε το πλήκτρο F12 για να ανοίξετε τα Εργαλεία Προγραμματιστή</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Κάντε κλικ στην καρτέλα «Εφαρμογές» (Chrome) ή στην καρτέλα «Αποθήκευση» (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Αναπτύξτε την ενότητα «Cookies» και επιλέξτε «https://www.roblox.com»</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Βρείτε το cookie «ROBLOSECURITY»</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Κάντε διπλό κλικ στη στήλη «Τιμή» και αντιγράψτε την</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Επικολλήστε την τιμή στο παραπάνω πλαίσιο</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Το cookie δεν είναι έγκυρο. Παρακαλώ, ελέγξτε το και δοκιμάστε ξανά.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Επικολλήστε το cookie .ROBLOSECURITY</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Σύνδεση με χειροκίνητη εισαγωγή στοιχείων</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Διαχείριση και εφαρμογή τροποποιήσεων αρχείων στον πελάτη παιχνιδιού Roblox.</value>
   </data>
@@ -1420,6 +1546,24 @@
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Χρήση του παλιού φόντου του επεξεργαστή προφίλ</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Η σύνδεση ακυρώθηκε.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Η σύνδεση ολοκληρώθηκε! Κλείσιμο...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Αντιγράψτε αυτόν τον κώδικα και επικολλήστε τον στη [Σελίδα γρήγορης σύνδεσης]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Η συσκευή έχει συνδεθεί – εγκρίνοντας τη σύνδεση...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Η σύνδεση έληξε.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Αναμονή για γρήγορη σύνδεση...\nΗ εφαρμογή θα κλείσει αυτό το παράθυρο μόλις ολοκληρωθεί η σύνδεση.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Εισάγετε τον κωδικό τοποθεσίας ή το όνομα του παιχνιδιού...</value>
   </data>
@@ -1488,24 +1632,9 @@
   <data name="Menu.Title" xml:space="preserve">
     <value>Ρυθμίσεις Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Τροποποιήσεις της κοινότητας</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Αποθήκευση των τρεχουσών σημαίας</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Αποθήκευση και φόρτωση προφίλ σημαίας με γρήγορο τρόπο.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Προφίλ Fast Flag</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Εικονίδια</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Δοκιμαστικό κείμενο για μετάφραση.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Θα παραμείνουν στον χώρο όπου είχε εγκατασταθεί το Froststrap και θα αποκατασταθούν αυτόματα σε περίπτωση επανεγκατάστασης.</value>

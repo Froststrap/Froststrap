@@ -240,8 +240,14 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Du har i øjeblikket ikke WebView2-runtime installeret. Nogle Roblox-funktioner fungerer ikke korrekt uden det, f.eks. desktop-appen. Vil du downloade det nu?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Tilføj</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Tilføj enkelt</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Vinkel</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Gennemse</value>
@@ -251,6 +257,12 @@ Vil du skifte til standardkanalen ({1})?</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Luk</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Farvevælger</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Kopier</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopier alt</value>
@@ -273,6 +285,9 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Implementering</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Beskrivelse</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>De handicappede</value>
   </data>
@@ -283,11 +298,29 @@ Vil du skifte til standardkanalen ({1})?</value>
     <value>Eksport</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Hurtig flagredigerer</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Spil</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Forhåndsvisning af glyf</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Hex-kode</value>
+  </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importer fra fil</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>Import af JSON</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Installer</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Lancering</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Indlæser, vent venligst...</value>
@@ -313,6 +346,9 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Ydeevne</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Spiller</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Forudindstillede flaglister</value>
   </data>
@@ -334,11 +370,23 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Søg</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Server-ID</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Indstillinger</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Genveje</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Ikon på skrivebordet</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Nøgtern</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Undersøgelse</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Systemstandard</value>
@@ -349,6 +397,12 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Tidspunkt</value>
   </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>I alt</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Opdatering</value>
+  </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Værdi</value>
   </data>
@@ -357,9 +411,6 @@ Vil du skifte til standardkanalen ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Ja</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Hurtig flagredigerer</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Luk Roblox</value>
@@ -795,6 +846,15 @@ Er du sikker på, at du vil fortsætte?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Der vil ikke blive skrevet nogen logfil ved denne opstart, da Froststrap ikke kan skrive til mappen på '{0}'</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Oplysninger om byggeriet</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Commit-hash</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Commit-henvisning</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Medvirkende</value>
   </data>
@@ -1026,6 +1086,27 @@ Er du sikker på, at du vil fortsætte?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Den angivne kanal findes enten ikke, eller også er den privat</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Vælg farve</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Om information</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Fællesskabsmods</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Luk Studio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Nøje iagttager</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Der foreligger ingen aktivitetsdata.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Bliv medlem af Best Region (Auto)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Denne kanal er forældet og bliver sandsynligvis ikke længere opdateret. Brug venligst en anden kanal.</value>
   </data>
@@ -1075,6 +1156,9 @@ Yderligere oplysninger:
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Vis forudindstillede flag</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Gem de nuværende markeringer</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Styr, hvordan bestemte parametre og funktioner i Roblox-motoren konfigureres.</value>
@@ -1154,6 +1238,15 @@ Yderligere oplysninger:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Ryd FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Gem og indlæs flagprofiler hurtigt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen profiler</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Profiler for hurtige flag</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Du kan ændre indstillingerne i spillet via en praktisk menu.</value>
@@ -1299,6 +1392,39 @@ Yderligere oplysninger:
   <data name="Menu.Load" xml:space="preserve">
     <value>Indlæs</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Indtast venligst en cookie.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Åbn Roblox.com i din browser, og log ind</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Tryk på F12 for at åbne udviklerværktøjerne</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Klik på fanen »App« (Chrome) eller »Lagring« (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Udvid »Cookies« og vælg »https://www.roblox.com«</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Find cookien »ROBLOSECURITY«</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Dobbeltklik på kolonnen »Værdi« og kopier den</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Indsæt værdien i feltet ovenfor</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Ugyldig cookie. Kontroller venligst og prøv igen.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Indsæt din .ROBLOSECURITY-cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Manuel login</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Administrer og anvend filændringer til Roblox-spilklienten.</value>
   </data>
@@ -1389,6 +1515,24 @@ Yderligere oplysninger:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Brug den gamle avatar-editor-baggrund</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Login annulleret.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Login er gennemført! Lukker nu...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Kopier denne kode og indsæt den på [siden til hurtig login]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Enheden er tilknyttet – godkendelse af login i gang...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Tidsgrænsen for login er overskredet.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Venter på hurtig login...\nAppen lukker dette vindue, når loginet er gennemført.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Indtast sted-ID eller spilnavn...</value>
   </data>
@@ -1454,24 +1598,9 @@ Vil du aktivere testtilstand?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Indstillinger for Froststrap</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Fællesskabsmods</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Gem de nuværende markeringer</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Gem og indlæs flagprofiler hurtigt.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Profiler for hurtige flag</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoner</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Test af oversættelse.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>De gemmes på det sted, hvor Froststrap blev installeret, og gendannes automatisk ved en geninstallation.</value>
