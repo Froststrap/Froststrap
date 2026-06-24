@@ -118,1414 +118,1429 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="About.Licenses.Title" xml:space="preserve">
-    <value>Licence</value>
+    <value>许可证</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
   <data name="About.Title" xml:space="preserve">
-    <value>O podjetju Froststrap</value>
+    <value>关于Froststrap</value>
   </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
-    <value>Lokacije strežnika ni bilo mogoče poiskati. Morda se v igre vključujete prehitro.</value>
+    <value>无法查询服务器位置。您可能加入游戏的间隔时间过短。</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
-    <value>Roblox ne podpira več operacijskih sistemov Windows 7 in 8.1. Če želite še naprej igrati Roblox, posodobite sistem na Windows 10 ali novejšo različico.</value>
+    <value>Roblox 不再支持 Windows 7 或 8.1。如需继续游玩 Roblox，请升级至 Windows 10 或更高版本。</value>
   </data>
   <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
-    <value>Kanal, na katerem ste trenutno ({0}), je zdaj omejen za javno uporabo. Zdaj boste preusmerjeni na privzeti kanal ({1}).</value>
+    <value>您当前所在的频道（{0}）现已限制公众使用。您将转至默认频道（{1}）。</value>
   </data>
   <data name="Bootstrapper.AutoUpdateFailed" xml:space="preserve">
-    <value>Program Froststrap se ni mogel samodejno posodobiti na različico {0}. Prosimo, ga posodobite ročno tako, da ga prenesete s spletne strani in zagnate.</value>
+    <value>Froststrap 无法自动更新至版本 {0}。请手动从网站下载并运行该程序进行更新。</value>
   </data>
   <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
-    <value>Roblox poskuša nastaviti tvoj kanal na {0}, vendar je tvoj trenutno izbrani kanal {1}.
+    <value>Roblox 正尝试将您的频道设置为 {0}，但您当前的首选频道是 {1}。
 
 
-Želiš spremeniti izbrani kanal na {0}?</value>
+您是否要将首选频道切换为 {0}？</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
-    <value>Roblox trenutno teče, zagon nove instance pa bo program zaprl. Ali ste prepričani, da želite nadaljevati z zagonom?</value>
+    <value>Roblox 当前正在运行，启动另一个实例将导致其关闭。您确定要继续启动吗？</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>Kanal, na katerem ste trenutno ({0}), je zastarel in se zdi, da ne prejema več posodobitev.\n
-Ali želite preklopiti na privzeti kanal ({1})?</value>
+    <value>您当前所在的频道（{0}）已过时，且似乎不再接收更新。\n
+您是否要切换到默认频道（{1}）？</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
-    <value>Nadgradnje so bile onemogočene zaradi manjkajočega odjemalca.
-    Da bi preprečili težave, se bo nadgradnja nadaljevala.</value>
+    <value>由于客户端缺失，升级功能已被禁用。
+    为避免出现问题，升级操作将继续进行。</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
-    <value>Naj Froststrap odloči, katerim strežnikom se boste pridružili. Prednost bo dal strežniku, ki je najbližje vam.</value>
+    <value>让 Froststrap 决定您加入哪个服务器。系统会优先选择距离您最近的服务器。</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
-    <value>Zdi se, da ta igra trenutno igra eden od tvojih prijateljev. Želiš se mu pridružiti?</value>
+    <value>看起来有位朋友正在玩这款游戏。你想加入他们吗？</value>
   </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
-    <value>Omogoči BetterMatchmaking</value>
+    <value>启用“BetterMatchmaking”功能</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Morda manjka nekaj vsebine. To lahko odpravite tako, da v nastavitvah prisilite ponovno namestitev Robloxa.</value>
+    <value>部分内容可能缺失。请在设置中强制重新安装 Roblox 以解决此问题。</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
-    <value>Vseh datotek ni bilo mogoče izpakirati</value>
+    <value>无法解压所有文件</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
-    <value>Shranjevanje {0} ni uspelo: {1}</value>
+    <value>无法保存 {0}：{1}</value>
   </data>
   <data name="Bootstrapper.ModificationsFailed.Message" xml:space="preserve">
-    <value>V tej različici ne bodo na voljo vse spremembe.</value>
+    <value>并非所有修改都会包含在本次发布中。</value>
   </data>
   <data name="Bootstrapper.ModificationsFailed.Title" xml:space="preserve">
-    <value>Vseh sprememb ni bilo mogoče uporabiti</value>
+    <value>无法应用所有修改</value>
   </data>
   <data name="Bootstrapper.NotEnoughSpace" xml:space="preserve">
-    <value>Froststrap nima dovolj prostora na disku za prenos in namestitev Robloxa. Prosimo, sprostite nekaj prostora na disku in poskusite znova.</value>
+    <value>Froststrap 的磁盘空间不足，无法下载并安装 Roblox。请释放一些磁盘空间后再试一次。</value>
   </data>
   <data name="Bootstrapper.Status.ApplyingModifications" xml:space="preserve">
-    <value>Uporaba modifikacij za Roblox...</value>
+    <value>正在应用 Roblox 模组……</value>
   </data>
   <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
-    <value>Preklic nadgradnje Roblox.</value>
+    <value>取消 Roblox 升级。</value>
   </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
-    <value>Nastavljanje {product}...</value>
+    <value>正在配置 {product}...</value>
   </data>
   <data name="Bootstrapper.Status.Connecting" xml:space="preserve">
-    <value>Povezovanje z Robloxom...</value>
+    <value>正在连接 Roblox...</value>
   </data>
   <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
-    <value>Prenos</value>
+    <value>正在下载</value>
   </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
-    <value>Izpisovanje</value>
+    <value>提取</value>
   </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
-    <value>Namestitev {izdelka}...</value>
+    <value>正在安装 {product}...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
-    <value>Namestitev WebView2, prosimo, počakajte...</value>
+    <value>正在安装 WebView2，请稍候...</value>
   </data>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
-    <value>levo</value>
+    <value>左</value>
   </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
-    <value>Zagon {product}...</value>
+    <value>正在启动 {product}...</value>
     <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
-    <value>Posodabljanje {izdelka}...</value>
+    <value>正在升级 {product}...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
-    <value>Čakam na podatke...</value>
+    <value>正在等待数据...</value>
   </data>
   <data name="Bootstrapper.Status.WaitingOtherInstances" xml:space="preserve">
-    <value>Čakam na druge instance...</value>
+    <value>正在等待其他实例……</value>
   </data>
   <data name="Bootstrapper.StylePreview.ImageCancel" xml:space="preserve">
-    <value>Predogled sloga – za zaprtje kliknite gumb X v zgornjem desnem kotu</value>
+    <value>样式预览——点击右上角的“X”按钮关闭</value>
     <comment>Text for style previews that use an X button. Currently only applies to Byfron</comment>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
-    <value>Predogled sloga – kliknite »Prekliči«, da zaprete</value>
+    <value>样式预览——点击“取消”关闭</value>
     <comment>Text for style previews that use text button that says "Cancel"</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
-    <value>Program Froststrap je bil uspešno odstranjen</value>
+    <value>Froststrap 已成功卸载</value>
   </data>
   <data name="Bootstrapper.Uninstall.RobloxRunning" xml:space="preserve">
-    <value>Roblox trenutno teče, vendar ga je treba zapreti, preden odstranite program Froststrap. Ali želite Roblox zapreti zdaj?</value>
+    <value>Roblox 当前正在运行，但在卸载 Froststrap 之前必须先关闭它。您现在要关闭 Roblox 吗？</value>
   </data>
   <data name="Bootstrapper.WMFNotFound" xml:space="preserve">
-    <value>Roblox zahteva uporabo komponent Windows Media Foundation. Zdi se, da jih nimate nameščenih, verjetno zato, ker uporabljate različico Windows N. Najprej jih namestite, nato pa zaženite Roblox.</value>
+    <value>Roblox 需要使用 Windows Media Foundation 组件。您似乎缺少这些组件，这很可能是因为您使用的 Windows 系统是 N 版。请先安装这些组件，然后再启动 Roblox。</value>
   </data>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
-    <value>Trenutno nimate nameščenega izvajalnega okolja WebView2. Brez njega nekatere funkcije Robloxa ne bodo delovale pravilno, na primer namizna aplikacija. Ali ga želite prenesti zdaj?</value>
+    <value>您当前尚未安装 WebView2 运行时。如果没有它，某些 Roblox 功能将无法正常运行，例如桌面应用。您现在要下载吗？</value>
   </data>
   <data name="Common.AddSingle" xml:space="preserve">
-    <value>Dodaj eno</value>
+    <value>添加单曲</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
-    <value>Brskanje</value>
+    <value>浏览</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
-    <value>Prekliči</value>
+    <value>取消</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
-    <value>Zapri</value>
+    <value>关闭</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
-    <value>Kopiraj vse</value>
+    <value>全选</value>
   </data>
   <data name="Common.CreateNew" xml:space="preserve">
-    <value>Ustvari novo</value>
+    <value>创建新条目</value>
   </data>
   <data name="Common.Custom" xml:space="preserve">
-    <value>Po meri</value>
+    <value>自定义</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
-    <value>Privzeto</value>
+    <value>默认</value>
   </data>
   <data name="Common.Delete" xml:space="preserve">
-    <value>Izbriši</value>
+    <value>删除</value>
   </data>
   <data name="Common.DeleteAll" xml:space="preserve">
-    <value>Izbriši vse</value>
+    <value>删除全部</value>
   </data>
   <data name="Common.Deployment" xml:space="preserve">
-    <value>Uvedba</value>
+    <value>部署</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
-    <value>Invalidi</value>
+    <value>已禁用</value>
   </data>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
-    <value>Discord – razširjene funkcije prisotnosti</value>
+    <value>Discord 丰富状态信息</value>
   </data>
   <data name="Common.Edit" xml:space="preserve">
-    <value>Uredi</value>
+    <value>编辑</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
-    <value>Izvoz</value>
+    <value>导出</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
   <data name="Common.Import" xml:space="preserve">
-    <value>Uvoz</value>
+    <value>导入</value>
   </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
-    <value>Uvoz iz datoteke</value>
+    <value>从文件导入</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
-    <value>Uvoz JSON</value>
+    <value>导入 JSON</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
-    <value>Nalaganje, prosimo, počakajte...</value>
+    <value>正在加载，请稍候...</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
-    <value>Razno</value>
+    <value>杂项</value>
   </data>
   <data name="Common.Name" xml:space="preserve">
-    <value>Ime</value>
+    <value>姓名</value>
   </data>
   <data name="Common.New" xml:space="preserve">
-    <value>Novo</value>
+    <value>新</value>
   </data>
   <data name="Common.No" xml:space="preserve">
-    <value>Ne</value>
+    <value>不</value>
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
-    <value>Ni na voljo</value>
+    <value>暂无</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
-    <value>Odpri datoteko z dnevnikom</value>
+    <value>打开日志文件</value>
   </data>
   <data name="Common.Performance" xml:space="preserve">
-    <value>Zmogljivost</value>
+    <value>表现</value>
   </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
-    <value>Seznami vnaprej nastavljenih zastav</value>
+    <value>预设标志列表</value>
   </data>
   <data name="Common.Presets" xml:space="preserve">
-    <value>Prednastavitve</value>
+    <value>预设</value>
   </data>
   <data name="Common.Profiles" xml:space="preserve">
-    <value>Profil</value>
+    <value>个人资料</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
-    <value>Kakovost</value>
+    <value>质量</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
-    <value>Preimenuj</value>
+    <value>重命名</value>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
-    <value>Roblox še ni nameščen. Preden poskusite uporabiti to možnost, vsaj enkrat zaženite Roblox prek programa Froststrap.</value>
+    <value>Roblox 尚未安装。在尝试使用此选项之前，请先使用 Froststrap 至少启动一次 Roblox。</value>
   </data>
   <data name="Common.Search" xml:space="preserve">
-    <value>Iskanje</value>
+    <value>搜索</value>
   </data>
   <data name="Common.Shortcuts" xml:space="preserve">
-    <value>Bližnjice</value>
+    <value>快捷方式</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
-    <value>Ikona na namizju</value>
+    <value>桌面图标</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
-    <value>Privzeta nastavitev sistema</value>
+    <value>系统默认值</value>
   </data>
   <data name="Common.Template" xml:space="preserve">
-    <value>Predloga</value>
+    <value>模板</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
-    <value>Časovni žig</value>
+    <value>时间戳</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
-    <value>Vrednost</value>
+    <value>值</value>
   </data>
   <data name="Common.Version" xml:space="preserve">
-    <value>Različica</value>
+    <value>版本</value>
   </data>
   <data name="Common.VersionGuid" xml:space="preserve">
-    <value>ID različice</value>
+    <value>版本标识符</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
-    <value>Da</value>
+    <value>是</value>
   </data>
   <data name="Common_FastFlags" xml:space="preserve">
-    <value>Urejevalnik zastav »Fast Flag«</value>
+    <value>快速旗帜编辑器</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
-    <value>Zapri Roblox</value>
+    <value>关闭 Roblox</value>
   </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
-    <value>Kopiraj globoko povezavo vabilu</value>
+    <value>复制邀请深链</value>
   </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
-    <value>Zgodovina iger se beleži le za tvojo trenutno sejo v Robloxu. Igre se bodo tukaj prikazale, ko jih zapustiš ali se v njih teleportiraš. Na nekatere strežnike se ne bo mogoče ponovno priključiti.</value>
+    <value>游戏历史记录仅针对您当前的 Roblox 会话进行记录。当您退出游戏或在游戏内传送时，相关游戏会显示在此处。并非所有服务器都支持重新加入。</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
-    <value>Ponovno se pridruži</value>
+    <value>重新加入</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
-    <value>Zgodovina igre</value>
+    <value>比赛历史</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
-    <value>Lokacija: {0}
-Čas delovanja: {1}</value>
+    <value>位置：{0}
+运行时间：{1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.CopyInstanceId" xml:space="preserve">
-    <value>Kopiraj ID instance</value>
+    <value>复制实例 ID</value>
   </data>
   <data name="ContextMenu.ServerInformation.InstanceId" xml:space="preserve">
-    <value>ID instance</value>
+    <value>实例 ID</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
-    <value>Lokacija</value>
+    <value>位置</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
-    <value>Povezan z zasebnim strežnikom</value>
+    <value>已连接到私有服务器</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Public" xml:space="preserve">
-    <value>Povezan z javnim strežnikom</value>
+    <value>已连接到公共服务器</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Reserved" xml:space="preserve">
-    <value>Povezan z rezerviranim strežnikom</value>
+    <value>已连接到预留服务器</value>
   </data>
   <data name="ContextMenu.ServerInformation.Title" xml:space="preserve">
-    <value>Podatki o strežniku</value>
+    <value>服务器信息</value>
   </data>
   <data name="ContextMenu.ServerInformation.Type" xml:space="preserve">
-    <value>Vrsta</value>
+    <value>类型</value>
   </data>
   <data name="ContextMenu.ServerInformation.Uptime" xml:space="preserve">
-    <value>Delovni čas</value>
+    <value>正常运行时间</value>
   </data>
   <data name="CustomTheme.Add.Errors.FileNotZip" xml:space="preserve">
-    <value>Datoteka mora biti v formatu ZIP</value>
+    <value>文件必须是ZIP格式</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameEmpty" xml:space="preserve">
-    <value>Ime ne sme biti prazno</value>
+    <value>姓名不能为空</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameIllegalCharacters" xml:space="preserve">
-    <value>Ime vsebuje nedovoljene znake</value>
+    <value>名称中包含非法字符</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameReserved" xml:space="preserve">
-    <value>Ime ni na voljo</value>
+    <value>该名称无法使用</value>
   </data>
   <data name="CustomTheme.Add.Errors.NameTaken" xml:space="preserve">
-    <value>Ime je že zasedeno</value>
+    <value>该名称已被占用</value>
   </data>
   <data name="CustomTheme.Add.Errors.Unknown" xml:space="preserve">
-    <value>Neznana napaka</value>
+    <value>未知错误</value>
   </data>
   <data name="CustomTheme.Add.Errors.ZipInvalidData" xml:space="preserve">
-    <value>Neveljavna ali poškodovana datoteka ZIP</value>
+    <value>ZIP 文件无效或已损坏</value>
   </data>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
-    <value>V datoteki ZIP ni bilo mogoče najti datoteke s temo</value>
+    <value>在 ZIP 文件中找不到主题文件</value>
   </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
-    <value>Prilagojena tema {0}</value>
+    <value>自定义主题 {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
   </data>
   <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
-    <value>Shraniti spremembe v {0}?</value>
+    <value>将更改保存到 {0} 吗？</value>
   </data>
   <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
-    <value>Predogled teme ni uspel: {0}</value>
+    <value>无法预览主题：{0}</value>
   </data>
   <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
-    <value>Odpri imenik tem</value>
+    <value>打开主题目录</value>
   </data>
   <data name="CustomTheme.Editor.Preview" xml:space="preserve">
-    <value>Predogled</value>
+    <value>预览</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
-    <value>Shrani</value>
+    <value>保存</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
-    <value>Vaša tema je bila shranjena!</value>
+    <value>您的主题已保存！</value>
   </data>
   <data name="CustomTheme.Editor.Title" xml:space="preserve">
-    <value>Urejanje »{0}«</value>
+    <value>编辑“{0}”</value>
   </data>
   <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
-    <value>Prilagojeno pogovorno okno je že bilo inicializirano</value>
+    <value>自定义对话框已初始化</value>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeBlacklistedUriScheme" xml:space="preserve">
-    <value>{0}.{1} uporablja shemo {2}, ki je na črnem seznamu</value>
+    <value>{0}.{1} 使用了被列入黑名单的方案 {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the URI scheme (e.g. http)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeConversionError" xml:space="preserve">
-    <value>{0} ima neveljaven {1}: {2}</value>
+    <value>{0} 的 {1} 无效：{2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeInvalidType" xml:space="preserve">
-    <value>{0}.{1} ni veljaven {2}</value>
+    <value>{0}.{1} 不是一个有效的 {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMissing" xml:space="preserve">
-    <value>Elementu {0} manjka atribut {1}</value>
+    <value>元素 {0} 缺少 {1} 属性</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMissingChild" xml:space="preserve">
-    <value>{0}.{1} nima podrejenega elementa</value>
+    <value>{0}.{1} 缺少其子节点</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMultipleChildren" xml:space="preserve">
-    <value>{0}.{1} lahko ima le enega potomca</value>
+    <value>{0}.{1} 只能有一个子节点</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMultipleDefinitions" xml:space="preserve">
-    <value>Za {0} je mogoče opredeliti le en {1}</value>
+    <value>{0} 只能定义一个 {1}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMustBeLargerThanMin" xml:space="preserve">
-    <value>{0}.{1} mora biti večje od {2}</value>
+    <value>{0}.{1} 必须大于 {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax" xml:space="preserve">
-    <value>{0}.{1} mora biti manjše od {2}</value>
+    <value>{0}.{1} 必须小于 {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeParseError" xml:space="preserve">
-    <value>{0}.{1} ni bilo mogoče razčleniti v {2}</value>
+    <value>{0}.{1} 无法解析为 {2}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeParseErrorNull" xml:space="preserve">
-    <value>{0}.{1} {2} je prazna vrednost</value>
+    <value>{0}.{1} {2} 为空</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
-    <value>{0} ne more imeti otroka {1}</value>
+    <value>{0} 不能有 {1} 的子项</value>
     <comment>{0} and {1} are element names (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
-    <value>{0} lahko ima le enega otroka</value>
+    <value>{0} 只能有一个孩子</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementTypeCreationFailed" xml:space="preserve">
-    <value>{0} ni uspelo ustvariti {1}: {2}</value>
+    <value>{0} 无法创建 {1}：{2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
-    <value>Koren XML-datoteke teme ni {0}</value>
+    <value>主题 XML 的根节点不是 {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.NoThemeSelected" xml:space="preserve">
-    <value>Ni izbrana nobena prilagojena tema</value>
+    <value>未选择自定义主题</value>
   </data>
   <data name="CustomTheme.Errors.SetupFailed" xml:space="preserve">
-    <value>Nastavitev prilagojenega zaganjalnika ni uspela: {0}.
-Uporablja se privzeta vrednost {1}.</value>
+    <value>无法设置自定义引导程序：{0}。
+将默认使用 {1}。</value>
     <comment>{0} is the error reason, {1} is the theme name (e.g. Froststrap (Classic))</comment>
   </data>
   <data name="CustomTheme.Errors.TooManyElements" xml:space="preserve">
-    <value>Prilagojeni bootstrapperji lahko vsebujejo največ {0} elementov, dobili smo {1}</value>
+    <value>自定义引导程序最多只能包含 {0} 个元素，已获得 {1} 个</value>
     <comment>{0} and {1} are numbers</comment>
   </data>
   <data name="CustomTheme.Errors.UnknownElement" xml:space="preserve">
-    <value>Neznani element {0}</value>
+    <value>未知元素 {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
-    <value>{0} Neznano {1} '{2}'</value>
+    <value>{0} 未知 {1} '{2}'</value>
     <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
-    <value>{0} različica ni številka</value>
+    <value>{0} 版本不是一个数字</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
-    <value>Različica {0} {1} ni prepoznana</value>
+    <value>{0} 版本 {1} 无法识别</value>
     <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotSet" xml:space="preserve">
-    <value>Različica {0} ni nastavljena</value>
+    <value>{0} 版本未设置</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotSupported" xml:space="preserve">
-    <value>Različica {0} {1} ni več podprta</value>
+    <value>{0} 版本 {1} 已不再受支持</value>
     <comment>{0} is the element name (e.g. Button), {1} is the version number</comment>
   </data>
   <data name="CustomTheme.Errors.XMLParseFailed" xml:space="preserve">
-    <value>Analiza datoteke s temo ni uspela: {0}</value>
+    <value>无法解析主题文件：{0}</value>
   </data>
   <data name="CustomTheme.Templates.Blank.MoreExamples" xml:space="preserve">
-    <value>Primere prilagojenih bootstrapperjev najdete na {0}</value>
+    <value>自定义引导程序的示例可参见 {0}</value>
   </data>
   <data name="CustomTheme.Templates.Blank.UIElements" xml:space="preserve">
-    <value>Tukaj vstavite elemente uporabniškega vmesnika</value>
+    <value>将 UI 元素放在这里</value>
   </data>
   <data name="CustomTheme.Templates.Simple.MoreExamples" xml:space="preserve">
-    <value>Več primerov prilagojenih bootstrapperjev najdete na {0}</value>
+    <value>在 {0} 中查看更多自定义 Bootstrapper 示例</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
-    <value>Dodaj oznako »Hitro«</value>
+    <value>添加“快速”标记</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
-    <value>Prosimo, počakajte, da se odstranitev zaključi.</value>
+    <value>请等待卸载完成。</value>
   </data>
   <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
-    <value>Froststrap ne podpira več Bloxshade.
-Za več informacij se pridružite Discord strežniku Bloxshade.</value>
+    <value>Froststrap 不再支持 Bloxshade。
+如需了解更多信息，请加入 Bloxshade 的 Discord 服务器。</value>
   </data>
   <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
-    <value>Oprostite</value>
+    <value>对不起</value>
   </data>
   <data name="Dialog.CannotCreateShortcuts" xml:space="preserve">
-    <value>Froststrap ni uspel ustvariti bližnjic na namizju in v meniju »Začetek«. Poskusite jih ustvariti kasneje prek nastavitev.</value>
+    <value>Froststrap 无法在桌面和“开始”菜单上创建快捷方式。请稍后通过设置尝试创建。</value>
   </data>
   <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
-    <value>Povezave ni bilo mogoče vzpostaviti, kar verjetno kaže na slabo internetno povezavo ali blokado požarnega zidu. Če je vaša povezava v redu, preverite, ali vaš protivirusni program ne blokira programa Froststrap.</value>
+    <value>无法建立连接，这很可能表明网络连接不佳或被防火墙拦截。如果您的网络连接正常，请确保您的杀毒软件没有拦截 Froststrap。</value>
   </data>
   <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
-    <value>Funkcija BetterMatchmaking bo v tej seji onemogočena.</value>
+    <value>本次会话中将禁用“BetterMatchmaking”功能。</value>
   </data>
   <data name="Dialog.Connectivity.MoreInfo" xml:space="preserve">
-    <value>Več informacij:</value>
+    <value>更多信息：</value>
   </data>
   <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
-    <value>Roblox trenutno morda ne deluje. Za več informacij glej {0}.</value>
+    <value>Roblox 目前可能无法访问。更多信息请参见 {0}。</value>
   </data>
   <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
-    <value>Ker je treba namestiti ali posodobiti program Roblox, se program Froststrap ne more nadaljevati.</value>
+    <value>由于需要安装或升级 Roblox，Froststrap 无法继续运行。</value>
   </data>
   <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
-    <value>Pri tej izdaji se Roblox ne bo preverjal za nadgradnje, spremembe modov pa se ne bodo uporabile.</value>
+    <value>本次发布时，系统不会检查 Roblox 是否需要更新，也不会应用模组的更改。</value>
   </data>
   <data name="Dialog.Connectivity.Title" xml:space="preserve">
-    <value>Napaka pri povezavi</value>
+    <value>连接错误</value>
   </data>
   <data name="Dialog.Connectivity.TryAgainLater" xml:space="preserve">
-    <value>Prosimo, poskusite kasneje.</value>
+    <value>请稍后再试。</value>
   </data>
   <data name="Dialog.Connectivity.UnableToConnect" xml:space="preserve">
-    <value>Froststrap se ne more povezati z {0}</value>
+    <value>Froststrap 无法连接到 {0}</value>
     <comment>{0} is the name of a service (i.e. Roblox, GitHub)</comment>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
-    <value>Froststrap ne more prenesti Robloxa</value>
+    <value>Froststrap 无法下载 Roblox</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
-    <value>Roblox trenutno ni na voljo za prenos. Za več informacij preberite naslednjo stran s pomočjo: {0}</value>
+    <value>目前无法下载 Roblox。请阅读以下帮助页面以获取更多信息：{0}</value>
     <comment>{0} is a URL</comment>
   </data>
   <data name="Dialog.Exception.CopyLogContents" xml:space="preserve">
-    <value>Kopiraj vsebino dnevnika</value>
+    <value>复制日志内容</value>
   </data>
   <data name="Dialog.Exception.Info.1" xml:space="preserve">
-    <value>Med izvajanjem programa Froststrap/Froststrap je prišlo do izjeme</value>
+    <value>在运行 Froststrap/Froststrap 时发生了一个异常</value>
   </data>
   <data name="Dialog.Exception.Info.2" xml:space="preserve">
-    <value>Najprej preverite [Froststrap Wiki]({0}), da ugotovite, ali je bila ta težava že odpravljena.
+    <value>请先查看 [Froststrap Wiki]({0})，确认该问题是否已有修复方案。
 
-Če ne, prosimo, da to izjemo prijavite prek [GitHub issue]({1}) skupaj s kopijo ustvarjene dnevniške datoteke.</value>
+如果没有，请通过 [GitHub 问题]({1}) 报告此异常，并附上生成的日志文件副本。</value>
   </data>
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
-    <value>Najprej preverite [Froststrap Wiki]({0}), da ugotovite, ali je bila ta težava že odpravljena.
+    <value>请先查看 [Froststrap Wiki]({0})，确认该问题是否已有修复方案。
 
-Če ne, prosimo, da to izjemo prijavite skrbnikom tega forka. Te težave NE prijavljajte v rubriki »Issues« na GitHubu projekta Froststrap, saj gre za neuradno različico.</value>
+如果没有，请向此分支的维护者报告此异常。请勿在 Froststrap 的 GitHub 问题跟踪中报告此问题，因为这是非官方构建版本。</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
-    <value>Prijavi izjemo</value>
+    <value>报告异常</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
-    <value>Izjema Froststrap</value>
+    <value>Froststrap 异常</value>
   </data>
   <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>Različica {0}</value>
+    <value>版本 {0}</value>
   </data>
   <data name="Dialog.IconLoadFailed" xml:space="preserve">
-    <value>Izbrane ikone za zagon ni bilo mogoče naložiti.
+    <value>无法加载所选的引导程序图标。
 
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
   <data name="Dialog.LanguageSelector.Header" xml:space="preserve">
-    <value>Izberite želeni jezik</value>
+    <value>选择首选语言</value>
   </data>
   <data name="Dialog.LanguageSelector.Subtext" xml:space="preserve">
-    <value>Preden nadaljujete z namestitvijo, izberite jezik.
-Nekateri deli besedila morda ne bodo prevedeni v izbrani jezik.</value>
+    <value>请先选择语言，然后继续安装。
+部分文本可能尚未翻译成您首选的语言。</value>
   </data>
   <data name="Dialog.PlayerError.Crash" xml:space="preserve">
-    <value>Roblox se je sesul.</value>
+    <value>Roblox 崩溃了。</value>
   </data>
   <data name="Dialog.PlayerError.FailedLaunch" xml:space="preserve">
-    <value>Roblox se ni uspel zagnati.</value>
+    <value>Roblox 无法启动。</value>
   </data>
   <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
-    <value>Za informacije o tem, zakaj se to lahko dogaja in kako se to lahko reši, preberite [ta članek v pomoči]({0}).
+    <value>如需了解可能导致此问题的原因及解决方法，请阅读[这篇帮助文章]({0})。
 
-Preverite, ali Roblox deluje z [izvirnim zaganjalnikom]({1}). Če ne deluje, to ni težava s programom Froststrap. Če pa deluje, si oglejte članek v pomoči.</value>
+请检查 Roblox 是否能在 [原版启动器]({1}) 上正常运行。如果无法运行，则这并非 Froststrap 的问题。如果可以运行，请参考该帮助文章。</value>
   </data>
   <data name="Dialog.RegistryWriteError" xml:space="preserve">
-    <value>Froststrap ne more zapisovati v register sistema Windows. Verjetno moti protivirusni program in povzroča težave. Preverite, ali ni ničesar, kar bi omejevalo delovanje programa Froststrap.</value>
+    <value>Froststrap 无法写入 Windows 注册表。这很可能是由于杀毒软件的干扰导致的。请检查并确保没有其他因素限制 Froststrap 的运行。</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
-    <value>Konec leta 2015</value>
+    <value>2015年底</value>
   </data>
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
-    <value>Ponaredek Byfrona (~2023)</value>
+    <value>假冒Byfron（约2023年）</value>
   </data>
   <data name="Enums.BootstrapperStyle.ClassicFluentDialog" xml:space="preserve">
-    <value>Froststrap (klasična različica)</value>
+    <value>Froststrap（经典版）</value>
   </data>
   <data name="Enums.BootstrapperStyle.CustomDialog" xml:space="preserve">
-    <value>Po meri</value>
+    <value>自定义</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentAeroDialog" xml:space="preserve">
-    <value>Froststrap (steklo)</value>
+    <value>霜带（玻璃）</value>
   </data>
   <data name="Enums.BootstrapperStyle.FluentDialog" xml:space="preserve">
-    <value>Froststrap (neprosojen)</value>
+    <value>Froststrap（不透明）</value>
+  </data>
+  <data name="Enums.BootstrapperStyle.TwentyFiveDialog" xml:space="preserve">
+    <value>Roblox（约2025年）</value>
   </data>
   <data name="Enums.CleanerOptions.Never" xml:space="preserve">
-    <value>Nikoli</value>
+    <value>绝不</value>
   </data>
   <data name="Enums.CleanerOptions.OneDay" xml:space="preserve">
-    <value>Po 1 dnevu</value>
+    <value>1天后</value>
   </data>
   <data name="Enums.CleanerOptions.OneMonth" xml:space="preserve">
-    <value>Po 1 mesecu</value>
+    <value>1个月后</value>
   </data>
   <data name="Enums.CleanerOptions.OneWeek" xml:space="preserve">
-    <value>Po 1 tednu</value>
+    <value>1周后</value>
   </data>
   <data name="Enums.CleanerOptions.TwoMonths" xml:space="preserve">
-    <value>Po 2 mesecih</value>
+    <value>2个月后</value>
   </data>
   <data name="Enums.CopyFormatMode.Format1" xml:space="preserve">
-    <value>Privzeto</value>
+    <value>默认</value>
   </data>
   <data name="Enums.CopyFormatMode.Format2" xml:space="preserve">
-    <value>Priporočeno</value>
+    <value>推荐</value>
   </data>
   <data name="Enums.CopyFormatMode.Format3" xml:space="preserve">
-    <value>Po abecednem redu</value>
+    <value>按字母顺序排列</value>
   </data>
   <data name="Enums.CopyFormatMode.Format4" xml:space="preserve">
-    <value>Razvrščeno po dolžini</value>
+    <value>按长度降序排列</value>
   </data>
   <data name="Enums.CursorType.BlackAndWhiteDot" xml:space="preserve">
-    <value>Črna in bela pika</value>
+    <value>黑白圆点</value>
   </data>
   <data name="Enums.CursorType.From2006" xml:space="preserve">
-    <value>~2006 (v risankastem slogu)</value>
+    <value>~2006（卡通风格）</value>
+  </data>
+  <data name="Enums.CursorType.From2013" xml:space="preserve">
+    <value>~2013（Angular）</value>
   </data>
   <data name="Enums.CursorType.PurpleCross" xml:space="preserve">
-    <value>Vijolični križ</value>
+    <value>紫色十字架</value>
   </data>
   <data name="Enums.CustomThemeTemplate.Blank" xml:space="preserve">
-    <value>Prazno</value>
+    <value>空白</value>
   </data>
   <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
-    <value>Preprosto</value>
+    <value>简单</value>
   </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
-    <value>Privzeto (Twemoji)</value>
+    <value>默认（Twemoji）</value>
+  </data>
+  <data name="Enums.FlagPresets.RenderingMode.Vulkan" xml:space="preserve">
+    <value>火山</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
-    <value>Raven 0 (najnižja)</value>
+    <value>0级（最低）</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level1" xml:space="preserve">
-    <value>Stopnja 1 (nizka)</value>
+    <value>1级（低）</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level2" xml:space="preserve">
-    <value>Raven 2 (srednja)</value>
+    <value>第2级（中等）</value>
   </data>
   <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
-    <value>Stopnja 3 (najvišja)</value>
+    <value>3级（最高级）</value>
   </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
-    <value>Zasebni strežnik</value>
+    <value>私人服务器</value>
   </data>
   <data name="Enums.ServerType.Public" xml:space="preserve">
-    <value>Javni strežnik</value>
+    <value>公共服务器</value>
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
-    <value>Rezerviran strežnik</value>
+    <value>专用服务器</value>
   </data>
   <data name="Enums.Theme.Blue" xml:space="preserve">
-    <value>Modra</value>
+    <value>蓝色</value>
   </data>
   <data name="Enums.Theme.Dark" xml:space="preserve">
-    <value>Temno</value>
+    <value>黑暗</value>
   </data>
   <data name="Enums.Theme.Green" xml:space="preserve">
-    <value>Zelena</value>
+    <value>绿色</value>
   </data>
   <data name="Enums.Theme.Light" xml:space="preserve">
-    <value>Svetloba</value>
+    <value>光</value>
   </data>
   <data name="Enums.Theme.Orange" xml:space="preserve">
-    <value>Oranžna</value>
+    <value>橙色</value>
   </data>
   <data name="Enums.Theme.Pink" xml:space="preserve">
-    <value>Roza</value>
+    <value>粉色</value>
   </data>
   <data name="Enums.Theme.Purple" xml:space="preserve">
-    <value>Vijolična</value>
+    <value>紫色</value>
   </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
-    <value>Arhiv v obliki ZIP</value>
+    <value>Zip压缩包</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
-    <value>Froststrap je bil posodobljen na različico v{0}</value>
+    <value>Froststrap 已升级至 v{0}</value>
   </data>
   <data name="InstallChecker.VersionDifferentThanInstalled" xml:space="preserve">
-    <value>Različica programa Froststrap, ki ste jo zagnali, se razlikuje od različice, ki jo imate trenutno nameščeno.
-Ali želite posodobiti trenutno nameščeno različico?</value>
+    <value>您启动的 Froststrap 版本与当前已安装的版本不同。
+您是否要升级当前已安装的版本？</value>
   </data>
   <data name="InstallChecker.VersionLessThanInstalled" xml:space="preserve">
-    <value>Različica programa Froststrap, ki ste jo zagnali, je starejša od različice, ki jo imate trenutno nameščeno.
-Lahko pride do težav, vaše nastavitve pa se lahko spremenijo. Priporočamo ponovno namestitev.
-Ali ste prepričani, da želite nadaljevati?</value>
+    <value>您启动的 Froststrap 版本比当前安装的版本更旧。
+可能会出现问题，且您的设置可能会被更改。建议重新安装。
+您确定要继续吗？</value>
   </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
-    <value>Vaših »Fast Flags« ni bilo mogoče naložiti. Ponastavljeni so bili na privzeto konfiguracijo.</value>
+    <value>无法加载您的“快速标志”。它们已重置为默认配置。</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
-    <value>Vaših nastavitev ni bilo mogoče naložiti. Ponastavile so se na privzete nastavitve.</value>
+    <value>无法加载您的设置。这些设置已重置为默认配置。</value>
   </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
-    <value>Zaženi Roblox</value>
+    <value>启动 Roblox</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
-    <value>Zaženi Roblox Studio</value>
+    <value>启动 Roblox Studio</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
-    <value>Za ta zagon se dnevniška datoteka ne bo zapisala, ker Froststrap ne more zapisovati v mapo »{0}«</value>
+    <value>本次启动不会生成日志文件，因为 Froststrap 无法向 '{0}' 文件夹写入数据</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
-    <value>Avtorji</value>
+    <value>贡献者</value>
   </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
-    <value>Koda</value>
+    <value>代码</value>
   </data>
   <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
-    <value>Avtorji</value>
+    <value>贡献者</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
-    <value>To so vsi tisti, ki so pomembno prispevali k razvoju projektov Froststrap in Froststrap ter ju oblikovali v to, kar sta danes.</value>
+    <value>以下是所有为 Froststrap 和 Froststrap 做出突出贡献的人士，正是他们的努力，才使它们发展成为如今的样子。</value>
   </data>
   <data name="Menu.About.Contributors.Insipirations" xml:space="preserve">
-    <value>Navdihi</value>
+    <value>灵感</value>
   </data>
   <data name="Menu.About.Description" xml:space="preserve">
-    <value>Vilice tipa »Fishstrap«/»Froststrap«.</value>
+    <value>鱼带/霜带分叉。</value>
   </data>
   <data name="Menu.About.DiscordServer" xml:space="preserve">
-    <value>Discord strežnik</value>
+    <value>Discord 服务器</value>
   </data>
   <data name="Menu.About.GithubRepository" xml:space="preserve">
-    <value>Repozitorij GitHub</value>
+    <value>GitHub 仓库</value>
   </data>
   <data name="Menu.About.HelpInformation" xml:space="preserve">
-    <value>Pomoč in informacije</value>
+    <value>帮助与信息</value>
   </data>
   <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>Licence</value>
+    <value>许可证</value>
   </data>
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
-    <value>Licenca Apache 2.0</value>
+    <value>Apache 2.0 许可协议</value>
   </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
-    <value>Licenca MIT</value>
+    <value>MIT 许可协议</value>
   </data>
   <data name="Menu.About.ReportIssue" xml:space="preserve">
-    <value>Prijavi težavo</value>
+    <value>报告问题</value>
   </data>
   <data name="Menu.About.Title" xml:space="preserve">
-    <value>O nas</value>
+    <value>关于</value>
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
-    <value>Različica {0}</value>
+    <value>版本 {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
-    <value>Upoštevajte, da se ne bodo vse vaše spremembe takoj upoštevale, dokler ne zaprete vseh trenutno odprtih primerov Roblox.</value>
+    <value>请注意，在您关闭所有当前打开的 Roblox 实例之前，并非所有更改都会立即生效。</value>
   </data>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
-    <value>Froststrap že teče</value>
+    <value>Froststrap 已经正在运行</value>
   </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
-    <value>Prilagodite zaganjalnik programa Froststrap z uporabo številnih možnosti.</value>
+    <value>使用多种选项自定义 Froststrap 的启动程序。</value>
+  </data>
+  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
+    <value>自力更生者</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
-    <value>Preprosto prilagodite teme Froststrap s pomočjo prednastavitev ali ustvarite svoj edinstven videz.</value>
+    <value>您可以使用预设轻松自定义 Froststrap 主题，或打造属于您自己的独特风格。</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
-    <value>Teme za aplikacije</value>
+    <value>应用主题</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
-    <value>Izbris prilagojene teme {0} ni uspel: {1}</value>
+    <value>无法删除自定义主题 {0}：{1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
-    <value>Ni izbrana nobena prilagojena tema.</value>
+    <value>未选择自定义主题。</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>Nastavite druge različne prilagodljive možnosti zagonskega programa.</value>
+    <value>配置其他可自定义的引导程序选项。</value>
   </data>
   <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>Prilagajanje</value>
+    <value>定制</value>
   </data>
   <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>Datoteka mora biti datoteka .ico z več velikostmi, od 16px do 128px. Da jo lahko uporabite, nastavite ikono na »Po meri«.</value>
+    <value>必须是一个包含多种尺寸的 .ico 文件，尺寸范围为 16px 至 128px。将图标设置为“自定义”即可使用。</value>
   </data>
   <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>Ikona po meri</value>
+    <value>自定义图标</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
-    <value>Besedilo, ki se prikaže kot naslov zaganjalnika.</value>
+    <value>作为引导程序标题显示的文本。</value>
   </data>
   <data name="Menu.Appearance.CustomisationTitle.Title" xml:space="preserve">
-    <value>Naslov</value>
+    <value>标题</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
-    <value>Nastavite videz Froststrapa.</value>
+    <value>配置 Froststrap 的外观。</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
-    <value>Izberite, katero ikono naj uporablja Froststrap.</value>
+    <value>选择 Froststrap 应使用的图标。</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
-    <value>Ikona</value>
+    <value>图标</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
-    <value>Da bi spremembe začele veljati, je potrebna ponovna zagon. Nekateri deli besedila morda ne bodo prevedeni v želeni jezik.</value>
+    <value>需要重新启动才能使更改生效。部分文本可能未被翻译成首选语言。</value>
   </data>
   <data name="Menu.Appearance.Language.Title" xml:space="preserve">
-    <value>Jezik</value>
+    <value>语言</value>
   </data>
   <data name="Menu.Appearance.Launcher.Description" xml:space="preserve">
-    <value>Izberite slog zagonskega zaslona. Opomba: Temna tema ni podprta za operacijska sistema Legacy in Vista. Za več prilagodljivih zagonskih programov obiščite uradni Discord-strežnik Froststrap.</value>
+    <value>选择一个启动屏幕样式。注意：旧版系统或Vista不支持深色主题。如需更多自定义启动器，请访问Froststrap官方Discord服务器。</value>
   </data>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
-    <value>Slog »bootstrapper«</value>
+    <value>自力更生风格</value>
   </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
-    <value>Predogled</value>
+    <value>预览</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
-    <value>Videz</value>
+    <value>外观</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Description" xml:space="preserve">
-    <value>Izberite učinek ozadja okna. Zahteva temno temo in ponovni zagon aplikacije. Opomba: Mica deluje le v sistemu Windows 11.</value>
+    <value>选择一种窗口背景效果。需要启用深色主题并重启应用。注意：Mica 仅支持 Windows 11。</value>
   </data>
   <data name="Menu.Appearance.WindowsBackdrop.Title" xml:space="preserve">
-    <value>Ozadje okna</value>
+    <value>窗户背景</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Description" xml:space="preserve">
-    <value>Omogoča dostop do API-jev Roblox z uporabo vašega piškotka za avtentifikacijo. [Kaj bo Froststrap dostopal?]({0})</value>
+    <value>使用您的身份验证 Cookie 访问 Roblox API。[Froststrap 将访问哪些内容？]({0})</value>
   </data>
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
-    <value>Dovoljenja za račun Froststrap</value>
+    <value>Froststrap 账户权限</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
-    <value>Froststrap se bo ob zagonu Robloxa samodejno preveril in posodobil na stabilno različico.</value>
+    <value>在启动 Roblox 时，Froststrap 会自动检查并更新至稳定版本。</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
-    <value>Samodejna posodobitev programa Froststrap</value>
+    <value>自动更新 Froststrap</value>
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
-    <value>Posodobite Roblox v ozadju, namesto da čakate. Ne priporoča se za počasne internetne povezave. Da bi ta funkcija delovala, je potrebnih vsaj 3 GB prostega prostora za shranjevanje.</value>
+    <value>在后台更新 Roblox，无需等待。不建议在网络速度较慢时使用。此功能需要至少 3GB 的可用存储空间才能正常运行。</value>
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
-    <value>Posodobitve ozadja</value>
+    <value>背景更新</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
-    <value>Ob zagonu samodejno zapre proces RobloxCrashHandler.exe, da se sprosti nekaj sistemskih virov.</value>
+    <value>在启动时自动关闭 RobloxCrashHandler.exe 进程，以释放部分系统资源。</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Title" xml:space="preserve">
-    <value>Zapri obdelovalnik napak</value>
+    <value>关闭崩溃处理程序</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Description" xml:space="preserve">
-    <value>Prepreči zaprtje trenutno odprte igre, če po nesreči zaženete še eno instanco Roblox.</value>
+    <value>可防止在意外启动另一个 Roblox 实例时，现有游戏被关闭。</value>
   </data>
   <data name="Menu.Behaviour.ConfirmLaunches.Title" xml:space="preserve">
-    <value>Potrditev zagona instance</value>
+    <value>实例启动确认</value>
   </data>
   <data name="Menu.Behaviour.Description" xml:space="preserve">
-    <value>Nastavite, kaj naj Froststrap stori ob zagonu Robloxa.</value>
+    <value>配置 Froststrap 在启动 Roblox 时应执行的操作。</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
-    <value>Pri naslednjem zagonu se bo izvedla čista namestitev programa Roblox.</value>
+    <value>下次启动时，系统将对 Roblox 进行全新安装。</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
-    <value>Prisilna ponovna namestitev Roblox</value>
+    <value>强制重新安装 Roblox</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
-    <value>Izbere prednost procesorja za Roblox.</value>
+    <value>为 Roblox 选择 CPU 优先级。</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
-    <value>Prednost procesov v Robloxu</value>
+    <value>Roblox 进程优先级</value>
+  </data>
+  <data name="Menu.Behaviour.Title" xml:space="preserve">
+    <value>自力更生者</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
-    <value>Samodejno izbriše stare podatke, da sprosti prostor. Izvirno ga je ustvaril Fishstrap.</value>
+    <value>自动清除旧数据以释放空间。最初由 Fishstrap 创建。</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Title" xml:space="preserve">
-    <value>Čistilo za Froststrap</value>
+    <value>Froststrap 清洁剂</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Age.Description" xml:space="preserve">
-    <value>Datoteke, starejše od določene vrednosti, bodo izbrisane.</value>
+    <value>超过设定时限的文件将被删除。</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Age.Title" xml:space="preserve">
-    <value>Časovni razpored brisanja datotek</value>
+    <value>文件删除计划</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Cache.Description" xml:space="preserve">
-    <value>Stare datoteke za prenos bodo izbrisane.</value>
+    <value>旧的下载内容将被删除。</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Cache.Title" xml:space="preserve">
-    <value>Predpomnilnik</value>
+    <value>缓存</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Description" xml:space="preserve">
-    <value>Dnevniški zapisi Froststrap bodo izbrisani.</value>
+    <value>Froststrap 日志将被删除。</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
-    <value>Dnevniki Froststrap</value>
+    <value>Froststrap 日志</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
-    <value>Stare datoteke z dnevniki bodo izbrisane.</value>
+    <value>旧的日志文件将被删除。</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
-    <value>Meni »Dnevniki«</value>
+    <value>日志菜单</value>
   </data>
   <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
-    <value>Nastavitve izvoza</value>
+    <value>导出设置</value>
   </data>
   <data name="Menu.BottomButtons.ImportSettings" xml:space="preserve">
-    <value>Uvoz nastavitev</value>
+    <value>导入设置</value>
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
-    <value>Ponastavi nastavitve na privzete</value>
+    <value>将设置重置为默认值</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
-    <value>Samodejna sprememba</value>
+    <value>自动更改</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Description" xml:space="preserve">
-    <value>Roblox ali Froststrap bosta morda poskušala spremeniti vaš izbrani kanal.</value>
+    <value>Roblox 或 Froststrap 可能会尝试更改您的首选频道。</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Ignore" xml:space="preserve">
-    <value>Nikoli se ne spremeni</value>
+    <value>永远不要改变</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Prompt" xml:space="preserve">
-    <value>Vedno pravočasno</value>
+    <value>始终及时</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Title" xml:space="preserve">
-    <value>Avtomatska menjava kanala</value>
+    <value>自动换台操作</value>
   </data>
   <data name="Menu.Channel.Description" xml:space="preserve">
-    <value>Spremenite nastavitve namestitve in zagon za Roblox in Froststrap.</value>
+    <value>更改 Roblox 和 Froststrap 的部署和安装设置。</value>
   </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
-    <value>Nadgradnje Roblox</value>
+    <value>Roblox 升级</value>
   </data>
   <data name="Menu.Channel.RobloxUpgrades.Description" xml:space="preserve">
-    <value>Če je ta možnost onemogočena, se odjemalec Roblox ne bo posodobil na novejše različice.</value>
+    <value>如果禁用此功能，Roblox 客户端将无法升级到新版本。</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
-    <value>Prehod z imenikov za namestitev v različici xxx na imenike, ki temeljijo na BinaryType, vpliva le na Studio v sistemu Linux.</value>
+    <value>从版本-xxx 切换为基于 BinaryType 的安装目录，仅影响 Linux 上的 Studio。</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
-    <value>Statični imenik</value>
+    <value>静态目录</value>
   </data>
   <data name="Menu.Channel.Switcher.Fetching" xml:space="preserve">
-    <value>Pridobivanje najnovejših podatkov o namestitvi, prosimo, počakajte...</value>
+    <value>正在获取最新部署信息，请稍候...</value>
   </data>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
-    <value>Navedeni kanal bodisi ne obstaja bodisi je zaseben</value>
+    <value>指定的频道不存在或为私有频道</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
-    <value>Ta kanal je zastarel in verjetno se ne posodablja več. Prosimo, uporabite drug kanal.</value>
+    <value>该频道已过时，可能不再更新。请使用其他频道。</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
-    <value>Hitra prijava</value>
+    <value>快速登录</value>
   </data>
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
-    <value>Dodaj novo</value>
+    <value>添加新条目</value>
   </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
-    <value>Vnos za to ime zastave že obstaja.</value>
+    <value>该旗帜名称的条目已存在。</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
-    <value>Seznam čistih</value>
+    <value>干净列表</value>
   </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
-    <value>Nekatere zastavice, ki jih poskušate uvoziti, že imajo nastavljene vrednosti. Ali želite njihove trenutne vrednosti nadomestiti s tistimi, ki so določene v uvozu?
+    <value>您尝试导入的某些标志已有设置值。是否要用导入中定义的值覆盖其当前值？
 
-Obstaja {0} nasprotujočih si opredelitev zastavic:
+共有 {0} 个冲突的标志定义：
 {1}</value>
     <comment>{0} is a number, {1} is a comma-separated list</comment>
   </data>
   <data name="Menu.FastFlagEditor.DeleteSelected" xml:space="preserve">
-    <value>Izbriši izbrano</value>
+    <value>删除所选内容</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Tukaj lahko upravljate s svojimi FastFlags. Več funkcij si oglejte v razdelku »Napredne nastavitve«.</value>
+    <value>在此管理您的 FastFlags。请在“高级设置”中查看更多功能。</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
-    <value>Izvoz v JSON</value>
+    <value>导出JSON</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
-    <value>Zdi se, da JSON, ki ste ga vnesli, ni veljaven. Prosimo, še enkrat preverite vnos in poskusite znova.
+    <value>您输入的 JSON 似乎无效。请仔细检查并重试。
 
-Več informacij:
+更多信息：
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
-    <value>Uau, tukaj je pa res prazno! Kaj praviš na to, da bi dodali FastFlag?</value>
+    <value>哇，这里好空啊！要不要加个 FastFlag 呢？</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
-    <value>Profil zastav</value>
+    <value>国旗简介</value>
   </data>
   <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>Iskanje</value>
+    <value>搜索</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
-    <value>Prikaži zastavice prednastavitev</value>
+    <value>显示预设标记</value>
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
-    <value>Urednik FastFlag</value>
+    <value>FastFlag 编辑器</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
-    <value>Nadzorujte nastavitve posameznih parametrov in funkcij Robloxovega pogonskega sistema.</value>
+    <value>控制 Roblox 引擎中特定参数和功能的配置方式。</value>
   </data>
   <data name="Menu.FastFlags.Editor.Description" xml:space="preserve">
-    <value>Upravljajte svoje lastne »Fast Flags«. Uporabljajte jih previdno.</value>
+    <value>管理您自己的“快速标记”。请谨慎使用。</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
-    <value>Če to možnost onemogočite, se nastavitve, ki so tukaj določene, ne bodo uporabile v Robloxu.</value>
+    <value>禁用此选项将阻止此处配置的任何内容应用于 Roblox。</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
-    <value>Dovoli Froststrapu, da upravlja s FastFlags</value>
+    <value>允许 Froststrap 管理 FastFlags</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
-    <value>Roblox zmanjša kakovost prikazovanja glede na to, kako je vaš zaslon prilagojen v sistemu Windows.</value>
+    <value>Roblox 会根据 Windows 中显示器的缩放比例来降低渲染质量。</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
-    <value>Ohranite kakovost upodabljanja pri prilagajanju velikosti zaslona</value>
+    <value>在显示缩放时保持渲染质量</value>
   </data>
   <data name="Menu.FastFlags.Presets.GraySky.Description" xml:space="preserve">
-    <value>Nebo v igri spremeni v enotno sivo barvo. Opomba: To ne bo delovalo v igrah, v katere je razvijalec dodal lastno skybox.</value>
+    <value>将游戏中的天空更改为纯灰色。注意：在开发者添加了自定义天空盒的游戏中，此操作将无法生效。</value>
   </data>
   <data name="Menu.FastFlags.Presets.GraySky.Title" xml:space="preserve">
-    <value>Sivo nebo</value>
+    <value>灰蒙蒙的天空</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Description" xml:space="preserve">
-    <value>Nadzorujte kakovost mreže, da izboljšate zmogljivost ali vizualno podobo.</value>
+    <value>控制网格质量以提升性能或视觉效果。</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Information" xml:space="preserve">
-    <value>Povlecite, da prilagodite podrobnost mreže glede na zmogljivost ali kakovost.</value>
+    <value>拖动以调整网格细节，从而优化性能或提升画质。</value>
   </data>
   <data name="Menu.FastFlags.Presets.LowPolyMeshes.Title" xml:space="preserve">
-    <value>Podrobnosti o mreži</value>
+    <value>网格详细信息</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
-    <value>Višje stopnje MSAA zmanjšujejo nazobčane robove, vendar lahko vplivajo na zmogljivost.</value>
+    <value>更高的 MSAA 级别可以减少锯齿，但可能会影响性能。</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
-    <value>Kakovost zglajevanja (MSAA)</value>
+    <value>抗锯齿质量（MSAA）</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Description" xml:space="preserve">
-    <value>Kakovost grafike se fiksira na izbrano vrednost. Opomba: Če je ta nastavitev omogočena, bo drsnik za grafiko v meniju Roblox vplival le na razdaljo upodabljanja v igri.</value>
+    <value>将图形质量锁定为所选级别。注意：启用此设置后，Roblox 菜单中的图形滑块仅会影响游戏中的渲染距离。</value>
   </data>
   <data name="Menu.FastFlags.Presets.OverrideGraphicQuality.Title" xml:space="preserve">
-    <value>Prepis raven kakovosti grafike</value>
+    <value>覆盖图形质量级别</value>
   </data>
   <data name="Menu.FastFlags.Presets.PauseVoxelizer.Description" xml:space="preserve">
-    <value>Onemogoči vgrajene sence, da se izboljša zmogljivost, vendar lahko v nekaterih igrah povzroči težave z osvetlitvijo.</value>
+    <value>禁用烘焙阴影以提升性能，但可能会导致某些游戏中出现光照问题。</value>
   </data>
   <data name="Menu.FastFlags.Presets.PauseVoxelizer.Title" xml:space="preserve">
-    <value>Zaustavi Voxelizer</value>
+    <value>暂停 Voxelizer</value>
   </data>
   <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
-    <value>Odstrani privzete teksture trave v Robloxu. Opomba: Ta nastavitev ne vpliva na prilagojene teksture trave, ki jih uporabljajo posamezne igre.</value>
+    <value>移除 Roblox 的默认草地贴图。注意：此设置不会影响各游戏使用的自定义草地贴图。</value>
   </data>
   <data name="Menu.FastFlags.Presets.RemoveGrass.Title" xml:space="preserve">
-    <value>Onemogoči travo</value>
+    <value>禁用草地</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Description" xml:space="preserve">
-    <value>Nastavite API za upodabljanje, ki se uporablja za Roblox. Opomba: Če kot API za upodabljanje uporabljate Direct3D, pritisnite Alt + Enter, da preklopite v izključni polnozaslonski način.</value>
+    <value>配置 Roblox 所使用的渲染 API。注意：当使用 Direct3D 作为渲染 API 时，请按 Alt + Enter 键进入独占全屏模式。</value>
   </data>
   <data name="Menu.FastFlags.Presets.RenderingMode.Title" xml:space="preserve">
-    <value>Način upodabljanja</value>
+    <value>渲染模式</value>
   </data>
   <data name="Menu.FastFlags.Presets.TextureQuality.Description" xml:space="preserve">
-    <value>Prilagodite kakovost tekstur za igre. Opomba: Ta nastavitev vpliva tudi na grafični vmesnik (GUI) in uporabniški vmesnik (UI).</value>
+    <value>调整游戏的纹理质量。注意：此设置也会影响图形界面（GUI）和用户界面（UI）。</value>
   </data>
   <data name="Menu.FastFlags.Presets.TextureQuality.Title" xml:space="preserve">
-    <value>Kakovost teksture</value>
+    <value>纹理质量</value>
   </data>
   <data name="Menu.FastFlags.Reset.Title" xml:space="preserve">
-    <value>Ponastavi vse na privzete nastavitve</value>
+    <value>将所有设置重置为默认值</value>
   </data>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
-    <value>Nastavitve FastFlag</value>
+    <value>FastFlag 设置</value>
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
-    <value>Izbriši FFlags</value>
+    <value>清除 FFlags</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
-    <value>Nastavitve v igri lahko spremenite prek priročnega menija.</value>
+    <value>通过便捷的菜单更改游戏内设置。</value>
   </data>
   <data name="Menu.GBSEditor.ReadOnly.Description" xml:space="preserve">
-    <value>Prepreči, da bi Roblox prepisal globalne nastavitve.</value>
+    <value>阻止 Roblox 覆盖全局设置。</value>
   </data>
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
-    <value>Nastavi kot samo za branje</value>
+    <value>设为只读</value>
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
-    <value>Splošne nastavitve</value>
+    <value>全局设置</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
-    <value>Sledenje aktivnosti</value>
+    <value>活动追踪</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Description" xml:space="preserve">
-    <value>Omogoča, da se kdorkoli prek tvojega profila na Discord pridruži igri, v kateri trenutno igraš.</value>
+    <value>允许任何人通过你的 Discord 个人资料加入你当前所在的游戏。</value>
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
-    <value>Omogoči pridruževanje dejavnostim</value>
+    <value>允许加入活动</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
-    <value>Vklaplja oziroma izklaplja določene vgrajene funkcije Robloxa.</value>
+    <value>切换某些 Roblox 内置功能。</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Title" xml:space="preserve">
-    <value>Onemogoči funkcije Roblox</value>
+    <value>禁用 Roblox 功能</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Description" xml:space="preserve">
-    <value>Onemogoči funkcijo zajemanja zaslona v Robloxu. Opomba: Ko je ta funkcija omogočena, kombinacija tipk za hitro izvajanje ne bo več delovala.</value>
+    <value>禁用 Roblox 的截图功能。注意：启用此功能后，快捷键组合将无法使用。</value>
   </data>
   <data name="Menu.Integrations.BlockScreenShots.Title" xml:space="preserve">
-    <value>Onemogoči zajemanje zaslona v Robloxu</value>
+    <value>禁用 Roblox 截图功能</value>
   </data>
   <data name="Menu.Integrations.BlockVideoRecording.Description" xml:space="preserve">
-    <value>Onemogoči funkcijo snemanja v Robloxu. Opomba: Ko je ta funkcija omogočena, kombinacija tipk za hitro izvajanje ne bo več delovala.</value>
+    <value>禁用 Roblox 的录屏功能。注意：启用此功能后，快捷键组合将无法使用。</value>
   </data>
   <data name="Menu.Integrations.BlockVideoRecording.Title" xml:space="preserve">
-    <value>Onemogoči snemanje v Robloxu</value>
+    <value>禁用 Roblox 录屏功能</value>
   </data>
   <data name="Menu.Integrations.Custom.AppLocation" xml:space="preserve">
-    <value>Kraj uporabe</value>
+    <value>应用位置</value>
   </data>
   <data name="Menu.Integrations.Custom.AutoClose" xml:space="preserve">
-    <value>Samodejno zapiranje ob zaprtju programa Roblox</value>
+    <value>当 Roblox 关闭时自动关闭</value>
   </data>
   <data name="Menu.Integrations.Custom.AutoCloseOnGame" xml:space="preserve">
-    <value>Samodejno zapiranje ob zaprtju igre</value>
+    <value>游戏关闭时自动关闭</value>
   </data>
   <data name="Menu.Integrations.Custom.Description" xml:space="preserve">
-    <value>Z Robloxom samodejno zaženite dodatne programe.</value>
+    <value>使用 Roblox 自动启动其他程序。</value>
   </data>
   <data name="Menu.Integrations.Custom.GameID" xml:space="preserve">
-    <value>ID igre</value>
+    <value>游戏ID</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs" xml:space="preserve">
-    <value>Argumenti za zagon</value>
+    <value>启动参数</value>
   </data>
   <data name="Menu.Integrations.Custom.LaunchArgs.Placeholder" xml:space="preserve">
-    <value>Roblox deluje!</value>
+    <value>Roblox 正在运行！</value>
   </data>
   <data name="Menu.Integrations.Custom.NewIntegration" xml:space="preserve">
-    <value>Nova integracija</value>
+    <value>新集成</value>
   </data>
   <data name="Menu.Integrations.Custom.NoneSelected" xml:space="preserve">
-    <value>Ni izbrana nobena integracija. Izberite ali dodajte novo.</value>
+    <value>未选择任何集成。请选择或添加一个新的集成。</value>
   </data>
   <data name="Menu.Integrations.Custom.SpecifyGame" xml:space="preserve">
-    <value>Zaženi določeno igro</value>
+    <value>在特定游戏中运行</value>
   </data>
   <data name="Menu.Integrations.Custom.Title" xml:space="preserve">
-    <value>Prilagojene integracije</value>
+    <value>自定义集成</value>
   </data>
   <data name="Menu.Integrations.CustomStatusDisplay.Description" xml:space="preserve">
-    <value>Prikaže prilagojeno sporočilo o stanju namesto privzetega sporočila »Predvajanje Roblox«.</value>
+    <value>显示自定义状态消息，而不是默认的“正在播放 Roblox”消息。</value>
   </data>
   <data name="Menu.Integrations.CustomStatusDisplay.Title" xml:space="preserve">
-    <value>Prikaz stanja po meri</value>
+    <value>自定义状态显示</value>
   </data>
   <data name="Menu.Integrations.Description" xml:space="preserve">
-    <value>Nastavite dodatne funkcije, ki dopolnjujejo Roblox.</value>
+    <value>配置与 Roblox 配套的附加功能。</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Description" xml:space="preserve">
-    <value>Roblox se bo popolnoma zaprl, če zapustiš igro, namesto da se vrneš v aplikacijo. [To bo povzročilo nekaj težav!]({0})</value>
+    <value>当你退出游戏而非返回应用时，Roblox 将完全关闭。[这会导致某些功能无法正常使用！]({0})</value>
   </data>
   <data name="Menu.Integrations.DesktopApp.Title" xml:space="preserve">
-    <value>Podobno kot na namizju</value>
+    <value>“接近桌面”</value>
   </data>
   <data name="Menu.Integrations.DoubleClickAction.Description" xml:space="preserve">
-    <value>Ob zagonu Robloxa se ob dvojnem kliku na ikono Froststrap v sistemski vrstici odpre določeno okno.</value>
+    <value>在启动 Roblox 时，双击系统托盘中的 Froststrap 即可打开特定窗口。</value>
   </data>
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
-    <value>Dejanje z dvojnim klikom</value>
+    <value>双击操作</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
-    <value>Omogoča aplikaciji Froststrap, da prepozna, katero igro Roblox trenutno igrate. To je lahko potrebno za delovanje nekaterih funkcij.</value>
+    <value>允许 Froststrap 检测您正在玩的 Roblox 游戏。某些功能可能需要此权限。</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Title" xml:space="preserve">
-    <value>Omogoči sledenje aktivnosti</value>
+    <value>启用活动追踪</value>
   </data>
   <data name="Menu.Integrations.FroststrapRPC.Description" xml:space="preserve">
-    <value>To možnost vklopite, da se v vašem profilu na Discord-u prikaže prilagojeni RPC »Playing Froststrap«, dokler je aplikacija odprta.</value>
+    <value>启用此选项，可在应用打开时，在您的 Discord 个人资料中显示自定义的“正在游玩 Froststrap”RPC。</value>
   </data>
   <data name="Menu.Integrations.GameHistory.Description" xml:space="preserve">
-    <value>Prikaže igro, ki ste jo igrali v tej seji, in vam omogoča, da se ji ponovno pridružite.</value>
+    <value>显示您在本会话中玩过的游戏，并允许您重新加入该游戏。</value>
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Description" xml:space="preserve">
-    <value>Oglejte si zgodovino iger, da se hitro ponovno pridružite svojemu strežniku.</value>
+    <value>查看游戏历史记录，快速重新加入您的服务器。</value>
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
-    <value>Meni zgodovine igre</value>
+    <value>游戏历史记录菜单</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
-    <value>Med igranjem igre ali v prostoru »Studio« prikazuje skupni čas igranja in čas trenutne seje.</value>
+    <value>在游戏或Studio场景中，显示您的总游玩时长和当前会话时长。</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Title" xml:space="preserve">
-    <value>Števec igralnega časa</value>
+    <value>游戏时间计数器</value>
   </data>
   <data name="Menu.Integrations.QueryServerLocation.Description" xml:space="preserve">
-    <value>Ko boste v igri, boste lahko prek [ipinfo.io](https://ipinfo.io) preverili, kje se nahaja vaš strežnik.</value>
+    <value>在游戏中，你可以通过 [ipinfo.io](https://ipinfo.io) 查看你的服务器所在位置。</value>
   </data>
   <data name="Menu.Integrations.QueryServerLocation.Title" xml:space="preserve">
-    <value>Preverjanje lokacije strežnika</value>
+    <value>查询服务器位置</value>
   </data>
   <data name="Menu.Integrations.RequiresActivityTracking" xml:space="preserve">
-    <value>Za to funkcijo mora biti omogočeno sledenje aktivnosti, namestjena in zagnana pa mora biti tudi namizna aplikacija Discord. [Več informacij]({0}).</value>
+    <value>此功能需要启用活动追踪，并且已安装并正在运行 Discord 桌面应用。[了解更多]({0})。</value>
   </data>
   <data name="Menu.Integrations.ShowAccountOnProfile.Description" xml:space="preserve">
-    <value>Na tvojem profilu v Discord-u prikaže Robloxov račun, s katerim trenutno igraš.</value>
+    <value>在你的 Discord 个人资料中显示你正在使用的 Roblox 账号。</value>
   </data>
   <data name="Menu.Integrations.ShowAccountOnProfile.Title" xml:space="preserve">
-    <value>Prikaži račun Roblox</value>
+    <value>显示 Roblox 账号</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Description" xml:space="preserve">
-    <value>Igra Roblox, ki jo igraš, se bo prikazala na tvojem profilu v Discord. [Ne deluje?]({0})</value>
+    <value>你正在玩的 Roblox 游戏将显示在你的 Discord 个人资料中。[无法正常显示？]({0})</value>
   </data>
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
-    <value>Prikaži dejavnosti v igri</value>
+    <value>显示游戏活动</value>
   </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
-    <value>Integracije</value>
+    <value>集成</value>
   </data>
   <data name="Menu.Load" xml:space="preserve">
-    <value>Naloži</value>
+    <value>加载</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Upravljanje in uporaba modifikacij datotek v igralnem odjemalcu Roblox.</value>
+    <value>管理和对 Roblox 游戏客户端应用文件修改。</value>
   </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
-    <value>Vse, kar potrebujete za upravljanje kazalcev.</value>
+    <value>管理光标所需的一切。</value>
   </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
-    <value>Funkcije prilagojenega kazalca</value>
+    <value>自定义光标功能</value>
   </data>
   <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
-    <value>Nastavite parametre aplikacije, kot so način prilagajanja DPI in [optimizacije za polnozaslonski način]({0}).</value>
+    <value>配置应用程序参数，例如 DPI 缩放行为和 [全屏优化]({0})。</value>
   </data>
   <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
-    <value>Upravljanje nastavitev združljivosti</value>
+    <value>管理兼容性设置</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
-    <value>Izberi kazalec...</value>
+    <value>选择光标...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
-    <value>V igri Roblox uporabljajte svoje lastne kazalce miške.</value>
+    <value>在 Roblox 中使用您自己的鼠标光标。</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
-    <value>Odstrani prilagojeni kazalec</value>
+    <value>删除自定义光标</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
-    <value>Prilagojeni kazalec</value>
+    <value>自定义光标</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
-    <value>Pripravite si več naborov kazalcev, ki so takoj pripravljeni za uporabo.</value>
+    <value>准备好多组光标，以便随时使用。</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
-    <value>Prilagojeni nabor kazalcev</value>
+    <value>自定义光标集</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
-    <value>Izberi zvok...</value>
+    <value>选择声音...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
-    <value>Zamenja zvok smrti z vašim lastnim avdio posnetkom.</value>
+    <value>将死亡音效替换为自定义音频。</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
-    <value>Odstrani prilagojeni zvok smrti</value>
+    <value>删除自定义死亡音效</value>
   </data>
   <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
-    <value>Zvočni učinek smrti po meri</value>
+    <value>自定义死亡音效</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
-    <value>Izberi pisavo...</value>
+    <value>选择字体...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
-    <value>V Robloxu nastavi izbrano lastno pisavo.</value>
+    <value>在 Roblox 中设置所选的自定义字体。</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
-    <value>Odstrani uporabljeno pisavo</value>
+    <value>删除已应用的字体</value>
   </data>
   <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
-    <value>Pisava po meri za igre</value>
+    <value>自定义游戏字体</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
-    <value>Izberite ShiftLock...</value>
+    <value>选择 ShiftLock...</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
-    <value>V igri Roblox uporabi svoj Shiftlock.</value>
+    <value>在 Roblox 中使用你自己的 Shiftlock。</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
-    <value>Odstrani prilagojeno blokado prestav</value>
+    <value>移除自定义换挡锁定</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
-    <value>Shiftlock po meri</value>
+    <value>定制换挡锁</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
-    <value>Izberi, katero vrsto emojijev naj uporablja Roblox.</value>
+    <value>请选择 Roblox 应该使用哪种表情符号。</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
-    <value>Trenutno ni mogoče uporabiti modifikacije za emojije.</value>
+    <value>目前无法应用该表情符号模组。</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
-    <value>Želeni tip emojija</value>
+    <value>首选表情符号类型</value>
   </data>
   <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
-    <value>Izberite med uporabo več kazalcev Roblox.</value>
+    <value>在多个 Roblox 光标之间进行选择。</value>
   </data>
   <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
-    <value>Miškin kazalec</value>
+    <value>鼠标光标</value>
   </data>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
-    <value>Vrnite staro ozadje urejevalnika avatarjev, ki se je v aplikaciji Roblox uporabljalo pred letom 2020.</value>
+    <value>恢复2020年之前Roblox应用中使用的旧版头像编辑器背景。</value>
   </data>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
-    <value>Uporabi ozadje iz starega urejevalnika avatarjev</value>
+    <value>使用旧版头像编辑器的背景</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
-    <value>Vnesite ID lokacije ali ime igre...</value>
+    <value>请输入地点 ID 或游戏名称...</value>
   </data>
   <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
-    <value>Prikaži več</value>
+    <value>加载更多</value>
   </data>
   <data name="Menu.RegionSelector.Region" xml:space="preserve">
-    <value>Regija:</value>
+    <value>地区：</value>
   </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
-    <value>Velikost strežnika:</value>
+    <value>服务器大小：</value>
   </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
-    <value>Izbirnik regije</value>
+    <value>地区选择器</value>
   </data>
   <data name="Menu.Restart" xml:space="preserve">
-    <value>Ponovni zagon</value>
+    <value>重新启动</value>
   </data>
   <data name="Menu.Save" xml:space="preserve">
-    <value>Shrani</value>
+    <value>保存</value>
   </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
-    <value>Spremembe bodo začele veljati ob naslednjem zagonu programa Roblox.</value>
+    <value>这些更改将在您下次启动 Roblox 时生效。</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
-    <value>Nastavitve so shranjene!</value>
+    <value>设置已保存！</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
-    <value>Tako lahko ustvarite bližnjice, s katerimi se lahko hitro pridružite določenim igram.</value>
+    <value>这样，您就可以创建快捷方式，从而快速加入特定的游戏。</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
-    <value>Bližnjice v igri</value>
+    <value>游戏快捷键</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
-    <value>Nastavite, kako se lahko Froststrap enostavno zažene.</value>
+    <value>配置如何快速启动 Froststrap。</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
-    <value>Omogoča vam uporabo niza ikon Froststrap za Roblox za vaše bližnjice. [Oglejte si, kako.]({0})</value>
+    <value>允许您在快捷方式中使用 Froststrap 提供的各种 Roblox 图标。[查看方法。]({0})</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Title" xml:space="preserve">
-    <value>Izpis ikone Roblox v mapo</value>
+    <value>将 Roblox 图标解压到文件夹中</value>
   </data>
   <data name="Menu.Shortcuts.Function.Description" xml:space="preserve">
-    <value>Ustvarite bližnjice za hiter dostop do določenih funkcij. Vse bodo nameščene na namizju.</value>
+    <value>创建快捷方式，以便快速访问特定功能。这些快捷方式都将放置在桌面上。</value>
   </data>
   <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
-    <value>Funkcija</value>
+    <value>功能</value>
   </data>
   <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
-    <value>To so bližnjice, s katerimi se odpre izbirni zagonski meni.</value>
+    <value>以下是用于调出多选项启动菜单的快捷键。</value>
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
-    <value>Splošno</value>
+    <value>概述</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
-    <value>Testni način</value>
+    <value>测试模式</value>
     <comment>See the prompt for more context</comment>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
-    <value>Testni način olajša postopno preizkušanje, kako vaše nastavitve vplivajo na delovanje Robloxa. 
+    <value>“测试模式”可让您更轻松地反复测试各项设置对 Roblox 的影响。
 
-Ko je ta način omogočen, se bo Roblox samodejno zagnal po zaprtju nastavitev, nastavitve pa se bodo ponovno odprle po zaprtju Robloxa – in tako naprej, dokler ga ne onemogočite.
+启用该模式后，关闭“设置”后系统会自动启动 Roblox，关闭 Roblox 后又会重新打开“设置”，如此循环往复，直到您将其关闭。
 
-Ali želite omogočiti testni način?</value>
+您要启用“测试模式”吗？</value>
   </data>
   <data name="Menu.Title" xml:space="preserve">
-    <value>Nastavitve Froststrap</value>
+    <value>Froststrap 设置</value>
   </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Modifikacije skupnosti</value>
+    <value>社区版主</value>
   </data>
   <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Shrani trenutne zastavice</value>
+    <value>保存当前标志</value>
   </data>
   <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Hitro shranjevanje in nalaganje profilov zastav.</value>
+    <value>快速保存和加载旗帜配置文件。</value>
   </data>
   <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Profilni zastavici »Fast«</value>
+    <value>Fast Flag 配置文件</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
-    <value>Ikone</value>
+    <value>图标</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
   </data>
   <data name="Test.For.Translation" xml:space="preserve">
-    <value>Preizkus prevoda.</value>
+    <value>翻譯測試。</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
-    <value>Shranjeni bodo na mestu, kjer je bil nameščen program Froststrap, in se bodo ob ponovni namestitvi samodejno obnovili.</value>
+    <value>它们将保存在安装 Froststrap 的位置，并在重新安装时自动恢复。</value>
   </data>
   <data name="Uninstaller.KeepData.Label" xml:space="preserve">
-    <value>Ohrani moje nastavitve in modifikacije</value>
+    <value>保留我的设置和模组</value>
   </data>
   <data name="Uninstaller.Text" xml:space="preserve">
-    <value>Z odstranitvijo boste iz sistema odstranili program Froststrap in samodejno ponovno nastavili privzeti zagon Roblox, če je ta še vedno nameščen.
+    <value>卸载将从您的系统中移除 Froststrap，并自动重新配置默认的 Roblox 启动器（如果该启动器仍已安装）。
 
-Če program odstranjujete ali ponovno nameščate zaradi težav z Robloxom, najprej preberite [to stran s pomočjo]({0}).
+如果您是因为遇到 Roblox 相关问题而进行卸载或重新安装，请先阅读[此帮助页面]({0})。
 
-Postopek odstranitve morda ne bo uspel v celoti počistiti vseh ostankov, zato boste morda morali ročno počistiti preostale datoteke v mapi, kjer je bil nameščen Froststrap.
+卸载过程可能无法完全清理所有残留文件，因此您可能需要手动清理 Froststrap 安装目录中的残留文件。
 
-Froststrap je bil nameščen v mapi »{1}«.</value>
+Froststrap 安装在 "{1}" 目录下。</value>
   </data>
   <data name="Uninstaller.Title" xml:space="preserve">
-    <value>Odstranite program Froststrap</value>
+    <value>卸载 Froststrap</value>
   </data>
   <data name="Uninstaller.Uninstall" xml:space="preserve">
-    <value>Odstrani</value>
+    <value>卸载</value>
   </data>
 </root>

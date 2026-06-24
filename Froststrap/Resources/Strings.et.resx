@@ -121,33 +121,11 @@
     <value>Litsentsid</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Need on inimesed, kes on toetanud Froststrapi Ko-fi kaudu. Suur tänu kõigile siin olevatele inimestele!
-Kõik siin olevad inimesed on järjestatud nende kogutoetuse suuruse järgi.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Kuu</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Ühekordne</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Froststrapi toetajad</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>Froststrapi kohta</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Kõik Froststrapi tõlked on koostatud ühisloomepõhimõttel [Crowdin]({0}) kaudu. Siin loetletud inimesed on kõik need, kes on suuremeelselt pühendanud oma aega ja vaeva Froststrapi lokaliseerimisele. Suur tänu kõigile siin nimetatutele!</value>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Tõlkijad</value>
-  </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Serveri asukohta ei õnnestunud kindlaks teha. Võimalik, et liitud mängudega liiga kiiresti.</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Sinu praegune mäng ei kuvata Discordi olekuaknas, kuna mänguandmete laadimisel tekkis viga.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox ei toeta enam Windows 7 ega 8.1. Et Robloxiga mängimist jätkata, palun uuendage oma operatsioonisüsteem Windows 10-le või uuemale versioonile.</value>
@@ -167,10 +145,6 @@ Kas soovid muuta oma eelistatud kanali {0}-ks?</value>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox on hetkel käivitatud ja uue instantsi käivitamine sulgeb selle. Kas soovid kindlasti käivitamist jätkata?</value>
   </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Anselit ei toetata.
-Bloxshade’i ei saa enam koos Froststrapiga kasutada.</value>
-  </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>Kanal, millel te praegu viibite ({0}), on aegunud ja ilmselt ei saa enam uuendusi.\n
 Kas soovite minna üle vaikimisi kanalile ({1})?</value>
@@ -185,12 +159,6 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
     <value>Paistab, et üks sõber mängib seda mängu praegu. Kas soovid temaga ühineda?</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>Valib juhuslikult sobiva serveri optimaalsete serverite nimekirjast.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>BetterMatchmakingi serveri juhuslik valik</value>
-  </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
     <value>Luba BetterMatchmaking</value>
   </data>
@@ -199,15 +167,6 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Kõiki faile ei õnnestunud lahti pakkida</value>
-  </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap püüdis Robloxi uuendada, kuid see ei õnnestunud, kuna Robloxi faile kasutatakse endiselt.
-
-Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitage see uuesti.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
-  </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Enne eemaldamist peate esmalt Froststrapi installima.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>{0} salvestamine ebaõnnestus: {1}</value>
@@ -255,9 +214,6 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>{toote} uuendamine...</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>Froststrapi uusim versioon...</value>
-  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Oodatakse andmeid...</value>
   </data>
@@ -287,29 +243,14 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Lisa üksik</value>
   </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>Analüütika</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automaatne</value>
-  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Sirvi</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Tühista</value>
   </data>
-  <data name="Common.Channel" xml:space="preserve">
-    <value>Kanal</value>
-  </data>
-  <data name="Common.Choose" xml:space="preserve">
-    <value>Vali</value>
-  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sulge</value>
-  </data>
-  <data name="Common.Color" xml:space="preserve">
-    <value>Värv</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopeeri kõik</value>
@@ -319,12 +260,6 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Kohandatud</value>
-  </data>
-  <data name="Common.Debug" xml:space="preserve">
-    <value>Veaparandus</value>
-  </data>
-  <data name="Common.DebugMenu" xml:space="preserve">
-    <value>Debug-menüü</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Vaikimisi</value>
@@ -347,18 +282,9 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Common.Edit" xml:space="preserve">
     <value>Muuda</value>
   </data>
-  <data name="Common.Experimental" xml:space="preserve">
-    <value>Eksperimentaalne</value>
-  </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksport</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FilterType" xml:space="preserve">
-    <value>Filtri tüüp:</value>
-  </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>Abi</value>
   </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importimine failist</value>
@@ -366,39 +292,14 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON-i import</value>
   </data>
-  <data name="Common.LauncherType" xml:space="preserve">
-    <value>Tüüp: Käivitaja</value>
-  </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Laadimine käib, palun oodake...</value>
-  </data>
-  <data name="Common.LookingFor" xml:space="preserve">
-    <value>Otsin</value>
-  </data>
-  <data name="Common.Message" xml:space="preserve">
-    <value>Sõnum</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Mitmesugust</value>
   </data>
-  <data name="Common.ModType" xml:space="preserve">
-    <value>Tüüp: Mod</value>
-  </data>
   <data name="Common.Name" xml:space="preserve">
     <value>Nimi</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Tagasi</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Paigalda</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Järgmine</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>Andmeid ei õnnestunud laadida võrguvea tõttu.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>Uus</value>
@@ -408,9 +309,6 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ei ole saadaval</value>
-  </data>
-  <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>Ava silumismenüü</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Ava logifail</value>
@@ -430,21 +328,8 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Common.Quality" xml:space="preserve">
     <value>Kvaliteet</value>
   </data>
-  <data name="Common.Recommended" xml:space="preserve">
-    <value>Soovitatav</value>
-  </data>
-  <data name="Common.Refresh" xml:space="preserve">
-    <value>Värskenda</value>
-  </data>
-  <data name="Common.Remove" xml:space="preserve">
-    <value>Eemalda</value>
-  </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Ümbernimetamine</value>
-  </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>Taasta</value>
-    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox pole veel installitud. Palun käivita Roblox Froststrapi abil vähemalt üks kord, enne kui proovid seda valikut kasutada.</value>
@@ -452,23 +337,11 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Common.Search" xml:space="preserve">
     <value>Otsi</value>
   </data>
-  <data name="Common.SearchBy" xml:space="preserve">
-    <value>Otsi järgi</value>
-  </data>
-  <data name="Common.Settings" xml:space="preserve">
-    <value>Seaded</value>
-  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Kiirviited</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Töölaua ikoon</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Start-menüü ikoon</value>
-  </data>
-  <data name="Common.Studio" xml:space="preserve">
-    <value>Uuring</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Süsteemi vaikimisi seaded</value>
@@ -476,23 +349,8 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Common.Template" xml:space="preserve">
     <value>Mall</value>
   </data>
-  <data name="Common.Time" xml:space="preserve">
-    <value>Aeg</value>
-  </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Aegmärge</value>
-  </data>
-  <data name="Common.Type" xml:space="preserve">
-    <value>Tüüp</value>
-  </data>
-  <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>Staatus teadmata</value>
-  </data>
-  <data name="Common.UserId" xml:space="preserve">
-    <value>Kasutaja ID</value>
-  </data>
-  <data name="Common.Username" xml:space="preserve">
-    <value>Kasutajanimi</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Väärtus</value>
@@ -503,9 +361,6 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="Common.VersionGuid" xml:space="preserve">
     <value>Versiooni GUID</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>Hoiatus</value>
-  </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Jah</value>
   </data>
@@ -515,44 +370,17 @@ Palun sulgege kõik rakendused, mis võivad Robloxi faile kasutada, ja käivitag
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Sulge Roblox</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Kas oled kindel, et soovid Robloxi sulgeda? See lõpetab protsessi sundkorras.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>Kopeeri kutse deeplink</value>
   </data>
-  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>Ajaloo kustutamine</value>
-  </data>
-  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>Kopeeri töö ID</value>
-  </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
     <value>Mängu ajalugu salvestatakse ainult sinu praeguse Roblox-istungi kohta. Mängud kuvatakse siin siis, kui sa neist lahkud või nende sees teleportid. Kõikidele serveritele ei ole võimalik uuesti ühineda.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>Mänguajalugu puudub veel{0}{0}Osale mõnes mängus, et need siin kuvataks!</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>Värskenda</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
     <value>Liitu uuesti</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>Mängu ajalugu</value>
-  </data>
-  <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>Logide menüü</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>Näitab mängijate poolt hiljuti saadetud sõnumeid.</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>Sõnumite logid</value>
-  </data>
-  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>Mängijate logid</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>Asukoht: {0}
@@ -566,10 +394,6 @@ Töötundide arv: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Asukoht</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Asukoht: {0}
-Klõpsake siin, et saada lisateavet</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
     <value>Ühendatud eraserveriga</value>
@@ -613,9 +437,6 @@ Klõpsake siin, et saada lisateavet</value>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
     <value>ZIP-failist ei leitud teemafaili</value>
   </data>
-  <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>Lisa kohandatud teema</value>
-  </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Kohandatud teema {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
@@ -634,12 +455,6 @@ Klõpsake siin, et saada lisateavet</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
     <value>Salvesta</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>Teema salvestamisel tekkis viga.</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>Teema salvestati edukalt!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Teie teema on salvestatud!</value>
@@ -706,9 +521,6 @@ Klõpsake siin, et saada lisateavet</value>
     <value>{0} ei õnnestunud luua {1}: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
-  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>Prooviti kasutada kehtetut WindowBackdropType’i: {0}</value>
-  </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
     <value>Teema XML-i juur ei ole {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
@@ -763,9 +575,6 @@ Kasutatakse vaikimisi {1}.</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>Lisa kiirmärge</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Palun oodake, kuni paigaldamine on lõppenud.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>Palun oodake, kuni eemaldamine on lõppenud.</value>
@@ -976,10 +785,6 @@ Kontrollige, kas Roblox töötab [originaalse käivitajaga]({1}). Kui ei, siis e
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Lilla</value>
   </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON-failid</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>ZIP-arhiiv</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
@@ -996,109 +801,17 @@ Kas soovite oma praegu installitud versiooni uuendada?</value>
 Võivad tekkida probleemid ja teie seaded võivad muutuda. Soovitame programmi uuesti installida.
 Kas olete kindel, et soovite jätkata?</value>
   </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Kui kõik on paigaldatud ja seadistatud, avab see Robloxi</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Robloxi installimine ja käivitamine</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Vaata ja kohanda kõiki Froststrapi pakutavaid funktsioone ja seadeid</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Froststrapi seadete konfigureerimine</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap on edukalt paigaldatud.
-
-Roblox pole aga veel paigaldatud. See paigaldatakse, kui käivitad Robloxi Froststrapiga esimest korda. Enne paigaldamist võid soovi korral esmalt Froststrapi seaded konfigureerida.
-
-Oluline märkus: Ära kasuta Robloxi käivitamiseks „Roblox Player” kiirklahvi, kuna Froststrap ei suuda Robloxi käivitada konfliktide tõttu. Kui Robloxi veebilehelt käivitamisel ei näe, et Froststrap käivituks, käivita Roblox lihtsalt üks kord töölaua rakendusest koos Froststrapiga, et see probleem lahendada.
-
-Mida soovid teha?</value>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Lõpetamine</value>
-  </data>
-  <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Froststrapi seadeid ei õnnestunud importida.
-
-{0}</value>
-  </data>
-  <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Froststrapist seadete importimine</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap on sellesse asukohta varem paigaldatud ja on seal endiselt olemas, kuid paigaldaja ei saa vana käivitatavat faili üle kirjutada. 
-
-Palun kustutage Froststrap.exe käsitsi paigaldusasukohast või proovige süsteemi taaskäivitada ja proovige seejärel paigaldamist uuesti.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Leiti olemasolevad andmed. Teie modifikatsioonid ja seaded taastatakse.</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox paigaldatakse samuti sellesse kataloogi. Muuda seda, kui soovid paigaldada kõik oma mängud eraldi kõvakettale. Muidu on soovitatav jätta see muutmata.</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Valige paigalduskoht</value>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Need on üldised kiirklahvid, mis avavad mitme valikuvõimalusega käivitusmenüü. Konkreetsete funktsioonide kiirklahve saab luua hiljem seadete kaudu.</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Paigalda</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>Bootstrapperi installatsiooni ei leitud.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Kas oled kindel, et soovid paigaldamist tühistada?</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap paigaldaja</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Täname, et laadisite alla Froststrapi. 
-
-Ainus ametlik allikas, kust Froststrapi alla laadida, on {0}, seega palun veenduge, et olete selle alla laadinud just sealt.
-
-Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrapi seaded konfigureerida.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Jätkamiseks klõpsake nuppu „Järgmine”.</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Tere tulemast</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Sa üritad installida Froststrapi versiooni {0}, kuid uusim saadaval olev versioon on {1}. Kas soovid selle alla laadida?</value>
-  </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
     <value>Teie Fast Flags’i ei õnnestunud laadida. Need on taastatud vaikimisi seadistustele.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>Teie seadeid ei õnnestunud laadida. Need on taastatud vaikimisi seadistustele.</value>
   </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Seadistuste konfigureerimine</value>
-  </data>
-  <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>Liitu meie Discordi serveriga</value>
-    <comment>Call-to-action button</comment>
-  </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Käivita Roblox</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
     <value>Käivita Roblox Studio</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Abi saamiseks vaata Vikist</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Kas sul on probleem?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Selle käivitamise kohta ei salvestata logifaili, kuna Froststrap ei saa kirjutada kausta '{0}'</value>
@@ -1136,9 +849,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Apache'i litsents 2.0</value>
   </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD 2-klausli litsents</value>
-  </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>MIT-litsents</value>
   </data>
@@ -1152,15 +862,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
     <value>Versioon {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
-  <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>Kliendihaldur</value>
-  </data>
-  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>Seaded on salvestatud. Nüüd võite selle akna sulgeda</value>
-  </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Kõik failid</value>
-  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Pange tähele, et mitte kõik teie muudatused ei jõustu kohe, kuni te pole sulgenud kõiki hetkel avatud Roblox-i instantsse.</value>
   </data>
@@ -1170,32 +871,17 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Kohandage Froststrapi käivitajat mitmesuguste valikuvõimaluste abil.</value>
   </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>Muuda allalaadimise stringi. {0} on paketi nimi, {1} on allalaaditud paketite suurus ja {2} on paketite kogumaht.</value>
-  </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>Bootstrapperi allalaadimise staatus</value>
-  </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>Kohanda Froststrap’i teemasid hõlpsalt eelseadistuste abil või loo oma ainulaadne kujundus.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
     <value>Rakenduste teemad</value>
   </data>
-  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Vali kohandatud kirjasort, et asendada Froststrapi kasutajaliidese vaikimisi kirjasort.</value>
-  </data>
-  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>Rakenduse kohandatud font</value>
-  </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
     <value>Kohandatud teema {0} kustutamine ebaõnnestus: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Kohandatud teemat pole valitud.</value>
-  </data>
-  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>Kohandatud teema {0} ümbernimetamine ebaõnnestus: {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
     <value>Määrake muud mitmesugused kohandatavad käivitusprogrammi seaded.</value>
@@ -1236,24 +922,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>„Bootstrapper“-stiil</value>
   </data>
-  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>Järjestage navigeerimismenüü elemendid oma soovi järgi ümber. Muudatused salvestatakse automaatselt.</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>Lukustamisjärjekord</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>Liigu allapoole</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>Järgmine tase</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>Taasta vaikimisi seaded</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>Menüü seadistamine</value>
-  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Eelvaade</value>
   </data>
@@ -1272,9 +940,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap’i kontoõigused</value>
   </data>
-  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>Shaderite jaoks on vaja Anseli tuge.</value>
-  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap kontrollib ja uuendab end automaatselt stabiilse versioonini, kui Roblox käivitatakse.</value>
   </data>
@@ -1286,9 +951,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>Taustteabe uuendused</value>
-  </data>
-  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>Kanal</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>Sulgeb käivitamisel automaatselt protsessi „RobloxCrashHandler.exe“, et vabastada osa süsteemiressursse.</value>
@@ -1305,35 +967,11 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Määra kindlaks, mida Froststrap peaks tegema Robloxi käivitamisel.</value>
   </data>
-  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>Kui see on sisse lülitatud, lülitatakse rakenduses kõik animatsioonid välja. Nõuab rakenduse taaskäivitamist.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>Animeerimise väljalülitamine</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Lülitab riistvarakiirenduse välja ainult Froststrapis. Märkus: Muudatuste nägemiseks tuleb rakendus uuesti käivitada.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>Riistvarakiirenduse keelamine</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Kehtib ainult Robloxi veebisaidilt käivitatud mängude puhul.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Luba mittetoetatud keeled</value>
-  </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Järgmisel käivitamisel toimub Robloxi puhas installimine.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Robloxi uuesti paigaldamine</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Taastab Robloxi tegumiriba ja ülemise riba ikoonid vanemate versioonide kujule. Võib mitte töötada, kui Robloxi käivitamine võtab liiga kaua aega.</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Tööriistariba ikoon</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
     <value>Valib Robloxile protsessori prioriteedi.</value>
@@ -1365,12 +1003,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
     <value>Froststrapi logid</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>Froststrap’i logifailid kustutatakse.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>Froststrapi logid</value>
-  </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>Vanad logifailid kustutatakse.</value>
   </data>
@@ -1385,9 +1017,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Taasta vaikimisi seaded</value>
-  </data>
-  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Froststrapi eemaldamine</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>Muuda automaatselt</value>
@@ -1407,12 +1036,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Channel.Description" xml:space="preserve">
     <value>Muuda Robloxi ja Froststrapi kasutuselevõtu- ja paigaldusseadeid.</value>
   </data>
-  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Määra, millist domeeni Roblox ja Froststrap kasutavad. Sisesta ainult usaldusväärsed domeenid.</value>
-  </data>
-  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>Roblox domeen</value>
-  </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
     <value>Robloxi uuendused</value>
   </data>
@@ -1431,57 +1054,6 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Määratud kanal kas puudub või on privaatne</value>
   </data>
-  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Sundige Froststrap’i alla laadima versiooni, mille hash-väärtus on kindlaks määratud. Palun ärge seda muutke, kui te ei tea, mida see teeb.</value>
-  </data>
-  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>Versiooni hash</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>Saadaval olevad kanalid</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Otsib läbi enamiku kasutamiseks saadaval olevatest kanalitest.</value>
-  </data>
-  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>Määrab kasutuselevõtu kanali. Ära seda muuda, kui sa ei tea, mida teed!</value>
-  </data>
-  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>Palun käivita rakendus uuesti, et animatsioonid lülituksid välja.</value>
-  </data>
-  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>Palun käivita rakendus uuesti, et riistvarakiirendus lülituks välja ja muudatus jõustuks.</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>Mängijate logid</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>Näitab mängijaid, kes lahkuvad sinu serverist või liituvad sellega.</value>
-  </data>
-  <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Võimaldab paigaldada Bootstrapperist kohandatud modifikatsioone.</value>
-  </data>
-  <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>Kohandatud modifikatsioonid</value>
-  </data>
-  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>Logide kustutamine</value>
-  </data>
-  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>Kopeeri valitud</value>
-  </data>
-  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>Ekspordilogid</value>
-  </data>
-  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>Ava logifailide kaust</value>
-  </data>
-  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>Logide uuendamine</value>
-  </data>
-  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>Otsingulogid</value>
-  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>See kanal on aegunud ja seda tõenäoliselt enam ei uuendata. Palun kasutage mõnda teist kanalit.</value>
   </data>
@@ -1491,27 +1063,8 @@ Paigaldamine on kiire ja lihtne ning pärast paigaldamist saate kõik Froststrap
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>Lisa uus</value>
   </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>Täpsemad seaded</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>JSON-faili importimise ID</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>Lisa ID-ga</value>
-  </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
     <value>Selle lipu nime kohta on juba olemas kanne.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Tagasi</value>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Selle väärkasutamine võib põhjustada ebastabiilsust või ootamatuid sündmusi.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Kasutada ettevaatusega.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Puhas nimekiri</value>
@@ -1529,24 +1082,8 @@ On {0} vastuolulist lipu määratlust:
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
     <value>Haldage oma FastFlags-i siin. Tutvuge täiendavate funktsioonidega täpsemates seadetes.</value>
   </data>
-  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>Toetatakse ainult .json- ja .txt-faile</value>
-  </data>
-  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 Lae oma JSON- või TXT-fail siia üles</value>
-  </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON-i eksport</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>Kas soovite lisada eelseadistatud FFlags’e?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>Sissekanne „{0}” ei ole kehtiv, kuna väärtus peab olema booli tüüpi (kas „True” või „False”)</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>Kanne „{0}” ei ole kehtiv, kuna nimi võib sisaldada ainult tähti, numbreid ja alaviiteid</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Teie sisestatud JSON ei tundu olevat kehtiv. Palun kontrollige seda veel kord ja proovige uuesti.
@@ -1554,23 +1091,6 @@ On {0} vastuolulist lipu määratlust:
 Lisateave:
 {0}</value>
     <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>Kirje „{0}” ei ole kehtiv, kuna väärtus peab olema täisarv</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>Sissekanne „{0}” ei ole kehtiv, kuna asukohafilter ei ole õigesti vormindatud.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>Kanne „{0}” ei ole kehtiv, kuna nimi peab algama FFlag, DFInt jne-ga</value>
-  </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Kopeeritud lõikelauale.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Tundub, et impordite väga mahuka konfiguratsiooni. Impordige ainult neid konfiguratsioone, millest saate täielikult aru. ÄRGE kleepige pimesi sisse teiste inimeste koostatud konfiguratsioone. Kui jätkate, tekivad tõenäoliselt stabiilsusprobleemid ja ootamatud muudatused.
-
-Kas olete kindel, et soovite jätkata?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Vau, siin on nii tühi! Mis sa arvad, kas lisaksime FastFlagi?</value>
@@ -1584,20 +1104,6 @@ Kas olete kindel, et soovite jätkata?</value>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Näita eelseadistatud lipukesi</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Tagasi</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Ma tean, mida ma teen</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Kas sa tead, mida sa teed?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Fast Flags on äärmiselt võimsad, kuna need on mõeldud kasutamiseks ainult Robloxi inseneridele. Kuigi need võivad olla väga kasulikud, võib nende käsitsi konfigureerimine põhjustada tõsiseid stabiilsus- ja funktsionaalsusprobleeme. Ära kasuta redaktorit, kui sa pole kindel, mida teed.
-
-ÄRA kasuta seda teiste inimeste koostatud suurte „lipunimekirjade” importimiseks, mis lubavad parandada jõudlust või midagi sarnast. Need on seotud eespool mainitud probleemidega ja tekitavad sulle raskusi, kuna sa ei ole täielikult teadlik sellest, mida need muudavad. Kui sa olid just seda tegemas, MINE TAGASI.</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Määra, kuidas konkreetseid Roblox-mootori parameetreid ja funktsioone konfigureeritakse.</value>
   </data>
@@ -1605,18 +1111,11 @@ Kas olete kindel, et soovite jätkata?</value>
     <value>Haldage oma Fast Flags’e. Kasutage ettevaatlikult.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Loe lähemalt Fast Flagsist, millist funktsiooni need eelseadistused täidavad ja kuidas neid kasutada.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
     <value>Selle funktsiooni keelamine takistab siin konfigureeritud seadete rakendamist Robloxis.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Luba Froststrapil FastFlags’i hallata</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Määra Robloxi mootori graafika- ja jõudlusseaded.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox vähendab renderdamise kvaliteeti sõltuvalt sellest, kuidas sinu ekraani Windowsis on skaalatud.</value>
@@ -1681,64 +1180,8 @@ Kas olete kindel, et soovite jätkata?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlagi seaded</value>
   </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Froststrapi käivitamisel lisatakse automaatselt Alt+Enter FastFlag.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Alt-klahvi käsitsi kasutamine</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>Valige JSON-i kopeerimise formaat.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>Kopeeri vorming</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Kopeerib valitud lipud JSON-vormingus, kasutades valitud kopeerimisvormingut, kui vajutada klahvikombinatsiooni Ctrl+C.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C JSON-vorming</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>Lülita FastFlagi seadete menüüs sisse eelseadistatud veerg lülitatavate FastFlagide jaoks.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>Eelseadistatud veerg</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>Näita FastFlag Editoris lipude koguarvu.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>Lipude arv</value>
-  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlagide tühistamine</value>
-  </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Fontifailid</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>See on anonüümne ja selles pole midagi halba, luban. Et saada ülevaadet sellest, milliseid andmeid Froststrap kogub ja miks, vaata Froststrapi [privaatsuspoliitikat]({0}).</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Luba analüütiliste andmete saatmine Froststrapile</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Määra Froststrapi enda toimimisega seotud seaded.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>Koguge teavet, mida saab veebi üles laadida, et lahendada tekkinud probleem.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>Froststrapi seadistamine</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>Kõik Froststrapi logid</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
-    <value>Diagnostikaandmete eksport</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Muuda mängusiseseid seadeid mugava menüü kaudu.</value>
@@ -1751,31 +1194,6 @@ Kas olete kindel, et soovite jätkata?</value>
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Üldised seaded</value>
-  </data>
-  <data name="Menu.Help.Title" xml:space="preserve">
-    <value>Abi</value>
-  </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Ikoonifailid</value>
-  </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Froststrapit ei saa siia paigaldada. Palun valige mõni muu asukoht või kasutage vaikimisi asukohta, klõpsates nuppu „Taasta”.</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrapil puudub kirjutusõigus teie valitud paigalduskohale. Palun valige mõni muu asukoht.</value>
-  </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>Kausta, kuhu soovisite Froststrapi installida, on juba olemas ja see EI OLE tühi. Soovitame tungivalt installida Froststrap omaette kausta.
-
-Soovitame valida järgmise asukoha:
-{0}
-
-Kas soovite valida soovitatud asukoha?
-Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
-    <comment>{0} is a file path</comment>
-  </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Peate määrama paigalduskoha</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Tegevuste jälgimine</value>
@@ -1876,12 +1294,6 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Mängu ajaloo menüü</value>
   </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>Näitab mängijate liitumisi ja lahkumisi ning sõnumeid. Töötab ainult koos [tekstivestlusteenusega](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
-  </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>Logide menüü</value>
-  </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Näitab mängu või Studio-kohas viibimise ajal sinu kogumänguaega ja praeguse seansi kestust.</value>
   </data>
@@ -1918,10 +1330,6 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox-i mängukliendi failide modifikatsioonide haldamine ja rakendamine.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Vaata teavet modide haldamise ja loomise kohta.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Kõik, mida vajad kursorite haldamiseks.</value>
   </data>
@@ -1946,23 +1354,8 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Kohandatud kursor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>Kohalda komplekti</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Hoidke valmis mitu kursorikomplekti, mida saab kohe kasutusele võtta.</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>Ekspordikomplekt</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>Tooma ja panema</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>Importimiskomplekt</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>Kohandatud kursorikomplekti pole valitud.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Kohandatud kursorikomplekt</value>
@@ -1985,9 +1378,6 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Määrab Robloxis valitud kohandatud kirjatüübi.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>Teie valitud fail ei tundu olevat kehtiv fontifail.</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Kohaldatud kirjatüübi eemaldamine</value>
   </data>
@@ -2005,60 +1395,6 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Kohandatud Shiftlock</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>Lisa värviüleminek</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Modifikatsiooni loomise valikud</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>Värvilised kursorid</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>Värviline emote-ratas</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>Värviline Shiftlock-kursor</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>Värvilised häälvestluse ikoonid</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>Gradiendi nurk:</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>Gradientvärvid</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>Kiirtoimingud</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Kopeeri kausta „Mods“</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
-    <value>Loo režiim</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>Kohandatud Roblox’i logo</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>Sprite-lehe eelvaade</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>Ühe sprite’i eelvaade</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>Kohandatud laadimisindikaator</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
-    <value>Vastupidine generaator</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Haldage siin Robloxi kohandatud modifikatsioone.</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Ava kaust „Mods“</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Vali, millist tüüpi emojisid Roblox peaks kasutama.</value>
@@ -2081,30 +1417,6 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Kasuta vana avatari redaktori taustapilti</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Püüe taastada ligikaudselt enne 2014. aastat kasutatud tähemärkide hääled.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Vanade tegelaste häälte jäljendamine</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Tooge tagasi klassikaline surmaheli „oof“.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Kasuta „Old Death Sound“</value>
-  </data>
-  <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Modifikatsioonid</value>
-  </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Klõpsake siin, et saada lisateavet selle valiku kohta.</value>
-  </data>
-  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>Tühjenda serverite nimekiri</value>
-  </data>
-  <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Liituge hõlpsalt teie lähedal asuvate serveritega, kasutades kontohalduris valitud kontot. Kasutab [RoValra API-sid]({0}), [kehtib RoValra privaatsuspoliitika.]({0}/privacy)</value>
-  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Sisesta koha ID või mängu nimi...</value>
   </data>
@@ -2117,21 +1429,6 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Serveri suurus:</value>
   </data>
-  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>Liitu</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>Mängijad</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
-    <value>Piirkond</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>Serveri ID</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>Serveri töökindlus</value>
-  </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Piirkonna valija</value>
   </data>
@@ -2141,29 +1438,14 @@ Kui valite „Ei”, ignoreeritakse see hoiatus ja installimine jätkub.</value>
   <data name="Menu.Save" xml:space="preserve">
     <value>Salvesta</value>
   </data>
-  <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>Salvesta ja paigalda</value>
-  </data>
-  <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>Salvesta ja käivita</value>
-  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Muudatused jõustuvad järgmisel korral, kui käivitad Robloxi.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>Seaded on salvestatud!</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>Mängu otsetee loomine</value>
-  </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>See võimaldab sul luua otseteid, mille abil saad kiiresti konkreetsetesse mängudesse liituda.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>Valige kiirviide, et seda muuta.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>Kasuta mängu ikooni</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
     <value>Mängu kiirklahvid</value>
@@ -2203,9 +1485,6 @@ Kas soovid testrežiimi sisse lülitada?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap'i seaded</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>Sul on salvestamata muudatused. Kas oled kindel, et soovid akna sulgeda ilma salvestamata?</value>
-  </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>Kogukonna moderaatorid</value>
   </data>
@@ -2221,6 +1500,9 @@ Kas soovid testrežiimi sisse lülitada?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoonid</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>Tõlke kontroll.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Need säilitatakse kohas, kuhu Froststrap paigaldati, ning taastatakse automaatselt uuesti paigaldamisel.</value>

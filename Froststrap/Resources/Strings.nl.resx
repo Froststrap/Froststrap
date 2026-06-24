@@ -121,33 +121,11 @@
     <value>Licenties</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Dit zijn de mensen die Froststrap via Ko-fi hebben gesteund. Hartelijk dank aan iedereen hier!
-Iedereen op deze lijst is gerangschikt op basis van het totale gedoneerde bedrag.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Maandelijks</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Eenmalig</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Aanhangers van Froststrap</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>Over Froststrap</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Alle vertalingen van Froststrap worden via [Crowdin]({0}) via crowdsourcing gerealiseerd. Alle hier genoemde personen hebben vrijwillig hun tijd en moeite ingezet om Froststrap te lokaliseren. Hartelijk dank aan iedereen!</value>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Vertalers</value>
-  </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>De locatie van de server kon niet worden opgevraagd. Mogelijk sluit je te snel aan bij spellen.</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Je huidige game wordt niet weergegeven in je Discord-status, omdat er een fout is opgetreden bij het laden van de game-informatie.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox biedt geen ondersteuning meer voor Windows 7 of 8.1. Als je Roblox wilt blijven spelen, moet je upgraden naar Windows 10 of een nieuwere versie.</value>
@@ -167,10 +145,6 @@ Wil je je voorkeurskanaal wijzigen naar {0}?</value>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox is momenteel actief. Als je nog een exemplaar start, wordt het huidige exemplaar gesloten. Weet je zeker dat je wilt doorgaan met het starten?</value>
   </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Ansel wordt niet ondersteund.
-Je kunt Bloxshade niet langer gebruiken in combinatie met Froststrap.</value>
-  </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>Het kanaal waarop je je momenteel bevindt ({0}) is verouderd en lijkt geen updates meer te ontvangen.\n
 Wil je overschakelen naar het standaardkanaal ({1})?</value>
@@ -185,12 +159,6 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
     <value>Het lijkt erop dat een vriend dit spel op dit moment aan het spelen is. Wil je meedoen?</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>Kiest willekeurig een server uit de lijst met optimale servers.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>De BetterMatchmaking-server willekeurig toewijzen</value>
-  </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
     <value>BetterMatchmaking inschakelen</value>
   </data>
@@ -199,15 +167,6 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Het is niet gelukt om alle bestanden uit te pakken</value>
-  </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap heeft geprobeerd Roblox te updaten, maar dat lukt niet omdat de bestanden van Roblox nog in gebruik zijn.
-
-Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox en start het programma opnieuw op.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
-  </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Je moet Froststrap eerst installeren voordat je het kunt verwijderen.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>Het opslaan van {0} is mislukt: {1}</value>
@@ -255,9 +214,6 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>{product} wordt bijgewerkt...</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>De nieuwste Froststrap downloaden...</value>
-  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Wachten op gegevens...</value>
   </data>
@@ -287,26 +243,14 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Enkel toevoegen</value>
   </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automatisch</value>
-  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Bladeren</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Annuleren</value>
   </data>
-  <data name="Common.Channel" xml:space="preserve">
-    <value>Kanaal</value>
-  </data>
-  <data name="Common.Choose" xml:space="preserve">
-    <value>Kies</value>
-  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sluiten</value>
-  </data>
-  <data name="Common.Color" xml:space="preserve">
-    <value>Kleur</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Alles kopiëren</value>
@@ -316,12 +260,6 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Op maat</value>
-  </data>
-  <data name="Common.Debug" xml:space="preserve">
-    <value>Foutopsporing</value>
-  </data>
-  <data name="Common.DebugMenu" xml:space="preserve">
-    <value>Debug-menu</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Standaard</value>
@@ -341,18 +279,9 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.Edit" xml:space="preserve">
     <value>Bewerken</value>
   </data>
-  <data name="Common.Experimental" xml:space="preserve">
-    <value>Experimenteel</value>
-  </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Exporteren</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FilterType" xml:space="preserve">
-    <value>Filtertype:</value>
-  </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>Hulp</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importeren</value>
@@ -366,30 +295,11 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.Loading" xml:space="preserve">
     <value>Bezig met laden, even geduld a.u.b...</value>
   </data>
-  <data name="Common.LookingFor" xml:space="preserve">
-    <value>Op zoek naar</value>
-  </data>
-  <data name="Common.Message" xml:space="preserve">
-    <value>Bericht</value>
-  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Diversen</value>
   </data>
   <data name="Common.Name" xml:space="preserve">
     <value>Naam</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Terug</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Installeren</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Volgende</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>De gegevens konden niet worden geladen vanwege een netwerkfout.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>Nieuw</value>
@@ -399,9 +309,6 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Niet beschikbaar</value>
-  </data>
-  <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>Open het menu ‘Debug’</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Logbestand openen</value>
@@ -421,21 +328,8 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.Quality" xml:space="preserve">
     <value>Kwaliteit</value>
   </data>
-  <data name="Common.Recommended" xml:space="preserve">
-    <value>Aanbevolen</value>
-  </data>
-  <data name="Common.Refresh" xml:space="preserve">
-    <value>Vernieuwen</value>
-  </data>
-  <data name="Common.Remove" xml:space="preserve">
-    <value>Verwijderen</value>
-  </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Naam wijzigen</value>
-  </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>Opnieuw instellen</value>
-    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox is nog niet geïnstalleerd. Start Roblox alstublieft minstens één keer via Froststrap voordat u deze optie probeert te gebruiken.</value>
@@ -443,20 +337,11 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.Search" xml:space="preserve">
     <value>Zoeken</value>
   </data>
-  <data name="Common.SearchBy" xml:space="preserve">
-    <value>Zoeken op</value>
-  </data>
-  <data name="Common.Settings" xml:space="preserve">
-    <value>Instellingen</value>
-  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Snelkoppelingen</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Bureaubladpictogram</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Pictogram in het Startmenu</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Systeemstandaard</value>
@@ -464,20 +349,8 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.Template" xml:space="preserve">
     <value>Sjabloon</value>
   </data>
-  <data name="Common.Time" xml:space="preserve">
-    <value>Tijd</value>
-  </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Tijdstempel</value>
-  </data>
-  <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>Onbekende status</value>
-  </data>
-  <data name="Common.UserId" xml:space="preserve">
-    <value>Gebruikers-ID</value>
-  </data>
-  <data name="Common.Username" xml:space="preserve">
-    <value>Gebruikersnaam</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Waarde</value>
@@ -488,9 +361,6 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="Common.VersionGuid" xml:space="preserve">
     <value>Versie-ID</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>Waarschuwing</value>
-  </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Ja</value>
   </data>
@@ -500,44 +370,17 @@ Sluit alle programma’s die mogelijk gebruikmaken van de bestanden van Roblox e
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Roblox sluiten</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Weet je zeker dat je Roblox wilt afsluiten? Hierdoor wordt het proces geforceerd beëindigd.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>Deeplink van uitnodiging kopiëren</value>
   </data>
-  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>Geschiedenis wissen</value>
-  </data>
-  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>Taak-ID kopiëren</value>
-  </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
     <value>De spelgeschiedenis wordt alleen bijgehouden voor je huidige Roblox-sessie. Spellen verschijnen hier zodra je ze verlaat of je erin teleporteert. Je kunt niet bij alle servers opnieuw aansluiten.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>Nog geen spelgeschiedenis{0}{0}Speel een paar spellen mee om ze hier te kunnen zien!</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>Vernieuwen</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
     <value>Opnieuw lid worden</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>Spelgeschiedenis</value>
-  </data>
-  <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>Menu 'Logbestanden'</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>Toont recent verzonden berichten van spelers.</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>Berichtlogboeken</value>
-  </data>
-  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>Spelerslogboeken</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>Locatie: {0}
@@ -551,10 +394,6 @@ Uptime: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Locatie</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Locatie: {0}
-Klik hier voor meer informatie</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
     <value>Verbonden met een privéserver</value>
@@ -592,9 +431,6 @@ Klik hier voor meer informatie</value>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
     <value>Het themabestand kon niet worden gevonden in het ZIP-bestand</value>
   </data>
-  <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>Aangepast thema toevoegen</value>
-  </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Aangepast thema {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
@@ -613,12 +449,6 @@ Klik hier voor meer informatie</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
     <value>Opslaan</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>Er is een fout opgetreden bij het opslaan van je thema.</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>Het thema is succesvol opgeslagen!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Je thema is opgeslagen!</value>
@@ -681,9 +511,6 @@ Klik hier voor meer informatie</value>
     <value>{0} kon {1} niet aanmaken: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
-  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>Er is geprobeerd een ongeldige WindowBackdropType te gebruiken: {0}</value>
-  </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
     <value>De XML-root van het thema is niet {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
@@ -738,9 +565,6 @@ Er wordt nu standaard {1} gebruikt.</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>Vlag 'Snel' toevoegen</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Wacht even tot de installatie is voltooid.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>Wacht even tot het verwijderen is voltooid.</value>
@@ -945,10 +769,6 @@ Controleer of Roblox werkt met [de originele launcher]({1}). Als dat niet het ge
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Paars</value>
   </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON-bestanden</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>Zip-archief</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
@@ -965,109 +785,17 @@ Wilt u de momenteel geïnstalleerde versie upgraden?</value>
 Er kunnen problemen optreden en je instellingen kunnen worden gewijzigd. Het wordt aanbevolen om het programma opnieuw te installeren.
 Weet je zeker dat je door wilt gaan?</value>
   </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Start Roblox op zodra alles is geïnstalleerd en geconfigureerd</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Roblox installeren en starten</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Bekijk en pas alle functies en instellingen aan die Froststrap te bieden heeft</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>De instellingen van Froststrap configureren</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap is succesvol geïnstalleerd.
-
-Roblox is echter nog niet geïnstalleerd. Dit gebeurt wanneer je Roblox voor het eerst via Froststrap start. Voordat je met de installatie begint, kun je eventueel eerst de instellingen van Froststrap configureren.
-
-Belangrijke opmerking: Gebruik de snelkoppeling ‘Roblox Player’ niet om Roblox te starten, aangezien Froststrap Roblox dan niet kan starten vanwege conflicten. Als je niet ziet dat Froststrap wordt gestart wanneer je Roblox via de Roblox-website opent, start je Roblox dan eenmaal via de desktop-applicatie met Froststrap om dit probleem op te lossen.
-
-Wat wil je doen?</value>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Voltooiing</value>
-  </data>
-  <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Het importeren van de Froststrap-instellingen is mislukt.
-
-{0}</value>
-  </data>
-  <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Instellingen importeren vanuit Froststrap</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap is eerder op deze locatie geïnstalleerd en is nog steeds aanwezig, maar het installatieprogramma kan het oude uitvoerbare bestand niet overschrijven. 
-
-Verwijder Froststrap.exe handmatig uit de installatiemap of start uw systeem opnieuw op, en probeer de installatie daarna nogmaals.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Er zijn bestaande gegevens gevonden. Je mods en instellingen worden hersteld.</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox wordt ook in dit pad geïnstalleerd. Pas dit aan als je al je games liever op een aparte schijf wilt installeren. Anders wordt aangeraden om dit zo te laten staan.</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Kies waar je het wilt installeren</value>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Dit zijn algemene sneltoetsen waarmee je een startmenu met verschillende opties opent. Sneltoetsen voor specifieke functies kun je later in de instellingen instellen.</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Installeren</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>Er is geen bootstrapper-installatie gevonden.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Weet je zeker dat je de installatie wilt annuleren?</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap-installatieprogramma</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Bedankt voor het downloaden van Froststrap. 
-
-De enige officiële bron om Froststrap te downloaden is {0}, dus controleer alstublieft of u het programma inderdaad via de officiële bron hebt gedownload.
-
-Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u alle instellingen van Froststrap configureren.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Klik op 'Volgende' om door te gaan.</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Welkom</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Je probeert versie {0} van Froststrap te installeren, maar de nieuwste beschikbare versie is {1}. Wil je deze downloaden?</value>
-  </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
     <value>Je Fast Flags konden niet worden geladen. Ze zijn teruggezet naar de standaardconfiguratie.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>Je instellingen konden niet worden geladen. Ze zijn teruggezet naar de standaardconfiguratie.</value>
   </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Instellingen configureren</value>
-  </data>
-  <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>Word lid van onze Discord-server</value>
-    <comment>Call-to-action button</comment>
-  </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Start Roblox</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
     <value>Start Roblox Studio</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Raadpleeg de Wiki voor hulp</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Heb je een probleem?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Er wordt geen logbestand aangemaakt voor deze start, omdat Froststrap geen gegevens kan schrijven naar de map op '{0}'</value>
@@ -1102,9 +830,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Apache-licentie 2.0</value>
   </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD-licentie met twee clausules</value>
-  </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>MIT-licentie</value>
   </data>
@@ -1118,15 +843,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
     <value>Versie {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
-  <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>Accountmanager</value>
-  </data>
-  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>Instellingen opgeslagen. Je kunt dit venster nu sluiten</value>
-  </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Alle bestanden</value>
-  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Houd er rekening mee dat niet al je wijzigingen onmiddellijk van kracht worden, totdat je alle momenteel geopende Roblox-instanties hebt gesloten.</value>
   </data>
@@ -1139,32 +855,17 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
     <value>Zelfstarter</value>
   </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>Pas de downloadstring aan. {0} is de naam van het pakket, {1} is de grootte van de gedownloade pakketten en {2} is de totale grootte van de pakketten.</value>
-  </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>Downloadstatus van Bootstrapper</value>
-  </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>Pas Froststrap-thema’s eenvoudig aan met voorinstellingen of creëer je eigen unieke look.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
     <value>App-thema’s</value>
   </data>
-  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Kies een aangepast lettertype om het standaardlettertype van de gebruikersinterface van Froststrap te overschrijven.</value>
-  </data>
-  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>Aangepast lettertype voor de app</value>
-  </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
     <value>Het verwijderen van het aangepaste thema {0} is mislukt: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Er is geen aangepast thema geselecteerd.</value>
-  </data>
-  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>Het hernoemen van het aangepaste thema {0} is mislukt: {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
     <value>Configureer diverse andere aanpasbare bootstrapper-opties.</value>
@@ -1205,24 +906,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Bootstrapper-stijl</value>
   </data>
-  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>Pas de volgorde van de navigatiemenu-items naar wens aan. De wijzigingen worden automatisch opgeslagen.</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>Vergrendelingsopdracht</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>Een stap naar beneden</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>Een stapje hoger</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>Terugzetten naar standaardinstellingen</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>Menu-aanpassing</value>
-  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Voorbeeld</value>
   </data>
@@ -1241,9 +924,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
     <value>Rechten voor Froststrap-accounts</value>
   </data>
-  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>Voor shaders is Ansel-ondersteuning vereist.</value>
-  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap controleert automatisch of er een stabiele versie beschikbaar is en werkt zichzelf bij wanneer Roblox wordt gestart.</value>
   </data>
@@ -1255,9 +935,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>Achtergrondupdates</value>
-  </data>
-  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>Kanaal</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>Sluit het proces RobloxCrashHandler.exe automatisch bij het opstarten om wat systeembronnen vrij te maken.</value>
@@ -1274,35 +951,11 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Stel in wat Froststrap moet doen bij het opstarten van Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>Als deze optie is ingeschakeld, worden alle animaties in de app uitgeschakeld. De app moet opnieuw worden opgestart.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>Animaties uitschakelen</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Schakelt hardwareversnelling alleen in Froststrap uit. Opmerking: Je moet de toepassing opnieuw opstarten om het effect te zien.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>Hardwareversnelling uitschakelen</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Dit geldt alleen voor games die via de Roblox-website worden gestart.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Niet-ondersteunde talen toestaan</value>
-  </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Bij de volgende keer opstarten wordt Roblox opnieuw geïnstalleerd.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Roblox opnieuw installeren</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Zorgt ervoor dat de pictogrammen in de taakbalk en de bovenste balk van Roblox weer worden weergegeven zoals in oudere versies. Werkt mogelijk niet als het opstarten van Roblox te lang duurt.</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Pictogram op de taakbalk</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
     <value>Hiermee stel je de CPU-prioriteit voor Roblox in.</value>
@@ -1334,12 +987,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
     <value>Froststrap-logbestanden</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>Froststrap-logbestanden worden verwijderd.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>Froststrap-logbestanden</value>
-  </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>Oude logbestanden worden verwijderd.</value>
   </data>
@@ -1354,9 +1001,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Instellingen terugzetten naar standaardinstellingen</value>
-  </data>
-  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Froststrap verwijderen</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>Automatisch wijzigen</value>
@@ -1376,12 +1020,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Channel.Description" xml:space="preserve">
     <value>Pas de implementatie- en installatie-instellingen voor Roblox en Froststrap aan.</value>
   </data>
-  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Stel in welk domein Roblox en Froststrap zullen gebruiken. Voer alleen vertrouwde domeinen in.</value>
-  </data>
-  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>Roblox-domein</value>
-  </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
     <value>Roblox-upgrades</value>
   </data>
@@ -1400,57 +1038,6 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Het opgegeven kanaal bestaat niet of is privé</value>
   </data>
-  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Zorg ervoor dat Froststrap de versie met een specifieke hash downloadt. Wijzig dit niet als je geen idee hebt wat dit doet.</value>
-  </data>
-  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>Versie-hash</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>Beschikbare kanalen</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Zoekt de meeste beschikbare kanalen af om te gebruiken.</value>
-  </data>
-  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>Hiermee stel je het implementatiekanaal in. Wijzig dit alleen als je weet wat je doet!</value>
-  </data>
-  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>Start de app opnieuw op om de animaties uit te schakelen.</value>
-  </data>
-  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>Start de app opnieuw op om de hardwareversnelling uit te schakelen en de wijziging door te voeren.</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>Spelerslogboeken</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>Geeft weer welke spelers de server waarop je je bevindt verlaten of erbij komen.</value>
-  </data>
-  <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Hiermee kun je aangepaste mods installeren vanuit de Bootstrapper.</value>
-  </data>
-  <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>Aangepaste mods</value>
-  </data>
-  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>Logbestanden wissen</value>
-  </data>
-  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>Geselecteerde tekst kopiëren</value>
-  </data>
-  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>Exportlogboeken</value>
-  </data>
-  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>Map ‘Logs’ openen</value>
-  </data>
-  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>Logs vernieuwen</value>
-  </data>
-  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>Zoeklogboeken</value>
-  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Dit kanaal is verouderd en wordt waarschijnlijk niet meer bijgewerkt. Gebruik alstublieft een ander kanaal.</value>
   </data>
@@ -1460,27 +1047,8 @@ Het installatieproces verloopt snel en eenvoudig, en na de installatie kunt u al
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>Nieuw toevoegen</value>
   </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>Geavanceerde instellingen</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>JSON-import-ID</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>Toevoegen met ID</value>
-  </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
     <value>Er bestaat al een vermelding voor deze vlagnaam.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Terug</value>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Als je dit verkeerd gebruikt, kan dit leiden tot instabiliteit of onverwachte gebeurtenissen.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Wees voorzichtig bij het gebruik.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Schone lijst</value>
@@ -1498,24 +1066,8 @@ Er zijn {0} conflicterende vlagdefinities:
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
     <value>Beheer hier je FastFlags. Bekijk meer functies in de geavanceerde instellingen.</value>
   </data>
-  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>Alleen .json- en .txt-bestanden worden ondersteund</value>
-  </data>
-  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 Plaats hier je JSON- of TXT-bestand</value>
-  </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON exporteren</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>Wilt u vooraf ingestelde FFlags opnemen?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, aangezien de waarde een booleaanse waarde moet zijn (ofwel 'True', ofwel 'False')</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, omdat de naam alleen letters, cijfers en onderstrepingstekens mag bevatten</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>De JSON die je hebt ingevoerd, lijkt niet geldig te zijn. Controleer deze nogmaals en probeer het opnieuw.
@@ -1523,23 +1075,6 @@ Er zijn {0} conflicterende vlagdefinities:
 Meer informatie:
 {0}</value>
     <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, aangezien de waarde een geheel getal moet zijn</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig omdat het plaatsfilter niet correct is opgemaakt.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>De invoer voor '{0}' is ongeldig, omdat de naam moet beginnen met FFlag, DFInt, enz.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Naar het klembord gekopieerd.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Het lijkt erop dat je een zeer omvangrijke configuratie importeert. Je dient alleen configuraties te importeren die je volledig begrijpt. Plak GEEN configuraties van anderen klakkeloos in. Als je doorgaat, zul je hoogstwaarschijnlijk te maken krijgen met stabiliteitsproblemen en onverwachte wijzigingen.
-
-Weet je zeker dat je wilt doorgaan?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Wauw, dit is zo leeg! Zullen we er een FastFlag aan toevoegen?</value>
@@ -1553,20 +1088,6 @@ Weet je zeker dat je wilt doorgaan?</value>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Vooraf ingestelde vlaggen weergeven</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Terug</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Ik weet wat ik doe</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Weet je wel wat je aan het doen bent?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Fast Flags zijn uiterst krachtig, aangezien ze uitsluitend bedoeld zijn voor gebruik door Roblox-ontwikkelaars. Hoewel ze erg nuttig kunnen zijn, kan het handmatig configureren ervan ernstige problemen met de stabiliteit en functionaliteit veroorzaken. Gebruik de editor NIET als je niet zeker weet wat je doet.
-
-Gebruik dit NIET om grote „flaglijsten“ te importeren die door anderen zijn gemaakt en die beloven de prestaties te verbeteren of iets dergelijks. Deze lijsten zijn onderhevig aan de eerder genoemde problemen en zullen voor jou problemen veroorzaken, aangezien je niet volledig op de hoogte bent van wat ze precies wijzigen. Als je dat van plan was, GA DAN TERUG.</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Bepaal hoe bepaalde parameters en functies van de Roblox-engine worden geconfigureerd.</value>
   </data>
@@ -1574,18 +1095,11 @@ Gebruik dit NIET om grote „flaglijsten“ te importeren die door anderen zijn 
     <value>Beheer je eigen Fast Flags. Wees voorzichtig bij het gebruik.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Lees meer over Fast Flags, wat deze voorinstellingen doen en hoe je ze kunt gebruiken.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
     <value>Als je deze optie uitschakelt, wordt niets van wat hier is geconfigureerd toegepast op Roblox.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Froststrap toestaan om FastFlags te beheren</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Stel de grafische en prestatie-instellingen voor de Roblox-engine in.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox past de weergavekwaliteit aan, afhankelijk van hoe je scherm in Windows is geschaald.</value>
@@ -1650,64 +1164,8 @@ Gebruik dit NIET om grote „flaglijsten“ te importeren die door anderen zijn 
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag-instellingen</value>
   </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Voeg automatisch de Alt+Enter FastFlag toe bij het opstarten van Froststrap.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Alt handmatig gebruiken</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>Kies het formaat voor het kopiëren van JSON.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>Opmaak kopiëren</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Kopieert geselecteerde vlaggen als JSON met behulp van het gekozen kopieerformaat wanneer je op Ctrl+C drukt.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C JSON-formaat</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>Schakel de kolom ‘Preset’ in de FastFlag-instellingen in voor FastFlags die kunnen worden in- en uitgeschakeld.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>Vooraf ingestelde kolom</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>Geef het totale aantal vlaggen weer in de FastFlag Editor.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>Aantal vlaggen</value>
-  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FF-vlaggen wissen</value>
-  </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Lettertypebestanden</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Het is anoniem en er zit niets kwaadaardigs achter, dat beloof ik. Voor meer informatie over welke gegevens Froststrap verzamelt en waarom, zie het [privacybeleid]({0}) van Froststrap.</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Het verzenden van analysegegevens naar Froststrap inschakelen</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Configureer opties die betrekking hebben op het gedrag van Froststrap zelf.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>Verzamel informatie die je online kunt uploaden om een probleem dat je hebt op te lossen.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>Configuratie van Froststrap</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>Alle Froststrap-logbestanden</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
-    <value>Diagnostische gegevens exporteren</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Pas de instellingen in het spel aan via een handig menu.</value>
@@ -1720,31 +1178,6 @@ Gebruik dit NIET om grote „flaglijsten“ te importeren die door anderen zijn 
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Algemene instellingen</value>
-  </data>
-  <data name="Menu.Help.Title" xml:space="preserve">
-    <value>Hulp</value>
-  </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Pictogrambestanden</value>
-  </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Froststrap kan hier niet worden geïnstalleerd. Kies een andere locatie of gebruik de standaardlocatie door op de resetknop te klikken.</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrap heeft geen schrijftoegang tot de door u gekozen installatielocatie. Kies alstublieft een andere locatie.</value>
-  </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>De map waarin u Froststrap wilt installeren, bestaat al en is NIET leeg. Het wordt ten zeerste aanbevolen om Froststrap in een eigen, afzonderlijke map te installeren.
-
-Het wordt aangeraden om naar de volgende locatie over te schakelen:
-{0}
-
-Wilt u overschakelen naar de voorgestelde locatie?
-Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installatie voortgezet.</value>
-    <comment>{0} is a file path</comment>
-  </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Je moet een installatielocatie instellen</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Activiteiten bijhouden</value>
@@ -1845,12 +1278,6 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menu ‘Spelgeschiedenis’</value>
   </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>Geeft weer wanneer spelers toetreden of vertrekken, en toont berichten. Werkt alleen met [de tekstchatservice](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
-  </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>Menu 'Logbestanden'</value>
-  </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Geeft je totale speeltijd en de huidige sessietijd weer terwijl je in een spel of in Studio bent.</value>
   </data>
@@ -1887,10 +1314,6 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Bestandsaanpassingen voor de Roblox-gameclient beheren en toepassen.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Lees meer over het beheren en maken van mods.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Alles wat je nodig hebt om je cursors te beheren.</value>
   </data>
@@ -1915,23 +1338,8 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Aangepaste cursor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>Set toepassen</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Zorg dat je meerdere cursorsets bij de hand hebt om te gebruiken.</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>Exportset</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>Haal Set</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>Importset</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>Er is geen aangepaste cursorset geselecteerd.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Aangepaste cursorset</value>
@@ -1954,9 +1362,6 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Stelt het gekozen aangepaste lettertype in Roblox in.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>Het bestand dat u hebt gekozen, lijkt geen geldig lettertypebestand te zijn.</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Toegepast lettertype verwijderen</value>
   </data>
@@ -1974,60 +1379,6 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock op maat</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>Kleurverloop toevoegen</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Opties voor het genereren van modellen</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>Kleuren cursors</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>Kleurenwiel voor emotes</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>Cursor met kleurverandering en vergrendeling</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>Kleurrijke pictogrammen voor voicechat</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>Hellinghoek:</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>Verloopkleuren</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>Snelle acties</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Kopieer naar de map Mods</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
-    <value>Genereren-modus</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>Aangepast Roblox-logo</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>Voorbeeld van een sprite-sheet</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>Voorbeeld van één sprite</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>Aangepaste laadindicator</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
-    <value>Tegen Generator</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Beheer hier je eigen Roblox-mods.</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Open de map ‘Mods’</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Kies welk type emoji Roblox moet gebruiken.</value>
@@ -2050,27 +1401,6 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Achtergrond van de oude avatar-editor gebruiken</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Een poging om de geluiden van de personages die vóór 2014 werden gebruikt, grofweg terug te brengen.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Oude karaktergeluiden nabootsen</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Laat het klassieke 'oof'-doodsgeluid weer terugkomen.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Gebruik 'Old Death Sound'</value>
-  </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Klik hier voor meer informatie over deze optie.</value>
-  </data>
-  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>Serverlijst wissen</value>
-  </data>
-  <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Maak eenvoudig verbinding met servers bij jou in de buurt via het geselecteerde account in Account Manager. Maakt gebruik van [de API’s van RoValra]({0}), [het privacybeleid van RoValra is van toepassing.]({0}/privacy)</value>
-  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Voer de plaats-ID of de naam van het spel in...</value>
   </data>
@@ -2083,21 +1413,6 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Servergrootte:</value>
   </data>
-  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>Doe mee</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>Spelers</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
-    <value>Regio</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>Server-ID</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>Beschikbaarheid van de server</value>
-  </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Regioselectie</value>
   </data>
@@ -2107,29 +1422,14 @@ Als u 'Nee' selecteert, wordt deze waarschuwing genegeerd en wordt de installati
   <data name="Menu.Save" xml:space="preserve">
     <value>Opslaan</value>
   </data>
-  <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>Opslaan en installeren</value>
-  </data>
-  <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>Opslaan en starten</value>
-  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>De wijzigingen worden van kracht zodra je Roblox de volgende keer opstart.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>Instellingen opgeslagen!</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>Snelkoppeling naar het spel maken</value>
-  </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>Hiermee kun je snelkoppelingen maken waarmee je snel aan bepaalde spellen kunt deelnemen.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>Kies een snelkoppeling om deze te bewerken.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>Gebruik het spelpictogram</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
     <value>Sneltoetsen voor games</value>
@@ -2169,9 +1469,6 @@ Wil je de testmodus inschakelen?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Instellingen voor Froststrap</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>Je hebt wijzigingen die nog niet zijn opgeslagen. Weet je zeker dat je wilt sluiten zonder op te slaan?</value>
-  </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>Community-mods</value>
   </data>
@@ -2187,6 +1484,9 @@ Wil je de testmodus inschakelen?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Pictogrammen</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>Test voor vertaling.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ze worden bewaard op de plek waar Froststrap was geïnstalleerd en worden bij een herinstallatie automatisch hersteld.</value>

@@ -121,33 +121,11 @@
     <value>Licențe</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Aceștia sunt oamenii care au susținut Froststrap prin Ko-fi. Un mulțumesc imens tuturor celor de aici!
-Fiecare persoană de aici este clasată în funcție de suma totală donată.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Lunar</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>O singură dată</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Susținătorii mișcării Froststrap</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>Despre Froststrap</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Toate traducerile pentru Froststrap sunt realizate prin crowdsourcing prin intermediul [Crowdin]({0}). Toate persoanele menționate aici sunt oameni care și-au oferit cu generozitate timpul și efortul pentru a contribui la localizarea Froststrap. Mulțumim din suflet tuturor celor de aici!</value>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Traducători</value>
-  </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Nu s-a putut interoga locația serverului. Este posibil să te alături jocurilor prea repede.</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Jocul pe care îl joci în acest moment nu va apărea în starea ta de prezență de pe Discord, deoarece a apărut o eroare la încărcarea informațiilor despre joc.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox nu mai este compatibil cu Windows 7 sau 8.1. Pentru a continua să joci Roblox, te rugăm să treci la Windows 10 sau la o versiune mai recentă.</value>
@@ -167,10 +145,6 @@ Dorești să-ți schimbi canalul preferat la {0}?</value>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox rulează în prezent, iar lansarea unei alte instanțe va duce la închiderea acestuia. Ești sigur că vrei să continui cu lansarea?</value>
   </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Ansel nu este compatibil.
-Nu mai poți folosi Bloxshade împreună cu Froststrap.</value>
-  </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>Canalul pe care vă aflați în prezent ({0}) este învechit și se pare că nu mai primește actualizări.\n
 Doriți să treceți la canalul implicit ({1})?</value>
@@ -185,29 +159,14 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
     <value>Se pare că un prieten joacă acest joc chiar acum. Vrei să te alături lui?</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>Alege aleatoriu un server din lista serverelor optime.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>Randomizează serverul BetterMatchmaking</value>
-  </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
     <value>Activează funcția BetterMatchmaking</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțează reinstalarea Roblox din setări.</value>
+    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțați reinstalarea Roblox din setări.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Nu s-au putut extrage toate fișierele</value>
-  </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap a încercat să actualizeze Roblox, dar nu poate face acest lucru deoarece fișierele Roblox sunt încă în uz.
-
-Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblox și să repornești aplicația.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
-  </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Înainte de a dezinstala, trebuie să instalați mai întâi Froststrap.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>Nu s-a putut salva {0}: {1}</value>
@@ -255,9 +214,6 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>Se actualizează {product}...</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>Descărcarea celei mai recente versiuni a Froststrap...</value>
-  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Se așteaptă datele...</value>
   </data>
@@ -287,29 +243,14 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Adaugă un singur element</value>
   </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>Analize</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automat</value>
-  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Răsfoiește</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Anulează</value>
   </data>
-  <data name="Common.Channel" xml:space="preserve">
-    <value>Canal</value>
-  </data>
-  <data name="Common.Choose" xml:space="preserve">
-    <value>Alegeți</value>
-  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Închide</value>
-  </data>
-  <data name="Common.Color" xml:space="preserve">
-    <value>Culoare</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Copiază tot</value>
@@ -319,12 +260,6 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Personalizat</value>
-  </data>
-  <data name="Common.Debug" xml:space="preserve">
-    <value>Depanare</value>
-  </data>
-  <data name="Common.DebugMenu" xml:space="preserve">
-    <value>Meniul de depanare</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Implicit</value>
@@ -347,48 +282,17 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="Common.Edit" xml:space="preserve">
     <value>Editare</value>
   </data>
-  <data name="Common.FilterType" xml:space="preserve">
-    <value>Tipul filtrului:</value>
-  </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>Ajutor</value>
-  </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Import din fișier</value>
-  </data>
-  <data name="Common.LauncherType" xml:space="preserve">
-    <value>Tip: Lansator</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Se încarcă, vă rugăm să așteptați...</value>
   </data>
-  <data name="Common.LookingFor" xml:space="preserve">
-    <value>Caut</value>
-  </data>
-  <data name="Common.Message" xml:space="preserve">
-    <value>Mesaj</value>
-  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Diverse</value>
   </data>
-  <data name="Common.ModType" xml:space="preserve">
-    <value>Tip: Mod</value>
-  </data>
   <data name="Common.Name" xml:space="preserve">
     <value>Nume</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Înapoi</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Instalare</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Următorul</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>Nu s-au putut încărca datele din cauza unei erori de rețea.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>Nou</value>
@@ -398,9 +302,6 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Nu este disponibil</value>
-  </data>
-  <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>Deschide meniul de depanare</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Deschide fișierul jurnal</value>
@@ -420,21 +321,8 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="Common.Quality" xml:space="preserve">
     <value>Calitate</value>
   </data>
-  <data name="Common.Recommended" xml:space="preserve">
-    <value>Recomandat</value>
-  </data>
-  <data name="Common.Refresh" xml:space="preserve">
-    <value>Reîmprospătează</value>
-  </data>
-  <data name="Common.Remove" xml:space="preserve">
-    <value>Eliminare</value>
-  </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Redenumire</value>
-  </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>Resetare</value>
-    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox nu a fost încă instalat. Te rugăm să pornești Roblox folosind Froststrap cel puțin o dată înainte de a încerca să utilizezi această opțiune.</value>
@@ -442,23 +330,11 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="Common.Search" xml:space="preserve">
     <value>Căutare</value>
   </data>
-  <data name="Common.SearchBy" xml:space="preserve">
-    <value>Căutare după</value>
-  </data>
-  <data name="Common.Settings" xml:space="preserve">
-    <value>Setări</value>
-  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Comenzi rapide</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Pictogramă pe desktop</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Pictograma din meniul Start</value>
-  </data>
-  <data name="Common.Studio" xml:space="preserve">
-    <value>Birou</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Setarea implicită a sistemului</value>
@@ -466,23 +342,8 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="Common.Template" xml:space="preserve">
     <value>Șablon</value>
   </data>
-  <data name="Common.Time" xml:space="preserve">
-    <value>Ora</value>
-  </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Marcaj temporal</value>
-  </data>
-  <data name="Common.Type" xml:space="preserve">
-    <value>Tip</value>
-  </data>
-  <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>Stare necunoscută</value>
-  </data>
-  <data name="Common.UserId" xml:space="preserve">
-    <value>ID utilizator</value>
-  </data>
-  <data name="Common.Username" xml:space="preserve">
-    <value>Nume de utilizator</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Valoare</value>
@@ -493,9 +354,6 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="Common.VersionGuid" xml:space="preserve">
     <value>Ghidul versiunilor</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>Avertisment</value>
-  </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Da</value>
   </data>
@@ -505,44 +363,17 @@ Te rugăm să închizi toate aplicațiile care ar putea utiliza fișierele Roblo
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Închide Roblox</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Ești sigur că vrei să închizi Roblox? Această acțiune va închide forțat procesul.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>Copiază linkul direct al invitației</value>
   </data>
-  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>Șterge istoricul</value>
-  </data>
-  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>Copiază ID-ul comenzii</value>
-  </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
     <value>Istoricul jocurilor este înregistrat doar pentru sesiunea ta curentă de Roblox. Jocurile vor apărea aici pe măsură ce le părăsești sau te teleportezi în cadrul lor. Nu la toate serverele te vei putea reconecta.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>Nu există încă istoric de jocuri{0}{0}Participă la câteva jocuri pentru a le vedea aici!</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>Reîmprospătează</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
     <value>Reînregistrează-te</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>Istoric jocuri</value>
-  </data>
-  <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>Meniul „Jurnale”</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>Afișează mesajele trimise recent de jucători.</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>Jurnale de mesaje</value>
-  </data>
-  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>Jurnalele jucătorilor</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>Locație: {0}
@@ -556,10 +387,6 @@ Timp de funcționare: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Locație</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Locație: {0}
-Faceți clic pentru mai multe informații</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
     <value>Conectat la un server privat</value>
@@ -603,9 +430,6 @@ Faceți clic pentru mai multe informații</value>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
     <value>Fișierul temei nu a putut fi găsit în fișierul ZIP</value>
   </data>
-  <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>Adăugare temă personalizată</value>
-  </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Tema personalizată {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
@@ -624,12 +448,6 @@ Faceți clic pentru mai multe informații</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
     <value>Salvare</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>A apărut o eroare în timpul salvării temei tale.</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>Tema a fost salvată cu succes!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Tema ta a fost salvată!</value>
@@ -685,7 +503,7 @@ Faceți clic pentru mai multe informații</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
-    <value>{0} nu poate avea un copil de tip {1}</value>
+    <value>{0} nu poate avea un element de tip {1}</value>
     <comment>{0} and {1} are element names (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
@@ -695,9 +513,6 @@ Faceți clic pentru mai multe informații</value>
   <data name="CustomTheme.Errors.ElementTypeCreationFailed" xml:space="preserve">
     <value>{0} nu a putut crea {1}: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
-  </data>
-  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>S-a încercat utilizarea unui tip WindowBackdropType nevalid: {0}</value>
   </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
     <value>Rădăcina fișierului XML al temei nu este {0}</value>
@@ -753,9 +568,6 @@ Se utilizează implicit {1}.</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>Adăugare rapidă a marcajului</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Vă rugăm să așteptați până la finalizarea instalării.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>Vă rugăm să așteptați până la finalizarea dezinstalării.</value>
@@ -966,10 +778,6 @@ Verifică dacă Roblox funcționează cu [lansatorul original]({1}). Dacă nu fu
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Violet</value>
   </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>Fișiere JSON</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>Arhivă ZIP</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
@@ -986,109 +794,17 @@ Doriți să actualizați versiunea instalată în prezent?</value>
 Pot apărea probleme, iar setările dvs. pot fi modificate. Se recomandă reinstalarea.
 Sunteți sigur că doriți să continuați?</value>
   </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Deschide Roblox după ce totul a fost instalat și configurat</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Instalați și porniți Roblox</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Vizualizați și modificați toate funcțiile și setările pe care le oferă Froststrap</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Configurarea setărilor Froststrap</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap a fost instalat cu succes.
-
-Cu toate acestea, Roblox nu a fost încă instalat. Acesta va fi instalat atunci când vei lansa Roblox cu Froststrap pentru prima dată. Înainte de instalare, s-ar putea să vrei să configurezi mai întâi setările Froststrap.
-
-Notă importantă: Nu utilizați comanda rapidă „Roblox Player” pentru a lansa Roblox, deoarece Froststrap nu va putea lansa Roblox din cauza unor conflicte. Dacă nu observați că Froststrap se inițializează atunci când lansați aplicația de pe site-ul web Roblox, lansați pur și simplu Roblox cu Froststrap o singură dată din aplicația de pe desktop pentru a remedia această problemă.
-
-Ce doriți să faceți?</value>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Finalizare</value>
-  </data>
-  <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Nu s-au putut importa setările Froststrap.
-
-{0}</value>
-  </data>
-  <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Importă setările din Froststrap</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap a fost instalat anterior în această locație și este încă prezent, însă programul de instalare nu poate suprascrie vechiul fișier executabil. 
-
-Vă rugăm să ștergeți manual fișierul Froststrap.exe din locația de instalare sau să încercați să reporniți sistemul, apoi să încercați din nou instalarea.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>S-au găsit date existente. Modificările și setările tale vor fi restaurate.</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox va fi instalat, de asemenea, în această cale. Modificați această setare dacă doriți să instalați toate jocurile pe o unitate separată. În caz contrar, se recomandă să păstrați setarea așa cum este.</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Alegeți unde doriți să instalați</value>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Acestea sunt comenzi rapide generale care afișează un meniu de lansare cu opțiuni multiple. Comenzile rapide pentru funcții specifice pot fi create ulterior din setări.</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Instalare</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>Nu s-a găsit nicio instalare de tip bootstrapper.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Ești sigur că vrei să anulezi instalarea?</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Programul de instalare Froststrap</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Vă mulțumim că ați descărcat Froststrap. 
-
-Singura sursă oficială de descărcare a Froststrap este {0}, așa că vă rugăm să vă asigurați că l-ați descărcat de acolo.
-
-Procesul de instalare va fi rapid și simplu, iar după instalare veți putea configura toate setările Froststrap.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Vă rugăm să faceți clic pe „Următorul” pentru a continua.</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Bine ați venit</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Încercați să instalați versiunea {0} a Froststrap, dar cea mai recentă versiune disponibilă este {1}. Doriți să o descărcați?</value>
-  </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
     <value>Nu s-au putut încărca „Fast Flags”. Acestea au fost resetate la configurația implicită.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>Setările tale nu au putut fi încărcate. Acestea au fost resetate la configurația implicită.</value>
   </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Configurare setări</value>
-  </data>
-  <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>Alătură-te serverului nostru Discord</value>
-    <comment>Call-to-action button</comment>
-  </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Pornește Roblox</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
     <value>Pornește Roblox Studio</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Consultați pagina Wiki pentru ajutor</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Ai vreo problemă?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Nu se va crea niciun fișier jurnal pentru această lansare, deoarece Froststrap nu poate scrie în folderul de la „{0}”</value>
@@ -1126,9 +842,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Licența Apache 2.0</value>
   </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>Licența BSD cu două clauze</value>
-  </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>Licența MIT</value>
   </data>
@@ -1142,15 +855,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
     <value>Versiunea {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
-  <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>Manager de conturi</value>
-  </data>
-  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>Setările au fost salvate. Acum puteți închide această fereastră</value>
-  </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Toate fișierele</value>
-  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Vă rugăm să rețineți că nu toate modificările efectuate vor fi aplicate imediat, până când nu închideți toate sesiunile Roblox deschise în prezent.</value>
   </data>
@@ -1160,32 +864,17 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Personalizați programul de inițializare al Froststrap folosind o gamă largă de opțiuni.</value>
   </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>Modificați șirul de descărcare. {0} reprezintă numele pachetului, {1} reprezintă dimensiunea pachetelor descărcate, iar {2} reprezintă dimensiunea totală a pachetelor.</value>
-  </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>Starea descărcării programului Bootstrapper</value>
-  </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>Personalizați cu ușurință temele Froststrap folosind presetările disponibile sau creați-vă propriul aspect unic.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
     <value>Teme pentru aplicații</value>
   </data>
-  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Alegeți un font personalizat pentru a înlocui fontul implicit al interfeței de utilizare Froststrap.</value>
-  </data>
-  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>Font personalizat pentru aplicație</value>
-  </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
     <value>Nu s-a putut șterge tema personalizată {0}: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Nu a fost selectată nicio temă personalizată.</value>
-  </data>
-  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>Nu s-a putut redenumi tema personalizată {0}: {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
     <value>Configurați alte opțiuni diverse personalizabile ale programului de inițializare.</value>
@@ -1226,24 +915,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Stilul „Bootstrapper”</value>
   </data>
-  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>Reordonați elementele din meniul de navigare după cum doriți. Modificările vor fi salvate automat.</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>Comandă cu blocare</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>Deplasare în jos</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>Treci la nivelul următor</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>Restaurare la setările implicite</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>Reglarea meniului</value>
-  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Previzualizare</value>
   </data>
@@ -1262,9 +933,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
     <value>Permisiuni pentru contul Froststrap</value>
   </data>
-  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>Pentru shadere este necesar suportul Ansel.</value>
-  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap se va verifica automat și se va actualiza la o versiune stabilă la lansarea Roblox.</value>
   </data>
@@ -1276,9 +944,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>Actualizări privind contextul</value>
-  </data>
-  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>Canal</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>Închide automat procesul RobloxCrashHandler.exe la pornire, pentru a elibera o parte din resursele sistemului.</value>
@@ -1295,35 +960,11 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Configurează ce trebuie să facă Froststrap la lansarea Roblox.</value>
   </data>
-  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>Când această opțiune este activată, toate animațiile din aplicație vor fi dezactivate. Este necesară repornirea aplicației.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>Dezactivează animațiile</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Dezactivează accelerarea hardware numai în Froststrap. Notă: Trebuie să reporniți aplicația pentru a observa efectele.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>Dezactivare accelerare hardware</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Se aplică numai jocurilor lansate de pe site-ul Roblox.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Permite limbile neacceptate</value>
-  </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>La următoarea pornire, se va efectua o instalare curată a Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Forțează reinstalarea Roblox</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Restaurează pictogramele din bara de activități și din bara de sus a aplicației Roblox la versiunile anterioare. Este posibil să nu funcționeze dacă lansarea aplicației Roblox durează prea mult.</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Pictograma din bara de activități</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
     <value>Selectează prioritatea procesorului pentru Roblox.</value>
@@ -1352,12 +993,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
     <value>Jurnalele Froststrap</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>Jurnalele Froststrap vor fi șterse.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>Jurnalele Froststrap</value>
-  </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>Fișierele jurnal vechi vor fi șterse.</value>
   </data>
@@ -1372,9 +1007,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Resetare setări la valorile implicite</value>
-  </data>
-  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Dezinstalați Froststrap</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>Modificare automată</value>
@@ -1394,12 +1026,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.Channel.Description" xml:space="preserve">
     <value>Modificați setările de implementare și instalare pentru Roblox și Froststrap.</value>
   </data>
-  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Stabiliți ce domeniu vor utiliza Roblox și Froststrap. Introduceți numai domenii de încredere.</value>
-  </data>
-  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>Domeniul Roblox</value>
-  </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
     <value>Actualizări Roblox</value>
   </data>
@@ -1418,57 +1044,6 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Canalul specificat fie nu există, fie este privat</value>
   </data>
-  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Forțează Froststrap să descarce versiunea corespunzătoare unui anumit hash. Te rugăm să nu modifici această setare dacă nu știi ce efect are.</value>
-  </data>
-  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>Hash-ul versiunii</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>Canale disponibile</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Scanează majoritatea canalelor disponibile pentru utilizare.</value>
-  </data>
-  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>Stabilește canalul de implementare. Nu modifica această setare decât dacă știi exact ce faci!</value>
-  </data>
-  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>Te rugăm să repornești aplicația pentru ca animațiile să fie dezactivate.</value>
-  </data>
-  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>Te rugăm să repornești aplicația pentru ca dezactivarea accelerării hardware să intre în vigoare.</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>Jurnalele jucătorilor</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>Afișează jucătorii care părăsesc sau se alătură serverului pe care te afli.</value>
-  </data>
-  <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Îți permite să instalezi moduri personalizate din Bootstrapper.</value>
-  </data>
-  <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>Modificări personalizate</value>
-  </data>
-  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>Șterge jurnalele</value>
-  </data>
-  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>Copierea elementelor selectate</value>
-  </data>
-  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>Jurnale de export</value>
-  </data>
-  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>Deschide folderul „Logs”</value>
-  </data>
-  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>Reîmprospătează jurnalele</value>
-  </data>
-  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>Jurnale de căutare</value>
-  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Acest canal este învechit și, probabil, nu mai este actualizat. Vă rugăm să utilizați un alt canal.</value>
   </data>
@@ -1478,27 +1053,8 @@ Procesul de instalare va fi rapid și simplu, iar după instalare veți putea co
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>Adăugare nouă</value>
   </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>Setări avansate</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>Importare ID JSON</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>Adăugare cu ID</value>
-  </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
     <value>Există deja o intrare pentru acest nume de steag.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Înapoi</value>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Utilizarea incorectă a acestei funcții poate duce la instabilitate sau la apariția unor situații neașteptate.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>A se utiliza cu precauție.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Lista curată</value>
@@ -1516,45 +1072,12 @@ Există {0} definiții de opțiuni care intră în conflict:
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
     <value>Gestionează-ți FastFlags-urile aici. Descoperă mai multe funcții în secțiunea „Setări avansate”.</value>
   </data>
-  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>Sunt acceptate doar fișierele .json și .txt</value>
-  </data>
-  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 Încarcă aici fișierul tău JSON sau TXT</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>Doriți să includeți FFlags prestabilite?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>Intrarea pentru „{0}” nu este validă, deoarece valoarea trebuie să fie de tip boolean (fie „True”, fie „False”)</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>Intrarea pentru „{0}” nu este validă, deoarece numele poate conține doar litere, cifre și caractere de subliniere</value>
-  </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Se pare că fișierul JSON pe care l-ați introdus nu este valid. Vă rugăm să îl verificați din nou și să încercați încă o dată.
 
 Mai multe informații:
 {0}</value>
     <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>Intrarea pentru „{0}” nu este validă, deoarece valoarea trebuie să fie un număr întreg</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>Intrarea pentru „{0}” nu este validă, deoarece filtrul de locație nu este formatat corect.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>Intrarea pentru „{0}” nu este validă, deoarece numele trebuie să înceapă cu FFlag, DFInt etc.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Copiat în clipboard.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Se pare că importați o configurație foarte mare. Ar trebui să importați numai configurații pe care le înțelegeți pe deplin. NU copiați orbește configurații create de alte persoane. Dacă continuați, este foarte probabil să vă confruntați cu probleme de stabilitate și să întâmpinați modificări neașteptate.
-
-Sunteți sigur că doriți să continuați?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Uau, e atât de gol! Ce-ar fi să adăugăm un FastFlag?</value>
@@ -1571,20 +1094,6 @@ Sunteți sigur că doriți să continuați?</value>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editorul FastFlag</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Înapoi</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Știu ce fac</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Știi ce faci?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Opțiunile „Fast Flags” sunt extrem de puternice, fiind destinate exclusiv inginerilor Roblox. Deși pot fi foarte utile, configurarea manuală a acestora poate provoca probleme grave de stabilitate și funcționalitate. NU folosiți editorul dacă nu sunteți siguri de ceea ce faceți.
-
-NU folosiți acest editor pentru a importa „liste de flag-uri” voluminoase create de alte persoane, care promit îmbunătățirea performanței sau altceva similar. Acestea sunt supuse problemelor menționate anterior și vă vor cauza probleme, deoarece nu veți fi pe deplin conștienți de modificările pe care le introduc. Dacă erați pe punctul de a face acest lucru, ÎNTOARCEȚI-VĂ ÎNAPOI.</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlează modul în care sunt configurați anumiți parametri și funcții ale motorului Roblox.</value>
   </data>
@@ -1592,18 +1101,11 @@ NU folosiți acest editor pentru a importa „liste de flag-uri” voluminoase c
     <value>Gestionează-ți propriile Fast Flags. Folosește-le cu prudență.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Află mai multe despre Fast Flags, ce fac aceste presetări și cum se utilizează.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
     <value>Dacă dezactivați această opțiune, setările configurate aici nu vor fi aplicate în Roblox.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Permiteți Froststrap să gestioneze FastFlags</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Configurează setările vizuale și de performanță pentru motorul Roblox.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox reduce calitatea de redare în funcție de modul în care este scalat ecranul tău în Windows.</value>
@@ -1627,7 +1129,7 @@ NU folosiți acest editor pentru a importa „liste de flag-uri” voluminoase c
     <value>Detalii despre plasă</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
-    <value>Nivelurile mai ridicate ale MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
+    <value>Nivelurile mai ridicate de MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Calitatea anti-aliasingului (MSAA)</value>
@@ -1668,61 +1170,8 @@ NU folosiți acest editor pentru a importa „liste de flag-uri” voluminoase c
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Setări FastFlag</value>
   </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Adăugarea automată a comenzii rapide Alt+Enter „FastFlag” la lansarea Froststrap.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Utilizarea manuală a tastei Alt</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>Alegeți formatul în care doriți să copiați JSON.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>Copiere format</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Copiază elementele selectate în format JSON, utilizând formatul de copiere ales, atunci când se apasă Ctrl+C.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C Format JSON</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>Activați/dezactivați coloana „Preset” pentru FastFlags-urile care pot fi activate/dezactivate în setările FastFlag.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>Coloană prestabilită</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>Afișează numărul total de steaguri în FastFlag Editor.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>Număr de steaguri</value>
-  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Șterge FFlags</value>
-  </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Fișiere de fonturi</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Este un proces anonim și nu are nimic rău, promit. Pentru mai multe informații despre datele colectate de Froststrap și motivele pentru care le colectează, consultați [politica de confidențialitate]({0}) a Froststrap.</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Activează trimiterea datelor de analiză către Froststrap</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Configurați opțiunile legate de comportamentul propriu-zis al Froststrap.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>Adună informații care pot fi încărcate online pentru a rezolva o problemă cu care te confrunți.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>Configurarea Froststrap</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>Toate jurnalele Froststrap</value>
-    <comment>Label that appears next to a checkbox</comment>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Modifică setările din joc dintr-un meniu ușor de folosit.</value>
@@ -1735,31 +1184,6 @@ NU folosiți acest editor pentru a importa „liste de flag-uri” voluminoase c
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Setări generale</value>
-  </data>
-  <data name="Menu.Help.Title" xml:space="preserve">
-    <value>Ajutor</value>
-  </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Fișiere icon</value>
-  </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Froststrap nu poate fi instalat aici. Vă rugăm să alegeți o altă locație sau să utilizați locația implicită făcând clic pe butonul de resetare.</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrap nu are acces de scriere la locația de instalare pe care ați selectat-o. Vă rugăm să alegeți o altă locație.</value>
-  </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>Folderul pe care l-ați ales pentru instalarea Froststrap există deja și NU este gol. Se recomandă insistent ca Froststrap să fie instalat într-un folder propriu, independent.
-
-Se sugerează trecerea la următoarea locație:
-{0}
-
-Doriți să treceți la locația sugerată?
-Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va continua.</value>
-    <comment>{0} is a file path</comment>
-  </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Trebuie să setați o locație de instalare</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Monitorizarea activității</value>
@@ -1860,12 +1284,6 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Meniul Istoric jocuri</value>
   </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>Afișează intrările și ieșirile jucătorilor, precum și mesajele. Funcționează numai cu [serviciul de chat text](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
-  </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>Meniul „Jurnale”</value>
-  </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Afișează durata totală de joc și durata sesiunii curente atunci când te afli într-un joc sau într-un loc din Studio.</value>
   </data>
@@ -1902,10 +1320,6 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Gestionați și aplicați modificările de fișiere la clientul de joc Roblox.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Consultați informațiile despre gestionarea și crearea modurilor.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Tot ce ai nevoie pentru a-ți gestiona cursorii.</value>
   </data>
@@ -1930,23 +1344,8 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Cursor personalizat</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>Aplică setul</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Asigurați-vă că aveți la îndemână mai multe seturi de cursori gata de utilizare.</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>Set de export</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>Preluare Setare</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>Set de import</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>Nu este selectat niciun set de cursoare personalizat.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Set de cursoare personalizate</value>
@@ -1969,9 +1368,6 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Setează fontul personalizat ales în Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>Fișierul pe care l-ați selectat nu pare a fi un fișier de font valid.</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Eliminare font aplicat</value>
   </data>
@@ -1989,57 +1385,6 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock personalizat</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>Adăugare culoare cu gradient</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Opțiuni de generare a modurilor</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>Cursori colorate</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>Roata de emoticoane colorate</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>Cursor Color Shiftlock</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>Pictograme colorate pentru chatul vocal</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>Unghiul gradientului:</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>Culori în degrade</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>Acțiuni rapide</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Copiază în folderul „Mods”</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>Logo personalizat pentru Roblox</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>Previzualizare foaie de sprite</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>Previzualizare sprite unic</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>Indicator de încărcare personalizat</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
-    <value>Generator de moduri</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Gestionează aici modurile personalizate pentru Roblox.</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Deschide folderul „Mods”</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Alege ce tip de emoji ar trebui să folosească Roblox.</value>
@@ -2062,30 +1407,6 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Utilizează fundalul vechi al editorului de avatare</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>O încercare de a reproduce aproximativ sunetele personajelor folosite înainte de 2014.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Emularea sunetelor vechi ale personajelor</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Reintroduceți sunetul clasic de moarte „oof”.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Folosește sunetul „Old Death”</value>
-  </data>
-  <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Modificări</value>
-  </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Faceți clic pentru mai multe informații despre această opțiune.</value>
-  </data>
-  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>Șterge lista de servere</value>
-  </data>
-  <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Conectează-te cu ușurință la serverele din apropierea ta folosind contul selectat în Managerul de conturi. Se utilizează [API-urile RoValra]({0}), [se aplică politica de confidențialitate a RoValra.]({0}/privacy)</value>
-  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Introduceți ID-ul locației sau numele jocului...</value>
   </data>
@@ -2098,21 +1419,6 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Dimensiunea serverului:</value>
   </data>
-  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>Alătură-te</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>Jucători</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
-    <value>Regiune</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>ID-ul serverului</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>Timpul de funcționare al serverului</value>
-  </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Selector de regiune</value>
   </data>
@@ -2122,29 +1428,14 @@ Dacă selectați „Nu”, acest avertisment va fi ignorat și instalarea va con
   <data name="Menu.Save" xml:space="preserve">
     <value>Salvare</value>
   </data>
-  <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>Salvați și instalați</value>
-  </data>
-  <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>Salvare și lansare</value>
-  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Modificările vor intra în vigoare la următoarea lansare a aplicației Roblox.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>Setările au fost salvate!</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>Creează o comandă rapidă pentru joc</value>
-  </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>Astfel, poți crea comenzi rapide care îți permit să te alături rapid anumitor jocuri.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>Selectați o comandă rapidă pentru a o edita.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>Folosește pictograma jocului</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
     <value>Comenzi rapide pentru joc</value>
@@ -2184,9 +1475,6 @@ Dorești să activezi Modul de testare?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Setări Froststrap</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>Aveți modificări nesalvate. Sunteți sigur că doriți să închideți fără a salva?</value>
-  </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>Moduri comunitare</value>
   </data>
@@ -2202,6 +1490,9 @@ Dorești să activezi Modul de testare?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Icoane</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>Test de traducere.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Acestea vor fi păstrate în locul în care a fost instalat Froststrap și vor fi restaurate automat la o reinstalare.</value>

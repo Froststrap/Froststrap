@@ -121,33 +121,11 @@
     <value>라이선스</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>다음은 Ko-fi를 통해 Froststrap을 후원해 주신 분들입니다. 여기 계신 모든 분들께 진심으로 감사드립니다!
-여기 나열된 분들은 총 후원 금액 순으로 정렬되어 있습니다.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>월간</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>일회성</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>프로스트스트랩 지지자들</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>Froststrap 소개</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Froststrap의 모든 번역은 [Crowdin]({0})을 통해 크라우드소싱으로 이루어집니다. 여기에 이름을 올린 모든 분들은 Froststrap의 현지화를 돕기 위해 아낌없이 시간과 노력을 기부해 주신 자원봉사자분들입니다. 여기 계신 모든 분들께 진심으로 감사드립니다!</value>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>번역가</value>
-  </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>서버 위치를 조회할 수 없습니다. 게임에 너무 빠르게 참여하고 계신 것 같습니다.</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>게임 정보를 불러오는 과정에서 오류가 발생했기 때문에, 현재 플레이 중인 게임이 디스코드 상태 정보에 표시되지 않습니다.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox는 더 이상 Windows 7 및 8.1을 지원하지 않습니다. Roblox를 계속 이용하시려면 Windows 10 이상으로 업그레이드해 주세요.</value>
@@ -167,10 +145,6 @@
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>현재 Roblox가 실행 중이며, 다른 인스턴스를 실행하면 현재 실행 중인 인스턴스가 종료됩니다. 그래도 실행하시겠습니까?</value>
   </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Ansel은 지원되지 않습니다.
-더 이상 Froststrap과 함께 Bloxshade를 사용할 수 없습니다.</value>
-  </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>현재 시청 중인 채널({0})은 최신 정보가 아니며, 더 이상 업데이트를 받지 않는 것으로 보입니다.\n
 기본 채널({1})로 전환하시겠습니까?</value>
@@ -185,12 +159,6 @@
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
     <value>지금 친구 한 명이 이 게임을 하고 있는 것 같네요. 함께 플레이하시겠어요?</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>선택된 서버를 최적의 서버 목록에서 무작위로 선정합니다.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>BetterMatchmaking 서버 무작위 배정</value>
-  </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
     <value>BetterMatchmaking 활성화</value>
   </data>
@@ -199,15 +167,6 @@
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>모든 파일을 추출하지 못했습니다.</value>
-  </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap이 Roblox를 업데이트하려고 했지만, Roblox 파일이 아직 사용 중이라 업데이트할 수 없습니다.
-
-Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫은 후 다시 실행해 주세요.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
-  </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>제거하기 전에 먼저 Froststrap을 설치해야 합니다.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>{0}을(를) 저장하지 못했습니다: {1}</value>
@@ -255,9 +214,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>{product} 업그레이드 중...</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>최신 버전의 Froststrap을 다운로드 중...</value>
-  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>데이터를 기다리는 중...</value>
   </data>
@@ -287,29 +243,14 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Common.AddSingle" xml:space="preserve">
     <value>단일 추가</value>
   </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>분석</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>자동</value>
-  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>찾아보기</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>취소</value>
   </data>
-  <data name="Common.Channel" xml:space="preserve">
-    <value>채널</value>
-  </data>
-  <data name="Common.Choose" xml:space="preserve">
-    <value>선택하세요</value>
-  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>닫기</value>
-  </data>
-  <data name="Common.Color" xml:space="preserve">
-    <value>색상</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>모두 복사</value>
@@ -319,12 +260,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>사용자 지정</value>
-  </data>
-  <data name="Common.Debug" xml:space="preserve">
-    <value>디버그</value>
-  </data>
-  <data name="Common.DebugMenu" xml:space="preserve">
-    <value>디버그 메뉴</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>기본값</value>
@@ -347,18 +282,9 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Common.Edit" xml:space="preserve">
     <value>편집</value>
   </data>
-  <data name="Common.Experimental" xml:space="preserve">
-    <value>실험적</value>
-  </data>
   <data name="Common.Export" xml:space="preserve">
     <value>내보내기</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FilterType" xml:space="preserve">
-    <value>필터 유형:</value>
-  </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>도움말</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>가져오기</value>
@@ -369,39 +295,14 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON 가져오기</value>
   </data>
-  <data name="Common.LauncherType" xml:space="preserve">
-    <value>유형: 런처</value>
-  </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>로딩 중입니다. 잠시만 기다려 주세요...</value>
-  </data>
-  <data name="Common.LookingFor" xml:space="preserve">
-    <value>찾고 있는 것</value>
-  </data>
-  <data name="Common.Message" xml:space="preserve">
-    <value>메시지</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>기타</value>
   </data>
-  <data name="Common.ModType" xml:space="preserve">
-    <value>유형: 모드</value>
-  </data>
   <data name="Common.Name" xml:space="preserve">
     <value>이름</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>뒤로</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>설치</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>다음</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>네트워크 오류로 인해 데이터를 불러올 수 없습니다.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>새로움</value>
@@ -411,9 +312,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>이용 불가</value>
-  </data>
-  <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>디버그 메뉴 열기</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>로그 파일 열기</value>
@@ -433,36 +331,14 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Common.Quality" xml:space="preserve">
     <value>품질</value>
   </data>
-  <data name="Common.Recommended" xml:space="preserve">
-    <value>추천</value>
-  </data>
-  <data name="Common.Refresh" xml:space="preserve">
-    <value>새로 고침</value>
-  </data>
-  <data name="Common.Remove" xml:space="preserve">
-    <value>제거</value>
-  </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>이름 변경</value>
-  </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>초기화</value>
-    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox가 아직 설치되지 않았습니다. 이 옵션을 사용하기 전에 Froststrap을 통해 Roblox를 적어도 한 번은 실행해 주십시오.</value>
   </data>
-  <data name="Common.RobloxStudio" xml:space="preserve">
-    <value>Roblox 스튜디오</value>
-  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>검색</value>
-  </data>
-  <data name="Common.SearchBy" xml:space="preserve">
-    <value>검색 기준</value>
-  </data>
-  <data name="Common.Settings" xml:space="preserve">
-    <value>설정</value>
   </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>바로가기</value>
@@ -470,35 +346,14 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>바탕화면 아이콘</value>
   </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>시작 메뉴 아이콘</value>
-  </data>
-  <data name="Common.Studio" xml:space="preserve">
-    <value>연구</value>
-  </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>시스템 기본값</value>
   </data>
   <data name="Common.Template" xml:space="preserve">
     <value>템플릿</value>
   </data>
-  <data name="Common.Time" xml:space="preserve">
-    <value>시간</value>
-  </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>타임스탬프</value>
-  </data>
-  <data name="Common.Type" xml:space="preserve">
-    <value>유형</value>
-  </data>
-  <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>상태 미상</value>
-  </data>
-  <data name="Common.UserId" xml:space="preserve">
-    <value>사용자 ID</value>
-  </data>
-  <data name="Common.Username" xml:space="preserve">
-    <value>사용자 이름</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>값</value>
@@ -509,9 +364,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Common.VersionGuid" xml:space="preserve">
     <value>버전 GUID</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>경고</value>
-  </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>네</value>
   </data>
@@ -521,44 +373,17 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Roblox 닫기</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Roblox를 정말 종료하시겠습니까? 이렇게 하면 프로세스가 강제 종료됩니다.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>초대 링크 복사</value>
   </data>
-  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>기록 지우기</value>
-  </data>
-  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>작업 ID 복사</value>
-  </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
     <value>게임 기록은 현재 진행 중인 Roblox 세션에 대해서만 저장됩니다. 게임을 종료하거나 게임 내에서 순간이동을 하면 해당 게임이 여기에 표시됩니다. 모든 서버에 다시 접속할 수 있는 것은 아닙니다.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>아직 게임 기록이 없습니다{0}{0}게임에 참여하면 여기서 확인할 수 있습니다!</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>새로 고침</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
     <value>다시 가입하기</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>게임 기록</value>
-  </data>
-  <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>로그 메뉴</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>플레이어들이 최근에 보낸 메시지를 표시합니다.</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>메시지 로그</value>
-  </data>
-  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>플레이어 기록</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>위치: {0}
@@ -572,10 +397,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>위치</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>위치: {0}
-자세한 정보를 보려면 클릭하세요</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
     <value>개인 서버에 연결됨</value>
@@ -619,9 +440,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
     <value>ZIP 파일에서 테마 파일을 찾을 수 없습니다.</value>
   </data>
-  <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>사용자 지정 테마 추가</value>
-  </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>사용자 지정 테마 {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
@@ -640,12 +458,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
     <value>저장</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>테마를 저장하는 과정에서 오류가 발생했습니다.</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>테마가 정상적으로 저장되었습니다!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>테마가 저장되었습니다!</value>
@@ -712,9 +524,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
     <value>{0}에서 {1}을(를) 생성하는 데 실패했습니다: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
-  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>유효하지 않은 WindowBackdropType을 사용하려고 했습니다: {0}</value>
-  </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
     <value>테마 XML의 루트가 {0}이 아닙니다.</value>
     <comment>{0} is the element name (e.g. Button)</comment>
@@ -769,9 +578,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>'빠른' 플래그 추가</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>설치가 완료될 때까지 잠시 기다려 주십시오.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>제거 작업이 완료될 때까지 잠시 기다려 주십시오.</value>
@@ -991,10 +797,6 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>보라색</value>
   </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON 파일</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>ZIP 압축 파일</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
@@ -1011,109 +813,17 @@ Roblox 파일을 사용하고 있을 수 있는 모든 애플리케이션을 닫
 문제가 발생하거나 설정이 변경될 수 있습니다. 재설치를 권장합니다.
 정말 계속하시겠습니까?</value>
   </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>모든 설치 및 설정이 완료되면 Roblox가 실행됩니다.</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Roblox 설치 및 실행</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Froststrap이 제공하는 모든 기능과 설정을 확인하고 조정해 보세요</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Froststrap 설정 구성하기</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap이 성공적으로 설치되었습니다.
-
-하지만 Roblox는 아직 설치되지 않았습니다. Froststrap을 통해 Roblox를 처음 실행할 때 설치됩니다. 설치 전에 Froststrap 설정을 먼저 구성하는 것이 좋습니다.
-
-중요 참고 사항: “Roblox Player” 바로 가기를 사용하여 Roblox를 실행하지 마십시오. 충돌 문제로 인해 Froststrap이 Roblox를 실행할 수 없게 됩니다. Roblox 웹사이트에서 실행할 때 Froststrap이 시작되지 않는다면, 바탕 화면 애플리케이션에서 Froststrap을 통해 Roblox를 한 번만 실행하면 이 문제가 해결됩니다.
-
-어떤 작업을 하시겠습니까?</value>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>완료</value>
-  </data>
-  <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Froststrap 설정을 가져오지 못했습니다.
-
-{0}</value>
-  </data>
-  <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Froststrap에서 설정 가져오기</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>이 위치에 이전에 Froststrap이 설치된 적이 있으며, 여전히 남아 있지만 설치 프로그램이 기존 실행 파일을 덮어쓸 수 없습니다.
-
-설치 위치에서 Froststrap.exe 파일을 수동으로 삭제하거나 시스템을 재시작한 후, 다시 설치를 시도해 주십시오.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>기존 데이터가 발견되었습니다. 사용자 지정 설정과 옵션이 복원될 예정입니다.</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox도 이 경로에 설치됩니다. 모든 게임을 별도의 드라이브에 설치하고 싶다면 이 경로를 변경하세요. 그렇지 않다면, 이 설정을 그대로 두는 것이 좋습니다.</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>설치 위치를 선택하세요</value>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>다음은 여러 가지 선택 항목이 포함된 실행 메뉴를 표시하는 일반적인 단축키입니다. 특정 기능에 대한 단축키는 나중에 설정에서 생성할 수 있습니다.</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>설치</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>부트스트래퍼 설치가 발견되지 않았습니다.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>설치를 취소하시겠습니까?</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap 설치 프로그램</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Froststrap을 다운로드해 주셔서 감사합니다. 
-
-Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다. 따라서 공식 출처에서 다운로드했는지 확인해 주시기 바랍니다.
-
-설치 과정은 빠르고 간단하며, 설치 후 Froststrap의 모든 설정을 구성할 수 있습니다.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>계속하려면 ‘다음’을 클릭해 주세요.</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>환영합니다</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Froststrap 버전 {0}을 설치하려고 하시지만, 현재 사용 가능한 최신 버전은 {1}입니다. 다운로드하시겠습니까?</value>
-  </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
     <value>Fast Flags를 불러올 수 없습니다. 기본 설정으로 재설정되었습니다.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>사용자의 설정을 불러올 수 없습니다. 설정이 기본값으로 재설정되었습니다.</value>
   </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>설정 구성</value>
-  </data>
-  <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>저희 디스코드 서버에 가입하세요</value>
-    <comment>Call-to-action button</comment>
-  </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Roblox 실행하기</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
     <value>Roblox Studio 실행하기</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>도움이 필요하시면 위키를 참고하세요</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>문제가 있으신가요?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Froststrap이 '{0}' 폴더에 파일을 쓸 수 없으므로, 이번 실행에 대해서는 로그 파일이 작성되지 않습니다.</value>
@@ -1151,9 +861,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>아파치 라이선스 2.0</value>
   </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD 2조항 라이선스</value>
-  </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>MIT 라이선스</value>
   </data>
@@ -1167,15 +874,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
     <value>버전 {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
-  <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>계정 관리자</value>
-  </data>
-  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>설정이 저장되었습니다. 이제 이 창을 닫으셔도 됩니다.</value>
-  </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>모든 파일</value>
-  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>현재 열려 있는 모든 Roblox 인스턴스를 닫기 전까지는 변경 사항이 즉시 모두 적용되지 않을 수 있으니 유의해 주시기 바랍니다.</value>
   </data>
@@ -1188,32 +886,17 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
     <value>부트스트래퍼</value>
   </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>다운로드 문자열을 변경합니다. {0}은 패키지 이름, {1}은 다운로드된 패키지의 크기, {2}는 패키지의 총 크기입니다.</value>
-  </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>부트스트래퍼 다운로드 상태</value>
-  </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>프리셋을 사용하여 Froststrap 테마를 간편하게 맞춤 설정하거나 나만의 독특한 디자인을 만들어 보세요.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
     <value>앱 테마</value>
   </data>
-  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Froststrap의 기본 UI 글꼴을 덮어쓰려면 사용자 지정 글꼴을 선택하세요.</value>
-  </data>
-  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>사용자 지정 앱 글꼴</value>
-  </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
     <value>사용자 정의 테마 {0}을(를) 삭제하지 못했습니다: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>사용자 정의 테마가 선택되지 않았습니다.</value>
-  </data>
-  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>사용자 정의 테마 {0}의 이름 변경에 실패했습니다: {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
     <value>기타 다양한 사용자 지정 가능한 부트스트래퍼 옵션을 구성합니다.</value>
@@ -1254,24 +937,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>부트스트래퍼 스타일</value>
   </data>
-  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>원하는 대로 탐색 메뉴 항목의 순서를 재정렬하세요. 변경 사항은 자동으로 저장됩니다.</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>잠금 순서</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>아래로 이동</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>다음 단계로</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>기본값으로 재설정</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>메뉴 조정</value>
-  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>미리 보기</value>
   </data>
@@ -1290,9 +955,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap 계정 권한</value>
   </data>
-  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>셰이더를 사용하려면 Ansel 지원이 필요합니다.</value>
-  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap은 Roblox를 실행할 때 자동으로 상태를 확인하고 안정 버전을 설치합니다.</value>
   </data>
@@ -1304,9 +966,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>배경 정보 업데이트</value>
-  </data>
-  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>채널</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>실행 시 RobloxCrashHandler.exe 프로세스를 자동으로 종료하여 시스템 리소스를 일부 확보합니다.</value>
@@ -1323,35 +982,11 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Roblox를 실행할 때 Froststrap이 수행할 작업을 설정합니다.</value>
   </data>
-  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>이 기능을 활성화하면 앱 내의 모든 애니메이션이 비활성화됩니다. 앱을 다시 시작해야 합니다.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>애니메이션 비활성화</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Froststrap에서만 하드웨어 가속을 비활성화합니다. 참고: 변경 사항을 적용하려면 애플리케이션을 다시 시작해야 합니다.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>하드웨어 가속 비활성화</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Roblox 웹사이트에서 실행한 게임에만 적용됩니다.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>지원되지 않는 언어 허용</value>
-  </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>다음에 실행할 때 Roblox가 새로 설치됩니다.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Roblox 재설치 강제 실행</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Roblox 작업 표시줄 및 상단 바 아이콘을 이전 버전으로 되돌립니다. Roblox가 실행되는 데 너무 오래 걸리는 경우 작동하지 않을 수 있습니다.</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>작업 표시줄 아이콘</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
     <value>Roblox의 CPU 우선순위를 선택합니다.</value>
@@ -1386,12 +1021,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
     <value>Froststrap 로그</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>Froststrap 로그가 삭제됩니다.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>Froststrap 로그</value>
-  </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>오래된 로그 파일이 삭제됩니다.</value>
   </data>
@@ -1406,9 +1035,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>설정을 기본값으로 재설정</value>
-  </data>
-  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Froststrap 제거</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>자동으로 변경</value>
@@ -1428,12 +1054,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Channel.Description" xml:space="preserve">
     <value>Roblox 및 Froststrap의 배포 및 설치 설정을 변경합니다.</value>
   </data>
-  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Roblox와 Froststrap이 사용할 도메인을 설정하세요. 신뢰할 수 있는 도메인만 입력하십시오.</value>
-  </data>
-  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>Roblox 도메인</value>
-  </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
     <value>Roblox 업데이트</value>
   </data>
@@ -1452,57 +1072,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>지정된 채널이 존재하지 않거나 비공개 채널입니다.</value>
   </data>
-  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Froststrap이 특정 해시 값의 버전을 다운로드하도록 강제합니다. 이 설정이 어떤 역할을 하는지 잘 모르신다면 변경하지 마십시오.</value>
-  </data>
-  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>버전 해시</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>시청 가능한 채널</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>사용 가능한 채널 대부분을 스캔합니다.</value>
-  </data>
-  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>배포 채널을 설정합니다. 무엇을 하는지 정확히 알지 못하는 한 변경하지 마십시오!</value>
-  </data>
-  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>애니메이션이 비활성화되려면 앱을 다시 시작해 주세요.</value>
-  </data>
-  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>하드웨어 가속 기능을 비활성화하고 변경 사항을 적용하려면 앱을 다시 시작해 주세요.</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>플레이어 기록</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>현재 접속 중인 서버에서 서버를 떠나는 플레이어와 서버에 새로 들어오는 플레이어를 표시합니다.</value>
-  </data>
-  <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Bootstrapper를 통해 사용자 지정 모드를 설치할 수 있습니다.</value>
-  </data>
-  <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>사용자 지정 모드</value>
-  </data>
-  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>로그 지우기</value>
-  </data>
-  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>선택한 항목 복사</value>
-  </data>
-  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>로그 내보내기</value>
-  </data>
-  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>로그 폴더 열기</value>
-  </data>
-  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>로그 새로 고침</value>
-  </data>
-  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>검색 기록</value>
-  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>이 채널은 최신 정보가 아니며, 더 이상 업데이트되지 않을 가능성이 높습니다. 다른 채널을 이용해 주시기 바랍니다.</value>
   </data>
@@ -1512,27 +1081,8 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>새 항목 추가</value>
   </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>고급 설정</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>JSON ID 가져오기</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>ID로 추가</value>
-  </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
     <value>이 깃발 이름에 대한 항목이 이미 존재합니다.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>뒤로</value>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>이를 잘못 사용하면 시스템이 불안정해지거나 예상치 못한 문제가 발생할 수 있습니다.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>주의하여 사용하십시오.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>청정 목록</value>
@@ -1550,24 +1100,8 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
     <value>여기에서 FastFlags를 관리하세요. ‘고급 설정’에서 더 많은 기능을 확인해 보세요.</value>
   </data>
-  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>.json 및 .txt 파일만 지원됩니다.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 JSON 또는 TXT 파일을 여기에 올려주세요</value>
-  </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON 내보내기</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>사전 설정된 FFlags를 포함하시겠습니까?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>'{0}' 항목은 값이 부울형(‘True’ 또는 ‘False’)이어야 하므로 유효하지 않습니다.</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>'{0}' 항목은 이름에 영문자, 숫자 및 밑줄만 포함될 수 있으므로 유효하지 않습니다.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>입력하신 JSON이 유효하지 않은 것으로 보입니다. 내용을 다시 한 번 확인하신 후 다시 시도해 주세요.
@@ -1575,23 +1109,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
 자세한 정보:
 {0}</value>
     <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>'{0}' 항목은 값이 정수여야 하므로 유효하지 않습니다.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>'{0}' 항목은 위치 필터의 형식이 올바르지 않아 유효하지 않습니다.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>'{0}'에 대한 항목은 이름이 FFlag, DFInt 등으로 시작해야 하므로 유효하지 않습니다.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>클립보드에 복사되었습니다.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>매우 대용량의 구성 파일을 가져오려는 것으로 보입니다. 완전히 이해하고 있는 구성 파일만 가져와야 합니다. 다른 사람이 만든 구성 파일을 무턱대고 복사하여 붙여넣지 마십시오. 계속 진행할 경우, 시스템 안정성 문제가 발생하거나 예상치 못한 변경 사항이 발생할 가능성이 매우 높습니다.
-
-정말 계속하시겠습니까?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>와, 여기 정말 텅 비었네요! FastFlag를 추가해 보는 건 어떨까요?</value>
@@ -1608,20 +1125,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag 편집기</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>뒤로 가기</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>내가 뭘 하고 있는지 알고 있다</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>지금 뭘 하고 있는지 알고 계신가요?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>패스트 플래그는 로블록스 엔지니어만 사용하도록 설계된 기능으로, 매우 강력한 기능을 지닙니다. 매우 유용할 수 있지만, 수동으로 구성할 경우 안정성과 기능에 심각한 문제를 일으킬 수 있습니다. 무엇을 하고 있는지 확실하지 않다면 편집기를 사용하지 마십시오.
-
-성능 향상 등을 약속하며 다른 사람이 만든 대규모 “플래그 목록”을 가져오기 위해 이 기능을 사용하지 마십시오. 이러한 목록은 앞서 언급한 문제들의 영향을 받을 뿐만 아니라, 어떤 설정이 변경되는지 완전히 파악하지 못한 상태에서 사용하면 문제가 발생할 수 있습니다. 만약 그렇게 하려 했다면, 지금 바로 돌아가십시오.</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Roblox 엔진의 특정 매개변수 및 기능이 어떻게 구성되는지 제어합니다.</value>
   </data>
@@ -1629,18 +1132,11 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
     <value>자신의 Fast Flags를 직접 관리하세요. 주의해서 사용하십시오.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Fast Flags에 대해, 이 프리셋들이 어떤 기능을 하는지, 그리고 사용 방법에 대해 자세히 알아보세요.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
     <value>이 기능을 비활성화하면 여기에서 설정한 내용이 Roblox에 적용되지 않습니다.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Froststrap이 FastFlags를 관리하도록 허용</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Roblox 엔진의 그래픽 및 성능 설정을 구성합니다.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox는 Windows에서 디스플레이의 확대/축소 비율에 따라 렌더링 품질을 낮춥니다.</value>
@@ -1705,64 +1201,8 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag 설정</value>
   </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Froststrap을 실행할 때 Alt+Enter FastFlag를 자동으로 추가합니다.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Alt 키 수동으로 사용하기</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>JSON을 복사할 형식을 선택하세요.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>서식 복사</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Ctrl+C를 누르면 선택한 복사 형식을 사용하여 선택한 플래그를 JSON 형식으로 복사합니다.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C JSON 형식</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>FastFlag 설정에서 토글 가능한 FastFlag에 대한 ‘프리셋’ 열을 토글하세요.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>사전 설정 열</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>FastFlag 편집기에서 총 플래그 수를 표시합니다.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>깃발 수</value>
-  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlag 지우기</value>
-  </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>글꼴 파일</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>익명 처리되며, 악의적인 목적은 전혀 없습니다. 약속드립니다. Froststrap이 어떤 정보를 수집하는지, 그리고 그 이유에 대한 자세한 내용은 Froststrap의 [개인정보 처리방침]({0})을 참조해 주세요.</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Froststrap으로 분석 데이터 전송 활성화</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Froststrap의 동작 자체와 관련된 옵션을 설정합니다.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>현재 겪고 있는 문제를 해결하기 위해 온라인에 업로드할 수 있는 정보를 수집하세요.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>Froststrap 구성</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>모든 Froststrap 로그</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
-    <value>진단 데이터 내보내기</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>편리한 메뉴를 통해 게임 내 설정을 변경하세요.</value>
@@ -1775,31 +1215,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>전역 설정</value>
-  </data>
-  <data name="Menu.Help.Title" xml:space="preserve">
-    <value>도움말</value>
-  </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>아이콘 파일</value>
-  </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>이 위치에는 Froststrap을 설치할 수 없습니다. 다른 위치를 선택하거나, 재설정 버튼을 클릭하여 기본 위치를 사용해 주십시오.</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrap은 사용자가 선택한 설치 위치에 대한 쓰기 권한이 없습니다. 다른 위치를 선택해 주십시오.</value>
-  </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>Froststrap을 설치하려고 선택한 폴더는 이미 존재하며 비어 있지 않습니다. Froststrap은 별도의 독립된 폴더에 설치하는 것을 강력히 권장합니다.
-
-다음 위치로 변경하는 것이 좋습니다:
-{0}
-
-권장 위치로 변경하시겠습니까?
-'아니오'를 선택하면 이 경고가 무시되고 설치가 계속 진행됩니다.</value>
-    <comment>{0} is a file path</comment>
-  </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>설치 위치를 지정해야 합니다.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>활동 추적</value>
@@ -1900,12 +1315,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>게임 기록 메뉴</value>
   </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>플레이어의 접속/이탈 및 메시지를 표시합니다. [텍스트 채팅 서비스](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837)에서만 작동합니다.</value>
-  </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>로그 메뉴</value>
-  </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>게임이나 스튜디오 공간에 있을 때 총 플레이 시간과 현재 세션 시간을 표시합니다.</value>
   </data>
@@ -1942,10 +1351,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox 게임 클라이언트에 파일 모드를 관리하고 적용합니다.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>모드 관리 및 제작에 대한 정보를 확인하세요.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>커서를 관리하는 데 필요한 모든 것.</value>
   </data>
@@ -1970,23 +1375,8 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>사용자 지정 커서</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>세트 적용</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>사용할 수 있도록 여러 개의 커서 세트를 미리 준비해 두세요.</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>내보내기 세트</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>가져오기 설정</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>가져오기 세트</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>사용자 정의 커서 세트가 선택되지 않았습니다.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>맞춤형 커서 세트</value>
@@ -2009,9 +1399,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Roblox에서 선택한 사용자 지정 글꼴을 설정합니다.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>선택하신 파일은 유효한 글꼴 파일이 아닌 것으로 보입니다.</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>적용된 글꼴 제거</value>
   </data>
@@ -2029,60 +1416,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>맞춤형 시프트락</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>그라데이션 색상 추가</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Mod 생성 옵션</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>색상 커서</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>컬러 이모티콘 휠</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>컬러 시프트락 커서</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>컬러 음성 채팅 아이콘</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>기울기 각도:</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>그라데이션 색상</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>빠른 작업</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Mods 폴더에 복사</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
-    <value>생성 모드</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>맞춤형 로블록스 로고</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>스프라이트 시트 미리보기</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>단일 스프라이트 미리 보기</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>사용자 정의 로딩 스핀너</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
-    <value>모드 생성기</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>여기에서 Roblox 사용자 제작 모드를 관리하세요.</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>모드 폴더 열기</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Roblox에서 사용할 이모티콘 유형을 선택하세요.</value>
@@ -2105,30 +1438,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>기존 아바타 편집기 배경 사용</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>2014년 이전에 사용되던 캐릭터 음성을 대략적으로 복원하려는 시도입니다.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>옛날 캐릭터의 효과음 재현하기</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>고전적인 ‘우프’라는 죽음의 소리를 되살려 주세요.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>'Old Death Sound' 사용</value>
-  </data>
-  <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>모드</value>
-  </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>이 옵션에 대한 자세한 정보를 보려면 여기를 클릭하세요.</value>
-  </data>
-  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>서버 목록 지우기</value>
-  </data>
-  <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>계정 관리자에서 선택한 계정을 사용하여 가까운 서버에 간편하게 접속하세요. [RoValra의 API]({0})를 사용하며, [RoValra의 개인정보 처리방침이 적용됩니다.]({0}/privacy)</value>
-  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>장소 ID 또는 게임 이름을 입력하세요...</value>
   </data>
@@ -2141,21 +1450,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>서버 크기:</value>
   </data>
-  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>참여하기</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>선수들</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
-    <value>지역</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>서버 ID</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>서버 가동 시간</value>
-  </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>지역 선택기</value>
   </data>
@@ -2165,29 +1459,14 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Save" xml:space="preserve">
     <value>저장</value>
   </data>
-  <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>저장 및 설치</value>
-  </data>
-  <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>저장 및 실행</value>
-  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>변경 사항은 다음에 Roblox를 실행할 때부터 적용됩니다.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>설정이 저장되었습니다!</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>게임 바로가기 만들기</value>
-  </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>이를 통해 특정 게임에 빠르게 참여할 수 있는 바로가기를 만들 수 있습니다.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>편집할 바로가기를 선택하세요.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>게임 아이콘 사용하기</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
     <value>게임 단축키</value>
@@ -2227,9 +1506,6 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap 설정</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>저장하지 않은 변경 사항이 있습니다. 저장하지 않고 닫으시겠습니까?</value>
-  </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>커뮤니티 관리자</value>
   </data>
@@ -2245,6 +1521,9 @@ Froststrap을 다운로드할 수 있는 유일한 공식 출처는 {0}입니다
   <data name="Paths.Icons" xml:space="preserve">
     <value>아이콘</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>번역 테스트.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>이 파일들은 Froststrap이 설치되었던 위치에 보관되며, 재설치 시 자동으로 복원됩니다.</value>

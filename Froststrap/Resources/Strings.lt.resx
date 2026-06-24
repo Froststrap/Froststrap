@@ -121,33 +121,11 @@
     <value>Licencijos</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Tai žmonės, kurie parėmė „Froststrap“ per „Ko-fi“. Nuoširdžiai dėkojame visiems čia esantiems!
-Kiekvienas čia esantis asmuo yra išrikiuotas pagal bendrą paaukotą sumą.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Kas mėnesį</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Vienkartinis</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>„Froststrap“ rėmėjai</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>Apie „Froststrap“</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Visi „Froststrap“ vertimai atliekami bendruomenės pastangomis per [Crowdin]({0}). Čia išvardyti žmonės dosniai skyrė savo laiką ir pastangas, kad padėtų lokalizuoti „Froststrap“. Nuoširdžiai dėkojame visiems čia esantiems!</value>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Vertėjai</value>
-  </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Nepavyko nustatyti serverio vietos. Galbūt prisijungiate prie žaidimų per greitai.</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Tavo dabartinis žaidimas nebus rodomas tavo „Discord“ būsenoje, nes įkeliant žaidimo informaciją įvyko klaida.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>„Roblox“ nebepritaikytas „Windows 7“ ar „Windows 8.1“ operacinėms sistemoms. Norėdami toliau žaisti „Roblox“, atnaujinkite operacinę sistemą į „Windows 10“ ar naujesnę versiją.</value>
@@ -167,10 +145,6 @@ Ar norite pakeisti numatytąjį kanalą į {0}?</value>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>„Roblox“ šiuo metu veikia, o paleidus dar vieną instanciją ji bus uždaryta. Ar tikrai norite tęsti paleidimą?</value>
   </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>„Ansel“ nepalaikoma.
-„Bloxshade“ su „Froststrap“ naudoti nebegalima.</value>
-  </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>Kanalas, kuriame šiuo metu esate ({0}), yra pasenęs ir, atrodo, nebėra atnaujinamas.\n
 Ar norite pereiti į numatytąjį kanalą ({1})?</value>
@@ -185,12 +159,6 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
     <value>Atrodo, kad vienas iš draugų šiuo metu žaidžia šį žaidimą. Ar nori prisijungti prie jo?</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>Atsitiktine tvarka parenka serverį iš optimalaus serverių sąrašo.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>Atsitiktinis „BetterMatchmaking“ serverio parinkimas</value>
-  </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
     <value>Įjunkite „BetterMatchmaking“</value>
   </data>
@@ -199,15 +167,6 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Nepavyko išskleisti visų failų</value>
-  </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>„Froststrap“ bandė atnaujinti „Roblox“, tačiau to padaryti nepavyko, nes „Roblox“ failai vis dar naudojami.
-
-Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir paleiskite iš naujo.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
-  </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Prieš pašalinant programą, pirmiausia turite įdiegti „Froststrap“.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>Nepavyko išsaugoti {0}: {1}</value>
@@ -255,9 +214,6 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>Atnaujinamas {product}...</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>Įsigyti naujausią „Froststrap“...</value>
-  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Laukiama duomenų...</value>
   </data>
@@ -287,29 +243,14 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Pridėti vieną</value>
   </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>Analitika</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automatinis</value>
-  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Naršyti</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Atšaukti</value>
   </data>
-  <data name="Common.Channel" xml:space="preserve">
-    <value>Kanalas</value>
-  </data>
-  <data name="Common.Choose" xml:space="preserve">
-    <value>Pasirinkite</value>
-  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Uždaryti</value>
-  </data>
-  <data name="Common.Color" xml:space="preserve">
-    <value>Spalva</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopijuoti viską</value>
@@ -319,9 +260,6 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Pasirinktinis</value>
-  </data>
-  <data name="Common.DebugMenu" xml:space="preserve">
-    <value>Debug meniu</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Numatytasis</value>
@@ -344,18 +282,9 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="Common.Edit" xml:space="preserve">
     <value>Redaguoti</value>
   </data>
-  <data name="Common.Experimental" xml:space="preserve">
-    <value>Eksperimentinis</value>
-  </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksportas</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FilterType" xml:space="preserve">
-    <value>Filtro tipas:</value>
-  </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>Pagalba</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importas</value>
@@ -366,39 +295,14 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON importas</value>
   </data>
-  <data name="Common.LauncherType" xml:space="preserve">
-    <value>Tipas: Paleidimo programa</value>
-  </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Įkeliama, prašome palaukti...</value>
-  </data>
-  <data name="Common.LookingFor" xml:space="preserve">
-    <value>Ieškau</value>
-  </data>
-  <data name="Common.Message" xml:space="preserve">
-    <value>Pranešimas</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Įvairūs dalykai</value>
   </data>
-  <data name="Common.ModType" xml:space="preserve">
-    <value>Tipas: Mod</value>
-  </data>
   <data name="Common.Name" xml:space="preserve">
     <value>Vardas</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Atgal</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Įdiegti</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Toliau</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>Dėl tinklo klaidos nepavyko įkelti duomenų.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>Nauja</value>
@@ -408,9 +312,6 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Nėra prieinama</value>
-  </data>
-  <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>Atidaryti meniu „Debug“</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Atidaryti žurnalo failą</value>
@@ -430,36 +331,14 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="Common.Quality" xml:space="preserve">
     <value>Kokybė</value>
   </data>
-  <data name="Common.Recommended" xml:space="preserve">
-    <value>Rekomenduojama</value>
-  </data>
-  <data name="Common.Refresh" xml:space="preserve">
-    <value>Atnaujinti</value>
-  </data>
-  <data name="Common.Remove" xml:space="preserve">
-    <value>Pašalinti</value>
-  </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Pervardyti</value>
-  </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>Atstatyti</value>
-    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>„Roblox“ dar nėra įdiegtas. Prieš bandydami naudotis šia parinktimi, bent kartą paleiskite „Roblox“ naudodami „Froststrap“.</value>
   </data>
-  <data name="Common.RobloxStudio" xml:space="preserve">
-    <value>„Roblox Studio“</value>
-  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Paieška</value>
-  </data>
-  <data name="Common.SearchBy" xml:space="preserve">
-    <value>Ieškoti pagal</value>
-  </data>
-  <data name="Common.Settings" xml:space="preserve">
-    <value>Nustatymai</value>
   </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Spartieji klavišai</value>
@@ -467,35 +346,14 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Darbalaukio piktograma</value>
   </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>„Pradžios“ meniu piktograma</value>
-  </data>
-  <data name="Common.Studio" xml:space="preserve">
-    <value>Tyrimas</value>
-  </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Sistemos numatytasis nustatymas</value>
   </data>
   <data name="Common.Template" xml:space="preserve">
     <value>Šablonas</value>
   </data>
-  <data name="Common.Time" xml:space="preserve">
-    <value>Laikas</value>
-  </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Laiko žyma</value>
-  </data>
-  <data name="Common.Type" xml:space="preserve">
-    <value>Tipas</value>
-  </data>
-  <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>Nežinomas statusas</value>
-  </data>
-  <data name="Common.UserId" xml:space="preserve">
-    <value>Vartotojo ID</value>
-  </data>
-  <data name="Common.Username" xml:space="preserve">
-    <value>Vartotojo vardas</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Vertė</value>
@@ -506,9 +364,6 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="Common.VersionGuid" xml:space="preserve">
     <value>Versijos identifikatorius</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>Įspėjimas</value>
-  </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Taip</value>
   </data>
@@ -518,44 +373,17 @@ Uždarykite visas programas, kurios galbūt naudoja „Roblox“ failus, ir pale
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Uždaryti „Roblox“</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Ar tikrai norite uždaryti „Roblox“? Tai priverstinai nutrauks procesą.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>Kopijuoti kvietimo giluminę nuorodą</value>
   </data>
-  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>Išvalyti istoriją</value>
-  </data>
-  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>Kopijuoti užduoties ID</value>
-  </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
     <value>Žaidimų istorija įrašoma tik jūsų dabartinės „Roblox“ sesijos metu. Žaidimai čia pasirodys, kai juos paliksite arba teleportuositės jų viduje. Ne į visus serverius bus galima prisijungti iš naujo.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>Dar nėra žaidimų istorijos{0}{0}Prisijunk prie keleto žaidimų, kad juos čia pamatytum!</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>Atnaujinti</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
     <value>Prisijungti iš naujo</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>Žaidimo istorija</value>
-  </data>
-  <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>Žurnalų meniu</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>Rodo žaidėjų neseniai išsiųstas žinutes.</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>Pranešimų žurnalai</value>
-  </data>
-  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>Žaidėjų žurnalai</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>Vieta: {0}
@@ -569,10 +397,6 @@ Veikimo laikas: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Vieta</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Vieta: {0}
-Spustelėkite, jei norite gauti daugiau informacijos</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
     <value>Prijungta prie privačiojo serverio</value>
@@ -616,9 +440,6 @@ Spustelėkite, jei norite gauti daugiau informacijos</value>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
     <value>ZIP faile nerastas temos failas</value>
   </data>
-  <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>Pridėti pasirinktą temą</value>
-  </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Individualizuota tema {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
@@ -637,12 +458,6 @@ Spustelėkite, jei norite gauti daugiau informacijos</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
     <value>Išsaugoti</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>Išsaugant jūsų temą įvyko klaida.</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>Tema sėkmingai išsaugota!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Jūsų tema išsaugota!</value>
@@ -709,9 +524,6 @@ Spustelėkite, jei norite gauti daugiau informacijos</value>
     <value>Nepavyko sukurti {0}: {1}: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
-  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>Bandoma naudoti neteisingą „WindowBackdropType“: {0}</value>
-  </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
     <value>Temos XML šaknis nėra {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
@@ -766,9 +578,6 @@ Naudojamas numatytasis: {1}.</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>Pridėti žymę „Greitai“</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Prašome palaukti, kol baigsis diegimas.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>Prašome palaukti, kol bus baigtas programos pašalinimas.</value>
@@ -994,10 +803,6 @@ Patikrinkite, ar „Roblox“ veikia naudojant [originalią paleidimo programą]
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Violetinė</value>
   </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON failai</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>Archyvas su „zip“</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
@@ -1014,109 +819,17 @@ Ar norite atnaujinti šiuo metu įdiegtą versiją?</value>
 Gali kilti problemų, o jūsų nustatymai gali būti pakeisti. Rekomenduojama iš naujo įdiegti programą.
 Ar tikrai norite tęsti?</value>
   </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Kai viskas bus įdiegta ir sukonfigūruota, paleis „Roblox“</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>„Roblox“ įdiegimas ir paleidimas</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Peržiūrėkite ir koreguokite visas „Froststrap“ siūlomas funkcijas ir nustatymus</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>„Froststrap“ nustatymų konfigūravimas</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>„Froststrap“ buvo sėkmingai įdiegtas.
-
-Tačiau „Roblox“ dar nėra įdiegtas. Jis bus įdiegtas, kai pirmą kartą paleisite „Roblox“ naudodami „Froststrap“. Prieš diegimą galbūt norėsite pirmiausia sukonfigūruoti „Froststrap“ nustatymus.
-
-Svarbi pastaba: nepanaudokite „Roblox Player“ nuorodos, kad paleistumėte „Roblox“, nes dėl suderinamumo problemų „Froststrap“ negalės paleisti „Roblox“. Jei paleidžiant iš „Roblox“ svetainės nematote, kad „Froststrap“ paleidžiamas, tiesiog vieną kartą paleiskite „Roblox“ su „Froststrap“ iš darbalaukio programos, kad išspręstumėte šią problemą.
-
-Ką norėtumėte daryti?</value>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Užbaigimas</value>
-  </data>
-  <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Nepavyko importuoti „Froststrap“ nustatymų.
-
-{0}</value>
-  </data>
-  <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Importuoti nustatymus iš „Froststrap“</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>„Froststrap“ jau buvo įdiegtas šioje vietoje ir vis dar ten yra, tačiau diegimo programa negali perrašyti senojo vykdomojo failo. 
-
-Prašome rankiniu būdu ištrinti „Froststrap.exe“ iš diegimo vietos arba pabandyti iš naujo paleisti kompiuterį, o po to dar kartą pabandyti įdiegti programą.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Rasti esami duomenys. Jūsų modifikacijos ir nustatymai bus atkurti.</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>„Roblox“ taip pat bus įdiegtas į šį katalogą. Pakeiskite šį nustatymą, jei norite, kad visi žaidimai būtų įdiegiami į atskirą diską. Kitais atvejais rekomenduojama palikti šį nustatymą nepakeistą.</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Pasirinkite, kur įdiegti</value>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Tai yra bendrieji klavišų deriniai, kuriuos paspaudus atsiveria daugiapasirinkčių paleidimo meniu. Konkrečioms funkcijoms skirtus klavišų derinius galima sukurti vėliau nustatymuose.</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Įdiegti</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>Nerasta jokios „bootstrapper“ diegimo versijos.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Ar tikrai norite atšaukti diegimą?</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>„Froststrap“ diegimo programa</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Dėkojame, kad atsisiuntėte „Froststrap“. 
-
-Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl prašome patikrinti, ar atsisiuntėte jį iš oficialaus šaltinio.
-
-Šis diegimo procesas bus greitas ir paprastas, o po diegimo galėsite konfigūruoti visus „Froststrap“ nustatymus.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Norėdami tęsti, spustelėkite „Toliau“.</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Sveiki atvykę</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Bandote įdiegti „Froststrap“ versiją {0}, tačiau naujausia prieinama versija yra {1}. Ar norite ją atsisiųsti?</value>
-  </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
     <value>Nepavyko įkelti jūsų „Fast Flags“. Jų nustatymai buvo atkurti į numatytuosius.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>Nepavyko įkelti jūsų nustatymų. Jie buvo atkurti į numatytuosius.</value>
   </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Nustatyti parametrus</value>
-  </data>
-  <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>Prisijunkite prie mūsų „Discord“ serverio</value>
-    <comment>Call-to-action button</comment>
-  </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Paleisti „Roblox“</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
     <value>Paleiskite „Roblox Studio“</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Pagalbos ieškokite Vikipedijoje</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Kilo problemų?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Šio paleidimo metu žurnalo failas nebus įrašytas, nes „Froststrap“ negali įrašyti į aplanką „{0}“</value>
@@ -1154,9 +867,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>„Apache“ licencija 2.0</value>
   </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD 2-straipsnių licencija</value>
-  </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>MIT licencija</value>
   </data>
@@ -1170,15 +880,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
     <value>Versija {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
-  <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>Klientų vadybininkas</value>
-  </data>
-  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>Nustatymai išsaugoti. Dabar galite uždaryti šį langą</value>
-  </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Visi failai</value>
-  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Atkreipkite dėmesį, kad ne visi jūsų pakeitimai bus iškart pritaikyti, kol neuždarysite visų šiuo metu atidarytų „Roblox“ sesijų.</value>
   </data>
@@ -1191,32 +892,17 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
     <value>„Bootstrapper“</value>
   </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>Pakeiskite atsisiuntimo eilutę. {0} – tai paketo pavadinimas, {1} – atsisiųstų paketų dydis, o {2} – bendras paketų dydis.</value>
-  </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>„Bootstrapper“ atsisiuntimo būsena</value>
-  </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>Lengvai pritaikykite „Froststrap“ temas naudodami iš anksto nustatytus šablonus arba sukurkite savo unikalų stilių.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
     <value>Programėlių temos</value>
   </data>
-  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Pasirinkite pasirinktinį šriftą, kad pakeistumėte „Froststrap“ numatytąjį vartotojo sąsajos šriftą.</value>
-  </data>
-  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>Pasirinktinis programos šriftas</value>
-  </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
     <value>Nepavyko ištrinti pasirinktos temos {0}: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Nėra pasirinkta jokia pasirinktinė tema.</value>
-  </data>
-  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>Nepavyko pervardyti pasirinktos temos {0} į {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
     <value>Nustatykite kitas įvairias pritaikomas paleidimo programos parinktis.</value>
@@ -1257,24 +943,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>„Bootstrapper“ stilius</value>
   </data>
-  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>Perkelkite navigacijos meniu elementus į norimą tvarką. Pakeitimai bus išsaugoti automatiškai.</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>Užrakinti užsakymą</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>Pereiti žemyn</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>Perkelti aukštyn</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>Atkurti numatytuosius nustatymus</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>Meniu nustatymų keitimas</value>
-  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Peržiūra</value>
   </data>
@@ -1293,9 +961,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
     <value>„Froststrap“ paskyros leidimai</value>
   </data>
-  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>Šeideriams reikalinga „Ansel“ parama.</value>
-  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
     <value>„Froststrap“ paleidus „Roblox“ automatiškai patikrins ir atnaujins save iki stabilios versijos.</value>
   </data>
@@ -1307,9 +972,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>Fono atnaujinimai</value>
-  </data>
-  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>Kanalas</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>Paleidžiant programą automatiškai uždaro „RobloxCrashHandler.exe“ procesą, kad būtų atlaisvinta dalis sistemos išteklių.</value>
@@ -1326,35 +988,11 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Nustatykite, ką „Froststrap“ turėtų daryti paleidžiant „Roblox“.</value>
   </data>
-  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>Įjungus šią funkciją, visos programėlės animacijos bus išjungtos. Reikia iš naujo paleisti programėlę.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>Išjungti animacijas</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Išjungia aparatinės įrangos spartinimą tik „Froststrap“ aplinkoje. Pastaba: norint pamatyti pokyčius, reikia iš naujo paleisti programą.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>Išjungti aparatinės įrangos spartinimą</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Tai taikoma tik žaidimams, paleistiems iš „Roblox“ svetainės.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Leisti naudoti nepalaikomas kalbas</value>
-  </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Kitas paleidimas bus susijęs su „Roblox“ švariu įdiegimu.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Priversti iš naujo įdiegti „Roblox“</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Grąžina „Roblox“ užduočių juostos ir viršutinės juostos piktogramas į ankstesnes versijas. Gali neveikti, jei „Roblox“ paleidimas užtrunka pernelyg ilgai.</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Užduočių juostos piktograma</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
     <value>Nustato „Roblox“ procesoriaus prioritetą.</value>
@@ -1389,12 +1027,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
     <value>„Froststrap“ žurnalai</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>„Froststrap“ žurnalai bus ištrinti.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>„Froststrap“ žurnalai</value>
-  </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>Senosios žurnalo failai bus ištrinti.</value>
   </data>
@@ -1409,9 +1041,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Atkurti numatytuosius nustatymus</value>
-  </data>
-  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Pašalinti „Froststrap“</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>Keisti automatiškai</value>
@@ -1431,12 +1060,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Channel.Description" xml:space="preserve">
     <value>Pakeiskite „Roblox“ ir „Froststrap“ diegimo ir įdiegimo nustatymus.</value>
   </data>
-  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Nustatykite, kokį domeną naudos „Roblox“ ir „Froststrap“. Įveskite tik patikimus domenus.</value>
-  </data>
-  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>„Roblox“ domenas</value>
-  </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
     <value>„Roblox“ atnaujinimai</value>
   </data>
@@ -1455,57 +1078,6 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Nurodytas kanalas arba neegzistuoja, arba yra privatus</value>
   </data>
-  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Priversti „Froststrap“ atsisiųsti versiją pagal konkretų hash. Prašome nekeisti, jei nežinote, ką tai reiškia.</value>
-  </data>
-  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>Versijos hash</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>Galimi kanalai</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Išnaršo daugumą kanalų, kuriuos galima naudoti.</value>
-  </data>
-  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>Nustato diegimo kanalą. Nekeiskite, jei nežinote, ką darote!</value>
-  </data>
-  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>Kad animacijos būtų išjungtos, prašome iš naujo paleisti programėlę.</value>
-  </data>
-  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>Prašome iš naujo paleisti programą, kad aparatinės įrangos spartinimas būtų išjungtas ir pakeitimai įsigaliotų.</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>Žaidėjų žurnalai</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>Rodo žaidėjus, kurie išeina iš serverio, kuriame esate, arba prisijungia prie jo.</value>
-  </data>
-  <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Leidžia įdiegti pasirinktus modus iš „Bootstrapper“.</value>
-  </data>
-  <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>Individualizuoti modai</value>
-  </data>
-  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>Išvalyti žurnalus</value>
-  </data>
-  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>Kopijuoti pasirinktą tekstą</value>
-  </data>
-  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>Eksporto žurnalai</value>
-  </data>
-  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>Atidaryti aplanką „Logs“</value>
-  </data>
-  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>Atnaujinti žurnalus</value>
-  </data>
-  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>Paieškos žurnalai</value>
-  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Šis kanalas yra pasenęs ir, tikėtina, jau nebėra atnaujinamas. Prašome naudoti kitą kanalą.</value>
   </data>
@@ -1515,27 +1087,8 @@ Vienintelis oficialus „Froststrap“ atsisiuntimo šaltinis yra {0}, todėl pr
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>Pridėti naują</value>
   </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>Išplėstiniai nustatymai</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>Importuoti ID JSON</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>Pridėti pagal ID</value>
-  </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
     <value>Įrašas su šiuo vėliavos pavadinimu jau egzistuoja.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Atgal</value>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Netinkamas šio elemento naudojimas gali sukelti nestabilumą arba netikėtus įvykius.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Naudokite atsargiai.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Švarus sąrašas</value>
@@ -1553,24 +1106,8 @@ Yra {0} nesuderinamų žymeklių apibrėžimų:
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
     <value>Čia galite valdyti savo „FastFlags“. Daugiau funkcijų rasite skyriuje „Išplėstiniai nustatymai“.</value>
   </data>
-  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>Palaikomi tik .json ir .txt failai</value>
-  </data>
-  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 Įklijuokite savo JSON arba TXT failą čia</value>
-  </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Eksportuoti JSON</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>Ar norėtumėte įtraukti iš anksto nustatytus „FFlags“ parametrus?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>Įrašas „{0}“ yra neteisingas, nes reikšmė turi būti boolinė (t. y. „True“ arba „False“)</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>Įrašas „{0}“ yra neteisingas, nes pavadinime gali būti tik raidės, skaičiai ir apatiniai brūkšneliai</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Atrodo, kad jūsų įvestas JSON nėra teisingas. Prašome jį dar kartą patikrinti ir pabandyti iš naujo.
@@ -1578,23 +1115,6 @@ Yra {0} nesuderinamų žymeklių apibrėžimų:
 Daugiau informacijos:
 {0}</value>
     <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>Įrašas „{0}“ yra neteisingas, nes reikšmė turi būti sveikasis skaičius</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>Įrašas „{0}“ yra neteisingas, nes vietos filtras suformatuotas netinkamai.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>Įrašas „{0}“ yra neteisingas, nes pavadinimas turi prasidėti žodžiais „FFlag“, „DFInt“ ir pan.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Nukopijuota į iškarpinę.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Atrodo, kad importuojate labai didelę konfigūraciją. Turėtumėte importuoti tik tas konfigūracijas, kurias visiškai suprantate. NEKLIJUOKITE aklai kitų žmonių sukurtų konfigūracijų. Jei tęsite, labai tikėtina, kad susidursite su stabilumo problemomis ir netikėtais pokyčiais.
-
-Ar tikrai norite tęsti?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Oho, čia taip tuščia! Gal pridėkime „FastFlag“?</value>
@@ -1611,20 +1131,6 @@ Ar tikrai norite tęsti?</value>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>„FastFlag“ redaktorius</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Grįžti atgal</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Aš žinau, ką darau</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Ar žinai, ką darai?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>„Fast Flags“ yra itin galingos funkcijos, skirtos naudoti tik „Roblox“ inžinieriams. Nors jos gali būti labai naudingos, jų rankinis konfigūravimas gali sukelti rimtų stabilumo ir funkcionalumo problemų. NENAUDOKITE redaktoriaus, jei nesate tikri, ką darote.
-
-NENAUDOKITE šio redaktoriaus, kad importuotumėte didelius kitų žmonių sukurtus „flagų sąrašus“, kurie žada pagerinti našumą ar pan. Jiems būdingos minėtosios problemos, ir jie sukels jums sunkumų, nes jūs ne visiškai žinosite, ką jie keičia. Jei ketinote tai daryti, GRĮŽKITE ATGAL.</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Nustatykite, kaip konfigūruojami konkretūs „Roblox“ variklio parametrai ir funkcijos.</value>
   </data>
@@ -1632,18 +1138,11 @@ NENAUDOKITE šio redaktoriaus, kad importuotumėte didelius kitų žmonių sukur
     <value>Valdykite savo „Fast Flags“. Naudokite atsargiai.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Sužinokite daugiau apie „Fast Flags“, ką daro šie nustatymai ir kaip juos naudoti.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
     <value>Išjungus šią parinktį, čia nustatyti parametrai nebus pritaikyti „Roblox“ sistemoje.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Leisti „Froststrap“ valdyti „FastFlags“</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Nustatykite „Roblox“ variklio vaizdo ir našumo parametrus.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>„Roblox“ sumažina vaizdo atkūrimo kokybę priklausomai nuo to, kaip jūsų ekranas yra mastelio keičiamas „Windows“ sistemoje.</value>
@@ -1708,64 +1207,8 @@ NENAUDOKITE šio redaktoriaus, kad importuotumėte didelius kitų žmonių sukur
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>„FastFlag“ nustatymai</value>
   </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Paleidžiant „Froststrap“, automatiškai įtraukti „Alt+Enter“ „FastFlag“.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Naudoti „Alt“ rankiniu būdu</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>Pasirinkite JSON kopijavimo formatą.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>Kopijuoti formatą</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Paspausus „Ctrl+C“, pasirinktos vėliavos nukopijuojamos JSON formatu, naudojant pasirinktą kopijavimo formatą.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C JSON formatas</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>„FastFlag“ nustatymuose įjunkite stulpelį „Preset“, skirtą perjungiamiesiems „FastFlag“ žymekliams.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>Iš anksto nustatytas stulpelis</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>„FastFlag Editor“ lange rodyti bendrą vėliavėlių skaičių.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>Vėliavų skaičius</value>
-  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Išvalyti FFlags</value>
-  </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Šriftų failai</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Tai anonimiška ir nieko blogo, pažadu. Norėdami sužinoti, kokius duomenis „Froststrap“ renka ir kodėl, peržiūrėkite „Froststrap“ [privatumo politiką]({0}).</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Įjungti analitinių duomenų siuntimą į „Froststrap“</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Nustatykite su pačiu „Froststrap“ veikimu susijusias parinktis.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>Surinkite informaciją, kurią galima įkelti internete, kad būtų galima išspręsti jūsų problemą.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>„Froststrap“ konfigūracija</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>Visi „Froststrap“ žurnalai</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
-    <value>Eksportuoti diagnostikos duomenis</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Pakeiskite žaidimo nustatymus naudodamiesi patogiu meniu.</value>
@@ -1778,31 +1221,6 @@ NENAUDOKITE šio redaktoriaus, kad importuotumėte didelius kitų žmonių sukur
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Bendrieji nustatymai</value>
-  </data>
-  <data name="Menu.Help.Title" xml:space="preserve">
-    <value>Pagalba</value>
-  </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Piktogramų failai</value>
-  </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>„Froststrap“ čia neįmanoma įdiegti. Prašome pasirinkti kitą vietą arba pasinaudoti numatyta vieta, paspaudę mygtuką „Atstatyti“.</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>„Froststrap“ neturi rašymo teisių į jūsų pasirinktą diegimo vietą. Prašome pasirinkti kitą vietą.</value>
-  </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>Aplankas, kurį pasirinkote „Froststrap“ įdiegimui, jau egzistuoja ir NĖRA tuščias. Labai rekomenduojama „Froststrap“ įdiegti į atskirą, savarankišką aplanką.
-
-Siūloma pakeisti į šią vietą:
-{0}
-
-Ar norite pakeisti į siūlomą vietą?
-Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas.</value>
-    <comment>{0} is a file path</comment>
-  </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Turite nurodyti diegimo vietą</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Veiklos stebėjimas</value>
@@ -1906,12 +1324,6 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Žaidimo istorijos meniu</value>
   </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>Rodo, kai žaidėjas prisijungia ar atsijungia, taip pat rodo pranešimus. Veikia tik su [teksto pokalbių paslauga](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
-  </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>Žurnalų meniu</value>
-  </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Rodo bendrą žaidimo trukmę ir dabartinės sesijos trukmę, kai esate žaidime arba „Studio“ vietoje.</value>
   </data>
@@ -1948,10 +1360,6 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Valdykite ir taikykite failų modifikacijas „Roblox“ žaidimo klientui.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Peržiūrėkite informaciją apie modų kūrimą ir tvarkymą.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Viskas, ko reikia, kad galėtumėte valdyti savo žymeklius.</value>
   </data>
@@ -1976,23 +1384,8 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Pasirinktinis žymeklis</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>Taikyti rinkinį</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Turėkite paruoštus naudoti kelis žymeklių rinkinius.</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>Eksporto rinkinys</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>Paimti Nustatyti</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>Importavimo rinkinys</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>Nėra pasirinktas joks pasirinktinis žymeklio rinkinys.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Individualus žymeklio rinkinys</value>
@@ -2015,9 +1408,6 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Nustato pasirinktą pasirinktinį šriftą „Roblox“ žaidime.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>Atrodo, kad jūsų pasirinktas failas nėra tinkamas šrifto failas.</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Pašalinti pritaikytą šriftą</value>
   </data>
@@ -2035,60 +1425,6 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Individualus „Shiftlock“</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>Pridėti spalvų perėjimą</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Modifikavimo parinktys</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>Spalvoti žymekliai</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>Spalvų emocijų ratas</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>„Color Shiftlock“ žymeklis</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>Spalvotos balso pokalbių piktogramos</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>Gradiento kampas:</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>Gradacinės spalvos</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>Greiti veiksmai</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Nukopijuoti į „Mods“ aplanką</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
-    <value>Sukurti režimą</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>Individualus „Roblox“ logotipas</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>„Sprite Sheet“ peržiūra</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>Vieno sprite’o peržiūra</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>Individualizuotas įkėlimo indikatorius</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
-    <value>„Mod“ generatorius</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Čia galite tvarkyti savo „Roblox“ modus.</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Atidaryti aplanką „Mods“</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Pasirinkite, kokio tipo emodžius turėtų naudoti „Roblox“.</value>
@@ -2111,30 +1447,6 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Naudoti senojo avatarų redaktoriaus foną</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Bandymas apytikriai atkurti iki 2014 m. naudotus simbolių garsus.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Senųjų veikėjų garsų imitavimas</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Sugrąžinkite klasikinį mirties šūksnį „oof“.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Naudokite „Old Death Sound“</value>
-  </data>
-  <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Modai</value>
-  </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Spustelėkite čia, jei norite gauti daugiau informacijos apie šią galimybę.</value>
-  </data>
-  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>Išvalyti serverių sąrašą</value>
-  </data>
-  <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Naudodamiesi „Account Manager“ pasirinktu paskyros profiliu, lengvai prisijunkite prie artimiausių serverių. Naudojami [„RoValra“ API]({0}), [taikoma „RoValra“ privatumo politika]({0}/privacy)</value>
-  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Įveskite vietos ID arba žaidimo pavadinimą...</value>
   </data>
@@ -2147,21 +1459,6 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Serverio dydis:</value>
   </data>
-  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>Prisijunkite</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>Žaidėjai</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
-    <value>Regionas</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>Serverio ID</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>Serverio veikimo laikas</value>
-  </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Regiono pasirinkimas</value>
   </data>
@@ -2171,29 +1468,14 @@ Pasirinkus „Ne“, šis įspėjimas bus ignoruotas ir įdiegimas bus tęsiamas
   <data name="Menu.Save" xml:space="preserve">
     <value>Išsaugoti</value>
   </data>
-  <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>Išsaugoti ir įdiegti</value>
-  </data>
-  <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>Išsaugoti ir paleisti</value>
-  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Pakeitimai įsigalios kitą kartą, kai paleisite „Roblox“.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>Nustatymai išsaugoti!</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>Sukurti žaidimo nuorodą</value>
-  </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>Tai leidžia kurti nuorodas, kuriomis galite greitai prisijungti prie konkrečių žaidimų.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>Pasirinkite nuorodą, kad ją redaguotumėte.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>Naudoti žaidimo piktogramą</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
     <value>Žaidimo sparčiosios klavišų kombinacijos</value>
@@ -2233,9 +1515,6 @@ Ar norite įjungti bandymo režimą?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>„Froststrap“ nustatymai</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>Jūsų pakeitimai nėra išsaugoti. Ar tikrai norite uždaryti neišsaugoję?</value>
-  </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>Bendruomenės moderatoriai</value>
   </data>
@@ -2251,6 +1530,9 @@ Ar norite įjungti bandymo režimą?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Piktogramos</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>Vertimo patikrinimas.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Jie bus išsaugoti toje vietoje, kurioje buvo įdiegta „Froststrap“, ir bus automatiškai atkurti ją įdiegus iš naujo.</value>
