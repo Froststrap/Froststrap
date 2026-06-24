@@ -1298,12 +1298,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Tving geninstallation af Roblox</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Gør det muligt at have mere end én Roblox-instans åben på samme tid. Kan medføre problemer med desktop-appen.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Start af flere instanser</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Gendanner ikonerne på Roblox-proceslinjen og øverste bjælke til de ældre versioner. Fungerer muligvis ikke, hvis Roblox tager for lang tid at starte.</value>
   </data>
@@ -1848,9 +1842,6 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menu for spilhistorik</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Multi-Instancing er tilbøjelig til at gå i stykker. Vi yder ikke support ved problemer med Multi-Instancing, da Roblox løbende indfører foranstaltninger for at sikre, at det ikke fungerer. Vi kan ikke og vil ikke forsøge at omgå disse foranstaltninger.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Viser, når spillere tilmelder sig eller forlader spillet, samt beskeder. Fungerer kun med [tekstchattjenesten](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2184,9 +2175,6 @@ Vil du aktivere testtilstand?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoner</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Denne tekst er beregnet til at teste den automatiske oversættelse – den kan du bare ignorere.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>De gemmes på det sted, hvor Froststrap blev installeret, og gendannes automatisk ved en geninstallation.</value>

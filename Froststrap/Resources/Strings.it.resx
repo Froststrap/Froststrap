@@ -1046,6 +1046,9 @@ Si prega di eliminare manualmente il file Froststrap.exe dalla cartella di insta
   <data name="Installer.ShouldCancel" xml:space="preserve">
     <value>Sei sicuro di voler annullare l'installazione?</value>
   </data>
+  <data name="Installer.Title" xml:space="preserve">
+    <value>Programma di installazione di Froststrap</value>
+  </data>
   <data name="Installer.Welcome.MainText" xml:space="preserve">
     <value>Grazie per aver scaricato Froststrap. 
 
@@ -1316,12 +1319,6 @@ La procedura di installazione sarà rapida e semplice e, una volta completata, p
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Forza la reinstallazione di Roblox</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Consente di aprire più istanze di Roblox contemporaneamente. Potrebbe causare problemi con l'app desktop.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Avvio di più istanze</value>
   </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Ripristina le icone della barra delle applicazioni e della barra superiore di Roblox alle versioni precedenti. Potrebbe non funzionare se Roblox impiega troppo tempo ad avviarsi.</value>
@@ -1870,9 +1867,6 @@ Selezionando "No" questo avviso verrà ignorato e l'installazione proseguirà.</
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menu Cronologia delle partite</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Il multi-instancing è soggetto a malfunzionamenti. Non forniremo assistenza per i problemi legati al multi-instancing, poiché Roblox sta attivamente adottando misure per impedirne il funzionamento. Non possiamo e non tenteremo di aggirare tali misure.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Mostra gli utenti che si uniscono o escono dalla chat e i messaggi. Funziona solo con [il servizio di chat testuale](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2218,9 +2212,6 @@ Vuoi attivare la Modalità di prova?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Icone</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Questa stringa è stata creata per testare la traduzione automatica; si prega di ignorarla.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Verranno conservati nella posizione in cui era installato Froststrap e verranno ripristinati automaticamente in caso di reinstallazione.</value>

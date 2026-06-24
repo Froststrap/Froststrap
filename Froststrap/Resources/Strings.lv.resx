@@ -1329,12 +1329,6 @@ Vienīgais oficiālais avots, no kura var lejupielādēt Froststrap, ir {0}, tā
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Piespiedu Roblox pārinstalēšana</value>
   </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Ļauj vienlaikus atvērt vairākus „Roblox“ eksemplārus. Var radīt problēmas ar datora lietotni.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Vairāku instancu palaišana</value>
-  </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Atjauno Roblox uzdevumjoslas un augšējās joslas ikonas, kā tās bija iepriekšējās versijās. Var nedarboties, ja Roblox palaišana aizņem pārāk ilgu laiku.</value>
   </data>
@@ -1885,9 +1879,6 @@ Izvēloties „Nē”, šis brīdinājums tiks ignorēts un instalēšana turpin
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Spēles vēstures izvēlne</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Daudzu instancu izmantošana bieži rada darbības traucējumus. Mēs nesniegsim atbalstu saistībā ar problēmām, kas rodas, izmantojot daudzas instances, jo „Roblox“ aktīvi ievieš pasākumus, lai nodrošinātu, ka šī funkcija nedarbojas. Mēs nevaram un nemēģināsim apiet šos pasākumus.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Parāda, kad spēlētāji pievienojas vai atstāj spēli, kā arī ziņojumus. Darbojas tikai kopā ar [teksta čata pakalpojumu](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2233,9 +2224,6 @@ Vai vēlaties ieslēgt testa režīmu?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikonas</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Šī teksta rinda ir paredzēta automātiskās tulkošanas pārbaudei, lūdzu, to ignorējiet.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Tie tiks saglabāti tajā vietā, kur bija instalēts „Froststrap”, un tiks automātiski atjaunoti, veicot atkārtotu instalēšanu.</value>

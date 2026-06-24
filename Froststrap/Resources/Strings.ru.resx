@@ -470,6 +470,9 @@
   <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
     <value>Значок в меню «Пуск»</value>
   </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Исследование</value>
+  </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Настройки по умолчанию системы</value>
   </data>
@@ -934,6 +937,9 @@
   <data name="Enums.EmojiType.Default" xml:space="preserve">
     <value>По умолчанию (Twemoji)</value>
   </data>
+  <data name="Enums.FlagPresets.RenderingMode.Vulkan" xml:space="preserve">
+    <value>Вулкан</value>
+  </data>
   <data name="Enums.FlagPresets.TextureQuality.Level0" xml:space="preserve">
     <value>Уровень 0 (самый низкий)</value>
   </data>
@@ -1328,12 +1334,6 @@
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Принудительная переустановка Roblox</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Description" xml:space="preserve">
-    <value>Позволяет одновременно открывать несколько экземпляров Roblox. Может вызвать проблемы с работой настольного приложения.</value>
-  </data>
-  <data name="Menu.Behaviour.MultiInstances.Title" xml:space="preserve">
-    <value>Запуск нескольких экземпляров</value>
   </data>
   <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
     <value>Восстанавливает значки Roblox на панели задач и верхней панели в виде, который был в более старых версиях. Может не сработать, если запуск Roblox занимает слишком много времени.</value>
@@ -1885,9 +1885,6 @@
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Меню «История игры»</value>
   </data>
-  <data name="Menu.Integrations.MultiInstanceLaunching.Warning" xml:space="preserve">
-    <value>Функция «Multi-Instancing» часто выходит из строя. Мы не будем оказывать поддержку по проблемам, связанным с «Multi-Instancing», поскольку Roblox активно вводит меры, препятствующие её работе. Мы не можем и не будем пытаться обойти эти меры.</value>
-  </data>
   <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
     <value>Отображает входы/выходы игроков и сообщения. Работает только с [сервисом текстового чата](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
   </data>
@@ -2233,9 +2230,6 @@
   <data name="Paths.Icons" xml:space="preserve">
     <value>Значки</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="TranslationTesting.Test" xml:space="preserve">
-    <value>Эта строка предназначена для тестирования автоматического перевода, пожалуйста, не обращайте на неё внимания.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Они будут сохранены в том месте, где был установлен Froststrap, и автоматически восстановятся при повторной установке.</value>
