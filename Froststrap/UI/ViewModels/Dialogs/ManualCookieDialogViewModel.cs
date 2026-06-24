@@ -1,7 +1,5 @@
-﻿using System.Net;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using CommunityToolkit.Mvvm.Input;
-using Froststrap.Models.APIs.Roblox;
 using Froststrap.UI.Elements.Base;
 
 namespace Froststrap.UI.ViewModels.Dialogs
@@ -36,7 +34,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
         {
             if (string.IsNullOrWhiteSpace(CookieInput))
             {
-                await Frontend.ShowMessageBox("Please enter a cookie.", MessageBoxImage.Warning);
+                await Frontend.ShowMessageBox(Strings.Menu_ManualLogin_EnterCookie, MessageBoxImage.Warning);
                 return;
             }
 
@@ -49,7 +47,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
                 if (accountInfo == null)
                 {
-                    await Frontend.ShowMessageBox("Invalid cookie. Please check and try again.", MessageBoxImage.Error);
+                    await Frontend.ShowMessageBox(Strings.Menu_ManualLogin_InvalidCookie, MessageBoxImage.Error);
                     return;
                 }
 

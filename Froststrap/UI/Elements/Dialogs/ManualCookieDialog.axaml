@@ -18,7 +18,7 @@
 
     <Grid Background="{DynamicResource ApplicationBackgroundColor}" RowDefinitions="Auto,*,Auto">
         <controls:TitleBar
-            Title="Add Account with Cookie"
+            Title="{x:Static resources:Strings.Menu_ManualLogin_Title}"
             Grid.Row="0"
             ShowMaximize="False"
             Icon="avares://Froststrap/Froststrap.ico"
@@ -37,7 +37,7 @@
                 <TextBlock
                     FontSize="18"
                     FontWeight="SemiBold"
-                    Text="Add Account with Cookie" />
+                    Text="{x:Static resources:Strings.Menu_ManualLogin_Title}" />
             </StackPanel>
 
             <Border
@@ -54,7 +54,7 @@
                         Margin="0,0,0,8"
                         FontSize="13"
                         FontWeight="SemiBold"
-                        Text="Paste your .ROBLOSECURITY cookie:" />
+                        Text="{x:Static resources:Strings.Menu_ManualLogin_PasteSecurity}" />
 
                     <TextBox
                         x:Name="CookieTextBox"
@@ -71,31 +71,31 @@
             <StackPanel Grid.Row="3" Margin="8,0,0,0">
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="1." FontWeight="Bold" />
-                    <Run Text="Open Roblox.com in your browser and log in" />
+                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_1}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="2." FontWeight="Bold" />
-                    <Run Text="Press F12 to open Developer Tools" />
+                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_2}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="3." FontWeight="Bold" />
-                    <Run Text="Click the 'Application' tab (Chrome) or 'Storage' tab (Firefox)" />
+                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_3}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="4." FontWeight="Bold" />
-                    <Run Text="Expand 'Cookies' and select 'https://www.roblox.com'" />
+                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_4}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="5." FontWeight="Bold" />
-                    <Run Text="Find the 'ROBLOSECURITY' cookie" />
+                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_5}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="6." FontWeight="Bold" />
-                    <Run Text="Double-click the 'Value' column and copy it" />
+                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_6}" />
                 </TextBlock>
                 <TextBlock Margin="0,2,0,2">
                     <Run Text="7." FontWeight="Bold" />
-                    <Run Text="Paste the value in the box above" />
+                    <Run Text="{x:Static resources:Strings.Menu_ManualLogin_Instruction_7}" />
                 </TextBlock>
             </StackPanel>
         </Grid>
@@ -114,7 +114,7 @@
                         Margin="0,0,8,0"
                         HorizontalAlignment="Right"
                         Command="{Binding AddAccountCommand}"
-                        Content="Add Account"
+                        Content="{x:Static resources:Strings.Common_Add}"
                         IsEnabled="{Binding IsAddEnabled}"/>
 
                 <Button
@@ -122,7 +122,7 @@
                     MinWidth="100"
                     HorizontalAlignment="Right"
                     Command="{Binding CancelCommand}"
-                    Content="Cancel"/>
+                    Content="{x:Static resources:Strings.Common_Cancel}"/>
             </Grid>
         </Border>
     </Grid>

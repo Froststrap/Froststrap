@@ -68,18 +68,18 @@
             </WrapPanel>
 
             <StackPanel IsVisible="{Binding BuildInformationVisibility}">
-                <TextBlock Text="Build Information" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
+                <TextBlock Text="{x:Static resources:Strings.Menu_About_BuildInfo}" FontWeight="Bold" FontSize="20" Margin="0,16,0,0" />
 
                 <Grid Margin="0,8,0,0" ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
-                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Timestamp" />
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Common_Timestamp}" />
                     <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding BuildTimestamp}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Version" />
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Common_Version}" />
                     <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding Version}" Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
 
-                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Hash"
+                    <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitHash}"
                                IsVisible="{Binding BuildCommitVisibility}" />
 
                     <Button Grid.Row="2" Grid.Column="1"
@@ -94,7 +94,7 @@
                                    Foreground="{DynamicResource SystemAccentColor}" />
                     </Button>
 
-                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="Commit Ref"
+                    <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,4,16,4" FontSize="14" Text="{x:Static resources:Strings.Menu_About_CommitRef}"
                                IsVisible="{Binding BuildCommitVisibility}" />
                     <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"
                                Text="{Binding BuildMetadata.CommitRef}"
@@ -141,7 +141,7 @@
                         <controls:MarkdownTextBlock MarkdownText="[Bloxstrap](https://github.com/bloxstraplabs/bloxstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[Fishstrap](https://github.com/fishstrap/fishstrap)" />
                         <controls:MarkdownTextBlock MarkdownText="[AppleBlox](https://github.com/AppleBlox/appleblox)" />
-						<controls:MarkdownTextBlock MarkdownText="[Sober/Vinegar](https://github.com/vinegarhq/vinegar)" />
+                        <controls:MarkdownTextBlock MarkdownText="[Sober/Vinegar](https://github.com/vinegarhq/vinegar)" />
                         <controls:MarkdownTextBlock MarkdownText="[MaximumADHD](https://github.com/MaximumADHD)" />
                     </StackPanel>
                 </Expander>

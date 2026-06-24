@@ -1186,16 +1186,16 @@ Would you like to enable Test Mode?</value>
   <data name="Enums.FlagPresets.RenderingMode.Vulkan" xml:space="preserve">
     <value>Vulkan</value>
   </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Fast Flag Profiles</value>
   </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
     <value>Save and load fast flag profiles.</value>
   </data>
-  <data name="Common_FastFlags" xml:space="preserve">
+  <data name="Common.FastFlags" xml:space="preserve">
     <value>Fast Flag Editor</value>
   </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Save current flags</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
@@ -1525,7 +1525,7 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Timestamp</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Community Mods</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
@@ -1570,7 +1570,142 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>left</value>
   </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Test For Translation.</value>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Build Information</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Commit Hash</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Commit Ref</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Join Best Region (Auto)</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Close Watcher</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Close Studio</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Studio</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>No activity data available.</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>Deeplink</value>
+  </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Server ID</value>
+  </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Select Color</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Hex Code</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value> </value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Color Picker</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Mod Information</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Glyph Preview</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Angle</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>No Profiles Found</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Sober</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Launch</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Manual Login</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Paste your .ROBLOSECURITY cookie</value>
+  </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Open Roblox.com in your browser and log in</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Press F12 to open Developer Tools</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Click the 'Application' tab (Chrome) or 'Storage' tab (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Expand 'Cookies' and select 'https://www.roblox.com'</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Find the 'ROBLOSECURITY' cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Double-click the 'Value' column and copy it</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Paste the value in the box above</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Invalid cookie. Please check and try again.</value>
+  </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Please enter a cookie.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Copy this code and paste it in the [Quick Sign-In Page]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Waiting for Quick Sign-In...\nThe app will close this window when sign-in completes.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Login complete! Closing...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Sign-In Cancelled.</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Sign-in timed out.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Device linked - approving sign-in...</value>
   </data>
 </root>

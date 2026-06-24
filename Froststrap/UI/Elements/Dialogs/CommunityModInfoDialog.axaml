@@ -10,6 +10,7 @@
                      xmlns:resources="clr-namespace:Froststrap.Resources"
                      xmlns:ui="using:FluentAvalonia.UI.Controls"
                      x:DataType="vm:CommunityModInfoViewModel"
+					 Title="{x:Static resources:Strings.Menu_CommunityModInfo_Title}"
                      mc:Ignorable="d"
                      Width="650"
                      SizeToContent="Height"
@@ -17,7 +18,7 @@
 
     <Grid RowDefinitions="Auto,*">
         <md:TitleBar Grid.Row="0"
-                     Title="Mod Information"
+                     Title="{x:Static resources:Strings.Menu_CommunityModInfo_Title}"
                      Icon="avares://Froststrap/Froststrap.ico" />
 
         <Grid Grid.Row="1" Margin="16,0,16,16" ColumnDefinitions="320,*">
@@ -36,7 +37,7 @@
 
                 <md:Card Padding="12" IsVisible="{Binding Mod.IsColorMod}">
                     <StackPanel Spacing="8">
-                        <TextBlock Text="Glyph Preview" Margin="4,0,0,0" FontSize="12" FontWeight="SemiBold" />
+                        <TextBlock Text="{x:Static resources:Strings.Common_GlyphPreview}" Margin="4,0,0,0" FontSize="12" FontWeight="SemiBold" />
                         <ScrollViewer MaxHeight="160" VerticalScrollBarVisibility="Auto">
                             <Panel>
                                 <ItemsControl ItemsSource="{Binding GlyphItems}">
@@ -94,7 +95,7 @@
 
                         <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2,0,0"
                                     IsVisible="{Binding Mod.GradientAngle.HasValue}">
-                            <TextBlock Text="Angle:"
+                            <TextBlock Text="{x:Static resources:Strings.Common_Angle}"
                                        FontSize="12"
                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                             <TextBlock Text="{Binding Mod.GradientAngle}"
@@ -110,7 +111,7 @@
 
                         <Separator Margin="0,12"/>
 
-                        <TextBlock Text="Description" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBlock Text="{x:Static resources:Strings.Common_Description}" FontWeight="SemiBold" Margin="0,0,0,4"/>
                         <TextBlock Text="{Binding Mod.Description}"
                                    TextWrapping="Wrap"
                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />

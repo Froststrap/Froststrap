@@ -39,7 +39,7 @@ namespace Froststrap.UI.ViewModels.Dialogs
 
         public static bool IsStudioInstalled => App.IsStudioInstalled;
 
-        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? "Sober" : "Player";
+        public static string PlayerMenuItemText => OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
 
         public string LaunchButtonText
         {
@@ -47,16 +47,16 @@ namespace Froststrap.UI.ViewModels.Dialogs
             {
                 if (SelectedLaunchMode == LaunchMode.Player)
                 {
-                    string modeName = OperatingSystem.IsLinux() ? "Sober" : "Player";
+                    string modeName = OperatingSystem.IsLinux() ? Strings.Common_Sober : Strings.Common_Player;
                     return IsPlayerInstalled
-                        ? $"Launch {modeName}"
-                        : $"Install {modeName}";
+                        ? $"{Strings.Common_Launch} {modeName}"
+                        : $"{Strings.Common_Install} {modeName}";
                 }
                 else
                 {
                     return IsStudioInstalled
-                        ? "Launch Studio"
-                        : "Install Studio";
+                        ? $"{Strings.Common_Launch} {Strings.Common_Studio}"
+                        : $"{Strings.Common_Install} {Strings.Common_Studio}";
                 }
             }
         }

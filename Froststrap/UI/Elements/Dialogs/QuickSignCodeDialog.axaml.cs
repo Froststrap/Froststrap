@@ -15,7 +15,7 @@ namespace Froststrap.UI.Elements.Dialogs
             InitializeComponent();
             SignInSuccessful = false;
 
-            StatusText.Text = "Waiting for Quick Sign-In...\nThe app will close this window when sign-in completes.";
+            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
         }
 
         public void StartNewSignIn(string code)
@@ -27,7 +27,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             CodeTextBox.Text = code ?? string.Empty;
             CodeBox.IsVisible = true;
-            StatusText.Text = "Waiting for Quick Sign-In...\nCopy the code above and enter it in the Quick Sign-In Page.";
+            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
 
             if (!IsVisible)
             {
@@ -41,7 +41,7 @@ namespace Froststrap.UI.Elements.Dialogs
         public void CompleteSignIn()
         {
             SignInSuccessful = true;
-            StatusText.Text = "Login complete! Closing...";
+            StatusText.Text = Strings.Menu_QuickSignIn_Complete;
 
             _autoCloseTimer = new DispatcherTimer
             {
@@ -64,13 +64,12 @@ namespace Froststrap.UI.Elements.Dialogs
                 if (clipboard != null)
                 {
                     await clipboard.SetTextAsync(CodeTextBox.Text);
-                    StatusText.Text = "Code copied to clipboard!";
 
                     _ = Task.Delay(2000).ContinueWith(_ =>
                     {
                         Dispatcher.UIThread.Post(() =>
                         {
-                            StatusText.Text = "Waiting for Quick Sign-In...\nCopy the code above and enter it in the Roblox app.";
+                            StatusText.Text = Strings.Menu_QuickSignIn_Waitting;
                         });
                     });
                 }
@@ -96,13 +95,13 @@ namespace Froststrap.UI.Elements.Dialogs
                         CompleteSignIn();
                         break;
                     case "Cancelled":
-                        StatusText.Text = "Sign-in cancelled.";
+                        StatusText.Text = Strings.Menu_QuickSignIn_Cancelled;
                         break;
                     case "TimedOut":
-                        StatusText.Text = "Sign-in timed out.";
+                        StatusText.Text = Strings.Menu_QuickSignIn_TimedOut;
                         break;
                     case "UserLinked":
-                        StatusText.Text = "Device linked - approving sign-in...";
+                        StatusText.Text = Strings.Menu_QuickSignIn_Linked;
                         break;
                     default:
                         if (!string.IsNullOrEmpty(accountName))

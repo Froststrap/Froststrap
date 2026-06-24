@@ -101,13 +101,13 @@
 
                                     <controls:IconButton
                                         Icon="Link"
-                                        Content="DeepLink"
+                                        Content="{x:Static resources:Strings.Common_Deeplink}"
                                         Command="{Binding CopyDeeplinkCommand}"
                                         CommandParameter="{Binding $self}"/>
 
                                     <controls:IconButton
                                         Icon="ClipboardSettings"
-                                        Content="Server ID"
+                                        Content="{x:Static resources:Strings.Common_ServerID}"
                                         Command="{Binding CopyServerIdCommand}"
                                         CommandParameter="{Binding $self}"/>
 

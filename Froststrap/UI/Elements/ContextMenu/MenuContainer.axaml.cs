@@ -2,7 +2,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Froststrap.Integrations;
-using Froststrap.UI.Elements.Dialogs;
 
 namespace Froststrap.UI.Elements.ContextMenu
 {
@@ -80,7 +79,7 @@ namespace Froststrap.UI.Elements.ContextMenu
                         ServerDetailsMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         GameHistoryMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
                         AutoJoinRegionMenuItem?.SetValue(MenuItem.IsVisibleProperty, false);
-                        CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, "Close Studio");
+                        CloseRobloxMenuItem?.SetValue(MenuItem.HeaderProperty, Strings.Menu_ContextMenu_CloseStudio);
 
                         if (App.Settings.Prop.PlaytimeCounter)
                         {
@@ -123,11 +122,11 @@ namespace Froststrap.UI.Elements.ContextMenu
 
             string statusText;
             if (ActivityWatcher.InStudioPlace && _studioPlaceJoinTime.HasValue)
-                statusText = $"Total: {FormatTimeSpan(total)} | Studio: {FormatTimeSpan(DateTime.Now - _studioPlaceJoinTime.Value)}";
+                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)} | {Strings.Common_Studio}: {FormatTimeSpan(DateTime.Now - _studioPlaceJoinTime.Value)}";
             else if (ActivityWatcher.InGame)
-                statusText = $"Total: {FormatTimeSpan(total)} | Game: {FormatTimeSpan(DateTime.Now - ActivityWatcher.Data.TimeJoined)}";
+                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)} | {Strings.Common_Game}: {FormatTimeSpan(DateTime.Now - ActivityWatcher.Data.TimeJoined)}";
             else
-                statusText = $"Total: {FormatTimeSpan(total)}";
+                statusText = $"{Strings.Common_Total}: {FormatTimeSpan(total)}";
 
             PlaytimeMenuItem.Header = statusText;
         }
@@ -181,7 +180,7 @@ namespace Froststrap.UI.Elements.ContextMenu
 
         private void InviteDeeplinkMenuItem_Click(object? sender, EventArgs e)
         {
-            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxWeb) ?? "No activity data available";
+            string deeplink = ActivityWatcher?.Data?.GetInviteDeeplink(true, DeeplinkType.RobloxWeb) ?? Strings.Menu_ContextMenu_NoData;
             TopLevel.GetTopLevel(this)?.Clipboard?.SetTextAsync(deeplink);
         }
 

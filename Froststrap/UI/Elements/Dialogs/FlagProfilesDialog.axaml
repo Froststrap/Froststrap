@@ -6,7 +6,7 @@
         xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
         xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
         x:Class="Froststrap.UI.Elements.Dialogs.FlagProfilesDialog"
-        Title="Flag Profiles"
+        Title="{x:Static resources:Strings.Menu_FlagProfiles_Title}"
         Width="540"
         SizeToContent="Height"
         CanResize="False"
@@ -14,7 +14,7 @@
         mc:Ignorable="d">
 
     <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
-        <controls:TitleBar Grid.Row="0" Icon="avares://Froststrap/Froststrap.ico" Title="{x:Static resources:Strings.Menu_FastFlagEditor_ProfilesDescription}" />
+        <controls:TitleBar Grid.Row="0" Icon="avares://Froststrap/Froststrap.ico" Title="{x:Static resources:Strings.Menu_FlagProfiles_Title}" />
 
         <TabControl x:Name="Tabs" Grid.Row="1" Margin="16">
             <TabItem Header="{x:Static resources:Strings.Menu_Save}">
@@ -28,16 +28,16 @@
                 <Grid RowDefinitions="Auto,*,Auto" Margin="11">
                     <Grid x:Name="RenamePanel" Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto" Margin="0,0,0,12">
                         <TextBox Grid.Column="0" x:Name="RenameTextBox" Watermark="Rename Profile" Margin="0,0,8,0" />
-                        <Button Grid.Column="1" Content="Rename" Click="RenameButton_Click" Margin="0,0,6,0" MinWidth="80" />
-                        <Button Grid.Column="2" Content="Copy" Click="CopyButton_Click" Margin="0,0,6,0" MinWidth="80" />
-                        <Button Grid.Column="3" Content="Update" Click="UpdateButton_Click" MinWidth="80" />
+                        <Button Grid.Column="1" Content="{x:Static resources:Strings.Common_Rename}" Click="RenameButton_Click" Margin="0,0,6,0" MinWidth="80" />
+                        <Button Grid.Column="2" Content="{x:Static resources:Strings.Common_Copy}" Click="CopyButton_Click" Margin="0,0,6,0" MinWidth="80" />
+                        <Button Grid.Column="3" Content="{x:Static resources:Strings.Common_Update}" Click="UpdateButton_Click" MinWidth="80" />
                     </Grid>
                     
                     <ListBox x:Name="LoadProfile" Grid.Row="1" Height="200" 
                              SelectionChanged="LoadProfile_SelectionChanged" />
                     
                     <TextBlock x:Name="LoadProfileEmptyText" Grid.Row="1" 
-                               Text="No Profiles Found" 
+                               Text="{x:Static resources:Strings.Menu_FlagProfiles_NoProfileFound}" 
                                Foreground="{DynamicResource SystemFillColorSecondaryBrush}" 
                                HorizontalAlignment="Center" VerticalAlignment="Center" 
                                IsVisible="False" />
