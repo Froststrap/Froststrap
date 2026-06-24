@@ -1,14 +1,14 @@
 using DiscordRPC;
-using Froststrap.Models.APIs;
 using System.Net.Sockets;
 
 namespace Froststrap.Integrations
 {
     public class PlayerDiscordRichPresence : IDisposable
     {
-        private readonly DiscordRpcClient _rpcClient = new("363445589247131668");
+        private readonly DiscordRpcClient? _rpcClient;
         private readonly ActivityWatcher _activityWatcher;
         private readonly Queue<Message> _messageQueue = new();
+        private readonly bool _isMacOS;
 
         private DiscordRPC.RichPresence? _currentPresence;
         private DiscordRPC.RichPresence? _originalPresence;
@@ -26,6 +26,17 @@ namespace Froststrap.Integrations
         {
             const string LOG_IDENT = "PlayerDiscordRichPresence";
 
+            _isMacOS = OperatingSystem.IsMacOS();
+
+            if (_isMacOS)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Skipping Discord RPC initialization on macOS");
+                _rpcClient = null!;
+                _activityWatcher = activityWatcher;
+                return;
+            }
+
+            _rpcClient = new DiscordRpcClient("363445589247131668");
             _activityWatcher = activityWatcher;
 
             _activityWatcher.OnGameJoin += (_, _) => Task.Run(() => SetCurrentGame());
@@ -58,6 +69,8 @@ namespace Froststrap.Integrations
 
         public void ProcessRPCMessage(Message message, bool implicitUpdate = true)
         {
+            if (_isMacOS || _disposed) return;
+
             const string LOG_IDENT = "DiscordRichPresence::ProcessRPCMessage";
 
             if (message.Command != "SetRichPresence" && message.Command != "SetLaunchData")
@@ -91,6 +104,8 @@ namespace Froststrap.Integrations
 
         private async Task UpdatePresenceIconsAsync(ulong? smallImg, ulong? largeImg, bool implicitUpdate, CancellationToken token)
         {
+            if (_isMacOS || _disposed) return;
+
             Debug.Assert(smallImg != null || largeImg != null);
 
             if (smallImg != null && largeImg != null)
@@ -163,6 +178,8 @@ namespace Froststrap.Integrations
 
         private void ProcessSetRichPresence(Message message, bool implicitUpdate)
         {
+            if (_isMacOS || _disposed) return;
+
             const string LOG_IDENT = "DiscordRichPresence::ProcessSetRichPresence";
             Models.BloxstrapRPC.RichPresence? presenceData;
 
@@ -306,6 +323,8 @@ namespace Froststrap.Integrations
 
         public void SetVisibility(bool visible)
         {
+            if (_isMacOS || _disposed) return;
+
             App.Logger.WriteLine("DiscordRichPresence::SetVisibility", $"Setting presence visibility ({visible})");
 
             _visible = visible;
@@ -313,11 +332,13 @@ namespace Froststrap.Integrations
             if (_visible)
                 UpdatePresence();
             else
-                _rpcClient.ClearPresence();
+                _rpcClient?.ClearPresence();
         }
 
         public async Task<bool> SetCurrentGame()
         {
+            if (_isMacOS || _disposed) return false;
+
             const string LOG_IDENT = "DiscordRichPresence::SetCurrentGame";
 
             if (!_activityWatcher.InGame)
@@ -435,9 +456,11 @@ namespace Froststrap.Integrations
 
         public void UpdatePresence()
         {
+            if (_isMacOS || _disposed || _rpcClient == null) return;
+
             const string LOG_IDENT = "DiscordRichPresence::UpdatePresence";
 
-            if (_disposed || !_rpcClient.IsInitialized)
+            if (!_rpcClient.IsInitialized)
                 return;
 
             try
@@ -479,22 +502,25 @@ namespace Froststrap.Integrations
             const string LOG_IDENT = "DiscordRichPresence::Dispose";
             App.Logger.WriteLine(LOG_IDENT, "Cleaning up Discord RPC and Presence");
 
-            try
+            if (_rpcClient != null)
             {
-                _fetchThumbnailsToken?.Cancel();
-                _fetchThumbnailsToken?.Dispose();
-
-                if (_rpcClient.IsInitialized)
+                try
                 {
-                    try { _rpcClient.ClearPresence(); } catch (IOException) { }
-                }
+                    _fetchThumbnailsToken?.Cancel();
+                    _fetchThumbnailsToken?.Dispose();
 
-                _rpcClient.Dispose();
-            }
-            catch (IOException ex) when (ex.InnerException is SocketException) { }
-            catch (Exception ex)
-            {
-                App.Logger.WriteException(LOG_IDENT, ex);
+                    if (_rpcClient.IsInitialized)
+                    {
+                        try { _rpcClient.ClearPresence(); } catch (IOException) { }
+                    }
+
+                    _rpcClient.Dispose();
+                }
+                catch (IOException ex) when (ex.InnerException is SocketException) { }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteException(LOG_IDENT, ex);
+                }
             }
 
             GC.SuppressFinalize(this);
