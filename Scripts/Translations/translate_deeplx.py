@@ -21,13 +21,12 @@ class DeepLXTranslator:
         
         self.languages = [
             "ar", "bg", "cs", "da", "de", "el", "es-ES", "et",
-            "fa", "fi", "fil", "fr", "hr", "hu", "id", "it",
-            "ja", "ko", "lt", "lv", "ms", "nl", "pl", "pt-BR",
-            "pt-PT", "ro", "ru", "sk", "sl", "sv-SE", "th",
+            "fi", "fr", "hu", "id", "it",
+            "ja", "ko", "lt", "lv", "nl", "pl", "pt-BR",
+            "pt-PT", "ro", "ru", "sk", "sl", "sv-SE",
             "tr", "uk", "vi", "zh-CN", "zh-TW"
         ]
         
-        self.unsupported_languages = ["fil", "ms", "th", "vi", "fa", "hr"]
         self.qa_languages = ["da", "el", "et", "lv", "pt-PT", "sk", "sl"]
         self.skip_languages = ["en-US", "en"]
         
@@ -36,7 +35,7 @@ class DeepLXTranslator:
             "pt-PT": "PT-PT",
             "sv-SE": "SV",
             "zh-CN": "ZH",
-            "zh-TW": "ZH",
+            "zh-TW": "ZH-HANT",
             "es-ES": "ES",
             "ar": "AR",
             "bg": "BG",
@@ -63,6 +62,7 @@ class DeepLXTranslator:
             "sv": "SV",
             "tr": "TR",
             "uk": "UK",
+            "vi": "VI",
         }
         
         self.skip_patterns = [
@@ -80,6 +80,7 @@ class DeepLXTranslator:
         print(f"Resources: {self.resources_dir}")
         print(f"Base file: {self.base_file}")
         print(f"Cache file: {self.cache_file}")
+        print(f"Languages to translate: {len(self.languages)}")
     
     def _load_cache(self) -> Dict:
         if self.cache_file.exists():
@@ -110,7 +111,7 @@ class DeepLXTranslator:
     def _get_deepl_code(self, lang: str) -> str:
         return self.deepl_lang_map.get(lang, lang.upper())
     
-    def translate_text_with_retry(self, text: str, target_lang: str, max_retries: int = 5) -> str:
+    def translate_text_with_retry(self, text: str, target_lang: str, max_retries: int = 3) -> str:
         if self._should_skip(text):
             return text
         
@@ -129,21 +130,63 @@ class DeepLXTranslator:
                 
                 response = requests.post(self.deeplx_url, json=payload, timeout=30)
                 
+                if response.status_code == 400:
+                    error_detail = response.text[:200] if response.text else "Bad Request"
+                    print(f"    API Error 400: {error_detail}")
+                    return text
+                
                 if response.status_code == 429:
                     wait_time = (2 ** attempt) * 5
                     print(f"    Rate limited, waiting {wait_time}s... (attempt {attempt + 1}/{max_retries})")
                     time.sleep(wait_time)
                     continue
                 
+                if response.status_code >= 500:
+                    wait_time = (2 ** attempt) * 3
+                    print(f"    Server error {response.status_code}, retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                    continue
+                
                 response.raise_for_status()
                 
                 result = response.json()
+                
+                if result.get("code") != 200:
+                    error_msg = result.get("message", "Unknown error")
+                    print(f"    API error: {error_msg}")
+                    if attempt < max_retries - 1:
+                        time.sleep(2)
+                        continue
+                    return text
+                
                 translated = result.get("data", text)
+                
+                if translated == text and len(text) > 3:
+                    if attempt < max_retries - 1:
+                        print(f"    Warning: Translation returned same text, retrying...")
+                        time.sleep(2)
+                        continue
+                    return text
                 
                 self.cache[cache_key] = translated
                 self._save_cache()
                 
                 return translated
+                
+            except requests.exceptions.Timeout:
+                if attempt == max_retries - 1:
+                    print(f"    Timeout after {max_retries} attempts: {text[:30]}...")
+                    return text
+                wait_time = (2 ** attempt) * 2
+                print(f"    Timeout, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(wait_time)
+                
+            except requests.exceptions.ConnectionError:
+                if attempt == max_retries - 1:
+                    print(f"    Connection error: DeepLX container may not be running")
+                    return text
+                print(f"    Connection error, retrying in 5s... (attempt {attempt + 1}/{max_retries})")
+                time.sleep(5)
                 
             except Exception as e:
                 if attempt == max_retries - 1:
@@ -151,7 +194,8 @@ class DeepLXTranslator:
                     return text
                 
                 wait_time = (2 ** attempt) * 2
-                print(f"    Error, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                error_str = str(e)[:50]
+                print(f"    Error: {error_str}, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
                 time.sleep(wait_time)
         
         return text
@@ -186,6 +230,9 @@ class DeepLXTranslator:
             
             translated = self.translate_text_with_retry(text, target_lang)
             results[text] = translated
+            
+            if i < len(uncached) - 1:
+                time.sleep(0.5)
         
         self._save_cache()
         return results
@@ -305,10 +352,6 @@ class DeepLXTranslator:
             print(f"Skipping {lang} (base English file)")
             return
         
-        if lang in self.unsupported_languages:
-            print(f"Skipping {lang} (not supported by DeepL)")
-            return
-        
         lang_file = self.resources_dir / f"Strings.{lang}.resx"
         print(f"Processing {lang}...")
         
@@ -397,7 +440,7 @@ class DeepLXTranslator:
             return False
     
     def start_deeplx(self) -> bool:
-        """Start DeepLX using docker run (no compose file needed)"""
+        """Start DeepLX using docker run"""
         try:
             print("Starting DeepLX container...")
             
@@ -441,20 +484,18 @@ class DeepLXTranslator:
             return
         
         print(f"Found {len(base_strings)} strings in base file")
+        print(f"Translating {len(self.languages)} languages\n")
         
-        active_languages = [lang for lang in self.languages if lang not in self.unsupported_languages]
-        print(f"Translating {len(active_languages)} languages\n")
-        
-        for i, lang in enumerate(active_languages):
-            print(f"\n[{i+1}/{len(active_languages)}]", end=" ")
+        for i, lang in enumerate(self.languages):
+            print(f"\n[{i+1}/{len(self.languages)}]", end=" ")
             self.translate_language(lang, base_strings)
             
-            if i < len(active_languages) - 1:
-                print("  Waiting 5 seconds before next language...")
-                time.sleep(5)
+            if i < len(self.languages) - 1:
+                print("  Waiting 3 seconds before next language...")
+                time.sleep(3)
         
         total = sum(self.stats.values())
-        print(f"\nComplete. Processed {total} changes across {len(active_languages)} languages")
+        print(f"\nComplete. Processed {total} changes across {len(self.languages)} languages")
 
 if __name__ == "__main__":
     translator = DeepLXTranslator()

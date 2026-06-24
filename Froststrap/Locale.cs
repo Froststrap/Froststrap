@@ -12,7 +12,7 @@ namespace Froststrap
 
         public static bool RightToLeft { get; private set; } = false;
 
-        private static readonly List<string> _rtlLocales = ["ar", "he", "fa"];
+        private static readonly List<string> _rtlLocales = ["ar", "he"];
 
         public static readonly Dictionary<string, string> SupportedLocales = new()
         {
@@ -29,20 +29,16 @@ namespace Froststrap
             { "da", "Dansk" }, // Danish
             { "es-ES", "Español" }, // Spanish
             { "el", "Ελληνικά" }, // Greek
-            { "fa", "فارسی" }, // Persian
             { "fi", "Suomi" }, // Finnish
-            { "fil", "Filipino" }, // Filipino
             { "fr", "Français" }, // French
             { "he", "עברית‎" }, // Hebrew
             { "hi", "Hindi (Latin)" }, // Hindi
-            { "hr", "Hrvatski" }, // Croatian
             { "hu", "Magyar" }, // Hungarian
             { "id", "Bahasa Indonesia" }, // Indonesian
             { "it", "Italiano" }, // Italian
             { "ja", "日本語" }, // Japanese
             { "ko", "한국어" }, // Korean
             { "lt", "Lietuvių" }, // Lithuanian
-            { "ms", "Malay" }, // Malay
             { "nl", "Nederlands" }, // Dutch
             { "no", "Bokmål" }, // Norwegian
             { "pl", "Polski" }, // Polish
@@ -50,7 +46,6 @@ namespace Froststrap
             { "ro", "Română" }, // Romanian
             { "ru", "Русский" }, // Russian
             { "sv-SE", "Svenska" }, // Swedish
-            { "th", "ภาษาไทย" }, // Thai
             { "tr", "Türkçe" }, // Turkish
             { "uk", "Українська" }, // Ukrainian
             { "vi", "Tiếng Việt" }, // Vietnamese
