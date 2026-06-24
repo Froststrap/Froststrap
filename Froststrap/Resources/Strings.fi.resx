@@ -121,33 +121,11 @@
     <value>Lisenssit</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Nämä ovat ihmiset, jotka ovat tukeneet Froststrapia Ko-fi-palvelun kautta. Suuri kiitos kaikille täällä oleville!
-Jokainen tässä luettelossa oleva henkilö on järjestetty kokonaislahjoitussumman mukaan.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Kuukausittain</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Kertaluonteinen</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Froststrapin kannattajat</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>Tietoa Froststrapista</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Kaikki Froststrapin käännökset on tuotettu joukkoistamalla [Crowdin]({0}) -palvelun kautta. Tässä luettelossa mainitut henkilöt ovat kaikki anteliaasti uhraaneet aikaansa ja vaivaansa Froststrapin lokalisointiin. Suuri kiitos kaikille!</value>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Kääntäjät</value>
-  </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Palvelimen sijaintia ei voitu selvittää. Saatat liittyä peleihin liian nopeasti.</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Nykyinen pelisi ei näy Discord-läsnäolotiedoissasi, koska pelitietojen lataamisen yhteydessä ilmeni virhe.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox ei enää tue Windows 7:ää tai 8.1:tä. Jotta voit jatkaa Robloxin pelaamista, päivitä käyttöjärjestelmäsi Windows 10:een tai uudempaan versioon.</value>
@@ -167,10 +145,6 @@ Haluatko vaihtaa ensisijaisen kanavasi kanavaksi {0}?</value>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox on tällä hetkellä käynnissä, ja uuden instanssin käynnistäminen sulkee sen. Haluatko varmasti jatkaa käynnistämistä?</value>
   </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Anselia ei tueta.
-Bloxshadea ei voi enää käyttää Froststrapin kanssa.</value>
-  </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>Kanava, jolla olet tällä hetkellä ({0}), on vanhentunut, eikä se näytä enää saavan päivityksiä.\n
 Haluatko siirtyä oletuskanavalle ({1})?</value>
@@ -185,12 +159,6 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
     <value>Näyttää siltä, että ystäväsi pelaa tätä peliä juuri nyt. Haluatko liittyä mukaan?</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>Valitsee palvelimen satunnaisesti optimaalisten palvelimien luettelosta.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>Satunnaista BetterMatchmaking-palvelinta</value>
-  </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
     <value>Ota BetterMatchmaking käyttöön</value>
   </data>
@@ -199,15 +167,6 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Kaikkia tiedostoja ei voitu purkaa</value>
-  </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap yritti päivittää Robloxia, mutta se ei onnistu, koska Robloxin tiedostoja käytetään edelleen.
-
-Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja käynnistä ohjelma uudelleen.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
-  </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Ennen kuin poistat asennuksen, sinun on ensin asennettava Froststrap.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>{0}:n tallentaminen epäonnistui: {1}</value>
@@ -255,9 +214,6 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>{tuote} päivitetään...</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>Hankitaan uusin Froststrap...</value>
-  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Odotetaan tietoja...</value>
   </data>
@@ -287,29 +243,14 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Lisää yksi</value>
   </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>Analytiikka</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automaattinen</value>
-  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Selaa</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Peruuta</value>
   </data>
-  <data name="Common.Channel" xml:space="preserve">
-    <value>Kanava</value>
-  </data>
-  <data name="Common.Choose" xml:space="preserve">
-    <value>Valitse</value>
-  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sulje</value>
-  </data>
-  <data name="Common.Color" xml:space="preserve">
-    <value>Väri</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopioi kaikki</value>
@@ -319,12 +260,6 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Mukautettu</value>
-  </data>
-  <data name="Common.Debug" xml:space="preserve">
-    <value>Virheenkorjaus</value>
-  </data>
-  <data name="Common.DebugMenu" xml:space="preserve">
-    <value>Debug-valikko</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Oletus</value>
@@ -344,18 +279,9 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Common.Edit" xml:space="preserve">
     <value>Muokkaa</value>
   </data>
-  <data name="Common.Experimental" xml:space="preserve">
-    <value>Kokeellinen</value>
-  </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Vienti</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FilterType" xml:space="preserve">
-    <value>Suodattimen tyyppi:</value>
-  </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>Ohje</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Tuonti</value>
@@ -366,39 +292,14 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON-tuonti</value>
   </data>
-  <data name="Common.LauncherType" xml:space="preserve">
-    <value>Tyyppi: Käynnistysohjelma</value>
-  </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Ladataan, odota hetki...</value>
-  </data>
-  <data name="Common.LookingFor" xml:space="preserve">
-    <value>Etsitään</value>
-  </data>
-  <data name="Common.Message" xml:space="preserve">
-    <value>Viesti</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Sekalaiset asiat</value>
   </data>
-  <data name="Common.ModType" xml:space="preserve">
-    <value>Tyyppi: Mod</value>
-  </data>
   <data name="Common.Name" xml:space="preserve">
     <value>Nimi</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Takaisin</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Asenna</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Seuraava</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>Tietoja ei voitu ladata verkkovirheen vuoksi.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>Uusi</value>
@@ -408,9 +309,6 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ei saatavilla</value>
-  </data>
-  <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>Avaa Debug-valikko</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Avaa lokitiedosto</value>
@@ -430,21 +328,8 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Common.Quality" xml:space="preserve">
     <value>Laatu</value>
   </data>
-  <data name="Common.Recommended" xml:space="preserve">
-    <value>Suositeltava</value>
-  </data>
-  <data name="Common.Refresh" xml:space="preserve">
-    <value>Päivitä</value>
-  </data>
-  <data name="Common.Remove" xml:space="preserve">
-    <value>Poista</value>
-  </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Nimeä uudelleen</value>
-  </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>Nollaa</value>
-    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox-sovellusta ei ole vielä asennettu. Käynnistä Roblox Froststrapin avulla ainakin kerran ennen kuin yrität käyttää tätä vaihtoehtoa.</value>
@@ -452,23 +337,11 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Common.Search" xml:space="preserve">
     <value>Haku</value>
   </data>
-  <data name="Common.SearchBy" xml:space="preserve">
-    <value>Hae</value>
-  </data>
-  <data name="Common.Settings" xml:space="preserve">
-    <value>Asetukset</value>
-  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Pikakuvakkeet</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Työpöydän kuvake</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Käynnistysvalikon kuvake</value>
-  </data>
-  <data name="Common.Studio" xml:space="preserve">
-    <value>Tutkimus</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Järjestelmän oletusasetus</value>
@@ -476,23 +349,8 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Common.Template" xml:space="preserve">
     <value>Malli</value>
   </data>
-  <data name="Common.Time" xml:space="preserve">
-    <value>Aika</value>
-  </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Aikaleima</value>
-  </data>
-  <data name="Common.Type" xml:space="preserve">
-    <value>Tyyppi</value>
-  </data>
-  <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>Tuntematon tila</value>
-  </data>
-  <data name="Common.UserId" xml:space="preserve">
-    <value>Käyttäjätunnus</value>
-  </data>
-  <data name="Common.Username" xml:space="preserve">
-    <value>Käyttäjätunnus</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Arvo</value>
@@ -503,9 +361,6 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="Common.VersionGuid" xml:space="preserve">
     <value>Versio-GUID</value>
   </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>Varoitus</value>
-  </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Kyllä</value>
   </data>
@@ -515,44 +370,17 @@ Sulje kaikki sovellukset, jotka saattavat käyttää Robloxin tiedostoja, ja kä
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Sulje Roblox</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Haluatko varmasti sulkea Robloxin? Tämä lopettaa prosessin väkisin.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>Kopioi kutsun syvälinkki</value>
   </data>
-  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>Tyhjennä historia</value>
-  </data>
-  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>Kopioi työnumero</value>
-  </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
     <value>Pelihistoria tallennetaan vain nykyisen Roblox-istuntosi ajalta. Pelit näkyvät tässä, kun poistut niistä tai siirryt niiden sisällä. Kaikille palvelimille ei voi liittyä uudelleen.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>Pelitietoja ei vielä ole{0}{0}Liity muutamaan peliin, niin ne näkyvät täällä!</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>Päivitä</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
     <value>Liity uudelleen</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>Pelin historia</value>
-  </data>
-  <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>Lokit-valikko</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>Näyttää pelaajien äskettäin lähettämät viestit.</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>Viestilokit</value>
-  </data>
-  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>Pelaajien lokit</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>Sijainti: {0}
@@ -566,10 +394,6 @@ Käyttöaika: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Sijainti</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Sijainti: {0}
-Napsauta saadaksesi lisätietoja</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
     <value>Yhdistetty yksityiseen palvelimeen</value>
@@ -613,9 +437,6 @@ Napsauta saadaksesi lisätietoja</value>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
     <value>Teematiedostoa ei löytynyt ZIP-tiedostosta</value>
   </data>
-  <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>Lisää mukautettu teema</value>
-  </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Mukautettu teema {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
@@ -634,12 +455,6 @@ Napsauta saadaksesi lisätietoja</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
     <value>Tallenna</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>Teeman tallennuksessa tapahtui virhe.</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>Teema on tallennettu onnistuneesti!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Teemasi on tallennettu!</value>
@@ -706,9 +521,6 @@ Napsauta saadaksesi lisätietoja</value>
     <value>{0}:n luominen epäonnistui: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
-  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>Yritettiin käyttää virheellistä WindowBackdropType-arvoa: {0}</value>
-  </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
     <value>Teeman XML-juurikansio ei ole {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
@@ -763,9 +575,6 @@ Käytetään oletusarvoa {1}.</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>Lisää pikamerkki</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Odota, kunnes asennus on valmis.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>Odota, kunnes asennuksen poisto on valmis.</value>
@@ -973,10 +782,6 @@ Tarkista, toimiiko Roblox [alkuperäisen käynnistysohjelman]({1}) avulla. Jos s
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Violetti</value>
   </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON-tiedostot</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>Zip-arkisto</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
@@ -993,109 +798,17 @@ Haluatko päivittää tällä hetkellä asennetun version?</value>
 Tämä voi aiheuttaa ongelmia, ja asetuksesi saattavat muuttua. Suosittelemme uudelleenasennusta.
 Haluatko varmasti jatkaa?</value>
   </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Avaa Robloxin, kun kaikki on asennettu ja määritetty</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Asenna ja käynnistä Roblox</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Tutustu kaikkiin Froststrapin tarjoamiin ominaisuuksiin ja asetuksiin ja muokkaa niitä</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Froststrapin asetusten määrittäminen</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap on asennettu onnistuneesti.
-
-Roblox ei kuitenkaan ole vielä asennettu. Se asennetaan, kun käynnistät Robloxin Froststrapin avulla ensimmäistä kertaa. Ennen asennusta kannattaa ehkä määrittää ensin Froststrapin asetukset.
-
-Tärkeä huomautus: Älä käytä ”Roblox Player” -pikakuvaketta Robloxin käynnistämiseen, sillä Froststrap ei pysty käynnistämään Robloxia yhteensopivuusongelmien vuoksi. Jos et näe Froststrapin käynnistyvän, kun käynnistät Robloxin Roblox-verkkosivustolta, korjaa ongelma käynnistämällä Roblox kerran Froststrapin avulla työpöytäsovelluksesta.
-
-Mitä haluat tehdä?</value>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Valmistuminen</value>
-  </data>
-  <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Froststrap-asetusten tuonti epäonnistui.
-
-{0}</value>
-  </data>
-  <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Tuo asetukset Froststrapista</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap on asennettu tähän sijaintiin aiemmin, ja se on edelleen olemassa, mutta asennusohjelma ei voi korvata vanhaa suoritustiedostoa.
-
-Poista Froststrap.exe manuaalisesti asennussijainnista tai yritä käynnistää järjestelmä uudelleen ja yritä sitten asennusta uudelleen.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Olemassa olevia tietoja löytyi. Modifikaatiosi ja asetuksesi palautetaan.</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox asennetaan myös tähän polkuun. Muuta tätä, jos haluat asentaa kaikki pelisi erilliselle levylle. Muussa tapauksessa on suositeltavaa jättää tämä asetus ennalleen.</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Valitse asennuskohde</value>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Nämä ovat yleisiä pikanäppäimiä, jotka avaavat monivalintavalikon. Tiettyjä toimintoja varten voidaan luoda pikanäppäimiä myöhemmin asetuksissa.</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Asenna</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>Bootstrapper-asennusta ei löytynyt.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Haluatko varmasti peruuttaa asennuksen?</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap-asennusohjelma</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Kiitos, että latasit Froststrapin. 
-
-Ainoa virallinen lähde, josta Froststrapin voi ladata, on {0}, joten varmista, että olet ladannut sen virallisesta lähteestä.
-
-Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrittää kaikki Froststrapin asetukset.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Jatka napsauttamalla ”Seuraava”.</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Tervetuloa</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Yrität asentaa Froststrapin version {0}, mutta uusin saatavilla oleva versio on {1}. Haluatko ladata sen?</value>
-  </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
     <value>Fast Flags -asetuksiasi ei voitu ladata. Ne on palautettu oletusasetuksiin.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>Asetuksiasi ei voitu ladata. Ne on palautettu oletusasetuksiin.</value>
   </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Määritä asetukset</value>
-  </data>
-  <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>Liity Discord-palvelimellemme</value>
-    <comment>Call-to-action button</comment>
-  </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Käynnistä Roblox</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
     <value>Käynnistä Roblox Studio</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Katso ohjeet Wikistä</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Onko sinulla ongelmia?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Tästä käynnistyksestä ei tallenneta lokitiedostoa, koska Froststrap ei pysty kirjoittamaan kansioon '{0}'</value>
@@ -1133,9 +846,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Apache-lisenssi 2.0</value>
   </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD:n 2-kohtainen lisenssi</value>
-  </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>MIT-lisenssi</value>
   </data>
@@ -1149,15 +859,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
     <value>Versio {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
-  <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>Asiakkuuspäällikkö</value>
-  </data>
-  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>Asetukset on tallennettu. Voit nyt sulkea tämän ikkunan</value>
-  </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Kaikki tiedostot</value>
-  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Huomaa, että kaikki tekemäsi muutokset eivät tule voimaan välittömästi, ennen kuin olet sulkenut kaikki tällä hetkellä auki olevat Roblox-istunnot.</value>
   </data>
@@ -1167,32 +868,17 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Mukauta Froststrapin käynnistysohjelmaa monipuolisten asetusten avulla.</value>
   </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>Muuta latausmerkkijonoa. {0} on paketin nimi, {1} on ladattujen pakettien koko ja {2} on pakettien kokonaiskoko.</value>
-  </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>Bootstrapperin lataustila</value>
-  </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>Mukauta Froststrap-teemoja helposti valmiiden asetusten avulla tai luo oma ainutlaatuinen ulkoasusi.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
     <value>Sovellusten teemat</value>
   </data>
-  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Valitse mukautettu fontti, jolla korvataan Froststrapin oletusfontti käyttöliittymässä.</value>
-  </data>
-  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>Sovelluksen mukautettu fontti</value>
-  </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
     <value>Mukautetun teeman {0} poistaminen epäonnistui: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Mukautettua teemaa ei ole valittu.</value>
-  </data>
-  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>Mukautetun teeman {0} uudelleennimeäminen epäonnistui: {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
     <value>Määritä muut erilaiset mukautettavat käynnistysohjelman asetukset.</value>
@@ -1233,24 +919,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Bootstrapper-tyyli</value>
   </data>
-  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>Järjestä navigointivalikon kohteet uudelleen haluamallasi tavalla. Muutokset tallennetaan automaattisesti.</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>Lukitusjärjestys</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>Siirry alaspäin</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>Siirry ylöspäin</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>Palauta oletusasetukset</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>Valikon säätö</value>
-  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Esikatselu</value>
   </data>
@@ -1269,9 +937,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap-tilin käyttöoikeudet</value>
   </data>
-  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>Shadereiden käyttö edellyttää Ansel-tukea.</value>
-  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap tarkistaa ja päivittää itsensä automaattisesti vakaaseen versioon, kun Roblox käynnistetään.</value>
   </data>
@@ -1283,9 +948,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>Taustatiedot</value>
-  </data>
-  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>Kanava</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>Sulkee RobloxCrashHandler.exe-prosessin automaattisesti käynnistyksen yhteydessä, jotta järjestelmän resursseja vapautuu.</value>
@@ -1302,35 +964,11 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Määritä, mitä Froststrapin tulisi tehdä, kun Roblox käynnistetään.</value>
   </data>
-  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>Kun tämä toiminto on käytössä, se poistaa käytöstä kaikki sovelluksen animaatiot. Vaatii sovelluksen uudelleenkäynnistyksen.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>Poista animaatiot käytöstä</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Poistaa laitteistokiihdytyksen käytöstä vain Froststrapissa. Huomautus: Jotta muutokset tulevat voimaan, sovellus on käynnistettävä uudelleen.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>Poista laitteistokiihdytys käytöstä</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Koskee vain pelejä, jotka käynnistetään Roblox-verkkosivustolta.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Salli tuottamattomat kielet</value>
-  </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Roblox asennetaan puhtaasti seuraavan käynnistyksen yhteydessä.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Pakota Robloxin uudelleenasennus</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Palauttaa Robloxin tehtäväpalkin ja yläpalkin kuvakkeet vanhempiin versioihin. Ei välttämättä toimi, jos Robloxin käynnistyminen kestää liian kauan.</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Tehtäväpalkin kuvake</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
     <value>Valitsee Robloxille prosessorin prioriteetin.</value>
@@ -1362,12 +1000,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
     <value>Froststrap-lokit</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>Froststrap-lokit poistetaan.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>Froststrap-lokit</value>
-  </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>Vanhat lokitiedostot poistetaan.</value>
   </data>
@@ -1382,9 +1014,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Palauta asetukset oletusarvoihin</value>
-  </data>
-  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Poista Froststrap</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>Vaihda automaattisesti</value>
@@ -1404,12 +1033,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Channel.Description" xml:space="preserve">
     <value>Muuta Robloxin ja Froststrapin käyttöönotto- ja asennusasetuksia.</value>
   </data>
-  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Määritä, mitä verkkotunnusta Roblox ja Froststrap käyttävät. Syötä vain luotettavia verkkotunnuksia.</value>
-  </data>
-  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>Roblox-verkkotunnus</value>
-  </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
     <value>Roblox-päivitykset</value>
   </data>
@@ -1428,57 +1051,6 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Määritettyä kanavaa ei ole olemassa tai se on yksityinen</value>
   </data>
-  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Pakota Froststrap lataamaan versio tietyn hash-arvon perusteella. Älä muuta tätä asetusta, jos et tiedä, mitä se tekee.</value>
-  </data>
-  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>Versiotunniste</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>Saatavilla olevat kanavat</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Etsii suurimman osan käytettävissä olevista kanavista.</value>
-  </data>
-  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>Määrittää käyttöönottokanavan. Älä muuta tätä, ellet ole varma siitä, mitä olet tekemässä!</value>
-  </data>
-  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>Käynnistä sovellus uudelleen, jotta animaatiot poistuvat käytöstä.</value>
-  </data>
-  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>Käynnistä sovellus uudelleen, jotta laitteistokiihdytys poistuu käytöstä ja asetus astuu voimaan.</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>Pelaajien lokit</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>Näyttää pelaajat, jotka poistuvat tai liittyvät palvelimelle, jolla olet.</value>
-  </data>
-  <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Tämän avulla voit asentaa mukautettuja modeja Bootstrapperin kautta.</value>
-  </data>
-  <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>Mukautetut modit</value>
-  </data>
-  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>Tyhjennä lokit</value>
-  </data>
-  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>Kopioi valitut</value>
-  </data>
-  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>Vientilokit</value>
-  </data>
-  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>Avaa Lokit-kansio</value>
-  </data>
-  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>Päivitä lokit</value>
-  </data>
-  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>Hakulokit</value>
-  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Tämä kanava on vanhentunut, eikä sitä todennäköisesti enää päivitetä. Käytä toista kanavaa.</value>
   </data>
@@ -1488,27 +1060,8 @@ Asennusprosessi on nopea ja yksinkertainen, ja asennuksen jälkeen voit määrit
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>Lisää uusi</value>
   </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>Lisäasetukset</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>Tuo JSON-tunnus</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>Lisää tunnuksen avulla</value>
-  </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
     <value>Tälle lipun nimelle on jo olemassa merkintä.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Takaisin</value>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Tämän väärinkäyttö voi johtaa epävakauteen tai odottamattomiin tapahtumiin.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Käytä varoen.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Puhdas luettelo</value>
@@ -1526,24 +1079,8 @@ Ristiriitaisia lippumääritelmiä on {0} kappaletta:
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
     <value>Hallitse FastFlags-asetuksiasi täällä. Tutustu muihin ominaisuuksiin kohdassa ”Lisäasetukset”.</value>
   </data>
-  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>Vain .json- ja .txt-tiedostot ovat tuettuja</value>
-  </data>
-  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 Lisää JSON- tai TXT-tiedostosi tähän</value>
-  </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Vie JSON</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>Haluatko sisällyttää valmiiksi määritettyjä FFlags-lippuja?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>Merkintä ”{0}” ei ole kelvollinen, sillä arvon on oltava boolean-tyyppinen (joko ”True” tai ”False”)</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>Merkintä ”{0}” ei ole kelvollinen, sillä nimi saa sisältää vain kirjaimia, numeroita ja alaviivoja</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Syöttämäsi JSON-tiedosto ei näytä olevan kelvollinen. Tarkista se vielä kerran ja yritä uudelleen.
@@ -1551,23 +1088,6 @@ Ristiriitaisia lippumääritelmiä on {0} kappaletta:
 Lisätietoja:
 {0}</value>
     <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>Merkintä ”{0}” ei ole kelvollinen, sillä arvon on oltava kokonaisluku</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>Merkintä ”{0}” ei ole kelvollinen, koska paikkasuodattimen muotoilu ei ole oikea.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>Merkintä ”{0}” ei ole kelvollinen, sillä nimen on alettava merkillä FFlag, DFInt jne.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Kopioitu leikepöydälle.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Näyttää siltä, että olet tuomassa erittäin laajaa määritystiedostoa. Sinun tulisi tuoda vain sellaisia määrityksiä, jotka ymmärrät täysin. ÄLÄ kopioi sokeasti muiden laatimia määrityksiä. Jos jatkat, tulet hyvin todennäköisesti kohtaamaan vakausongelmia ja odottamattomia muutoksia.
-
-Haluatko varmasti jatkaa?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Vau, täällä on tosi tyhjää! Miten olisi, jos lisättäisiin FastFlag?</value>
@@ -1584,20 +1104,6 @@ Haluatko varmasti jatkaa?</value>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag-editori</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Palaa takaisin</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Tiedän, mitä teen</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Tiedätkö, mitä olet tekemässä?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Fast Flags -asetukset ovat erittäin tehokkaita, sillä ne on tarkoitettu ainoastaan Roblox-kehittäjien käyttöön. Vaikka ne voivat olla erittäin hyödyllisiä, niiden manuaalinen määrittäminen voi aiheuttaa vakavia vakaus- ja toiminnallisuusongelmia. ÄLÄ käytä editoria, jos et ole varma siitä, mitä olet tekemässä.
-
-ÄLÄ käytä tätä tuodaksesi muiden ihmisten luomia suuria ”flag-listoja”, jotka lupaavat parantaa suorituskykyä tai vastaavaa. Niihin liittyy edellä mainittuja ongelmia, ja ne aiheuttavat sinulle ongelmia, koska et ole täysin tietoinen siitä, mitä ne muuttavat. Jos olit aikeissa tehdä niin, PALAA TAKAISIN.</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Hallitse tiettyjen Roblox-moottorin parametrien ja ominaisuuksien asetuksia.</value>
   </data>
@@ -1605,18 +1111,11 @@ Haluatko varmasti jatkaa?</value>
     <value>Hallitse omia Fast Flags -lippujasi. Käytä varovasti.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Lue lisää Fast Flags -toiminnosta, näiden esiasetusten tarkoituksesta ja niiden käytöstä.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
     <value>Jos tämä asetus poistetaan käytöstä, tässä määritettyjä asetuksia ei sovelleta Robloxiin.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Anna Froststrapin hallita FastFlags-asetuksia</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Määritä Roblox-moottorin grafiikka- ja suorituskykyasetukset.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox heikentää renderoinnin laatua sen mukaan, miten näytön skaalaus on määritetty Windowsissa.</value>
@@ -1681,64 +1180,8 @@ Haluatko varmasti jatkaa?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag-asetukset</value>
   </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Lisää Alt+Enter-pikakomento automaattisesti Froststrapin käynnistyessä.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Käytä Alt-näppäintä manuaalisesti</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>Valitse JSON-tiedoston kopiointimuoto.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>Kopioi muoto</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Kopioi valitut liput JSON-muodossa valitun kopiointimuodon mukaisesti, kun painat Ctrl+C.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C JSON-muoto</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>Kytke esiasetussarake päälle tai pois päältä FastFlag-asetuksissa niiden FastFlag-lippujen osalta, joita voi kytkeä päälle tai pois päältä.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>Esiasetettu sarake</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>Näytä lippujen kokonaismäärä FastFlag Editorissa.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>Lippujen lukumäärä</value>
-  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Tyhjennä FFlags</value>
-  </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Fonttitiedostot</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Se on anonyymiä eikä siinä ole mitään pahaa, lupaan sen. Lisätietoja siitä, mitä tietoja Froststrap kerää ja miksi, löytyy Froststrapin [tietosuojakäytännöstä]({0}).</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Ota käyttöön analytiikkatietojen lähettäminen Froststrapiin</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Määritä Froststrapin toimintaan liittyvät asetukset.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>Kerää tietoja, jotka voidaan ladata verkkoon, jotta kohtaamasi ongelma voidaan selvittää.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>Froststrap-asetukset</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>Kaikki Froststrap-lokit</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
-    <value>Vie diagnostiikkatiedot</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Muokkaa pelin asetuksia kätevän valikon kautta.</value>
@@ -1751,31 +1194,6 @@ Haluatko varmasti jatkaa?</value>
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Yleiset asetukset</value>
-  </data>
-  <data name="Menu.Help.Title" xml:space="preserve">
-    <value>Ohje</value>
-  </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Kuvaketiedostot</value>
-  </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Froststrapia ei voi asentaa tähän. Valitse toinen sijainti tai käytä oletussijaintia napsauttamalla nollauspainiketta.</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrapilla ei ole kirjoitusoikeutta valitsemaasi asennuskansioon. Valitse toinen sijainti.</value>
-  </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>Kansio, johon olet valinnut Froststrapin asennuksen, on jo olemassa eikä se ole tyhjä. On erittäin suositeltavaa, että Froststrap asennetaan omaan erilliseen kansioonsa.
-
-Suosittelemme siirtymistä seuraavaan sijaintiin:
-{0}
-
-Haluatko siirtyä ehdotettuun sijaintiin?
-Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
-    <comment>{0} is a file path</comment>
-  </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Sinun on määritettävä asennuspaikka</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Aktiviteetin seuranta</value>
@@ -1876,12 +1294,6 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Pelin historia -valikko</value>
   </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>Näyttää pelaajien liittymiset ja poistumiset sekä viestit. Toimii vain [tekstikeskustelupalvelun](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837) kanssa.</value>
-  </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>Lokit-valikko</value>
-  </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Näyttää pelin kokonaiskestoajan ja nykyisen istunnon keston, kun olet pelissä tai Studio-paikassa.</value>
   </data>
@@ -1918,10 +1330,6 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Hallitse ja asenna tiedostomuokkauksia Roblox-peliohjelmaan.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Katso lisätietoja modien hallinnasta ja luomisesta.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Kaikki, mitä tarvitset osoittimien hallintaan.</value>
   </data>
@@ -1946,23 +1354,8 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Mukautettu osoitin</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>Käytä asetuksia</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Pidä useita kursorisarjoja valmiina käyttöön.</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>Vientiasetukset</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>Hae Aseta</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>Tuontijoukko</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>Mitään mukautettua kohdistinsarjaa ei ole valittu.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Mukautettu osoitinsarja</value>
@@ -1985,9 +1378,6 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Asettaa valitun mukautetun fontin Robloxissa.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>Valitsemasi tiedosto ei näytä olevan kelvollinen fonttitiedosto.</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Poista käytetty fontti</value>
   </data>
@@ -2005,60 +1395,6 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Mukautettu Shiftlock</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>Lisää väriliukuma</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Mod-sukupolven asetukset</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>Värilliset osoittimet</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>Värillinen emote-pyörä</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>Värillinen Shiftlock-kohdistin</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>Värilliset äänikeskustelukuvakkeet</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>Kaltevuuskulma:</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>Väriliukuma</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>Pikatoiminnot</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Kopioi Mods-kansioon</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
-    <value>Luo tila</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>Räätälöity Roblox-logo</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>Sprite-arkin esikatselu</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>Yksittäisen sprite-kuvan esikatselu</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>Mukautettu latauspyristys</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Title" xml:space="preserve">
-    <value>Mod-generaattori</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Hallitse mukautettuja Roblox-moduuleja täällä.</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Avaa Mods-kansio</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Valitse, minkä tyyppisiä emojeja Robloxin tulisi käyttää.</value>
@@ -2081,30 +1417,6 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Käytä vanhan avatar-editorin taustakuvaa</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Yritys palauttaa suurin piirtein ne hahmojen äänet, joita käytettiin ennen vuotta 2014.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Vanhojen hahmojen äänien jäljitteleminen</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Tuo takaisin klassinen ”oof”-kuolemanhuuto.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Käytä Old Death Soundia</value>
-  </data>
-  <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Modit</value>
-  </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Napsauta saadaksesi lisätietoja tästä vaihtoehdosta.</value>
-  </data>
-  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>Tyhjennä palvelinluettelo</value>
-  </data>
-  <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Liity helposti lähelläsi oleviin palvelimiin käyttämällä Account Managerissa valittua tiliä. Käyttää [RoValran sovellusrajapintoja]({0}), [RoValran tietosuojakäytäntö on voimassa.]({0}/privacy)</value>
-  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Kirjoita paikan tunnus tai pelin nimi...</value>
   </data>
@@ -2117,21 +1429,6 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Palvelimen koko:</value>
   </data>
-  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>Liity mukaan</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>Pelaajat</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Region" xml:space="preserve">
-    <value>Alue</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>Palvelimen tunnus</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>Palvelimen käytettävyys</value>
-  </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Alueen valinta</value>
   </data>
@@ -2141,29 +1438,14 @@ Valitsemalla ”Ei” ohitat tämän varoituksen ja jatkat asennusta.</value>
   <data name="Menu.Save" xml:space="preserve">
     <value>Tallenna</value>
   </data>
-  <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>Tallenna ja asenna</value>
-  </data>
-  <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>Tallenna ja käynnistä</value>
-  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Muutokset astuvat voimaan, kun seuraavan kerran käynnistät Robloxin.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>Asetukset on tallennettu!</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>Luo pelin pikakuvake</value>
-  </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>Tämän avulla voit luoda pikakuvakkeita, joiden avulla pääset nopeasti tiettyihin peleihin.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>Valitse pikakuvake, jota haluat muokata.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>Käytä pelikuvaketta</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
     <value>Pelin pikanäppäimet</value>
@@ -2203,9 +1485,6 @@ Haluatko ottaa testitilan käyttöön?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap-asetukset</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>Sinulla on tallentamattomia muutoksia. Haluatko varmasti sulkea ilman tallennusta?</value>
-  </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>Yhteisön modit</value>
   </data>
@@ -2221,6 +1500,9 @@ Haluatko ottaa testitilan käyttöön?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Kuvakkeet</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>Käännöstesti.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ne säilytetään siinä paikassa, johon Froststrap asennettiin, ja ne palautetaan automaattisesti, kun ohjelma asennetaan uudelleen.</value>

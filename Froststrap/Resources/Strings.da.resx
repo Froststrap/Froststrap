@@ -121,33 +121,11 @@
     <value>Licenser</value>
     <comment>Referring to code licenses; see https://opensource.org/licenses for example</comment>
   </data>
-  <data name="About.Supporters.Description" xml:space="preserve">
-    <value>Dette er de personer, der har støttet Froststrap via Ko-fi. En kæmpe tak til jer alle sammen!
-Hver person på listen er rangordnet efter det samlede bidrag.</value>
-  </data>
-  <data name="About.Supporters.Monthly" xml:space="preserve">
-    <value>Månedligt</value>
-  </data>
-  <data name="About.Supporters.OneOff" xml:space="preserve">
-    <value>Engangsbeløb</value>
-  </data>
-  <data name="About.Supporters.Title" xml:space="preserve">
-    <value>Froststrap-tilhængere</value>
-  </data>
   <data name="About.Title" xml:space="preserve">
     <value>Om Froststrap</value>
   </data>
-  <data name="About.Translators.Description" xml:space="preserve">
-    <value>Alle oversættelser af Froststrap er udført via crowdsourcing gennem [Crowdin]({0}). Alle, der er nævnt her, er personer, der generøst har stillet deres tid og kræfter til rådighed for at hjælpe med at lokalisere Froststrap. En kæmpe tak til jer alle!</value>
-  </data>
-  <data name="About.Translators.Title" xml:space="preserve">
-    <value>Oversættere</value>
-  </data>
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Det var ikke muligt at hente oplysninger om serverens placering. Du deltager muligvis i spil for hurtigt.</value>
-  </data>
-  <data name="ActivityWatcher.RichPresenceLoadFailed" xml:space="preserve">
-    <value>Det spil, du spiller lige nu, vises ikke i din Discord-status, da der opstod en fejl under indlæsningen af spiloplysningerne.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox understøtter ikke længere Windows 7 eller 8.1. For at kunne fortsætte med at spille Roblox skal du opgradere til Windows 10 eller en nyere version.</value>
@@ -167,10 +145,6 @@ Vil du skifte din foretrukne kanal til {0}?</value>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox kører i øjeblikket, og hvis du starter en ny instans, lukkes den nuværende. Er du sikker på, at du vil fortsætte med at starte den?</value>
   </data>
-  <data name="Bootstrapper.Dialog.AnselDisabled" xml:space="preserve">
-    <value>Ansel understøttes ikke.
-Du kan ikke længere bruge Bloxshade sammen med Froststrap.</value>
-  </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
     <value>Den kanal, du er på lige nu ({0}), er forældet og ser ud til ikke længere at modtage opdateringer.\n
 Vil du skifte til standardkanalen ({1})?</value>
@@ -185,12 +159,6 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
     <value>Det ser ud til, at en ven spiller dette spil lige nu. Vil du være med?</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description" xml:space="preserve">
-    <value>Vælger en tilfældig server fra listen over optimale servere.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title" xml:space="preserve">
-    <value>Randomiser BetterMatchmaking-serveren</value>
-  </data>
   <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
     <value>Aktivér BetterMatchmaking</value>
   </data>
@@ -199,15 +167,6 @@ Vil du skifte til standardkanalen ({1})?</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Det lykkedes ikke at udpakke alle filer</value>
-  </data>
-  <data name="Bootstrapper.FilesInUse" xml:space="preserve">
-    <value>Froststrap forsøgte at opdatere Roblox, men kan ikke gøre det, fordi Roblox’ filer stadig er i brug.
-
-Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart programmet.</value>
-    <comment>This is *not* for when Roblox is still running when trying to upgrade. This applies to files being open (i.e. image assets)</comment>
-  </data>
-  <data name="Bootstrapper.FirstRunUninstall" xml:space="preserve">
-    <value>Du skal først installere Froststrap, før du afinstallerer det.</value>
   </data>
   <data name="Bootstrapper.JsonManagerSaveFailed" xml:space="preserve">
     <value>Det lykkedes ikke at gemme {0}: {1}</value>
@@ -255,9 +214,6 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>Opdaterer {produkt}...</value>
   </data>
-  <data name="Bootstrapper.Status.UpgradingFroststrap" xml:space="preserve">
-    <value>Sådan får du den nyeste version af Froststrap...</value>
-  </data>
   <data name="Bootstrapper.Status.WaitingForData" xml:space="preserve">
     <value>Venter på data...</value>
   </data>
@@ -287,29 +243,14 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Tilføj enkelt</value>
   </data>
-  <data name="Common.Analytics" xml:space="preserve">
-    <value>Analytik</value>
-  </data>
-  <data name="Common.Automatic" xml:space="preserve">
-    <value>Automatisk</value>
-  </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Gennemse</value>
   </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Annuller</value>
   </data>
-  <data name="Common.Channel" xml:space="preserve">
-    <value>Kanal</value>
-  </data>
-  <data name="Common.Choose" xml:space="preserve">
-    <value>Vælg</value>
-  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Luk</value>
-  </data>
-  <data name="Common.Color" xml:space="preserve">
-    <value>Farve</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopier alt</value>
@@ -319,12 +260,6 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Brugerdefineret</value>
-  </data>
-  <data name="Common.Debug" xml:space="preserve">
-    <value>Fejlfinding</value>
-  </data>
-  <data name="Common.DebugMenu" xml:space="preserve">
-    <value>Debug-menuen</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Standard</value>
@@ -344,18 +279,9 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="Common.Edit" xml:space="preserve">
     <value>Rediger</value>
   </data>
-  <data name="Common.Experimental" xml:space="preserve">
-    <value>Eksperimentel</value>
-  </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksport</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FilterType" xml:space="preserve">
-    <value>Filtertype:</value>
-  </data>
-  <data name="Common.Help" xml:space="preserve">
-    <value>Hjælp</value>
   </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importer fra fil</value>
@@ -363,36 +289,14 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="Common.ImportJson" xml:space="preserve">
     <value>Import af JSON</value>
   </data>
-  <data name="Common.LauncherType" xml:space="preserve">
-    <value>Type: Startprogram</value>
-  </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Indlæser, vent venligst...</value>
-  </data>
-  <data name="Common.LookingFor" xml:space="preserve">
-    <value>Søger</value>
-  </data>
-  <data name="Common.Message" xml:space="preserve">
-    <value>Besked</value>
   </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Diverse</value>
   </data>
   <data name="Common.Name" xml:space="preserve">
     <value>Navn</value>
-  </data>
-  <data name="Common.Navigation.Back" xml:space="preserve">
-    <value>Tilbage</value>
-  </data>
-  <data name="Common.Navigation.Install" xml:space="preserve">
-    <value>Installer</value>
-    <comment>The word "Install" is being used as a verb in this instance, like the other navigation button texts of "Next" and "Back"</comment>
-  </data>
-  <data name="Common.Navigation.Next" xml:space="preserve">
-    <value>Næste</value>
-  </data>
-  <data name="Common.NetworkError" xml:space="preserve">
-    <value>Det var ikke muligt at indlæse data på grund af en netværksfejl.</value>
   </data>
   <data name="Common.New" xml:space="preserve">
     <value>Nyt</value>
@@ -402,9 +306,6 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ikke tilgængelig</value>
-  </data>
-  <data name="Common.OpenDebugMenu" xml:space="preserve">
-    <value>Åbn menuen »Debug«</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Åbn logfil</value>
@@ -424,21 +325,8 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="Common.Quality" xml:space="preserve">
     <value>Kvalitet</value>
   </data>
-  <data name="Common.Recommended" xml:space="preserve">
-    <value>Anbefalet</value>
-  </data>
-  <data name="Common.Refresh" xml:space="preserve">
-    <value>Opdater</value>
-  </data>
-  <data name="Common.Remove" xml:space="preserve">
-    <value>Fjern</value>
-  </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Omdøb</value>
-  </data>
-  <data name="Common.Reset" xml:space="preserve">
-    <value>Nulstil</value>
-    <comment>In the context of resetting something to a default value</comment>
   </data>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox er endnu ikke installeret. Du skal starte Roblox via Froststrap mindst én gang, før du forsøger at bruge denne funktion.</value>
@@ -446,23 +334,11 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="Common.Search" xml:space="preserve">
     <value>Søg</value>
   </data>
-  <data name="Common.SearchBy" xml:space="preserve">
-    <value>Søg efter</value>
-  </data>
-  <data name="Common.Settings" xml:space="preserve">
-    <value>Indstillinger</value>
-  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Genveje</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Ikon på skrivebordet</value>
-  </data>
-  <data name="Common.Shortcuts.StartMenu" xml:space="preserve">
-    <value>Startmenu-ikon</value>
-  </data>
-  <data name="Common.Studio" xml:space="preserve">
-    <value>Undersøgelse</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Systemstandard</value>
@@ -470,29 +346,14 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="Common.Template" xml:space="preserve">
     <value>Skabelon</value>
   </data>
-  <data name="Common.Time" xml:space="preserve">
-    <value>Tid</value>
-  </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Tidspunkt</value>
-  </data>
-  <data name="Common.UnknownStatus" xml:space="preserve">
-    <value>Ukendt status</value>
-  </data>
-  <data name="Common.UserId" xml:space="preserve">
-    <value>Bruger-id</value>
-  </data>
-  <data name="Common.Username" xml:space="preserve">
-    <value>Brugernavn</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Værdi</value>
   </data>
   <data name="Common.VersionGuid" xml:space="preserve">
     <value>Versions-GUID</value>
-  </data>
-  <data name="Common.Warning" xml:space="preserve">
-    <value>Advarsel</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Ja</value>
@@ -503,44 +364,17 @@ Luk venligst alle programmer, der muligvis bruger Roblox’ filer, og genstart p
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Luk Roblox</value>
   </data>
-  <data name="ContextMenu.CloseRobloxMessage" xml:space="preserve">
-    <value>Er du sikker på, at du vil lukke Roblox? Dette vil afbryde processen tvungent.</value>
-  </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>Kopier invitationens deeplink</value>
   </data>
-  <data name="ContextMenu.GameHistory.ClearHistory" xml:space="preserve">
-    <value>Ryd historik</value>
-  </data>
-  <data name="ContextMenu.GameHistory.CopyJobId" xml:space="preserve">
-    <value>Kopier job-ID</value>
-  </data>
   <data name="ContextMenu.GameHistory.Description" xml:space="preserve">
     <value>Spilhistorikken gemmes kun for din nuværende Roblox-session. Spil vises her, når du forlader dem eller teleporterer dig inden for dem. Det er ikke muligt at genindtræde på alle servere.</value>
-  </data>
-  <data name="ContextMenu.GameHistory.NoHistory" xml:space="preserve">
-    <value>Der er endnu ingen spilhistorik{0}{0}Deltag i nogle spil for at se dem her!</value>
-  </data>
-  <data name="ContextMenu.GameHistory.Refresh" xml:space="preserve">
-    <value>Opdater</value>
   </data>
   <data name="ContextMenu.GameHistory.Rejoin" xml:space="preserve">
     <value>Tilmeld dig igen</value>
   </data>
   <data name="ContextMenu.GameHistory.Title" xml:space="preserve">
     <value>Spilhistorik</value>
-  </data>
-  <data name="ContextMenu.Logs.Title" xml:space="preserve">
-    <value>Menuen »Logs«</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Description" xml:space="preserve">
-    <value>Viser de seneste beskeder, som spillerne har sendt.</value>
-  </data>
-  <data name="ContextMenu.MessageLogs.Title" xml:space="preserve">
-    <value>Meddelelseslogfiler</value>
-  </data>
-  <data name="ContextMenu.PlayerLogs.Title" xml:space="preserve">
-    <value>Spillerlogfiler</value>
   </data>
   <data name="ContextMenu.ServerDetails.Notification.Text" xml:space="preserve">
     <value>Placering: {0}
@@ -554,10 +388,6 @@ Driftstid: {1}</value>
   </data>
   <data name="ContextMenu.ServerInformation.Location" xml:space="preserve">
     <value>Placering</value>
-  </data>
-  <data name="ContextMenu.ServerInformation.Notification.Text" xml:space="preserve">
-    <value>Placering: {0}
-Klik her for mere information</value>
   </data>
   <data name="ContextMenu.ServerInformation.Notification.Title.Private" xml:space="preserve">
     <value>Forbundet til en privat server</value>
@@ -598,9 +428,6 @@ Klik her for mere information</value>
   <data name="CustomTheme.Add.Errors.ZipMissingThemeFile" xml:space="preserve">
     <value>Temafilen kunne ikke findes i ZIP-filen</value>
   </data>
-  <data name="CustomTheme.Add.Title" xml:space="preserve">
-    <value>Tilføj brugerdefineret tema</value>
-  </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Brugerdefineret tema {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
@@ -619,12 +446,6 @@ Klik her for mere information</value>
   </data>
   <data name="CustomTheme.Editor.Save" xml:space="preserve">
     <value>Gem</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Error" xml:space="preserve">
-    <value>Der opstod en fejl under gemningen af dit tema.</value>
-  </data>
-  <data name="CustomTheme.Editor.Save.Success" xml:space="preserve">
-    <value>Temaet er gemt!</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Dit tema er blevet gemt!</value>
@@ -691,9 +512,6 @@ Klik her for mere information</value>
     <value>{0} kunne ikke oprette {1}: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
-  <data name="CustomTheme.Errors.InvalidBackdrop" xml:space="preserve">
-    <value>Der blev forsøgt at bruge en ugyldig WindowBackdropType: {0}</value>
-  </data>
   <data name="CustomTheme.Errors.InvalidRoot" xml:space="preserve">
     <value>XML-rod for temaet er ikke {0}</value>
     <comment>{0} is the element name (e.g. Button)</comment>
@@ -748,9 +566,6 @@ Der anvendes nu {1} som standard.</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
     <value>Tilføj »Hurtig«-flag</value>
-  </data>
-  <data name="Dialog.AlreadyRunning.Installer" xml:space="preserve">
-    <value>Vent venligst, indtil installationen er færdig.</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>Vent venligst, indtil afinstallationen er afsluttet.</value>
@@ -949,10 +764,6 @@ Tjek, om Roblox fungerer med [den originale launcher]({1}). Hvis det ikke er til
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Lilla</value>
   </data>
-  <data name="FileTypes.JSONFiles" xml:space="preserve">
-    <value>JSON-filer</value>
-    <comment>Shown in the open file dialog, where the file type selection dropdown is, e.g. "JSON files (*.json)"</comment>
-  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>Zip-arkiv</value>
     <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
@@ -969,109 +780,17 @@ Vil du opgradere den version, du har installeret i øjeblikket?</value>
 Der kan opstå problemer, og dine indstillinger kan blive ændret. Det anbefales at geninstallere.
 Er du sikker på, at du vil fortsætte?</value>
   </data>
-  <data name="Installer.Completion.Launch.Description" xml:space="preserve">
-    <value>Åbner Roblox, når alt er installeret og konfigureret</value>
-  </data>
-  <data name="Installer.Completion.Launch.Title" xml:space="preserve">
-    <value>Installer og start Roblox</value>
-  </data>
-  <data name="Installer.Completion.Settings.Description" xml:space="preserve">
-    <value>Se og tilpas alle de funktioner og indstillinger, som Froststrap har at byde på</value>
-  </data>
-  <data name="Installer.Completion.Settings.Title" xml:space="preserve">
-    <value>Konfigurer Froststraps indstillinger</value>
-  </data>
-  <data name="Installer.Completion.Text" xml:space="preserve">
-    <value>Froststrap er nu installeret.
-
-Roblox er dog endnu ikke installeret. Det installeres, når du starter Roblox med Froststrap for første gang. Inden installationen kan det være en god idé at konfigurere Froststraps indstillinger først.
-
-Vigtig bemærkning: Brug ikke genvejen »Roblox Player« til at starte Roblox, da Froststrap ikke vil kunne starte Roblox på grund af konflikter. Hvis du ikke kan se, at Froststrap starter, når du starter fra Roblox-webstedet, skal du blot starte Roblox med Froststrap én gang fra skrivebordsprogrammet for at løse dette problem.
-
-Hvad vil du gerne gøre?</value>
-  </data>
-  <data name="Installer.Completion.Title" xml:space="preserve">
-    <value>Afslutning</value>
-  </data>
-  <data name="Installer.FailedToImportSettings" xml:space="preserve">
-    <value>Det lykkedes ikke at importere Froststrap-indstillingerne.
-
-{0}</value>
-  </data>
-  <data name="Installer.ImportSettings" xml:space="preserve">
-    <value>Importer indstillinger fra Froststrap</value>
-  </data>
-  <data name="Installer.Install.CannotOverwrite" xml:space="preserve">
-    <value>Froststrap er tidligere blevet installeret på denne placering og findes stadig der, men installationsprogrammet kan ikke overskrive den gamle eksekverbare fil.
-
-Slet venligst Froststrap.exe manuelt fra installationsmappen, eller prøv at genstarte computeren, og forsøg derefter at installere programmet igen.</value>
-  </data>
-  <data name="Installer.Install.Location.DataFound" xml:space="preserve">
-    <value>Der er fundet eksisterende data. Dine mods og indstillinger vil blive gendannet.</value>
-  </data>
-  <data name="Installer.Install.Location.Text" xml:space="preserve">
-    <value>Roblox vil også blive installeret i denne mappe. Du kan ændre dette, hvis du foretrækker at installere alle dine spil på et separat drev. Ellers anbefales det, at du lader indstillingen være, som den er.</value>
-  </data>
-  <data name="Installer.Install.Location.Title" xml:space="preserve">
-    <value>Vælg, hvor programmet skal installeres</value>
-  </data>
-  <data name="Installer.Install.Shortcuts.Description" xml:space="preserve">
-    <value>Dette er generelle genveje, der åbner en startmenu med flere valgmuligheder. Genveje til specifikke funktioner kan oprettes senere i indstillingerne.</value>
-  </data>
-  <data name="Installer.Install.Title" xml:space="preserve">
-    <value>Installer</value>
-    <comment>Refers to "Install" as a verb</comment>
-  </data>
-  <data name="Installer.InstallationNotFound" xml:space="preserve">
-    <value>Der blev ikke fundet nogen bootstrapper-installation.</value>
-  </data>
-  <data name="Installer.ShouldCancel" xml:space="preserve">
-    <value>Er du sikker på, at du vil afbryde installationen?</value>
-  </data>
-  <data name="Installer.Title" xml:space="preserve">
-    <value>Froststrap-installationsprogram</value>
-  </data>
-  <data name="Installer.Welcome.MainText" xml:space="preserve">
-    <value>Tak, fordi du har downloadet Froststrap. 
-
-Den eneste officielle kilde, hvorfra du kan downloade Froststrap, er {0}, så sørg for at kontrollere, at du har downloadet det fra den officielle kilde.
-
-Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Froststraps indstillinger efter installationen.</value>
-    <comment>{0} and {1} are URLs</comment>
-  </data>
-  <data name="Installer.Welcome.NextToContinue" xml:space="preserve">
-    <value>Klik venligst på »Næste« for at fortsætte.</value>
-  </data>
-  <data name="Installer.Welcome.Title" xml:space="preserve">
-    <value>Velkommen</value>
-  </data>
-  <data name="Installer.Welcome.UpdateNotice" xml:space="preserve">
-    <value>Du forsøger at installere version {0} af Froststrap, men den nyeste tilgængelige version er {1}. Vil du downloade den?</value>
-  </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
     <value>Dine Fast Flags kunne ikke indlæses. De er blevet nulstillet til standardindstillingerne.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>Det var ikke muligt at indlæse dine indstillinger. De er blevet nulstillet til standardindstillingerne.</value>
   </data>
-  <data name="LaunchMenu.ConfigureSettings" xml:space="preserve">
-    <value>Konfigurer indstillinger</value>
-  </data>
-  <data name="LaunchMenu.Discord" xml:space="preserve">
-    <value>Bliv medlem af vores Discord-server</value>
-    <comment>Call-to-action button</comment>
-  </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
     <value>Start Roblox</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
     <value>Start Roblox Studio</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Description" xml:space="preserve">
-    <value>Se Wiki'en for hjælp</value>
-  </data>
-  <data name="LaunchMenu.Wiki.Title" xml:space="preserve">
-    <value>Har du et problem?</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Der vil ikke blive skrevet nogen logfil ved denne opstart, da Froststrap ikke kan skrive til mappen på '{0}'</value>
@@ -1109,9 +828,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Apache-licens 2.0</value>
   </data>
-  <data name="Menu.About.Licenses.BSD2" xml:space="preserve">
-    <value>BSD-licens med to klausuler</value>
-  </data>
   <data name="Menu.About.Licenses.MIT" xml:space="preserve">
     <value>MIT-licens</value>
   </data>
@@ -1120,15 +836,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   </data>
   <data name="Menu.About.Title" xml:space="preserve">
     <value>Om</value>
-  </data>
-  <data name="Menu.AccountManager.Title" xml:space="preserve">
-    <value>Kundechef</value>
-  </data>
-  <data name="Menu.AdvancedSettings.SettingsSaved" xml:space="preserve">
-    <value>Indstillingerne er gemt. Du kan nu lukke dette vindue</value>
-  </data>
-  <data name="Menu.AllFiles" xml:space="preserve">
-    <value>Alle filer</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Vær opmærksom på, at ikke alle dine ændringer træder i kraft med det samme, før du har lukket alle de Roblox-instanser, der er åbne i øjeblikket.</value>
@@ -1139,32 +846,17 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Tilpas Froststraps bootstrapper ved hjælp af en lang række indstillinger.</value>
   </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Description" xml:space="preserve">
-    <value>Rediger downloadstrengen. {0} er pakkenavnet, {1} er størrelsen på de downloadede pakker, og {2} er den samlede størrelse af pakkerne.</value>
-  </data>
-  <data name="Menu.Appearance.BootstrapperDownloading.Title" xml:space="preserve">
-    <value>Status for download af Bootstrapper</value>
-  </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>Du kan nemt tilpasse Froststrap-temaer ved hjælp af forudindstillinger eller skabe dit helt eget unikke udseende.</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Title" xml:space="preserve">
     <value>App-temaer</value>
   </data>
-  <data name="Menu.Appearance.CustomAppFont.Description" xml:space="preserve">
-    <value>Vælg en brugerdefineret skrifttype for at overskrive Froststraps standardskrifttype i brugergrænsefladen.</value>
-  </data>
-  <data name="Menu.Appearance.CustomAppFont.Title" xml:space="preserve">
-    <value>Brugerdefineret app-skrifttype</value>
-  </data>
   <data name="Menu.Appearance.CustomThemes.DeleteFailed" xml:space="preserve">
     <value>Det lykkedes ikke at slette det brugerdefinerede tema {0}: {1}</value>
   </data>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Der er ikke valgt noget brugerdefineret tema.</value>
-  </data>
-  <data name="Menu.Appearance.CustomThemes.RenameFailed" xml:space="preserve">
-    <value>Det lykkedes ikke at omdøbe det brugerdefinerede tema {0} til {1}</value>
   </data>
   <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
     <value>Konfigurer andre diverse tilpasningsmuligheder for bootstrapperen.</value>
@@ -1205,24 +897,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Bootstrapper-stil</value>
   </data>
-  <data name="Menu.Appearance.MenuAdjustment.Description" xml:space="preserve">
-    <value>Omarranger punkterne i navigationsmenuen, som du ønsker. Ændringerne gemmes automatisk.</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.LockOrder" xml:space="preserve">
-    <value>Låseordre</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveDown" xml:space="preserve">
-    <value>Gå ned</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.MoveUp" xml:space="preserve">
-    <value>Gå op</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.ResetToDefault" xml:space="preserve">
-    <value>Nulstil til standardindstillinger</value>
-  </data>
-  <data name="Menu.Appearance.MenuAdjustment.Title" xml:space="preserve">
-    <value>Justering af menuen</value>
-  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Forhåndsvisning</value>
   </data>
@@ -1241,9 +915,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Behaviour.AllowCookieAccess.Title" xml:space="preserve">
     <value>Froststrap-kontorettigheder</value>
   </data>
-  <data name="Menu.Behaviour.AnselBanner" xml:space="preserve">
-    <value>Der kræves Ansel-understøttelse for shaders.</value>
-  </data>
   <data name="Menu.Behaviour.AutoUpdate.Description" xml:space="preserve">
     <value>Froststrap kontrollerer automatisk, om der er en stabil version tilgængelig, og opdaterer sig selv til denne, når Roblox startes.</value>
   </data>
@@ -1255,9 +926,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>Opdateringer om baggrunden</value>
-  </data>
-  <data name="Menu.Behaviour.Channel.Title" xml:space="preserve">
-    <value>Kanal</value>
   </data>
   <data name="Menu.Behaviour.CloseCrashHandler.Description" xml:space="preserve">
     <value>Lukker automatisk processen RobloxCrashHandler.exe ved opstart for at frigøre noget systemressourceforbrug.</value>
@@ -1274,35 +942,11 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Behaviour.Description" xml:space="preserve">
     <value>Indstil, hvad Froststrap skal gøre, når Roblox startes.</value>
   </data>
-  <data name="Menu.Behaviour.DisableAnimation.Description" xml:space="preserve">
-    <value>Når denne funktion er aktiveret, deaktiveres alle animationer i appen. Appen skal genstartes.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableAnimation.Title" xml:space="preserve">
-    <value>Deaktiver animationer</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Description" xml:space="preserve">
-    <value>Deaktiverer kun hardwareacceleration i Froststrap. Bemærk: Du skal genstarte programmet for at se ændringerne.</value>
-  </data>
-  <data name="Menu.Behaviour.DisableHardwareAcceleration.Title" xml:space="preserve">
-    <value>Deaktiver hardwareacceleration</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Description" xml:space="preserve">
-    <value>Gælder kun for spil, der startes fra Roblox-hjemmesiden.</value>
-  </data>
-  <data name="Menu.Behaviour.ForceRobloxLanguage.Title" xml:space="preserve">
-    <value>Tillad sprog, der ikke understøttes</value>
-  </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Der vil blive foretaget en ren installation af Roblox, næste gang programmet startes.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Tving geninstallation af Roblox</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Description" xml:space="preserve">
-    <value>Gendanner ikonerne på Roblox-proceslinjen og øverste bjælke til de ældre versioner. Fungerer muligvis ikke, hvis Roblox tager for lang tid at starte.</value>
-  </data>
-  <data name="Menu.Behaviour.OldRobloxIcon.Title" xml:space="preserve">
-    <value>Ikon på proceslinjen</value>
   </data>
   <data name="Menu.Behaviour.ProcessPriority.Description" xml:space="preserve">
     <value>Vælger CPU-prioritet for Roblox.</value>
@@ -1331,12 +975,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Bootstrapper.Cleaner.IncludeBloxstrap.Title" xml:space="preserve">
     <value>Froststrap-logfiler</value>
   </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description" xml:space="preserve">
-    <value>Froststrap-logfiler vil blive slettet.</value>
-  </data>
-  <data name="Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title" xml:space="preserve">
-    <value>Froststrap-logfiler</value>
-  </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Description" xml:space="preserve">
     <value>Gamle logfiler vil blive slettet.</value>
   </data>
@@ -1351,9 +989,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   </data>
   <data name="Menu.BottomButtons.ResetSettingsToDefault" xml:space="preserve">
     <value>Nulstil indstillingerne til standardindstillingerne</value>
-  </data>
-  <data name="Menu.BottomButtons.Uninstall" xml:space="preserve">
-    <value>Afinstaller Froststrap</value>
   </data>
   <data name="Menu.Channel.ChangeAction.Automatic" xml:space="preserve">
     <value>Skift automatisk</value>
@@ -1373,12 +1008,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Channel.Description" xml:space="preserve">
     <value>Rediger indstillingerne for installation og implementering af Roblox og Froststrap.</value>
   </data>
-  <data name="Menu.Channel.RobloxDomain.Description" xml:space="preserve">
-    <value>Angiv, hvilket domæne Roblox og Froststrap skal bruge. Indtast kun pålidelige domæner.</value>
-  </data>
-  <data name="Menu.Channel.RobloxDomain.Title" xml:space="preserve">
-    <value>Roblox-domæne</value>
-  </data>
   <data name="Menu.Channel.RobloxUpgrades" xml:space="preserve">
     <value>Roblox-opgraderinger</value>
   </data>
@@ -1397,57 +1026,6 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Den angivne kanal findes enten ikke, eller også er den privat</value>
   </data>
-  <data name="Menu.Channel.VersionHash.Desription" xml:space="preserve">
-    <value>Tving Froststrap til at downloade versionen fra en bestemt hash. Du bør ikke ændre denne indstilling, hvis du ikke ved, hvad den gør.</value>
-  </data>
-  <data name="Menu.Channel.VersionHash.Title" xml:space="preserve">
-    <value>Versionshash</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels" xml:space="preserve">
-    <value>Tilgængelige kanaler</value>
-  </data>
-  <data name="Menu.ChannelChanger.AvailableChannels.Description" xml:space="preserve">
-    <value>Gennemser de fleste af de tilgængelige kanaler med henblik på brug.</value>
-  </data>
-  <data name="Menu.ChannelChanger.Description" xml:space="preserve">
-    <value>Indstiller implementeringskanalen. Du bør kun ændre denne indstilling, hvis du ved, hvad du gør!</value>
-  </data>
-  <data name="Menu.Channels.DisableAnimationRestart" xml:space="preserve">
-    <value>Genstart venligst appen for at deaktivere animationerne.</value>
-  </data>
-  <data name="Menu.Channels.HardwareAccelRestart" xml:space="preserve">
-    <value>Genstart venligst appen, for at hardwareaccelerationen kan deaktiveres og træde i kraft.</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs" xml:space="preserve">
-    <value>Spillerlogfiler</value>
-  </data>
-  <data name="Menu.Context.PlayerLogs.Description" xml:space="preserve">
-    <value>Viser spillere, der forlader eller tilmelder sig den server, du befinder dig på.</value>
-  </data>
-  <data name="Menu.CustomMods.Description" xml:space="preserve">
-    <value>Giver dig mulighed for at installere brugerdefinerede mods fra Bootstrapper.</value>
-  </data>
-  <data name="Menu.CustomMods.Title" xml:space="preserve">
-    <value>Brugerdefinerede mods</value>
-  </data>
-  <data name="Menu.DebugMenu.ClearLogs" xml:space="preserve">
-    <value>Slet logfiler</value>
-  </data>
-  <data name="Menu.DebugMenu.CopySelected" xml:space="preserve">
-    <value>Kopier det markerede</value>
-  </data>
-  <data name="Menu.DebugMenu.ExportLogs" xml:space="preserve">
-    <value>Eksportlogfiler</value>
-  </data>
-  <data name="Menu.DebugMenu.OpenLogsFolder" xml:space="preserve">
-    <value>Åbn mappen »Logs«</value>
-  </data>
-  <data name="Menu.DebugMenu.RefreshLogs" xml:space="preserve">
-    <value>Opdater logfiler</value>
-  </data>
-  <data name="Menu.DebugMenu.SearchBoxPlaceHolder" xml:space="preserve">
-    <value>Søgelogfiler</value>
-  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Denne kanal er forældet og bliver sandsynligvis ikke længere opdateret. Brug venligst en anden kanal.</value>
   </data>
@@ -1457,27 +1035,8 @@ Installationsprocessen er hurtig og enkel, og du vil kunne konfigurere alle Fros
   <data name="Menu.FastFlagEditor.AddNew" xml:space="preserve">
     <value>Tilføj nyt</value>
   </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings" xml:space="preserve">
-    <value>Avancerede indstillinger</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.ImportAddID" xml:space="preserve">
-    <value>Importer JSON-ID</value>
-  </data>
-  <data name="Menu.FastFlagEditor.AdvancedSettings.SingleAddID" xml:space="preserve">
-    <value>Tilføj med ID</value>
-  </data>
   <data name="Menu.FastFlagEditor.AlreadyExists" xml:space="preserve">
     <value>Der findes allerede en post med dette flagnavn.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Back" xml:space="preserve">
-    <value>Tilbage</value>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerText" xml:space="preserve">
-    <value>Misbrug af denne funktion kan føre til ustabilitet eller uventede hændelser.</value>
-    <comment>The element that this string is rendered in *cannot be wrapped* and may be truncated when displayed if too long. If so, try and paraphrase a shortened version.</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.BannerTitle" xml:space="preserve">
-    <value>Anvend med forsigtighed.</value>
   </data>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Renset liste</value>
@@ -1495,24 +1054,8 @@ Der er {0} konfliktende flagdefinitioner:
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
     <value>Administrer dine FastFlags her. Se flere funktioner under »Avancerede indstillinger«.</value>
   </data>
-  <data name="Menu.FastFlagEditor.DropJson.Description" xml:space="preserve">
-    <value>Der understøttes kun .json- og .txt-filer</value>
-  </data>
-  <data name="Menu.FastFlagEditor.DropJson.Title" xml:space="preserve">
-    <value>📂 Indsæt din JSON- eller TXT-fil her</value>
-  </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Eksportér JSON</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ExportJson.IncludePresets" xml:space="preserve">
-    <value>Vil du gerne medtage forudindstillede FFlags?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidBoolValue" xml:space="preserve">
-    <value>Indtastningen for '{0}' er ikke gyldig, da værdien skal være en boolsk værdi (enten 'True' eller 'False')</value>
-    <comment>Do not translate 'True' and 'False', those must stay in English</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidCharacter" xml:space="preserve">
-    <value>Indtastningen for '{0}' er ikke gyldig, da navnet kun må indeholde bogstaver, tal og understregninger</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Den JSON, du har indtastet, ser ikke ud til at være gyldig. Tjek den venligst igen, og prøv på ny.
@@ -1520,23 +1063,6 @@ Der er {0} konfliktende flagdefinitioner:
 Yderligere oplysninger:
 {0}</value>
     <comment>{0} is an exception message</comment>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidNumberValue" xml:space="preserve">
-    <value>Indtastningen for '{0}' er ikke gyldig, da værdien skal være et heltal</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPlaceFilter" xml:space="preserve">
-    <value>Indtastningen for '{0}' er ugyldig, da stedfiltret ikke er formateret korrekt.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.InvalidPrefix" xml:space="preserve">
-    <value>Indtastningen for '{0}' er ikke gyldig, da navnet skal begynde med FFlag, DFInt osv.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.JsonCopiedToClipboard" xml:space="preserve">
-    <value>Kopieret til udklipsholderen.</value>
-  </data>
-  <data name="Menu.FastFlagEditor.LargeConfig" xml:space="preserve">
-    <value>Det ser ud til, at du er ved at importere en meget stor konfiguration. Du bør kun importere konfigurationer, som du fuldt ud forstår. Du må IKKE blindt indsætte konfigurationer, der er lavet af andre. Hvis du fortsætter, vil du med stor sandsynlighed opleve stabilitetsproblemer og uventede ændringer.
-
-Er du sikker på, at du vil fortsætte?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Wow, her er jo helt tomt! Hvad med at tilføje et FastFlag?</value>
@@ -1550,20 +1076,6 @@ Er du sikker på, at du vil fortsætte?</value>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Vis forudindstillede flag</value>
   </data>
-  <data name="Menu.FastFlagEditor.Warning.Back" xml:space="preserve">
-    <value>Gå tilbage</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Continue" xml:space="preserve">
-    <value>Jeg ved godt, hvad jeg gør</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Header" xml:space="preserve">
-    <value>Ved du, hvad du laver?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Warning.Text" xml:space="preserve">
-    <value>Fast Flags er ekstremt kraftfulde, da de udelukkende er beregnet til brug af Roblox-ingeniører. Selvom de kan være meget nyttige, kan manuel konfiguration af dem medføre alvorlige problemer med stabilitet og funktionalitet. Brug IKKE editoren, hvis du er usikker på, hvad du laver.
-
-Brug IKKE dette til at importere store "flag-lister", der er lavet af andre, og som lover at forbedre ydeevnen eller lignende. De er udsat for de ovennævnte problemer, og de vil skabe problemer for dig, da du ikke vil være fuldt ud klar over, hvad de ændrer. Hvis du var ved at gøre det, så GÅ TILBAGE.</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Styr, hvordan bestemte parametre og funktioner i Roblox-motoren konfigureres.</value>
   </data>
@@ -1571,18 +1083,11 @@ Brug IKKE dette til at importere store "flag-lister", der er lavet af andre, og 
     <value>Administrer dine egne Fast Flags. Brug dem med forsigtighed.</value>
     <comment>Title is Menu.FastFlagEditor.Title</comment>
   </data>
-  <data name="Menu.FastFlags.Help.Description" xml:space="preserve">
-    <value>Læs mere om Fast Flags, hvad disse forudindstillinger gør, og hvordan man bruger dem.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.FastFlags.ManagerEnabled.Description" xml:space="preserve">
     <value>Hvis du deaktiverer denne indstilling, vil de indstillinger, der er konfigureret her, ikke blive anvendt i Roblox.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
     <value>Tillad Froststrap at administrere FastFlags</value>
-  </data>
-  <data name="Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo" xml:space="preserve">
-    <value>Konfigurer indstillingerne for grafik og ydeevne i Roblox’ motor.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
     <value>Roblox nedsætter din gengivelseskvalitet afhængigt af, hvordan din skærm er skaleret i Windows.</value>
@@ -1647,64 +1152,8 @@ Brug IKKE dette til at importere store "flag-lister", der er lavet af andre, og 
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Indstillinger for FastFlag</value>
   </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description" xml:space="preserve">
-    <value>Tilføj automatisk Alt+Enter-FastFlag, når Froststrap startes.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title" xml:space="preserve">
-    <value>Brug Alt manuelt</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description" xml:space="preserve">
-    <value>Vælg formatet til kopiering af JSON.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title" xml:space="preserve">
-    <value>Kopier format</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description" xml:space="preserve">
-    <value>Kopierer de valgte flag som JSON ved hjælp af det valgte kopiformat, når man trykker på Ctrl+C.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title" xml:space="preserve">
-    <value>Ctrl+C JSON-format</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description" xml:space="preserve">
-    <value>Aktivér kolonnen »Forudindstillinger« for de FastFlags, der kan slås til og fra, i FastFlag-indstillingerne.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title" xml:space="preserve">
-    <value>Forudindstillet kolonne</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description" xml:space="preserve">
-    <value>Vis det samlede antal flag i FastFlag Editor.</value>
-  </data>
-  <data name="Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title" xml:space="preserve">
-    <value>Antal flag</value>
-  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Ryd FFlags</value>
-  </data>
-  <data name="Menu.FontFiles" xml:space="preserve">
-    <value>Skrifttypefiler</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Description" xml:space="preserve">
-    <value>Det er anonymt og helt harmløst, det lover jeg. For at få et indblik i, hvilke oplysninger Froststrap indsamler, og hvorfor, kan du læse Froststraps [privatlivspolitik]({0}).</value>
-  </data>
-  <data name="Menu.Froststrap.Analytics.Title" xml:space="preserve">
-    <value>Aktivér overførsel af analyseoplysninger til Froststrap</value>
-  </data>
-  <data name="Menu.Froststrap.Description" xml:space="preserve">
-    <value>Konfigurer indstillinger, der vedrører selve Froststraps funktionsmåde.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Description" xml:space="preserve">
-    <value>Indsaml oplysninger, der kan uploades online, for at løse det problem, du har.</value>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportConfig" xml:space="preserve">
-    <value>Konfiguration af Froststrap</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.ExportLogs" xml:space="preserve">
-    <value>Alle Froststrap-logfiler</value>
-    <comment>Label that appears next to a checkbox</comment>
-  </data>
-  <data name="Menu.Froststrap.ExportData.Title" xml:space="preserve">
-    <value>Eksport af diagnosedata</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Du kan ændre indstillingerne i spillet via en praktisk menu.</value>
@@ -1717,31 +1166,6 @@ Brug IKKE dette til at importere store "flag-lister", der er lavet af andre, og 
   </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Globale indstillinger</value>
-  </data>
-  <data name="Menu.Help.Title" xml:space="preserve">
-    <value>Hjælp</value>
-  </data>
-  <data name="Menu.IconFiles" xml:space="preserve">
-    <value>Ikonfiler</value>
-  </data>
-  <data name="Menu.InstallLocation.CantInstall" xml:space="preserve">
-    <value>Froststrap kan ikke installeres her. Vælg venligst en anden placering, eller brug standardplaceringen ved at klikke på knappen »Nulstil«.</value>
-  </data>
-  <data name="Menu.InstallLocation.NoWritePerms" xml:space="preserve">
-    <value>Froststrap har ikke skriveadgang til den installationsplacering, du har valgt. Vælg venligst en anden placering.</value>
-  </data>
-  <data name="Menu.InstallLocation.NotEmpty" xml:space="preserve">
-    <value>Den mappe, du har valgt at installere Froststrap i, findes allerede og er IKKE tom. Det anbefales på det kraftigste, at Froststrap installeres i sin egen, uafhængige mappe.
-
-Det foreslås, at du skifter til følgende placering:
-{0}
-
-Vil du skifte til den foreslåede placering?
-Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter.</value>
-    <comment>{0} is a file path</comment>
-  </data>
-  <data name="Menu.InstallLocation.NotSet" xml:space="preserve">
-    <value>Du skal angive en installationsplacering</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Aktivitetsmåling</value>
@@ -1842,12 +1266,6 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menu for spilhistorik</value>
   </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Description" xml:space="preserve">
-    <value>Viser, når spillere tilmelder sig eller forlader spillet, samt beskeder. Fungerer kun med [tekstchattjenesten](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837).</value>
-  </data>
-  <data name="Menu.Integrations.PlayerMessageLogs.Title" xml:space="preserve">
-    <value>Menuen »Logs«</value>
-  </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Viser din samlede spilletid og den aktuelle sessionstid, når du befinder dig i et spil eller i Studio.</value>
   </data>
@@ -1884,10 +1302,6 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Administrer og anvend filændringer til Roblox-spilklienten.</value>
   </data>
-  <data name="Menu.Mods.Help.Description" xml:space="preserve">
-    <value>Se oplysninger om, hvordan man administrerer og opretter mods.</value>
-    <comment>Title is Common.Help</comment>
-  </data>
   <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Alt, hvad du har brug for til at administrere dine markører.</value>
   </data>
@@ -1912,23 +1326,8 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Brugerdefineret markør</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ApplySet" xml:space="preserve">
-    <value>Anvend sæt</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Sørg for at have flere markørsæt klar til brug.</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ExportSet" xml:space="preserve">
-    <value>Eksportsæt</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.FetchSet" xml:space="preserve">
-    <value>Hent Sæt</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.ImportSet" xml:space="preserve">
-    <value>Importindstilling</value>
-  </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.NoneSelected" xml:space="preserve">
-    <value>Der er ikke valgt noget brugerdefineret markørsæt.</value>
   </data>
   <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Brugerdefineret markørsæt</value>
@@ -1951,9 +1350,6 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Indstiller den valgte brugerdefinerede skrifttype i Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Invalid" xml:space="preserve">
-    <value>Den fil, du har valgt, ser ikke ud til at være en gyldig skrifttypefil.</value>
-  </data>
   <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Fjern den anvendte skrifttype</value>
   </data>
@@ -1971,57 +1367,6 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   </data>
   <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Brugerdefineret Shiftlock</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.AddGradientColor" xml:space="preserve">
-    <value>Tilføj farveovergang</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions" xml:space="preserve">
-    <value>Indstillinger for mod-generering</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Cursor" xml:space="preserve">
-    <value>Farvede markører</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel" xml:space="preserve">
-    <value>Farve-emote-hjul</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.Shiftlock" xml:space="preserve">
-    <value>Farve-Shiftlock-markør</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GenerationOptions.VoiceChat" xml:space="preserve">
-    <value>Farvede ikoner til stemmechat</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientAngle" xml:space="preserve">
-    <value>Hældningsvinkel:</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.GradientColors" xml:space="preserve">
-    <value>Farveovergange</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions" xml:space="preserve">
-    <value>Hurtige handlinger</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder" xml:space="preserve">
-    <value>Kopier til mappen »Mods«</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.QuickActions.GenerateMod" xml:space="preserve">
-    <value>Genereret tilstand</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.RobloxLOGO" xml:space="preserve">
-    <value>Brugerdefineret Roblox-logo</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreview" xml:space="preserve">
-    <value>Forhåndsvisning af sprite-ark</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.SheetPreviewSingle" xml:space="preserve">
-    <value>Vis enkelt sprite</value>
-  </data>
-  <data name="Menu.Mods.ModGenerator.Spinner" xml:space="preserve">
-    <value>Brugerdefineret indlæsningsindikator</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Description" xml:space="preserve">
-    <value>Her kan du administrere brugerdefinerede Roblox-mods.</value>
-  </data>
-  <data name="Menu.Mods.OpenModsFolder.Title" xml:space="preserve">
-    <value>Åbn mappen »Mods«</value>
   </data>
   <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Vælg, hvilken type emoji Roblox skal bruge.</value>
@@ -2044,27 +1389,6 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Brug den gamle avatar-editor-baggrund</value>
   </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Description" xml:space="preserve">
-    <value>Et forsøg på groft at genskabe de karakterlyde, der blev brugt før 2014.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldCharacterSounds.Title" xml:space="preserve">
-    <value>Efterlign gamle tegnlyde</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Description" xml:space="preserve">
-    <value>Giv den klassiske »oof«-dødslyd et comeback.</value>
-  </data>
-  <data name="Menu.Mods.Presets.OldDeathSound.Title" xml:space="preserve">
-    <value>Brug lyden »Old Death«</value>
-  </data>
-  <data name="Menu.MoreInfo" xml:space="preserve">
-    <value>Klik her for at få mere at vide om denne mulighed.</value>
-  </data>
-  <data name="Menu.RegionSelector.ClearServerList" xml:space="preserve">
-    <value>Ryd serverliste</value>
-  </data>
-  <data name="Menu.RegionSelector.Description" xml:space="preserve">
-    <value>Du kan nemt oprette forbindelse til servere i nærheden ved hjælp af den valgte konto i Account Manager. Bruger [RoValras API’er]({0}), [RoValras privatlivspolitik gælder.]({0}/privacy)</value>
-  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Indtast sted-ID eller spilnavn...</value>
   </data>
@@ -2073,18 +1397,6 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Serverstørrelse:</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Join" xml:space="preserve">
-    <value>Bliv medlem</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.Players" xml:space="preserve">
-    <value>Spillere</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerID" xml:space="preserve">
-    <value>Server-ID</value>
-  </data>
-  <data name="Menu.RegionSelector.Servers.ServerUptime" xml:space="preserve">
-    <value>Serverens oppetid</value>
   </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Regionsvælger</value>
@@ -2095,29 +1407,14 @@ Hvis du vælger »Nej«, ignoreres denne advarsel, og installationen fortsætter
   <data name="Menu.Save" xml:space="preserve">
     <value>Gem</value>
   </data>
-  <data name="Menu.SaveAndInstall" xml:space="preserve">
-    <value>Gem og installer</value>
-  </data>
-  <data name="Menu.SaveAndLaunch" xml:space="preserve">
-    <value>Gem og start</value>
-  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Ændringerne træder i kraft, næste gang du starter Roblox.</value>
   </data>
   <data name="Menu.SettingsSaved.Title" xml:space="preserve">
     <value>Indstillingerne er gemt!</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Create" xml:space="preserve">
-    <value>Opret genvej til spillet</value>
-  </data>
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>På denne måde kan du oprette genveje, der giver dig mulighed for hurtigt at deltage i bestemte spil.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.Empty" xml:space="preserve">
-    <value>Vælg en genvej for at redigere den.</value>
-  </data>
-  <data name="Menu.Shortcut.GameShortcut.GameIcon" xml:space="preserve">
-    <value>Brug spilikonet</value>
   </data>
   <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
     <value>Spilgenveje</value>
@@ -2157,9 +1454,6 @@ Vil du aktivere testtilstand?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Indstillinger for Froststrap</value>
   </data>
-  <data name="Menu.UnsavedChanges" xml:space="preserve">
-    <value>Du har ændringer, der ikke er gemt. Er du sikker på, at du vil lukke uden at gemme?</value>
-  </data>
   <data name="Menu_CommunityMods_Title" xml:space="preserve">
     <value>Fællesskabsmods</value>
   </data>
@@ -2175,6 +1469,9 @@ Vil du aktivere testtilstand?</value>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoner</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+  </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>Test af oversættelse.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>De gemmes på det sted, hvor Froststrap blev installeret, og gendannes automatisk ved en geninstallation.</value>
