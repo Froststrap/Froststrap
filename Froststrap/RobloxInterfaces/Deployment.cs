@@ -170,15 +170,35 @@
 
             try
             {
-                string location = GetLocation($"/{version}-rbxPkgManifest.txt");
-                var response = await App.HttpClient.GetAsync(location);
-                response.EnsureSuccessStatusCode();
+                string location;
 
-                if (response.Content.Headers.TryGetValues(header, out var values))
+                if (OperatingSystem.IsMacOS())
                 {
-                    string lastModified = values.First();
-                    DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
-                    return dateTime;
+                    location = GetLocation($"/mac/{version}-RobloxPlayer.zip");
+
+                    using var request = new HttpRequestMessage(HttpMethod.Head, location);
+                    using var response = await App.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+                    response.EnsureSuccessStatusCode();
+
+                    if (response.Content.Headers.TryGetValues(header, out var values))
+                    {
+                        string lastModified = values.First();
+                        DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
+                        return dateTime;
+                    }
+                }
+                else
+                {
+                    location = GetLocation($"/{version}-rbxPkgManifest.txt");
+                    var response = await App.HttpClient.GetAsync(location);
+                    response.EnsureSuccessStatusCode();
+
+                    if (response.Content.Headers.TryGetValues(header, out var values))
+                    {
+                        string lastModified = values.First();
+                        DateTime dateTime = DateTime.Parse(lastModified, CultureInfo.InvariantCulture);
+                        return dateTime;
+                    }
                 }
             }
             catch (HttpRequestException ex)
