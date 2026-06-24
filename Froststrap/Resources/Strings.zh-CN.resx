@@ -240,8 +240,14 @@
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>您当前尚未安装 WebView2 运行时。如果没有它，某些 Roblox 功能将无法正常运行，例如桌面应用。您现在要下载吗？</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>添加</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>添加单曲</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>角度</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>浏览</value>
@@ -252,6 +258,12 @@
   <data name="Common.Close" xml:space="preserve">
     <value>关闭</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>颜色选择器</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>复制</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>全选</value>
   </data>
@@ -260,6 +272,9 @@
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>自定义</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>深度链接</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>默认</value>
@@ -272,6 +287,9 @@
   </data>
   <data name="Common.Deployment" xml:space="preserve">
     <value>部署</value>
+  </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>描述</value>
   </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>已禁用</value>
@@ -286,6 +304,18 @@
     <value>导出</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>快速旗帜编辑器</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>游戏</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>字形预览</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>十六进制代码</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>导入</value>
   </data>
@@ -294,6 +324,12 @@
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>导入 JSON</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>发布</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>正在加载，请稍候...</value>
@@ -319,6 +355,9 @@
   <data name="Common.Performance" xml:space="preserve">
     <value>表现</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>玩家</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>预设标志列表</value>
   </data>
@@ -340,11 +379,23 @@
   <data name="Common.Search" xml:space="preserve">
     <value>搜索</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>服务器ID</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>设置</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>快捷方式</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>桌面图标</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>清醒</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>研究</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>系统默认设置</value>
@@ -354,6 +405,12 @@
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>时间戳</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>总计</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>更新</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>值</value>
@@ -366,9 +423,6 @@
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>是</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>快速旗帜编辑器</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>关闭 Roblox</value>
@@ -825,6 +879,15 @@
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>本次启动不会生成日志文件，因为 Froststrap 无法向 '{0}' 文件夹写入数据</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>构建信息</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>提交哈希值</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>提交引用</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>贡献者</value>
   </data>
@@ -1069,6 +1132,27 @@
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>指定的频道不存在或为私有频道</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>选择颜色</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>关于信息</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>社区版主</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>关闭工作室</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>密切关注者</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>没有可用活动数据。</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>加入“最佳地区”（自动）</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>该频道已过时，可能不再更新。请使用其他频道。</value>
   </data>
@@ -1121,6 +1205,9 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag 编辑器</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>保存当前标志</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>控制 Roblox 引擎中特定参数和功能的配置方式。</value>
@@ -1200,6 +1287,15 @@
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>清除 FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>快速保存和加载标志配置文件。</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>未找到个人资料</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Fast Flag 配置文件</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>通过便捷的菜单更改游戏内设置。</value>
@@ -1345,6 +1441,39 @@
   <data name="Menu.Load" xml:space="preserve">
     <value>加载</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>请输入一个cookie。</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>在浏览器中打开 Roblox.com 并登录</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>按 F12 键打开开发者工具</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>点击“应用程序”选项卡（Chrome）或“存储”选项卡（Firefox）</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>展开“Cookies”，然后选择“https://www.roblox.com”</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>查找“ROBLOSECURITY” Cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>双击“值”列并将其复制</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>将该值粘贴到上面的框中</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>“Cookie 无效。请检查后重试。</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>粘贴您的 .ROBLOSECURITY cookie</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>手动登录</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>管理和应用 Roblox 游戏客户端的文件修改。</value>
   </data>
@@ -1435,6 +1564,24 @@
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>使用旧版头像编辑器的背景</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>登录已取消。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>登录完成！正在关闭...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>复制此代码并将其粘贴到 [快速登录页面]({0}) 中。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>设备已关联——正在批准登录...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>登录超时。</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>正在等待快速登录……\n登录完成后，应用将关闭此窗口。</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>请输入地点 ID 或游戏名称...</value>
   </data>
@@ -1503,24 +1650,9 @@
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap 设置</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>社区版主</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>保存当前标志</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>快速保存和加载标志配置文件。</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Fast Flag 配置文件</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>图标</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>翻译测试。</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>它们将保存在安装 Froststrap 的位置，并在重新安装时自动恢复。</value>

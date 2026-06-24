@@ -240,8 +240,14 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Jelenleg nincs telepítve a WebView2 futtatókörnyezet. Enélkül a Roblox egyes funkciói, például az asztali alkalmazás, nem fognak megfelelően működni. Szeretnéd most letölteni?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Hozzáadás</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Egyetlen hozzáadása</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Szög</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Böngészés</value>
@@ -252,6 +258,12 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Close" xml:space="preserve">
     <value>Bezárás</value>
   </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Színválasztó</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Másolás</value>
+  </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Összes másolása</value>
   </data>
@@ -260,6 +272,9 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   </data>
   <data name="Common.Custom" xml:space="preserve">
     <value>Egyedi</value>
+  </data>
+  <data name="Common.DeepLink" xml:space="preserve">
+    <value>Mélylink</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
     <value>Alapértelmezett</value>
@@ -273,11 +288,26 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Bevezetés</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Leírás</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Fogyatékkal élők</value>
   </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Szerkesztés</value>
+  </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Gyors zászló-szerkesztő</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Játék</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Glif-előnézet</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Hexadecimális kód</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importálás</value>
@@ -287,6 +317,12 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON-import</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Telepítés</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Indítás</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Betöltés, kérjük, várjon...</value>
@@ -312,6 +348,9 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Teljesítmény</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Játékos</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Előre beállított zászlólisták</value>
   </data>
@@ -333,11 +372,23 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Keresés</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Szerverazonosító</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Gyorsbillentyűk</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Asztali ikon</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Józan</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Iroda</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>A rendszer alapértelmezett beállítása</value>
@@ -347,6 +398,12 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Időbélyeg</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Összesen</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Frissítés</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Érték</value>
@@ -359,9 +416,6 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Igen</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Gyors zászló-szerkesztő</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Roblox bezárása</value>
@@ -809,6 +863,15 @@ Biztosan folytatni szeretné?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Erre az indításra nem készül naplófájl, mivel a Froststrap nem tud írni a „{0}” mappába.</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Építési adatok</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Commit-hash</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Változtatás hivatkozása</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Közreműködők</value>
   </data>
@@ -1047,6 +1110,27 @@ Biztosan folytatni szeretné?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>A megadott csatorna vagy nem létezik, vagy zárt csatorna</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Szín kiválasztása</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Információk a Modról</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Közösségi moderátorok</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Stúdió bezárása</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Figyelmes megfigyelő</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Nincs elérhető tevékenységi adat.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Csatlakozz a Best Region (Auto) csoporthoz</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Ez a csatorna elavult, és valószínűleg már nem frissítik. Kérjük, használjon egy másik csatornát.</value>
   </data>
@@ -1099,6 +1183,9 @@ További információk:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag szerkesztő</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Az aktuális jelölések mentése</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Irányítsd a Roblox motor egyes paramétereinek és funkcióinak beállításait.</value>
@@ -1178,6 +1265,15 @@ További információk:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlagek törlése</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Gyors mentés és betöltés a zászlóprofilokhoz.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Nem találtak profilokat</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Gyors zászlóprofilok</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>A játék beállításait egy kényelmes menüből módosíthatod.</value>
@@ -1323,6 +1419,39 @@ További információk:
   <data name="Menu.Load" xml:space="preserve">
     <value>Betöltés</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Kérjük, adjon meg egy cookie-t.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Nyisd meg a Roblox.com oldalt a böngésződben, és jelentkezz be</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Nyomja meg az F12 billentyűt a Fejlesztői eszközök megnyitásához</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Kattintson az „Alkalmazások” fülre (Chrome) vagy a „Tárolás” fülre (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Bontsa ki a „Cookies” menüpontot, majd válassza ki a „https://www.roblox.com” elemet</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Keresse meg a „ROBLOSECURITY” nevű cookie-t</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Kattintson duplán az „Érték” oszlopra, majd másolja ki azt</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Illessze be az értéket a fenti mezőbe</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Érvénytelen cookie. Kérjük, ellenőrizze, majd próbálja meg újra.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Illessze be a .ROBLOSECURITY cookie-t</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Kézi bejelentkezés</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>A Roblox játékkliens fájljainak módosításainak kezelése és alkalmazása.</value>
   </data>
@@ -1413,6 +1542,24 @@ További információk:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>A régi avatárszerkesztő háttérének használata</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>A bejelentkezés törölve.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>A bejelentkezés sikeresen befejeződött! Bezárás...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Másold ki ezt a kódot, és illeszd be a [Gyors bejelentkezési oldalra]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Az eszköz összekapcsolva – a bejelentkezés jóváhagyása folyamatban...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>A bejelentkezés időtúllépése.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Várakozás a gyors bejelentkezésre...\nAz alkalmazás bezárja ezt az ablakot, amint a bejelentkezés befejeződött.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Írja be a hely azonosítóját vagy a játék nevét...</value>
   </data>
@@ -1481,24 +1628,9 @@ Szeretnéd engedélyezni a Tesztmódot?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap beállítások</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Közösségi moderátorok</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Az aktuális jelölések mentése</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Gyors mentés és betöltés a zászlóprofilokhoz.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Gyors zászlóprofilok</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikonok</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Fordítási teszt.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Ezeket a Froststrap telepítésének helyén tárolják, és újratelepítéskor automatikusan visszaállnak.</value>

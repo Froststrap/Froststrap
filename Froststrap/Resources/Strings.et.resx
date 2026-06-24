@@ -240,8 +240,14 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Hetkel pole sul WebView2-i käivituskeskkonda installitud. Ilma selleta ei tööta mõned Robloxi funktsioonid korralikult, näiteks töölaua rakendus. Kas soovid selle kohe alla laadida?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Lisa</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Lisa üksik</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Nurk</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Sirvi</value>
@@ -251,6 +257,12 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sulge</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Värvivalija</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Kopeeri</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopeeri kõik</value>
@@ -273,6 +285,9 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Kasutuselevõtt</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Kirjeldus</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Puudega</value>
   </data>
@@ -286,11 +301,29 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
     <value>Eksport</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Kiire lipu redigeerija</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Mäng</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Sümboli eelvaade</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Kuusekood</value>
+  </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importimine failist</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON-i import</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Paigalda</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Käivitamine</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Laadimine käib, palun oodake...</value>
@@ -316,6 +349,9 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Tulemuslikkus</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Mängija</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Eelnevalt määratud lipunimekirjad</value>
   </data>
@@ -337,11 +373,23 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Otsi</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Serveri ID</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Seaded</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Kiirviited</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Töölaua ikoon</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Kainus</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Uuring</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Süsteemi vaikimisi seaded</value>
@@ -351,6 +399,12 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Aegmärge</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Kokku</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Uuendus</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Väärtus</value>
@@ -363,9 +417,6 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Jah</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Kiire lipu redigeerija</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Sulge Roblox</value>
@@ -816,6 +867,15 @@ Kas olete kindel, et soovite jätkata?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Selle käivitamise kohta ei salvestata logifaili, kuna Froststrap ei saa kirjutada kausta '{0}'</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Ehitusandmed</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Muudatuse hash</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Muudatuse viide</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Kaastöötajad</value>
   </data>
@@ -1054,6 +1114,27 @@ Kas olete kindel, et soovite jätkata?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Määratud kanal kas puudub või on privaatne</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Vali värv</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Moodi teave</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Kogukonna moderaatorid</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Sulge stuudio</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Tähelepanelik jälgija</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Tegevusandmeid pole saadaval.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Liitu Best Regioniga (Auto)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>See kanal on aegunud ja seda tõenäoliselt enam ei uuendata. Palun kasutage mõnda teist kanalit.</value>
   </data>
@@ -1103,6 +1184,9 @@ Lisateave:
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Näita eelseadistatud lipukesi</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Salvesta praegused lipud</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Määra, kuidas konkreetseid Roblox-mootori parameetreid ja funktsioone konfigureeritakse.</value>
@@ -1182,6 +1266,15 @@ Lisateave:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlagide tühistamine</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Salvesta ja lae kiiresti lipuprofiile.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Profiile ei leitud</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>Fast Flagi profiilid</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Muuda mängusiseseid seadeid mugava menüü kaudu.</value>
@@ -1327,6 +1420,39 @@ Lisateave:
   <data name="Menu.Load" xml:space="preserve">
     <value>Laadimine</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Palun sisestage küpsis.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Ava veebibrauseris veebileht Roblox.com ja logi sisse</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Vajuta klahvi F12, et avada arendaja tööriistad</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Klõpsa vahekaardil „Rakendus” (Chrome) või „Salvestusruum” (Firefox)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Ava menüü „Cookies“ ja vali „https://www.roblox.com“</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Leia küpsis „ROBLOSECURITY”</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Tee topeltklõps veerule „Väärtus” ja kopeeri see</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Kopeeri väärtus ülalolevasse lahtrisse</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>"Kehtetu küpsis. Palun kontrollige ja proovige uuesti.</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Kopeeri oma .ROBLOSECURITY küpsis</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Käsitsi sisselogimine</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox-i mängukliendi failide modifikatsioonide haldamine ja rakendamine.</value>
   </data>
@@ -1417,6 +1543,24 @@ Lisateave:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Kasuta vana avatari redaktori taustapilti</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Sisselogimine tühistati.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Sisselogimine on lõpetatud! Sulgemine...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Kopeeri see kood ja kleebi see [kiirregistreerumise lehele]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Seade on ühendatud – sisselogimise kinnitamine...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Sisselogimise ooteaeg on lõppenud.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Oodatakse kiirsisselogimist...\nRakendus sulgeb selle akna, kui sisselogimine on lõppenud.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Sisesta koha ID või mängu nimi...</value>
   </data>
@@ -1485,24 +1629,9 @@ Kas soovid testrežiimi sisse lülitada?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>Froststrap'i seaded</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Kogukonna moderaatorid</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Salvesta praegused lipud</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Salvesta ja lae kiiresti lipuprofiile.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>Fast Flagi profiilid</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoonid</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Tõlke kontroll.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Need säilitatakse kohas, kuhu Froststrap paigaldati, ning taastatakse automaatselt uuesti paigaldamisel.</value>

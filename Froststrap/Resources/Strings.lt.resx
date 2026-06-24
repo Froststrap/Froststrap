@@ -240,8 +240,14 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Bootstrapper.WebView2NotFound" xml:space="preserve">
     <value>Šiuo metu jūsų kompiuteryje nėra įdiegta „WebView2“ vykdymo aplinka. Be jos kai kurios „Roblox“ funkcijos, pavyzdžiui, darbalaukio programa, neveiks tinkamai. Ar norite ją atsisiųsti dabar?</value>
   </data>
+  <data name="Common.Add" xml:space="preserve">
+    <value>Pridėti</value>
+  </data>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Pridėti vieną</value>
+  </data>
+  <data name="Common.Angle" xml:space="preserve">
+    <value>Kampas</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Naršyti</value>
@@ -251,6 +257,12 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Uždaryti</value>
+  </data>
+  <data name="Common.ColorPicker" xml:space="preserve">
+    <value>Spalvų pasirinkimo įrankis</value>
+  </data>
+  <data name="Common.Copy" xml:space="preserve">
+    <value>Kopijuoti</value>
   </data>
   <data name="Common.CopyAll" xml:space="preserve">
     <value>Kopijuoti viską</value>
@@ -273,6 +285,9 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.Deployment" xml:space="preserve">
     <value>Įdiegimas</value>
   </data>
+  <data name="Common.Description" xml:space="preserve">
+    <value>Aprašymas</value>
+  </data>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Neįgalieji</value>
   </data>
@@ -286,6 +301,18 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
     <value>Eksportas</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
   </data>
+  <data name="Common.FastFlags" xml:space="preserve">
+    <value>Greitasis vėliavų redaktorius</value>
+  </data>
+  <data name="Common.Game" xml:space="preserve">
+    <value>Žaidimas</value>
+  </data>
+  <data name="Common.GlyphPreview" xml:space="preserve">
+    <value>Simbolio peržiūra</value>
+  </data>
+  <data name="Common.HexCode" xml:space="preserve">
+    <value>Šešioliktainis kodas</value>
+  </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importas</value>
   </data>
@@ -294,6 +321,12 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   </data>
   <data name="Common.ImportJson" xml:space="preserve">
     <value>JSON importas</value>
+  </data>
+  <data name="Common.Install" xml:space="preserve">
+    <value>Įdiegti</value>
+  </data>
+  <data name="Common.Launch" xml:space="preserve">
+    <value>Paleidimas</value>
   </data>
   <data name="Common.Loading" xml:space="preserve">
     <value>Įkeliama, prašome palaukti...</value>
@@ -319,6 +352,9 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.Performance" xml:space="preserve">
     <value>Našumas</value>
   </data>
+  <data name="Common.Player" xml:space="preserve">
+    <value>Žaidėjas</value>
+  </data>
   <data name="Common.PresetFlagLists" xml:space="preserve">
     <value>Iš anksto nustatyti vėliavų sąrašai</value>
   </data>
@@ -340,11 +376,23 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.Search" xml:space="preserve">
     <value>Paieška</value>
   </data>
+  <data name="Common.ServerID" xml:space="preserve">
+    <value>Serverio ID</value>
+  </data>
+  <data name="Common.Settings" xml:space="preserve">
+    <value>Nustatymai</value>
+  </data>
   <data name="Common.Shortcuts" xml:space="preserve">
     <value>Spartieji klavišai</value>
   </data>
   <data name="Common.Shortcuts.Desktop" xml:space="preserve">
     <value>Darbalaukio piktograma</value>
+  </data>
+  <data name="Common.Sober" xml:space="preserve">
+    <value>Blaivus</value>
+  </data>
+  <data name="Common.Studio" xml:space="preserve">
+    <value>Tyrimas</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Sistemos numatytasis nustatymas</value>
@@ -354,6 +402,12 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Laiko žyma</value>
+  </data>
+  <data name="Common.Total" xml:space="preserve">
+    <value>Iš viso</value>
+  </data>
+  <data name="Common.Update" xml:space="preserve">
+    <value>Atnaujinimas</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Vertė</value>
@@ -366,9 +420,6 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   </data>
   <data name="Common.Yes" xml:space="preserve">
     <value>Taip</value>
-  </data>
-  <data name="Common_FastFlags" xml:space="preserve">
-    <value>Greitasis vėliavų redaktorius</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
     <value>Uždaryti „Roblox“</value>
@@ -834,6 +885,15 @@ Ar tikrai norite tęsti?</value>
   <data name="Logger.NoWriteMode" xml:space="preserve">
     <value>Šio paleidimo metu žurnalo failas nebus įrašytas, nes „Froststrap“ negali įrašyti į aplanką „{0}“</value>
   </data>
+  <data name="Menu.About.BuildInfo" xml:space="preserve">
+    <value>Informacija apie versiją</value>
+  </data>
+  <data name="Menu.About.CommitHash" xml:space="preserve">
+    <value>Komiteto šifras</value>
+  </data>
+  <data name="Menu.About.CommitRef" xml:space="preserve">
+    <value>Įrašyti nuorodą</value>
+  </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Autoriai</value>
   </data>
@@ -1078,6 +1138,27 @@ Ar tikrai norite tęsti?</value>
   <data name="Menu.Channel.Switcher.Unauthorized" xml:space="preserve">
     <value>Nurodytas kanalas arba neegzistuoja, arba yra privatus</value>
   </data>
+  <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
+    <value>Pasirinkite spalvą</value>
+  </data>
+  <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
+    <value>Apie „Mod“</value>
+  </data>
+  <data name="Menu.CommunityMods.Title" xml:space="preserve">
+    <value>Bendruomenės moderatoriai</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseStudio" xml:space="preserve">
+    <value>Uždaryti studiją</value>
+  </data>
+  <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
+    <value>Atidus stebėtojas</value>
+  </data>
+  <data name="Menu.ContextMenu.NoData" xml:space="preserve">
+    <value>Veiklos duomenų nėra.</value>
+  </data>
+  <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
+    <value>Prisijunkite prie „Best Region“ (Automobiliai)</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Šis kanalas yra pasenęs ir, tikėtina, jau nebėra atnaujinamas. Prašome naudoti kitą kanalą.</value>
   </data>
@@ -1130,6 +1211,9 @@ Daugiau informacijos:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>„FastFlag“ redaktorius</value>
+  </data>
+  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
+    <value>Išsaugoti dabartinius žymėjimus</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Nustatykite, kaip konfigūruojami konkretūs „Roblox“ variklio parametrai ir funkcijos.</value>
@@ -1209,6 +1293,15 @@ Daugiau informacijos:
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Išvalyti FFlags</value>
+  </data>
+  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
+    <value>Greitai išsaugokite ir įkelkite vėliavų profilius.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
+    <value>Profiliai nerasti</value>
+  </data>
+  <data name="Menu.FlagProfiles.Title" xml:space="preserve">
+    <value>„Fast Flag“ profiliai</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Pakeiskite žaidimo nustatymus naudodamiesi patogiu meniu.</value>
@@ -1357,6 +1450,39 @@ Daugiau informacijos:
   <data name="Menu.Load" xml:space="preserve">
     <value>Įkelti</value>
   </data>
+  <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
+    <value>Įveskite slapuką.</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
+    <value>Naršyklėje atidarykite Roblox.com ir prisijunkite</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
+    <value>Paspauskite klavišą F12, kad atidarytumėte kūrėjo įrankius</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
+    <value>Spustelėkite skirtuką „Programos“ („Chrome“) arba „Saugykla“ („Firefox“)</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
+    <value>Išskleiskite skyrių „Slapukai“ ir pasirinkite „https://www.roblox.com“</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
+    <value>Suraskite slapuką „ROBLOSECURITY“</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
+    <value>Dukart spustelėkite stulpelį „Vertė“ ir jį nukopijuokite</value>
+  </data>
+  <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
+    <value>Įklijuokite reikšmę į laukelį viršuje</value>
+  </data>
+  <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
+    <value>„Neteisingas slapukas. Patikrinkite ir pabandykite dar kartą.“</value>
+  </data>
+  <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
+    <value>Įklijuokite savo .ROBLOSECURITY slapuką</value>
+  </data>
+  <data name="Menu.ManualLogin.Title" xml:space="preserve">
+    <value>Prisijungimas rankiniu būdu</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Valdykite ir taikykite failų modifikacijas „Roblox“ žaidimo klientui.</value>
   </data>
@@ -1447,6 +1573,24 @@ Daugiau informacijos:
   <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Naudoti senojo avatarų redaktoriaus foną</value>
   </data>
+  <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
+    <value>Prisijungimas atšauktas.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Complete" xml:space="preserve">
+    <value>Prisijungimas baigtas! Uždaroma...</value>
+  </data>
+  <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
+    <value>Nukopijuokite šį kodą ir įklijuokite jį į [Greito prisijungimo puslapį]({0}).</value>
+  </data>
+  <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
+    <value>Įrenginys susietas – patvirtinamas prisijungimas...</value>
+  </data>
+  <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
+    <value>Pasibaigė prisijungimo laiko limitas.</value>
+  </data>
+  <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
+    <value>Laukiama greito prisijungimo...\nProgramėlė uždarys šį langą, kai prisijungimas bus baigtas.</value>
+  </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Įveskite vietos ID arba žaidimo pavadinimą...</value>
   </data>
@@ -1515,24 +1659,9 @@ Ar norite įjungti bandymo režimą?</value>
   <data name="Menu.Title" xml:space="preserve">
     <value>„Froststrap“ nustatymai</value>
   </data>
-  <data name="Menu_CommunityMods_Title" xml:space="preserve">
-    <value>Bendruomenės moderatoriai</value>
-  </data>
-  <data name="Menu_FastFlagProfiles_Save" xml:space="preserve">
-    <value>Išsaugoti dabartinius žymėjimus</value>
-  </data>
-  <data name="Menu_FlagProfiles_Description" xml:space="preserve">
-    <value>Greitai išsaugokite ir įkelkite vėliavų profilius.</value>
-  </data>
-  <data name="Menu_FlagProfiles_Title" xml:space="preserve">
-    <value>„Fast Flag“ profiliai</value>
-  </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Piktogramos</value>
     <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
-  </data>
-  <data name="Test.For.Translation" xml:space="preserve">
-    <value>Vertimo patikrinimas.</value>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Jie bus išsaugoti toje vietoje, kurioje buvo įdiegta „Froststrap“, ir bus automatiškai atkurti ją įdiegus iš naujo.</value>
