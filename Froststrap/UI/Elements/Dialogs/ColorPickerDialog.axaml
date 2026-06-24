@@ -5,6 +5,7 @@
     xmlns:base="clr-namespace:Froststrap.UI.Elements.Base"
     xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
     xmlns:colorPicker="clr-namespace:ColorPicker;assembly=ColorPicker.AvaloniaUI"
+    xmlns:resources="clr-namespace:Froststrap.Resources"
     Title="{x:Static resources:Strings.Common_ColorPicker}"
     Width="400"
     SizeToContent="Height"

@@ -2,7 +2,6 @@ using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -333,10 +332,8 @@ namespace Froststrap.UI.Elements.Settings
             var notificationPanel = this.FindControl<Panel>("NotificationPanel");
             if (notificationPanel == null) return;
 
-            // If a notification is currently animating out, wait for it to finish
             if (_isAnimatingOut)
             {
-                // Schedule this notification to show after the animation completes
                 Task.Run(async () =>
                 {
                     while (_isAnimatingOut)
@@ -348,23 +345,19 @@ namespace Froststrap.UI.Elements.Settings
                 return;
             }
 
-            // Cancel existing notification timeout
             _notificationCts?.Cancel();
             _notificationCts?.Dispose();
             _notificationCts = new CancellationTokenSource();
             var token = _notificationCts.Token;
 
-            // If there's a current notification, animate it out first
             if (_currentNotification != null && notificationPanel.Children.Contains(_currentNotification))
             {
                 _isAnimatingOut = true;
                 var oldNotification = _currentNotification;
 
-                // Animate out the old notification
                 oldNotification.Opacity = 0;
                 oldNotification.RenderTransform = new TranslateTransform(0, 40);
 
-                // Wait for animation to complete
                 Task.Run(async () =>
                 {
                     await Task.Delay(350);
@@ -377,14 +370,12 @@ namespace Froststrap.UI.Elements.Settings
                         _isAnimatingOut = false;
                         _currentNotification = null;
 
-                        // Now show the new notification
                         ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
                     });
                 });
                 return;
             }
 
-            // No existing notification, show directly
             ShowNotificationInternal(title, subtitle, type, timeout, customIcon);
         }
 
@@ -468,7 +459,7 @@ namespace Froststrap.UI.Elements.Settings
             notification.Transitions =
             [
                 new TransformOperationsTransition { Property = Border.RenderTransformProperty, Duration = TimeSpan.FromMilliseconds(350), Easing = new QuarticEaseOut() },
-        new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
+                new DoubleTransition { Property = Border.OpacityProperty, Duration = TimeSpan.FromMilliseconds(250) }
             ];
 
             async void Dismiss()
