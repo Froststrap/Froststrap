@@ -201,6 +201,7 @@ namespace Froststrap.UI.Elements.Base
 #endif
 
             UpdateBackdropForAllWindows();
+            Locale.ApplyLocaleToWindow(this);
         }
     }
 }

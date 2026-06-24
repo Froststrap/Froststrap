@@ -116,7 +116,6 @@ namespace Froststrap
             }
 
 #if QA_BUILD
-            // In Avalonia, you can add a red border via styles or directly
             window.BorderBrush = Brushes.Red;
             window.BorderThickness = new Thickness(4);
 #endif
@@ -135,17 +134,6 @@ namespace Froststrap
                 };
 
                 Application.Current?.Styles.Add(rtlStyle);
-            }
-        }
-
-        public class LocaleAwareWindow : AvaloniaWindow
-        {
-            public LocaleAwareWindow()
-            {
-                this.Initialized += (s, e) =>
-                {
-                    ApplyLocaleToWindow(this);
-                };
             }
         }
     }

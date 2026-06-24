@@ -17,7 +17,7 @@ using Symbol = FluentIcons.Common.Symbol;
 
 namespace Froststrap.UI.Elements.Settings
 {
-    public partial class MainWindow : Locale.LocaleAwareWindow
+    public partial class MainWindow : Base.AvaloniaWindow
     {
         public static MainWindow? Instance { get; private set; }
 

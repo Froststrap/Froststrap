@@ -3635,24 +3635,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows for more than one Roblox instance to be opened simultaneously. May cause issues with desktop app..
-        /// </summary>
-        public static string Menu_Behaviour_MultiInstances_Description {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.MultiInstances.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Multi-Instance Launching.
-        /// </summary>
-        public static string Menu_Behaviour_MultiInstances_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.MultiInstances.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Reverts the Roblox taskbar and topbar icons to older versions. May not work if Roblox takes too long to launch..
         /// </summary>
         public static string Menu_Behaviour_OldRobloxIcon_Description {
@@ -5294,15 +5276,6 @@ namespace Froststrap.Resources {
         public static string Menu_Integrations_GameHistoryMenu_Title {
             get {
                 return ResourceManager.GetString("Menu.Integrations.GameHistoryMenu.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Multi-Instancing is prone to breaking. We will not provide support for issues with Multi-Instancing, since Roblox is actively adding measures to make sure it doesn&apos;t work. We cannot and won&apos;t attempt to bypass these measures..
-        /// </summary>
-        public static string Menu_Integrations_MultiInstanceLaunching_Warning {
-            get {
-                return ResourceManager.GetString("Menu.Integrations.MultiInstanceLaunching.Warning", resourceCulture);
             }
         }
         
