@@ -44,7 +44,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.PR_GITHUB }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: auto-translate resources with DeepLX"
           title: "Auto-Translate Strings"
           body: |
@@ -55,3 +55,5 @@ jobs:
           base: feat/crossplatform
           delete-branch: true
           labels: automated, translation
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
