@@ -1570,4 +1570,7 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>left</value>
   </data>
+  <data name="Test.For.Translation" xml:space="preserve">
+    <value>Test For Translation</value>
+  </data>
 </root>

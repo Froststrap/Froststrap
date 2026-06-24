@@ -111,7 +111,8 @@ class DeepLXTranslator:
     def _get_deepl_code(self, lang: str) -> str:
         return self.deepl_lang_map.get(lang, lang.upper())
     
-    def translate_text_with_retry(self, text: str, target_lang: str, max_retries: int = 3) -> str:
+    def translate_text_with_retry(self, text: str, target_lang: str, max_retries: int = 2) -> str:
+        """Translate text with retry logic - stops after max_retries"""
         if self._should_skip(text):
             return text
         
@@ -131,39 +132,38 @@ class DeepLXTranslator:
                 response = requests.post(self.deeplx_url, json=payload, timeout=30)
                 
                 if response.status_code == 400:
-                    error_detail = response.text[:200] if response.text else "Bad Request"
-                    print(f"    API Error 400: {error_detail}")
+                    if attempt < max_retries - 1:
+                        time.sleep(1)
+                        continue
                     return text
                 
                 if response.status_code == 429:
-                    wait_time = (2 ** attempt) * 5
-                    print(f"    Rate limited, waiting {wait_time}s... (attempt {attempt + 1}/{max_retries})")
+                    wait_time = 5
+                    print(f"    Rate limited, waiting {wait_time}s...")
                     time.sleep(wait_time)
                     continue
                 
                 if response.status_code >= 500:
-                    wait_time = (2 ** attempt) * 3
-                    print(f"    Server error {response.status_code}, retrying in {wait_time}s...")
-                    time.sleep(wait_time)
-                    continue
+                    if attempt < max_retries - 1:
+                        time.sleep(3)
+                        continue
+                    return text
                 
                 response.raise_for_status()
                 
                 result = response.json()
                 
                 if result.get("code") != 200:
-                    error_msg = result.get("message", "Unknown error")
-                    print(f"    API error: {error_msg}")
                     if attempt < max_retries - 1:
-                        time.sleep(2)
+                        time.sleep(1)
                         continue
                     return text
                 
                 translated = result.get("data", text)
                 
                 if translated == text and len(text) > 3:
-                    if attempt < max_retries - 1:
-                        print(f"    Warning: Translation returned same text, retrying...")
+                    if attempt == 0:
+                        print(f"    Retrying once (translation failed)...")
                         time.sleep(2)
                         continue
                     return text
@@ -173,34 +173,15 @@ class DeepLXTranslator:
                 
                 return translated
                 
-            except requests.exceptions.Timeout:
-                if attempt == max_retries - 1:
-                    print(f"    Timeout after {max_retries} attempts: {text[:30]}...")
-                    return text
-                wait_time = (2 ** attempt) * 2
-                print(f"    Timeout, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
-                time.sleep(wait_time)
-                
-            except requests.exceptions.ConnectionError:
-                if attempt == max_retries - 1:
-                    print(f"    Connection error: DeepLX container may not be running")
-                    return text
-                print(f"    Connection error, retrying in 5s... (attempt {attempt + 1}/{max_retries})")
-                time.sleep(5)
-                
             except Exception as e:
                 if attempt == max_retries - 1:
-                    print(f"    Failed after {max_retries} attempts: {text[:30]}...")
                     return text
-                
-                wait_time = (2 ** attempt) * 2
-                error_str = str(e)[:50]
-                print(f"    Error: {error_str}, retrying in {wait_time}s... (attempt {attempt + 1}/{max_retries})")
-                time.sleep(wait_time)
+                time.sleep(2)
         
         return text
     
     def translate_batch(self, texts: List[str], target_lang: str) -> Dict[str, str]:
+        """Translate a batch of texts with progress reporting"""
         if not texts:
             return {}
         
@@ -224,15 +205,15 @@ class DeepLXTranslator:
         print(f"    Translating {len(uncached)} strings...")
         
         for i, text in enumerate(uncached):
-            if i > 0 and i % 5 == 0:
+            if i > 0 and i % 10 == 0:
                 print(f"    Progress: {i}/{len(uncached)}")
-                time.sleep(2)
+                time.sleep(1)
             
             translated = self.translate_text_with_retry(text, target_lang)
             results[text] = translated
             
             if i < len(uncached) - 1:
-                time.sleep(0.5)
+                time.sleep(0.3)
         
         self._save_cache()
         return results
@@ -457,7 +438,18 @@ class DeepLXTranslator:
             
             if result.returncode != 0:
                 print(f"Failed to start DeepLX: {result.stderr}")
-                return False
+                print("Trying alternative DeepLX image...")
+                result = subprocess.run([
+                    "docker", "run", "-d",
+                    "--name", "deeplx",
+                    "-p", "1188:1188",
+                    "--restart", "unless-stopped",
+                    "missuo/deeplx:latest"
+                ], capture_output=True, text=True)
+                
+                if result.returncode != 0:
+                    print(f"Failed to start with alternative image: {result.stderr}")
+                    return False
             
             print("Waiting for DeepLX to initialize...")
             time.sleep(10)

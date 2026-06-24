@@ -70,43 +70,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to These are the people who&apos;ve supported Froststrap through Ko-fi. A massive thank you to everyone here!
-        ///Every person here is ranked by their overall pledge..
-        /// </summary>
-        public static string About_Supporters_Description {
-            get {
-                return ResourceManager.GetString("About.Supporters.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Monthly.
-        /// </summary>
-        public static string About_Supporters_Monthly {
-            get {
-                return ResourceManager.GetString("About.Supporters.Monthly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to One-off.
-        /// </summary>
-        public static string About_Supporters_OneOff {
-            get {
-                return ResourceManager.GetString("About.Supporters.OneOff", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap supporters.
-        /// </summary>
-        public static string About_Supporters_Title {
-            get {
-                return ResourceManager.GetString("About.Supporters.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to About Froststrap.
         /// </summary>
         public static string About_Title {
@@ -116,38 +79,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All of Froststrap&apos;s translations are crowdsourced through [Crowdin]({0}). Everyone listed here are people who generously volunteered their time and effort to help localise Froststrap. A massive thank you to everyone here!.
-        /// </summary>
-        public static string About_Translators_Description {
-            get {
-                return ResourceManager.GetString("About.Translators.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Translators.
-        /// </summary>
-        public static string About_Translators_Title {
-            get {
-                return ResourceManager.GetString("About.Translators.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The server location could not be queried. You may be joining games too quickly..
         /// </summary>
         public static string ActivityWatcher_LocationQueryFailed {
             get {
                 return ResourceManager.GetString("ActivityWatcher.LocationQueryFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your current game will not show on your Discord presence because an error occurred when loading the game information..
-        /// </summary>
-        public static string ActivityWatcher_RichPresenceLoadFailed {
-            get {
-                return ResourceManager.GetString("ActivityWatcher.RichPresenceLoadFailed", resourceCulture);
             }
         }
         
@@ -200,16 +136,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ansel is not supported.
-        ///You can no longer use Bloxshade with Froststrap..
-        /// </summary>
-        public static string Bootstrapper_Dialog_AnselDisabled {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Dialog.AnselDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The channel you&apos;re currently on ({0}) is out of date, and appears to no longer be receiving updates.\n
         ///Would you like to switch to the default channel ({1})?.
         /// </summary>
@@ -248,24 +174,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Randomizes the chosen server from the list of optimal servers..
-        /// </summary>
-        public static string Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Description {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Randomize BetterMatchmaking server.
-        /// </summary>
-        public static string Bootstrapper_Experimental_BetterMatchmaking_RandomizeServer_Title {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Experimental.BetterMatchmaking.RandomizeServer.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enable BetterMatchmaking.
         /// </summary>
         public static string Bootstrapper_Experimental_BetterMatchmaking_Title {
@@ -289,26 +197,6 @@ namespace Froststrap.Resources {
         public static string Bootstrapper_ExtractionFailed_Title {
             get {
                 return ResourceManager.GetString("Bootstrapper.ExtractionFailed.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap tried to upgrade Roblox but can&apos;t because Roblox&apos;s files are still in use.
-        ///
-        ///Please close any applications that may be using Roblox&apos;s files, and relaunch..
-        /// </summary>
-        public static string Bootstrapper_FilesInUse {
-            get {
-                return ResourceManager.GetString("Bootstrapper.FilesInUse", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must first install Froststrap before uninstalling..
-        /// </summary>
-        public static string Bootstrapper_FirstRunUninstall {
-            get {
-                return ResourceManager.GetString("Bootstrapper.FirstRunUninstall", resourceCulture);
             }
         }
         
@@ -448,15 +336,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Getting the latest Froststrap....
-        /// </summary>
-        public static string Bootstrapper_Status_UpgradingFroststrap {
-            get {
-                return ResourceManager.GetString("Bootstrapper.Status.UpgradingFroststrap", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Waiting for data....
         /// </summary>
         public static string Bootstrapper_Status_WaitingForData {
@@ -538,24 +417,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Analytics.
-        /// </summary>
-        public static string Common_Analytics {
-            get {
-                return ResourceManager.GetString("Common.Analytics", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Automatic.
-        /// </summary>
-        public static string Common_Automatic {
-            get {
-                return ResourceManager.GetString("Common.Automatic", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string Common_Browse {
@@ -574,38 +435,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Channel.
-        /// </summary>
-        public static string Common_Channel {
-            get {
-                return ResourceManager.GetString("Common.Channel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose.
-        /// </summary>
-        public static string Common_Choose {
-            get {
-                return ResourceManager.GetString("Common.Choose", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string Common_Close {
             get {
                 return ResourceManager.GetString("Common.Close", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color.
-        /// </summary>
-        public static string Common_Color {
-            get {
-                return ResourceManager.GetString("Common.Color", resourceCulture);
             }
         }
         
@@ -633,24 +467,6 @@ namespace Froststrap.Resources {
         public static string Common_Custom {
             get {
                 return ResourceManager.GetString("Common.Custom", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Debug.
-        /// </summary>
-        public static string Common_Debug {
-            get {
-                return ResourceManager.GetString("Common.Debug", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Debug Menu.
-        /// </summary>
-        public static string Common_DebugMenu {
-            get {
-                return ResourceManager.GetString("Common.DebugMenu", resourceCulture);
             }
         }
         
@@ -718,15 +534,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Experimental.
-        /// </summary>
-        public static string Common_Experimental {
-            get {
-                return ResourceManager.GetString("Common.Experimental", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         public static string Common_Export {
@@ -741,24 +548,6 @@ namespace Froststrap.Resources {
         public static string Common_FastFlags {
             get {
                 return ResourceManager.GetString("Common_FastFlags", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Filter Type:.
-        /// </summary>
-        public static string Common_FilterType {
-            get {
-                return ResourceManager.GetString("Common.FilterType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Help.
-        /// </summary>
-        public static string Common_Help {
-            get {
-                return ResourceManager.GetString("Common.Help", resourceCulture);
             }
         }
         
@@ -790,38 +579,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type: Launcher.
-        /// </summary>
-        public static string Common_LauncherType {
-            get {
-                return ResourceManager.GetString("Common.LauncherType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Loading, please wait....
         /// </summary>
         public static string Common_Loading {
             get {
                 return ResourceManager.GetString("Common.Loading", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Looking For.
-        /// </summary>
-        public static string Common_LookingFor {
-            get {
-                return ResourceManager.GetString("Common.LookingFor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message.
-        /// </summary>
-        public static string Common_Message {
-            get {
-                return ResourceManager.GetString("Common.Message", resourceCulture);
             }
         }
         
@@ -835,56 +597,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type: Mod.
-        /// </summary>
-        public static string Common_ModType {
-            get {
-                return ResourceManager.GetString("Common.ModType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Common_Name {
             get {
                 return ResourceManager.GetString("Common.Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Back.
-        /// </summary>
-        public static string Common_Navigation_Back {
-            get {
-                return ResourceManager.GetString("Common.Navigation.Back", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install.
-        /// </summary>
-        public static string Common_Navigation_Install {
-            get {
-                return ResourceManager.GetString("Common.Navigation.Install", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Next.
-        /// </summary>
-        public static string Common_Navigation_Next {
-            get {
-                return ResourceManager.GetString("Common.Navigation.Next", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Could not load data because of a network error..
-        /// </summary>
-        public static string Common_NetworkError {
-            get {
-                return ResourceManager.GetString("Common.NetworkError", resourceCulture);
             }
         }
         
@@ -921,15 +638,6 @@ namespace Froststrap.Resources {
         public static string Common_OK {
             get {
                 return ResourceManager.GetString("Common.OK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Debug Menu.
-        /// </summary>
-        public static string Common_OpenDebugMenu {
-            get {
-                return ResourceManager.GetString("Common.OpenDebugMenu", resourceCulture);
             }
         }
         
@@ -988,47 +696,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recommended.
-        /// </summary>
-        public static string Common_Recommended {
-            get {
-                return ResourceManager.GetString("Common.Recommended", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        public static string Common_Refresh {
-            get {
-                return ResourceManager.GetString("Common.Refresh", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Remove.
-        /// </summary>
-        public static string Common_Remove {
-            get {
-                return ResourceManager.GetString("Common.Remove", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Rename.
         /// </summary>
         public static string Common_Rename {
             get {
                 return ResourceManager.GetString("Common.Rename", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset.
-        /// </summary>
-        public static string Common_Reset {
-            get {
-                return ResourceManager.GetString("Common.Reset", resourceCulture);
             }
         }
         
@@ -1042,38 +714,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Roblox Studio.
-        /// </summary>
-        public static string Common_RobloxStudio {
-            get {
-                return ResourceManager.GetString("Common.RobloxStudio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Search.
         /// </summary>
         public static string Common_Search {
             get {
                 return ResourceManager.GetString("Common.Search", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search By.
-        /// </summary>
-        public static string Common_SearchBy {
-            get {
-                return ResourceManager.GetString("Common.SearchBy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Settings.
-        /// </summary>
-        public static string Common_Settings {
-            get {
-                return ResourceManager.GetString("Common.Settings", resourceCulture);
             }
         }
         
@@ -1096,24 +741,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Menu Icon.
-        /// </summary>
-        public static string Common_Shortcuts_StartMenu {
-            get {
-                return ResourceManager.GetString("Common.Shortcuts.StartMenu", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Studio.
-        /// </summary>
-        public static string Common_Studio {
-            get {
-                return ResourceManager.GetString("Common.Studio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to System default.
         /// </summary>
         public static string Common_SystemDefault {
@@ -1132,56 +759,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Time.
-        /// </summary>
-        public static string Common_Time {
-            get {
-                return ResourceManager.GetString("Common.Time", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Timestamp.
         /// </summary>
         public static string Common_Timestamp {
             get {
                 return ResourceManager.GetString("Common.Timestamp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Type.
-        /// </summary>
-        public static string Common_Type {
-            get {
-                return ResourceManager.GetString("Common.Type", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unknown status.
-        /// </summary>
-        public static string Common_UnknownStatus {
-            get {
-                return ResourceManager.GetString("Common.UnknownStatus", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User Id.
-        /// </summary>
-        public static string Common_UserId {
-            get {
-                return ResourceManager.GetString("Common.UserId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Username.
-        /// </summary>
-        public static string Common_Username {
-            get {
-                return ResourceManager.GetString("Common.Username", resourceCulture);
             }
         }
         
@@ -1213,15 +795,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Warning.
-        /// </summary>
-        public static string Common_Warning {
-            get {
-                return ResourceManager.GetString("Common.Warning", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Yes.
         /// </summary>
         public static string Common_Yes {
@@ -1240,15 +813,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to close Roblox? This will forcefully end the process..
-        /// </summary>
-        public static string ContextMenu_CloseRobloxMessage {
-            get {
-                return ResourceManager.GetString("ContextMenu.CloseRobloxMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Copy invite deeplink.
         /// </summary>
         public static string ContextMenu_CopyDeeplinkInvite {
@@ -1258,47 +822,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Clear History.
-        /// </summary>
-        public static string ContextMenu_GameHistory_ClearHistory {
-            get {
-                return ResourceManager.GetString("ContextMenu.GameHistory.ClearHistory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copy Job ID.
-        /// </summary>
-        public static string ContextMenu_GameHistory_CopyJobId {
-            get {
-                return ResourceManager.GetString("ContextMenu.GameHistory.CopyJobId", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Game history is only recorded for your current Roblox session. Games will appear here as you leave them or teleport within them. Not all servers will be rejoinable..
         /// </summary>
         public static string ContextMenu_GameHistory_Description {
             get {
                 return ResourceManager.GetString("ContextMenu.GameHistory.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No game history yet{0}{0}Join some games to see them here!.
-        /// </summary>
-        public static string ContextMenu_GameHistory_NoHistory {
-            get {
-                return ResourceManager.GetString("ContextMenu.GameHistory.NoHistory", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh.
-        /// </summary>
-        public static string ContextMenu_GameHistory_Refresh {
-            get {
-                return ResourceManager.GetString("ContextMenu.GameHistory.Refresh", resourceCulture);
             }
         }
         
@@ -1317,42 +845,6 @@ namespace Froststrap.Resources {
         public static string ContextMenu_GameHistory_Title {
             get {
                 return ResourceManager.GetString("ContextMenu.GameHistory.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Logs Menu.
-        /// </summary>
-        public static string ContextMenu_Logs_Title {
-            get {
-                return ResourceManager.GetString("ContextMenu.Logs.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Displays recently sent messages by players..
-        /// </summary>
-        public static string ContextMenu_MessageLogs_Description {
-            get {
-                return ResourceManager.GetString("ContextMenu.MessageLogs.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Message logs.
-        /// </summary>
-        public static string ContextMenu_MessageLogs_Title {
-            get {
-                return ResourceManager.GetString("ContextMenu.MessageLogs.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Player logs.
-        /// </summary>
-        public static string ContextMenu_PlayerLogs_Title {
-            get {
-                return ResourceManager.GetString("ContextMenu.PlayerLogs.Title", resourceCulture);
             }
         }
         
@@ -1390,16 +882,6 @@ namespace Froststrap.Resources {
         public static string ContextMenu_ServerInformation_Location {
             get {
                 return ResourceManager.GetString("ContextMenu.ServerInformation.Location", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Location: {0}
-        ///Click for more information.
-        /// </summary>
-        public static string ContextMenu_ServerInformation_Notification_Text {
-            get {
-                return ResourceManager.GetString("ContextMenu.ServerInformation.Notification.Text", resourceCulture);
             }
         }
         
@@ -1530,15 +1012,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Custom Theme.
-        /// </summary>
-        public static string CustomTheme_Add_Title {
-            get {
-                return ResourceManager.GetString("CustomTheme.Add.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Custom Theme {0}.
         /// </summary>
         public static string CustomTheme_DefaultName {
@@ -1589,24 +1062,6 @@ namespace Froststrap.Resources {
         public static string CustomTheme_Editor_Save {
             get {
                 return ResourceManager.GetString("CustomTheme.Editor.Save", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to An error occurred while saving your theme..
-        /// </summary>
-        public static string CustomTheme_Editor_Save_Error {
-            get {
-                return ResourceManager.GetString("CustomTheme.Editor.Save.Error", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Theme successfully saved!.
-        /// </summary>
-        public static string CustomTheme_Editor_Save_Success {
-            get {
-                return ResourceManager.GetString("CustomTheme.Editor.Save.Success", resourceCulture);
             }
         }
         
@@ -1764,15 +1219,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tried to use invalid WindowBackdropType: {0}.
-        /// </summary>
-        public static string CustomTheme_Errors_InvalidBackdrop {
-            get {
-                return ResourceManager.GetString("CustomTheme.Errors.InvalidBackdrop", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Theme XML root is not {0}.
         /// </summary>
         public static string CustomTheme_Errors_InvalidRoot {
@@ -1909,15 +1355,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please wait for installation to finish..
-        /// </summary>
-        public static string Dialog_AlreadyRunning_Installer {
-            get {
-                return ResourceManager.GetString("Dialog.AlreadyRunning.Installer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please wait for uninstallation to finish..
         /// </summary>
         public static string Dialog_AlreadyRunning_Uninstaller {
@@ -1982,15 +1419,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string Dialog_Connectivity_Preventing {
-            get {
-                return ResourceManager.GetString("Dialog.Connectivity.Preventing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Roblox may be down right now. See {0} for more information..
         /// </summary>
         public static string Dialog_Connectivity_RobloxDown {
@@ -2014,15 +1442,6 @@ namespace Froststrap.Resources {
         public static string Dialog_Connectivity_RobloxUpgradeSkip {
             get {
                 return ResourceManager.GetString("Dialog.Connectivity.RobloxUpgradeSkip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string Dialog_Connectivity_TimedOut {
-            get {
-                return ResourceManager.GetString("Dialog.Connectivity.TimedOut", resourceCulture);
             }
         }
         
@@ -2621,15 +2040,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to JSON files.
-        /// </summary>
-        public static string FileTypes_JSONFiles {
-            get {
-                return ResourceManager.GetString("FileTypes.JSONFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Zip archive.
         /// </summary>
         public static string FileTypes_ZipArchive {
@@ -2669,207 +2079,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Opens Roblox once everything has been installed and configured.
-        /// </summary>
-        public static string Installer_Completion_Launch_Description {
-            get {
-                return ResourceManager.GetString("Installer.Completion.Launch.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install And Launch Roblox.
-        /// </summary>
-        public static string Installer_Completion_Launch_Title {
-            get {
-                return ResourceManager.GetString("Installer.Completion.Launch.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to View and tweak all of the features and settings Froststrap has to offer.
-        /// </summary>
-        public static string Installer_Completion_Settings_Description {
-            get {
-                return ResourceManager.GetString("Installer.Completion.Settings.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure Froststrap&apos;s Settings.
-        /// </summary>
-        public static string Installer_Completion_Settings_Title {
-            get {
-                return ResourceManager.GetString("Installer.Completion.Settings.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap has successfully been installed.
-        ///
-        ///However, Roblox has not been installed yet. It will be installed when you launch Roblox with Froststrap for the first time. Before installation, you may want to configure Froststrap’s settings first.
-        ///
-        ///Important Note: Do not use the “Roblox Player” shortcut to launch Roblox, as Froststrap will be unable to launch Roblox due to conflicting issues. If you don’t see Froststrap initiating when launching from the Roblox website, simply launch Roblox with Froststrap [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Installer_Completion_Text {
-            get {
-                return ResourceManager.GetString("Installer.Completion.Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Completion.
-        /// </summary>
-        public static string Installer_Completion_Title {
-            get {
-                return ResourceManager.GetString("Installer.Completion.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to import Froststrap settings.
-        ///
-        ///{0}.
-        /// </summary>
-        public static string Installer_FailedToImportSettings {
-            get {
-                return ResourceManager.GetString("Installer.FailedToImportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import settings from Froststrap.
-        /// </summary>
-        public static string Installer_ImportSettings {
-            get {
-                return ResourceManager.GetString("Installer.ImportSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap has been installed to this location before and is still present, however the installer cannot overwrite the old executable. 
-        ///
-        ///Please manually delete Froststrap.exe from the install location or try restarting your system, and then retry installation afterwards..
-        /// </summary>
-        public static string Installer_Install_CannotOverwrite {
-            get {
-                return ResourceManager.GetString("Installer.Install.CannotOverwrite", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Existing data found. Your mods and settings will be restored..
-        /// </summary>
-        public static string Installer_Install_Location_DataFound {
-            get {
-                return ResourceManager.GetString("Installer.Install.Location.DataFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Roblox will also be installed to this path. Change this if you prefer to install all your games to a separate drive. Otherwise, it&apos;s recommended that you keep this as it is..
-        /// </summary>
-        public static string Installer_Install_Location_Text {
-            get {
-                return ResourceManager.GetString("Installer.Install.Location.Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose where to install to.
-        /// </summary>
-        public static string Installer_Install_Location_Title {
-            get {
-                return ResourceManager.GetString("Installer.Install.Location.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to These are general shortcuts that bring up a multi-choice Launch Menu. Shortcuts for specific functions can be created later in the settings..
-        /// </summary>
-        public static string Installer_Install_Shortcuts_Description {
-            get {
-                return ResourceManager.GetString("Installer.Install.Shortcuts.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install.
-        /// </summary>
-        public static string Installer_Install_Title {
-            get {
-                return ResourceManager.GetString("Installer.Install.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No bootstrapper installation was found..
-        /// </summary>
-        public static string Installer_InstallationNotFound {
-            get {
-                return ResourceManager.GetString("Installer.InstallationNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to cancel the installation?.
-        /// </summary>
-        public static string Installer_ShouldCancel {
-            get {
-                return ResourceManager.GetString("Installer.ShouldCancel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap Installer.
-        /// </summary>
-        public static string Installer_Title {
-            get {
-                return ResourceManager.GetString("Installer.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Thank you for downloading Froststrap. 
-        ///
-        ///The only official source to download Froststrap from is {0}, so please verify that you have downloaded it from the official source.
-        ///
-        ///This installation process will be quick and simple, and you will be able to configure all of Froststrap&apos;s settings after installation..
-        /// </summary>
-        public static string Installer_Welcome_MainText {
-            get {
-                return ResourceManager.GetString("Installer.Welcome.MainText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please click &apos;Next&apos; to continue..
-        /// </summary>
-        public static string Installer_Welcome_NextToContinue {
-            get {
-                return ResourceManager.GetString("Installer.Welcome.NextToContinue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Welcome.
-        /// </summary>
-        public static string Installer_Welcome_Title {
-            get {
-                return ResourceManager.GetString("Installer.Welcome.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You are trying to install version {0} of Froststrap, but the latest version available is {1}. Would you like to download it?.
-        /// </summary>
-        public static string Installer_Welcome_UpdateNotice {
-            get {
-                return ResourceManager.GetString("Installer.Welcome.UpdateNotice", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Your Fast Flags could not be loaded. They have been reset to the default configuration..
         /// </summary>
         public static string JsonManager_FastFlagsLoadFailed {
@@ -2888,24 +2097,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure settings.
-        /// </summary>
-        public static string LaunchMenu_ConfigureSettings {
-            get {
-                return ResourceManager.GetString("LaunchMenu.ConfigureSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Join our Discord server.
-        /// </summary>
-        public static string LaunchMenu_Discord {
-            get {
-                return ResourceManager.GetString("LaunchMenu.Discord", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Launch Roblox.
         /// </summary>
         public static string LaunchMenu_LaunchRoblox {
@@ -2920,24 +2111,6 @@ namespace Froststrap.Resources {
         public static string LaunchMenu_LaunchRobloxStudio {
             get {
                 return ResourceManager.GetString("LaunchMenu.LaunchRobloxStudio", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See the Wiki for help.
-        /// </summary>
-        public static string LaunchMenu_Wiki_Description {
-            get {
-                return ResourceManager.GetString("LaunchMenu.Wiki.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Having an issue?.
-        /// </summary>
-        public static string LaunchMenu_Wiki_Title {
-            get {
-                return ResourceManager.GetString("LaunchMenu.Wiki.Title", resourceCulture);
             }
         }
         
@@ -3050,15 +2223,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to BSD 2-Clause License.
-        /// </summary>
-        public static string Menu_About_Licenses_BSD2 {
-            get {
-                return ResourceManager.GetString("Menu.About.Licenses.BSD2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to MIT License.
         /// </summary>
         public static string Menu_About_Licenses_MIT {
@@ -3091,33 +2255,6 @@ namespace Froststrap.Resources {
         public static string Menu_About_Version {
             get {
                 return ResourceManager.GetString("Menu.About.Version", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Account Manager.
-        /// </summary>
-        public static string Menu_AccountManager_Title {
-            get {
-                return ResourceManager.GetString("Menu.AccountManager.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Settings saved. You can now close this window.
-        /// </summary>
-        public static string Menu_AdvancedSettings_SettingsSaved {
-            get {
-                return ResourceManager.GetString("Menu.AdvancedSettings.SettingsSaved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All files.
-        /// </summary>
-        public static string Menu_AllFiles {
-            get {
-                return ResourceManager.GetString("Menu.AllFiles", resourceCulture);
             }
         }
         
@@ -3158,24 +2295,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change downloading string. {0} is package name, {1} is downloaded packages size and {2} is total size of packages..
-        /// </summary>
-        public static string Menu_Appearance_BootstrapperDownloading_Description {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.BootstrapperDownloading.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bootstrapper downloading status.
-        /// </summary>
-        public static string Menu_Appearance_BootstrapperDownloading_Title {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.BootstrapperDownloading.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Customize Froststrap themes easily with presets or create your own unique look..
         /// </summary>
         public static string Menu_Appearance_Custom_Theme_Description {
@@ -3190,24 +2309,6 @@ namespace Froststrap.Resources {
         public static string Menu_Appearance_Custom_Theme_Title {
             get {
                 return ResourceManager.GetString("Menu.Appearance.Custom.Theme.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose a custom font to override Froststrap’s default UI font..
-        /// </summary>
-        public static string Menu_Appearance_CustomAppFont_Description {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.CustomAppFont.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Custom App Font.
-        /// </summary>
-        public static string Menu_Appearance_CustomAppFont_Title {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.CustomAppFont.Title", resourceCulture);
             }
         }
         
@@ -3284,15 +2385,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to rename custom theme {0}: {1}.
-        /// </summary>
-        public static string Menu_Appearance_CustomThemes_RenameFailed {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.CustomThemes.RenameFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Configure how Froststrap should look..
         /// </summary>
         public static string Menu_Appearance_Description {
@@ -3356,60 +2448,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reorder the navigation menu items to your preference. Changes will be saved automatically..
-        /// </summary>
-        public static string Menu_Appearance_MenuAdjustment_Description {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.MenuAdjustment.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Lock Order.
-        /// </summary>
-        public static string Menu_Appearance_MenuAdjustment_LockOrder {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.MenuAdjustment.LockOrder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move Down.
-        /// </summary>
-        public static string Menu_Appearance_MenuAdjustment_MoveDown {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.MenuAdjustment.MoveDown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Move Up.
-        /// </summary>
-        public static string Menu_Appearance_MenuAdjustment_MoveUp {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.MenuAdjustment.MoveUp", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reset To Default.
-        /// </summary>
-        public static string Menu_Appearance_MenuAdjustment_ResetToDefault {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.MenuAdjustment.ResetToDefault", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Menu Adjustment.
-        /// </summary>
-        public static string Menu_Appearance_MenuAdjustment_Title {
-            get {
-                return ResourceManager.GetString("Menu.Appearance.MenuAdjustment.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
         public static string Menu_Appearance_Preview {
@@ -3464,15 +2502,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ansel support is required for shaders..
-        /// </summary>
-        public static string Menu_Behaviour_AnselBanner {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.AnselBanner", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Froststrap will automatically check and update itself to a stable version when launching Roblox..
         /// </summary>
         public static string Menu_Behaviour_AutoUpdate_Description {
@@ -3505,15 +2534,6 @@ namespace Froststrap.Resources {
         public static string Menu_Behaviour_BackgroundUpdates_Title {
             get {
                 return ResourceManager.GetString("Menu.Behaviour.BackgroundUpdates.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Channel.
-        /// </summary>
-        public static string Menu_Behaviour_Channel_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.Channel.Title", resourceCulture);
             }
         }
         
@@ -3563,60 +2583,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When enabled, it will disable all animations within the app. Requires app restart..
-        /// </summary>
-        public static string Menu_Behaviour_DisableAnimation_Description {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.DisableAnimation.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disable Animations.
-        /// </summary>
-        public static string Menu_Behaviour_DisableAnimation_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.DisableAnimation.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disables hardware acceleration on Froststrap only. Note: You must restart the application in order to see any effects..
-        /// </summary>
-        public static string Menu_Behaviour_DisableHardwareAcceleration_Description {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.DisableHardwareAcceleration.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disable Hardware Acceleration.
-        /// </summary>
-        public static string Menu_Behaviour_DisableHardwareAcceleration_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.DisableHardwareAcceleration.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only applies to games launched from the Roblox website..
-        /// </summary>
-        public static string Menu_Behaviour_ForceRobloxLanguage_Description {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.ForceRobloxLanguage.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Allow Unsupported Languages.
-        /// </summary>
-        public static string Menu_Behaviour_ForceRobloxLanguage_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.ForceRobloxLanguage.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A clean installation of Roblox will occur on the next launch..
         /// </summary>
         public static string Menu_Behaviour_ForceRobloxReinstall_Description {
@@ -3631,24 +2597,6 @@ namespace Froststrap.Resources {
         public static string Menu_Behaviour_ForceRobloxReinstall_Title {
             get {
                 return ResourceManager.GetString("Menu.Behaviour.ForceRobloxReinstall.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Reverts the Roblox taskbar and topbar icons to older versions. May not work if Roblox takes too long to launch..
-        /// </summary>
-        public static string Menu_Behaviour_OldRobloxIcon_Description {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.OldRobloxIcon.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Taskbar Icon.
-        /// </summary>
-        public static string Menu_Behaviour_OldRobloxIcon_Title {
-            get {
-                return ResourceManager.GetString("Menu.Behaviour.OldRobloxIcon.Title", resourceCulture);
             }
         }
         
@@ -3734,24 +2682,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap logs will be deleted..
-        /// </summary>
-        public static string Menu_Bootstrapper_Cleaner_IncludeFroststrap_Description {
-            get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeFroststrap.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap Logs.
-        /// </summary>
-        public static string Menu_Bootstrapper_Cleaner_IncludeFroststrap_Title {
-            get {
-                return ResourceManager.GetString("Menu.Bootstrapper.Cleaner.IncludeFroststrap.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Old log files will be deleted..
         /// </summary>
         public static string Menu_Bootstrapper_Cleaner_Logs_Description {
@@ -3815,15 +2745,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall Froststrap.
-        /// </summary>
-        public static string Menu_BottomButtons_Uninstall {
-            get {
-                return ResourceManager.GetString("Menu.BottomButtons.Uninstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Change automatically.
         /// </summary>
         public static string Menu_Channel_ChangeAction_Automatic {
@@ -3874,24 +2795,6 @@ namespace Froststrap.Resources {
         public static string Menu_Channel_Description {
             get {
                 return ResourceManager.GetString("Menu.Channel.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Set what domain Roblox and Froststrap will use. Enter only trusted domains..
-        /// </summary>
-        public static string Menu_Channel_RobloxDomain_Description {
-            get {
-                return ResourceManager.GetString("Menu.Channel.RobloxDomain.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Roblox domain.
-        /// </summary>
-        public static string Menu_Channel_RobloxDomain_Title {
-            get {
-                return ResourceManager.GetString("Menu.Channel.RobloxDomain.Title", resourceCulture);
             }
         }
         
@@ -3950,164 +2853,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Force Froststrap to download version from specific hash. Please do not change if you have no idea what this does..
-        /// </summary>
-        public static string Menu_Channel_VersionHash_Desription {
-            get {
-                return ResourceManager.GetString("Menu.Channel.VersionHash.Desription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Version hash.
-        /// </summary>
-        public static string Menu_Channel_VersionHash_Title {
-            get {
-                return ResourceManager.GetString("Menu.Channel.VersionHash.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Available Channels.
-        /// </summary>
-        public static string Menu_ChannelChanger_AvailableChannels {
-            get {
-                return ResourceManager.GetString("Menu.ChannelChanger.AvailableChannels", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Scans the majority of available channels for use..
-        /// </summary>
-        public static string Menu_ChannelChanger_AvailableChannels_Description {
-            get {
-                return ResourceManager.GetString("Menu.ChannelChanger.AvailableChannels.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sets the deployment channel. Do not change unless you know what you’re doing!.
-        /// </summary>
-        public static string Menu_ChannelChanger_Description {
-            get {
-                return ResourceManager.GetString("Menu.ChannelChanger.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please restart the app for the animations to disable..
-        /// </summary>
-        public static string Menu_Channels_DisableAnimationRestart {
-            get {
-                return ResourceManager.GetString("Menu.Channels.DisableAnimationRestart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Please restart the app for hardware acceleration to disable and take effect..
-        /// </summary>
-        public static string Menu_Channels_HardwareAccelRestart {
-            get {
-                return ResourceManager.GetString("Menu.Channels.HardwareAccelRestart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Community Mods.
         /// </summary>
         public static string Menu_CommunityMods_Title {
             get {
                 return ResourceManager.GetString("Menu_CommunityMods_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Player logs.
-        /// </summary>
-        public static string Menu_Context_PlayerLogs {
-            get {
-                return ResourceManager.GetString("Menu.Context.PlayerLogs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Shows players leaving/joining server you&apos;re in..
-        /// </summary>
-        public static string Menu_Context_PlayerLogs_Description {
-            get {
-                return ResourceManager.GetString("Menu.Context.PlayerLogs.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Allows you to install custom mods from the Bootstrapper..
-        /// </summary>
-        public static string Menu_CustomMods_Description {
-            get {
-                return ResourceManager.GetString("Menu.CustomMods.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Custom Mods.
-        /// </summary>
-        public static string Menu_CustomMods_Title {
-            get {
-                return ResourceManager.GetString("Menu.CustomMods.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear Logs.
-        /// </summary>
-        public static string Menu_DebugMenu_ClearLogs {
-            get {
-                return ResourceManager.GetString("Menu.DebugMenu.ClearLogs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copy Selected.
-        /// </summary>
-        public static string Menu_DebugMenu_CopySelected {
-            get {
-                return ResourceManager.GetString("Menu.DebugMenu.CopySelected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export Logs.
-        /// </summary>
-        public static string Menu_DebugMenu_ExportLogs {
-            get {
-                return ResourceManager.GetString("Menu.DebugMenu.ExportLogs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Logs Folder.
-        /// </summary>
-        public static string Menu_DebugMenu_OpenLogsFolder {
-            get {
-                return ResourceManager.GetString("Menu.DebugMenu.OpenLogsFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Refresh Logs.
-        /// </summary>
-        public static string Menu_DebugMenu_RefreshLogs {
-            get {
-                return ResourceManager.GetString("Menu.DebugMenu.RefreshLogs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Search Logs.
-        /// </summary>
-        public static string Menu_DebugMenu_SearchBoxPlaceHolder {
-            get {
-                return ResourceManager.GetString("Menu.DebugMenu.SearchBoxPlaceHolder", resourceCulture);
             }
         }
         
@@ -4139,65 +2889,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Advanced Settings.
-        /// </summary>
-        public static string Menu_FastFlagEditor_AdvancedSettings {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.AdvancedSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import ID JSON.
-        /// </summary>
-        public static string Menu_FastFlagEditor_AdvancedSettings_ImportAddID {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.AdvancedSettings.ImportAddID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add with ID.
-        /// </summary>
-        public static string Menu_FastFlagEditor_AdvancedSettings_SingleAddID {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.AdvancedSettings.SingleAddID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to An entry for this flag name already exists..
         /// </summary>
         public static string Menu_FastFlagEditor_AlreadyExists {
             get {
                 return ResourceManager.GetString("Menu.FastFlagEditor.AlreadyExists", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Back.
-        /// </summary>
-        public static string Menu_FastFlagEditor_Back {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.Back", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Misusing this can lead to instability or unexpected things happening..
-        /// </summary>
-        public static string Menu_FastFlagEditor_BannerText {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.BannerText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use with caution..
-        /// </summary>
-        public static string Menu_FastFlagEditor_BannerTitle {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.BannerTitle", resourceCulture);
             }
         }
         
@@ -4241,56 +2937,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only .json and .txt files are supported.
-        /// </summary>
-        public static string Menu_FastFlagEditor_DropJson_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.DropJson.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 📂 Drop your JSON or TXT here.
-        /// </summary>
-        public static string Menu_FastFlagEditor_DropJson_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.DropJson.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export JSON.
         /// </summary>
         public static string Menu_FastFlagEditor_ExportJson {
             get {
                 return ResourceManager.GetString("Menu.FastFlagEditor.ExportJson", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Would you like to include preset FFlags?.
-        /// </summary>
-        public static string Menu_FastFlagEditor_ExportJson_IncludePresets {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.ExportJson.IncludePresets", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the value must be a boolean (either &apos;True&apos; or &apos;False&apos;).
-        /// </summary>
-        public static string Menu_FastFlagEditor_InvalidBoolValue {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.InvalidBoolValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the name can only contain letters, numbers, and underscores.
-        /// </summary>
-        public static string Menu_FastFlagEditor_InvalidCharacter {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.InvalidCharacter", resourceCulture);
             }
         }
         
@@ -4303,53 +2954,6 @@ namespace Froststrap.Resources {
         public static string Menu_FastFlagEditor_InvalidJSON {
             get {
                 return ResourceManager.GetString("Menu.FastFlagEditor.InvalidJSON", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the value must be an interger.
-        /// </summary>
-        public static string Menu_FastFlagEditor_InvalidNumberValue {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.InvalidNumberValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the place filter is not formatted correctly..
-        /// </summary>
-        public static string Menu_FastFlagEditor_InvalidPlaceFilter {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.InvalidPlaceFilter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The entry for &apos;{0}&apos; is not valid as the name must start with FFlag, DFInt, etc.
-        /// </summary>
-        public static string Menu_FastFlagEditor_InvalidPrefix {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.InvalidPrefix", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copied to clipboard..
-        /// </summary>
-        public static string Menu_FastFlagEditor_JsonCopiedToClipboard {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.JsonCopiedToClipboard", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You appear to be importing a very large configuration. You should only be importing configurations that you fully understand. Do NOT blindly paste in configurations made by other people. If you continue, you will very likely end up with stability issues and encounter unexpected changes.
-        ///
-        ///Are you sure you want to continue?.
-        /// </summary>
-        public static string Menu_FastFlagEditor_LargeConfig {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.LargeConfig", resourceCulture);
             }
         }
         
@@ -4399,44 +3003,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go back.
-        /// </summary>
-        public static string Menu_FastFlagEditor_Warning_Back {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.Warning.Back", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I know what I&apos;m doing.
-        /// </summary>
-        public static string Menu_FastFlagEditor_Warning_Continue {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.Warning.Continue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Do you know what you are doing?.
-        /// </summary>
-        public static string Menu_FastFlagEditor_Warning_Header {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.Warning.Header", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fast Flags are extremely powerful, being that they are intended to only be used by Roblox engineers. While they can be very useful, manually configuring them can cause serious issues with stability and functionality. Do NOT use the editor if you are unsure of what you are doing.
-        ///
-        ///Do NOT use this to import large &quot;flag lists&quot; made by other people that promise to improve performance or such. They are subject to the aforementioned issues, and they will cause problems for you since you will not be fully aware  [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string Menu_FastFlagEditor_Warning_Text {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagEditor.Warning.Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save current flags.
         /// </summary>
         public static string Menu_FastFlagProfiles_Save {
@@ -4464,15 +3030,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Learn more about Fast Flags, what these presets do, and how to use them..
-        /// </summary>
-        public static string Menu_FastFlags_Help_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlags.Help.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Disabling this will prevent anything configured here from being applied to Roblox..
         /// </summary>
         public static string Menu_FastFlags_ManagerEnabled_Description {
@@ -4487,15 +3044,6 @@ namespace Froststrap.Resources {
         public static string Menu_FastFlags_ManagerEnabled_Title {
             get {
                 return ResourceManager.GetString("Menu.FastFlags.ManagerEnabled.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure visual and performance settings for Roblox’s engine..
-        /// </summary>
-        public static string Menu_FastFlags_Presets_D3DExclusiveFullscreenInfo {
-            get {
-                return ResourceManager.GetString("Menu.FastFlags.Presets.D3DExclusiveFullscreenInfo", resourceCulture);
             }
         }
         
@@ -4689,96 +3237,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically add the Alt+Enter FastFlag when launching Froststrap..
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_AltManually_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.AltManually.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Alt Manually.
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_AltManually_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.AltManually.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose the format for copying JSON..
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_CopyFormat_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copy Format.
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_CopyFormat_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.CopyFormat.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copies selected flags as JSON using the chosen Copy Format when pressing Ctrl+C..
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_CtrlC_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ctrl+C Json Format.
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_CtrlC_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.CtrlC.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Toggle the Preset Column for toggleable FastFlags in FastFlag Settings..
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_PresetColumn_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preset Column.
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_PresetColumn_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.PresetColumn.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show the total flag count in the FastFlag Editor..
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_ToggleFlagCount_Description {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Flag Count.
-        /// </summary>
-        public static string Menu_FastFlagsEditor_AdvancedSettings_ToggleFlagCount_Title {
-            get {
-                return ResourceManager.GetString("Menu.FastFlagsEditor.AdvancedSettings.ToggleFlagCount.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Clear FFlags.
         /// </summary>
         public static string Menu_FlagProfiles_ClearFlags {
@@ -4802,78 +3260,6 @@ namespace Froststrap.Resources {
         public static string Menu_FlagProfiles_Title {
             get {
                 return ResourceManager.GetString("Menu_FlagProfiles_Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Font files.
-        /// </summary>
-        public static string Menu_FontFiles {
-            get {
-                return ResourceManager.GetString("Menu.FontFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to It&apos;s anonymous and nothing evil, promise. For insight on what Froststrap collects and why, see Froststrap&apos;s [privacy policy]({0})..
-        /// </summary>
-        public static string Menu_Froststrap_Analytics_Description {
-            get {
-                return ResourceManager.GetString("Menu.Froststrap.Analytics.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable sending of analytics to Froststrap.
-        /// </summary>
-        public static string Menu_Froststrap_Analytics_Title {
-            get {
-                return ResourceManager.GetString("Menu.Froststrap.Analytics.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Configure options related to Froststrap&apos;s behaviour itself..
-        /// </summary>
-        public static string Menu_Froststrap_Description {
-            get {
-                return ResourceManager.GetString("Menu.Froststrap.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Gather information that can be uploaded online to troubleshoot a problem you&apos;re having..
-        /// </summary>
-        public static string Menu_Froststrap_ExportData_Description {
-            get {
-                return ResourceManager.GetString("Menu.Froststrap.ExportData.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap configuration.
-        /// </summary>
-        public static string Menu_Froststrap_ExportData_ExportConfig {
-            get {
-                return ResourceManager.GetString("Menu.Froststrap.ExportData.ExportConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to All Froststrap logs.
-        /// </summary>
-        public static string Menu_Froststrap_ExportData_ExportLogs {
-            get {
-                return ResourceManager.GetString("Menu.Froststrap.ExportData.ExportLogs", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export diagnostic data.
-        /// </summary>
-        public static string Menu_Froststrap_ExportData_Title {
-            get {
-                return ResourceManager.GetString("Menu.Froststrap.ExportData.Title", resourceCulture);
             }
         }
         
@@ -4910,66 +3296,6 @@ namespace Froststrap.Resources {
         public static string Menu_GlobalSettings_Title {
             get {
                 return ResourceManager.GetString("Menu.GlobalSettings.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Help.
-        /// </summary>
-        public static string Menu_Help_Title {
-            get {
-                return ResourceManager.GetString("Menu.Help.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Icon files.
-        /// </summary>
-        public static string Menu_IconFiles {
-            get {
-                return ResourceManager.GetString("Menu.IconFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap cannot be installed here. Please choose a different location, or resort to using the default location by clicking the reset button..
-        /// </summary>
-        public static string Menu_InstallLocation_CantInstall {
-            get {
-                return ResourceManager.GetString("Menu.InstallLocation.CantInstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The folder you&apos;ve chosen to install Froststrap to already exists and is NOT empty. It is strongly recommended for Froststrap to be installed to its own independent folder.
-        ///
-        ///Changing to the following location is suggested:
-        ///{0}
-        ///
-        ///Would you like to change to the suggested location?
-        ///Selecting &apos;No&apos; will ignore this warning and continue installation..
-        /// </summary>
-        public static string Menu_InstallLocation_NotEmpty {
-            get {
-                return ResourceManager.GetString("Menu.InstallLocation.NotEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to You must set an install location.
-        /// </summary>
-        public static string Menu_InstallLocation_NotSet {
-            get {
-                return ResourceManager.GetString("Menu.InstallLocation.NotSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Froststrap does not have write access to the install location you&apos;ve selected. Please choose another location..
-        /// </summary>
-        public static string Menu_InstallLocation_NoWritePerms {
-            get {
-                return ResourceManager.GetString("Menu.InstallLocation.NoWritePerms", resourceCulture);
             }
         }
         
@@ -5280,24 +3606,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Displays player joins/leaves and messages. Only works with [text chat service](https://devforum.roblox.com/t/new-in-experience-text-chat-system-public-release/1848837)..
-        /// </summary>
-        public static string Menu_Integrations_PlayerMessageLogs_Description {
-            get {
-                return ResourceManager.GetString("Menu.Integrations.PlayerMessageLogs.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Logs Menu.
-        /// </summary>
-        public static string Menu_Integrations_PlayerMessageLogs_Title {
-            get {
-                return ResourceManager.GetString("Menu.Integrations.PlayerMessageLogs.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Displays your total playtime and current session time while in a game or Studio place..
         /// </summary>
         public static string Menu_Integrations_PlaytimeCounter_Description {
@@ -5406,15 +3714,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See info about managing and creating mods..
-        /// </summary>
-        public static string Menu_Mods_Help_Description {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Help.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Everything you need to manage your cursors..
         /// </summary>
         public static string Menu_Mods_Misc_CardExpander_CustomCursors_Descriptions {
@@ -5487,56 +3786,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply Set.
-        /// </summary>
-        public static string Menu_Mods_Misc_CustomCursorSet_ApplySet {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Misc.CustomCursorSet.ApplySet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Have multiple cursor sets ready to go for use..
         /// </summary>
         public static string Menu_Mods_Misc_CustomCursorSet_Description {
             get {
                 return ResourceManager.GetString("Menu.Mods.Misc.CustomCursorSet.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Export Set.
-        /// </summary>
-        public static string Menu_Mods_Misc_CustomCursorSet_ExportSet {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Misc.CustomCursorSet.ExportSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fetch Set.
-        /// </summary>
-        public static string Menu_Mods_Misc_CustomCursorSet_FetchSet {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Misc.CustomCursorSet.FetchSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Import Set.
-        /// </summary>
-        public static string Menu_Mods_Misc_CustomCursorSet_ImportSet {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Misc.CustomCursorSet.ImportSet", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Custom Cursor Set selected..
-        /// </summary>
-        public static string Menu_Mods_Misc_CustomCursorSet_NoneSelected {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Misc.CustomCursorSet.NoneSelected", resourceCulture);
             }
         }
         
@@ -5604,15 +3858,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The file you have chosen does not appear to be a valid font file..
-        /// </summary>
-        public static string Menu_Mods_Misc_CustomFont_Invalid {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Misc.CustomFont.Invalid", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Remove Applied Font.
         /// </summary>
         public static string Menu_Mods_Misc_CustomFont_Remove {
@@ -5663,168 +3908,6 @@ namespace Froststrap.Resources {
         public static string Menu_Mods_Misc_CustomShiftLock_Title {
             get {
                 return ResourceManager.GetString("Menu.Mods.Misc.CustomShiftLock.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Gradient Color.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_AddGradientColor {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.AddGradientColor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mod Generation Options.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_GenerationOptions {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.GenerationOptions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color Cursors.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_GenerationOptions_Cursor {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.GenerationOptions.Cursor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color Emote Wheel.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_GenerationOptions_EmoteWheel {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.GenerationOptions.EmoteWheel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color Shiftlock Cursor.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_GenerationOptions_Shiftlock {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.GenerationOptions.Shiftlock", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Color Voice Chat Icons.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_GenerationOptions_VoiceChat {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.GenerationOptions.VoiceChat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Gradient Angle:.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_GradientAngle {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.GradientAngle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Gradient Colors.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_GradientColors {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.GradientColors", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Quick Actions.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_QuickActions {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.QuickActions", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Copy to Mods folder.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_QuickActions_CopyToModsFolder {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.QuickActions.CopyToModsFolder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generate Mod.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_QuickActions_GenerateMod {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.QuickActions.GenerateMod", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Custom Roblox Logo.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_RobloxLOGO {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.RobloxLOGO", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sprite Sheet Preview.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_SheetPreview {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.SheetPreview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Preview Single Sprite.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_SheetPreviewSingle {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.SheetPreviewSingle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Custom Loading Spinner.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_Spinner {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.Spinner", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mod Generator.
-        /// </summary>
-        public static string Menu_Mods_ModGenerator_Title {
-            get {
-                return ResourceManager.GetString("Menu.Mods.ModGenerator.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage custom Roblox mods here..
-        /// </summary>
-        public static string Menu_Mods_OpenModsFolder_Description {
-            get {
-                return ResourceManager.GetString("Menu.Mods.OpenModsFolder.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Mods Folder.
-        /// </summary>
-        public static string Menu_Mods_OpenModsFolder_Title {
-            get {
-                return ResourceManager.GetString("Menu.Mods.OpenModsFolder.Title", resourceCulture);
             }
         }
         
@@ -5892,78 +3975,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An attempt to roughly bring back the character sounds used prior to 2014..
-        /// </summary>
-        public static string Menu_Mods_Presets_OldCharacterSounds_Description {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Presets.OldCharacterSounds.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Emulate Old Character Sounds.
-        /// </summary>
-        public static string Menu_Mods_Presets_OldCharacterSounds_Title {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Presets.OldCharacterSounds.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bring back the classic &apos;oof&apos; death sound..
-        /// </summary>
-        public static string Menu_Mods_Presets_OldDeathSound_Description {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Presets.OldDeathSound.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Old Death Sound.
-        /// </summary>
-        public static string Menu_Mods_Presets_OldDeathSound_Title {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Presets.OldDeathSound.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mods.
-        /// </summary>
-        public static string Menu_Mods_Title {
-            get {
-                return ResourceManager.GetString("Menu.Mods.Title", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Click for more information on this option..
-        /// </summary>
-        public static string Menu_MoreInfo {
-            get {
-                return ResourceManager.GetString("Menu.MoreInfo", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Clear Server List.
-        /// </summary>
-        public static string Menu_RegionSelector_ClearServerList {
-            get {
-                return ResourceManager.GetString("Menu.RegionSelector.ClearServerList", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Easily join servers near you using the selected account in Account Manager. Uses [RoValra&apos;s APIs]({0}), [RoValra&apos;s privacy policy applies.]({0}/privacy).
-        /// </summary>
-        public static string Menu_RegionSelector_Description {
-            get {
-                return ResourceManager.GetString("Menu.RegionSelector.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enter Place ID or Game Name....
         /// </summary>
         public static string Menu_RegionSelector_FindGame {
@@ -5987,51 +3998,6 @@ namespace Froststrap.Resources {
         public static string Menu_RegionSelector_Region {
             get {
                 return ResourceManager.GetString("Menu.RegionSelector.Region", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Join.
-        /// </summary>
-        public static string Menu_RegionSelector_Servers_Join {
-            get {
-                return ResourceManager.GetString("Menu.RegionSelector.Servers.Join", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Players.
-        /// </summary>
-        public static string Menu_RegionSelector_Servers_Players {
-            get {
-                return ResourceManager.GetString("Menu.RegionSelector.Servers.Players", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Region.
-        /// </summary>
-        public static string Menu_RegionSelector_Servers_Region {
-            get {
-                return ResourceManager.GetString("Menu.RegionSelector.Servers.Region", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Server ID.
-        /// </summary>
-        public static string Menu_RegionSelector_Servers_ServerID {
-            get {
-                return ResourceManager.GetString("Menu.RegionSelector.Servers.ServerID", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Server Uptime.
-        /// </summary>
-        public static string Menu_RegionSelector_Servers_ServerUptime {
-            get {
-                return ResourceManager.GetString("Menu.RegionSelector.Servers.ServerUptime", resourceCulture);
             }
         }
         
@@ -6072,24 +4038,6 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save and Install.
-        /// </summary>
-        public static string Menu_SaveAndInstall {
-            get {
-                return ResourceManager.GetString("Menu.SaveAndInstall", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save and Launch.
-        /// </summary>
-        public static string Menu_SaveAndLaunch {
-            get {
-                return ResourceManager.GetString("Menu.SaveAndLaunch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Changes will take effect the next time you launch Roblox..
         /// </summary>
         public static string Menu_SettingsSaved_Message {
@@ -6108,38 +4056,11 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create Game Shortcut.
-        /// </summary>
-        public static string Menu_Shortcut_GameShortcut_Create {
-            get {
-                return ResourceManager.GetString("Menu.Shortcut.GameShortcut.Create", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This allows you to create shortcuts which let you join specific games quickly..
         /// </summary>
         public static string Menu_Shortcut_GameShortcut_Description {
             get {
                 return ResourceManager.GetString("Menu.Shortcut.GameShortcut.Description", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Select a shortcut to edit it..
-        /// </summary>
-        public static string Menu_Shortcut_GameShortcut_Empty {
-            get {
-                return ResourceManager.GetString("Menu.Shortcut.GameShortcut.Empty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Game Icon.
-        /// </summary>
-        public static string Menu_Shortcut_GameShortcut_GameIcon {
-            get {
-                return ResourceManager.GetString("Menu.Shortcut.GameShortcut.GameIcon", resourceCulture);
             }
         }
         
@@ -6247,20 +4168,20 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have unsaved changes. Are you sure you want to close without saving?.
-        /// </summary>
-        public static string Menu_UnsavedChanges {
-            get {
-                return ResourceManager.GetString("Menu.UnsavedChanges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Icons.
         /// </summary>
         public static string Paths_Icons {
             get {
                 return ResourceManager.GetString("Paths.Icons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test For Translation.
+        /// </summary>
+        public static string Test_For_Translation {
+            get {
+                return ResourceManager.GetString("Test.For.Translation", resourceCulture);
             }
         }
         
