@@ -25,6 +25,14 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
+      - name: Restore DeepLX cache
+        uses: actions/cache@v3
+        with:
+          path: Scripts/Translations/deeplx_cache.json
+          key: deeplx-cache-${{ hashFiles('Froststrap/Resources/Strings.resx') }}
+          restore-keys: |
+            deeplx-cache-
+
       - name: Start DeepLX
         run: |
           docker run -d --name deeplx -p 1188:1188 ghcr.io/owo-network/deeplx:latest

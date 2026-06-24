@@ -6,6 +6,8 @@ from pathlib import Path
 from typing import Dict, List, Set
 import requests
 import time
+import subprocess
+import sys
 
 class DeepLXTranslator:
     def __init__(self):
@@ -15,7 +17,7 @@ class DeepLXTranslator:
         self.project_root = self.script_dir.parent.parent
         self.resources_dir = self.project_root / "Froststrap" / "Resources"
         self.base_file = self.resources_dir / "Strings.resx"
-        self.cache_file = self.project_root / "deeplx_cache.json"
+        self.cache_file = self.script_dir / "deeplx_cache.json"
         
         self.languages = [
             "ar", "bg", "cs", "da", "de", "el", "es-ES", "et",
@@ -77,6 +79,7 @@ class DeepLXTranslator:
         print(f"DeepLX URL: {self.deeplx_url}")
         print(f"Resources: {self.resources_dir}")
         print(f"Base file: {self.base_file}")
+        print(f"Cache file: {self.cache_file}")
     
     def _load_cache(self) -> Dict:
         if self.cache_file.exists():
@@ -200,24 +203,18 @@ class DeepLXTranslator:
         if not base_content:
             return ""
         
-        # Find the first real data element (not inside the comment block)
-        # We look for the pattern after the resheaders
-        # First, find where the comment block ends (the schema section)
         schema_end = base_content.find('</xsd:schema>')
         if schema_end != -1:
-            # Find the first data element after the schema
             data_start = base_content.find('<data name=', schema_end)
             if data_start != -1:
                 return base_content[:data_start]
         
-        # Fallback: find the last resheader
         resheader_end = base_content.rfind('</resheader>')
         if resheader_end != -1:
             data_start = base_content.find('<data name=', resheader_end)
             if data_start != -1:
                 return base_content[:data_start]
         
-        # Last resort: find first data element
         data_start = base_content.find('<data name=')
         if data_start == -1:
             return base_content
@@ -278,7 +275,6 @@ class DeepLXTranslator:
             return set()
     
     def format_resx_file(self, data_elements, base_header) -> str:
-        # Strip trailing whitespace and ensure exactly one newline
         content = base_header.rstrip() + '\n'
         
         data_elements.sort(key=lambda x: x.get("name", ""))
@@ -295,7 +291,6 @@ class DeepLXTranslator:
             content += f'    <value>{value.text}</value>\n'
             
             if comment is not None and comment.text:
-                # Escape any ampersands in comments
                 comment_text = comment.text.replace('&', '&amp;')
                 content += f'    <comment>{comment_text}</comment>\n'
             
@@ -401,13 +396,42 @@ class DeepLXTranslator:
         except:
             return False
     
+    def start_deeplx(self) -> bool:
+        """Start DeepLX using docker run (no compose file needed)"""
+        try:
+            print("Starting DeepLX container...")
+            
+            subprocess.run(["docker", "rm", "-f", "deeplx"], 
+                          capture_output=True, text=True)
+            
+            result = subprocess.run([
+                "docker", "run", "-d",
+                "--name", "deeplx",
+                "-p", "1188:1188",
+                "--restart", "unless-stopped",
+                "ghcr.io/owo-network/deeplx:latest"
+            ], capture_output=True, text=True)
+            
+            if result.returncode != 0:
+                print(f"Failed to start DeepLX: {result.stderr}")
+                return False
+            
+            print("Waiting for DeepLX to initialize...")
+            time.sleep(10)
+            return True
+            
+        except Exception as e:
+            print(f"Failed to start DeepLX: {e}")
+            return False
+    
     def translate_all(self):
         print("\nStarting translation with DeepLX...")
         
         if not self.is_deeplx_running():
-            print("\nCannot connect to DeepLX!")
-            print("Run: docker run -d --name deeplx -p 1188:1188 ghcr.io/owo-network/deeplx:latest")
-            return
+            print("DeepLX is not running. Attempting to start it...")
+            if not self.start_deeplx():
+                print("Failed to start DeepLX!")
+                return
         
         print("DeepLX is running.\n")
         
@@ -431,17 +455,6 @@ class DeepLXTranslator:
         
         total = sum(self.stats.values())
         print(f"\nComplete. Processed {total} changes across {len(active_languages)} languages")
-        
-        stats_file = self.script_dir / "translation_stats.txt"
-        with open(stats_file, 'w', encoding='utf-8') as f:
-            f.write("| Language | Changes |\n")
-            f.write("|----------|---------|\n")
-            for lang, count in sorted(self.stats.items()):
-                if count > 0:
-                    f.write(f"| {lang} | {count} |\n")
-            f.write(f"\nTotal: {total} changes")
-        
-        print(f"\nStats saved to: {stats_file}")
 
 if __name__ == "__main__":
     translator = DeepLXTranslator()

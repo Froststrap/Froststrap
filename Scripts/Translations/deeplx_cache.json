@@ -19407,5 +19407,10 @@
   "fr|2d457b859f61df5cdc0ae605436482d3": "Windows 10",
   "fr|7b83a194a05d6fe305f0b87ae28d2aaf": "Windows 8",
   "fr|0f4264ef8142f2461cd1f08c018fc9c2": "Catmoji",
-  "fr|a768caa988605a2846599cf7e2d0c26a": "Analyse"
+  "fr|a768caa988605a2846599cf7e2d0c26a": "Analyse",
+  "ar|d414d64bffe01dbd0262c9b427f7857f": "تم إنشاء هذه العبارة لاختبار الترجمة التلقائية، يرجى تجاهلها، شكرًا.",
+  "bg|d414d64bffe01dbd0262c9b427f7857f": "Този текст е създаден с цел тестване на автоматичния превод, моля, не му обръщайте внимание, благодаря.",
+  "cs|d414d64bffe01dbd0262c9b427f7857f": "Tento řetězec slouží k testování automatického překladu, prosím ignorujte ho, děkuji.",
+  "da|d414d64bffe01dbd0262c9b427f7857f": "Denne tekst er skrevet for at teste den automatiske oversættelse. Ignorer den venligst. Tak.",
+  "de|d414d64bffe01dbd0262c9b427f7857f": "Dieser Text dient zum Testen der automatischen Übersetzung. Bitte ignorieren Sie ihn. Vielen Dank."
 }
