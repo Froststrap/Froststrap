@@ -246,20 +246,35 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Lägg till enstaka</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Alla</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Vinkel</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Band</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Bläddra</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Webbläsare</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Avbryt</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Rensa</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Stäng</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Färgväljare</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Bekräfta</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopiera</value>
@@ -291,14 +306,29 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Funktionshindrade</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Ladda ner</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Redigera</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redaktör</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Fel</value>
   </data>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Snabb flaggredigerare</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Filer</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Spel</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Skapa</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Förhandsgranskning av tecken</value>
@@ -324,6 +354,9 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Laddar, vänta...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Handbok</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Övrigt</value>
   </data>
@@ -336,8 +369,17 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nej</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Inga resultat hittades</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ej tillgängligt</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Hittades inte</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Öppna mapp</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Öppna loggfilen</value>
@@ -354,11 +396,17 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Förinställningar</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioritet</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiler</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kvalitet</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Ta bort</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Byt namn</value>
@@ -366,8 +414,17 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox har ännu inte installerats. Starta Roblox via Froststrap minst en gång innan du försöker använda det här alternativet.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Spara och installera</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Spara och starta</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Sök</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Välj</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Server-ID</value>
@@ -398,6 +455,9 @@ Vill du byta till standardkanalen ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Totalt</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Okänt</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Uppdatering</value>
@@ -899,6 +959,34 @@ Det kan uppstå problem och dina inställningar kan ändras. Vi rekommenderar at
   <data name="Menu.About.Title" xml:space="preserve">
     <value>Om</value>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Kontot ”{0}” har tagits bort eftersom dess cookie är ogiltig eller har gått ut.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Lägg till konto</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Konton '@{0}' är redan inloggat.\nHar bytt till det.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Inga konton har lagts till
+Klicka på ”Lägg till konto” ovan för att komma igång</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Lokal cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Inte inloggad</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>I ett Roblox-spel</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>I Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (Roblox-webbplatsen)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Observera att inte alla dina ändringar träder i kraft omedelbart förrän du har stängt alla öppna Roblox-instanser.</value>
   </data>
@@ -1091,6 +1179,36 @@ Det kan uppstå problem och dina inställningar kan ändras. Vi rekommenderar at
   <data name="Menu.ColorPicker.SelectColor" xml:space="preserve">
     <value>Välj färg</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatarredigerare</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Färgmodifikationer</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Markör</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Upptäck mods som skapats av användare.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Övriga modifikationer</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' har installerats!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Ska den befintliga moden ”{0}” skrivas över?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Sök efter mods...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Temat ”{0}” har installerats och tillämpats!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Anpassade teman</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Moddar från användargemenskapen</value>
   </data>
@@ -1098,13 +1216,28 @@ Det kan uppstå problem och dina inställningar kan ändras. Vi rekommenderar at
     <value>Stäng studion</value>
   </data>
   <data name="Menu.ContextMenu.CloseWatcher" xml:space="preserve">
-    <value>Noggrann observatör</value>
+    <value>Noggrann iakttagare</value>
   </data>
   <data name="Menu.ContextMenu.NoData" xml:space="preserve">
     <value>Inga aktivitetsuppgifter finns tillgängliga.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Gå med i Best Region (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Det gick inte att ladda Roblox-cookien.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Det gick inte att ladda cookie-filen.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>En cookie har hittats, men den är ogiltig eller har gått ut.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Tillgång till cookies är inaktiverad i inställningarna.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Roblox-cookiefilen hittades inte.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Den här kanalen är föråldrad och uppdateras troligen inte längre. Använd gärna en annan kanal.</value>
@@ -1121,6 +1254,9 @@ Det kan uppstå problem och dina inställningar kan ändras. Vi rekommenderar at
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Ren lista</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Är du säker på att du vill ta bort alla flaggor?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Vissa av de flaggor som du försöker importera har redan angivna värden. Vill du skriva över deras nuvarande värden med de värden som definieras i importen?
 
@@ -1132,10 +1268,22 @@ Det finns {0} flaggdefinitioner som står i konflikt med varandra:
     <value>Ta bort det markerade</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Hantera dina FastFlags här. Se fler funktioner under Avancerade inställningar.</value>
+    <value>Här kan du hantera alla dina FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Dra och släpp för att importera JSON/TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Exportera JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags har exporterats utan problem.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Lägg gärna upp JSON- eller TXT-filer.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} har tagits bort eftersom de inte finns med på tillåtelselistan.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Den JSON-text du har angett verkar inte vara giltig. Kontrollera den noga och försök igen.
@@ -1144,8 +1292,17 @@ Mer information:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Det finns inga flaggor att ta bort.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Oj, det här är ju helt tomt! Vad sägs om att lägga till en FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Inga ogiltiga FastFlags har upptäckts.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' finns inte med på Roblox tillåtna lista och kommer inte att fungera.\n\nVill du ta bort det nu?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Flaggprofiler</value>
@@ -1155,6 +1312,12 @@ Mer information:
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Visa förinställda flaggor</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Antal flaggor</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Efter att vissa Roblox FastFlags har lagts till på vitlistan är dessa de enda som fortfarande är tillgängliga för användning.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Spara aktuella flaggor</value>
@@ -1256,8 +1419,14 @@ Mer information:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Ställ in som skrivskyddad</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y-vektorn</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Globala inställningar</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Här kan du hantera alla dina globala inställningar.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Aktivitetsmätning</value>
@@ -1424,95 +1593,236 @@ Mer information:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Manuell inloggning</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Lägg till stopp</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Ändringarna har tillämpats ({0} filer).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Tillämpa på markörer</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Lägg till i emote-hjulet</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Ansök till Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Ju högre siffra, desto bättre kvalitet, men det tar längre tid. Maxvärdet är 64, standardvärdet är 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Modgenereringen har avbrutits.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Städar upp...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Modnamn (valfritt)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Anpassad spinner (valfritt)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Skapa mods enkelt med ett enda klick.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Ikon för ”Dont Color Play”</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Hämtar nödvändiga resurser...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Hämtar filer...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Det gick inte att ladda förhandsgranskningsfonterna.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Ikonuppsättning:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Lägg till i Mina mods</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Förpackning...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Är du redo att skapa en mod?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Ändrar färg på teckensnitt...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Ändrar färg på bilder...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox-ikon (valfritt)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Sparat i {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Påbörjar generering av mod...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Förhandsgranskning av stil</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Motgenerator</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Det finns redan en mod med det namnet. Välj ett annat namn.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Mappnamnet innehåller ogiltiga tecken.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Lägg till ny mod</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Det finns redan en mod med namnet ”{0}”.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Vill du radera ”{0}” permanent?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Hantera och tillämpa filändringar på Roblox-spelklienten.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Dra och släpp för att importera ZIP-fil/mapp</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Mappen för ”{0}” finns inte längre.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Importera mapp</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Importera ZIP-fil</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Modulen ”{0}” har importerats.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Importera mods genom att dra modet eller importera det. Mods med lägre prioritet tillämpas sist, vilket gör att de vinner vid konflikter med andra mods.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Ogiltigt mappnamn.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Den valda källan innehåller ingen giltig mod-struktur.\nDen måste innehålla minst en av följande mappar: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Inga modifikationer installerade.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Valda mod-åtgärder</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Mina mods</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Filtyp eller sökväg som inte stöds: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Officiella inbyggda mods.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Allt du behöver för att hantera dina markörer.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Anpassade markörfunktioner</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Konfigurera programparametrar såsom DPI-skalning och [optimeringar för helskärmsläge]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Hantera kompatibilitetsinställningar</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Välj markör...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Använd dina egna muspekare i Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Ta bort anpassad markör</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Anpassad markör</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Se till att ha flera olika marköruppsättningar redo att användas.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Anpassad marköruppsättning</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Välj ljud...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Ersätter dödsljudet med ditt eget ljud.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Ta bort anpassat dödsljud</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Anpassat dödsljud</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Välj typsnitt...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Ställer in det valda anpassade teckensnittet i Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Ta bort tillämpat teckensnitt</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Anpassat typsnitt för spel</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Välj ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Använd din egen Shiftlock i Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Ta bort anpassad växellåsning</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Anpassad Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Välj vilken typ av emoji Roblox ska använda.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Emoji-moden kan inte användas just nu.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Föredragen typ av emoji</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Välj mellan att använda flera Roblox-markörer.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Muspekaren</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Återinför den gamla bakgrunden i avatarredigeraren som användes i Roblox-appen före 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Använd bakgrunden från den gamla avatarredigeraren</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Förinställda modifieringar</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Gå tillbaka till dina senaste spel.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Snabbspel</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Inloggningen har avbrutits.</value>
@@ -1550,6 +1860,30 @@ Mer information:
   <data name="Menu.Save" xml:space="preserve">
     <value>Spara</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automatiskt läge: Söker efter det bästa området för dig...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Det gick inte att ansluta till spelet: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Ansluter till den bästa servern...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Ansluta sig till spelet</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Ansluter till {0} via snabbspel.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Det gick inte att hitta en lämplig server.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Sök på något så kanske det dyker upp här...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Servern hittades</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Ändringarna träder i kraft nästa gång du startar Roblox.</value>
   </data>
@@ -1582,6 +1916,9 @@ Mer information:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Allmänt</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Nykterhetsmiljöer</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testläge</value>

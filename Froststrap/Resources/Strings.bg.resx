@@ -246,20 +246,35 @@
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Добави единичен</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Всички</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Ъгъл</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Групи</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Разглеждане</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Браузър</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Отказ</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Изчисти</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Затвори</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Избор на цвят</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Потвърди</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Копирай</value>
@@ -273,7 +288,7 @@
   <data name="Common.Custom" xml:space="preserve">
     <value>По избор</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>Диплинк</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
@@ -297,8 +312,17 @@
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Разширени функции в Discord</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Изтегли</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Редактиране</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Редактор</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Грешка</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Износ</value>
@@ -307,11 +331,17 @@
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Бърз редактор на знамена</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Файлове</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Игра</value>
   </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Генериране</value>
+  </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
-    <value>Преглед на глифа</value>
+    <value>Предварителен преглед на глифа</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
     <value>Шестнадесетичен код</value>
@@ -334,6 +364,9 @@
   <data name="Common.Loading" xml:space="preserve">
     <value>Зареждане, моля изчакайте...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Ръководство</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Разнообразни</value>
   </data>
@@ -346,8 +379,20 @@
   <data name="Common.No" xml:space="preserve">
     <value>Не</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Не бяха намерени резултати</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Не е налично</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Не е намерено</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Офсет</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Отвори папка</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Отвори файла с лог записите</value>
@@ -364,11 +409,17 @@
   <data name="Common.Presets" xml:space="preserve">
     <value>Предварителни настройки</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Приоритет</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Профили</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Качество</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Премахни</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Преименувай</value>
@@ -376,8 +427,17 @@
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox все още не е инсталиран. Моля, стартирайте Roblox чрез Froststrap поне веднъж, преди да опитате да използвате тази опция.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Запази и инсталирай</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Запази и стартирай</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Търсене</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Изберете</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Идентификационен номер на сървъра</value>
@@ -408,6 +468,9 @@
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Общо</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Неизвестно</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Актуализация</value>
@@ -931,6 +994,37 @@
     <value>Версия {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Акаунтът „{0}“ беше премахнат, тъй като неговата „бисквитка“ е невалидна или срокът ѝ е изтекъл.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Добави профил</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Акаунтът „@{0}“ вече е влязъл в системата.\nПреминах към него.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Няма добавени акаунти
+Кликнете върху „Добави акаунт“ по-горе, за да започнете</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Местна бисквитка</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Не сте влезли в системата</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>В игра в Roblox</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>В Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>Офлайн</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Онлайн (уебсайтът на Roblox)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Моля, имайте предвид, че не всички промени ще влязат в сила веднага, докато не затворите всички отворени в момента инстанции на Roblox.</value>
   </data>
@@ -1129,6 +1223,36 @@
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Информация за модата</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Редактор на аватари</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Цветови модификации</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Курсор</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Разгледайте модификациите, създадени от потребители.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Различни модификации</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Модификацията „{0}“ беше инсталирана успешно!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Да се презапише съществуващият мод „{0}“?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Търсене на модификации...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Темата „{0}“ е инсталирана и приложена!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Персонализирани теми</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Модификации на общността</value>
   </data>
@@ -1143,6 +1267,21 @@
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Присъединете се към „Best Region“ (Авто)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Не можа да се зареди бисквитката на Roblox.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Не успяхме да заредим файла с бисквитките.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Намерена е бисквитка, но тя е невалидна или срокът ѝ е изтекъл.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Достъпът до бисквитките е деактивиран в настройките.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Файлът с бисквитките на Roblox не беше намерен.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Този канал е остарял и вероятно вече не се актуализира. Моля, използвайте друг канал.</value>
@@ -1159,6 +1298,9 @@
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Списък с чистите продукти</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Сигурен ли си, че искаш да изтриеш всички отметки?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Някои от флаговете, които се опитвате да импортирате, вече имат зададени стойности. Искате ли да замените текущите им стойности със стойностите, дефинирани в импорта?
 
@@ -1170,10 +1312,22 @@
     <value>Изтрий избраното</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Управлявайте вашите FastFlags тук. Разгледайте още функции в „Разширени настройки“.</value>
+    <value>Управлявайте всичките си FastFlags тук.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Плъзнете, за да импортирате JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Експорт на JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags беше експортиран успешно.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Моля, качите файлове във формат JSON или TXT.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} са били премахнати, тъй като не фигурират в списъка с разрешените.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Въведеният от вас JSON изглежда не е валиден. Моля, проверете го отново и опитайте още веднъж.
@@ -1182,8 +1336,17 @@
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Няма флагове за изтриване.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Уау, тук е толкова празно! Какво ще кажеш да добавим FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Не са открити невалидни FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>„{0}“ не фигурира в списъка с разрешени имена на Roblox и няма да работи.\n\nДа го премахнем ли сега?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Профили на знамената</value>
@@ -1196,6 +1359,12 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Редактор на FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Общ брой знамена</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>След включването в белия списък на някои FastFlags в Roblox, това са единствените, които остават на разположение за използване.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Запази текущите флагове</value>
@@ -1297,8 +1466,17 @@
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Определи като „Само за четене“</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Вектор X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Вектор Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Общи настройки</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Тук можете да управлявате всичките си глобални настройки.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Проследяване на активността</value>
@@ -1465,95 +1643,236 @@
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Ръчно влизане</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Добави спирка</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Модификациите бяха приложени успешно ({0} файла).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Приложи към курсорите</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Добави към колелото с емотикони</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Кандидатствайте за работа в Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Колкото по-голямо е числото, толкова по-високо е качеството, но отнема повече време; максималната стойност е 64, а по подразбиране е 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Създаването на мод е отменено.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Почистване...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Име на модификацията (по избор)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Персонализиран спинър (по избор)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Създавайте модификации лесно с едно кликване.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Икона „Без игра с цветове“</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Изтегляне на необходимите ресурси...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Извличане на файлове...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Не успях да заредя шрифтовете за предварителен преглед.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Набор от икони:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Добави към „Моите модификации“</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Опаковка...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Готови ли сте да създадете модификация?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Промяна на цвета на шрифтовете...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Преоцветяване на изображения...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Икона на Roblox (по избор)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Запазено в {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Започва генерирането на модификации...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Предварителен преглед на стила</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Генератор на мода</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Вече съществува мод с това име. Изберете друго име.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Името на папката съдържа недопустими символи.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Добави нов мод</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Вече съществува модификация с име „{0}“.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Да изтриете „{0}“ окончателно?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Управление и прилагане на модификации на файлове към клиента на играта Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Плъзнете, за да импортирате ZIP файл / папка</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Папката за „{0}“ вече не съществува.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Импортиране на папка</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Импортиране на ZIP файл</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Модификацията „{0}“ беше импортирана успешно.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Импортирайте модификации, като ги плъзнете или чрез импортиране; модификациите с по-нисък приоритет се прилагат накрая, което позволява да се разрешават конфликтите с други модификации.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Невалидно име на папка.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Избраният източник не съдържа валидна структура на модификацията.\nТя трябва да съдържа поне една от следните папки: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Няма инсталирани модификации.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Избрано действие на модификацията</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Моите модификации</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Неподдържан тип файл или път: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Официални вградени модификации.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Всичко, от което се нуждаете, за да управлявате курсорите си.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Функции за персонализиран курсор</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Конфигурирайте параметрите на приложението, като например поведението при мащабиране на DPI и [оптимизациите за пълен екран]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Управление на настройките за съвместимост</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Изберете курсор...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Използвайте свои собствени курсори на мишката в Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Премахване на персонализиран курсор</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Персонализиран курсор</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Подгответе няколко комплекта курсори, които да са готови за употреба.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Персонализиран набор от курсори</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Изберете звук...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Заменя звука при смърт с твой собствен аудиофайл.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Премахване на персонализиран звук при смърт</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Персонализиран звук при смърт</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Изберете шрифт...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Задава избрания потребителски шрифт в Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Премахване на приложения шрифт</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Персонализиран шрифт за игра</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Изберете ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Използвайте своя собствен Shiftlock в Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Премахване на персонализирания Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock по поръчка</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Изберете какъв тип емоджи да използва Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>В момента не е възможно да се приложи модификацията за емоджита.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Предпочитан тип емоджи</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Изберете дали да използвате няколко курсора за Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Курсорът на мишката</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Възстановете стария фон на редактора за аватари, който се използваше в приложението Roblox преди 2020 г.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Използване на стария фон на редактора за аватари</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Предварително зададени модификации</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Върни се към последните си игри.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Бърза игра</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Влизането беше отменено.</value>
@@ -1594,6 +1913,30 @@
   <data name="Menu.Save" xml:space="preserve">
     <value>Запази</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Автоматичен режим: Търсене на най-подходящия за вас регион...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Не успях да се присъединя към играта: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Свързване с най-добрия сървър...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Присъединяване към играта</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Присъединявам се към {0} чрез бърза игра.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Не беше намерен подходящ сървър.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Потърси нещо и може да се появи тук...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Сървърът е намерен</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Промените ще влязат в сила при следващото стартиране на Roblox.</value>
   </data>
@@ -1626,6 +1969,9 @@
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Общо</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Трезвени настройки</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Тестов режим</value>

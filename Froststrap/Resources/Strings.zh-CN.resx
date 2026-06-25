@@ -246,20 +246,35 @@
   <data name="Common.AddSingle" xml:space="preserve">
     <value>添加单曲</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>全部</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>角度</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>乐队</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>浏览</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>浏览器</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>取消</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>清除</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>关闭</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>颜色选择器</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>确认</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>复制</value>
@@ -273,7 +288,7 @@
   <data name="Common.Custom" xml:space="preserve">
     <value>自定义</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>深度链接</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
@@ -297,8 +312,17 @@
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Discord 丰富状态信息</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>下载</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>编辑</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>编辑</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>错误</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>导出</value>
@@ -307,8 +331,14 @@
   <data name="Common.FastFlags" xml:space="preserve">
     <value>快速旗帜编辑器</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>文件</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>游戏</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>生成</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>字形预览</value>
@@ -334,6 +364,9 @@
   <data name="Common.Loading" xml:space="preserve">
     <value>正在加载，请稍候...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>手册</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>杂项</value>
   </data>
@@ -346,8 +379,20 @@
   <data name="Common.No" xml:space="preserve">
     <value>不</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>未找到结果</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>暂无</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>未找到</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>偏移量</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>打开文件夹</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>打开日志文件</value>
@@ -364,11 +409,17 @@
   <data name="Common.Presets" xml:space="preserve">
     <value>预设</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>优先级</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>个人资料</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>质量</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>删除</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>重命名</value>
@@ -376,8 +427,17 @@
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox 尚未安装。在尝试使用此选项之前，请先使用 Froststrap 至少启动一次 Roblox。</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>保存并安装</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>保存并启动</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>搜索</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>选择</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>服务器ID</value>
@@ -408,6 +468,9 @@
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>总计</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>未知</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>更新</value>
@@ -934,6 +997,37 @@
     <value>版本 {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>账户“{0}”已被删除，因为其 Cookie 无效或已过期。</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>添加账户</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>账户“@{0}”已登录。\n已切换至该账户。</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>尚未添加任何账户
+点击上方的“添加账户”开始操作</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>本地 Cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>尚未登录</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>在《Roblox》游戏中</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>在 Roblox Studio 中</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>离线</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>在线（Roblox 网站）</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>请注意，在您关闭所有当前打开的 Roblox 实例之前，并非所有更改都会立即生效。</value>
   </data>
@@ -1138,6 +1232,36 @@
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>关于信息</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>头像编辑器</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>颜色模组</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>光标</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>探索用户创作的模组。</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>其他模组</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>模组“{0}”已成功安装！</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>是否覆盖现有模组“{0}”？</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>搜索模组...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>主题“{0}”已安装并启用！</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>自定义主题</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>社区版主</value>
   </data>
@@ -1152,6 +1276,21 @@
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>加入“最佳地区”（自动）</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>无法加载 Roblox Cookie。</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>无法加载 Cookie 文件。</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>已找到 Cookie，但该 Cookie 无效或已过期。</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>在设置中已禁用 Cookie 访问。</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>未找到 Roblox Cookie 文件。</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>该频道已过时，可能不再更新。请使用其他频道。</value>
@@ -1168,6 +1307,9 @@
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>干净列表</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>您确定要删除所有标记吗？</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>您尝试导入的某些标志已有设置值。是否要用导入中定义的值覆盖其当前值？
 
@@ -1179,10 +1321,22 @@
     <value>删除所选内容</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>请在此处管理您的 FastFlags。请在“高级设置”中查看更多功能。</value>
+    <value>在此管理您所有的 FastFlags。</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 拖放以导入 JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>导出JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags 已成功导出。</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>请上传 JSON 或 TXT 文件。</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} 因未列入允许列表而被移除。</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>您输入的 JSON 似乎无效。请仔细检查并重试。
@@ -1191,8 +1345,17 @@
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>没有待删除的标记。简体中文（大陆）</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>哇，这里好空啊！要不要加个 FastFlag 呢？</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>未检测到无效的 FastFlags。</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>“{0}”未列入 Roblox 允许列表，因此无法使用。\n\n现在删除它吗？</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>国旗简介</value>
@@ -1205,6 +1368,12 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag 编辑器</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>旗帜总数</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>随着部分 Roblox FastFlags 被列入白名单，以下是目前仅剩的、仍可使用的 FastFlags。</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>保存当前标志</value>
@@ -1306,8 +1475,14 @@
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>设为只读</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y向量</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>全局设置</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>您可以在此管理所有全局设置。</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>活动追踪</value>
@@ -1474,95 +1649,236 @@
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>手动登录</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>添加停靠站</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>已成功应用修改（{0} 个文件）。</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>应用于光标</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>应用到表情轮</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>申请加入Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>数值越高，质量越好，但耗时越长，最大值为64，默认值为8。</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>模组生成已取消。</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>正在清理……</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>模组名称（可选）</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>自定义旋转轮（可选）</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>只需单击一下，即可轻松生成模组。</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>“不要着色”游戏图标</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>正在下载所需资源...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>正在解压文件...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>无法加载预览字体。</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>图标集：</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>添加到“我的模组”</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>包装……</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>准备生成模组了吗</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>正在重新设置字体颜色……</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>正在重新着色图片……</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox 图标（可选）</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>已保存至 {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>开始生成模组...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>样式预览</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>模组生成器</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>已经有一个同名的模组了。请选择另一个名称。</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>文件夹名称中包含无效字符。</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>添加新模组</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>已经存在一个名为“{0}”的模组。</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>要永久删除“{0}”吗？</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>管理和应用 Roblox 游戏客户端的文件修改。</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 拖放以导入 Zip 文件/文件夹</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>“{0}”的文件夹已不存在。</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>导入文件夹</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>导入 ZIP 文件</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>模组“{0}”已成功导入。</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>通过拖拽模组或直接导入的方式导入模组，优先级较低的模组将最后应用，从而避免与其他模组发生冲突。</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>文件夹名称无效。</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>所选源文件不包含有效的模组结构。\n它必须包含以下文件夹中的至少一个：content、ExtraContent、PlatformContent。</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>未安装任何模组。</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>选定的模组操作</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>我的模组</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>不支持的文件类型或路径：{0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>官方内置模组。</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>管理光标所需的一切。</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>自定义光标功能</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>配置应用程序参数，例如 DPI 缩放行为和 [全屏优化]({0})。</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>管理兼容性设置</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>选择光标...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>在 Roblox 中使用您自己的鼠标光标。</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>删除自定义光标</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>自定义光标</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>准备好多组光标，以便随时使用。</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>自定义光标集</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>选择声音...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>将死亡音效替换为自定义音频。</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>删除自定义死亡音效</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>自定义死亡音效</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>选择字体...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>在 Roblox 中设置所选的自定义字体。</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>删除已应用的字体</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>自定义游戏字体</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>选择 ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>在 Roblox 中使用你自己的 Shiftlock。</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>移除自定义换挡锁定</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>定制换挡锁</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>请选择 Roblox 应该使用哪种表情符号。</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>目前无法应用该表情符号模组。</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>首选表情符号类型</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>在多个 Roblox 光标之间进行选择。</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>鼠标光标</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>恢复2020年之前Roblox应用中使用的旧版头像编辑器背景。</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>使用旧版头像编辑器的背景</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>预设模组</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>返回您最近玩过的游戏。</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>快速游玩</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>登录已取消。</value>
@@ -1603,6 +1919,30 @@
   <data name="Menu.Save" xml:space="preserve">
     <value>保存</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>自动模式：正在为您寻找最佳区域……</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>无法加入游戏：{0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>正在连接最佳服务器……</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>加入游戏</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>通过快速游戏加入 {0}。</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>无法找到合适的服务器。</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>搜索一下什么内容，它可能会出现在这里……</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>已找到服务器</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>这些更改将在您下次启动 Roblox 时生效。</value>
   </data>
@@ -1635,6 +1975,9 @@
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>概述</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>清醒环境</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>测试模式</value>

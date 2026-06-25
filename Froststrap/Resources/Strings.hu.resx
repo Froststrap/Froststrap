@@ -246,20 +246,35 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Egyetlen hozzáadása</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Minden</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Szög</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Zenekarok</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Böngészés</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Böngésző</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Mégse</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Törlés</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Bezárás</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Színválasztó</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Megerősítés</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Másolás</value>
@@ -273,7 +288,7 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Custom" xml:space="preserve">
     <value>Egyedi</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>Mélylink</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
@@ -294,14 +309,29 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Fogyatékkal élők</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Letöltés</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Szerkesztés</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Szerkesztő</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Hiba</value>
   </data>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Gyors zászló-szerkesztő</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Fájlok</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Játék</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Létrehozás</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Glif-előnézet</value>
@@ -327,6 +357,9 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Betöltés, kérjük, várjon...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Kézikönyv</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Egyéb</value>
   </data>
@@ -339,8 +372,20 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nem</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Nem találtam találatot</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Nem elérhető</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Nem található</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Eltolás</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Mappa megnyitása</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Naplófájl megnyitása</value>
@@ -357,11 +402,17 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Előre beállított értékek</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Elsőbbség</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profilok</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Minőség</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Eltávolítás</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Átnevezés</value>
@@ -369,8 +420,17 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>A Roblox még nincs telepítve. Kérjük, mielőtt ezt az opciót használná, indítsa el a Robloxot a Froststrap segítségével legalább egyszer.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Mentés és telepítés</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Mentés és indítás</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Keresés</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Kiválasztás</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Szerverazonosító</value>
@@ -401,6 +461,9 @@ Szeretnél átváltani az alapértelmezett csatornára ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Összesen</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Ismeretlen</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Frissítés</value>
@@ -918,6 +981,34 @@ Biztosan folytatni szeretné?</value>
     <value>{0} verzió</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>A „{0}” fiókot eltávolítottuk, mert a hozzá tartozó cookie érvénytelen vagy lejárt.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Fiók hozzáadása</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Az „@{0}” fiók már be van jelentkezve.\nÁtváltottam erre a fiókra.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Nincs hozzáadott fiók
+Kattintson a fenti „Fiók hozzáadása” gombra a kezdéshez</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Helyi cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Nincs bejelentkezve</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Egy Roblox-játékban</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>A Roblox Studio-ban</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (a Roblox weboldala)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Felhívjuk figyelmét, hogy a módosítások nem mindegyike lép azonnal hatályba, amíg az összes jelenleg megnyitott Roblox-példányt be nem zárja.</value>
   </data>
@@ -1116,6 +1207,36 @@ Biztosan folytatni szeretné?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Információk a Modról</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatar-szerkesztő</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Színmódosítások</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kijelölő</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Fedezd fel a felhasználók által készített modokat!</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Különféle módosítások</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>A „{0}” mod sikeresen telepítve!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Felülírja a meglévő „{0}” modot?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Modok keresése...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>A „{0}” téma telepítve és alkalmazva!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Egyedi témák</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Közösségi moderátorok</value>
   </data>
@@ -1130,6 +1251,21 @@ Biztosan folytatni szeretné?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Csatlakozz a Best Region (Auto) csoporthoz</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>A Roblox-süti betöltése nem sikerült.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>A cookie-fájl betöltése nem sikerült.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>A cookie-t megtaláltuk, de érvénytelen vagy lejárt.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>A beállításokban a cookie-k használata le van tiltva.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>A Roblox cookie-fájl nem található.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Ez a csatorna elavult, és valószínűleg már nem frissítik. Kérjük, használjon egy másik csatornát.</value>
@@ -1146,6 +1282,9 @@ Biztosan folytatni szeretné?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Tiszta lista</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Biztosan törölni szeretné az összes jelölést?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Az importálni kívánt jelzők közül néhánynak már vannak beállított értékei. Felülírja a jelenlegi értékeket az importban megadott értékekkel?
 
@@ -1157,10 +1296,22 @@ Biztosan folytatni szeretné?</value>
     <value>A kijelöltek törlése</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Itt kezelheti a FastFlags-beállításait. További funkciókat a „Speciális beállítások” menüpontban talál.</value>
+    <value>Itt kezelheti az összes FastFlags-jét.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Húzza ide a JSON- vagy TXT-fájlt az importáláshoz</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON-export</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>A FastFlags exportálása sikeresen befejeződött.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Kérjük, helyezze el a JSON- vagy TXT-fájlokat.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>A {0} elemet eltávolítottuk, mivel nem szerepel a megengedett listán.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Úgy tűnik, hogy a megadott JSON-adat nem érvényes. Kérjük, ellenőrizze újra, majd próbálja meg újra.
@@ -1169,8 +1320,17 @@ További információk:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Nincs törölni való jelölés.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Hű, ez olyan üres! Mi lenne, ha hozzáadnánk egy FastFlag-et?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Nem észleltünk érvénytelen FastFlags-et.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>A „{0}” nem szerepel a Roblox engedélyezési listáján, ezért nem fog működni.\n\nMost töröljük?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Zászlóprofilok</value>
@@ -1183,6 +1343,12 @@ További információk:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag szerkesztő</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Zászlók összesen</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Miután néhány Roblox FastFlag felkerült a fehérlistára, ezek az egyetlenek, amelyek továbbra is használhatók.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Az aktuális jelölések mentése</value>
@@ -1284,8 +1450,17 @@ További információk:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Írásvédettként beállítani</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Vektor X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y-vektor</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Általános beállítások</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Itt kezelheted az összes általános beállításodat.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Tevékenységkövetés</value>
@@ -1438,7 +1613,7 @@ További információk:
     <value>Keresse meg a „ROBLOSECURITY” nevű cookie-t</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
-    <value>Kattintson duplán az „Érték” oszlopra, majd másolja ki azt</value>
+    <value>Kattintson duplán az „Érték” oszlopra, majd másolja azt</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
     <value>Illessze be az értéket a fenti mezőbe</value>
@@ -1452,95 +1627,236 @@ További információk:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Kézi bejelentkezés</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Megálló hozzáadása</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>A módosítások sikeresen alkalmazva ({0} fájl).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Alkalmazás a kurzorokra</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Hozzárendelés az emote-kerékhez</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Jelentkezz a Shiftlockhoz</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Minél nagyobb a szám, annál jobb a minőség, de annál hosszabb ideig tart; a maximális érték 64, az alapértelmezett érték pedig 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>A mod generálása törölve.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Takarítás...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Mod neve (opcionális)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Egyedi forgóelem (opcionális)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Készítsen modokat egyszerűen, egyetlen kattintással.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>„Ne színezz” játék ikon</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>A szükséges elemek letöltése...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Fájlok kibontása...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Nem sikerült betölteni az előnézeti betűtípusokat.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Ikonkészlet:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Hozzáadás a „Saját modjaimhoz” listához</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Csomagolás...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Készen állsz a mod létrehozására?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Betűtípusok átfestése...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Képek átfestése...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox-ikon (opcionális)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Elmentve a {0} mappába</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>A mod generálása megkezdődött...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stílus-előnézet</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Generátor ellen</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Már létezik ilyen nevű mod. Válassz egy másik nevet!</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>A mappa neve érvénytelen karaktereket tartalmaz.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Új mod hozzáadása</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Már létezik egy „{0}” nevű mod.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Véglegesen törölje a „{0}”-t?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>A Roblox játékkliens fájljainak módosításainak kezelése és alkalmazása.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Húzza ide a ZIP-fájlt vagy mappát az importáláshoz</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>A „{0}” nevű mappa már nem létezik.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Mappa importálása</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>ZIP-fájl importálása</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>A „{0}” mod sikeresen importálva.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>A modokat húzással vagy importálással lehet beolvasni; az alacsonyabb prioritású modok kerülnek alkalmazásra utoljára, így elkerülhetők az egyéb modokkal való ütközések.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Érvénytelen mappa neve.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>A kiválasztott forrás nem tartalmaz érvényes mod-struktúrát.\nLegalább az alábbi mappák egyikét tartalmaznia kell: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Nincs telepítve semmilyen mod.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Kiválasztott modul művelet</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>A saját modjaim</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Nem támogatott fájltípus vagy elérési út: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Hivatalos beépített modok.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Minden, amire szükséged van a kurzorok kezeléséhez.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Egyedi kurzorfunkciók</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Állítsa be az alkalmazás paramétereit, például a DPI-skálázás viselkedését és a [teljes képernyős optimalizálásokat]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Kompatibilitási beállítások kezelése</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Kijelölő eszköz kiválasztása...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Használd a saját egérkurzorjaidat a Robloxban.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Egyéni kurzor eltávolítása</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Egyedi kurzor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Több kurzorkészletet is tartson készenlétben a használatra.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Egyedi kurzorkészlet</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Válassza ki a hangot...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>A halál hangját a saját hangfájloddal helyettesíti.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Egyéni halálhang eltávolítása</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Egyedi halálhang</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Betűtípus kiválasztása...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Beállítja a kiválasztott egyéni betűtípust a Robloxban.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Az alkalmazott betűtípus eltávolítása</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Egyedi játékbetűtípus</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Válassza a ShiftLock lehetőséget...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Használd a saját Shiftlockodat a Robloxban.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Az egyéni Shiftlock eltávolítása</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Egyedi Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Válaszd ki, hogy milyen típusú emojikat használjon a Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Az emoji-mod jelenleg nem alkalmazható.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Előnyben részesített emoji-típus</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Válassz a többféle Roblox-kurzor közül.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Egérkurzor</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Állítsák vissza azt a régi avatárszerkesztő-háttérképet, amelyet 2020 előtt a Roblox alkalmazásban használtak.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>A régi avatárszerkesztő háttérének használata</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Előre beállított módosítások</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Térj vissza a legutóbbi játékaidhoz!</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Gyors játék</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>A bejelentkezés törölve.</value>
@@ -1581,6 +1897,30 @@ További információk:
   <data name="Menu.Save" xml:space="preserve">
     <value>Mentés</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automatikus mód: Az Ön számára legmegfelelőbb régió keresése...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Nem sikerült csatlakozni a játékhoz: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Csatlakozás a legjobb szerverhez...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Csatlakozás a játékhoz</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Csatlakozás a {0}-hoz a gyorsjáték segítségével.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Nem sikerült megfelelő szervert találni.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Keress rá valamire, és lehet, hogy itt fog megjelenni...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Szerver megtalálva</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>A változtatások a Roblox következő indításakor lépnek életbe.</value>
   </data>
@@ -1613,6 +1953,9 @@ További információk:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Általános</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Mérsékelt beállítások</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Teszt üzemmód</value>

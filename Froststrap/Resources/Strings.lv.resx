@@ -246,20 +246,35 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Pievienot vienu</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Visi</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Leņķis</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Grupas</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Pārlūkot</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Pārlūks</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Atcelt</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Dzēst</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Aizvērt</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Krāsu izvēlne</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Apstiprināt</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopēt</value>
@@ -294,8 +309,17 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Discord bagātīgā klātbūtne</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Lejupielādēt</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Rediģēt</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redaktors</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Kļūda</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksports</value>
@@ -304,8 +328,14 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Ātrs karogu redaktors</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Faili</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Spēle</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Izveidot</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Glyph priekšskatījums</value>
@@ -331,6 +361,9 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Ielādējas, lūdzu, pagaidiet...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Lietošanas rokasgrāmata</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Dažādi</value>
   </data>
@@ -343,8 +376,20 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nē</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Rezultāti netika atrasti</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Nav pieejams</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Nav atrasts</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Novirze</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Atvērt mapi</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Atvērt žurnāla failu</value>
@@ -361,11 +406,17 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Iepriekš iestatījumi</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioritāte</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profili</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kvalitāte</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Noņemt</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Pārdēvēt</value>
@@ -373,8 +424,17 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox vēl nav instalēts. Lūdzu, vismaz vienu reizi palaidiet Roblox, izmantojot Froststrap, pirms mēģināt izmantot šo opciju.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Saglabāt un instalēt</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Saglabāt un palaist</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Meklēt</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Izvēlēties</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Servera ID</value>
@@ -405,6 +465,9 @@ Vai vēlaties pāriet uz noklusējuma kanālu ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Kopā</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Nav zināms</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Atjauninājums</value>
@@ -925,6 +988,37 @@ Vai esat pārliecināts, ka vēlaties turpināt?</value>
     <value>Versija {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Konts „{0}“ ir dzēsts, jo tā sīkdatne ir nederīga vai tās derīguma termiņš ir beidzies.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Pievienot kontu</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Lietotājs „@{0}” jau ir pieteicies.\nPāreja uz šo lietotāju.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Nav pievienots neviens konts
+Lai sāktu, noklikšķiniet uz „Pievienot kontu” augšā</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Vietējā sīkdatne</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Nav pieteicies</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>„Roblox“ spēlē</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>„Roblox Studio“</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>Bezsaistē</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Tiešsaistē (Roblox tīmekļa vietnē)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Lūdzu, ņemiet vērā, ka ne visas jūsu izmaiņas stāsies spēkā uzreiz, kamēr neaizvērsiet visas pašlaik atvērtās „Roblox“ instances.</value>
   </data>
@@ -1123,6 +1217,36 @@ Vai esat pārliecināts, ka vēlaties turpināt?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Informācija par Mod</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatāra redaktors</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Krāsu modifikācijas</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kursors</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Iepazīsties ar lietotāju izveidotajiem modiem.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Dažādi modifikācijas</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mods „{0}“ veiksmīgi instalēts!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Pārrakstīt esošo modu „{0}“?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Meklēt modifikācijas...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Tēma „{0}“ ir instalēta un piemērota!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Pielāgotas tēmas</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Kopienas modifikācijas</value>
   </data>
@@ -1137,6 +1261,21 @@ Vai esat pārliecināts, ka vēlaties turpināt?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Pievienojies „Best Region“ (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Neizdevās ielādēt Roblox sīkfailu.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Neizdevās ielādēt sīkdatņu failu.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Sīkfails atrasts, taču tas ir nederīgs vai tā derīguma termiņš ir beidzies.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Sīkdatņu piekļuve ir atspējota iestatījumos.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Roblox sīkdatnes fails nav atrasts.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Šis kanāls ir novecojis, un, visticamāk, vairs netiek atjaunināts. Lūdzu, izmantojiet citu kanālu.</value>
@@ -1153,6 +1292,9 @@ Vai esat pārliecināts, ka vēlaties turpināt?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Tīrā saraksta</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Vai esat pārliecināts, ka vēlaties dzēst visus marķējumus?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Dažiem no karogiem, kurus mēģināt importēt, jau ir iestatītas vērtības. Vai vēlaties pārrakstīt to pašreizējās vērtības ar importā definētajām?
 
@@ -1164,10 +1306,22 @@ Ir {0} pretrunīgas karogu definīcijas:
     <value>Dzēst atlasīto</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Šeit varat pārvaldīt savus FastFlags. Uzziniet vairāk par funkcijām sadaļā „Papildu iestatījumi“.</value>
+    <value>Šeit varat pārvaldīt visus savus FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Velciet failu, lai importētu JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Eksportēt JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags tika veiksmīgi eksportēts.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Lūdzu, ievietojiet JSON vai TXT failus.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} ir izdzēsti, jo tie nebija iekļauti atļauto sarakstā.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Šķiet, ka jūsu ievadītais JSON nav derīgs. Lūdzu, pārbaudiet to vēlreiz un mēģiniet vēlreiz.
@@ -1176,8 +1330,17 @@ Papildu informācija:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Nav nekādu karogu, kurus dzēst.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Oho, šeit ir tik tukši! Kā būtu, ja pievienotu FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Nav konstatēti nederīgi FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' nav iekļauts Roblox atļauto sarakstā un nedarbosies.\n\nVai to izdzēst tagad?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Karogu profili</value>
@@ -1190,6 +1353,12 @@ Papildu informācija:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag redaktors</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Kopējais karogu skaits</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Pēc tam, kad daži „Roblox FastFlags“ tika iekļauti baltajā sarakstā, šie ir vienīgie, kas joprojām ir pieejami lietošanai.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Saglabāt pašreizējos karogus</value>
@@ -1291,8 +1460,17 @@ Papildu informācija:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Iestatīt kā „Tikai lasīšanai”</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Vektors X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y vektors</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Vispārējie iestatījumi</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Šeit varat pārvaldīt visus savus vispārējos iestatījumus.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Aktivitāšu uzskaite</value>
@@ -1433,7 +1611,7 @@ Papildu informācija:
     <value>Atveriet Roblox.com savā pārlūkprogrammā un piesakieties</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
-    <value>Nospiediet F12, lai atvērtu izstrādātāja rīkus</value>
+    <value>Nospiediet taustiņu F12, lai atvērtu izstrādātāja rīkus</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
     <value>Noklikšķiniet uz cilnes „Pieteikumi” (Chrome) vai „Uzglabāšana” (Firefox)</value>
@@ -1459,95 +1637,236 @@ Papildu informācija:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Pieslēgšanās ar manuālo metodi</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Pievienot pieturu</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Izmaiņas veiksmīgi piemērotas ({0} faili).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Piemērot kursoriem</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Pievienot emociju ratiņam</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Pieteikties darbam „Shiftlock“</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Jo lielāks skaitlis, jo augstāka kvalitāte, taču tas prasa vairāk laika; maksimālais vērtība ir 64, noklusējuma vērtība ir 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Modu ģenerēšana atcelta.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Tīrīšana...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Modifikācijas nosaukums (pēc izvēles)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Pielāgots griežulis (pēc izvēles)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Viegli izveidojiet modus ar vienu klikšķi.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>„Dont Color Play“ ikona</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Lejupielādē nepieciešamos resursus...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Failu izgūšana...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Neizdevās ielādēt priekšskatījuma fontus.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Ikonu komplekts:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Pievienot maniem modiem</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Iepakojums...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Esat gatavs izveidot modu?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Fontu pārkrāsošana...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Attēlu pārkrāsošana...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>„Roblox“ ikona (pēc izvēles)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Saglabāts {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Sākas modu ģenerēšana...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stila priekšskatījums</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Pret ģeneratoru</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Mods ar šādu nosaukumu jau pastāv. Izvēlieties citu nosaukumu.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Mapes nosaukumā ir neatļauti simboli.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Pievienot jaunu modu</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Jau pastāv mods ar nosaukumu „{0}“.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Vai vēlaties neatgriezeniski dzēst „{0}“?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Pārvaldiet un piemērojiet failu modifikācijas Roblox spēļu klientam.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Velciet, lai importētu ZIP failu / mapi</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Mapes „{0}“ vairs nav.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Importēt mapi</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Importēt ZIP failu</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mods „{0}“ veiksmīgi importēts.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Modus var importēt, tos pārvelkot vai izmantojot importēšanas funkciju; modiem ar zemāku prioritāti tiek piemēroti pēdējie, tādējādi novēršot konfliktus ar citiem modiem.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Nepareizs mapes nosaukums.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Izvēlētajā avotā nav derīgas mod struktūras.\nTajā ir jābūt vismaz vienai no šīm mapēm: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Nav instalēti nekādi modifikatori.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Izvēlētā modu darbība</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Mani modifikatori</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Nepiedāvāts faila tips vai ceļš: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Oficiāli iebūvēti modifikatori.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Viss, kas jums nepieciešams, lai pārvaldītu kursorus.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Pielāgotā kursora funkcijas</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Konfigurējiet lietojumprogrammas parametrus, piemēram, DPI mērogošanas darbību un [pilnekrāna optimizācijas]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Saderības iestatījumu pārvaldība</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Izvēlieties kursoru...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Izmanto savus peles kursorus spēlē „Roblox“.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Noņemt pielāgoto kursoru</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Pielāgots kursors</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Sagatavojiet vairākus kursoru komplektus, kas ir gatavi lietošanai.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Pielāgots kursoru komplekts</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Izvēlieties skaņu...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Aizstāj nāves skaņu ar tavu paša audioierakstu.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Noņemt pielāgoto nāves skaņu</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Pielāgots nāves skaņas efekts</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Izvēlieties fontu...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Iestata izvēlēto pielāgoto fontu spēlē „Roblox“.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Noņemt piemēroto fontu</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Pielāgots spēles fonts</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Izvēlieties „ShiftLock“...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Izmanto savu „Shiftlock“ spēlē „Roblox“.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Noņemt pielāgoto Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Pielāgots Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Izvēlies, kāda veida emodžus Roblox vajadzētu izmantot.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Šobrīd emodži modifikāciju nevar piemērot.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Vēlamais emodži veids</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Izvēlies, vai vēlies izmantot vairākus „Roblox“ kursorus.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Peles kursors</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Atjaunojiet veco avatāra redaktora fonu, kas tika izmantots „Roblox“ lietotnē pirms 2020. gada.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Izmantot vecā avatāra redaktora fonu</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Iepriekš iestatīti modifikatori</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Atgriezies pie savām pēdējām spēlēm.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Ātrā spēle</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Pieslēgšanās atcelta.</value>
@@ -1588,6 +1907,30 @@ Papildu informācija:
   <data name="Menu.Save" xml:space="preserve">
     <value>Saglabāt</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automātiskais režīms: Meklē jums piemērotāko reģionu...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Neizdevās pievienoties spēlei: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Pievienojos labākajam serverim...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Pievienošanās spēlei</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Pievienojos {0} izmantojot ātro spēli.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Neizdevās atrast piemērotu serveri.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Ievadi meklēšanas laukā kaut ko, un tas varētu parādīties šeit...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Serveris atrasts</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Izmaiņas stāsies spēkā, kad nākamreiz palaidīsiet Roblox.</value>
   </data>
@@ -1620,6 +1963,9 @@ Papildu informācija:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Vispārīgi</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Nopietna atmosfēra</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testa režīms</value>

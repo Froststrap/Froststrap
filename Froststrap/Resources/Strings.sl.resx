@@ -246,20 +246,35 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Dodaj eno</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Vse</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Kot</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Glasbene skupine</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Brskanje</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Brskalnik</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Prekliči</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Izbriši</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Zapri</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Izbirnik barv</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Potrdi</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopiraj</value>
@@ -294,8 +309,17 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Discord – razširjene funkcije prisotnosti</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Prenesi</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Uredi</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Urednik</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Napaka</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Izvoz</value>
@@ -304,8 +328,14 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Urejevalnik zastav »Fast Flag«</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Datoteke</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Igra</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Ustvari</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Predogled glifov</value>
@@ -331,6 +361,9 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Nalaganje, prosimo, počakajte...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Navodila</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Razno</value>
   </data>
@@ -343,8 +376,17 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Ne</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Rezultatov ni bilo najdenih</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ni na voljo</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Ni bilo najdeno</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Odpri mapo</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Odpri datoteko z dnevnikom</value>
@@ -361,11 +403,17 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Prednastavitve</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prednost</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profil</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kakovost</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Odstrani</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Preimenuj</value>
@@ -373,8 +421,17 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox še ni nameščen. Preden poskusite uporabiti to možnost, vsaj enkrat zaženite Roblox prek programa Froststrap.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Shrani in namesti</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Shrani in zaženi</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Iskanje</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Izberi</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>ID strežnika</value>
@@ -405,6 +462,9 @@ Ali želite preklopiti na privzeti kanal ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Skupaj</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Neznano</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Posodobitev</value>
@@ -922,6 +982,37 @@ Ali ste prepričani, da želite nadaljevati?</value>
     <value>Različica {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Račun »{0}« je bil odstranjen, ker je njegov piškotek neveljaven ali je potekel.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Dodaj račun</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Račun »@{0}« je že prijavljen.\nPreklopljeno na ta račun.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Ni dodanih računov
+Kliknite »Dodaj račun« zgoraj, da začnete</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Lokalni piškotek</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Niste prijavljeni</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>V igri Roblox</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>V programu Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>Brez povezave</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Spletno (spletna stran Roblox)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Upoštevajte, da se ne bodo vse vaše spremembe takoj upoštevale, dokler ne zaprete vseh trenutno odprtih primerov Roblox.</value>
   </data>
@@ -1120,6 +1211,36 @@ Ali ste prepričani, da želite nadaljevati?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Podatki o modelu</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Urejevalnik avatarjev</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Barvne predelave</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kazalec</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Raziščite modifikacije, ki so jih ustvarili uporabniki.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Razni modifikacije</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' je bil uspešno nameščen!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Ali želite nadomestiti obstoječi mod »{0}«?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Iskanje modov...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Tema »{0}« je nameščena in aktivirana!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Prilagojene teme</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Modifikacije skupnosti</value>
   </data>
@@ -1134,6 +1255,21 @@ Ali ste prepričani, da želite nadaljevati?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Pridružite se Best Region (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Piškotka Roblox ni bilo mogoče naložiti.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Naložitev datoteke s piškotki ni uspela.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Piškotek je bil najden, vendar je neveljaven ali je potekel.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>V nastavitvah je dostop do piškotkov onemogočen.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Datoteka piškotka Roblox ni bila najdena.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Ta kanal je zastarel in verjetno se ne posodablja več. Prosimo, uporabite drug kanal.</value>
@@ -1150,6 +1286,9 @@ Ali ste prepričani, da želite nadaljevati?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Seznam čistih</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Ali ste prepričani, da želite izbrisati vse oznake?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Nekatere zastavice, ki jih poskušate uvoziti, že imajo nastavljene vrednosti. Ali želite njihove trenutne vrednosti nadomestiti s tistimi, ki so določene v uvozu?
 
@@ -1161,10 +1300,22 @@ Obstaja {0} nasprotujočih si opredelitev zastavic:
     <value>Izbriši izbrano</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Tukaj lahko upravljate s svojimi FastFlags. Več funkcij si oglejte v razdelku »Napredne nastavitve«.</value>
+    <value>Tukaj lahko upravljate vse svoje FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Pustite datoteko, da uvozite JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Izvoz v JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags je bil uspešno izvožen.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Prosimo, priložite datoteke v formatu JSON ali TXT.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} so bili odstranjeni, ker niso bili na seznamu dovoljenih.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Zdi se, da JSON, ki ste ga vnesli, ni veljaven. Prosimo, še enkrat preverite vnos in poskusite znova.
@@ -1173,8 +1324,17 @@ Več informacij:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Ni nobenih zastavic, ki bi jih bilo treba izbrisati.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Uau, tukaj je pa res prazno! Kaj praviš na to, da bi dodali FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Ni bilo zaznanih neveljavnih FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' ni na seznamu dovoljenih v Robloxu in ne bo delovalo.\n\nŽeliš ga zdaj odstraniti?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Profil zastav</value>
@@ -1187,6 +1347,12 @@ Več informacij:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Urednik FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Skupno število zastav</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Po uvrstitvi nekaterih Roblox FastFlags na belo listo so to edini, ki so še na voljo za uporabo.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Shrani trenutne zastavice</value>
@@ -1288,8 +1454,17 @@ Več informacij:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Nastavi kot samo za branje</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Vektor X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Vektor Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Splošne nastavitve</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Tukaj lahko upravljate vse svoje splošne nastavitve.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Sledenje aktivnosti</value>
@@ -1456,95 +1631,236 @@ Več informacij:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Ročno prijavljanje</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Dodaj postajo</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Spremembe so bile uspešno izvedene ({0} datotek).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Uporabi za kazalce</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Dodaj v kolo emojev</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Prijavi se na Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Čim višja je številka, tem višja je kakovost, vendar traja dlje; najvišja vrednost je 64, privzeta pa 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Ustvarjanje modov je bilo preklicano.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Čiščenje...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Ime modifikacije (neobvezno)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Prilagojeni vrtič (neobvezno)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Modifikacije lahko ustvarite z enim samim klikom.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Ikona »Ne barvaj«</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Prenos potrebnih datotek...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Izpisovanje datotek...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Pogled pisav ni bil uspešno naložen.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Nabor ikon:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Dodaj v »Moje modifikacije«</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Embalaža...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Ste pripravljeni ustvariti mod?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Prebarvanje pisav...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Prebarvanje slik...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Ikona Roblox (neobvezno)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Shranjeno v {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Začetek ustvarjanja modov...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Predogled sloga</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Proti generatorju</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Mod z istim imenom že obstaja. Izberite drugo ime.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Ime mape vsebuje neveljavne znake.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Dodaj nov mod</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Mod z imenom »{0}« že obstaja.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Ali želite '{0}' trajno izbrisati?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Upravljanje in uporaba modifikacij datotek v igralnem odjemalcu Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Pustite datoteko ali mapo, da jo uvozite</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Mapa za »{0}« ne obstaja več.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Uvozi mapo</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Uvozi ZIP</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod »{0}« je bil uspešno uvožen.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Modifikacije uvozite tako, da jih povlečete ali uvozite; modifikacije z nižjo prioriteto se uporabijo zadnje, kar preprečuje konflikte z drugimi modifikacijami.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Neveljavno ime mape.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Izbrani vir ne vsebuje veljavne strukture mod-a.\nVsebovati mora vsaj eno od naslednjih map: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Ni nameščenih modifikacij.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Izbrana akcija modifikacije</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Moji modifikatorji</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Nepodprta vrsta datoteke ali pot: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Uradni vgrajeni modifikatorji.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Vse, kar potrebujete za upravljanje kazalcev.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Funkcije prilagojenega kazalca</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Nastavite parametre aplikacije, kot so način prilagajanja DPI in [optimizacije za polnozaslonski način]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Upravljanje nastavitev združljivosti</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Izberi kazalec...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>V igri Roblox uporabljajte svoje lastne kazalce miške.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Odstrani prilagojeni kazalec</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Prilagojeni kazalec</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Pripravite si več naborov kazalcev, ki so takoj pripravljeni za uporabo.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Prilagojeni nabor kazalcev</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Izberi zvok...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Zamenja zvok smrti z vašim lastnim avdio posnetkom.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Odstrani prilagojeni zvok smrti</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Zvočni učinek smrti po meri</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Izberi pisavo...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>V Robloxu nastavi izbrano lastno pisavo.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Odstrani uporabljeno pisavo</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Pisava po meri za igre</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Izberite ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>V igri Roblox uporabi svoj Shiftlock.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Odstrani prilagojeno blokado prestav</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock po meri</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Izberi, katero vrsto emojijev naj uporablja Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Trenutno ni mogoče uporabiti modifikacije za emojije.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Želeni tip emojija</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Izberite med uporabo več kazalcev Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Miškin kazalec</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Vrnite staro ozadje urejevalnika avatarjev, ki se je v aplikaciji Roblox uporabljalo pred letom 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Uporabi ozadje iz starega urejevalnika avatarjev</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Prednastavljene modifikacije</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Vrni se k svojim zadnjim igram.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Hitro igranje</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Prijava je bila preklicana.</value>
@@ -1585,6 +1901,30 @@ Več informacij:
   <data name="Menu.Save" xml:space="preserve">
     <value>Shrani</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Avtomatski način: Iskanje najboljše regije za vas...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Pridružitev igri ni uspela: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Povezovanje z najboljšim strežnikom...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Pridružitev igri</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Pridružujem se {0} prek hitre igre.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Ustreznega strežnika ni bilo mogoče najti.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Poišči kaj in morda se bo prikazalo tukaj...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Strežnik najden</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Spremembe bodo začele veljati ob naslednjem zagonu programa Roblox.</value>
   </data>
@@ -1617,6 +1957,9 @@ Več informacij:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Splošno</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Trezna okolja</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testni način</value>

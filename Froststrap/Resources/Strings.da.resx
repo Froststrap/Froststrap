@@ -246,6 +246,9 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Tilføj enkelt</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Vinkel</value>
   </data>
@@ -255,11 +258,17 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Annuller</value>
   </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Ryd</value>
+  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Luk</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Farvevælger</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Bekræft</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopier</value>
@@ -294,6 +303,12 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Edit" xml:space="preserve">
     <value>Rediger</value>
   </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redaktør</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Fejl</value>
+  </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksport</value>
     <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
@@ -301,8 +316,14 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Hurtig flagredigerer</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Filer</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Spil</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Generer</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Forhåndsvisning af glyf</value>
@@ -325,6 +346,9 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Indlæser, vent venligst...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Brugsanvisning</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Diverse</value>
   </data>
@@ -337,8 +361,20 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nej</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Der blev ikke fundet nogen resultater</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ikke tilgængelig</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Ikke fundet</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Forskydning</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Åbn mappe</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Åbn logfil</value>
@@ -355,11 +391,17 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Forudindstillinger</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioritet</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiler</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kvalitet</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Fjern</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Omdøb</value>
@@ -367,8 +409,17 @@ Vil du skifte til standardkanalen ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox er endnu ikke installeret. Du skal starte Roblox via Froststrap mindst én gang, før du forsøger at bruge denne funktion.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Gem og installer</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Gem og start</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Søg</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Vælg</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Server-ID</value>
@@ -399,6 +450,9 @@ Vil du skifte til standardkanalen ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>I alt</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Ukendt</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Opdatering</value>
@@ -897,6 +951,34 @@ Er du sikker på, at du vil fortsætte?</value>
   <data name="Menu.About.Title" xml:space="preserve">
     <value>Om</value>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Kontoen '{0}' er blevet slettet, fordi dens cookie er ugyldig eller udløbet.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Tilføj konto</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Kontoen '@{0}' er allerede logget ind.\nDer er skiftet til den.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Der er ikke tilføjet nogen konti
+Klik på »Tilføj konto« ovenfor for at komme i gang</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Lokal cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Ikke logget ind</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>I et Roblox-spil</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>I Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (Roblox-hjemmesiden)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Vær opmærksom på, at ikke alle dine ændringer træder i kraft med det samme, før du har lukket alle de Roblox-instanser, der er åbne i øjeblikket.</value>
   </data>
@@ -1092,6 +1174,36 @@ Er du sikker på, at du vil fortsætte?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Om information</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatar-editor</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Farveændringer</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Markør</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Udforsk brugeroprettede mods.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Diverse modifikationer</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' er installeret!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Skal den eksisterende mod '{0}' overskrives?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Søg efter mods...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Temaet '{0}' er installeret og aktiveret!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Brugerdefinerede temaer</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Fællesskabsmods</value>
   </data>
@@ -1106,6 +1218,21 @@ Er du sikker på, at du vil fortsætte?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Bliv medlem af Best Region (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Det var ikke muligt at indlæse Roblox-cookien.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Det lykkedes ikke at indlæse cookie-filen.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Der er fundet en cookie, men den er ugyldig eller udløbet.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Adgang til cookies er deaktiveret i indstillingerne.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Roblox-cookie-filen blev ikke fundet.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Denne kanal er forældet og bliver sandsynligvis ikke længere opdateret. Brug venligst en anden kanal.</value>
@@ -1122,6 +1249,9 @@ Er du sikker på, at du vil fortsætte?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Renset liste</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Er du sikker på, at du vil slette alle markeringer?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Nogle af de flag, du forsøger at importere, har allerede angivne værdier. Vil du overskrive deres nuværende værdier med dem, der er defineret i importen?
 
@@ -1133,10 +1263,22 @@ Der er {0} konfliktende flagdefinitioner:
     <value>Slet det valgte</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Administrer dine FastFlags her. Se flere funktioner under »Avancerede indstillinger«.</value>
+    <value>Her kan du administrere alle dine FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Træk og slip for at importere JSON/TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Eksportér JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags er blevet eksporteret uden problemer.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Indsæt venligst JSON- eller TXT-filer.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} er blevet fjernet, da de ikke står på tilladelseslisten.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Den JSON, du har indtastet, ser ikke ud til at være gyldig. Tjek den venligst igen, og prøv på ny.
@@ -1145,8 +1287,17 @@ Yderligere oplysninger:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Der er ingen flag, der skal slettes.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Wow, her er jo helt tomt! Hvad med at tilføje et FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Der er ikke fundet nogen ugyldige FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' er ikke på Roblox' tilladelsesliste og vil ikke fungere.\n\nSkal det fjernes nu?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Flagprofiler</value>
@@ -1156,6 +1307,12 @@ Yderligere oplysninger:
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Vis forudindstillede flag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Antal flag i alt</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Efter at visse Roblox FastFlags er blevet sat på hvidlisten, er dette de eneste, der stadig kan bruges.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Gem de nuværende markeringer</value>
@@ -1257,8 +1414,14 @@ Yderligere oplysninger:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Indstil som skrivebeskyttet</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y-vektor</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Globale indstillinger</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Her kan du administrere alle dine globale indstillinger.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Aktivitetsmåling</value>
@@ -1425,95 +1588,233 @@ Yderligere oplysninger:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Manuel login</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Tilføj stop</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Ændringerne er blevet anvendt ({0} filer).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Anvend på markører</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Føj til emote-hjulet</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Ansøg hos Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Jo højere tallet er, desto bedre er kvaliteten, men det tager længere tid. Det maksimale tal er 64, standardværdien er 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Mod-generering afbrudt.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Rydder op...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Mod-navn (valgfrit)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Brugerdefineret spinner (valgfri)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Opret mods nemt med et enkelt klik.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Ikon for »Dont Color Play«</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Henter nødvendige filer...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Udlæsning af filer...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Det lykkedes ikke at indlæse forhåndsvisningsskrifttyper.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Ikon-sæt:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Føj til Mine mods</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Emballage...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Er du klar til at generere en mod?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Omfarvning af skrifttyper...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Omfarvning af billeder...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox-ikon (valgfrit)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Gemt i {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Påbegynder generering af mods...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stilforhåndsvisning</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Der findes allerede et mod med dette navn. Vælg et andet navn.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Mappenavnet indeholder ugyldige tegn.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Tilføj ny mod</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Der findes allerede et mod med navnet '{0}'.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Vil du slette '{0}' permanent?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Administrer og anvend filændringer til Roblox-spilklienten.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Træk og slip for at importere ZIP-fil/mappe</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Mappen til '{0}' findes ikke længere.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Importmappe</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Importer ZIP-fil</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod '{0}' er importeret uden problemer.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Du kan importere mods ved at trække dem hen eller ved at importere dem. Mods med lavere prioritet anvendes sidst, hvilket gør, at de vinder i tilfælde af konflikter med andre mods.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Ugyldigt mappenavn.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Den valgte kilde indeholder ikke en gyldig mod-struktur.\nDen skal indeholde mindst én af følgende mapper: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Der er ikke installeret nogen mods.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Valgt modulhandling</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Mine mods</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Ikke-understøttet filtype eller sti: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Officielle indbyggede mods.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Alt, hvad du har brug for til at administrere dine markører.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Funktioner til brugerdefinerede markører</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Konfigurer programparametre såsom DPI-skaleringsadfærd og [optimeringer til fuldskærm]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Administrer kompatibilitetsindstillinger</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Vælg markør...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Brug dine egne musemarkører i Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Fjern brugerdefineret markør</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Brugerdefineret markør</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Sørg for at have flere markørsæt klar til brug.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Brugerdefineret markørsæt</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Vælg lyd...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Erstatter dødslyden med din egen lydfil.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Fjern brugerdefineret dødslyd</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Brugerdefineret dødslyd</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Vælg skrifttype...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Indstiller den valgte brugerdefinerede skrifttype i Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Fjern den anvendte skrifttype</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Brugerdefineret skrifttype til spil</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Vælg ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Brug din egen Shiftlock i Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Fjern brugerdefineret Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Brugerdefineret Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Vælg, hvilken type emoji Roblox skal bruge.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Emoji-modet kan ikke anvendes på nuværende tidspunkt.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Foretrukken emoji-type</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Vælg mellem at bruge flere Roblox-markører.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Musemarkøren</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Gendan den gamle baggrund i avatar-editoren, som blev brugt i Roblox-appen før 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Brug den gamle avatar-editor-baggrund</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Forudindstillede modifikationer</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Gå tilbage til dine seneste spil.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Hurtigspil</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Login annulleret.</value>
@@ -1525,7 +1826,7 @@ Yderligere oplysninger:
     <value>Kopier denne kode og indsæt den på [siden til hurtig login]({0}).</value>
   </data>
   <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
-    <value>Enheden er tilknyttet – godkendelse af login i gang...</value>
+    <value>Enheden er tilknyttet – godkender login...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
     <value>Tidsgrænsen for login er overskredet.</value>
@@ -1550,6 +1851,30 @@ Yderligere oplysninger:
   </data>
   <data name="Menu.Save" xml:space="preserve">
     <value>Gem</value>
+  </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automatisk tilstand: Søger efter det bedste område til dig...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Det lykkedes ikke at deltage i spillet: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Opretter forbindelse til den bedste server...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Tilmelding til spillet</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Deltager i {0} via hurtigspil.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Det var ikke muligt at finde en passende server.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Søg efter noget, så dukker det måske op her...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Server fundet</value>
   </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Ændringerne træder i kraft, næste gang du starter Roblox.</value>
@@ -1583,6 +1908,9 @@ Yderligere oplysninger:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Generelt</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Nøgterne omgivelser</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testtilstand</value>
