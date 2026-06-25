@@ -1260,7 +1260,7 @@ Es gibt {0} widersprüchliche Flag-Definitionen:
     <value>Verwalten Sie hier alle Ihre FastFlags.</value>
   </data>
   <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
-    <value>📦 Per Drag & Drop JSON-/TXT-Dateien importieren</value>
+    <value>📦 Per Drag &amp; Drop JSON-/TXT-Dateien importieren</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON exportieren</value>
@@ -1697,7 +1697,7 @@ Weitere Informationen:
     <value>Mod „{0}“ wurde erfolgreich importiert.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>Importieren Sie Mods, indem Sie sie per Drag & Drop verschieben oder importieren. Mods mit niedrigerer Priorität werden zuletzt angewendet, wodurch Konflikte mit anderen Mods vermieden werden.</value>
+    <value>Importieren Sie Mods, indem Sie sie per Drag &amp; Drop verschieben oder importieren. Mods mit niedrigerer Priorität werden zuletzt angewendet, wodurch Konflikte mit anderen Mods vermieden werden.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>Ungültiger Ordnername.</value>
