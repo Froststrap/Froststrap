@@ -890,9 +890,6 @@ Hãy kiểm tra xem Roblox có hoạt động với [trình khởi chạy gốc]
   <data name="Enums.Theme.Dark" xml:space="preserve">
     <value>Tối</value>
   </data>
-  <data name="Enums.Theme.Froststrap" xml:space="preserve">
-    <value>Dây buộc chống sương giá</value>
-  </data>
   <data name="Enums.Theme.Green" xml:space="preserve">
     <value>Màu xanh lá cây</value>
   </data>
@@ -1890,7 +1887,7 @@ Thông tin thêm:
     <value>Thiết bị đã được liên kết - đang xác nhận đăng nhập...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
-    <value>Thời gian đăng nhập đã hết hạn.</value>
+    <value>Thời gian đăng nhập đã hết.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Đang chờ đăng nhập nhanh...\nỨng dụng sẽ đóng cửa sổ này khi quá trình đăng nhập hoàn tất.</value>

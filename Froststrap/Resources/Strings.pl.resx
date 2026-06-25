@@ -937,7 +937,7 @@ Czy na pewno chcesz kontynuować?</value>
     <value>Hash zatwierdzenia</value>
   </data>
   <data name="Menu.About.CommitRef" xml:space="preserve">
-    <value>Zgłoś zmianę</value>
+    <value>Zgłoszenie zmiany</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Autorzy</value>
@@ -1306,7 +1306,7 @@ Wystąpiło {0} konfliktów definicji flag:
     <value>Zarządzaj tutaj wszystkimi swoimi FastFlags.</value>
   </data>
   <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
-    <value>📦 Przeciągnij plik, aby zaimportować JSON / TXT</value>
+    <value>📦 Przeciągnij i upuść, aby zaimportować plik JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Eksport JSON</value>
@@ -1623,7 +1623,7 @@ Więcej informacji:
     <value>Wklej wartość w polu powyżej</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>„Nieprawidłowy plik cookie. Sprawdź i spróbuj ponownie.</value>
+    <value>„Nieprawidłowy plik cookie. Sprawdź i spróbuj ponownie.”</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>Wklej plik cookie o rozszerzeniu .ROBLOSECURITY</value>
@@ -1647,7 +1647,7 @@ Więcej informacji:
     <value>Zgłoś się do Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Im wyższa liczba, tym lepsza jakość, ale trwa to dłużej. Maksymalna wartość to 64, a domyślna to 8.</value>
+    <value>Im wyższa liczba, tym wyższa jakość, ale trwa to dłużej. Maksymalna wartość to 64, a domyślna to 8.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Generowanie modu zostało anulowane.</value>
@@ -1749,7 +1749,7 @@ Więcej informacji:
     <value>Nieprawidłowa nazwa folderu.</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
-    <value>Wybrane źródło nie zawiera prawidłowej struktury modów.\nMusi zawierać co najmniej jeden z następujących folderów: content, ExtraContent, PlatformContent.</value>
+    <value>Wybrane źródło nie zawiera prawidłowej struktury modyfikacji.\nMusi zawierać co najmniej jeden z następujących folderów: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nie zainstalowano żadnych modów.</value>

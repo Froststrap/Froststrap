@@ -946,7 +946,7 @@
     <value>Хеш коммита</value>
   </data>
   <data name="Menu.About.CommitRef" xml:space="preserve">
-    <value>Ссылка на коммит</value>
+    <value>Ссылка на фиксацию</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Авторы</value>
@@ -1635,7 +1635,7 @@
     <value>Вставьте значение в поле выше</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>«Недопустимый файл cookie. Проверьте и попробуйте ещё раз.</value>
+    <value>«Неверный файл cookie. Проверьте и попробуйте ещё раз.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>Вставьте файл cookie с расширением .ROBLOSECURITY</value>
@@ -1656,7 +1656,7 @@
     <value>Добавить в колесо эмоций</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
-    <value>Подать заявку в Shiftlock</value>
+    <value>Подать заявку на работу в Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
     <value>Чем выше число, тем выше качество, но это занимает больше времени. Максимальное значение — 64, по умолчанию — 8.</value>

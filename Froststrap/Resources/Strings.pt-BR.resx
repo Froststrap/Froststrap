@@ -1434,7 +1434,7 @@ Mais informações:
     <value>Salve e carregue perfis de bandeiras rapidamente.</value>
   </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Nenhum perfil encontrado</value>
+    <value>Não foram encontrados perfis</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Perfis de bandeiras rápidas</value>
@@ -1593,7 +1593,7 @@ Mais informações:
     <value>Carregar</value>
   </data>
   <data name="Menu.ManualLogin.EnterCookie" xml:space="preserve">
-    <value>Insira um biscoito, por favor.</value>
+    <value>Por favor, insira um biscoito.</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
     <value>Abra o site Roblox.com no seu navegador e faça login</value>
@@ -1641,7 +1641,7 @@ Mais informações:
     <value>Inscreva-se no Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Quanto maior o número, melhor a qualidade, mas o processo demora mais tempo. O valor máximo é 64, e o padrão é 8.</value>
+    <value>Quanto maior o número, melhor a qualidade, mas o processo demora mais; o valor máximo é 64, e o padrão é 8.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>A geração do mod foi cancelada.</value>

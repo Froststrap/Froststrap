@@ -1472,6 +1472,9 @@
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Встановити як «Тільки для читання»</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Вектор X</value>
+  </data>
   <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
     <value>Вектор Y</value>
   </data>
@@ -1662,7 +1665,7 @@
     <value>Подати заявку на роботу в Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Чим вище число, тим вища якість, але це займає більше часу. Максимальне значення — 64, за замовчуванням — 8.</value>
+    <value>Чим вище число, тим вища якість, але це займає більше часу; максимальне значення — 64, за замовчуванням — 8.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Створення модів скасовано.</value>
@@ -1680,7 +1683,7 @@
     <value>Створюйте моди легко одним кліком.</value>
   </data>
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
-    <value>Значок «Не грайся з кольорами»</value>
+    <value>Значок «Не грати з кольорами»</value>
   </data>
   <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
     <value>Завантаження необхідних ресурсів...</value>
@@ -1716,7 +1719,7 @@
     <value>Збережено в {0}</value>
   </data>
   <data name="Menu.ModGenerator.Starting" xml:space="preserve">
-    <value>Починається генерація модів...</value>
+    <value>Початок генерації модів...</value>
   </data>
   <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
     <value>Попередній перегляд стилю</value>
@@ -1887,7 +1890,7 @@
     <value>Скопіюйте цей код і вставте його на [сторінці швидкого входу]({0}).</value>
   </data>
   <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
-    <value>Пристрій підключено — підтверджується вхід...</value>
+    <value>Пристрій підключено — підтвердження входу...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
     <value>Час очікування входу закінчився.</value>

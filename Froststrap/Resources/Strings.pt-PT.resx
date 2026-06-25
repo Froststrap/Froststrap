@@ -1452,7 +1452,7 @@ Mais informações:
     <value>Definições globais</value>
   </data>
   <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
-    <value>Gira todas as tuas definições globais aqui.</value>
+    <value>Gira todas as tuas definições gerais aqui.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Monitorização da atividade</value>
@@ -1641,7 +1641,7 @@ Mais informações:
     <value>A criação do mod foi cancelada.</value>
   </data>
   <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
-    <value>A arrumar...</value>
+    <value>A limpar...</value>
   </data>
   <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
     <value>Nome do mod (opcional)</value>
@@ -1716,7 +1716,7 @@ Mais informações:
     <value>Gerir e aplicar modificações aos ficheiros do Cliente do Jogo Roblox.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
-    <value>📦 Arrastar e soltar para importar ficheiros Zip / pastas</value>
+    <value>📦 Arrastar e soltar para importar ficheiros ZIP / pastas</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
     <value>A pasta «{0}» já não existe.</value>
@@ -1731,7 +1731,7 @@ Mais informações:
     <value>O mod «{0}» foi importado com sucesso.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>Importa mods arrastando-os ou através da função de importação; os mods com prioridade mais baixa são aplicados por último, o que faz com que ganhem em caso de conflitos com outros mods.</value>
+    <value>Para importar mods, basta arrastá-los ou importá-los; os mods com prioridade mais baixa são aplicados por último, o que faz com que ganhem em caso de conflitos com outros mods.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>Nome da pasta inválido.</value>

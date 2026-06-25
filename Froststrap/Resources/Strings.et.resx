@@ -341,7 +341,7 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
     <value>Sümboli eelvaade</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Kuusekood</value>
+    <value>Kuusandkood</value>
   </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importimine failist</value>
@@ -1662,7 +1662,7 @@ Lisateave:
     <value>Ära värvi mängu ikooni</value>
   </data>
   <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
-    <value>Laaditakse vajalikke ressursse...</value>
+    <value>Laaditakse vajalikke faile...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
     <value>Failide väljavõtmine...</value>

@@ -439,7 +439,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
     <value>Sobru</value>
   </data>
   <data name="Common.Studio" xml:space="preserve">
-    <value>Studiu</value>
+    <value>Birou</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Setarea implicită a sistemului</value>
@@ -1235,7 +1235,7 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
     <value>Nu sunt disponibile date privind activitatea.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>Alătură-te regiunii Best (Auto)</value>
+    <value>Alătură-te Best Region (Auto)</value>
   </data>
   <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
     <value>Nu s-a putut încărca cookie-ul Roblox.</value>
@@ -1703,7 +1703,7 @@ Mai multe informații:
     <value>Gestionați și aplicați modificările de fișiere la clientul de joc Roblox.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
-    <value>📦 Trageți pentru a importa fișiere ZIP / dosare</value>
+    <value>📦 Trageți pentru a importa fișiere ZIP / foldere</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
     <value>Dosarul pentru „{0}” nu mai există.</value>
@@ -1718,7 +1718,7 @@ Mai multe informații:
     <value>Importați modurile trăgând fișierul modului sau prin import; modurile cu prioritate mai mică sunt aplicate ultimele, ceea ce le permite să prevaleze în cazul conflictelor cu alte moduri.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
-    <value>Nume de folder nevalid.</value>
+    <value>Numele folderului este incorect.</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
     <value>Sursa selectată nu conține o structură mod validă.\nAceasta trebuie să conțină cel puțin unul dintre următoarele foldere: content, ExtraContent, PlatformContent.</value>

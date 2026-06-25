@@ -1294,7 +1294,7 @@ Ristiriitaisia lippumääritelmiä on {0} kappaletta:
     <value>Poista valitut</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Hallinnoi kaikkia FastFlags-merkkejäsi täällä.</value>
+    <value>Hallinnoi kaikkia FastFlags-tunnuksiasi täällä.</value>
   </data>
   <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
     <value>📦 Vedä ja pudota tuodaksesi JSON- tai TXT-tiedoston</value>
@@ -1659,7 +1659,7 @@ Lisätietoja:
     <value>Älä väritä -kuvake</value>
   </data>
   <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
-    <value>Lataa tarvittavat resurssit...</value>
+    <value>Lataa tarvittavat tiedostot...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
     <value>Tiedostoja puretaan...</value>
@@ -1722,7 +1722,7 @@ Lisätietoja:
     <value>📦 Vedä ja pudota tuodaksesi ZIP-tiedoston tai kansion</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
-    <value>Kansiota ”{0}” ei enää ole olemassa.</value>
+    <value>Kansio ”{0}” ei ole enää olemassa.</value>
   </data>
   <data name="Menu.Mods.ImportFolder" xml:space="preserve">
     <value>Tuo kansio</value>

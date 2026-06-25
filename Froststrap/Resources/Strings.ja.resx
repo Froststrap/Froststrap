@@ -998,7 +998,7 @@
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
   <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
-    <value>アカウント「{0}」は、Cookieが無効であるか、有効期限が切れているため削除されました。</value>
+    <value>アカウント「{0}」は、Cookieが無効または有効期限が切れているため削除されました。</value>
   </data>
   <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
     <value>アカウントを追加</value>

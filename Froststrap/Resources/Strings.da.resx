@@ -1829,7 +1829,7 @@ Yderligere oplysninger:
     <value>Enheden er tilknyttet – godkender login...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
-    <value>Tidsgrænsen for login er overskredet.</value>
+    <value>Der er gået for lang tid siden du loggede ind.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Venter på hurtig login...\nAppen lukker dette vindue, når loginet er gennemført.</value>

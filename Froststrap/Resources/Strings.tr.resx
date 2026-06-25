@@ -1656,7 +1656,7 @@ Daha fazla bilgi:
     <value>Shiftlock’a Başvur</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Sayı ne kadar yüksekse, kalite o kadar yüksek olur ancak işlem süresi de o kadar uzar. Maksimum değer 64, varsayılan değer ise 8’dir.</value>
+    <value>Sayı ne kadar yüksekse, kalite o kadar yüksek olur ancak işlem süresi de o kadar uzar; maksimum değer 64, varsayılan değer ise 8’dir.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Mod oluşturma işlemi iptal edildi.</value>
@@ -1674,7 +1674,7 @@ Daha fazla bilgi:
     <value>Tek bir tıklamayla modları kolayca oluşturun.</value>
   </data>
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
-    <value>"Renk Oyna" Simgesi Yok</value>
+    <value>"Renk Oyna" Simgesi</value>
   </data>
   <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
     <value>Gerekli öğeler indiriliyor...</value>

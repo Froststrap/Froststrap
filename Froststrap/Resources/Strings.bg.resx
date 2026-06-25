@@ -1008,7 +1008,7 @@
 Кликнете върху „Добави акаунт“ по-горе, за да започнете</value>
   </data>
   <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
-    <value>Местна бисквитка</value>
+    <value>Местен бисквитка</value>
   </data>
   <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
     <value>Не сте влезли в системата</value>
@@ -1299,7 +1299,7 @@
     <value>Списък с чистите продукти</value>
   </data>
   <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
-    <value>Сигурен ли си, че искаш да изтриеш всички отметки?</value>
+    <value>Сигурен ли сте, че искате да изтриете всички отметки?</value>
   </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Някои от флаговете, които се опитвате да импортирате, вече имат зададени стойности. Искате ли да замените текущите им стойности със стойностите, дефинирани в импорта?
@@ -1324,7 +1324,7 @@
     <value>FastFlags беше експортиран успешно.</value>
   </data>
   <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
-    <value>Моля, качите файлове във формат JSON или TXT.</value>
+    <value>Моля, качите JSON или TXT файлове.</value>
   </data>
   <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
     <value>{0} са били премахнати, тъй като не фигурират в списъка с разрешените.</value>
@@ -1656,7 +1656,7 @@
     <value>Добави към колелото с емотикони</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
-    <value>Кандидатствайте за работа в Shiftlock</value>
+    <value>Кандидатствай в Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
     <value>Колкото по-голямо е числото, толкова по-високо е качеството, но отнема повече време; максималната стойност е 64, а по подразбиране е 8.</value>

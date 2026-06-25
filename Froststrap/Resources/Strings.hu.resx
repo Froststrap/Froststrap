@@ -1007,7 +1007,7 @@ Kattintson a fenti „Fiók hozzáadása” gombra a kezdéshez</value>
     <value>A Roblox Studio-ban</value>
   </data>
   <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
-    <value>Online (a Roblox weboldala)</value>
+    <value>Online (a Roblox weboldalán)</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Felhívjuk figyelmét, hogy a módosítások nem mindegyike lép azonnal hatályba, amíg az összes jelenleg megnyitott Roblox-példányt be nem zárja.</value>
@@ -1613,7 +1613,7 @@ További információk:
     <value>Keresse meg a „ROBLOSECURITY” nevű cookie-t</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
-    <value>Kattintson duplán az „Érték” oszlopra, majd másolja azt</value>
+    <value>Kattintson duplán az „Érték” oszlopra, majd másolja ki azt</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
     <value>Illessze be az értéket a fenti mezőbe</value>
@@ -1661,7 +1661,7 @@ További információk:
     <value>Készítsen modokat egyszerűen, egyetlen kattintással.</value>
   </data>
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
-    <value>„Ne színezz” játék ikon</value>
+    <value>„Ne színezz” játék ikonja</value>
   </data>
   <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
     <value>A szükséges elemek letöltése...</value>
