@@ -8,9 +8,9 @@
         Icon2008,
         [EnumName(StaticName = "2011")]
         Icon2011,
-        [EnumName(StaticName = "Early 2015")]
+        [EnumName(FromTranslation = "Enums.BootstrapperIcon.IconEarly2015")]
         IconEarly2015,
-        [EnumName(StaticName = "Late 2015")]
+        [EnumName(FromTranslation = "Enums.BootstrapperIcon.IconLate2015")]
         IconLate2015,
         [EnumName(StaticName = "2017")]
         Icon2017,
@@ -22,7 +22,7 @@
         Icon2025,
         [EnumName(FromTranslation = "Common.Custom")]
         IconCustom,
-        [EnumName(StaticName = "Froststrap (Classic)")]
+        [EnumName(FromTranslation = "Enums.BootstrapperIcon.IconFroststrapClassic")]
         IconFroststrapClassic
     }
 }

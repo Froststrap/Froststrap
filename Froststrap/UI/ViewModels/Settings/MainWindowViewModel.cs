@@ -67,7 +67,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public IRelayCommand NavigateToIntegrationsCommand { get; }
         public IRelayCommand NavigateToBehaviourCommand { get; }
-        public IRelayCommand NavigateToSoberSettingsCommand { get; }
+        public IRelayCommand NavigateToLinuxSettingsCommand { get; }
         public IRelayCommand NavigateToMyModsCommand { get; }
         public IRelayCommand NavigateToFastFlagsCommand { get; }
         public IRelayCommand NavigateToFastFlagEditorCommand { get; }
@@ -93,7 +93,6 @@ namespace Froststrap.UI.ViewModels.Settings
         public EventHandler? RequestCloseWindowEvent;
         public event EventHandler? SettingsSaved;
         public bool GBSEnabled = App.GlobalSettings.Loaded;
-        public bool SoberEnabled = App.SoberSettings.Loaded;
 
         public MainWindowViewModel()
         {
@@ -111,7 +110,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             NavigateToIntegrationsCommand = new RelayCommand(() => Navigate("integrations", Strings.Menu_Integrations_Title, Strings.Menu_Integrations_Description, new IntegrationsViewModel()));
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", Strings.Menu_Behaviour_Title, Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
-            NavigateToSoberSettingsCommand = new RelayCommand(() => Navigate("sobersettings", Strings.Menu_SoberSettings_Title, null!, new SoberSettingsViewModel()));
+            NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, new LinuxSettingsViewModel()));
             NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", Strings.Menu_PresetMods_Title, Strings.Menu_PresetMods_Description, new ModsPresetsViewModel()));
             NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, new FastFlagsViewModel()));
             NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
@@ -199,9 +198,9 @@ namespace Froststrap.UI.ViewModels.Settings
                 case "Froststrap.UI.ViewModels.Settings.BehaviourViewModel":
                     NavigateToBehaviourCommand.Execute(null);
                     break;
-                case "Froststrap.UI.ViewModels.Settings.SoberSettingsViewModel":
-                    if (SoberEnabled)
-                        NavigateToSoberSettingsCommand.Execute(null);
+                case "Froststrap.UI.ViewModels.Settings.LinuxSettingsViewModel":
+                    if (OperatingSystem.IsLinux())
+                        NavigateToLinuxSettingsCommand.Execute(null);
                     else
                         NavigateToIntegrationsCommand.Execute(null);
                     break;

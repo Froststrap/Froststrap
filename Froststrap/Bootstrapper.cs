@@ -811,7 +811,7 @@ namespace Froststrap
                 if (string.IsNullOrEmpty(selectedRegionCookie))
                     throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
 
-                SetStatus($"Searching for servers in {App.Settings.Prop.SelectedRegion}...");
+                SetStatus(string.Format(Strings.Bootstrapper_Status_SearchingServers, App.Settings.Prop.SelectedRegion));
 
                 var selectedRegionResult = await selectedRegionFetcher.FindBestServerInSelectedRegionAsync(
                     (long)_joinData.PlaceId!,
@@ -843,7 +843,7 @@ namespace Froststrap
             if (cancellationToken.IsCancellationRequested)
                 return "";
 
-            SetStatus($"Finding top {App.Settings.Prop.BestRegionAmounts} regions...");
+            SetStatus(string.Format(Strings.Bootstrapper_Status_FindingTopRegions, App.Settings.Prop.BestRegionAmounts));
 
             var topRegions = await autoFetcher.GetClosestRegionsForAutoModeAsync(App.Settings.Prop.BestRegionAmounts, cancellationToken);
 
@@ -864,7 +864,7 @@ namespace Froststrap
                 }
             }
 
-            SetStatus("Searching for nearby servers...");
+            SetStatus(Strings.Bootstrapper_Status_SearchingNearbyServers);
             string? autoCookie = await autoFetcher.ResolveCookieAsync();
             if (string.IsNullOrEmpty(autoCookie))
                 throw new HttpRequestException("Could not obtain a valid .ROBLOSECURITY cookie");
@@ -946,7 +946,7 @@ namespace Froststrap
                     App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, showing dialog");
 
                     var result = await Frontend.ShowMessageBox(
-                        String.Format(Strings.Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                        String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
                         MessageBoxImage.Question,
                         MessageBoxButton.YesNo
                     );
@@ -962,7 +962,7 @@ namespace Froststrap
                 _skipMatchmaking = false;
                 _matchmakingCts = new CancellationTokenSource();
 
-                Dialog?.CancelButtonText = "Skip";
+                Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
 
                 try
                 {
@@ -998,7 +998,7 @@ namespace Froststrap
                 }
                 finally
                 {
-                    Dialog?.CancelButtonText = "Cancel";
+                    Dialog?.CancelButtonText = Strings.Common_Cancel;
                     _matchmakingInProgress = false;
                     _matchmakingCts?.Dispose();
                     _matchmakingCts = null;
@@ -1135,7 +1135,7 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend — showing dialog");
 
                 var result = await Frontend.ShowMessageBox(
-                    String.Format(Strings.Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                    String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
                     MessageBoxImage.Question,
                     MessageBoxButton.YesNo
                 );
@@ -1151,7 +1151,7 @@ namespace Froststrap
             _skipMatchmaking = false;
             _matchmakingCts = new CancellationTokenSource();
 
-            Dialog?.CancelButtonText = "Skip";
+            Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
 
             try
             {
@@ -1187,7 +1187,7 @@ namespace Froststrap
             }
             finally
             {
-                Dialog?.CancelButtonText = "Cancel";
+                Dialog?.CancelButtonText = Strings.Common_Cancel;
                 _matchmakingInProgress = false;
                 _matchmakingCts?.Dispose();
                 _matchmakingCts = null;
@@ -1199,7 +1199,7 @@ namespace Froststrap
                 _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
             }
 
-            SetStatus("Starting Sober...");
+            SetStatus(Strings.Bootstrapper_Status_StartingSober);
 
             App.Logger.WriteLine(LOG_IDENT, $"Launching Sober via flatpak with args: {_launchCommandLine}");
 
@@ -1314,7 +1314,7 @@ namespace Froststrap
                 return;
             }
 
-            SetStatus("Starting Roblox Studio with Wine...");
+            SetStatus(Strings.Bootstrapper_Status_StartingStudioWine);
 
             var env = new Dictionary<string, string>();
 
@@ -1619,7 +1619,7 @@ namespace Froststrap
                 App.Logger.WriteLine(LOG_IDENT, "Skipping Better MatchMaking.");
                 _skipMatchmaking = true;
                 _matchmakingCts?.Cancel();
-                Dialog?.Message = "Skipping server search...";
+                SetStatus(Strings.Bootstrapper_Status_SkippingMatchmaking);
                 return true;
             }
 
@@ -1706,7 +1706,7 @@ namespace Froststrap
                 return false;
             }
 
-            SetStatus("Checking for updates");
+            SetStatus(Strings.Bootstrapper_Status_CheckingUpdates);
 
             App.Logger.WriteLine(LOG_IDENT, "Checking for updates...");
 
@@ -1771,7 +1771,7 @@ namespace Froststrap
                     }
                 }
 
-                SetStatus($"Downloading update {releaseVer}...");
+                SetStatus(string.Format(Strings.Bootstrapper_Status_DownloadingUpdate, releaseVer));
 
                 string downloadPath = Path.Combine(Paths.TempUpdates, asset.Name);
                 Directory.CreateDirectory(Paths.TempUpdates);
@@ -1785,7 +1785,7 @@ namespace Froststrap
                 Dialog?.ProgressIndeterminate = true;
                 Dialog?.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
 
-                SetStatus($"Installing update {releaseVer}...");
+                SetStatus(string.Format(Strings.Bootstrapper_Status_InstallingUpdate, releaseVer));
 
                 bool updateApplied = await ApplyUpdate(downloadPath);
 
@@ -2480,7 +2480,7 @@ exit";
         {
             const string LOG_IDENT = "Bootstrapper::EnsureSoberInstalled";
 
-            SetStatus("Checking Flatpak installation...");
+            SetStatus(Strings.Bootstrapper_Status_CheckingFlatpak);
 
             var flatpakCheck = new ProcessStartInfo
             {
@@ -2558,7 +2558,7 @@ exit";
                 Dialog.TaskbarProgressState = TaskbarItemProgressState.Indeterminate;
             }
 
-            SetStatus("Installing Sober...");
+            SetStatus(Strings.Bootstrapper_Status_InstallingSober);
 
             var installStartInfo = new ProcessStartInfo
             {
@@ -2619,7 +2619,7 @@ exit";
             }
 
             App.Logger.WriteLine(LOG_IDENT, "Sober installation complete.");
-            SetStatus("Starting Sober...");
+            SetStatus(Strings.Bootstrapper_Status_StartingSober);
             return true;
         }
 
@@ -2628,7 +2628,7 @@ exit";
             const string LOG_IDENT = "Bootstrapper::UpdateSoberFlatpak";
 
             App.Logger.WriteLine(LOG_IDENT, $"Running 'flatpak update {SoberFlatpakId}'.");
-            SetStatus("Updating Sober...");
+            SetStatus(Strings.Bootstrapper_Status_UpdatingSober);
 
             if (Dialog is not null)
             {
@@ -2728,7 +2728,7 @@ exit";
                                         {
                                             Dialog.ProgressValue = overallPercent;
                                             Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                            Dialog.Message = $"Updating Sober ({current}/{total}): {percent}%";
+                                            SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberProgress, current, total, percent));
                                         }
                                     }, null);
                                 }
@@ -2745,7 +2745,7 @@ exit";
                                         {
                                             Dialog.ProgressValue = overallPercent;
                                             Dialog.TaskbarProgressValue = overallPercent / 100.0;
-                                            Dialog.Message = $"Updating Sober ({current}/{total})...";
+                                            SetStatus(string.Format(Strings.Bootstrapper_Status_UpdatingSoberBasic, current, total));
                                         }
                                     }, null);
                                 }
@@ -2756,7 +2756,7 @@ exit";
                                     {
                                         _uiContext?.Post(_ =>
                                         {
-                                            Dialog?.Message = trimmed;
+                                            SetStatus(trimmed);
                                         }, null);
                                     }
                                 }
@@ -2824,7 +2824,7 @@ exit";
                         {
                             Dialog.ProgressValue = 100;
                             Dialog.TaskbarProgressValue = 1.0;
-                            Dialog.Message = "Sober update complete.";
+                            SetStatus(Strings.Bootstrapper_Status_SoberUpdateComplete);
                         }
                     }, null);
                 }
@@ -2902,7 +2902,7 @@ exit";
             string downloadPath = Path.Combine(Paths.Downloads, $"WebView2_{latestVersion}.exe");
             if (!File.Exists(downloadPath))
             {
-                SetStatus("Downloading WebView2...");
+                SetStatus(Strings.Bootstrapper_Status_DownloadingWebView2);
                 await DownloadFileWithProgressAsync(installerUrl, downloadPath);
             }
 
@@ -2948,7 +2948,7 @@ exit";
                 App.Logger.WriteLine(LOG_IDENT, $"Could not set version override: {ex.Message}");
             }
 
-            SetStatus("Installing WebView2...");
+            SetStatus(Strings.Bootstrapper_Status_InstallingWebView2);
             App.Logger.WriteLine(LOG_IDENT, "Running WebView2 installer");
 
             string installerArgs = "--msedgewebview --do-not-launch-msedge --system-level";
@@ -3009,7 +3009,7 @@ exit";
                 return;
             }
 
-            SetStatus($"Uninstalling WebView2 {version}...");
+            SetStatus(string.Format(Strings.Bootstrapper_Status_UninstallingWebView2, version));
             if (Dialog != null)
             {
                 Dialog.ProgressIndeterminate = true;
@@ -3166,7 +3166,7 @@ exit";
         {
             const string LOG_IDENT = "Bootstrapper::EnsureWineAndDependencies";
 
-            SetStatus("Checking dependencies");
+            SetStatus(Strings.Bootstrapper_Status_CheckingDependencies);
 
             string wineInstallBase = Path.Combine(Paths.Base, KombuchaWineDir);
             string versionMarker = Path.Combine(wineInstallBase, ".version");
@@ -3226,7 +3226,7 @@ exit";
 
             if (needInit)
             {
-                SetStatus("Initializing Wine prefix...");
+                SetStatus(Strings.Bootstrapper_Status_InitializingWinePrefix);
                 if (Dialog != null)
                 {
                     Dialog.ProgressIndeterminate = true;
@@ -3264,7 +3264,7 @@ exit";
             bool useDxvk = (renderer == StudioRenderer.DXVK || renderer == StudioRenderer.DXVKSarek);
             if (useDxvk)
             {
-                SetStatus("Setting up DXVK...");
+                SetStatus(Strings.Bootstrapper_Status_SettingUpDXVK);
                 if (!await SetupDxvkAsync())
                     App.Logger.WriteLine(LOG_IDENT, "DXVK installation failed, continuing without it.");
             }
@@ -3473,11 +3473,11 @@ exit";
 
                 if (!File.Exists(cachedArchive))
                 {
-                    SetStatus("Downloading Wine (Kombucha)...");
+                    SetStatus(Strings.Bootstrapper_Status_DownloadingWine);
                     await DownloadFileWithProgressAsync(asset.BrowserDownloadUrl, cachedArchive);
                 }
 
-                SetStatus("Extracting Wine...");
+                SetStatus(Strings.Bootstrapper_Status_ExtractingWine);
                 if (Dialog != null)
                 {
                     Dialog.ProgressIndeterminate = true;
@@ -3637,7 +3637,7 @@ Windows Registry Editor Version 5.00
 
             if (!File.Exists(soPath))
             {
-                SetStatus("Compiling Vulkan layer...");
+                SetStatus(Strings.Bootstrapper_Status_CompilingVulkanLayer);
                 var startInfo = new ProcessStartInfo
                 {
                     FileName = "g++",
@@ -3716,14 +3716,14 @@ Windows Registry Editor Version 5.00
 
             if (!File.Exists(archivePath))
             {
-                SetStatus(useSarek ? "Downloading DXVK-Sarek..." : "Downloading DXVK...");
+                SetStatus(useSarek ? Strings.Bootstrapper_Status_DownloadingDXVKSarek : Strings.Bootstrapper_Status_DownloadingDXVK);
                 string url = useSarek ? DxvkSarekUrl : $"https://github.com/doitsujin/dxvk/releases/download/v{version}/dxvk-{version}.tar.gz";
                 await DownloadFileWithProgressAsync(url, archivePath);
             }
 
             await RestoreOriginalDllsAsync();
 
-            SetStatus(useSarek ? "Extracting DXVK-Sarek..." : "Extracting DXVK...");
+            SetStatus(useSarek ? Strings.Bootstrapper_Status_ExtractingDXVKSarek : Strings.Bootstrapper_Status_ExtractingDXVK);
             if (Dialog != null)
             {
                 Dialog.ProgressIndeterminate = true;
@@ -4546,7 +4546,7 @@ Windows Registry Editor Version 5.00
 					}
 
 					App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
-					SetStatus($"Retrying {package.Name}...");
+					SetStatus(string.Format(Strings.Bootstrapper_Status_RetryingPackage, package.Name));
 					await Task.Delay(1000);
 					await DownloadPackage(package);
 				}

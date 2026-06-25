@@ -58,7 +58,7 @@
                     <TextBox Name="SearchTextBox"
                              Height="40"
                              VerticalContentAlignment="Center"
-                             Watermark="{x:Static resources:Strings.Menu_FastFlagEditor_Search}"
+                             Watermark="{x:Static resources:Strings.Common_Search}"
                              TextChanged="SearchTextBox_TextChanged">
                         <TextBox.InnerLeftContent>
                             <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />

@@ -358,7 +358,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 _accountManager.SetActiveAccount(existing.UserId);
                 IsDropdownOpen = false;
-                await Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, existing.Username), MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AlreadyLoggedIn, existing.Username), MessageBoxImage.Information);
                 return true;
             }
             return false;

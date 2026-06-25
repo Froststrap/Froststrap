@@ -163,26 +163,18 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async void OpenGameHistory()
         {
-            try
+            var activityWatcher = new ActivityWatcher();
+
+            var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
+            serverHistoryWindow.Show();
+
+            App.FrostRPC?.SetDialog("Game History");
+
+            serverHistoryWindow.Closed += (s, e) =>
             {
-                var activityWatcher = new ActivityWatcher();
-
-                var serverHistoryWindow = new Elements.ContextMenu.ServerHistory(activityWatcher);
-                serverHistoryWindow.Show();
-
-                App.FrostRPC?.SetDialog("Game History");
-
-                serverHistoryWindow.Closed += (s, e) =>
-                {
-                    activityWatcher?.Dispose();
-                    App.FrostRPC?.ClearDialog();
-                };
-            }
-            catch (Exception ex)
-            {
-                // Handle any errors
-                await Frontend.ShowMessageBox($"Failed to open Game History: {ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
-            }
+                activityWatcher?.Dispose();
+                App.FrostRPC?.ClearDialog();
+            };
         }
 
         public ObservableCollection<TrayDoubleClickAction> TrayDoubleClickActions { get; } = [.. Enum.GetValues<TrayDoubleClickAction>()];
@@ -271,8 +263,7 @@ namespace Froststrap.UI.ViewModels.Settings
             if (value && !App.Settings.Prop.StudioRPC)
             {
                 var result = await Frontend.ShowMessageBox(
-                    "This works by adding a custom made froststrap plugin that will log what your doing.\n" +
-                    "Do you want to install the plugin?",
+                    Strings.Menu_Integrations_StudioRPC_PluginConfirmation,
                     MessageBoxImage.Information,
                     MessageBoxButton.YesNo
                 );

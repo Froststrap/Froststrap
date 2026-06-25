@@ -38,10 +38,16 @@
                     </controls:CardExpander.HeaderContent>
                     <StackPanel Spacing="15">
                         <StackPanel Spacing="5">
-                            <TextBlock Text="Background Mode:" FontWeight="Bold"/>
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_BackgroundMode}" FontWeight="Bold"/>
                             <ComboBox ItemsSource="{Binding BackgroundTypes}"
                                       SelectedItem="{Binding BackgroundType}"
-                                      HorizontalAlignment="Stretch"/>
+                                      HorizontalAlignment="Stretch">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
                             <Separator Margin="0,8" />
                         </StackPanel>
 
@@ -49,26 +55,24 @@
 
                             <WrapPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                    <Button Content="Add Gradient Color" Command="{Binding AddGradientStopCommand}" Classes="accent"/>
-                                    <Button Content="Reset to Default" Command="{Binding ResetGradientCommand}"/>
-                                    <TextBlock Text="Gradient Angle:" VerticalAlignment="Center"/>
+                                    <Button Content="{x:Static resources:Strings.Menu_ModGenerator_AddStop}" Command="{Binding AddGradientStopCommand}" Classes="accent"/>
+                                    <Button Content="{x:Static resources:Strings.Menu_Appearance_ResetDefault}" Command="{Binding ResetGradientCommand}"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Common_Angle}" VerticalAlignment="Center"/>
                                     <NumericUpDown Value="{Binding GradientAngle}" Width="160" Minimum="0" Maximum="360" VerticalAlignment="Center" Margin="0,0,20,0"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <Button Content="Export Gradient" Command="{Binding ExportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
-                                    <Button Content="Import Gradient" Command="{Binding ImportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
+                                    <Button Content="{x:Static resources:Strings.Common_Export}" Command="{Binding ExportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
+                                    <Button Content="{x:Static resources:Strings.Common_Import}" Command="{Binding ImportGradientCommand}" CommandParameter="{Binding $parent[TopLevel]}"/>
                                 </StackPanel>
 
                             </WrapPanel>
-
-                            <TextBlock Text="Gradient Stops:" FontWeight="Bold" Margin="0,10,0,0"/>
 
                             <ItemsControl ItemsSource="{Binding GradientStops}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid ColumnDefinitions="Auto,*,45,110,Auto,Auto" Margin="0,4" VerticalAlignment="Center">
-                                            <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                            <TextBlock Text="{x:Static resources:Strings.Common_Offset}" VerticalAlignment="Center" Margin="0,0,10,0"/>
 
                                             <Slider Grid.Column="1"
                                                     Minimum="0"
@@ -85,12 +89,12 @@
                                             <TextBox Grid.Column="3" Text="{Binding Color}" Margin="0,0,8,0" VerticalAlignment="Center"/>
 
                                             <Button Grid.Column="4"
-                                                    Content="Color Picker"
+                                                    Content="{x:Static resources:Strings.Common_ColorPicker}"
                                                     Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).OpenColorPickerCommand}"
                                                     CommandParameter="{Binding $self}"
                                                     Margin="0,0,8,0"/>
 
-                                            <Button Grid.Column="5" Content="Remove"
+                                            <Button Grid.Column="5" Content="{x:Static resources:Strings.Common_Remove}"
                                                     Command="{Binding $parent[ItemsControl].((vm:AppearanceViewModel)DataContext).RemoveGradientStopCommand}"
                                                     CommandParameter="{Binding}"/>
                                         </Grid>
@@ -100,8 +104,6 @@
                         </StackPanel>
 
                         <StackPanel Spacing="15" IsVisible="{Binding IsImageMode}">
-                            <TextBlock Text="Image Settings:" FontWeight="Bold" Margin="0,10,0,0"/>
-
                             <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,4">
                                 <TextBox Text="{Binding BackgroundImagePath}"
                                          Watermark="No image selected..."
@@ -110,27 +112,33 @@
                                          Margin="0,0,8,0"/>
 
                                 <Button Grid.Column="1"
-                                        Content="Browse"
+                                        Content="{x:Static resources:Strings.Common_Browse}"
                                         Command="{Binding SelectImageCommand}"
                                         CommandParameter="{Binding $parent[TopLevel]}"
                                         Margin="0,0,8,0"/>
 
                                 <Button Grid.Column="2"
-                                        Content="Clear"
+                                        Content="{x:Static resources:Strings.Common_Clear}"
                                         Command="{Binding ClearImageCommand}"
                                         Classes="accent"/>
                             </Grid>
 
                             <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,10,0,0">
-                                <TextBlock Text="Stretch Mode:" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_StretchMode}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                 <ComboBox Grid.Column="1"
                                           ItemsSource="{Binding BackgroundStretches}"
                                           SelectedItem="{Binding BackgroundStretch}"
-                                          HorizontalAlignment="Stretch"/>
+                                          HorizontalAlignment="Stretch">
+									<ComboBox.ItemTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+										</DataTemplate>
+									</ComboBox.ItemTemplate>
+								</ComboBox>
                             </Grid>
 
                             <Grid ColumnDefinitions="Auto, *, 50" Margin="0,10,0,0">
-                                <TextBlock Text="Opacity:" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_Opacity}" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                 <Slider Grid.Column="1"
                                         Minimum="0"
                                         Maximum="1"
@@ -173,7 +181,7 @@
                             VerticalAlignment="Bottom"
                             FontSize="20"
                             FontWeight="Bold"
-                            Text="{x:Static resources:Strings.Menu_Appearance_Bootstrapper_Title}" />
+                            Text="{x:Static resources:Strings.Menu_Behaviour_Title}" />
                         <TextBlock
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                             Text="{x:Static resources:Strings.Menu_Appearance_Bootstrapper_Description}"
@@ -276,12 +284,12 @@
                                                      Content="{x:Static resources:Strings.Common_Export}" />
                             </Grid>
 
-                            <Border Classes="Separator" Height="1" Margin="0,12" Background="{DynamicResource DividerStrokeColorDefaultBrush}"/>
+                            <Separator Margin="0,12"/>
 
                             <Grid ColumnDefinitions="*, Auto" Margin="0,4">
                                 <StackPanel Spacing="2">
-                                    <TextBlock Text="Enable Theme Cycling" />
-                                    <TextBlock Text="Automatically cycle custom themes when 'Custom Dialog' is chosen"
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_ThemeCycling_Title}" />
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_ThemeCycling_Description}"
                                                FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                                 </StackPanel>
                                 <ToggleSwitch Grid.Column="1" IsChecked="{Binding IsThemeCyclingEnabled, Mode=TwoWay}"/>
@@ -289,20 +297,20 @@
 
                             <StackPanel Spacing="12" Margin="0,8,0,0" IsVisible="{Binding IsThemeCyclingEnabled}">
                                 <Grid ColumnDefinitions="180, *">
-                                    <TextBlock Text="Frequency:" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_Frequency}" VerticalAlignment="Center"/>
                                     <ComboBox Grid.Column="1" HorizontalAlignment="Stretch"
                                               ItemsSource="{Binding CycleFrequencies}"
                                               SelectedItem="{Binding SelectedCycleFrequency, Mode=TwoWay}">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Text="{Binding}" />
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
+										<ComboBox.ItemTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding ., Converter={StaticResource EnumNameConverter}}" />
+											</DataTemplate>
+										</ComboBox.ItemTemplate>
+									</ComboBox>
                                 </Grid>
 
                                 <Grid ColumnDefinitions="180, *" IsVisible="{Binding IsIntervalValueVisible}">
-                                    <TextBlock Text="Interval Value:" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_Appearance_Interval}" VerticalAlignment="Center"/>
                                     <NumericUpDown Grid.Column="1" HorizontalAlignment="Stretch" Minimum="1" Increment="1"
                                                    Value="{Binding CycleIntervalValue, Mode=TwoWay}"/>
                                 </Grid>
@@ -321,91 +329,38 @@
                     </Grid>
                 </controls:CardExpander>
 
-                <controls:OptionControl
-                    x:Name="IconSelector"
-                    Description="{x:Static resources:Strings.Menu_Appearance_Icon_Description}"
-                    Header="{x:Static resources:Strings.Menu_Appearance_Icon_Title}">
-                    <ComboBox
-                        MinWidth="200"
-                        Padding="10,5,10,5"
-                        ItemsSource="{Binding Icons, Mode=OneWay}"
-                        SelectedValue="{Binding Icon, Mode=TwoWay}"
-                        SelectedValueBinding="{Binding IconType}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid ColumnDefinitions="16,*">
-                                    <Image
-                                        Height="16"
-                                        RenderOptions.BitmapInterpolationMode="HighQuality"
-                                        Source="{Binding ImageSource, Mode=OneWay}" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Margin="8,0,0,0"
-                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                        Text="{Binding Path=IconType, Converter={StaticResource EnumNameConverter}}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" Description="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}">
+                    <TextBox Watermark="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
                 </controls:OptionControl>
 
-                <controls:CardExpander
-                    Description="{x:Static resources:Strings.Menu_Appearance_Customisation_Description}"
-                    Header="{x:Static resources:Strings.Menu_Appearance_Customisation_Title}"
-                    IsExpanded="False">
-                    <Grid RowDefinitions="*,*,*,*" ColumnDefinitions="180,*">
-                        <TextBlock
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" />
-                        <TextBox Grid.Column="1" Text="{Binding Title, Mode=TwoWay}" />
-                        <TextBlock
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Margin="0,4,0,0"
-                            FontSize="12"
-                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                            Text="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}" />
-                        <TextBlock
-                            Grid.Row="2"
-                            Grid.Column="0"
-                            Margin="0,12,0,0"
-                            VerticalAlignment="Center"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{x:Static resources:Strings.Menu_Appearance_CustomisationIcon_Title}"
-                            TextWrapping="Wrap" />
+                <controls:OptionControl x:Name="IconSelector" Header="{x:Static resources:Strings.Menu_Appearance_Icon_Title}" Description="{x:Static resources:Strings.Menu_Appearance_Icon_Description}" HelpLink="https://wiki.fishstrap.app/manual/appearance/#custom-icons">
+                    <Grid Width="200" HorizontalAlignment="Right" ColumnDefinitions="*, Auto">
+                        <ComboBox
+                            HorizontalAlignment="Stretch"
+                            Padding="10,5,10,5"
+                            ItemsSource="{Binding Icons, Mode=OneWay}"
+                            SelectedValue="{Binding Icon, Mode=TwoWay}"
+                            SelectedValueBinding="{Binding IconType}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="16,*">
+                                        <Image
+                                            Height="16"
+                                            RenderOptions.BitmapInterpolationMode="HighQuality"
+                                            Source="{Binding ImageSource, Mode=OneWay}" />
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{Binding Path=IconType, Converter={StaticResource EnumNameConverter}}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-                        <Grid
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Margin="0,12,0,0"
-                            ColumnDefinitions="*,Auto">
-                            <TextBox
-                                Grid.Column="0"
-                                Margin="0,0,4,0"
-                                Text="{Binding CustomIconLocation, Mode=TwoWay}" />
-                            <controls:IconButton
-                                Grid.Column="1"
-                                Height="35"
-                                Margin="4,0,0,0"
-                                IconData="M20,18H4V8H20M20,6H12L10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6Z"
-                                Command="{Binding BrowseCustomIconLocationCommand}"
-                                CommandParameter="{Binding $self}"
-                                Content="{x:Static resources:Strings.Common_Browse}" />
-                        </Grid>
-
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            Margin="0,4,0,0"
-                            FontSize="12"
-                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                            Text="{x:Static resources:Strings.Menu_Appearance_CustomisationIcon_Description}"
-                            TextWrapping="Wrap" />
+                        <controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="Folder" ToolTip.Tip="{Binding CustomIconLocation, Mode=OneWay}" Command="{Binding BrowseCustomIconLocationCommand}" IsEnabled="{Binding IsCustomIconSelected}" />
                     </Grid>
-                </controls:CardExpander>
+                </controls:OptionControl>
             </StackPanel>
         </ScrollViewer>
     </Grid>

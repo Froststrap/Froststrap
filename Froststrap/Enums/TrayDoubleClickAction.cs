@@ -2,13 +2,13 @@
 {
     public enum TrayDoubleClickAction
     {
-        [EnumName(StaticName = "Server Information")]
+        [EnumName(FromTranslation = "Enums.TrayDoubleClickAction.ServerInfo")]
         ServerInfo,
 
-        [EnumName(StaticName = "Game History")]
+        [EnumName(FromTranslation = "Enums.TrayDoubleClickAction.GameHistory")]
         GameHistory,
 
-        [EnumName(StaticName = "None")]
+        [EnumName(FromTranslation = "Enums.TrayDoubleClickAction.None")]
         None
     }
 }

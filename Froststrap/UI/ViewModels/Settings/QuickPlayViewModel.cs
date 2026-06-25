@@ -229,7 +229,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
                     if (!success)
                     {
-                        await Frontend.ShowMessageBox("No suitable server found.", MessageBoxImage.Information);
+                        await Frontend.ShowMessageBox(Strings.Menu_QuickPlay_NoSuitableServer, MessageBoxImage.Information);
                     }
                 }
                 finally
@@ -312,8 +312,8 @@ namespace Froststrap.UI.ViewModels.Settings
                 {
                     UniverseId = entry.UniverseId,
                     PlaceId = entry.PlaceId,
-                    Name = details?.Data?.Name ?? "Unknown Game",
-                    Creator = details?.Data?.Creator?.Name ?? "Unknown",
+                    Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                    Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
                     Playing = details?.Data?.Playing ?? 0,
                     Visits = details?.Data?.Visits ?? 0,
                     ServerCount = entry.Servers.Count,
@@ -442,8 +442,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     if (details?.Data != null)
                     {
                         game.OriginalDetails = details;
-                        game.Creator = details.Data.Creator?.Name ?? "Unknown";
-                        if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? "Unknown";
+                        game.Creator = details.Data.Creator?.Name ?? Strings.Common_Unknown;
+                        if (string.IsNullOrEmpty(game.Name)) game.Name = details.Data.Name ?? Strings.Menu_QuickPlay_UnknownGame;
                         game.Playing = details.Data.Playing;
                         game.Visits = details.Data.Visits;
                     }
@@ -481,8 +481,8 @@ namespace Froststrap.UI.ViewModels.Settings
                     {
                         UniverseId = entry.UniverseId,
                         PlaceId = entry.PlaceId,
-                        Name = details?.Data?.Name ?? "Unknown Game",
-                        Creator = details?.Data?.Creator?.Name ?? "Unknown",
+                        Name = details?.Data?.Name ?? Strings.Menu_QuickPlay_UnknownGame,
+                        Creator = details?.Data?.Creator?.Name ?? Strings.Common_Unknown,
                         Playing = details?.Data?.Playing ?? 0,
                         Visits = details?.Data?.Visits ?? 0,
                         ServerCount = entry.Servers.Count,
@@ -580,14 +580,14 @@ namespace Froststrap.UI.ViewModels.Settings
             var accountManager = AccountManager.Shared;
             if (accountManager is null)
             {
-                _ = Frontend.ShowMessageBox("Account manager is not available.", MessageBoxImage.Error);
+                _ = Frontend.ShowMessageBox(Strings.Menu_QuickPlay_AccountManagerNotAvailable, MessageBoxImage.Error);
                 return;
             }
 
             var activeAccount = accountManager.ActiveAccount;
             if (activeAccount == null)
             {
-                _ = Frontend.ShowMessageBox("Please select an account first.", MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox(Strings.Menu_QuickPlay_PleaseSelectAccount, MessageBoxImage.Warning);
                 return;
             }
 
@@ -601,7 +601,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 string? cookie = accountManager.GetRoblosecurityForUser(activeAccount.UserId);
                 if (string.IsNullOrEmpty(cookie))
                 {
-                    _ = Frontend.ShowMessageBox("Unable to authenticate. Please log in again.", MessageBoxImage.Warning);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_QuickPlay_UnableToAuthenticate, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -736,9 +736,6 @@ namespace Froststrap.UI.ViewModels.Settings
                     {
                         await LoadApiGamesAndMerge();
                         _ = RefreshApiGamesInBackground();
-                    }
-                    else
-                    {
                     }
                 }
                 finally

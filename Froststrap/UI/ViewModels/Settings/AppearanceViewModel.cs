@@ -82,11 +82,17 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ObservableCollection<BootstrapperIconEntry> Icons { get; set; } = [];
 
-        public static BootstrapperIcon Icon
+        public BootstrapperIcon Icon
         {
             get => App.Settings.Prop.BootstrapperIcon;
-            set => App.Settings.Prop.BootstrapperIcon = value;
+            set
+            {
+                App.Settings.Prop.BootstrapperIcon = value;
+                OnPropertyChanged(nameof(IsCustomIconSelected));
+            }
         }
+
+        public static bool IsCustomIconSelected => App.Settings.Prop.BootstrapperIcon == BootstrapperIcon.IconCustom;
 
         public static IEnumerable<WindowsBackdrops> BackdropOptions => Enum.GetValues<WindowsBackdrops>();
 
@@ -148,12 +154,8 @@ namespace Froststrap.UI.ViewModels.Settings
             get => App.Settings.Prop.BootstrapperStyle;
             set
             {
-                if (App.Settings.Prop.BootstrapperStyle != value)
-                {
-                    App.Settings.Prop.BootstrapperStyle = value;
-                    OnPropertyChanged(nameof(Dialog));
-                    OnPropertyChanged(nameof(CustomThemesExpanded));
-                }
+                App.Settings.Prop.BootstrapperStyle = value;
+                OnPropertyChanged(nameof(CustomThemesExpanded));
             }
         }
 

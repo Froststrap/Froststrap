@@ -52,9 +52,6 @@ namespace Froststrap.UI.Elements.Settings
             gbs.Opacity = _viewModel.GBSEnabled ? 1 : 0.5;
             gbs.IsEnabled = _viewModel.GBSEnabled; // binding doesnt work as expected so we are setting it in here instead
 
-            sober.Opacity = _viewModel.SoberEnabled ? 1 : 0.5;
-            sober.IsEnabled = _viewModel.SoberEnabled; // binding doesnt work as expected so we are setting it in here instead
-
             LoadState();
 
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
@@ -124,7 +121,7 @@ namespace Froststrap.UI.Elements.Settings
             {
                 "integrations" => () => _viewModel?.NavigateToIntegrationsCommand.Execute(null),
                 "behaviour" => () => _viewModel?.NavigateToBehaviourCommand.Execute(null),
-                "sobersettings" => () => _viewModel?.NavigateToSoberSettingsCommand.Execute(null),
+                "linuxsettings" => () => _viewModel?.NavigateToLinuxSettingsCommand.Execute(null),
                 "mods" => () => _viewModel?.NavigateToPresetModsCommand.Execute(null),
                 "fastflags" => () => _viewModel?.NavigateToFastFlagsCommand.Execute(null),
                 "appearance" => () => _viewModel?.NavigateToAppearanceCommand.Execute(null),
@@ -139,17 +136,17 @@ namespace Froststrap.UI.Elements.Settings
 
         private readonly Dictionary<string, (string Title, Symbol Icon)> _pageInfo = new()
         {
-            ["integrations"] = ("Integrations", Symbol.Link),
-            ["behaviour"] = ("Behaviour", Symbol.PlaySettings),
-            ["sobersettings"] = ("Sober Settings", Symbol.Settings),
-            ["mods"] = ("Preset Mods", Symbol.PuzzlePiece),
-            ["fastflags"] = ("Fast Flags", Symbol.Flag),
-            ["appearance"] = ("Appearance", Symbol.Color),
-            ["regionselector"] = ("Region Selector", Symbol.Earth),
-            ["globalsettings"] = ("Global Settings", Symbol.EditSettings),
-            ["shortcuts"] = ("Shortcuts", Symbol.Link),
-            ["quickplay"] = ("Quick Play", Symbol.Replay),
-            ["channels"] = ("Channels", Symbol.CloudArrowUp),
+            ["integrations"] = (Strings.Menu_Integrations_Title, Symbol.Link),
+            ["behaviour"] = (Strings.Menu_Behaviour_Title, Symbol.PlaySettings),
+            ["linuxsettings"] = (Strings.Menu_LinuxSettings_Title, Symbol.Settings),
+            ["mods"] = (Strings.Menu_PresetMods_Title, Symbol.PuzzlePiece),
+            ["fastflags"] = (Strings.Menu_FastFlags_Title, Symbol.Flag),
+            ["appearance"] = (Strings.Menu_Appearance_Title, Symbol.Color),
+            ["regionselector"] = (Strings.Menu_RegionSelector_Title, Symbol.Earth),
+            ["globalsettings"] = (Strings.Menu_GlobalSettings_Title, Symbol.EditSettings),
+            ["shortcuts"] = (Strings.Common_Shortcuts, Symbol.Link),
+            ["quickplay"] = (Strings.Menu_QuickPlay_Title, Symbol.Replay),
+            ["channels"] = (Strings.Common_Deployment, Symbol.CloudArrowUp),
         };
 
         private void UpdatePageView(object? viewModel)
@@ -563,23 +560,21 @@ namespace Froststrap.UI.Elements.Settings
 
             var pages = new List<(string PageTag, string PageTitle, object PageViewModel)>
             {
-                ("integrations", "Integrations", new IntegrationsViewModel()),
-                ("behaviour", "Behaviour", new BehaviourViewModel()),
-                ("sobersettings", "Sober Settings", new SoberSettingsViewModel()),
-                ("mods", "Preset Mods", new ModsPresetsViewModel()),
-                ("fastflags", "Fast Flags", new FastFlagsViewModel()),
-                ("appearance", "Appearance", new AppearanceViewModel()),
-                ("regionselector", "Region Selector", new RegionSelectorViewModel()),
-                ("globalsettings", "Global Settings", new GlobalSettingsViewModel()),
-                ("shortcuts", "Shortcuts", new ShortcutsViewModel()),
-                ("quickplay", "Quick Play", new QuickPlayViewModel()),
-                ("channels", "Channels", new ChannelViewModel()),
+                ("integrations", Strings.Menu_Integrations_Title, new IntegrationsViewModel()),
+                ("behaviour", Strings.Menu_Behaviour_Title, new BehaviourViewModel()),
+                ("linuxsettings", Strings.Menu_LinuxSettings_Title, new LinuxSettingsViewModel()),
+                ("mods", Strings.Menu_PresetMods_Title, new ModsPresetsViewModel()),
+                ("fastflags", Strings.Menu_FastFlags_Title, new FastFlagsViewModel()),
+                ("appearance", Strings.Menu_Appearance_Title, new AppearanceViewModel()),
+                ("regionselector", Strings.Menu_RegionSelector_Title, new RegionSelectorViewModel()),
+                ("globalsettings", Strings.Menu_GlobalSettings_Title, new GlobalSettingsViewModel()),
+                ("shortcuts", Strings.Common_Shortcuts, new ShortcutsViewModel()),
+                ("quickplay", Strings.Menu_QuickPlay_Title, new QuickPlayViewModel()),
+                ("channels", Strings.Common_Deployment, new ChannelViewModel()),
             };
 
             if (!_viewModel.GBSEnabled)
                 pages.RemoveAll(p => p.PageTag == "globalsettings");
-            if (!_viewModel.SoberEnabled)
-                pages.RemoveAll(p => p.PageTag == "sobersettings");
 
             var searchIndex = _searchIndexBuilder.BuildIndex(pages);
 
@@ -587,7 +582,7 @@ namespace Froststrap.UI.Elements.Settings
             {
                 { "integrations", () => _viewModel.NavigateToIntegrationsCommand.Execute(null) },
                 { "behaviour", () => _viewModel.NavigateToBehaviourCommand.Execute(null) },
-                { "sobersettings", () => _viewModel.NavigateToSoberSettingsCommand.Execute(null) },
+                { "linuxsettings", () => _viewModel.NavigateToLinuxSettingsCommand.Execute(null) },
                 { "mods", () => _viewModel.NavigateToPresetModsCommand.Execute(null) },
                 { "fastflags", () => _viewModel.NavigateToFastFlagsCommand.Execute(null) },
                 { "appearance", () => _viewModel.NavigateToAppearanceCommand.Execute(null) },

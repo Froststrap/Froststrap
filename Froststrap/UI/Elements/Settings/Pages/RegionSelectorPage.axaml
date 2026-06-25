@@ -39,7 +39,7 @@
 
                         <FlyoutBase.AttachedFlyout>
                             <Flyout Placement="BottomEdgeAlignedLeft" ShowMode="Transient">
-                                <Border Width="400"
+                                <Border HorizontalAlignment="Stretch"
                                         MaxHeight="450"
                                         Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}"
                                         BorderBrush="{DynamicResource ControlStrokeColorDefault}"
@@ -82,7 +82,7 @@
                                                             <TextBlock
                                                                 FontSize="10"
                                                                 Opacity="0.5"
-                                                                Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
+                                                                Text="{Binding RootPlaceId, Converter={StaticResource StringFormatConverter}, ConverterParameter='{x:Static resources:Strings.Menu_RegionSelector_ID}'}" />
                                                         </StackPanel>
                                                         <StackPanel
                                                             Grid.Column="2"
@@ -167,13 +167,13 @@
                       ItemsSource="{Binding Servers}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="40" Binding="{Binding Number}" Header="#" />
-                    <DataGridTextColumn Width="*" Binding="{Binding ServerId}" Header="Server ID" />
-                    <DataGridTextColumn Width="Auto" MinWidth="100" Binding="{Binding Players}" Header="Players" />
-                    <DataGridTextColumn Width="120" Binding="{Binding Region}" Header="Region" />
-                    <DataGridTemplateColumn Width="100" Header="Join">
+                    <DataGridTextColumn Width="*" Binding="{Binding ServerId}" Header="{x:Static resources:Strings.Common_ServerID}" />
+                    <DataGridTextColumn Width="Auto" MinWidth="100" Binding="{Binding Players}" Header="{x:Static resources:Strings.Menu_RegionSelector_Players}" />
+                    <DataGridTextColumn Width="120" Binding="{Binding Region}" Header="{x:Static resources:Strings.Menu_RegionSelector_RegionHeader}" />
+                    <DataGridTemplateColumn Width="100" Header="{x:Static resources:Strings.Menu_RegionSelector_Join}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Button Command="{Binding JoinCommand}" Content="Join" />
+                                <Button Command="{Binding JoinCommand}" Content="{x:Static resources:Strings.Menu_RegionSelector_Join}" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

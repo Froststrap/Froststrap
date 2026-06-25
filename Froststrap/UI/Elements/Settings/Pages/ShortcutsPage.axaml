@@ -74,7 +74,7 @@
                 FontWeight="Bold"
                 Text="{x:Static resources:Strings.Common_Miscellaneous}" />
 
-            <controls:CardExpander Description="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Description}" Header="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Title}" IsExpanded="True">
+            <controls:CardExpander Description="{x:Static resources:Strings.Menu_Shortcut_GameShortcut_Description}" Header="{x:Static resources:Strings.Menu_Shortcuts_GameShortcut_Title}" IsExpanded="True">
                 <StackPanel>
                     <Grid Margin="0,0,0,16" ColumnDefinitions="Auto,*">
 
@@ -92,7 +92,7 @@
                     </Grid>
 
                     <StackPanel>
-                        <Label Content="Search for a Game" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                        <Label Content="{x:Static resources:Strings.Menu_Shortcuts_SearchForGame}" FontWeight="SemiBold" Margin="0,0,0,8"/>
                         <TextBox
                             x:Name="SearchTextBox"
                             VerticalAlignment="Center"
@@ -112,69 +112,77 @@
 
                             <FlyoutBase.AttachedFlyout>
                                 <Flyout Placement="BottomEdgeAlignedLeft" ShowMode="Transient">
-                                    <Panel>
-                                        <ListBox
-                                            MaxWidth="500"
-                                            MinWidth="200"
-                                            MaxHeight="400"
-                                            Background="Transparent"
-                                            ItemsSource="{Binding SearchResults}"
-                                            SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid ColumnDefinitions="Auto,*,Auto">
-                                                        <Border
-                                                            Grid.Column="0"
-                                                            Width="44"
-                                                            Height="44"
-                                                            Background="#10FFFFFF"
-                                                            ClipToBounds="True"
-                                                            CornerRadius="4">
-                                                            <Image
-                                                                RenderOptions.BitmapInterpolationMode="HighQuality"
-                                                                Source="{Binding ThumbnailBitmap}"
-                                                                Stretch="UniformToFill" />
-                                                        </Border>
-                                                        <StackPanel
-                                                            Grid.Column="1"
-                                                            Margin="10,0"
-                                                            VerticalAlignment="Center">
-                                                            <TextBlock
-                                                                FontWeight="SemiBold"
-                                                                FontSize="16"
-                                                                Text="{Binding Name}"
-                                                                TextTrimming="CharacterEllipsis" />
-                                                            <TextBlock
-                                                                FontSize="10"
-                                                                Opacity="0.5"
-                                                                Text="{Binding RootPlaceId, StringFormat='ID: {0}'}" />
-                                                        </StackPanel>
-                                                        <StackPanel
-                                                            Grid.Column="2"
-                                                            VerticalAlignment="Center"
-                                                            Orientation="Horizontal"
-                                                            Spacing="4">
-                                                            <ic:SymbolIcon
-                                                                Margin="8,2,0,0"
-                                                                Width="14"
-                                                                Height="14"
-                                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                                Symbol="People"/>
-                                                            <TextBlock
+                                    <Border Width="400"
+                                            MaxHeight="450"
+                                            Background="{DynamicResource SolidBackgroundFillColorQuarternaryBrush}"
+                                            BorderBrush="{DynamicResource ControlStrokeColorDefault}"
+                                            BorderThickness="1"
+                                            CornerRadius="8"
+                                            BoxShadow="0 8 32 0 #40000000"
+                                            Margin="0,4,0,0">
+                                        <Panel>
+                                            <ListBox
+                                                MaxWidth="500"
+                                                MinWidth="200"
+                                                MaxHeight="400"
+                                                Background="Transparent"
+                                                ItemsSource="{Binding SearchResults}"
+                                                SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid ColumnDefinitions="Auto,*,Auto">
+                                                            <Border
+                                                                Grid.Column="0"
+                                                                Width="44"
+                                                                Height="44"
+                                                                Background="#10FFFFFF"
+                                                                ClipToBounds="True"
+                                                                CornerRadius="4">
+                                                                <Image
+                                                                    RenderOptions.BitmapInterpolationMode="HighQuality"
+                                                                    Source="{Binding ThumbnailBitmap}"
+                                                                    Stretch="UniformToFill" />
+                                                            </Border>
+                                                            <StackPanel
+                                                                Grid.Column="1"
+                                                                Margin="10,0"
+                                                                VerticalAlignment="Center">
+                                                                <TextBlock
+                                                                    FontWeight="SemiBold"
+                                                                    FontSize="16"
+                                                                    Text="{Binding Name}"
+                                                                    TextTrimming="CharacterEllipsis" />
+                                                                <TextBlock
+                                                                    FontSize="10"
+                                                                    Opacity="0.5"
+                                                                    Text="{Binding RootPlaceId, Converter={StaticResource StringFormatConverter}, ConverterParameter='{x:Static resources:Strings.Menu_RegionSelector_ID}'}" />
+                                                            </StackPanel>
+                                                            <StackPanel
+                                                                Grid.Column="2"
                                                                 VerticalAlignment="Center"
-                                                                FontSize="12"
-                                                                Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
+                                                                Orientation="Horizontal"
+                                                                Spacing="4">
+                                                                <ic:SymbolIcon
+                                                                    Margin="8,2,0,0"
+                                                                    FontSize="12"
+                                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                    Symbol="People"/>
+                                                                <TextBlock
+                                                                    VerticalAlignment="Center"
+                                                                    FontSize="12"
+                                                                    Text="{Binding PlayerCount, Converter={StaticResource NumberAbbreviationConverter}}" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
 
-                                        <ProgressBar
-                                            VerticalAlignment="Top"
-                                            IsIndeterminate="True"
-                                            IsVisible="{Binding IsGameSearchLoading}" />
-                                    </Panel>
+                                            <ProgressBar
+                                                VerticalAlignment="Top"
+                                                IsIndeterminate="True"
+                                                IsVisible="{Binding IsGameSearchLoading}" />
+                                        </Panel>
+                                    </Border>
                                 </Flyout>
                             </FlyoutBase.AttachedFlyout>
                         </TextBox>
@@ -182,11 +190,11 @@
 
                     <Grid Margin="0,16,0,0" ColumnDefinitions="*,16,*">
                         <StackPanel Grid.Column="0">
-                            <Label Content="Server Instance ID" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                            <Label Content="{x:Static resources:Strings.Menu_Shortcuts_ServerInstanceId}" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                             <TextBox Text="{Binding JobId, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Watermark="GUID/JobID" />
                         </StackPanel>
                         <StackPanel Grid.Column="2">
-                            <Label Content="Private Access Code" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                            <Label Content="{x:Static resources:Strings.Menu_Shortcuts_PrivateAccessCode}" FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
                             <TextBox Text="{Binding AccessCode, UpdateSourceTrigger=PropertyChanged}" Margin="0,4,0,0" Watermark="Access Code" />
                         </StackPanel>
                     </Grid>
@@ -194,7 +202,7 @@
                     <Separator Margin="0,8"/>
 
                     <DockPanel>
-                        <controls:IconButton Command="{Binding CreateGameShortcutCommand}" Content="Create Shortcut" Icon="Add" />
+                        <controls:IconButton Command="{Binding CreateGameShortcutCommand}" Content="{x:Static resources:Strings.Menu_Shortcuts_CreateShortcut}" Icon="Add" />
                         <TextBlock Text="{Binding ShortcutStatus}" Margin="16,8,0,0" FontSize="12" />
                     </DockPanel>
                 </StackPanel>

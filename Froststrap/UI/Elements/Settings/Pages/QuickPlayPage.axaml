@@ -6,6 +6,7 @@
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
              x:Name="RootPage"
              x:DataType="vm:QuickPlayViewModel">
     <Grid>
@@ -27,17 +28,17 @@
                                 </Button.Styles>
                                 <Button.Flyout>
                                     <MenuFlyout Placement="Pointer">
-                                        <MenuItem Header="Join Game" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
+                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinGame}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinGameCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
                                                 <ic:SymbolIcon Symbol="Play" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="Rejoin Last Server" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
+                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RejoinLastServer}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).RejoinLastServerCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
                                                 <ic:SymbolIcon Symbol="History" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="Join Best Region"
+                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_JoinBestRegion}"
                                                   Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).JoinBestRegionCommand}"
                                                   CommandParameter="{Binding}"
                                                   IsEnabled="{Binding DataContext.CanJoinBestRegion, ElementName=RootPage}">
@@ -46,7 +47,7 @@
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
-                                        <MenuItem Header="{Binding ServerCount, StringFormat='Tracked Servers ({0})'}"
+                                        <MenuItem Header="{Binding ServerCount, StringFormat='{x:Static resources:Strings.Menu_QuickPlay_TrackedServers}'}"
                                                   Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewServersCommand}"
                                                   CommandParameter="{Binding}"
                                                   IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
@@ -54,14 +55,14 @@
                                                 <ic:SymbolIcon Symbol="Server" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="Roblox Servers"
+                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_RobloxServers}"
                                                   Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewRobloxServersCommand}"
                                                   CommandParameter="{Binding}">
                                             <MenuItem.Icon>
                                                 <ic:SymbolIcon Symbol="Cloud" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="Private Servers"
+                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}"
                                                   IsVisible="{Binding DataContext.HasActiveAccount, ElementName=RootPage}"
                                                   Command="{Binding DataContext.ShowPrivateServersCommand, ElementName=RootPage}"
                                                   CommandParameter="{Binding}">
@@ -69,13 +70,13 @@
                                                 <ic:SymbolIcon Symbol="LockMultiple" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
-                                        <MenuItem Header="View Subplaces" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
+                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_ViewSubplaces}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).ViewSubplacesCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
                                                 <ic:SymbolIcon Symbol="Layer" FontSize="16" />
                                             </MenuItem.Icon>
                                         </MenuItem>
                                         <Separator />
-                                        <MenuItem Header="Visit Page" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
+                                        <MenuItem Header="{x:Static resources:Strings.Menu_QuickPlay_VisitPage}" Command="{Binding #RootPage.((vm:QuickPlayViewModel)DataContext).VisitPageCommand}" CommandParameter="{Binding}">
                                             <MenuItem.Icon>
                                                 <ic:SymbolIcon Symbol="Open" FontSize="16" />
                                             </MenuItem.Icon>
@@ -91,15 +92,15 @@
                                             </Border>
                                             <StackPanel Spacing="2" Margin="8">
                                                 <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                                                <TextBlock Text="{Binding Creator, StringFormat='by {0}'}" FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Creator}" FontSize="11" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
                                                 <Grid ColumnDefinitions="*, *" Margin="0,5,0,0">
                                                     <StackPanel Orientation="Horizontal" Spacing="4">
                                                         <TextBlock Text="{Binding Playing, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
-                                                        <TextBlock Text="Active" FontSize="10" Opacity="0.5"/>
+                                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Active}" FontSize="10" Opacity="0.5"/>
                                                     </StackPanel>
                                                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
                                                         <TextBlock Text="{Binding Visits, Converter={StaticResource NumberAbbreviationConverter}}" FontSize="10" FontWeight="Medium"/>
-                                                        <TextBlock Text="Visits" FontSize="10" Opacity="0.5"/>
+                                                        <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Visits}" FontSize="10" Opacity="0.5"/>
                                                     </StackPanel>
                                                 </Grid>
                                             </StackPanel>
@@ -114,11 +115,11 @@
                                         <Grid VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8">
                                             <Border Padding="6,2" CornerRadius="6" Background="#22C55E"
                                                     IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Tracked}">
-                                                <TextBlock Text="Tracked" FontSize="10" FontWeight="Bold"/>
+                                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Tracked}" FontSize="10" FontWeight="Bold"/>
                                             </Border>
                                             <Border Padding="6,2" CornerRadius="6" Background="#3B82F6"
                                                     IsVisible="{Binding Source, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=RobloxApi}">
-                                                <TextBlock Text="Roblox API" FontSize="10" FontWeight="Bold"/>
+                                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxAPI}" FontSize="10" FontWeight="Bold"/>
                                             </Border>
                                         </Grid>
                                     </Panel>
@@ -132,7 +133,7 @@
 
         <Grid IsVisible="{Binding IsLoading}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" VerticalAlignment="Center" HorizontalAlignment="Center">
-                <TextBlock Text="Loading recent games..."
+                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingRecentGames}"
                            HorizontalAlignment="Center"
                            FontSize="14"
                            FontWeight="SemiBold"
@@ -143,7 +144,7 @@
                                  Height="48"
                                  Foreground="{DynamicResource SystemAccentColor}"/>
 
-                <TextBlock Text="Fetching game information"
+                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FetchingGameInfo}"
                            HorizontalAlignment="Center"
                            FontSize="12"
                            Opacity="0.6"/>
@@ -152,7 +153,7 @@
 
         <Grid IsVisible="{Binding IsJoiningBestRegion}" ZIndex="200" Background="#99000000">
             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="Finding best server for your region..."
+                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_FindingBestServer}"
                            HorizontalAlignment="Center"
                            FontSize="14"
                            FontWeight="SemiBold"
@@ -163,7 +164,7 @@
                                  Height="48"
                                  Foreground="{DynamicResource SystemAccentColor}"/>
 
-                <TextBlock Text="Checking servers..."
+                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_CheckingServers}"
                            HorizontalAlignment="Center"
                            FontSize="12"
                            Opacity="0.7"/>
@@ -189,8 +190,8 @@
                             </Border>
                             <StackPanel Grid.Column="1" Margin="12,0" VerticalAlignment="Center">
                                 <TextBlock Text="{Binding SelectedUniverseDetails.Data.Name}" FontWeight="Bold" FontSize="16" TextTrimming="CharacterEllipsis"/>
-                                <TextBlock Text="Session History" FontSize="12" Opacity="0.6" IsVisible="{Binding !IsCurrentGameApi}"/>
-                                <TextBlock Text="Roblox API Servers" FontSize="12" Opacity="0.6" IsVisible="{Binding IsCurrentGameApi}"/>
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_SessionHistory}" FontSize="12" Opacity="0.6" IsVisible="{Binding !IsCurrentGameApi}"/>
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_RobloxServers}" FontSize="12" Opacity="0.6" IsVisible="{Binding IsCurrentGameApi}"/>
                             </StackPanel>
                             <Button Grid.Column="2" Command="{Binding CloseOverlayCommand}" Background="Transparent" BorderThickness="0">
                                 <ic:SymbolIcon Symbol="Dismiss" FontSize="16" />
@@ -203,7 +204,7 @@
                             <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <ui:ProgressRing IsActive="{Binding IsLoadingServers}" Width="40" Height="40"
                                                  Foreground="{DynamicResource SystemAccentColor}"/>
-                                <TextBlock Text="Loading servers..." FontSize="12" Opacity="0.7"/>
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingServers}" FontSize="12" Opacity="0.7"/>
                             </StackPanel>
                         </Grid>
 
@@ -221,7 +222,7 @@
                                                         <Border Margin="4,0,0,0" Padding="5,1" CornerRadius="4"
                                                                 Background="{DynamicResource AccentButtonBackground}"
                                                                 IsVisible="{Binding IsLatest}">
-                                                            <TextBlock Text="Latest" FontSize="8" FontWeight="Medium"/>
+                                                            <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_Latest}" FontSize="8" FontWeight="Medium"/>
                                                         </Border>
                                                     </StackPanel>
 
@@ -262,7 +263,7 @@
                             <Grid ColumnDefinitions="*, Auto">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <ic:SymbolIcon Symbol="Layer" FontSize="18" />
-                                    <TextBlock Text="Available Subplaces" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_AvailableSubplaces}" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Command="{Binding CloseSubplacesCommand}" Background="Transparent" BorderThickness="0">
                                     <ic:SymbolIcon Symbol="Dismiss" FontSize="16" />
@@ -278,7 +279,7 @@
                                                  Width="40"
                                                  Height="40"
                                                  Foreground="{DynamicResource SystemAccentColor}"/>
-                                <TextBlock Text="Loading subplaces..."
+                                <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingSubplaces}"
                                            FontSize="12"
                                            Opacity="0.7"/>
                             </StackPanel>
@@ -336,7 +337,7 @@
                             <Grid ColumnDefinitions="*, Auto">
                                 <StackPanel Orientation="Horizontal" Spacing="10">
                                     <ic:SymbolIcon Symbol="LockMultiple" FontSize="18" />
-                                    <TextBlock Text="Private Servers" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_PrivateServers}" FontWeight="Bold" FontSize="16" VerticalAlignment="Center"/>
                                 </StackPanel>
                                 <Button Grid.Column="1" Command="{Binding ClosePrivateServersCommand}" Background="Transparent" BorderThickness="0">
                                     <ic:SymbolIcon Symbol="Dismiss" FontSize="16" />
@@ -349,7 +350,7 @@
                                 <StackPanel Spacing="16" HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <ui:ProgressRing IsActive="{Binding IsLoadingPrivateServers}" Width="40" Height="40"
                                                      Foreground="{DynamicResource SystemAccentColor}"/>
-                                    <TextBlock Text="Loading private servers..." FontSize="12" Opacity="0.7"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_LoadingPrivateServers}" FontSize="12" Opacity="0.7"/>
                                 </StackPanel>
                             </Grid>
 
@@ -368,12 +369,13 @@
 
                                                         <StackPanel Grid.Column="1" Margin="8,0">
                                                             <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
-                                                            <TextBlock Text="{Binding OwnerName, StringFormat='Owner: {0}'}" FontSize="11" Opacity="0.6" />
+                                                            <TextBlock Text="{Binding OwnerName}" FontSize="11" Opacity="0.6" />
                                                             <TextBlock Margin="0,4,0,0" FontSize="11">
                                                                 <Run Text="{Binding CurrentPlayers}" />
                                                                 <Run Text="/" />
                                                                 <Run Text="{Binding MaxPlayers}" />
-                                                                <Run Text=" players" />
+                                                                <Run Text=" " />
+                                                                <Run Text="{x:Static resources:Strings.Menu_QuickPlay_Players}" />
                                                             </TextBlock>
                                                         </StackPanel>
 
@@ -393,7 +395,7 @@
                                             VerticalAlignment="Center"
                                             Spacing="8">
                                     <ic:SymbolIcon Symbol="LockClosed" FontSize="36" Opacity="0.5" />
-                                    <TextBlock Text="No private servers found" FontSize="13" Opacity="0.7"/>
+                                    <TextBlock Text="{x:Static resources:Strings.Menu_QuickPlay_NoPrivateServersFound}" FontSize="13" Opacity="0.7"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>

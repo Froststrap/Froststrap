@@ -5,67 +5,67 @@
         [EnumName(FromTranslation = "Common.Disabled")]
         Disabled,
 
-        [EnumName(StaticName = "Level 1")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level1")]
         Level1,
 
-        [EnumName(StaticName = "Level 2")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level2")]
         Level2,
 
-        [EnumName(StaticName = "Level 3")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level3")]
         Level3,
 
-        [EnumName(StaticName = "Level 4")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level4")]
         Level4,
 
-        [EnumName(StaticName = "Level 5")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level5")]
         Level5,
 
-        [EnumName(StaticName = "Level 6")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level6")]
         Level6,
 
-        [EnumName(StaticName = "Level 7")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level7")]
         Level7,
 
-        [EnumName(StaticName = "Level 8")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level8")]
         Level8,
 
-        [EnumName(StaticName = "Level 9")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level9")]
         Level9,
 
-        [EnumName(StaticName = "Level 10")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level10")]
         Level10,
 
-        [EnumName(StaticName = "Level 11")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level11")]
         Level11,
 
-        [EnumName(StaticName = "Level 12")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level12")]
         Level12,
 
-        [EnumName(StaticName = "Level 13")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level13")]
         Level13,
 
-        [EnumName(StaticName = "Level 14")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level14")]
         Level14,
 
-        [EnumName(StaticName = "Level 15")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level15")]
         Level15,
 
-        [EnumName(StaticName = "Level 16")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level16")]
         Level16,
 
-        [EnumName(StaticName = "Level 17")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level17")]
         Level17,
 
-        [EnumName(StaticName = "Level 18")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level18")]
         Level18,
 
-        [EnumName(StaticName = "Level 19")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level19")]
         Level19,
 
-        [EnumName(StaticName = "Level 20")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level20")]
         Level20,
 
-        [EnumName(StaticName = "Level 21")]
+        [EnumName(FromTranslation = "Enums.QualityLevel.Level21")]
         Level21,
     }
 }

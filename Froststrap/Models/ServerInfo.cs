@@ -21,6 +21,6 @@
         public bool IsLatest { get; set; }
 
         [JsonIgnore]
-        public string DurationText => $"{JoinedAt:HH:mm} -> {TimeLeft:HH:mm}";
+        public string DurationText => $"From {JoinedAt:HH:mm} to {TimeLeft:HH:mm}";
     }
 }

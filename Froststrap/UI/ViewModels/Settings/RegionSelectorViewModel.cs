@@ -202,18 +202,18 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public List<SortOrderComboBoxItem> SortOrderOptions { get; } =
         [
-            new() { Content = "Large Servers", Tag = 2 },
-            new() { Content = "Small Servers", Tag = 1 }
+            new() { Content = Strings.Menu_RegionSelector_LargeServers, Tag = 2 },
+            new() { Content = Strings.Menu_RegionSelector_SmallServers, Tag = 1 }
         ];
 
         public bool IsServerListEmpty => Servers.Count == 0;
         public bool IsServerListEmptyAndNotLoading => IsServerListEmpty && !IsLoading;
         public bool ShowLoadingIndicator => IsLoading && !IsGameSearchLoading;
 
-        public string ServerListMessage => !HasValidCookies ? "Log in using account manager or turn on 'Froststrap Account Permission' or report this to our discord server to use." :
+        public string ServerListMessage => !HasValidCookies ? Strings.Menu_RegionSelector_LoginRequired :
             IsLoading ? "" :
-            !HasSearched ? "Enter a Place ID and click Search to view servers." :
-            IsServerListEmpty ? (LastFetchProcessedCount == 0 ? "No public servers found." : "No servers found for specified region.") : "";
+            !HasSearched ? Strings.Menu_RegionSelector_EnterPlaceId :
+            IsServerListEmpty ? (LastFetchProcessedCount == 0 ? Strings.Menu_RegionSelector_NoPublicServers : Strings.Menu_RegionSelector_NoServersForRegion) : "";
 
         public IAsyncRelayCommand SearchCommand { get; }
         public IAsyncRelayCommand LoadMoreCommand { get; }
@@ -313,13 +313,13 @@ namespace Froststrap.UI.ViewModels.Settings
         private async Task LoadRegionsAsync()
         {
             IsLoading = true;
-            LoadingMessage = "Loading datacenters...";
+            LoadingMessage = Strings.Menu_RegionSelector_LoadingDatacenters;
 
             var result = await _fetcher!.GetDatacentersAsync() ?? await LoadDatacentersFromCacheAsync();
 
             if (result == null)
             {
-                LoadingMessage = "Failed to load datacenters.";
+                LoadingMessage = Strings.Menu_RegionSelector_FailedToLoadDatacenters;
                 IsLoading = false;
                 return;
             }
@@ -334,7 +334,7 @@ namespace Froststrap.UI.ViewModels.Settings
 
             SelectedRegion = Regions.FirstOrDefault(r => r.Equals(_selectedRegion, StringComparison.OrdinalIgnoreCase)) ?? Regions.FirstOrDefault();
 
-            LoadingMessage = $"Loaded {Regions.Count} regions.";
+            LoadingMessage = string.Format(Strings.Menu_RegionSelector_LoadedRegions, Regions.Count);
             IsLoading = false;
             await Task.Delay(800);
             LoadingMessage = "";
@@ -344,13 +344,13 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             if (string.IsNullOrWhiteSpace(SelectedRegion))
             {
-                _ = Frontend.ShowMessageBox("Please select a region first.", MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox(Strings.Menu_RegionSelector_PleaseSelectRegion, MessageBoxImage.Warning);
                 return;
             }
 
             HasSearched = true;
             IsLoading = true;
-            LoadingMessage = "Searching servers...";
+            LoadingMessage = Strings.Menu_RegionSelector_SearchingServers;
             Servers.Clear();
             _displayedServerIds.Clear();
             NextCursor = "";

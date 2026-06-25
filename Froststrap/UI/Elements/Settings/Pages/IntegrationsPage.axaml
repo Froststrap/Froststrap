@@ -38,24 +38,24 @@
             </controls:OptionControl>
 
             <controls:OptionControl
-                Description="Changes Roblox titlebar title to the game name."
-                Header="Title Change"
+                Description="{x:Static resources:Strings.Menu_Integrations_TitleChange_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_TitleChange_Title}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding AutoChangeTitle, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                Header="Icon Change"
-                Description="Auto change the roblox game titlebar and taskbar icon to the current game icon."
+                Header="{x:Static resources:Strings.Menu_Integrations_IconChange_Title}"
+                Description="{x:Static resources:Strings.Menu_Integrations_IconChange_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding AutoChangeIcon, Mode=TwoWay}" />
             </controls:OptionControl>
 
             <controls:OptionControl
-                Description="Automatically rejoins the same server after a 20-minute disconnection or network error."
-                Header="Auto Rejoin"
+                Description="{x:Static resources:Strings.Menu_Integrations_AutoRejoin_Description}"
+                Header="{x:Static resources:Strings.Menu_Integrations_AutoRejoin_Title}"
                 IsEnabled="{Binding ActivityTrackingEnabled}">
                 <ToggleSwitch IsChecked="{Binding AutoRejoinEnabled, Mode=TwoWay}" />
             </controls:OptionControl>
@@ -134,104 +134,106 @@
                 </StackPanel>
             </controls:CardExpander>
 
-            <StackPanel IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}">
+            <Separator IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}" Margin="0,8,0,8" />
 
-                <Separator Margin="0,8,0,8" />
+            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
 
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="Bold"
-                    Text="{x:Static resources:Strings.Common_DiscordRichPresence}" />
+            <controls:MarkdownTextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
+                                        TextWrapping="Wrap" />
 
-                <controls:MarkdownTextBlock
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    MarkdownText="{Binding Source={x:Static resources:Strings.Menu_Integrations_RequiresActivityTracking}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/What-is-activity-tracking%3F#discord-rich-presence'}"
-                    TextWrapping="Wrap" />
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Title}">
+                <ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl
-                    Description="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Description}"
-                    Header="{x:Static resources:Strings.Menu_Integrations_FroststrapRPC_Title}">
-                    <ToggleSwitch IsChecked="{Binding ShowUsingFroststrapRPC, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                       FontSize="18"
+                       Margin="0,16,0,0"
+                       FontWeight="Bold"
+                       Text="{x:Static resources:Strings.Common_Player}" />
 
-                <TextBlock
-                    FontSize="18"
-                    Margin="0,16,0,0"
-                    FontWeight="Bold"
-                    Text="Roblox Player" />
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    x:Name="DiscordActivityOption"
+                                    Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work'}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
+                                    IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding DiscordActivityEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl
-                    x:Name="DiscordActivityOption"
-                    Description="{Binding Source={x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://github.com/bloxstraplabs/bloxstrap/wiki/Discord-Rich-Presence-does-not-work'}"
-                    Header="{x:Static resources:Strings.Menu_Integrations_ShowGameActivity_Title}"
-                    IsEnabled="{Binding ActivityTrackingEnabled}">
-                    <ToggleSwitch IsChecked="{Binding DiscordActivityEnabled, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
+                                    IsEnabled="{Binding DiscordActivityEnabled}">
+                <ToggleSwitch IsChecked="{Binding EnableCustomStatusDisplay, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl
-                    Description="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Description}"
-                    Header="{x:Static resources:Strings.Menu_Integrations_CustomStatusDisplay_Title}"
-                    IsEnabled="{Binding DiscordActivityEnabled}">
-                    <ToggleSwitch IsChecked="{Binding EnableCustomStatusDisplay, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
+                                    IsEnabled="{Binding DiscordActivityEnabled}">
+                <ToggleSwitch IsChecked="{Binding DiscordActivityJoinEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl
-                    Description="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Description}"
-                    Header="{x:Static resources:Strings.Menu_Integrations_AllowActivityJoining_Title}"
-                    IsEnabled="{Binding DiscordActivityEnabled}">
-                    <ToggleSwitch IsChecked="{Binding DiscordActivityJoinEnabled, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
+                                    IsEnabled="{Binding DiscordActivityEnabled}">
+                <ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl
-                    Description="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Description}"
-                    Header="{x:Static resources:Strings.Menu_Integrations_ShowAccountOnProfile_Title}"
-                    IsEnabled="{Binding DiscordActivityEnabled}">
-                    <ToggleSwitch IsChecked="{Binding DiscordAccountOnProfile, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <TextBlock IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                       FontSize="18"
+                       Margin="0,16,0,0"
+                       FontWeight="Bold"
+                       Text="{x:Static resources:Strings.Common_Studio}"/>
 
-                <TextBlock
-                    FontSize="18"
-                    Margin="0,16,0,0"
-                    FontWeight="Bold"
-                    Text="Roblox Studio"/>
+            <controls:OptionControl x:Name="StudioActivityOption" IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_StudioActivity_Description}"
+                                    IsEnabled="{Binding ActivityTrackingEnabled}">
+                <ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl x:Name="StudioActivityOption"
-                                        Header="Display Studio Activity"
-                                        Description="Shows Roblox Studio as your Discord activity on launch."
-                                        IsEnabled="{Binding ActivityTrackingEnabled}">
-                    <ToggleSwitch IsChecked="{Binding StudioRPCEnabled, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_DynamicThumbnail_Description}"
+                                    IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl Header="Dynamic Thumbnail"
-                                        Description="Changes the thumbnail depending on the script you have open."
-                                        IsEnabled="{Binding StudioRPCEnabled}">
-                    <ToggleSwitch IsChecked="{Binding ThumbnailChanging, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_EditingInfo_Description}"
+                                    IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl Header="Editing Info"
-                                        Description="Shows the script type, script name, and number of lines in the script."
-                                        IsEnabled="{Binding StudioRPCEnabled}">
-                    <ToggleSwitch IsChecked="{Binding EditingInfo, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_WorkspaceInfo_Description}"
+                                    IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl Header="Workspace Info"
-                                        Description="Displays the name of your current workspace."
-                                        IsEnabled="{Binding StudioRPCEnabled}">
-                    <ToggleSwitch IsChecked="{Binding WorkspaceInfo, Mode=TwoWay}" />
-                </controls:OptionControl>
+            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_ShowTesting_Description}"
+                                    IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
+            </controls:OptionControl>
 
-                <controls:OptionControl Header="Show Testing"
-                                        Description="Shows a small play icon in your RPC when testing a game."
-                                        IsEnabled="{Binding StudioRPCEnabled}">
-                    <ToggleSwitch IsChecked="{Binding ShowTesting, Mode=TwoWay}" />
-                </controls:OptionControl>
-
-                <controls:OptionControl Header="Join Button"
-                                        Description="Adds a small button to join the game your working on."
-                                        IsEnabled="{Binding StudioRPCEnabled}">
-                    <ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />
-                </controls:OptionControl>
-            </StackPanel>
+            <controls:OptionControl  IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrLinux}"
+                                    Header="{x:Static resources:Strings.Menu_Integrations_JoinButton_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Integrations_JoinButton_Description}"
+                                    IsEnabled="{Binding StudioRPCEnabled}">
+                <ToggleSwitch IsChecked="{Binding StudioGameButton, Mode=TwoWay}" />
+            </controls:OptionControl>
 
             <Separator Margin="0,8,0,8" />
 

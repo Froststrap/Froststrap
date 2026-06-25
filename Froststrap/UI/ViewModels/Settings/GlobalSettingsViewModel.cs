@@ -39,12 +39,6 @@ namespace Froststrap.UI.ViewModels.Settings
 
         private async void ExportSettings()
         {
-            if (!File.Exists(GBSEditor.FileLocation))
-            {
-                _ = Frontend.ShowMessageBox("No GBS settings file found to export.", MessageBoxImage.Warning);
-                return;
-            }
-
             var visualRoot = Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop
                              ? desktop.MainWindow
                              : null;
@@ -54,7 +48,7 @@ namespace Froststrap.UI.ViewModels.Settings
             var file = await visualRoot.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
             {
                 Title = "Export GBS Settings",
-                SuggestedFileName = "FroststrapGlobalSettings.xml",
+                SuggestedFileName = "GlobalBasicSettings_13.xml",
                 DefaultExtension = ".xml",
                 FileTypeChoices =
                 [ new FilePickerFileType("GBS Settings File") { Patterns = ["*.xml" ] } ]
@@ -67,11 +61,11 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (success)
                 {
-                    _ = Frontend.ShowMessageBox($"Settings exported successfully to {localPath}", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_GlobalSettings_Export_Success, localPath), MessageBoxImage.Information);
                 }
                 else
                 {
-                    _ = Frontend.ShowMessageBox("Failed to export settings. Make sure Roblox is not running and try again.", MessageBoxImage.Error);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Export_Fail, MessageBoxImage.Error);
                 }
             }
         }
@@ -101,18 +95,18 @@ namespace Froststrap.UI.ViewModels.Settings
                 var doc = XDocument.Load(localPath);
                 if (doc.Root?.Name != "roblox")
                 {
-                    _ = Frontend.ShowMessageBox("The selected file does not appear to be a valid GBS settings file.", MessageBoxImage.Warning);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotGBS, MessageBoxImage.Warning);
                     return;
                 }
             }
             catch
             {
-                _ = Frontend.ShowMessageBox("The selected file is not a valid XML file.", MessageBoxImage.Warning);
+                _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_NotXML, MessageBoxImage.Warning);
                 return;
             }
 
             var confirm = await Frontend.ShowMessageBox(
-                "This will replace all your current Global settings with the imported ones. Are you sure you want to continue?",
+                Strings.Menu_GlobalSettings_Import_Confirmation,
                 MessageBoxImage.Warning,
                 MessageBoxButton.YesNo);
 
@@ -122,11 +116,11 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (success)
                 {
                     App.GlobalSettings.Load();
-                    _ = Frontend.ShowMessageBox("Settings imported successfully!", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Success, MessageBoxImage.Information);
                 }
                 else
                 {
-                    _ = Frontend.ShowMessageBox("Failed to import settings. Make sure Roblox is not running and try again.", MessageBoxImage.Error);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_GlobalSettings_Import_Fail, MessageBoxImage.Error);
                 }
             }
         }

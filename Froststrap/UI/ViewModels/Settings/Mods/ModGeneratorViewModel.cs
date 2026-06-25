@@ -417,7 +417,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 await Task.Run(async () =>
                 {
-                    StatusText = Strings.Menu_ModGenerator_DontColorPlay;
+                    StatusText = Strings.Menu_ModGenerator_Downnloading;
                     Progress = 5;
                     var (luaZip, extraZip, contentZip, vHash, vName) = await ModGenerator.DownloadForModGenerator();
 

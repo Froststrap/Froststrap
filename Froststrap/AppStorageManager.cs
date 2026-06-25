@@ -14,7 +14,6 @@ public class AppStorageManager : JsonManager<Dictionary<string, object>>
     {
         { "System.LaunchAtStartup", "LaunchAtStartup" },
         { "System.MinimizeToTray", "MinimizeToTray" },
-        { "System.SystemTrayModalShown", "SystemTrayModalShown" },
         { "UI.Theme", "DeviceLevelTheme" },
         { "User.UserId", "UserId" },
     };

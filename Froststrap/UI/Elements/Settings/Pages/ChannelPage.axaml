@@ -56,21 +56,21 @@
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
-                    Description="Froststrap will automatically check and update itself to a test version when launching Roblox."
-                    Header="Update to Pre Releases">
+                    Description="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Description}"
+                    Header="{x:Static resources:Strings.Menu_Deployment_AutoPreReleaseUpdate_Title}">
                     <ToggleSwitch IsChecked="{Binding PreReleaseUpdatesEnabled, Mode=TwoWay}"/>
                 </controls:OptionControl>
             </controls:CardExpander>
 
             <controls:OptionControl
-                Description="Automatically hide the settings window when launching Roblox and restore it when Roblox closes."
+                Description="{x:Static resources:Strings.Menu_TestMode_Description}"
                 Header="{x:Static resources:Strings.Menu_TestMode}">
                 <ToggleSwitch IsChecked="{Binding TestModeEnabled, Mode=TwoWay}"/>
             </controls:OptionControl>
 
             <controls:OptionControl
-                Header="Game Search"
-                Description="Shows you games in the top searchbar.">
+                Header="{x:Static resources:Strings.Menu_Deployment_GameSearch_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_GameSearch_Description}">
                 <ToggleSwitch IsChecked="{Binding GameSearch, Mode=TwoWay}" />
             </controls:OptionControl>
 
@@ -82,7 +82,7 @@
                        Text="Roblox" />
 
             <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Automatically update Sober">
+                                    Header="{x:Static resources:Strings.Menu_Deployment_AutoUpdateSober}">
                 <ToggleSwitch IsChecked="{Binding AutomaticallyUpdateSober, Mode=TwoWay}" />
             </controls:OptionControl>
 
@@ -99,8 +99,8 @@
                 <ToggleSwitch IsChecked="{Binding UpdateRoblox, Mode=TwoWay}" />
             </controls:OptionControl>
 
-            <controls:OptionControl Header="Multi Thread Download"
-                                    Description="Specify the thread amount used for downloading, Only affects studio on linux.">
+            <controls:OptionControl Header="{x:Static resources:Strings.Menu_Deployment_MultiThread_Title}"
+                                    Description="{x:Static resources:Strings.Menu_Deployment_MultiThread_Description}">
                 <TextBox
                     Width="200"
                     Margin="8,0,0,0"
@@ -114,14 +114,14 @@
             </controls:OptionControl>
 
             <controls:CardExpander
-                Header="Player Channel"
-                Description="Roblox game client channel (e.g. production, zcanary, etc.)"
+                Header="{x:Static resources:Strings.Menu_Deployment_PlayerChannel_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_Channel_Description}"
                 IsVisible="{x:Static gv:GlobalViewModel.IsWindowsOrMacOS}"
                 IsExpanded="True">
 
                 <controls:CardExpander.HeaderContent>
                     <TextBox
-                        Width="200"
+                        Width="172"
                         Margin="8,0,0,0"
                         Padding="10,5"
                         Text="{Binding PlayerChannel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -227,24 +227,22 @@
             <TextBlock Margin="0,8,0,0"
                        FontSize="20"
                        FontWeight="Bold"
-                       Text="Roblox Studio" />
+                       Text="{x:Static resources:Strings.Common_Studio}" />
 
             <controls:CardExpander
-                Header="Override Studio Version"
-                Description="Force Roblox Studio to install and use a specific version hash instead of the latest."
+                Header="{x:Static resources:Strings.Menu_Deployment_OverrideHash_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_OverrideHash_Description}"
                 IsExpanded="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"
                 Classes="NoUserExpansion">
 
                 <controls:CardExpander.HeaderContent>
                     <ToggleSwitch
-                        IsChecked="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"
-                        OffContent=""
-                        OnContent="" />
+                        IsChecked="{Binding StudioVersionOverrideEnabled, Mode=TwoWay}"/>
                 </controls:CardExpander.HeaderContent>
 
                 <controls:OptionControl
-                    Header="Version Hash"
-                    Description="Enter the Roblox Studio version GUID (e.g. version-xxxxxxxxxxxxxxxx). Only applies to Studio launches.">
+                    Header="{x:Static resources:Strings.Menu_Deployment_VersionHash_Title}"
+                    Description="{x:Static resources:Strings.Menu_Deployment_VersionHash_Description}">
                     <StackPanel Spacing="6">
                         <TextBox
                             Width="280"
@@ -295,13 +293,13 @@
             </controls:CardExpander>
 
             <controls:CardExpander
-                Header="Studio Channel"
-                Description="Roblox Studio channel (e.g. production, zcanary, etc.)"
+                Header="{x:Static resources:Strings.Menu_Deployment_StudioChannel_Title}"
+                Description="{x:Static resources:Strings.Menu_Deployment_Channel_Description}"
                 IsExpanded="True">
 
                 <controls:CardExpander.HeaderContent>
                     <TextBox
-                        Width="200"
+                        Width="172"
                         Margin="8,0,0,0"
                         Padding="10,5"
                         IsEnabled="{Binding !StudioVersionOverrideEnabled, Mode=TwoWay}"
@@ -392,90 +390,6 @@
                     </Grid>
                 </StackPanel>
             </controls:CardExpander>
-
-            <controls:CardAction
-                Icon="Settings"
-                Header="Advanced Wine Settings"
-                Command="{Binding OpenWineCfgCommand}"
-                IsVisible="{Binding IsWineAvailable}"/>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Web Pages"
-                                    Description="Used for certain UI elements and logging in">
-                <ToggleSwitch IsChecked="{Binding EnableWebView2, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Graphics Renderer"
-                                    Description="Select the rendering backend for Studio under Wine.">
-                <ComboBox Width="200"
-                          ItemsSource="{Binding StudioRendererOptions, Mode=OneTime}"
-                          SelectedItem="{Binding SelectedStudioRenderer, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:CardExpander Header="Virtual Desktops" Classes="NoUserExpansion"
-                                   Description="Create an isolated window for each instance" IsExpanded="{Binding VirtualDesktopEnabled, Mode=OneWay}"
-				   IsVisible="{x:Static gv:GlobalViewModel.IsLinux}">
-                <controls:CardExpander.HeaderContent>
-                    <ToggleSwitch IsChecked="{Binding VirtualDesktopEnabled, Mode=TwoWay}" />
-                </controls:CardExpander.HeaderContent>
-                <StackPanel Spacing="4">
-                    <TextBox Text="{Binding VirtualDesktopResolution, Mode=TwoWay}"
-                             IsEnabled="{Binding VirtualDesktopEnabled}"
-                             Watermark="e.g. 1920x1080"/>
-                </StackPanel>
-            </controls:CardExpander>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Launcher Command"
-                                    Description="Wrap the Studio command (e.g. gamescope -- %command%)">
-                <TextBox Text="{Binding StudioLauncher, Mode=TwoWay}" Watermark="gamescope -- %command%" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Game Mode"
-                                    Description="Apply system optimizations if available (requires gamemoded).">
-                <ToggleSwitch IsChecked="{Binding StudioGameMode, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Debug Mode"
-                                    Description="Enable verbose Wine/DXVK logging and console output.">
-                <ToggleSwitch IsChecked="{Binding StudioDebug, Mode=TwoWay}" />
-            </controls:OptionControl>
-
-            <controls:OptionControl IsVisible="{x:Static gv:GlobalViewModel.IsLinux}"
-                                    Header="Environment Variables"
-                                    Description="Additional environment variables passed to Wine.">
-                <StackPanel Spacing="8">
-                    <ItemsControl ItemsSource="{Binding StudioEnvEntries}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Spacing="4" Margin="0,2">
-                                    <TextBox Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
-                                             Width="150"
-                                             Watermark="Variable"
-                                             Padding="8,5" />
-                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
-                                             Width="200"
-                                             Watermark="Value"
-                                             Padding="8,5" />
-                                    <controls:IconButton Icon="Delete"
-                                                         Classes="Danger"
-                                                         Command="{Binding RemoveCommand}"
-                                                         Width="30"
-                                                         Padding="0"
-                                                         ToolTip.Tip="Remove" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <Button Content="+ Add Variable"
-                            Command="{Binding AddStudioEnvCommand}"
-                            HorizontalAlignment="Left"
-                            Margin="0,4,0,0" />
-                </StackPanel>
-            </controls:OptionControl>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

@@ -116,7 +116,7 @@
                     </StackPanel>
                 </Expander>
 
-                <Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors_Contributors}" IsExpanded="True">
+                <Expander Grid.Column="1" Margin="4,0,4,0" Header="{x:Static resources:Strings.Menu_About_Contributors}" IsExpanded="True">
                     <StackPanel>
                         <controls:MarkdownTextBlock MarkdownText="[jokoyanto987](https://github.com/jokoyanto987)" />
                         <controls:MarkdownTextBlock MarkdownText="[Scroom](https://discord.com/users/1254472513199673347)" />

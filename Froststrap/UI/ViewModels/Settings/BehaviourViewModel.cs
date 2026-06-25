@@ -32,13 +32,6 @@
             set => App.AppStorage.SetBoolPreset("System.MinimizeToTray", value);
         }
 
-        public static bool SystemTrayModalShown
-        {
-            get => App.AppStorage.GetBoolPreset("System.SystemTrayModalShown");
-            set => App.AppStorage.SetBoolPreset("System.SystemTrayModalShown", value);
-        }
-
-
         public static IEnumerable<Enums.AppStoragePresets.Theme> AppThemeOptions => Enum.GetValues<Enums.AppStoragePresets.Theme>();
 
         public static Enums.AppStoragePresets.Theme SelectedTheme

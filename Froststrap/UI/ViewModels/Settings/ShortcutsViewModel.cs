@@ -33,10 +33,10 @@ namespace Froststrap.UI.ViewModels.Settings
         private string _placeId = "";
         private string _jobId = "";
         private string _accessCode = "";
-        private string _previewName = "No Game Selected";
-        private string _previewId = "ID: 0";
+        private string _previewName = "";
+        private string _previewId = "";
         private Bitmap? _previewIcon;
-        private string _shortcutStatus = "Ready";
+        private string _shortcutStatus = "";
         private bool _isSearchFlyoutOpen;
         private OmniSearchContent? _selectedSearchResult;
         private CancellationTokenSource? _searchDebounceCts;
@@ -126,21 +126,25 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public ShortcutsViewModel()
         {
+            PreviewName = Strings.Menu_Shortcuts_NoGameSelected;
+            PreviewId = string.Format(Strings.Menu_RegionSelector_ID, 0);
+            ShortcutStatus = Strings.Menu_Shortcuts_Ready;
+
             CreateGameShortcutCommand = new AsyncRelayCommand(CreateGameShortcut);
             SearchGamesCommand = new AsyncRelayCommand(SearchGamesAsync);
         }
 
         private async Task CreateGameShortcut()
         {
-            if (string.IsNullOrEmpty(PlaceId) || PreviewName == "No Game Selected")
+            if (string.IsNullOrEmpty(PlaceId) || PreviewName == Strings.Menu_Shortcuts_NoGameSelected)
             {
-                ShortcutStatus = "Select a game first.";
+                ShortcutStatus = Strings.Menu_Shortcuts_SelectGameFirst;
                 return;
             }
 
             try
             {
-                ShortcutStatus = "Processing...";
+                ShortcutStatus = Strings.Menu_Shortcuts_Processing;
 
                 await Shortcut.CreateGameShortcut(
                     appPath: Paths.Application,
@@ -152,11 +156,11 @@ namespace Froststrap.UI.ViewModels.Settings
                     onStatus: status => ShortcutStatus = status
                 );
 
-                ShortcutStatus = "Shortcut created!";
+                ShortcutStatus = Strings.Menu_Shortcuts_ShortcutCreated;
             }
             catch (Exception ex)
             {
-                ShortcutStatus = "Error creating shortcut.";
+                ShortcutStatus = Strings.Menu_Shortcuts_ErrorCreatingShortcut;
                 App.Logger.WriteLine(LOG_IDENT, $"Error: {ex.Message}");
             }
         }
@@ -217,9 +221,9 @@ namespace Froststrap.UI.ViewModels.Settings
             PlaceId = value.RootPlaceId.ToString();
             SearchQuery = PlaceId;
             PreviewName = value.Name!;
-            PreviewId = $"ID: {value.RootPlaceId}";
+            PreviewId = string.Format(Strings.Menu_RegionSelector_ID, value.RootPlaceId);
             PreviewIcon = value.ThumbnailBitmap;
-            ShortcutStatus = "Ready to create";
+            ShortcutStatus = Strings.Menu_Shortcuts_ReadyToCreate;
 
             _isProcessingSelection = false;
             IsSearchFlyoutOpen = false;
@@ -229,7 +233,7 @@ namespace Froststrap.UI.ViewModels.Settings
         {
             try
             {
-                ShortcutStatus = "Updating preview...";
+                ShortcutStatus = Strings.Menu_Shortcuts_UpdatingPreview;
 
                 await UniverseDetails.FetchBulk(id.ToString());
                 var details = UniverseDetails.LoadFromCache(id);
@@ -237,20 +241,20 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (details != null)
                 {
                     PreviewName = details.Data.Name;
-                    PreviewId = $"ID: {id}";
+                    PreviewId = string.Format(Strings.Menu_RegionSelector_ID, id);
                     PreviewIcon = await LoadBitmapFromUrl(details.Thumbnail.ImageUrl, token);
                 }
                 else
                 {
-                    PreviewName = $"Game {id}";
-                    PreviewId = $"ID: {id}";
+                    PreviewName = string.Format(Strings.Menu_Shortcuts_Game, id);
+                    PreviewId = string.Format(Strings.Menu_RegionSelector_ID, id);
                     PreviewIcon = null;
                 }
             }
             catch (Exception)
             {
-                PreviewName = $"Game {id}";
-                ShortcutStatus = "Ready with manual ID.";
+                PreviewName = string.Format(Strings.Menu_Shortcuts_Game, id);
+                ShortcutStatus = Strings.Menu_Shortcuts_ReadyWithManualId;
             }
         }
 

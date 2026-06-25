@@ -44,7 +44,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 helpMessage = String.Format(Strings.Dialog_Exception_Info_2_Alt, wikiUrl);
 
             HelpMessageMarkdown.MarkdownText = helpMessage;
-            VersionText.Text = String.Format(Strings.Dialog_Exception_Version, App.Version);
+            VersionText.Text = String.Format(Strings.Menu_About_Version, App.Version);
 
             ReportExceptionButton.Click += (_, _) => Utilities.ShellExecute(issueUrl);
 

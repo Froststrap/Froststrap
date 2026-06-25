@@ -2,16 +2,16 @@
 {
     public enum FontSize
     {
-        [EnumName(StaticName = "Small")]
+        [EnumName(FromTranslation = "Enums.FontSize.x1")]
         x1,
 
-        [EnumName(StaticName = "Medium")]
+        [EnumName(FromTranslation = "Enums.FontSize.x2")]
         x2,
 
-        [EnumName(StaticName = "Large")]
+        [EnumName(FromTranslation = "Enums.FontSize.x3")]
         x3,
 
-        [EnumName(StaticName = "Extra Large")]
+        [EnumName(FromTranslation = "Enums.FontSize.x4")]
         x4
     }
 }

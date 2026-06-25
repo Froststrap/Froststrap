@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Froststrap.UI.Elements.Settings.Pages;
 
-public partial class SoberSettingsPage : UserControl
+public partial class LinuxSettingsPage : UserControl
 {
-    public SoberSettingsPage()
+    public LinuxSettingsPage()
     {
         InitializeComponent();
 

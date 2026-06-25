@@ -37,7 +37,6 @@ namespace Froststrap.Models
             set => SetProperty(ref _enabled, value);
         }
 
-        [JsonIgnore]
         public int FileCount => GetFileCount();
 
         public string FileCountDisplay => $"{FileCount} {Strings.Common_Files}";
