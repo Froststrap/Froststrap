@@ -246,20 +246,35 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Dodaj pojedynczy</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Wszystkie</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Kąt</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Zespoły</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Przeglądaj</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Przeglądarka</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Anuluj</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Wyczyść</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Zamknij</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Próbnik kolorów</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Potwierdź</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopiuj</value>
@@ -294,8 +309,17 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Rozbudowana funkcjonalność Discord</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Pobierz</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Edytuj</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redaktor</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Błąd</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksport</value>
@@ -304,8 +328,14 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Szybki edytor flag</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Pliki</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Gra</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Wygeneruj</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Podgląd glifu</value>
@@ -325,6 +355,9 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Ładowanie, proszę czekać...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Instrukcja obsługi</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Różne</value>
   </data>
@@ -337,8 +370,20 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nie</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Nie znaleziono wyników</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Niedostępne</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Nie znaleziono</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Przesunięcie</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Otwórz folder</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Otwórz plik dziennika</value>
@@ -355,11 +400,17 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Ustawienia wstępne</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Priorytet</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profile</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Jakość</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Usuń</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Zmień nazwę</value>
@@ -367,8 +418,17 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Aplikacja Roblox nie została jeszcze zainstalowana. Przed skorzystaniem z tej opcji należy przynajmniej raz uruchomić aplikację Roblox za pomocą Froststrap.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Zapisz i zainstaluj</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Zapisz i uruchom</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Wyszukiwanie</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Wybierz</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Identyfikator serwera</value>
@@ -399,6 +459,9 @@ Czy chcesz przejść na kanał domyślny ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Razem</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Nieznane</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Aktualizacja</value>
@@ -874,7 +937,7 @@ Czy na pewno chcesz kontynuować?</value>
     <value>Hash zatwierdzenia</value>
   </data>
   <data name="Menu.About.CommitRef" xml:space="preserve">
-    <value>Zgłoszenie zmiany</value>
+    <value>Zgłoś zmianę</value>
   </data>
   <data name="Menu.About.Contributors" xml:space="preserve">
     <value>Autorzy</value>
@@ -921,6 +984,37 @@ Czy na pewno chcesz kontynuować?</value>
   <data name="Menu.About.Version" xml:space="preserve">
     <value>Wersja {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+  </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Konto „{0}” zostało usunięte, ponieważ plik cookie tego konta jest nieprawidłowy lub wygasł.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Dodaj konto</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Konto „@{0}” jest już zalogowane.\nPrzełączono na to konto.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Nie dodano żadnych kont
+Kliknij „Dodaj konto” powyżej, aby rozpocząć</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Pliki cookie lokalne</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Nie jesteś zalogowany</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>W grze Roblox</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>W Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>W trybie offline</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (strona internetowa Roblox)</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Należy pamiętać, że nie wszystkie wprowadzone zmiany zostaną natychmiast zastosowane, dopóki nie zamknie się wszystkich aktualnie otwartych instancji Roblox.</value>
@@ -1120,6 +1214,36 @@ Czy na pewno chcesz kontynuować?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Informacje o modelu</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Edytor awatarów</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Modyfikacje kolorów</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kursor</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Odkryj modyfikacje stworzone przez użytkowników.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Różne modyfikacje</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod „{0}” został pomyślnie zainstalowany!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Czy chcesz nadpisać istniejący mod „{0}”?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Wyszukaj modyfikacje...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Motyw „{0}” został zainstalowany i zastosowany!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Motywy niestandardowe</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Modyfikacje społecznościowe</value>
   </data>
@@ -1134,6 +1258,21 @@ Czy na pewno chcesz kontynuować?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Dołącz do Best Region (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Nie udało się załadować pliku cookie serwisu Roblox.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Nie udało się załadować pliku cookie.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Znaleziono plik cookie, ale jest on nieprawidłowy lub wygasł.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>W ustawieniach wyłączono obsługę plików cookie.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Nie znaleziono pliku cookie serwisu Roblox.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Ten kanał jest nieaktualny i prawdopodobnie nie jest już aktualizowany. Proszę skorzystać z innego kanału.</value>
@@ -1150,6 +1289,9 @@ Czy na pewno chcesz kontynuować?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Lista czystych</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć wszystkie flagi?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Niektóre z flag, które próbujesz zaimportować, mają już przypisane wartości. Czy chcesz zastąpić ich obecne wartości wartościami zdefiniowanymi w pliku importowym?
 
@@ -1161,10 +1303,22 @@ Wystąpiło {0} konfliktów definicji flag:
     <value>Usuń zaznaczone</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Zarządzaj swoimi FastFlags tutaj. Zapoznaj się z innymi funkcjami w sekcji „Ustawienia zaawansowane”.</value>
+    <value>Zarządzaj tutaj wszystkimi swoimi FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Przeciągnij plik, aby zaimportować JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Eksport JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>Plik FastFlags został pomyślnie wyeksportowany.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Proszę przesłać pliki w formacie JSON lub TXT.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} zostały usunięte, ponieważ nie znajdowały się na liście dozwolonych.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Wprowadzony przez Ciebie plik JSON wydaje się być nieprawidłowy. Sprawdź go jeszcze raz i spróbuj ponownie.
@@ -1173,8 +1327,17 @@ Więcej informacji:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Nie ma żadnych flag do usunięcia.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Rany, tu jest tak pusto! Może dodamy FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Nie wykryto żadnych nieprawidłowych znaczników FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>„{0}” nie znajduje się na liście dozwolonych nazw w Roblox i nie będzie działać.\n\nChcesz to teraz usunąć?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Profile flag</value>
@@ -1187,6 +1350,12 @@ Więcej informacji:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Edytor FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Łączna liczba flag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Po dodaniu niektórych flag Roblox FastFlags do białej listy, są to jedyne flagi, które nadal można wykorzystać.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Zapisz bieżące flagi</value>
@@ -1288,8 +1457,14 @@ Więcej informacji:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Ustaw jako tylko do odczytu</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Wektor Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Ustawienia ogólne</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>W tym miejscu możesz zarządzać wszystkimi ustawieniami ogólnymi.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Monitorowanie aktywności</value>
@@ -1448,7 +1623,7 @@ Więcej informacji:
     <value>Wklej wartość w polu powyżej</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>„Nieprawidłowy plik cookie. Sprawdź i spróbuj ponownie.”</value>
+    <value>„Nieprawidłowy plik cookie. Sprawdź i spróbuj ponownie.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>Wklej plik cookie o rozszerzeniu .ROBLOSECURITY</value>
@@ -1456,95 +1631,236 @@ Więcej informacji:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Ręczne logowanie</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Dodaj przystanek</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Modyfikacje zostały pomyślnie zastosowane ({0} plików).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Zastosuj do kursorów</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Dodaj do koła emotikonów</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Zgłoś się do Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Im wyższa liczba, tym lepsza jakość, ale trwa to dłużej. Maksymalna wartość to 64, a domyślna to 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Generowanie modu zostało anulowane.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Sprzątanie...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Nazwa modułu (opcjonalnie)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Niestandardowy spinner (opcjonalnie)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Twórz modyfikacje w prosty sposób za pomocą jednego kliknięcia.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Ikona „Nie koloruj”</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Pobieranie wymaganych zasobów...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Pobieranie plików...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Nie udało się załadować czcionek podglądu.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Zestaw ikon:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Dodaj do „Moich modów”</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Opakowanie...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Gotowy do wygenerowania modyfikacji?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Zmiana koloru czcionek...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Zmiana kolorów obrazów...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Ikona Roblox (opcjonalnie)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Zapisano w {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Rozpoczęto generowanie modów...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Podgląd stylu</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Generator modów</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Mod o tej nazwie już istnieje. Wybierz inną nazwę.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Nazwa folderu zawiera niedozwolone znaki.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Dodaj nowy mod</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Mod o nazwie „{0}” już istnieje.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Czy chcesz trwale usunąć „{0}”?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Zarządzaj modyfikacjami plików i stosuj je w kliencie gry Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Przeciągnij i upuść, aby zaimportować plik ZIP lub folder</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Folder „{0}” już nie istnieje.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Importuj folder</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Importuj plik ZIP</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod „{0}” został pomyślnie zaimportowany.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Aby zaimportować mody, przeciągnij je lub skorzystaj z funkcji importowania; mody o niższym priorytecie są stosowane jako ostatnie, co pozwala uniknąć konfliktów z innymi modami.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Nieprawidłowa nazwa folderu.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Wybrane źródło nie zawiera prawidłowej struktury modów.\nMusi zawierać co najmniej jeden z następujących folderów: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Nie zainstalowano żadnych modów.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Wybrana akcja modułu</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Moje modyfikacje</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Nieobsługiwany typ pliku lub ścieżka: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Oficjalne wbudowane modyfikacje.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Wszystko, czego potrzebujesz do zarządzania kursorami.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Funkcje niestandardowego kursora</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Skonfiguruj parametry aplikacji, takie jak sposób skalowania DPI oraz [optymalizacje trybu pełnoekranowego]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Zarządzaj ustawieniami zgodności</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Wybierz kursor...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Korzystaj z własnych kursorów myszy w Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Usuń niestandardowy kursor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Niestandardowy kursor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Przygotuj kilka zestawów kursorów do natychmiastowego użycia.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Niestandardowy zestaw kursorów</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Wybierz dźwięk...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Zastępuje dźwięk śmierci własnym plikiem audio.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Usuń niestandardowy dźwięk śmierci</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Indywidualny dźwięk śmierci</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Wybierz czcionkę...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Ustawia wybraną niestandardową czcionkę w Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Usuń zastosowaną czcionkę</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Niestandardowa czcionka do gier</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Wybierz ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Korzystaj z własnego Shiftlocka w Robloxie.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Usuń niestandardową blokadę zmiany biegów</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Niestandardowy Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Wybierz, jakiego rodzaju emoji ma używać Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>W tej chwili nie można zastosować modyfikacji emoji.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Preferowany typ emoji</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Wybierz jedną z wielu kursorów Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Kursor myszy</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Przywróćcie stare tło edytora awatarów, które było używane w aplikacji Roblox przed 2020 rokiem.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Użyj tła ze starego edytora awatarów</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Gotowe modyfikacje</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Wróć do swoich ostatnich gier.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Szybka rozgrywka</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Logowanie zostało anulowane.</value>
@@ -1582,6 +1898,30 @@ Więcej informacji:
   <data name="Menu.Save" xml:space="preserve">
     <value>Zapisz</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Tryb automatyczny: Wybieram najlepszy region dla Ciebie...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Nie udało się dołączyć do gry: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Łączenie się z najlepszym serwerem...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Dołączanie do gry</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Dołączam do {0} w trybie szybkiej gry.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Nie udało się znaleźć odpowiedniego serwera.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Wyszukaj coś, a może to się tu pojawi...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Znaleziono serwer</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Zmiany zaczną obowiązywać przy następnym uruchomieniu Roblox.</value>
   </data>
@@ -1614,6 +1954,9 @@ Więcej informacji:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Ogólne</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Trzeźwe otoczenie</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Tryb testowy</value>

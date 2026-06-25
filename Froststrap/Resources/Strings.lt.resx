@@ -246,20 +246,35 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Pridėti vieną</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Visi</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Kampas</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Grupės</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Naršyti</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Naršyklė</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Atšaukti</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Išvalyti</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Uždaryti</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Spalvų pasirinkimo įrankis</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Patvirtinti</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopijuoti</value>
@@ -294,8 +309,17 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>„Discord“ išplėstinė buvimo informacija</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Atsisiųsti</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Redaguoti</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redaktorius</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Klaida</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksportas</value>
@@ -304,8 +328,14 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Greitasis vėliavų redaktorius</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Failai</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Žaidimas</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Sukurti</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Simbolio peržiūra</value>
@@ -331,6 +361,9 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Įkeliama, prašome palaukti...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Naudojimo instrukcija</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Įvairūs dalykai</value>
   </data>
@@ -343,8 +376,20 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Ne</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Rezultatų nerasta</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Nėra prieinama</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Nerasta</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Ofsetas</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Atidaryti aplanką</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Atidaryti žurnalo failą</value>
@@ -361,11 +406,17 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Išankstiniai nustatymai</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioritetas</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiliai</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kokybė</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Pašalinti</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Pervardyti</value>
@@ -373,8 +424,17 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>„Roblox“ dar nėra įdiegtas. Prieš bandydami naudotis šia parinktimi, bent kartą paleiskite „Roblox“ naudodami „Froststrap“.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Išsaugoti ir įdiegti</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Išsaugoti ir paleisti</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Paieška</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Pasirinkite</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Serverio ID</value>
@@ -405,6 +465,9 @@ Ar norite pereiti į numatytąjį kanalą ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Iš viso</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Nežinoma</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Atnaujinimas</value>
@@ -940,6 +1003,37 @@ Ar tikrai norite tęsti?</value>
     <value>Versija {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Paskyra „{0}“ buvo pašalinta, nes jos slapukas yra negaliojantis arba jo galiojimo laikas pasibaigęs.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Pridėti paskyrą</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Paskyra „@{0}“ jau yra prisijungusi.\nPerjungta į ją.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Nėra pridėtų paskyrų
+Norėdami pradėti, spustelėkite „Pridėti paskyrą“ viršuje</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Vietinis slapukas</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Nesate prisijungę</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>„Roblox“ žaidime</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>„Roblox Studio“</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>Neprisijungęs</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Internete (svetainėje „Roblox“)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Atkreipkite dėmesį, kad ne visi jūsų pakeitimai bus iškart pritaikyti, kol neuždarysite visų šiuo metu atidarytų „Roblox“ sesijų.</value>
   </data>
@@ -1144,6 +1238,36 @@ Ar tikrai norite tęsti?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Apie „Mod“</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>„Avatar“ redaktorius</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Spalvų modifikacijos</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Žymeklis</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Atraskite vartotojų sukurtus modus.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Įvairūs modai</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Modas „{0}“ sėkmingai įdiegtas!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Ar norite perrašyti esamą modą „{0}“?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Ieškoti modų...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Tema „{0}“ įdiegta ir pritaikyta!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Individualizuotos temos</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Bendruomenės moderatoriai</value>
   </data>
@@ -1158,6 +1282,21 @@ Ar tikrai norite tęsti?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Prisijunkite prie „Best Region“ (Automobiliai)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Nepavyko įkelti „Roblox“ slapuko.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Nepavyko įkelti slapuko failo.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Slapukas rastas, tačiau jis yra negaliojantis arba jo galiojimo laikas pasibaigęs.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Nustatymuose išjungta galimybė naudoti slapukus.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Nerastas „Roblox“ slapuko failas.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Šis kanalas yra pasenęs ir, tikėtina, jau nebėra atnaujinamas. Prašome naudoti kitą kanalą.</value>
@@ -1174,6 +1313,9 @@ Ar tikrai norite tęsti?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Švarus sąrašas</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Ar tikrai norite ištrinti visas žymes?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Kai kuriems žymekliams, kuriuos bandote importuoti, jau yra nustatytos reikšmės. Ar norite pakeisti jų dabartines reikšmes importo metu apibrėžtomis reikšmėmis?
 
@@ -1185,10 +1327,22 @@ Yra {0} nesuderinamų žymeklių apibrėžimų:
     <value>Ištrinti pažymėtus</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Čia galite valdyti savo „FastFlags“. Daugiau funkcijų rasite skyriuje „Išplėstiniai nustatymai“.</value>
+    <value>Čia galite valdyti visus savo „FastFlags“.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Nuvilkite, kad importuotumėte JSON / TXT failą</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Eksportuoti JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>„FastFlags“ sėkmingai eksportuota.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Prašome įkelti JSON arba TXT failus.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} buvo pašalinti, nes jų nebuvo leidžiamų sąraše.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Atrodo, kad jūsų įvestas JSON nėra teisingas. Prašome jį dar kartą patikrinti ir pabandyti iš naujo.
@@ -1197,8 +1351,17 @@ Daugiau informacijos:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Nėra jokių žymių, kurias reikėtų ištrinti.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Oho, čia taip tuščia! Gal pridėkime „FastFlag“?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Nenustatyta jokių neteisingų „FastFlags“.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>„{0}“ nėra įtrauktas į „Roblox“ leidžiamų sąrašą ir neveiks.\n\nAr norite jį pašalinti dabar?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Vėliavų aprašymai</value>
@@ -1211,6 +1374,12 @@ Daugiau informacijos:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>„FastFlag“ redaktorius</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Viso vėliavų skaičius</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Po to, kai kai kurie „Roblox FastFlags“ buvo įtraukti į baltąjį sąrašą, šie yra vieninteliai, kuriuos dar galima naudoti.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Išsaugoti dabartinius žymėjimus</value>
@@ -1312,8 +1481,14 @@ Daugiau informacijos:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Nustatyti kaip „Tik skaityti“</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y vektorius</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Bendrieji nustatymai</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Čia galite tvarkyti visus savo bendruosius nustatymus.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Veiklos stebėjimas</value>
@@ -1483,95 +1658,236 @@ Daugiau informacijos:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Prisijungimas rankiniu būdu</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Pridėti stotelę</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Pakeitimai sėkmingai pritaikyti ({0} failai).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Taikyti žymekliams</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Pridėti prie emocijų rato</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Pateikti paraišką į „Shiftlock“</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Kuo didesnis skaičius, tuo geresnė kokybė, tačiau tai užtrunka ilgiau; didžiausia reikšmė yra 64, o numatytoji – 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Modų generavimas atšauktas.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Valoma...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Modifikacijos pavadinimas (neprivaloma)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Individualus sukiklis (pasirinktinai)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Modus galima lengvai sukurti vienu paspaudimu.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Piktograma „Nenaudoti spalvų“</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Atsisiunčiami reikalingi ištekliai...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Ištraukiami failai...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Nepavyko įkelti peržiūros šriftų.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Piktogramų rinkinys:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Pridėti prie „Mano modų“</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Pakuotė...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Ar esate pasirengę sukurti modą?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Šriftų spalvų keitimas...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Vaizdų spalvų keitimas...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>„Roblox“ piktograma (neprivaloma)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Išsaugota į {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Pradedamas modų generavimas...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stiliaus peržiūra</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>„Mod“ generatorius</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Modas su tokiu pavadinimu jau egzistuoja. Pasirinkite kitą pavadinimą.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Aplanko pavadinime yra neleistini simboliai.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Pridėti naują modą</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Modas pavadinimu „{0}“ jau egzistuoja.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Ar norite visam laikui ištrinti „{0}“?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Valdykite ir taikykite failų modifikacijas „Roblox“ žaidimo klientui.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Nupieškite, kad importuotumėte ZIP failą / aplanką</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Aplankas „{0}“ nebeegzistuoja.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Importuoti aplanką</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Importuoti ZIP failą</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Modas „{0}“ sėkmingai importuotas.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Modus importuokite juos pervilkdami arba pasinaudodami importavimo funkcija; mažesnio prioriteto modai taikomi paskutiniai, todėl jie laimi konfliktus su kitais modais.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Neteisingas aplanko pavadinimas.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Pasirinktame šaltinyje nėra tinkamos mod struktūros.\nJame turi būti bent vienas iš šių aplankų: „content“, „ExtraContent“, „PlatformContent“.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Modifikacijų neįdiegta.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Pasirinkta modifikatoriaus veiksmas</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Mano modai</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Nepalaikomas failo tipas arba kelias: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Oficialūs įdiegti modai.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Viskas, ko reikia, kad galėtumėte valdyti savo žymeklius.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Individualaus žymeklio funkcijos</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Nustatykite programos parametrus, pavyzdžiui, DPI mastelio keitimo elgseną ir [visos ekrano optimizacijas]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Suderinamumo nustatymų tvarkymas</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Pasirinkite žymeklį...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Naudokite savo pelės žymeklius „Roblox“ žaidime.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Pašalinti pasirinktinį žymeklį</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Pasirinktinis žymeklis</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Turėkite paruoštus naudoti kelis žymeklių rinkinius.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Individualus žymeklio rinkinys</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Pasirinkite garsą...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Pakeičia mirties garsą jūsų pačių pasirinktu garso įrašu.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Pašalinti pasirinktinį mirties garsą</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Pasirinktinis mirties garsas</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Pasirinkite šriftą...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Nustato pasirinktą pasirinktinį šriftą „Roblox“ žaidime.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Pašalinti pritaikytą šriftą</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Pasirinktinis žaidimo šriftas</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Pasirinkite „ShiftLock“...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Naudokite savo „Shiftlock“ žaidime „Roblox“.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Pašalinti „Custom Shiftlock“</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Individualus „Shiftlock“</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Pasirinkite, kokio tipo emodžius turėtų naudoti „Roblox“.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Šiuo metu emodži modifikacijos taikyti negalima.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Pageidaujamas emodži tipas</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Pasirinkite, ar norite naudoti kelis „Roblox“ žymeklius.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Peles žymeklis</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Grąžinkite senąjį avataro redaktoriaus foną, kuris buvo naudojamas „Roblox“ programėlėje iki 2020 m.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Naudoti senojo avatarų redaktoriaus foną</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Iš anksto nustatyti modai</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Grįžkite į neseniai žaistus žaidimus.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Greitasis žaidimas</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Prisijungimas atšauktas.</value>
@@ -1589,7 +1905,7 @@ Daugiau informacijos:
     <value>Pasibaigė prisijungimo laiko limitas.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
-    <value>Laukiama greito prisijungimo...\nProgramėlė uždarys šį langą, kai prisijungimas bus baigtas.</value>
+    <value>Laukiama greito prisijungimo...\nPrograma uždarys šį langą, kai prisijungimas bus baigtas.</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Įveskite vietos ID arba žaidimo pavadinimą...</value>
@@ -1611,6 +1927,30 @@ Daugiau informacijos:
   </data>
   <data name="Menu.Save" xml:space="preserve">
     <value>Išsaugoti</value>
+  </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automatinis režimas: Ieškoma jums tinkamiausio regiono...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Nepavyko prisijungti prie žaidimo: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Prisijungimas prie geriausio serverio...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Prisijungimas prie žaidimo</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Prisijungiu prie {0} naudodamasis greito žaidimo funkcija.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Nepavyko rasti tinkamo serverio.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Ieškokite ko nors, ir tai gali pasirodyti čia...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Serveris rastas</value>
   </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Pakeitimai įsigalios kitą kartą, kai paleisite „Roblox“.</value>
@@ -1644,6 +1984,9 @@ Daugiau informacijos:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Bendrieji reikalavimai</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>„Sober“ nustatymai</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Bandymo režimas</value>

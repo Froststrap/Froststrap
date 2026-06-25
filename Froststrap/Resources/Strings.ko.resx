@@ -246,20 +246,35 @@
   <data name="Common.AddSingle" xml:space="preserve">
     <value>단일 추가</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>전체</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>각도</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>밴드</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>찾아보기</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>브라우저</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>취소</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>지우기</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>닫기</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>색상 선택기</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>확인</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>복사</value>
@@ -273,7 +288,7 @@
   <data name="Common.Custom" xml:space="preserve">
     <value>사용자 지정</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>딥링크</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
@@ -297,8 +312,17 @@
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>디스코드 리치 프레즌스</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>편집</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>편집자</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>오류</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>내보내기</value>
@@ -307,8 +331,14 @@
   <data name="Common.FastFlags" xml:space="preserve">
     <value>빠른 깃발 편집기</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>파일</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>게임</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>생성</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>글리프 미리보기</value>
@@ -334,6 +364,9 @@
   <data name="Common.Loading" xml:space="preserve">
     <value>로딩 중입니다. 잠시만 기다려 주세요...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>사용 설명서</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>기타</value>
   </data>
@@ -346,8 +379,20 @@
   <data name="Common.No" xml:space="preserve">
     <value>아니요</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>결과가 없습니다.</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>이용 불가</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>찾을 수 없음</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>오프셋</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>폴더 열기</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>로그 파일 열기</value>
@@ -364,11 +409,17 @@
   <data name="Common.Presets" xml:space="preserve">
     <value>사전 설정</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>우선순위</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>프로필</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>품질</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>제거</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>이름 변경</value>
@@ -376,8 +427,17 @@
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox가 아직 설치되지 않았습니다. 이 옵션을 사용하기 전에 Froststrap을 통해 Roblox를 적어도 한 번은 실행해 주십시오.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>저장 및 설치</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>저장 및 실행</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>검색</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>선택</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>서버 ID</value>
@@ -408,6 +468,9 @@
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>합계</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>알 수 없음</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>업데이트</value>
@@ -937,6 +1000,37 @@
     <value>버전 {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>'{0}' 계정은 쿠키가 유효하지 않거나 만료되었기 때문에 삭제되었습니다.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>계정 추가</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>'@{0}' 계정이 이미 로그인되어 있습니다.\n해당 계정으로 전환했습니다.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>계정이 추가되지 않았습니다.
+시작하려면 위의 ‘계정 추가’를 클릭하세요.</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>로컬 쿠키</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>로그인하지 않았습니다</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>로블록스 게임에서</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>Roblox Studio에서</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>오프라인</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>온라인 (Roblox 웹사이트)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>현재 열려 있는 모든 Roblox 인스턴스를 닫기 전까지는 변경 사항이 즉시 모두 적용되지 않을 수 있으니 유의해 주시기 바랍니다.</value>
   </data>
@@ -1141,6 +1235,36 @@
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>모델 정보</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>아바타 편집기</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>색상 모드</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>커서</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>사용자가 제작한 모드를 살펴보세요.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>기타 모드</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>'{0}' 모드가 성공적으로 설치되었습니다!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>기존 모드 '{0}'을 덮어쓰시겠습니까?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>모드 검색...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>테마 '{0}'이 설치 및 적용되었습니다!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>사용자 정의 테마</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>커뮤니티 관리자</value>
   </data>
@@ -1155,6 +1279,21 @@
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Best Region (자동차)에 가입하세요</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Roblox 쿠키를 불러올 수 없습니다.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>쿠키 파일을 불러오지 못했습니다.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>쿠키가 발견되었으나 유효하지 않거나 만료되었습니다.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>설정에서 쿠키 사용이 비활성화되어 있습니다.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Roblox 쿠키 파일을 찾을 수 없습니다.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>이 채널은 최신 정보가 아니며, 더 이상 업데이트되지 않을 가능성이 높습니다. 다른 채널을 이용해 주시기 바랍니다.</value>
@@ -1171,6 +1310,9 @@
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>청정 목록</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>모든 플래그를 삭제하시겠습니까?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>가져오려고 하는 플래그 중 일부에는 이미 값이 설정되어 있습니다. 현재 값을 가져오기 설정에 정의된 값으로 덮어쓰시겠습니까?
 
@@ -1182,10 +1324,22 @@
     <value>선택한 항목 삭제</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>여기에서 FastFlags를 관리하세요. ‘고급 설정’에서 더 많은 기능을 확인해 보세요.</value>
+    <value>여기에서 모든 FastFlags를 관리하세요.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 JSON/TXT 파일을 드래그 앤 드롭하여 가져오기</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON 내보내기</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags가 성공적으로 내보내졌습니다.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>JSON 또는 TXT 파일을 올려주세요.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0}은 허용 목록에 포함되지 않아 삭제되었습니다.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>입력하신 JSON이 유효하지 않은 것으로 보입니다. 내용을 다시 한 번 확인하신 후 다시 시도해 주세요.
@@ -1194,8 +1348,17 @@
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>삭제할 플래그가 없습니다.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>와, 여기 정말 텅 비었네요! FastFlag를 추가해 보는 건 어떨까요?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>잘못된 FastFlags가 감지되지 않았습니다.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}'은 Roblox 허용 목록에 포함되어 있지 않아 작동하지 않습니다.\n\n지금 삭제하시겠습니까?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>국기 프로필</value>
@@ -1208,6 +1371,12 @@
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag 편집기</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>총 깃발 수</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>일부 Roblox FastFlags가 허용 목록에 추가된 이후, 현재 사용할 수 있는 것은 다음 항목들뿐입니다.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>현재 플래그 저장</value>
@@ -1309,8 +1478,17 @@
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>읽기 전용으로 설정</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>벡터 X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y 벡터</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>전역 설정</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>여기에서 모든 글로벌 설정을 관리할 수 있습니다.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>활동 추적</value>
@@ -1477,95 +1655,236 @@
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>수동 로그인</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>중지 추가</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>수정 사항이 성공적으로 적용되었습니다 ({0}개 파일).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>커서에 적용</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>이모티콘 휠에 적용하기</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Shiftlock에 지원하기</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>숫자가 높을수록 품질은 좋아지지만 처리 시간이 더 오래 걸립니다. 최대값은 64이며, 기본값은 8입니다.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>모드 생성이 취소되었습니다.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>정리 중...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>모드 이름 (선택 사항)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>사용자 지정 스피너 (선택 사항)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>한 번의 클릭만으로 모드를 간편하게 생성하세요.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>색상 변경 금지 아이콘</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>필요한 리소스를 다운로드 중입니다...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>파일 추출 중...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>미리보기 글꼴을 불러오지 못했습니다.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>아이콘 세트:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>내 모드 목록에 추가</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>포장...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>모드 생성할 준비가 되셨나요?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>글꼴 색상 변경 중...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>이미지 색상 변경 중...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox 아이콘 (선택 사항)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>{0}에 저장됨</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>모드 생성 시작 중...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>스타일 미리보기</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>모드 생성기</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>이 이름의 모드는 이미 존재합니다. 다른 이름을 선택해 주세요.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>폴더 이름에 유효하지 않은 문자가 포함되어 있습니다.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>새 모드 추가</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>'{0}'이라는 이름의 모드가 이미 존재합니다.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>'{0}'을 영구적으로 삭제하시겠습니까?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox 게임 클라이언트에 파일 모드를 관리하고 적용합니다.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Zip 파일/폴더를 드래그하여 가져오기</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>'{0}' 폴더가 더 이상 존재하지 않습니다.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>폴더 가져오기</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>ZIP 파일 가져오기</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>'{0}' 모드가 성공적으로 가져왔습니다.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>모드를 드래그하거나 가져오기 기능을 통해 모드를 가져오면, 우선순위가 낮은 모드는 마지막에 적용되므로 다른 모드와의 충돌을 피할 수 있습니다.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>폴더 이름이 올바르지 않습니다.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>선택한 소스에는 유효한 모드 구조가 포함되어 있지 않습니다.\n다음 폴더 중 하나 이상(content, ExtraContent, PlatformContent)이 포함되어 있어야 합니다.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>설치된 모드가 없습니다.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>선택된 모드 동작</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>내 모드</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>지원되지 않는 파일 형식 또는 경로: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>공식 내장 모드.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>커서를 관리하는 데 필요한 모든 것.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>사용자 지정 커서 기능</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>DPI 스케일링 동작 및 [전체 화면 최적화]({0})와 같은 애플리케이션 매개변수를 구성합니다.</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>호환성 설정 관리</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>커서 선택...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Roblox에서 나만의 마우스 커서를 사용하세요.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>사용자 지정 커서 제거</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>사용자 지정 커서</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>사용할 수 있도록 여러 개의 커서 세트를 미리 준비해 두세요.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>맞춤형 커서 세트</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>사운드 선택...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>사망 음향을 사용자가 지정한 오디오로 대체합니다.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>사용자 지정 사망 효과음 제거</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>사용자 지정 사망 효과음</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>글꼴 선택...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Roblox에서 선택한 사용자 지정 글꼴을 설정합니다.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>적용된 글꼴 제거</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>사용자 지정 게임 글꼴</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>ShiftLock을 선택하세요...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Roblox에서 나만의 Shiftlock을 사용해 보세요.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>사용자 지정 시프트 잠금 해제</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>맞춤형 시프트락</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Roblox에서 사용할 이모티콘 유형을 선택하세요.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>현재 이모지 모드는 적용할 수 없습니다.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>선호하는 이모지 유형</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>여러 Roblox 커서 중에서 하나를 선택하세요.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>마우스 커서</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>2020년 이전 로블록스 앱에서 사용되던 예전 아바타 편집기 배경을 다시 도입해 주세요.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>기존 아바타 편집기 배경 사용</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>사전 설정 모드</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>최근에 플레이했던 게임으로 다시 돌아가세요.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>빠른 플레이</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>로그인이 취소되었습니다.</value>
@@ -1606,6 +1925,30 @@
   <data name="Menu.Save" xml:space="preserve">
     <value>저장</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>자동 모드: 사용자에게 가장 적합한 지역을 찾고 있습니다...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>게임에 참여하지 못했습니다: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>최고의 서버에 접속 중...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>게임 참여하기</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>빠른 플레이를 통해 {0}에 참여합니다.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>적합한 서버를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>무언가를 검색해 보면 여기에 나타날 수도 있습니다...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>서버를 찾았습니다</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>변경 사항은 다음에 Roblox를 실행할 때부터 적용됩니다.</value>
   </data>
@@ -1638,6 +1981,9 @@
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>일반</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>절제된 환경</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>테스트 모드</value>

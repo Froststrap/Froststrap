@@ -246,20 +246,35 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Pridať jeden</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Všetko</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Uhol</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Kapely</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Prehliadať</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Prehliadač</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Zrušiť</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Vymazať</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Zatvoriť</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Výber farieb</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Potvrdiť</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopírovať</value>
@@ -294,14 +309,29 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Rozšírené funkcie v Discord</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Stiahnuť</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Upraviť</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redaktor</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Chyba</value>
   </data>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Rýchly editor vlajok</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Súbory</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Hra</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Vytvoriť</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Náhľad glyfu</value>
@@ -321,6 +351,9 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Načítava sa, prosím, počkajte...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Návod</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Rôzne</value>
   </data>
@@ -333,8 +366,20 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nie</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Nenašli sa žiadne výsledky</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Nedostupné</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Nenájdené</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Posun</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Otvoriť priečinok</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Otvoriť súbor protokolu</value>
@@ -351,11 +396,17 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Prednastavenia</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Priorita</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profily</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kvalita</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Odstrániť</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Pomenovať</value>
@@ -363,8 +414,17 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox ešte nie je nainštalovaný. Predtým, ako sa pokúsite použiť túto možnosť, spustite prosím aspoň raz aplikáciu Roblox pomocou Froststrap.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Uložiť a nainštalovať</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Uložiť a spustiť</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Vyhľadávanie</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Vybrať</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>ID servera</value>
@@ -395,6 +455,9 @@ Chcete prejsť na predvolený kanál ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Spolu</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Neznáme</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Aktualizácia</value>
@@ -915,6 +978,34 @@ Naozaj chcete pokračovať?</value>
     <value>Verzia {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Účet „{0}“ bol odstránený, pretože jeho súbor cookie je neplatný alebo vypršala jeho platnosť.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Pridať účet</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Účet „@{0}“ je už prihlásený.\nPrešlo sa naň.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Neboli pridané žiadne účty
+Kliknite hore na „Pridať účet“, aby ste mohli začať</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Miestny súbor cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Nie ste prihlásený</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>V hre Roblox</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>V programe Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (webová stránka Roblox)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Upozorňujeme, že nie všetky vaše zmeny sa uplatnia okamžite, pokiaľ nezatvoríte všetky aktuálne otvorené inštancie Robloxu.</value>
   </data>
@@ -1110,6 +1201,36 @@ Naozaj chcete pokračovať?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Informácie o modeli</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Editor avatarov</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Farebné modifikácie</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kurzor</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Objavte mody vytvorené používateľmi.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Rôzne modifikácie</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Modul „{0}“ bol úspešne nainštalovaný!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Chcete prepísať existujúci mod „{0}“?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Vyhľadávať mody...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Téma „{0}“ bola nainštalovaná a aktivovaná!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Vlastné motívy</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Modifikácie komunity</value>
   </data>
@@ -1124,6 +1245,21 @@ Naozaj chcete pokračovať?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Pripojte sa k Best Region (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Nepodarilo sa načítať súbor cookie služby Roblox.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Načítanie súboru s cookies sa nepodarilo.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Súbor cookie bol nájdený, ale je neplatný alebo jeho platnosť vypršala.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>V nastaveniach je prístup k súborom cookie deaktivovaný.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Súbor cookie Roblox nebol nájdený.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Tento kanál je neaktuálny a pravdepodobne sa už neaktualizuje. Použite prosím iný kanál.</value>
@@ -1140,6 +1276,9 @@ Naozaj chcete pokračovať?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Zoznam čistých položiek</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Naozaj chcete odstrániť všetky vlajky?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Niektoré z príznakov, ktoré sa snažíte importovať, už majú nastavené hodnoty. Chcete ich aktuálne hodnoty prepísať hodnotami definovanými v importe?
 
@@ -1151,7 +1290,19 @@ Existuje {0} konfliktných definícií príznakov:
     <value>Odstrániť vybrané</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Svoje FastFlags môžete spravovať tu. Ďalšie funkcie nájdete v časti „Pokročilé nastavenia“.</value>
+    <value>Všetky svoje FastFlags môžete spravovať práve tu.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Pretiahnite súbor na import JSON / TXT</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags sa úspešne exportoval.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Prosím, vložte súbory vo formáte JSON alebo TXT.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} boli odstránené, pretože neboli na zozname povolených položiek.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Zdá sa, že zadaný JSON nie je platný. Skontrolujte ho, prosím, a skúste to znova.
@@ -1160,8 +1311,17 @@ Existuje {0} konfliktných definícií príznakov:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Nie sú tu žiadne vlajky, ktoré by sa mali odstrániť.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Páni, tu je to také prázdne! Čo tak pridať FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Neboli zistené žiadne neplatné FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>„{0}“ nie je na zozname povolených položiek v Roblox a nebude fungovať.\n\nChcete ho teraz odstrániť?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Profily vlajok</value>
@@ -1174,6 +1334,12 @@ Existuje {0} konfliktných definícií príznakov:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editor FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Celkový počet vlajok</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Po zaradení niektorých Roblox FastFlags na zoznam povolených sú tieto jediné, ktoré zostali k dispozícii na použitie.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Uložiť aktuálne vlajky</value>
@@ -1275,8 +1441,17 @@ Existuje {0} konfliktných definícií príznakov:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Nastaviť ako len na čítanie</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Vektor X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Vektor Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Všeobecné nastavenia</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Tu môžete spravovať všetky svoje globálne nastavenia.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Sledovanie aktivity</value>
@@ -1443,95 +1618,236 @@ Existuje {0} konfliktných definícií príznakov:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Ručné prihlásenie</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Pridať zastávku</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Úpravy boli úspešne uplatnené ({0} súborov).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Použiť na kurzory</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Pridať do kolieska emócií</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Prihlásiť sa do Shiftlocku</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Čím vyššie číslo, tým vyššia kvalita, ale trvá to dlhšie. Maximálna hodnota je 64, predvolená hodnota je 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Vytvorenie modu bolo zrušené.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Upratujem...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Názov modu (voliteľné)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Vlastný spinner (voliteľné)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Vytvárajte mody jednoducho jedným kliknutím.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Ikona „Dont Color Play“</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Načítavanie potrebných súborov...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Extrahovanie súborov...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Nepodarilo sa načítať náhľadové písma.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Sada ikon:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Pridať do Moje mody</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Balenie...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Ste pripravení vytvoriť mod?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Zmena farby písma...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Prefarbenie obrázkov...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Ikona Roblox (voliteľné)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Uložené do {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Začínam generovať mod...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Náhľad štýlu</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Generátor modov</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Mod s týmto názvom už existuje. Zvoľte iný názov.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Názov priečinka obsahuje neplatné znaky.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Pridať nový mod</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Mod s názvom „{0}“ už existuje.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Chcete trvalo odstrániť „{0}“?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Spravujte a aplikujte úpravy súborov na herný klient Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Pretiahnite súbor ZIP alebo priečinok na import</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Zložka pre „{0}“ už neexistuje.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Importovať priečinok</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Načítať ZIP</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Modul „{0}“ bol úspešne naimportovaný.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Modifikácie môžete importovať pretiahnutím alebo priamym importom; modifikácie s nižšou prioritou sa uplatňujú ako posledné, čím sa predchádza konfliktom s inými modifikáciami.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Neplatný názov priečinka.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Vybraný zdroj neobsahuje platnú štruktúru modulu.\nMusí obsahovať aspoň jednu z nasledujúcich zložiek: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Nie sú nainštalované žiadne mody.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Vybraná akcia modu</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Moje modifikácie</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Nepodporovaný typ súboru alebo cesta: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Oficiálne integrované modifikácie.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Všetko, čo potrebujete na správu kurzorov.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Funkcie vlastného kurzora</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Nastavte parametre aplikácie, ako je správanie škálovania DPI a [optimalizácie pre režim celej obrazovky]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Správa nastavení kompatibility</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Vyberte kurzor...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>V hre Roblox môžete používať vlastné kurzory myši.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Odstrániť vlastný kurzor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Vlastný kurzor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Majte pripravených viacero sád kurzorov na okamžité použitie.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Vlastná sada kurzorov</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Vyberte zvuk...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Nahradí zvuk smrti vaším vlastným zvukovým súborom.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Odstrániť vlastný zvuk smrti</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Vlastný zvuk smrti</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Vyberte písmo...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Nastaví zvolené vlastné písmo v hre Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Odstrániť použité písmo</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Vlastné písmo pre hru</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Vyberte ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Používajte svoj vlastný Shiftlock v hre Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Odstrániť vlastný Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Vlastný Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Vyberte, aký typ emodži má Roblox používať.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Modul emoji momentálne nie je možné použiť.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Preferovaný typ emodži</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Vyberte si, či chcete používať viac kurzorov pre Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Kurzor myši</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Obnovte staré pozadie editora avatarov, ktoré sa v aplikácii Roblox používalo pred rokom 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Použiť staré pozadie v editore avatarov</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Prednastavené modifikácie</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Vráť sa k svojim nedávnym hrám.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Rýchla hra</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Prihlásenie bolo zrušené.</value>
@@ -1572,6 +1888,30 @@ Existuje {0} konfliktných definícií príznakov:
   <data name="Menu.Save" xml:space="preserve">
     <value>Uložiť</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automatický režim: Vyhľadávanie najvhodnejšej oblasti pre vás...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Nepodarilo sa pripojiť k hre: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Pripojenie k najlepšiemu serveru...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Pripojenie sa k hre</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Pripojenie k {0} prostredníctvom rýchlej hry.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Nepodarilo sa nájsť vhodný server.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Vyhľadajte niečo a možno sa to tu objaví...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Server bol nájdený</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Zmeny nadobudnú platnosť pri najbližšom spustení aplikácie Roblox.</value>
   </data>
@@ -1604,6 +1944,9 @@ Existuje {0} konfliktných definícií príznakov:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Všeobecné informácie</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Nestranné prostredie</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testovací režim</value>

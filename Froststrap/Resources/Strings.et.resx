@@ -246,13 +246,25 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Lisa üksik</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Kõik</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Nurk</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Ansamblid</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Sirvi</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Veebibrauser</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
+    <value>Tühista</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
     <value>Tühista</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
@@ -260,6 +272,9 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Värvivalija</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Kinnita</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopeeri</value>
@@ -294,8 +309,17 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Discordi rikkalikud esitusvõimalused</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Lae alla</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Muuda</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Toimetaja</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Viga</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Eksport</value>
@@ -304,8 +328,14 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Kiire lipu redigeerija</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Failid</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Mäng</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Loo</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Sümboli eelvaade</value>
@@ -328,6 +358,9 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Laadimine käib, palun oodake...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Kasutusjuhend</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Mitmesugust</value>
   </data>
@@ -340,8 +373,20 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Ei</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Tulemusi ei leitud</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ei ole saadaval</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Ei leitud</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Nihe</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Ava kaust</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Ava logifail</value>
@@ -358,11 +403,17 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Eelseadistused</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioriteet</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiilid</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kvaliteet</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Eemalda</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Ümbernimetamine</value>
@@ -370,8 +421,17 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox pole veel installitud. Palun käivita Roblox Froststrapi abil vähemalt üks kord, enne kui proovid seda valikut kasutada.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Salvesta ja paigalda</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Salvesta ja käivita</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Otsi</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Vali</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Serveri ID</value>
@@ -402,6 +462,9 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Kokku</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Teadmata</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Uuendus</value>
@@ -922,6 +985,34 @@ Kas olete kindel, et soovite jätkata?</value>
     <value>Versioon {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Konto „{0}” on eemaldatud, kuna selle küpsis on kehtetu või aegunud.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Lisa konto</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Konto „@{0}” on juba sisse logitud.\nVahetati sellele kontole.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Kontosid pole lisatud
+Alustamiseks klõpsa ülal nuppu „Lisa konto”</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Kohalik küpsis</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Ei ole sisse logitud</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Roblox-mängus</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>Roblox Studio's</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Veebis (Robloxi veebilehel)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Pange tähele, et mitte kõik teie muudatused ei jõustu kohe, kuni te pole sulgenud kõiki hetkel avatud Roblox-i instantsse.</value>
   </data>
@@ -1120,6 +1211,36 @@ Kas olete kindel, et soovite jätkata?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Moodi teave</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatari redaktor</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Värvimoodulid</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kursor</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Avasta kasutajate loodud modifikatsioone.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Mitmesugused modifikatsioonid</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' on edukalt paigaldatud!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Kas soovid olemasolevat modifikatsiooni „{0}” üle kirjutada?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Otsi modifikatsioone...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Teema „{0}“ on paigaldatud ja rakendatud!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Kohandatud teemad</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Kogukonna moderaatorid</value>
   </data>
@@ -1134,6 +1255,21 @@ Kas olete kindel, et soovite jätkata?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Liitu Best Regioniga (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Robloxi küpsist ei õnnestunud laadida.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Küpsisefaili laadimine ebaõnnestus.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Küpsis leiti, kuid see on kehtetu või aegunud.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Küpsiste kasutamine on seadetes keelatud.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Robloxi küpsisfaili ei leitud.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>See kanal on aegunud ja seda tõenäoliselt enam ei uuendata. Palun kasutage mõnda teist kanalit.</value>
@@ -1150,6 +1286,9 @@ Kas olete kindel, et soovite jätkata?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Puhas nimekiri</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Kas oled kindel, et soovid kõik lipud kustutada?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Mõnedel lipudel, mida üritate importida, on juba väärtused määratud. Kas soovite nende praegused väärtused asendada impordis määratud väärtustega?
 
@@ -1161,10 +1300,22 @@ On {0} vastuolulist lipu määratlust:
     <value>Kustuta valitud</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Haldage oma FastFlags-i siin. Tutvuge täiendavate funktsioonidega täpsemates seadetes.</value>
+    <value>Haldage siin kõiki oma FastFlags’e.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Lohistage siia, et importida JSON- või TXT-faili</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON-i eksport</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags eksporditi edukalt.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Palun laadige üles JSON- või TXT-failid.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} on eemaldatud, kuna need ei olnud lubatud nimekirjas.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Teie sisestatud JSON ei tundu olevat kehtiv. Palun kontrollige seda veel kord ja proovige uuesti.
@@ -1173,8 +1324,17 @@ Lisateave:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Kustutada pole ühtegi lipu.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Vau, siin on nii tühi! Mis sa arvad, kas lisaksime FastFlagi?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Kehtetuid FastFlags-märgiseid ei leitud.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' ei ole Robloxi lubatud nimekirjas ja ei toimi.\n\nKas soovid selle kohe eemaldada?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Lipuprofiilid</value>
@@ -1184,6 +1344,12 @@ Lisateave:
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Näita eelseadistatud lipukesi</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Lipud kokku</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Pärast mõnede Roblox FastFlags’i valge nimekirja lisamist on need ainsad, mida veel kasutada saab.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Salvesta praegused lipud</value>
@@ -1285,8 +1451,14 @@ Lisateave:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Määra lugemisõigustega</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Vektor Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Üldised seaded</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Siin saad hallata kõiki oma üldseadeid.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Tegevuste jälgimine</value>
@@ -1453,95 +1625,236 @@ Lisateave:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Käsitsi sisselogimine</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Lisa peatus</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Muudatused on edukalt rakendatud ({0} faili).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Kohalda kursoritele</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Lisa emote-rattale</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Kandideeri Shiftlocki</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Mida suurem number, seda parem kvaliteet, kuid see võtab rohkem aega; maksimaalne väärtus on 64, vaikimisi on 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Modide loomine tühistati.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Koristan...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Mooduli nimi (valikuline)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Kohandatud spinner (valikuline)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Loo modifikatsioone lihtsalt ühe klõpsuga.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Ära värvi mängu ikooni</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Laaditakse vajalikke ressursse...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Failide väljavõtmine...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Eelvaatefonte ei õnnestunud laadida.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Ikoonide komplekt:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Lisa minu modidesse</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Pakend...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Kas olete valmis modifikatsiooni looma?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Kirjatüüpide värvi muutmine...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Piltide ümbervärvimine...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox’i ikoon (valikuline)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Salvestatud {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Alustan modide genereerimist...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stiili eelvaade</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Vastupidine generaator</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Sellise nimega mod on juba olemas. Vali teine nimi.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Kausta nimi sisaldab keelatud märke.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Lisa uus mod</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Mod nimega „{0}“ on juba olemas.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Kas soovid '{0}' lõplikult kustutada?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox-i mängukliendi failide modifikatsioonide haldamine ja rakendamine.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Lohistage siia ZIP-faili või kausta importimiseks</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Kausta „{0}” ei ole enam olemas.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Kausta importimine</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>ZIP-faili importimine</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod '{0}' imporditi edukalt.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Modifikatsioone saab importida, lohistades neid või kasutades importimisfunktsiooni; madalama prioriteediga modifikatsioonid rakendatakse viimasena, mis aitab vältida konflikte teiste modifikatsioonidega.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Kehtetu kausta nimi.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Valitud allikas ei sisalda kehtivat mod-struktuuri.\nSee peab sisaldama vähemalt ühte järgmistest kaustadest: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Mooduleid pole paigaldatud.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Valitud modifikatsiooni tegevus</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Minu modifikatsioonid</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Toetamata failitüüp või asukoht: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Ametlikud sisseehitatud modifikatsioonid.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Kõik, mida vajad kursorite haldamiseks.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Kohandatud kursori funktsioonid</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Määrake rakenduse parameetrid, nagu DPI-skaalimise käitumine ja [täisekraani optimeerimised]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Ühilduvusseadete haldamine</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Vali kursor...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Kasuta Robloxis oma hiirekursoreid.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Kohandatud kursori eemaldamine</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Kohandatud kursor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Hoidke valmis mitu kursorikomplekti, mida saab kohe kasutusele võtta.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Kohandatud kursorikomplekt</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Vali heli...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Asendab surmaheli sinu enda helifailiga.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Kohandatud surmaheli eemaldamine</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Kohandatud surmaheli</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Vali kirjatüüp...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Määrab Robloxis valitud kohandatud kirjatüübi.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Kohaldatud kirjatüübi eemaldamine</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Kohandatud mängufont</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Vali ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Kasuta Robloxis oma Shiftlocki.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Kohandatud Shiftlocki eemaldamine</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Kohandatud Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Vali, millist tüüpi emojisid Roblox peaks kasutama.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Emoji-modifikatsiooni ei ole hetkel võimalik rakendada.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Eelistatud emojide tüüp</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Vali, kas soovid kasutada mitut Roblox-kursorit.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Hiirekursor</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Tooge tagasi vana avatari redigeerija taust, mida kasutati Roblox’i rakenduses enne 2020. aastat.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Kasuta vana avatari redaktori taustapilti</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Eelseadistatud modifikatsioonid</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Naase oma viimaste mängude juurde.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Kiirmäng</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Sisselogimine tühistati.</value>
@@ -1582,6 +1895,30 @@ Lisateave:
   <data name="Menu.Save" xml:space="preserve">
     <value>Salvesta</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automaatrežiim: otsin sulle sobivaimat piirkonda...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Mänguga ühinemine ebaõnnestus: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Ühendan parima serveriga...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Mänguga liitumine</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Liitun {0} kiirmängu kaudu.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Sobivat serverit ei leitud.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Otsi midagi üles ja see võib siin ilmuda...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Server leitud</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Muudatused jõustuvad järgmisel korral, kui käivitad Robloxi.</value>
   </data>
@@ -1614,6 +1951,9 @@ Lisateave:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Üldine</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Kainuskeskkond</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testrežiim</value>

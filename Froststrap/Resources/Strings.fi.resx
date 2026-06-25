@@ -246,20 +246,35 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Lisää yksi</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Kaikki</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Kulma</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Yhtyeet</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Selaa</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Selain</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Peruuta</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Tyhjennä</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sulje</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Värivalitsin</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Vahvista</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopioi</value>
@@ -291,8 +306,17 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Vammaiset</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Lataa</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Muokkaa</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Toimittaja</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Virhe</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Vienti</value>
@@ -301,8 +325,14 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Nopea lippueditori</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Tiedostot</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Peli</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Luo</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Glyfien esikatselu</value>
@@ -328,6 +358,9 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Ladataan, odota hetki...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Käyttöopas</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Sekalaiset asiat</value>
   </data>
@@ -340,8 +373,17 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Ei</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Tuloksia ei löytynyt</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Ei saatavilla</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Ei löytynyt</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Avaa kansio</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Avaa lokitiedosto</value>
@@ -358,11 +400,17 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Esiasetukset</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioriteetti</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiilit</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Laatu</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Poista</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Nimeä uudelleen</value>
@@ -370,8 +418,17 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox-sovellusta ei ole vielä asennettu. Käynnistä Roblox Froststrapin avulla ainakin kerran ennen kuin yrität käyttää tätä vaihtoehtoa.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Tallenna ja asenna</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Tallenna ja käynnistä</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Haku</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Valitse</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Palvelimen tunnus</value>
@@ -402,6 +459,9 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Yhteensä</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Tuntematon</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Päivitys</value>
@@ -919,6 +979,34 @@ Haluatko varmasti jatkaa?</value>
     <value>Versio {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Tili ”{0}” on poistettu, koska sen eväste on virheellinen tai vanhentunut.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Lisää tili</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Käyttäjätili '@{0}' on jo kirjautuneena.\nSiirryttiin kyseiselle tilille.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Tilejä ei ole lisätty
+Aloita napsauttamalla yläpuolella olevaa ”Lisää tili” -painiketta</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Paikallinen eväste</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Et ole kirjautunut sisään</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Roblox-pelissä</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>Roblox Studiossa</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Verkossa (Roblox-verkkosivusto)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Huomaa, että kaikki tekemäsi muutokset eivät tule voimaan välittömästi, ennen kuin olet sulkenut kaikki tällä hetkellä auki olevat Roblox-istunnot.</value>
   </data>
@@ -1117,6 +1205,36 @@ Haluatko varmasti jatkaa?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Tietoa mallista</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatar-editori</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Värimuunnokset</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kohdistin</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Tutustu käyttäjien luomiin modeihin.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Muut modit</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' on asennettu onnistuneesti!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Korvataanko olemassa oleva mod '{0}'?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Hae modifikaatioita...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Teema ”{0}” on asennettu ja otettu käyttöön!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Mukautetut teemat</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Yhteisön modit</value>
   </data>
@@ -1131,6 +1249,21 @@ Haluatko varmasti jatkaa?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Liity Best Region (Auto) -palveluun</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Roblox-evästettä ei voitu ladata.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Evästetiedoston lataaminen epäonnistui.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Eväste löytyi, mutta se on virheellinen tai vanhentunut.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Evästeiden käyttö on poistettu käytöstä asetuksissa.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Roblox-evästetiedostoa ei löydy.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Tämä kanava on vanhentunut, eikä sitä todennäköisesti enää päivitetä. Käytä toista kanavaa.</value>
@@ -1147,6 +1280,9 @@ Haluatko varmasti jatkaa?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Puhdas luettelo</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Haluatko varmasti poistaa kaikki liput?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Joillakin lippuilla, joita yrität tuoda, on jo määritettyjä arvoja. Haluatko korvata niiden nykyiset arvot tuonnissa määritetyillä arvoilla?
 
@@ -1158,10 +1294,22 @@ Ristiriitaisia lippumääritelmiä on {0} kappaletta:
     <value>Poista valitut</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Hallitse FastFlags-asetuksiasi täällä. Tutustu muihin ominaisuuksiin kohdassa ”Lisäasetukset”.</value>
+    <value>Hallinnoi kaikkia FastFlags-merkkejäsi täällä.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Vedä ja pudota tuodaksesi JSON- tai TXT-tiedoston</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Vie JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags on viety onnistuneesti.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Voit ladata JSON- tai TXT-tiedostoja.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} on poistettu, koska ne eivät olleet sallittujen luettelossa.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Syöttämäsi JSON-tiedosto ei näytä olevan kelvollinen. Tarkista se vielä kerran ja yritä uudelleen.
@@ -1170,8 +1318,17 @@ Lisätietoja:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Poistettavia lippuja ei ole.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Vau, täällä on tosi tyhjää! Miten olisi, jos lisättäisiin FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Virheellisiä FastFlags-merkintöjä ei havaittu.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' ei ole Robloxin sallittujen luettelossa, joten se ei toimi.\n\nHaluatko poistaa sen nyt?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Lippuprofiilit</value>
@@ -1184,6 +1341,12 @@ Lisätietoja:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag-editori</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Lippujen kokonaismäärä</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Joidenkin Roblox FastFlags -komentojen sallimisen jälkeen nämä ovat ainoat, joita voi vielä käyttää.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Tallenna nykyiset liput</value>
@@ -1285,8 +1448,14 @@ Lisätietoja:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Aseta vain luku -tilaan</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y-vektori</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Yleiset asetukset</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Hallitse kaikkia yleisiä asetuksiasi täältä.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Aktiviteetin seuranta</value>
@@ -1453,95 +1622,236 @@ Lisätietoja:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Manuaalinen kirjautuminen</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Lisää pysäkki</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Muutokset on sovellettu onnistuneesti ({0} tiedostoa).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Käytä kohdistimiin</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Lisää emote-pyörään</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Hae Shiftlockiin</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Mitä suurempi luku, sitä parempi laatu, mutta käsittely kestää kauemmin. Suurin arvo on 64, oletusarvo on 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Modin luominen peruutettu.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Siivoan...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Modin nimi (valinnainen)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Mukautettu spinner (valinnainen)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Luo modit helposti yhdellä napsautuksella.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Älä väritä -kuvake</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Lataa tarvittavat resurssit...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Tiedostoja puretaan...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Esikatselufonttien lataaminen epäonnistui.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Kuvakkeet:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Lisää Omiin modauksiini</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Pakkaus...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Oletko valmis luomaan modin?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Fonttien värien muuttaminen...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Kuvien värien muuttaminen...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox-kuvake (valinnainen)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Tallennettu kansioon {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Modien luominen käynnistyy...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Tyylin esikatselu</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Mod-generaattori</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Tällä nimellä on jo olemassa mod. Valitse toinen nimi.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Kansion nimessä on virheellisiä merkkejä.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Lisää uusi mod</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Mod nimeltä '{0}' on jo olemassa.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Haluatko poistaa '{0}' lopullisesti?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Hallitse ja asenna tiedostomuokkauksia Roblox-peliohjelmaan.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Vedä ja pudota tuodaksesi ZIP-tiedoston tai kansion</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Kansiota ”{0}” ei enää ole olemassa.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Tuo kansio</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Tuo ZIP-tiedosto</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod '{0}' on tuotu onnistuneesti.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Tuo modit vetämällä modia tai tuomalla ne; modit, joiden prioriteetti on alhaisempi, otetaan käyttöön viimeisenä, jolloin ne voittavat ristiriidat muiden modien kanssa.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Kansion nimi on virheellinen.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Valittu lähde ei sisällä kelvollista mod-rakennetta.\nSen on sisällettävä vähintään yksi seuraavista kansioista: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Modifikaatioita ei ole asennettu.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Valittu moduulin toiminto</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Omat modit</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Tiedostotyyppiä tai polkua ei tueta: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Viralliset sisäänrakennetut modit.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Kaikki, mitä tarvitset osoittimien hallintaan.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Mukautettujen osoittimien ominaisuudet</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Määritä sovelluksen parametrit, kuten DPI-skaalauskäyttäytyminen ja [koko näytön optimoinnit]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Yhteensopivuusasetusten hallinta</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Valitse kohdistin...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Käytä omia hiiren osoittimia Robloxissa.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Poista mukautettu osoitin</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Mukautettu osoitin</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Pidä useita kursorisarjoja valmiina käyttöön.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Mukautettu osoitinsarja</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Valitse ääni...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Korvaa kuoleman äänen omalla äänitiedostollasi.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Poista mukautettu kuolemanääni</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Mukautettu kuolemanääni</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Valitse fontti...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Asettaa valitun mukautetun fontin Robloxissa.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Poista käytetty fontti</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Mukautettu pelifontti</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Valitse ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Käytä omaa Shiftlock-sovellustasi Robloxissa.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Poista mukautettu Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Mukautettu Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Valitse, minkä tyyppisiä emojeja Robloxin tulisi käyttää.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Emoji-modia ei voida tällä hetkellä ottaa käyttöön.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Suositeltava emojityyppi</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Voit valita, haluatko käyttää useita Roblox-kohdistimia.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Hiiren osoitin</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Palauttakaa vanha avatar-editorin tausta, jota käytettiin Roblox-sovelluksessa ennen vuotta 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Käytä vanhan avatar-editorin taustakuvaa</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Esiasetetut modit</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Palaa takaisin äskettäin pelaamiisi peleihin.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Pikapeli</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Kirjautuminen peruutettu.</value>
@@ -1582,6 +1892,30 @@ Lisätietoja:
   <data name="Menu.Save" xml:space="preserve">
     <value>Tallenna</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automaattitila: Etsitään sinulle parasta aluetta...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Peliin liittymistä ei onnistunut: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Yhdistytään parhaaseen palvelimeen...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Liittyminen peliin</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Liityn {0}:aan pikapelitoiminnolla.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Sopivaa palvelinta ei löytynyt.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Hae jotain, niin se saattaa näkyä täällä...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Palvelin löytyi</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Muutokset astuvat voimaan, kun seuraavan kerran käynnistät Robloxin.</value>
   </data>
@@ -1614,6 +1948,9 @@ Lisätietoja:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Yleistä</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Raitisympäristöt</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testitila</value>

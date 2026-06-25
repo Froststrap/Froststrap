@@ -163,7 +163,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
     <value>Activează funcția BetterMatchmaking</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțează reinstalarea Roblox din setări.</value>
+    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțați reinstalarea Roblox din setări.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Nu s-au putut extrage toate fișierele</value>
@@ -246,8 +246,14 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Adaugă un singur element</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Toate</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Unghi</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Trupe</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Răsfoiește</value>
@@ -255,11 +261,17 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Anulează</value>
   </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Șterge</value>
+  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Închide</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Selector de culori</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Confirmă</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Copiere</value>
@@ -273,7 +285,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Custom" xml:space="preserve">
     <value>Personalizat</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>Link direct</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
@@ -297,14 +309,29 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Funcționalități avansate pe Discord</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Descărcare</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Editare</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redactor</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Eroare</value>
   </data>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Editor rapid de steaguri</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Fișiere</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Joc</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Generare</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Previzualizare glifă</value>
@@ -336,8 +363,20 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nu</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Nu s-au găsit rezultate</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Nu este disponibil</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Nu s-a găsit</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Decalaj</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Deschide dosarul</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Deschide fișierul jurnal</value>
@@ -354,11 +393,17 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Setări prestabilite</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioritate</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiluri</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Calitate</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Eliminare</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Redenumire</value>
@@ -366,8 +411,17 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox nu a fost încă instalat. Te rugăm să pornești Roblox folosind Froststrap cel puțin o dată înainte de a încerca să utilizezi această opțiune.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Salvați și instalați</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Salvare și lansare</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Căutare</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Selectează</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>ID-ul serverului</value>
@@ -385,7 +439,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
     <value>Sobru</value>
   </data>
   <data name="Common.Studio" xml:space="preserve">
-    <value>Birou</value>
+    <value>Studiu</value>
   </data>
   <data name="Common.SystemDefault" xml:space="preserve">
     <value>Setarea implicită a sistemului</value>
@@ -395,6 +449,9 @@ Doriți să treceți la canalul implicit ({1})?</value>
   </data>
   <data name="Common.Timestamp" xml:space="preserve">
     <value>Marcaj temporal</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Necunoscut</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Actualizare</value>
@@ -554,7 +611,7 @@ Timp de funcționare: {1}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
-    <value>{0} nu poate avea un copil de tip {1}</value>
+    <value>{0} nu poate avea un element de tip {1}</value>
     <comment>{0} and {1} are element names (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
@@ -915,6 +972,34 @@ Sunteți sigur că doriți să continuați?</value>
     <value>Versiunea {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Contul „{0}” a fost eliminat deoarece cookie-ul său este nevalid sau a expirat.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Adăugare cont</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Contul „@{0}” este deja conectat.\nS-a trecut la acesta.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Nu s-au adăugat conturi
+Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Cookie local</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Nu sunteți autentificat</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Într-un joc Roblox</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>În Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (site-ul Roblox)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Vă rugăm să rețineți că nu toate modificările efectuate vor fi aplicate imediat, până când nu închideți toate sesiunile Roblox deschise în prezent.</value>
   </data>
@@ -1110,6 +1195,33 @@ Sunteți sigur că doriți să continuați?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Informații despre mod</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Editor de avatare</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Modificări de culoare</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Descoperă modurile create de utilizatori.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Modificări diverse</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Modul „{0}” a fost instalat cu succes!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Doriți să suprascrieți modulul existent „{0}”?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Căutare moduri...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Tema „{0}” a fost instalată și aplicată!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Teme personalizate</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Moduri comunitare</value>
   </data>
@@ -1123,7 +1235,22 @@ Sunteți sigur că doriți să continuați?</value>
     <value>Nu sunt disponibile date privind activitatea.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>Alătură-te Best Region (Auto)</value>
+    <value>Alătură-te regiunii Best (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Nu s-a putut încărca cookie-ul Roblox.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Nu s-a putut încărca fișierul cookie.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>S-a găsit un cookie, dar acesta este nevalid sau a expirat.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Accesul la cookie-uri este dezactivat în setări.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Fișierul cookie Roblox nu a fost găsit.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Acest canal este învechit și, probabil, nu mai este actualizat. Vă rugăm să utilizați un alt canal.</value>
@@ -1140,6 +1267,9 @@ Sunteți sigur că doriți să continuați?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Lista curată</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Ești sigur că vrei să ștergi toate marcajele?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Unele dintre opțiunile pe care încercați să le importați au deja valori setate. Doriți să suprascrieți valorile lor actuale cu cele definite în import?
 
@@ -1151,7 +1281,19 @@ Există {0} definiții de opțiuni care intră în conflict:
     <value>Șterge elementele selectate</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Gestionează-ți FastFlags-urile aici. Descoperă mai multe funcții în secțiunea „Setări avansate”.</value>
+    <value>Gestionează-ți toate FastFlags-urile de aici.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Trageți fișierul pentru a importa JSON / TXT</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags a fost exportat cu succes.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Vă rugăm să încărcați fișiere JSON sau TXT.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} au fost eliminate deoarece nu se aflau pe lista de permisiuni.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Se pare că fișierul JSON pe care l-ați introdus nu este valid. Vă rugăm să îl verificați din nou și să încercați încă o dată.
@@ -1160,8 +1302,17 @@ Mai multe informații:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Nu există marcaje de șters.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Uau, e atât de gol! Ce-ar fi să adăugăm un FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Nu s-au detectat FastFlags nevalide.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>„{0}” nu se află pe lista de permisiuni Roblox și nu va funcționa.\n\nVrei să îl elimini acum?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Profiluri de steaguri</value>
@@ -1174,6 +1325,12 @@ Mai multe informații:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editorul FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Număr total de steaguri</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>După includerea pe lista albă a unor FastFlags din Roblox, acestea sunt singurele care mai sunt disponibile pentru utilizare.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Salvează setările curente</value>
@@ -1213,7 +1370,7 @@ Mai multe informații:
     <value>Detalii despre plasă</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
-    <value>Nivelurile mai ridicate ale MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
+    <value>Nivelurile mai ridicate de MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Calitatea anti-aliasingului (MSAA)</value>
@@ -1275,8 +1432,14 @@ Mai multe informații:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Setați ca „Doar citire”</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Vectorul Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Setări generale</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Aici poți gestiona toate setările generale.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Monitorizarea activității</value>
@@ -1443,95 +1606,233 @@ Mai multe informații:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Autentificare manuală</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Adăugare oprire</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Modificările au fost aplicate cu succes ({0} fișiere).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Aplică la cursoare</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Adaugă la roata de emote-uri</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Aplică la Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Cu cât valoarea este mai mare, cu atât calitatea este mai bună, dar durează mai mult; valoarea maximă este 64, iar cea implicită este 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Generarea modului a fost anulată.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Se face curățenie...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Numele modulului (opțional)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Spinner personalizat (opțional)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Creați moduri cu ușurință, cu un singur clic.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Pictogramă „Fără joc de culori”</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Se descarcă resursele necesare...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Se extrag fișierele...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Nu s-au putut încărca fonturile de previzualizare.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Set de pictograme:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Adaugă la „Modurile mele”</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Ambalare...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Ești gata să creezi un mod?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Se schimbă culoarea fonturilor...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Se recolorează imaginile...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Pictograma Roblox (opțional)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Salvat în {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Se începe generarea modului...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Previzualizare stil</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Generator de moduri</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Există deja un mod cu acest nume. Alegeți un alt nume.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Numele folderului conține caractere nevalide.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Adăugare mod nou</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Există deja un mod numit „{0}”.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Doriți să ștergeți definitiv „{0}”?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Gestionați și aplicați modificările de fișiere la clientul de joc Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Trageți pentru a importa fișiere ZIP / dosare</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Dosarul pentru „{0}” nu mai există.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Import folder</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Modulul „{0}” a fost importat cu succes.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Importați modurile trăgând fișierul modului sau prin import; modurile cu prioritate mai mică sunt aplicate ultimele, ceea ce le permite să prevaleze în cazul conflictelor cu alte moduri.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Nume de folder nevalid.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Sursa selectată nu conține o structură mod validă.\nAceasta trebuie să conțină cel puțin unul dintre următoarele foldere: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Nu sunt instalate moduri.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Acțiune selectată în modul Mod</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Modurile mele</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Tip de fișier sau cale neacceptată: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Moduri oficiale integrate.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Tot ce ai nevoie pentru a-ți gestiona cursorii.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Funcții personalizate ale cursorului</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Configurați parametrii aplicației, cum ar fi comportamentul de scalare DPI și [optimizările pentru ecran complet]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Gestionarea setărilor de compatibilitate</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Alegeți cursorul...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Folosește-ți propriile cursoare de mouse în Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Eliminare cursor personalizat</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Cursor personalizat</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Asigurați-vă că aveți la îndemână mai multe seturi de cursori gata de utilizare.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Set de cursoare personalizate</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Alege sunetul...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Înlocuiește sunetul morții cu propriul fișier audio.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Elimină sunetul personalizat de moarte</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Sunet personalizat de deces</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Alegeți fontul...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Setează fontul personalizat ales în Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Eliminare font aplicat</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Font personalizat pentru joc</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Alegeți ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Folosește-ți propriul Shiftlock în Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Eliminarea funcției „Custom Shiftlock”</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock personalizat</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Alege ce tip de emoji ar trebui să folosească Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Modulul emoji nu poate fi aplicat în acest moment.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Tipul preferat de emoji</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Alege dintre mai multe cursori Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Cursorul mouse-ului</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Reintroduceți vechiul fundal al editorului de avatare folosit în aplicația Roblox înainte de 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Utilizează fundalul vechi al editorului de avatare</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Modificări prestabilite</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Revino la jocurile pe care le-ai jucat recent.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Joc rapid</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Autentificarea a fost anulată.</value>
@@ -1572,6 +1873,30 @@ Mai multe informații:
   <data name="Menu.Save" xml:space="preserve">
     <value>Salvare</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Mod automat: Se caută cea mai potrivită regiune pentru tine...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Nu s-a putut intra în joc: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Se conectează la cel mai bun server...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Alăturarea la joc</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Mă alătur lui {0} prin modul „Quick Play”.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Nu s-a găsit un server adecvat.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Caută ceva și s-ar putea să apară aici...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Server găsit</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Modificările vor intra în vigoare la următoarea lansare a aplicației Roblox.</value>
   </data>
@@ -1604,6 +1929,9 @@ Mai multe informații:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Generalități</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Setări de moderație</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Modul de testare</value>

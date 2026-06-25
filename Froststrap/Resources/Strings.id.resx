@@ -246,8 +246,14 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Tambahkan satu</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Semua</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Sudut</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Grup musik</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Jelajahi</value>
@@ -255,11 +261,17 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Batal</value>
   </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Jelas</value>
+  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Tutup</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Pemilih Warna</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Konfirmasi</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Salin</value>
@@ -273,7 +285,7 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Custom" xml:space="preserve">
     <value>Kustom</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>Tautan langsung</value>
   </data>
   <data name="Common.Delete" xml:space="preserve">
@@ -294,8 +306,14 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Fitur Rich Presence di Discord</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Unduh</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Sunting</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Kesalahan</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Ekspor</value>
@@ -304,14 +322,20 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Editor Bendera Cepat</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Berkas</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Permainan</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Buat</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Pratinjau Glyph</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Kode Hex</value>
+    <value>Kode Hexadesimal</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Impor</value>
@@ -331,6 +355,9 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Sedang dimuat, mohon tunggu...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Panduan</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Lain-lain</value>
   </data>
@@ -343,8 +370,17 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Tidak</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Tidak Ditemukan Hasil</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Tidak tersedia</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Tidak Ditemukan</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Buka Folder</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Buka berkas log</value>
@@ -361,11 +397,17 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Pengaturan Default</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioritas</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profil</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kualitas</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Hapus</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Ganti Nama</value>
@@ -373,8 +415,17 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox belum terpasang. Silakan jalankan Roblox menggunakan Froststrap setidaknya sekali sebelum mencoba menggunakan opsi ini.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Simpan dan Pasang</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Simpan dan Jalankan</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Cari</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Pilih</value>
   </data>
   <data name="Common.Settings" xml:space="preserve">
     <value>Pengaturan</value>
@@ -399,6 +450,9 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Jumlah</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Tidak diketahui</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Pembaruan</value>
@@ -913,6 +967,34 @@ Apakah Anda yakin ingin melanjutkan?</value>
     <value>Versi {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Akun '{0}' telah dihapus karena cookie-nya tidak valid atau telah kedaluwarsa.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Tambahkan Akun</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Akun '@{0}' sudah masuk.\nSudah beralih ke akun tersebut.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Belum ada akun yang ditambahkan
+Klik 'Tambahkan Akun' di atas untuk memulai</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Cookie Lokal</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Belum Masuk</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Dalam sebuah permainan Roblox</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>Di Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (situs web Roblox)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Harap diperhatikan bahwa tidak semua perubahan yang Anda lakukan akan langsung berlaku sampai Anda menutup semua sesi Roblox yang sedang terbuka.</value>
   </data>
@@ -1114,6 +1196,36 @@ Apakah Anda yakin ingin melanjutkan?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Informasi Model</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Editor Avatar</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Modifikasi Warna</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Kursor</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Jelajahi mod yang dibuat oleh pengguna.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Modifikasi Lain-lain</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' telah berhasil dipasang!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Apakah ingin menimpa mod '{0}' yang sudah ada?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Cari Mod...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Tema '{0}' telah diinstal dan diterapkan!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Tema Kustom</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Mod Komunitas</value>
   </data>
@@ -1127,7 +1239,22 @@ Apakah Anda yakin ingin melanjutkan?</value>
     <value>Tidak ada data aktivitas yang tersedia.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>Bergabunglah dengan Best Region (Otomotif)</value>
+    <value>Bergabunglah dengan Best Region (Otomatis)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Tidak dapat memuat cookie Roblox.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Gagal memuat berkas cookie.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Cookie ditemukan, tetapi tidak valid atau sudah kedaluwarsa.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Akses cookie dinonaktifkan di pengaturan.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Berkas cookie Roblox tidak ditemukan.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Saluran ini sudah ketinggalan zaman, dan kemungkinan besar tidak lagi diperbarui. Silakan gunakan saluran lain.</value>
@@ -1144,6 +1271,9 @@ Apakah Anda yakin ingin melanjutkan?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Daftar Bersih</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Apakah Anda yakin ingin menghapus semua bendera?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Beberapa bendera yang Anda coba impor sudah memiliki nilai yang ditetapkan. Apakah Anda ingin mengganti nilai saat ini dengan nilai yang ditentukan dalam proses impor?
 
@@ -1155,10 +1285,22 @@ Terdapat {0} definisi bendera yang bertentangan:
     <value>Hapus yang dipilih</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Kelola FastFlags Anda di sini. Lihat fitur-fitur lainnya di Pengaturan Lanjutan.</value>
+    <value>Kelola semua FastFlags Anda di sini.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Seret dan lepas untuk mengimpor berkas JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Ekspor JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags telah diekspor dengan sukses.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Silakan unggah berkas JSON atau TXT.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} telah dihapus karena tidak termasuk dalam daftar yang diizinkan.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>JSON yang Anda masukkan tampaknya tidak valid. Silakan periksa kembali dan coba lagi.
@@ -1167,8 +1309,17 @@ Informasi lebih lanjut:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Tidak ada bendera yang perlu dihapus.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Wah, tempat ini kosong sekali! Bagaimana kalau ditambahkan FastFlag?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Tidak terdeteksi FastFlags yang tidak valid.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' tidak ada dalam daftar putih Roblox dan tidak akan berfungsi.\n\nMau menghapusnya sekarang?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Profil Bendera</value>
@@ -1181,6 +1332,12 @@ Informasi lebih lanjut:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Editor FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Jumlah Bendera</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Setelah beberapa Roblox FastFlags dimasukkan ke dalam daftar putih, berikut ini adalah yang masih tersedia untuk digunakan.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Simpan pengaturan bendera saat ini</value>
@@ -1282,8 +1439,17 @@ Informasi lebih lanjut:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Tetapkan sebagai Hanya Baca</value>
   </data>
+  <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
+    <value>Vektor X</value>
+  </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Vektor Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Pengaturan Global</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Kelola semua pengaturan global Anda di sini.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Pelacakan Aktivitas</value>
@@ -1444,95 +1610,236 @@ Informasi lebih lanjut:
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>Tempelkan cookie .ROBLOSECURITY Anda</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Tambahkan Hentikan</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Modifikasi telah berhasil diterapkan ({0} berkas).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Terapkan ke Kursor</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Tambahkan ke Roda Emote</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Daftar ke Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Semakin tinggi angkanya, semakin tinggi kualitasnya, tetapi prosesnya memakan waktu lebih lama. Nilai maksimumnya adalah 64, sedangkan nilai defaultnya adalah 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Pembuatan mod dibatalkan.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Sedang membersihkan...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Nama Mod (Opsional)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Spinner Kustom (Opsional)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Buat mod dengan mudah hanya dengan satu klik.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Ikon "Jangan Main Warna"</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Sedang mengunduh aset yang diperlukan...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Sedang mengekstrak berkas...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Gagal memuat pratinjau font.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Kumpulan Ikon:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Tambahkan ke Mod Saya</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Kemasan...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Siap Membuat Mod</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Mewarnai Ulang Font...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Mewarnai Ulang Gambar...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Ikon Roblox (Opsional)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Tersimpan di {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Memulai pembuatan mod...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Pratinjau Gaya</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Generator Mod</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Mod dengan nama ini sudah ada. Silakan pilih nama lain.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Nama folder mengandung karakter yang tidak sah.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Tambahkan Mod Baru</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Mod bernama '{0}' sudah ada.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Apakah Anda ingin menghapus '{0}' secara permanen?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Mengelola dan menerapkan modifikasi berkas pada Klien Game Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Seret dan lepas untuk mengimpor berkas ZIP / folder</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Folder untuk '{0}' tidak ada lagi.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Impor Folder</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Impor ZIP</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod '{0}' telah berhasil diimpor.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Impor mod dengan menyeret mod tersebut atau melalui fitur impor; mod dengan prioritas lebih rendah akan diterapkan terakhir sehingga dapat mengatasi konflik dengan mod lain.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Nama Folder Tidak Sah.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Sumber yang dipilih tidak memiliki struktur mod yang valid.\nSumber tersebut harus berisi setidaknya salah satu dari folder berikut: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Tidak ada mod yang terpasang.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Tindakan Mod yang Dipilih</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Modifikasi Saya</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Jenis file atau jalur tidak didukung: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Mod bawaan resmi.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Segala yang Anda butuhkan untuk mengelola kursor Anda.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Fitur Kursor Kustom</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Konfigurasikan parameter aplikasi seperti perilaku penskalaan DPI dan [optimalisasi layar penuh]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Kelola Pengaturan Kompatibilitas</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Pilih Kursor...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Gunakan kursor mouse milikmu sendiri di Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Hapus Kursor Kustom</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Kursor Kustom</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Siapkan beberapa set kursor yang siap digunakan.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Set Kursor Kustom</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Pilih Suara...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Mengganti suara kematian dengan audio pilihanmu sendiri.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Hapus Suara Kematian Kustom</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Suara Kematian Khusus</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Pilih Jenis Huruf...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Mengatur font khusus yang dipilih di Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Hapus Font yang Telah Diterapkan</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Font Game Kustom</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Pilih ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Gunakan Shiftlock milikmu sendiri di Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Hapus Pengunci Perpindahan Gigi Kustom</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock Khusus</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Pilih jenis emoji apa yang sebaiknya digunakan oleh Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Mod emoji tidak dapat diterapkan saat ini.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Jenis Emoji yang Diinginkan</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Pilih salah satu dari beberapa kursor Roblox yang tersedia.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Kursor Mouse</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Kembalikan latar belakang editor avatar lama yang digunakan di aplikasi Roblox sebelum tahun 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Gunakan Latar Belakang Editor Avatar Lama</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Modifikasi Bawaan</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Kembali ke permainan yang baru saja kamu mainkan.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Permainan Cepat</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Masuk Dibatalkan.</value>
@@ -1573,6 +1880,30 @@ Informasi lebih lanjut:
   <data name="Menu.Save" xml:space="preserve">
     <value>Simpan</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Mode Otomatis: Mencari wilayah terbaik untuk Anda...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Gagal bergabung dengan permainan: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Sedang terhubung ke server terbaik...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Bergabung dalam Game</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Bergabung dengan {0} melalui mode permainan cepat.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Tidak dapat menemukan server yang sesuai.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Coba cari sesuatu, dan mungkin hasilnya akan muncul di sini...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Server Ditemukan</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Perubahan tersebut akan berlaku saat Anda membuka Roblox berikutnya.</value>
   </data>
@@ -1605,6 +1936,9 @@ Informasi lebih lanjut:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Umum</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Pengaturan Tanpa Alkohol</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Mode Uji Coba</value>

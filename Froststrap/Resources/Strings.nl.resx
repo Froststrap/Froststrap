@@ -246,6 +246,9 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Enkel toevoegen</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Alles</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Hoek</value>
   </data>
@@ -255,11 +258,17 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Annuleren</value>
   </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Wissen</value>
+  </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Sluiten</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Kleurkiezer</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Bevestigen</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopiëren</value>
@@ -291,8 +300,17 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.Disabled" xml:space="preserve">
     <value>Gehandicapt</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Downloaden</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Bewerken</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Redacteur</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Fout</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Exporteren</value>
@@ -301,8 +319,14 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Snelle vlaggen-editor</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Bestanden</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Spel</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Genereren</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Voorbeeld van het teken</value>
@@ -328,6 +352,9 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Bezig met laden, even geduld a.u.b...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Handleiding</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Diversen</value>
   </data>
@@ -340,8 +367,17 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Nee</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Geen resultaten gevonden</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Niet beschikbaar</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Niet gevonden</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Map openen</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Logbestand openen</value>
@@ -358,11 +394,17 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Voorinstellingen</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Prioriteit</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profielen</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kwaliteit</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Verwijderen</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Naam wijzigen</value>
@@ -370,8 +412,17 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox is nog niet geïnstalleerd. Start Roblox alstublieft minstens één keer via Froststrap voordat u deze optie probeert te gebruiken.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Opslaan en installeren</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Opslaan en starten</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Zoeken</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Selecteer</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Server-ID</value>
@@ -399,6 +450,9 @@ Wil je overschakelen naar het standaardkanaal ({1})?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Totaal</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Onbekend</value>
   </data>
   <data name="Common.Value" xml:space="preserve">
     <value>Waarde</value>
@@ -897,6 +951,31 @@ Weet je zeker dat je door wilt gaan?</value>
     <value>Versie {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Het account '{0}' is verwijderd omdat de bijbehorende cookie ongeldig is of is verlopen.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Account toevoegen</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Het account '@{0}' is al aangemeld.\nEr is naar dit account overgeschakeld.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Er zijn geen accounts toegevoegd
+Klik hierboven op 'Account toevoegen' om aan de slag te gaan</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Lokale cookie</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Niet ingelogd</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>In een Roblox-spel</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Online (Roblox-website)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Houd er rekening mee dat niet al je wijzigingen onmiddellijk van kracht worden, totdat je alle momenteel geopende Roblox-instanties hebt gesloten.</value>
   </data>
@@ -1098,6 +1177,33 @@ Weet je zeker dat je door wilt gaan?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Informatie over mode</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatar-editor</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Kleuraanpassingen</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Ontdek door gebruikers gemaakte mods.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Diverse modificaties</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' is succesvol geïnstalleerd!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>De bestaande mod '{0}' overschrijven?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Zoek naar mods...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Het thema '{0}' is geïnstalleerd en toegepast!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Aangepaste thema’s</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Community-mods</value>
   </data>
@@ -1112,6 +1218,21 @@ Weet je zeker dat je door wilt gaan?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Word lid van Best Region (Auto)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>De Roblox-cookie kon niet worden geladen.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Het laden van het cookiebestand is mislukt.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Er is een cookie gevonden, maar deze is ongeldig of verlopen.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>De toegang tot cookies is uitgeschakeld in de instellingen.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Roblox-cookiebestand niet gevonden.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Dit kanaal is verouderd en wordt waarschijnlijk niet meer bijgewerkt. Gebruik alstublieft een ander kanaal.</value>
@@ -1128,6 +1249,9 @@ Weet je zeker dat je door wilt gaan?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Schone lijst</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Weet je zeker dat je alle vlaggen wilt verwijderen?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Voor sommige vlaggen die u probeert te importeren, zijn al waarden ingesteld. Wilt u de huidige waarden overschrijven met de waarden die in de import zijn gedefinieerd?
 
@@ -1139,10 +1263,22 @@ Er zijn {0} conflicterende vlagdefinities:
     <value>Geselecteerde items verwijderen</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Beheer hier je FastFlags. Bekijk meer functies in de geavanceerde instellingen.</value>
+    <value>Beheer hier al je FastFlags.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Sleep hierheen om JSON/TXT te importeren</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON exporteren</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags is succesvol geëxporteerd.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Gelieve JSON- of TXT-bestanden te uploaden.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} zijn verwijderd omdat ze niet op de lijst met toegestane items stonden.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>De JSON die je hebt ingevoerd, lijkt niet geldig te zijn. Controleer deze nogmaals en probeer het opnieuw.
@@ -1151,8 +1287,17 @@ Meer informatie:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Er zijn geen vlaggen om te verwijderen.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Wauw, dit is zo leeg! Zullen we er een FastFlag aan toevoegen?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Er zijn geen ongeldige FastFlags gedetecteerd.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' staat niet op de toelatingslijst van Roblox en zal niet werken.\n\nWil je het nu verwijderen?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Vlagprofielen</value>
@@ -1162,6 +1307,12 @@ Meer informatie:
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Vooraf ingestelde vlaggen weergeven</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Totaal aantal vlaggen</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Nu sommige Roblox FastFlags op de witte lijst zijn geplaatst, zijn dit de enige die nog beschikbaar zijn voor gebruik.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Huidige vlaggen opslaan</value>
@@ -1263,8 +1414,14 @@ Meer informatie:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Instellen als alleen-lezen</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y-vector</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Algemene instellingen</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Beheer hier al je algemene instellingen.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Activiteiten bijhouden</value>
@@ -1431,95 +1588,236 @@ Meer informatie:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Handmatige aanmelding</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Stop toevoegen</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Wijzigingen succesvol toegepast ({0} bestanden).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Toepassen op cursors</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Toevoegen aan emoticonwiel</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Solliciteer bij Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Hoe hoger het getal, hoe beter de kwaliteit, maar het duurt wel langer. Het maximum is 64, de standaardinstelling is 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Het genereren van mods is geannuleerd.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Bezig met opruimen...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Naam van de mod (optioneel)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Aangepaste spinner (optioneel)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Maak eenvoudig mods met één enkele klik.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Pictogram 'Geen kleurenspel'</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>De benodigde bestanden worden gedownload...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Bestanden worden opgehaald...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Het laden van de voorbeeldlettertypen is mislukt.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Pictogramset:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Toevoegen aan Mijn mods</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Verpakking...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Klaar om een mod te maken?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Lettertypen opnieuw inkleuren...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Afbeeldingen opnieuw inkleuren...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox-pictogram (optioneel)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Opgeslagen in {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Beginnen met het genereren van mods...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stijlvoorbeeld</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Tegen Generator</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Er bestaat al een mod met deze naam. Kies een andere naam.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>De mapnaam bevat ongeldige tekens.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Nieuwe mod toevoegen</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Er bestaat al een mod met de naam '{0}'.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>'{0}' definitief verwijderen?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Bestandsaanpassingen voor de Roblox-gameclient beheren en toepassen.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Sleep een ZIP-bestand of map hierheen om te importeren</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>De map voor '{0}' bestaat niet meer.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Map importeren</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>ZIP importeren</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod '{0}' is succesvol geïmporteerd.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Importeer mods door ze te slepen of te importeren; mods met een lagere prioriteit worden als laatste toegepast, waardoor conflicten met andere mods worden voorkomen.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Ongeldige mapnaam.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>De geselecteerde bron bevat geen geldige mod-structuur.\nDeze moet ten minste één van de volgende mappen bevatten: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Er zijn geen mods geïnstalleerd.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Geselecteerde mod-actie</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Mijn mods</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Niet-ondersteund bestandstype of pad: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Officiële ingebouwde mods.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Alles wat je nodig hebt om je cursors te beheren.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Aangepaste cursorfuncties</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Stel de applicatieparameters in, zoals het DPI-schaalgedrag en [optimalisaties voor volledig scherm]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Compatibiliteitsinstellingen beheren</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Kies cursor...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Gebruik je eigen muiscursors in Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Aangepaste cursor verwijderen</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Aangepaste cursor</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Zorg dat je meerdere cursorsets bij de hand hebt om te gebruiken.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Aangepaste cursorset</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Kies 'Geluid'...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Vervangt het geluid bij overlijden door je eigen audio.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Aangepast sterfgeluid verwijderen</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Aangepast overlijdensgeluid</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Lettertype kiezen...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Stelt het gekozen aangepaste lettertype in Roblox in.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Toegepast lettertype verwijderen</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Aangepast lettertype voor het spel</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Kies ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Gebruik je eigen Shiftlock in Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Aangepaste Shiftlock verwijderen</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock op maat</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Kies welk type emoji Roblox moet gebruiken.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>De emoji-mod kan op dit moment niet worden toegepast.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Voorkeurssoort emoji</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Kies of je meerdere Roblox-cursors wilt gebruiken.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Muisaanwijzer</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Breng de oude achtergrond van de avatar-editor terug die vóór 2020 in de Roblox-app werd gebruikt.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Achtergrond van de oude avatar-editor gebruiken</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Vooraf ingestelde aanpassingen</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Ga terug naar je recent gespeelde spellen.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Snel spelen</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Aanmelding geannuleerd.</value>
@@ -1560,6 +1858,30 @@ Meer informatie:
   <data name="Menu.Save" xml:space="preserve">
     <value>Opslaan</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Automatische modus: Op zoek naar de beste regio voor jou...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Kan niet deelnemen aan het spel: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Word lid van de beste server...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Deelnemen aan het spel</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Deelnemen aan {0} via Quick Play.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Er kon geen geschikte server worden gevonden.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Zoek iets op en misschien verschijnt het hier wel...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Server gevonden</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>De wijzigingen worden van kracht zodra je Roblox de volgende keer opstart.</value>
   </data>
@@ -1592,6 +1914,9 @@ Meer informatie:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Algemeen</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Nuchtere omgevingen</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testmodus</value>

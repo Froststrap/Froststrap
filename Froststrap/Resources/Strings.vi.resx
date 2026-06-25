@@ -246,20 +246,35 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Thêm một bài hát</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Tất cả</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Góc</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Các ban nhạc</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Duyệt qua</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Trình duyệt</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>Hủy</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Xóa</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Đóng</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Công cụ chọn màu</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Xác nhận</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Sao chép</value>
@@ -273,7 +288,7 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.Custom" xml:space="preserve">
     <value>Tùy chỉnh</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>Liên kết sâu</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
@@ -297,8 +312,17 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Tính năng hiển thị phong phú trên Discord</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>Tải xuống</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Chỉnh sửa</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Biên tập viên</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Lỗi</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Xuất khẩu</value>
@@ -307,8 +331,14 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Trình chỉnh sửa cờ nhanh</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Tệp tin</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Trò chơi</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Tạo</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Xem trước ký tự</value>
@@ -334,6 +364,9 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Đang tải, vui lòng chờ...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Hướng dẫn sử dụng</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Các mục khác</value>
   </data>
@@ -346,8 +379,20 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Không</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Không tìm thấy kết quả nào</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Không có sẵn</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Không tìm thấy</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Chênh lệch</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Mở thư mục</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Mở tệp nhật ký</value>
@@ -364,11 +409,17 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Cài đặt sẵn</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Ưu tiên</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Hồ sơ</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Chất lượng</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Xóa</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Đổi tên</value>
@@ -376,8 +427,17 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox chưa được cài đặt. Vui lòng khởi chạy Roblox bằng Froststrap ít nhất một lần trước khi thử sử dụng tùy chọn này.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Lưu và cài đặt</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Lưu và Khởi chạy</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Tìm kiếm</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Chọn</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>ID máy chủ</value>
@@ -408,6 +468,9 @@ Bạn có muốn chuyển sang kênh mặc định ({1}) không?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Tổng cộng</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Không rõ</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Cập nhật</value>
@@ -603,7 +666,7 @@ Sẽ sử dụng mặc định là {1}.</value>
     <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
-    <value>Phiên bản {0} không phải là một con số</value>
+    <value>Phiên bản {0} không phải là một số</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotRecognised" xml:space="preserve">
@@ -695,7 +758,7 @@ Nếu chưa, vui lòng báo cáo lỗi này qua một [vấn đề trên GitHub]
   <data name="Dialog.Exception.Info.2.Alt" xml:space="preserve">
     <value>Hãy kiểm tra [Froststrap Wiki]({0}) trước để xem liệu vấn đề này đã được khắc phục chưa.
 
-Nếu chưa, vui lòng báo cáo lỗi này cho nhóm quản trị của nhánh này. KHÔNG báo cáo vấn đề này lên các vấn đề trên GitHub của Froststrap, vì đây là bản dựng không chính thức.</value>
+Nếu chưa, vui lòng báo cáo lỗi này cho những người quản trị nhánh này. KHÔNG báo cáo vấn đề này lên các vấn đề trên GitHub của Froststrap, vì đây là bản dựng không chính thức.</value>
     <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
@@ -827,6 +890,9 @@ Hãy kiểm tra xem Roblox có hoạt động với [trình khởi chạy gốc]
   <data name="Enums.Theme.Dark" xml:space="preserve">
     <value>Tối</value>
   </data>
+  <data name="Enums.Theme.Froststrap" xml:space="preserve">
+    <value>Dây buộc chống sương giá</value>
+  </data>
   <data name="Enums.Theme.Green" xml:space="preserve">
     <value>Màu xanh lá cây</value>
   </data>
@@ -927,6 +993,37 @@ Bạn có chắc chắn muốn tiếp tục không?</value>
   <data name="Menu.About.Version" xml:space="preserve">
     <value>Phiên bản {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+  </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>Tài khoản '{0}' đã bị xóa do cookie của tài khoản này không hợp lệ hoặc đã hết hạn.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Thêm tài khoản</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>Tài khoản '@{0}' đã đăng nhập.\nĐã chuyển sang tài khoản đó.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Chưa có tài khoản nào được thêm vào
+Nhấp vào 'Thêm tài khoản' ở trên để bắt đầu</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Cookie cục bộ</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Chưa đăng nhập</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Trong một trò chơi Roblox</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>Trong Roblox Studio</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>Ngoại tuyến</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Trực tuyến (trang web Roblox)</value>
   </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Xin lưu ý rằng không phải tất cả các thay đổi của bạn sẽ được áp dụng ngay lập tức cho đến khi bạn đóng tất cả các phiên Roblox đang mở.</value>
@@ -1037,7 +1134,7 @@ Bạn có chắc chắn muốn tiếp tục không?</value>
     <value>Cấu hình các thao tác mà Froststrap sẽ thực hiện khi khởi chạy Roblox.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
-    <value>Roblox sẽ được cài đặt lại hoàn toàn vào lần khởi động tiếp theo.</value>
+    <value>Roblox sẽ được cài đặt lại hoàn toàn khi khởi động lần tiếp theo.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Title" xml:space="preserve">
     <value>Buộc cài đặt lại Roblox</value>
@@ -1132,6 +1229,36 @@ Bạn có chắc chắn muốn tiếp tục không?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Thông tin về thời trang</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Trình chỉnh sửa Avatar</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Các bản mod màu sắc</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>Con trỏ</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Khám phá các bản mod do người dùng tạo ra.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Các bản mod khác</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>Mod '{0}' đã được cài đặt thành công!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Có muốn ghi đè lên mod hiện có '{0}' không?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Tìm kiếm các bản mod...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>Chủ đề '{0}' đã được cài đặt và áp dụng!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Chủ đề tùy chỉnh</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Mod của cộng đồng</value>
   </data>
@@ -1145,7 +1272,22 @@ Bạn có chắc chắn muốn tiếp tục không?</value>
     <value>Không có dữ liệu hoạt động nào.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>Tham gia Best Region (Tự động)</value>
+    <value>Tham gia Best Region (Ô tô)</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Không thể tải cookie của Roblox.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Không thể tải tệp cookie.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Đã tìm thấy cookie nhưng cookie này không hợp lệ hoặc đã hết hạn.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Tính năng truy cập cookie đã bị tắt trong phần cài đặt.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Không tìm thấy tệp cookie của Roblox.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Kênh này đã lỗi thời và có thể không còn được cập nhật nữa. Vui lòng sử dụng một kênh khác.</value>
@@ -1162,6 +1304,9 @@ Bạn có chắc chắn muốn tiếp tục không?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Danh sách sạch</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn xóa tất cả các cờ không?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>Một số cờ mà bạn đang cố gắng nhập đã có giá trị được thiết lập sẵn. Bạn có muốn ghi đè các giá trị hiện tại của chúng bằng các giá trị được định nghĩa trong quá trình nhập không?
 
@@ -1173,10 +1318,22 @@ Có {0} định nghĩa cờ mâu thuẫn:
     <value>Xóa các mục đã chọn</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>Quản lý FastFlags của bạn tại đây. Khám phá thêm các tính năng khác trong phần Cài đặt nâng cao.</value>
+    <value>Quản lý tất cả các FastFlags của bạn tại đây.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 Kéo và thả để nhập tệp JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Xuất JSON</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags đã được xuất thành công.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Vui lòng tải lên các tệp JSON hoặc TXT.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0} đã bị xóa do không có trong danh sách cho phép.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Dữ liệu JSON bạn đã nhập dường như không hợp lệ. Vui lòng kiểm tra lại và thử lại.
@@ -1185,8 +1342,17 @@ Thông tin thêm:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Không có cờ nào cần xóa.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Chà, chỗ này trống trơn quá! Hay là thêm một FastFlag vào nhỉ?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Không phát hiện thấy FastFlags không hợp lệ.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}' không có trong danh sách cho phép của Roblox và sẽ không hoạt động.\n\nBạn có muốn xóa nó ngay bây giờ không?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Thông tin về các lá cờ</value>
@@ -1199,6 +1365,12 @@ Thông tin thêm:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>Trình chỉnh sửa FastFlag</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Tổng số lá cờ</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Sau khi một số FastFlags của Roblox được đưa vào danh sách trắng, đây là những FastFlags duy nhất còn lại có thể sử dụng.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Lưu các cờ hiện tại</value>
@@ -1300,8 +1472,14 @@ Thông tin thêm:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Đặt thành Chỉ đọc</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Vectơ Y</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Cài đặt chung</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Quản lý tất cả các cài đặt chung của bạn tại đây.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Theo dõi hoạt động</value>
@@ -1468,95 +1646,236 @@ Thông tin thêm:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Hướng dẫn đăng nhập</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Thêm điểm dừng</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Đã áp dụng thành công các thay đổi ({0} tệp).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>Áp dụng cho con trỏ</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Áp dụng vào Bánh xe biểu cảm</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Đăng ký tham gia Shiftlock</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Số càng cao thì chất lượng càng tốt nhưng thời gian xử lý càng lâu; giá trị tối đa là 64, giá trị mặc định là 8.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Việc tạo mod đã bị hủy.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Đang dọn dẹp...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Tên mod (Tùy chọn)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Bộ quay tùy chỉnh (Tùy chọn)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Tạo mod một cách dễ dàng chỉ với một cú nhấp chuột.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>Biểu tượng "Đừng tô màu"</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Đang tải xuống các tài nguyên cần thiết...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Đang trích xuất các tệp...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Không tải được phông chữ xem trước.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Bộ biểu tượng:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Thêm vào Danh sách Mod của tôi</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Bao bì...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Sẵn sàng tạo bản mod</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Đang thay đổi màu phông chữ...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Đang thay đổi màu sắc cho hình ảnh...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Biểu tượng Roblox (Tùy chọn)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>Đã lưu vào {0}</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Bắt đầu tạo mod...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Xem trước kiểu dáng</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Chống máy phát điện</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Đã có một bản mod mang tên này rồi. Hãy chọn một tên khác.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Tên thư mục chứa các ký tự không hợp lệ.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Thêm mod mới</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>Đã có một bản mod có tên là '{0}'.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>Xóa vĩnh viễn '{0}'?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Quản lý và áp dụng các bản mod tệp cho Trình khách trò chơi Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Kéo và thả để nhập tệp ZIP / thư mục</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>Thư mục '{0}' không còn tồn tại nữa.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Nhập thư mục</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>Nhập tệp ZIP</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>Mod '{0}' đã được nhập thành công.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Nhập mod bằng cách kéo thả mod hoặc nhấn nút “Nhập”; các mod có mức ưu tiên thấp hơn sẽ được áp dụng sau cùng, giúp tránh xung đột với các mod khác.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Tên thư mục không hợp lệ.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Nguồn đã chọn không chứa cấu trúc mod hợp lệ.\nNó phải chứa ít nhất một trong các thư mục sau: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Chưa cài đặt bất kỳ bản mod nào.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Hành động đã chọn trong chế độ Mod</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Các bản mod của tôi</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Loại tệp hoặc đường dẫn không được hỗ trợ: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Các bản mod tích hợp chính thức.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>Tất cả những gì bạn cần để quản lý các con trỏ.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Các tính năng của con trỏ tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>Cấu hình các thông số ứng dụng như cách thức điều chỉnh tỷ lệ DPI và [các tối ưu hóa chế độ toàn màn hình]({0}).</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Quản lý cài đặt tương thích</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>Chọn con trỏ...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Sử dụng các con trỏ chuột của riêng bạn trong Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Xóa con trỏ tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Con trỏ tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Hãy chuẩn bị sẵn nhiều bộ con trỏ để có thể sử dụng ngay.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Bộ con trỏ tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Chọn Âm thanh...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Thay thế âm thanh khi chết bằng tệp âm thanh của riêng bạn.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Xóa âm thanh chết tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Âm thanh chết tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Chọn phông chữ...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Đặt phông chữ tùy chỉnh đã chọn trong Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Xóa phông chữ đã áp dụng</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Phông chữ tùy chỉnh cho trò chơi</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>Chọn ShiftLock...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Hãy sử dụng Shiftlock của riêng bạn trong Roblox.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Xóa khóa chuyển số tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock tùy chỉnh</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Hãy chọn loại biểu tượng cảm xúc mà Roblox nên sử dụng.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Hiện tại không thể áp dụng bản mod biểu tượng cảm xúc.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Loại biểu tượng cảm xúc ưa thích</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
-    <value>Chọn giữa các tùy chọn sử dụng nhiều con trỏ Roblox.</value>
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
+    <value>Chọn giữa việc sử dụng nhiều con trỏ Roblox.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Con trỏ chuột</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>Hãy khôi phục lại hình nền cũ của trình chỉnh sửa avatar từng được sử dụng trong ứng dụng Roblox trước năm 2020.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Sử dụng hình nền cũ của Trình chỉnh sửa ảnh đại diện</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Các bản mod cài sẵn</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Quay lại các trò chơi bạn đã chơi gần đây.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Chơi nhanh</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Việc đăng nhập đã bị hủy.</value>
@@ -1597,6 +1916,30 @@ Thông tin thêm:
   <data name="Menu.Save" xml:space="preserve">
     <value>Lưu</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Chế độ tự động: Đang tìm kiếm khu vực phù hợp nhất cho bạn...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Không thể tham gia trò chơi: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>Đang kết nối với máy chủ tốt nhất...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Tham gia trò chơi</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Tham gia {0} qua chế độ chơi nhanh.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Không tìm thấy máy chủ phù hợp.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Hãy tìm kiếm một thứ gì đó và nó có thể sẽ xuất hiện ở đây...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Đã tìm thấy máy chủ</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Các thay đổi sẽ có hiệu lực vào lần tiếp theo bạn khởi động Roblox.</value>
   </data>
@@ -1629,6 +1972,9 @@ Thông tin thêm:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Tổng quan</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Cài đặt chế độ tỉnh táo</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Chế độ thử nghiệm</value>

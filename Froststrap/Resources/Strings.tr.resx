@@ -246,20 +246,35 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.AddSingle" xml:space="preserve">
     <value>Tekli ekle</value>
   </data>
+  <data name="Common.All" xml:space="preserve">
+    <value>Tümü</value>
+  </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Açı</value>
+  </data>
+  <data name="Common.Bands" xml:space="preserve">
+    <value>Gruplar</value>
   </data>
   <data name="Common.Browse" xml:space="preserve">
     <value>Göz at</value>
   </data>
+  <data name="Common.Browser" xml:space="preserve">
+    <value>Tarayıcı</value>
+  </data>
   <data name="Common.Cancel" xml:space="preserve">
     <value>İptal et</value>
+  </data>
+  <data name="Common.Clear" xml:space="preserve">
+    <value>Temizle</value>
   </data>
   <data name="Common.Close" xml:space="preserve">
     <value>Kapat</value>
   </data>
   <data name="Common.ColorPicker" xml:space="preserve">
     <value>Renk Seçici</value>
+  </data>
+  <data name="Common.Confirm" xml:space="preserve">
+    <value>Onayla</value>
   </data>
   <data name="Common.Copy" xml:space="preserve">
     <value>Kopyala</value>
@@ -273,7 +288,7 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.Custom" xml:space="preserve">
     <value>Özel</value>
   </data>
-  <data name="Common.DeepLink" xml:space="preserve">
+  <data name="Common.Deeplink" xml:space="preserve">
     <value>Derin bağlantı</value>
   </data>
   <data name="Common.Default" xml:space="preserve">
@@ -297,8 +312,17 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.DiscordRichPresence" xml:space="preserve">
     <value>Discord Zengin Durum Bilgisi</value>
   </data>
+  <data name="Common.Download" xml:space="preserve">
+    <value>İndir</value>
+  </data>
   <data name="Common.Edit" xml:space="preserve">
     <value>Düzenle</value>
+  </data>
+  <data name="Common.Editor" xml:space="preserve">
+    <value>Editör</value>
+  </data>
+  <data name="Common.Error" xml:space="preserve">
+    <value>Hata</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Dışa Aktar</value>
@@ -307,8 +331,14 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.FastFlags" xml:space="preserve">
     <value>Hızlı Bayrak Düzenleyici</value>
   </data>
+  <data name="Common.Files" xml:space="preserve">
+    <value>Dosyalar</value>
+  </data>
   <data name="Common.Game" xml:space="preserve">
     <value>Oyun</value>
+  </data>
+  <data name="Common.Generate" xml:space="preserve">
+    <value>Oluştur</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Glif Önizlemesi</value>
@@ -334,6 +364,9 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.Loading" xml:space="preserve">
     <value>Yükleniyor, lütfen bekleyin...</value>
   </data>
+  <data name="Common.Manual" xml:space="preserve">
+    <value>Kılavuz</value>
+  </data>
   <data name="Common.Miscellaneous" xml:space="preserve">
     <value>Çeşitli</value>
   </data>
@@ -346,8 +379,20 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.No" xml:space="preserve">
     <value>Hayır</value>
   </data>
+  <data name="Common.NoResult" xml:space="preserve">
+    <value>Sonuç Bulunamadı</value>
+  </data>
   <data name="Common.NotAvailable" xml:space="preserve">
     <value>Mevcut değil</value>
+  </data>
+  <data name="Common.NotFound" xml:space="preserve">
+    <value>Bulunamadı</value>
+  </data>
+  <data name="Common.Offset" xml:space="preserve">
+    <value>Ofset</value>
+  </data>
+  <data name="Common.OpenFolder" xml:space="preserve">
+    <value>Klasörü Aç</value>
   </data>
   <data name="Common.OpenLogFile" xml:space="preserve">
     <value>Günlük dosyasını aç</value>
@@ -364,11 +409,17 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.Presets" xml:space="preserve">
     <value>Ön ayarlar</value>
   </data>
+  <data name="Common.Priority" xml:space="preserve">
+    <value>Öncelik</value>
+  </data>
   <data name="Common.Profiles" xml:space="preserve">
     <value>Profiller</value>
   </data>
   <data name="Common.Quality" xml:space="preserve">
     <value>Kalite</value>
+  </data>
+  <data name="Common.Remove" xml:space="preserve">
+    <value>Kaldır</value>
   </data>
   <data name="Common.Rename" xml:space="preserve">
     <value>Adını Değiştir</value>
@@ -376,8 +427,17 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Common.RobloxNotInstalled" xml:space="preserve">
     <value>Roblox henüz yüklenmemiştir. Lütfen bu seçeneği kullanmaya çalışmadan önce Froststrap aracılığıyla Roblox’u en az bir kez başlatın.</value>
   </data>
+  <data name="Common.SaveAndInstall" xml:space="preserve">
+    <value>Kaydet ve Yükle</value>
+  </data>
+  <data name="Common.SaveAndLaunch" xml:space="preserve">
+    <value>Kaydet ve Çalıştır</value>
+  </data>
   <data name="Common.Search" xml:space="preserve">
     <value>Arama</value>
+  </data>
+  <data name="Common.Select" xml:space="preserve">
+    <value>Seç</value>
   </data>
   <data name="Common.ServerID" xml:space="preserve">
     <value>Sunucu Kimliği</value>
@@ -408,6 +468,9 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Common.Total" xml:space="preserve">
     <value>Toplam</value>
+  </data>
+  <data name="Common.Unknown" xml:space="preserve">
+    <value>Bilinmiyor</value>
   </data>
   <data name="Common.Update" xml:space="preserve">
     <value>Güncelleme</value>
@@ -925,6 +988,37 @@ Devam etmek istediğinizden emin misiniz?</value>
     <value>Sürüm {0}</value>
     <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
   </data>
+  <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
+    <value>'{0}' hesabı, çerezi geçersiz veya süresi dolmuş olduğu için kaldırılmıştır.</value>
+  </data>
+  <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
+    <value>Hesap Ekle</value>
+  </data>
+  <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
+    <value>'@{0}' hesabı zaten oturum açmış durumda.\nBu hesaba geçildi.</value>
+  </data>
+  <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
+    <value>Eklenen hesap yok
+Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
+  </data>
+  <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
+    <value>Yerel Çerez</value>
+  </data>
+  <data name="Menu.AccountSelector.NotLoggedIn" xml:space="preserve">
+    <value>Giriş Yapılmadı</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
+    <value>Bir Roblox oyununda</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
+    <value>Roblox Studio'da</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>Çevrimdışı</value>
+  </data>
+  <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
+    <value>Çevrimiçi (Roblox web sitesi)</value>
+  </data>
   <data name="Menu.AlreadyRunning.Caption" xml:space="preserve">
     <value>Şu anda açık olan tüm Roblox oturumlarını kapatana kadar, yaptığınız değişikliklerin tamamının hemen geçerli olmayacağını lütfen unutmayın.</value>
   </data>
@@ -1129,6 +1223,36 @@ Devam etmek istediğinizden emin misiniz?</value>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
     <value>Mod Bilgisi</value>
   </data>
+  <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
+    <value>Avatar Düzenleyici</value>
+  </data>
+  <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
+    <value>Renk Modları</value>
+  </data>
+  <data name="Menu.CommunityMods.Cursor" xml:space="preserve">
+    <value>İmleç</value>
+  </data>
+  <data name="Menu.CommunityMods.Description" xml:space="preserve">
+    <value>Kullanıcılar tarafından oluşturulan modları keşfedin.</value>
+  </data>
+  <data name="Menu.CommunityMods.Misc" xml:space="preserve">
+    <value>Çeşitli Modlar</value>
+  </data>
+  <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
+    <value>'{0}' modunun kurulumu başarıyla tamamlandı!</value>
+  </data>
+  <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
+    <value>Mevcut '{0}' modunu üzerine yazmak istiyor musunuz?</value>
+  </data>
+  <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
+    <value>Modları ara...</value>
+  </data>
+  <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
+    <value>'{0}' teması yüklendi ve uygulandı!</value>
+  </data>
+  <data name="Menu.CommunityMods.Themes" xml:space="preserve">
+    <value>Özel Temalar</value>
+  </data>
   <data name="Menu.CommunityMods.Title" xml:space="preserve">
     <value>Topluluk Modları</value>
   </data>
@@ -1143,6 +1267,21 @@ Devam etmek istediğinizden emin misiniz?</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Best Region (Otomobil) grubuna katılın</value>
+  </data>
+  <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
+    <value>Roblox çerezi yüklenemedi.</value>
+  </data>
+  <data name="Menu.CookieState.Failed" xml:space="preserve">
+    <value>Çerez dosyası yüklenemedi.</value>
+  </data>
+  <data name="Menu.CookieState.Invalid" xml:space="preserve">
+    <value>Çerez bulundu, ancak geçersiz ya da süresi dolmuş.</value>
+  </data>
+  <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
+    <value>Ayarlar'da çerez erişimi devre dışı bırakılmıştır.</value>
+  </data>
+  <data name="Menu.CookieState.NotFound" xml:space="preserve">
+    <value>Roblox çerez dosyası bulunamadı.</value>
   </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Bu kanal güncelliğini yitirmiştir ve muhtemelen artık güncellenmemektedir. Lütfen başka bir kanal kullanın.</value>
@@ -1159,6 +1298,9 @@ Devam etmek istediğinizden emin misiniz?</value>
   <data name="Menu.FastFlagEditor.CleanList" xml:space="preserve">
     <value>Temiz Liste</value>
   </data>
+  <data name="Menu.FastFlagEditor.ConfirmDeleteAll" xml:space="preserve">
+    <value>Tüm işaretleri silmek istediğinizden emin misiniz?</value>
+  </data>
   <data name="Menu.FastFlagEditor.ConflictingImport" xml:space="preserve">
     <value>İçe aktarmaya çalıştığınız bayraklardan bazılarının değerleri zaten ayarlanmış durumda. Mevcut değerlerini, içe aktarma işleminde tanımlanan değerlerle üzerine yazmak ister misiniz?
 
@@ -1170,10 +1312,22 @@ Devam etmek istediğinizden emin misiniz?</value>
     <value>Seçilenleri sil</value>
   </data>
   <data name="Menu.FastFlagEditor.Description" xml:space="preserve">
-    <value>FastFlags'ınızı buradan yönetin. Gelişmiş Ayarlar'da diğer özelliklere göz atın.</value>
+    <value>Tüm FastFlags’larınızı buradan yönetin.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
+    <value>📦 JSON / TXT dosyasını içe aktarmak için sürükleyip bırakın</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>JSON Dışa Aktar</value>
+  </data>
+  <data name="Menu.FastFlagEditor.Exported" xml:space="preserve">
+    <value>FastFlags başarıyla dışa aktarıldı.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
+    <value>Lütfen JSON veya TXT dosyalarını buraya bırakın.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
+    <value>{0}, izin listesinde yer almadıkları için kaldırılmıştır.</value>
   </data>
   <data name="Menu.FastFlagEditor.InvalidJSON" xml:space="preserve">
     <value>Girdiğiniz JSON geçerli görünmüyor. Lütfen tekrar kontrol edip yeniden deneyin.
@@ -1182,8 +1336,17 @@ Daha fazla bilgi:
 {0}</value>
     <comment>{0} is an exception message</comment>
   </data>
+  <data name="Menu.FastFlagEditor.NoFlagDelete" xml:space="preserve">
+    <value>Silinecek bayrak yok.</value>
+  </data>
   <data name="Menu.FastFlagEditor.NoFlags" xml:space="preserve">
     <value>Vay canına, burası ne kadar da boş! Bir FastFlag eklemeye ne dersin?</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
+    <value>Geçersiz FastFlags tespit edilmedi.</value>
+  </data>
+  <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
+    <value>'{0}', Roblox izin listesinde yer almıyor ve çalışmayacaktır.\n\nŞimdi silmek ister misiniz?</value>
   </data>
   <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
     <value>Bayrak Profilleri</value>
@@ -1196,6 +1359,12 @@ Daha fazla bilgi:
   </data>
   <data name="Menu.FastFlagEditor.Title" xml:space="preserve">
     <value>FastFlag Düzenleyici</value>
+  </data>
+  <data name="Menu.FastFlagEditor.TotalFlags" xml:space="preserve">
+    <value>Toplam Bayrak Sayısı</value>
+  </data>
+  <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
+    <value>Bazı Roblox FastFlags’ın beyaz listeye alınmasının ardından, kullanım için geriye kalanlar yalnızca şunlardır.</value>
   </data>
   <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
     <value>Mevcut bayrakları kaydet</value>
@@ -1297,8 +1466,14 @@ Daha fazla bilgi:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Salt Okunur Olarak Ayarla</value>
   </data>
+  <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
+    <value>Y vektörü</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Genel Ayarlar</value>
+  </data>
+  <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
+    <value>Tüm genel ayarlarınızı buradan yönetebilirsiniz.</value>
   </data>
   <data name="Menu.Integrations.ActivityTracking" xml:space="preserve">
     <value>Aktivite Takibi</value>
@@ -1465,95 +1640,236 @@ Daha fazla bilgi:
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Manuel Oturum Açma</value>
   </data>
+  <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
+    <value>Durak Ekle</value>
+  </data>
+  <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
+    <value>Değişiklikler başarıyla uygulandı ({0} dosya).</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyCursor" xml:space="preserve">
+    <value>İmleçlere Uygula</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
+    <value>Duygu Simgesi Çarkına Ekle</value>
+  </data>
+  <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
+    <value>Shiftlock’a Başvur</value>
+  </data>
+  <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
+    <value>Sayı ne kadar yüksekse, kalite o kadar yüksek olur ancak işlem süresi de o kadar uzar. Maksimum değer 64, varsayılan değer ise 8’dir.</value>
+  </data>
+  <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
+    <value>Mod oluşturma işlemi iptal edildi.</value>
+  </data>
+  <data name="Menu.ModGenerator.CleaningUp" xml:space="preserve">
+    <value>Temizlik yapılıyor...</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomModName" xml:space="preserve">
+    <value>Mod Adı (İsteğe bağlı)</value>
+  </data>
+  <data name="Menu.ModGenerator.CustomSpinner" xml:space="preserve">
+    <value>Özel Döndürücü (İsteğe Bağlı)</value>
+  </data>
+  <data name="Menu.ModGenerator.Description" xml:space="preserve">
+    <value>Tek bir tıklamayla modları kolayca oluşturun.</value>
+  </data>
+  <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
+    <value>"Renk Oyna" Simgesi Yok</value>
+  </data>
+  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+    <value>Gerekli öğeler indiriliyor...</value>
+  </data>
+  <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
+    <value>Dosyalar çıkarılıyor...</value>
+  </data>
+  <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
+    <value>Önizleme yazı tipleri yüklenemedi.</value>
+  </data>
+  <data name="Menu.ModGenerator.IconSet" xml:space="preserve">
+    <value>Simge Seti:</value>
+  </data>
+  <data name="Menu.ModGenerator.IncludeModification" xml:space="preserve">
+    <value>Modlarıma Ekle</value>
+  </data>
+  <data name="Menu.ModGenerator.Packaging" xml:space="preserve">
+    <value>Ambalaj...</value>
+  </data>
+  <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
+    <value>Mod Oluşturmaya Hazır mısınız?</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
+    <value>Yazı Tiplerini Yeniden Renklendirme...</value>
+  </data>
+  <data name="Menu.ModGenerator.RecoloringPNGS" xml:space="preserve">
+    <value>Görüntülerin Renkleri Yeniden Ayarlanıyor...</value>
+  </data>
+  <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
+    <value>Roblox Simgesi (İsteğe bağlı)</value>
+  </data>
+  <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
+    <value>{0}'a kaydedildi</value>
+  </data>
+  <data name="Menu.ModGenerator.Starting" xml:space="preserve">
+    <value>Mod oluşturma işlemi başlıyor...</value>
+  </data>
+  <data name="Menu.ModGenerator.StylePreview" xml:space="preserve">
+    <value>Stil Önizlemesi</value>
+  </data>
+  <data name="Menu.ModGenerator.Title" xml:space="preserve">
+    <value>Mod Oluşturucu</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Exists" xml:space="preserve">
+    <value>Bu isimde bir mod zaten mevcut. Başka bir isim seçin.</value>
+  </data>
+  <data name="Menu.ModGeneratorName.Invalid" xml:space="preserve">
+    <value>Klasör adında geçersiz karakterler bulunmaktadır.</value>
+  </data>
+  <data name="Menu.Mods.AddNewMod" xml:space="preserve">
+    <value>Yeni Mod Ekle</value>
+  </data>
+  <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
+    <value>'{0}' adlı bir mod zaten mevcut.</value>
+  </data>
+  <data name="Menu.Mods.DeleteMod" xml:space="preserve">
+    <value>'{0}' öğesini kalıcı olarak silmek istiyor musunuz?</value>
+  </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox Oyun İstemcisi’ndeki dosya modlarını yönetin ve uygulayın.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
+  <data name="Menu.Mods.DragOverlay" xml:space="preserve">
+    <value>📦 Zip dosyasını / klasörü içe aktarmak için buraya sürükleyin</value>
+  </data>
+  <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
+    <value>'{0}' için olan klasör artık mevcut değil.</value>
+  </data>
+  <data name="Menu.Mods.ImportFolder" xml:space="preserve">
+    <value>Klasörü İçe Aktar</value>
+  </data>
+  <data name="Menu.Mods.ImportZIP" xml:space="preserve">
+    <value>ZIP dosyasını içe aktar</value>
+  </data>
+  <data name="Menu.Mods.Imported" xml:space="preserve">
+    <value>'{0}' modunu başarıyla içe aktarıldı.</value>
+  </data>
+  <data name="Menu.Mods.InfoBar" xml:space="preserve">
+    <value>Modları sürükleyerek veya içe aktararak yükleyin; önceliği daha düşük olan modlar en son uygulanır, böylece diğer modlarla olan çakışmaları önler.</value>
+  </data>
+  <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
+    <value>Geçersiz klasör adı.</value>
+  </data>
+  <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
+    <value>Seçilen kaynak geçerli bir mod yapısı içermiyor.\nAşağıdaki klasörlerden en az birini içermelidir: content, ExtraContent, PlatformContent.</value>
+  </data>
+  <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
+    <value>Yüklü mod yok.</value>
+  </data>
+  <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
+    <value>Seçilen Mod Eylemi</value>
+  </data>
+  <data name="Menu.Mods.Title" xml:space="preserve">
+    <value>Modlarım</value>
+  </data>
+  <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
+    <value>Desteklenmeyen dosya türü veya yol: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.Description" xml:space="preserve">
+    <value>Resmi yerleşik modlar.</value>
+  </data>
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Descriptions" xml:space="preserve">
     <value>İmleçlerinizi yönetmek için ihtiyacınız olan her şey.</value>
   </data>
-  <data name="Menu.Mods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CardExpander.CustomCursors.Title" xml:space="preserve">
     <value>Özel İmleç Özellikleri</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Description" xml:space="preserve">
     <value>DPI ölçeklendirme davranışı ve [tam ekran optimizasyonları]({0}) gibi uygulama parametrelerini yapılandırın.</value>
   </data>
-  <data name="Menu.Mods.Misc.CompatibilitySettings.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CompatibilitySettings.Title" xml:space="preserve">
     <value>Uyumluluk Ayarlarını Yönet</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Choose" xml:space="preserve">
     <value>İmleci seçin...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
     <value>Roblox'ta kendi fare imleçlerinizi kullanın.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Özel İmleci Kaldır</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursor.Title" xml:space="preserve">
     <value>Özel İmleç</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Description" xml:space="preserve">
     <value>Kullanıma hazır birden fazla imleç seti bulundurun.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomCursorSet.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomCursorSet.Title" xml:space="preserve">
     <value>Özel İmleç Seti</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Choose" xml:space="preserve">
     <value>Ses Seç...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Description" xml:space="preserve">
     <value>Ölüm sesini kendi ses dosyanızla değiştirir.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Remove" xml:space="preserve">
     <value>Özel Ölüm Sesini Kaldır</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomDeathSound.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomDeathSound.Title" xml:space="preserve">
     <value>Özel Ölüm Sesi</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Yazı Tipini Seç...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
     <value>Roblox'ta seçilen özel yazı tipini ayarlar.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Uygulanan Yazı Tipini Kaldır</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomFont.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomFont.Title" xml:space="preserve">
     <value>Özel Oyun Yazı Tipi</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Choose" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
     <value>ShiftLock'u seçin...</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Roblox’ta kendi Shiftlock’unu kullan.</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Remove" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
     <value>Özel Shiftlock'u Kaldır</value>
   </data>
-  <data name="Menu.Mods.Misc.CustomShiftLock.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Özel Shiftlock</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Roblox'un hangi tür emojileri kullanmasını istediğinizi seçin.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Error" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Emoji modu şu anda uygulanamıyor.</value>
   </data>
-  <data name="Menu.Mods.Presets.EmojiType.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.EmojiType.Title" xml:space="preserve">
     <value>Tercih Edilen Emoji Türü</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Description" xml:space="preserve">
     <value>Birden fazla Roblox imleci kullanma seçeneği arasından seçim yapın.</value>
   </data>
-  <data name="Menu.Mods.Presets.MouseCursor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.MouseCursor.Title" xml:space="preserve">
     <value>Fare İmleci</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Description" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
     <value>2020'den önce Roblox uygulamasında kullanılan eski avatar düzenleyici arka planını geri getirin.</value>
   </data>
-  <data name="Menu.Mods.Presets.OldAvatarEditor.Title" xml:space="preserve">
+  <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Eski Avatar Düzenleyicisi Arka Planını Kullan</value>
+  </data>
+  <data name="Menu.PresetMods.Title" xml:space="preserve">
+    <value>Önceden Ayarlanmış Modlar</value>
+  </data>
+  <data name="Menu.QuickPlay.Description" xml:space="preserve">
+    <value>Son oynadığınız oyunlara geri dönün.</value>
+  </data>
+  <data name="Menu.QuickPlay.Title" xml:space="preserve">
+    <value>Hızlı Oynat</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Giriş İptal Edildi.</value>
@@ -1591,6 +1907,30 @@ Daha fazla bilgi:
   <data name="Menu.Save" xml:space="preserve">
     <value>Kaydet</value>
   </data>
+  <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
+    <value>Otomatik mod: Size en uygun bölge aranıyor...</value>
+  </data>
+  <data name="Menu.SearchBar.JoinError" xml:space="preserve">
+    <value>Oyuna katılamadı: {0}</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningBest" xml:space="preserve">
+    <value>En iyi sunucuya bağlanılıyor...</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningGame" xml:space="preserve">
+    <value>Oyuna Katılma</value>
+  </data>
+  <data name="Menu.SearchBar.JoiningName" xml:space="preserve">
+    <value>Hızlı oyun moduyla {0}’a katılıyorum.</value>
+  </data>
+  <data name="Menu.SearchBar.NoSuitableServer" xml:space="preserve">
+    <value>Uygun bir sunucu bulunamadı.</value>
+  </data>
+  <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
+    <value>Bir şey aratın, belki burada karşınıza çıkar...</value>
+  </data>
+  <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
+    <value>Sunucu Bulundu</value>
+  </data>
   <data name="Menu.SettingsSaved.Message" xml:space="preserve">
     <value>Değişiklikler, Roblox’u bir sonraki açışınızda yürürlüğe girecek.</value>
   </data>
@@ -1623,6 +1963,9 @@ Daha fazla bilgi:
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Genel</value>
+  </data>
+  <data name="Menu.SoberSettings.Title" xml:space="preserve">
+    <value>Ayık Ortamlar</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Test Modu</value>
