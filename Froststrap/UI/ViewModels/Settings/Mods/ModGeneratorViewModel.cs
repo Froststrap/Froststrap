@@ -219,7 +219,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 if (GradientStops.Count > 0)
                     GradientStops[0].Color = SolidColorHex;
                 UpdateGlyphColors();
-                StatusText = "Ready to generate mod.";
+                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
             }
         }
 
@@ -256,12 +256,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     if (FontDisplayNames.Count > 0)
                         SelectedFontDisplayName = FontDisplayNames[0];
                 });
-                StatusText = "Ready to generate mod.";
+                StatusText = Strings.Menu_ModGenerator_ReadyToGenerate;
             }
             catch (Exception ex)
             {
                 App.Logger?.WriteException("ModGenerator::LoadFontFiles", ex);
-                StatusText = "Failed to load preview fonts.";
+                StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
 
@@ -325,7 +325,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             catch (Exception ex)
             {
                 App.Logger?.WriteException("ModGenerator::LoadGlyphPreviews", ex);
-                StatusText = "Failed to load font glyphs.";
+                StatusText = Strings.Menu_ModGenerator_FailedPreview;
             }
         }
 
@@ -339,13 +339,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (ModFolderName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
             {
-                FolderNameValidationError = "Folder name contains invalid characters.";
+                FolderNameValidationError = Strings.Menu_ModGeneratorName_Invalid;
                 return;
             }
 
             string fullPath = Path.Combine(Paths.Modifications, ModFolderName);
             if (Directory.Exists(fullPath))
-                FolderNameValidationError = "A mod with this name already exists. Choose another name.";
+                FolderNameValidationError = Strings.Menu_ModGeneratorName_Exists;
             else
                 FolderNameValidationError = "";
         }
@@ -411,17 +411,17 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             IsNotGeneratingMod = false;
             IsProgressVisible = true;
             Progress = 0;
-            StatusText = "Starting mod generation...";
+            StatusText = Strings.Menu_ModGenerator_Starting;
 
             try
             {
                 await Task.Run(async () =>
                 {
-                    StatusText = "Downloading required assets...";
+                    StatusText = Strings.Menu_ModGenerator_DontColorPlay;
                     Progress = 5;
                     var (luaZip, extraZip, contentZip, vHash, vName) = await ModGenerator.DownloadForModGenerator();
 
-                    StatusText = "Extracting files...";
+                    StatusText = Strings.Menu_ModGenerator_Extracting;
                     Progress = 25;
                     string luaDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages");
                     string extraDir = Path.Combine(TempRoot, "ExtraContent", "textures");
@@ -434,7 +434,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         () => SafeExtract(extraZip, extraDir),
                         () => SafeExtract(contentZip, contentDir));
 
-                    StatusText = "Recoloring assets...";
+                    StatusText = Strings.Menu_ModGenerator_RecoloringPNGS;
                     Progress = 50;
                     string foundationImagesDir = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "SpriteSheets");
                     string? getImageSetDataPath = Path.Combine(TempRoot, "ExtraContent", "LuaPackages", "Packages", "_Index", "FoundationImages", "FoundationImages", "Generated", "GetImageSetData.lua");
@@ -465,6 +465,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     );
                     Progress = 70;
 
+                    StatusText = Strings.Menu_ModGenerator_RecoloringFonts;
+
                     string? gradientArg = null;
                     double? angleArg = null;
                     if (IsGradientMode)
@@ -494,7 +496,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     WriteBuilderIconsJson(TempRoot);
 
-                    StatusText = "Cleaning up...";
+                    StatusText = Strings.Menu_ModGenerator_CleaningUp;
                     Progress = 80;
 
                     var preservePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -567,7 +569,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     };
                     await File.WriteAllTextAsync(infoPath, JsonSerializer.Serialize(infoData, _jsonOptions));
 
-                    StatusText = "Packaging...";
+                    StatusText = Strings.Menu_ModGenerator_Packaging;
                     Progress = 90;
 
                     if (IncludeModifications)
@@ -621,7 +623,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                         }
 
                         Progress = 100;
-                        StatusText = $"Successfully applied modifications ({copiedFiles} files).";
+                        StatusText = string.Format(Strings.Menu_ModGenerator_AppliedModifications, copiedFiles);
                     }
                     else
                     {
@@ -637,13 +639,17 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                                 DefaultExtension = ".zip",
                                 FileTypeChoices = [new FilePickerFileType("Zip Archive") { Patterns = ["*.zip"] }]
                             });
+
                             if (file != null)
                             {
                                 ModGenerator.ZipResult(TempRoot, file.Path.LocalPath);
                                 Progress = 100;
-                                StatusText = $"Mod saved to {Path.GetFileName(file.Path.LocalPath)}";
+                                StatusText = string.Format(Strings.Menu_ModGenerator_SavedTo, Path.GetFileName(file.Path.LocalPath));
                             }
-                            else StatusText = "Mod generation cancelled.";
+                            else
+                            {
+                                StatusText = Strings.Menu_ModGenerator_Cancelled;
+                            }
                         });
                     }
                 });
@@ -796,7 +802,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (window == null)
             {
-                StatusText = "Cannot open color picker: no active window.";
                 return;
             }
 
@@ -823,7 +828,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
             if (window == null)
             {
-                StatusText = "Cannot open file picker: no active window.";
                 return;
             }
 
@@ -843,7 +847,6 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             Window? window = GetActiveWindow();
             if (window == null)
             {
-                StatusText = "Cannot open file picker: no active window.";
                 return;
             }
 

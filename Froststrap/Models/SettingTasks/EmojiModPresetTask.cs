@@ -50,7 +50,7 @@
 
                     await Frontend.ShowConnectivityDialog(
                         String.Format(Strings.Dialog_Connectivity_UnableToConnect, "GitHub"),
-                        $"{Strings.Menu_Mods_Presets_EmojiType_Error}\n\n{Strings.Dialog_Connectivity_TryAgainLater}",
+                        $"{Strings.Menu_PresetMods_Presets_EmojiType_Error}\n\n{Strings.Dialog_Connectivity_TryAgainLater}",
                         MessageBoxImage.Warning,
                         ex
                     );

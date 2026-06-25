@@ -176,14 +176,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                     App.Settings.Prop.BootstrapperStyle = BootstrapperStyle.CustomDialog;
                     App.Settings.Save();
 
-                    _ = Frontend.ShowMessageBox($"Theme '{mod.Name}' installed and applied!", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ThemeInstalled, mod.Name), MessageBoxImage.Information);
                 }
                 else
                 {
                     string installPath = Path.Combine(Paths.Modifications, mod.Name);
                     if (Directory.Exists(installPath))
                     {
-                        var result = await Frontend.ShowMessageBox($"Overwrite existing mod '{mod.Name}'?", MessageBoxImage.Question, MessageBoxButton.YesNo);
+                        var result = await Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_Overwrite, mod.Name), MessageBoxImage.Question, MessageBoxButton.YesNo);
                         if (result != MessageBoxResult.Yes) return;
                         Directory.Delete(installPath, true);
                     }
@@ -214,7 +214,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
 
                     App.State.SaveSetting("Mods");
 
-                    _ = Frontend.ShowMessageBox($"Mod '{mod.Name}' installed successfully!", MessageBoxImage.Information);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_CommunityMods_ModInstalled, mod.Name), MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)

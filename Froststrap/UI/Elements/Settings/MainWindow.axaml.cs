@@ -33,11 +33,6 @@ namespace Froststrap.UI.Elements.Settings
         {
             Instance = this;
             InitializeComponent();
-
-            if (Locale.RightToLeft)
-            {
-                this.FlowDirection = FlowDirection.RightToLeft;
-            }
         }
 
         public MainWindow(bool showAlreadyRunningWarning) : this()
@@ -111,6 +106,8 @@ namespace Froststrap.UI.Elements.Settings
 
             if (_viewModel?.SelectedPage != item.PageTag)
             {
+                SaveCurrentPage();
+
                 // Navigation will trigger UpdatePageView, which will scroll to the item
                 var action = GetNavigationAction(item.PageTag ?? "");
                 action?.Invoke();
@@ -157,6 +154,8 @@ namespace Froststrap.UI.Elements.Settings
 
         private void UpdatePageView(object? viewModel)
         {
+            SaveCurrentPage();
+
             var pageControl = this.FindControl<TransitioningContentControl>("PageContentControl");
             if (pageControl == null || viewModel == null) return;
 
@@ -212,6 +211,8 @@ namespace Froststrap.UI.Elements.Settings
                     _viewModel?.OpenAboutCommand.Execute(null);
                     return;
                 }
+
+                SaveCurrentPage();
 
                 var action = GetNavigationAction(tag);
                 action?.Invoke();
@@ -751,6 +752,15 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
+        private void SaveCurrentPage()
+        {
+            if (_viewModel?.CurrentPage != null)
+            {
+                App.State.Prop.LastPage = _viewModel.CurrentPage.GetType().FullName;
+                App.State.SaveSetting("LastPage");
+            }
+        }
+
         #region Event Handlers
 
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -760,11 +770,7 @@ namespace Froststrap.UI.Elements.Settings
             State.Left = this.Position.X;
             State.Top = this.Position.Y;
 
-            if (_viewModel?.CurrentPage != null)
-            {
-                App.State.Prop.LastPage = _viewModel.CurrentPage.GetType().FullName;
-                App.State.SaveSetting("LastPage");
-            }
+            SaveCurrentPage();
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)

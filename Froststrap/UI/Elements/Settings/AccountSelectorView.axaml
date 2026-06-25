@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
+             xmlns:resources="clr-namespace:Froststrap.Resources"
              xmlns:controls="clr-namespace:Froststrap.UI.Elements.Controls"
              xmlns:vm="clr-namespace:Froststrap.UI.ViewModels.Settings"
              x:Class="Froststrap.UI.Elements.Settings.AccountSelectorView"
@@ -85,7 +86,7 @@
                                TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
 
-                <TextBlock Text="Not Logged In"
+                <TextBlock Text="{x:Static resources:Strings.Menu_AccountSelector_NotLoggedIn}"
                            FontSize="11"
                            FontWeight="SemiBold"
                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -118,7 +119,7 @@
                             BorderThickness="0,0,0,1">
                         <Grid ColumnDefinitions="*,Auto">
                             <Button Grid.Column="0"
-                                    Content="Add Account"
+                                    Content="{x:Static resources:Strings.Menu_AccountSelector_AddAccount}"
                                     Command="{Binding AddAccountCommand}"
                                     IsEnabled="{Binding !IsAddingAccount}"
                                     Height="32"
@@ -228,7 +229,7 @@
 
                     <!-- Empty State -->
                     <TextBlock Grid.Row="1"
-                               Text="No accounts added&#xa;Click 'Add Account' above to get started"
+                               Text="{x:Static resources:Strings.Menu_AccountSelector_AskToAddAccount}"
                                FontSize="12"
                                TextAlignment="Center"
                                HorizontalAlignment="Center"

@@ -118,7 +118,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
         public void UpdateTotalFlagsCount()
         {
             int count = _fastFlagList.Count;
-            TotalFlagsTextBlock.Text = $"Total Flags: {count}";
+            TotalFlagsTextBlock.Text = $"{Strings.Menu_FastFlagEditor_TotalFlags}: {count}";
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
@@ -203,7 +203,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!base64Flags.Contains(name))
             {
                 var result = await Frontend.ShowMessageBox(
-                    $"'{name}' is not in the Roblox allowlist and won't work.\n\nRemove it now?",
+                    string.Format(Strings.Menu_FastFlagEditor_NotInWhiteList, name),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -298,7 +298,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (invalidFlags.Count > 0)
             {
                 var result = await Frontend.ShowMessageBox(
-                    $"{invalidFlags.Count} imported flags are not in the allowlist and won't work.\n\nRemove them now?",
+                    string.Format(Strings.Menu_FastFlagEditor_NotInWhiteList, invalidFlags.Count),
                     MessageBoxImage.Warning,
                     MessageBoxButton.YesNo);
 
@@ -339,12 +339,12 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
             if (!(_fastFlagList.Any() || App.FastFlags.Prop.Count > 0))
             {
                 await Frontend.ShowMessageBox(
-                    "There are no flags to delete.",
+                    Strings.Menu_FastFlagEditor_NoFlagDelete,
                     MessageBoxImage.Information);
                 return;
             }
 
-            if (await Frontend.ShowMessageBox("Are you sure you want to delete all flags?",MessageBoxImage.Warning,
+            if (await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_ConfirmDeleteAll,MessageBoxImage.Warning,
                 MessageBoxButton.YesNo) != MessageBoxResult.Yes)
             {
                 return;
@@ -465,7 +465,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                     await writer.WriteAsync(json);
 
                     await Frontend.ShowMessageBox(
-                        "FastFlags exported successfully.",
+                        Strings.Menu_FastFlagEditor_Exported,
                         MessageBoxImage.Information);
                 }
             }
@@ -543,12 +543,12 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
                 int totalChanges = invalidRemoved.Count;
                 if (totalChanges == 0)
                 {
-                    await Frontend.ShowMessageBox("No invalid FastFlags detected.", MessageBoxImage.Information);
+                    await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_NoInvalid, MessageBoxImage.Information);
                     return;
                 }
 
                 await Frontend.ShowMessageBox(
-                    $"{totalChanges} have been removed due to not being in allow list.",
+                    string.Format(Strings.Menu_FastFlagEditor_HaveBeenRemoved, totalChanges),
                     MessageBoxImage.Information);
 
                 ReloadList();
@@ -744,7 +744,7 @@ namespace Froststrap.UI.Elements.Settings.Pages.FastFlags
 
             if (filePaths.Count == 0)
             {
-                await Frontend.ShowMessageBox("Please drop JSON or TXT files.", MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(Strings.Menu_FastFlagEditor_FileExtensionWarning, MessageBoxImage.Information);
                 return;
             }
 

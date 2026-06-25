@@ -101,7 +101,7 @@
 
                                     <controls:IconButton
                                         Icon="Link"
-                                        Content="{x:Static resources:Strings.Common_DeepLink}"
+                                        Content="{x:Static resources:Strings.Common_Deeplink}"
                                         Command="{Binding CopyDeeplinkCommand}"
                                         CommandParameter="{Binding $self}"/>
 

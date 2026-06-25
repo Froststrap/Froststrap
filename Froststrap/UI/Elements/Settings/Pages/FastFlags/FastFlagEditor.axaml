@@ -22,8 +22,7 @@
         <Grid RowDefinitions="Auto, Auto, Auto, *" Margin="14">
 
             <ui:InfoBar Grid.Row="0"
-                        Title="Important"
-                        Message="Following the whitelisting of some Roblox FastFlags, these are the only remaining available for use."
+                        Message="{x:Static resources:Strings.Menu_FastFlagEditor_WhiteList}"
                         Severity="Informational"
                         IsOpen="True"
                         IsClosable="False"
@@ -53,7 +52,7 @@
                            Margin="0,0,8,8"
                            FontWeight="Medium"
                            FontSize="12"
-                           Text="Total Flags: 0" />
+                           Text="{x:Static resources:Strings.Menu_FastFlagEditor_TotalFlags}" />
 
                 <Grid Grid.Row="1" Height="40">
                     <TextBox Name="SearchTextBox"
@@ -141,7 +140,7 @@
               IsVisible="False"
               Background="#88000000">
 
-            <TextBlock Text="📦 Drop to import JSON / TXT"
+            <TextBlock Text="{x:Static resources:Strings.Menu_FastFlagEditor_DragOverlay}"
                        FontSize="20"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"

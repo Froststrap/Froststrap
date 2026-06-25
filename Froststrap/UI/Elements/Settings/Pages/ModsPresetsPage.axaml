@@ -32,9 +32,9 @@
                                      Command="{Binding OpenModsFolderCommand}"/>
 
                 <controls:CardAction Grid.Row="2" Grid.ColumnSpan="3" IsVisible="{x:Static gv:GlobalViewModel.IsWindows}"
-                                     Header="{x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Title}"
+                                     Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CompatibilitySettings_Title}"
                                      Icon="ShieldCheckmark"
-                                     Description="{Binding Source={x:Static resources:Strings.Menu_Mods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"
+                                     Description="{Binding Source={x:Static resources:Strings.Menu_PresetMods_Misc_CompatibilitySettings_Description}, Converter={StaticResource StringFormatConverter}, ConverterParameter='https://devblogs.microsoft.com/directx/demystifying-full-screen-optimizations/'}"
                                      Command="{Binding OpenCompatSettingsCommand}"/>
             </Grid>
 
@@ -43,13 +43,13 @@
             <StackPanel>
                 <TextBlock FontSize="20" FontWeight="Bold" Text="{x:Static resources:Strings.Common_Presets}" />
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Presets_OldAvatarEditor_Title}"
-                                        Description="{x:Static resources:Strings.Menu_Mods_Presets_OldAvatarEditor_Description}">
+                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Title}"
+                                        Description="{x:Static resources:Strings.Menu_PresetMods_Presets_OldAvatarEditor_Description}">
                     <ToggleSwitch IsChecked="{Binding OldAvatarBackgroundTask.NewState, Mode=TwoWay}" />
                 </controls:OptionControl>
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Presets_MouseCursor_Title}"
-                                        Description="{x:Static resources:Strings.Menu_Mods_Presets_MouseCursor_Description}">
+                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_MouseCursor_Title}"
+                                        Description="{x:Static resources:Strings.Menu_PresetMods_Presets_MouseCursor_Description}">
                     <ComboBox MinWidth="200" ItemsSource="{Binding CursorTypeTask.Selections, Mode=OneTime}"
                               SelectedItem="{Binding CursorTypeTask.NewState, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
@@ -60,8 +60,8 @@
                     </ComboBox>
                 </controls:OptionControl>
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Presets_EmojiType_Title}"
-                                        Description="{x:Static resources:Strings.Menu_Mods_Presets_EmojiType_Description}">
+                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Presets_EmojiType_Title}"
+                                        Description="{x:Static resources:Strings.Menu_PresetMods_Presets_EmojiType_Description}">
                     <ComboBox MinWidth="220" ItemsSource="{Binding EmojiFontTask.Selections, Mode=OneTime}"
                               SelectedItem="{Binding EmojiFontTask.NewState, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
@@ -76,73 +76,73 @@
 
                 <TextBlock FontSize="20" FontWeight="Bold" Text="{x:Static resources:Strings.Common_Miscellaneous}" />
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Title}"
-                                        Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Description}">
+                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Title}"
+                                        Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Description}">
                     <Panel>
                         <controls:IconButton Command="{Binding ChooseCustomFontCommand}"
-                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Choose}"
+                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Choose}"
                                              Icon="DocumentAdd"
                                              IsVisible="{Binding !IsCustomFontSet}" />
                         <controls:IconButton Classes="Danger"
                                              Command="{Binding RemoveCustomFontCommand}"
-                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomFont_Remove}"
+                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomFont_Remove}"
                                              Icon="Delete"
                                              IsVisible="{Binding IsCustomFontSet}" />
                     </Panel>
                 </controls:OptionControl>
 
-                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Title}"
-                                        Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Description}">
+                <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Title}"
+                                        Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Description}">
                     <Panel>
                         <controls:IconButton Command="{Binding AddCustomDeathSoundCommand}"
-                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Choose}"
+                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Choose}"
                                              Icon="DocumentAdd"
                                              IsVisible="{Binding !HasCustomDeathSound}" />
                         <controls:IconButton Classes="Danger"
                                              Command="{Binding RemoveCustomDeathSoundCommand}"
-                                             Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomDeathSound_Remove}"
+                                             Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomDeathSound_Remove}"
                                              Icon="Delete"
                                              IsVisible="{Binding HasCustomDeathSound}" />
                     </Panel>
                 </controls:OptionControl>
 
                 <controls:CardExpander IsExpanded="True"
-                                       Header="{x:Static resources:Strings.Menu_Mods_Misc_CardExpander_CustomCursors_Title}"
-                                       Description="{x:Static resources:Strings.Menu_Mods_Misc_CardExpander_CustomCursors_Descriptions}">
+                                       Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CardExpander_CustomCursors_Title}"
+                                       Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CardExpander_CustomCursors_Descriptions}">
                     <StackPanel>
-                        <controls:OptionControl Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Title}"
-                                                Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Description}">
+                        <controls:OptionControl Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Title}"
+                                                Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Description}">
                             <Panel>
                                 <controls:IconButton Command="{Binding AddCustomCursorModCommand}" Icon="DocumentAdd"
-                                                     Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Choose}"
+                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Choose}"
                                                      IsVisible="{Binding !HasCustomCursors}" />
                                 <controls:IconButton Classes="Danger" Command="{Binding RemoveCustomCursorModCommand}" Icon="Delete"
-                                                     Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursor_Remove}"
+                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursor_Remove}"
                                                      IsVisible="{Binding HasCustomCursors}" />
                             </Panel>
                         </controls:OptionControl>
 
                         <controls:OptionControl
-                            Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Title}"
-                            Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Description}">
+                            Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Title}"
+                            Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Description}">
 
                             <StackPanel>
                                 <controls:IconButton Command="{Binding AddCustomShiftlockModCommand}"
-                                                     Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Choose}"
+                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Choose}"
                                                      Icon="DocumentAdd"
                                                      IsVisible="{Binding !HasCustomShiftlock}" />
 
                                 <controls:IconButton Classes="Danger"
                                                      Command="{Binding RemoveCustomShiftlockModCommand}"
-                                                     Content="{x:Static resources:Strings.Menu_Mods_Misc_CustomShiftLock_Remove}"
+                                                     Content="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomShiftLock_Remove}"
                                                      Icon="Delete"
                                                      IsVisible="{Binding HasCustomShiftlock}" />
                             </StackPanel>
                         </controls:OptionControl>
 
                         <controls:CardExpander IsExpanded="True"
-                                               Header="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Title}"
-                                               Description="{x:Static resources:Strings.Menu_Mods_Misc_CustomCursorSet_Description}">
+                                               Header="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursorSet_Title}"
+                                               Description="{x:Static resources:Strings.Menu_PresetMods_Misc_CustomCursorSet_Description}">
                             <Grid MinHeight="300" MaxHeight="500" Margin="-8,4,-8,0" RowDefinitions="340,Auto" ColumnDefinitions="250,*">
                                 <ListBox Grid.Row="0"
                                          Grid.Column="0"

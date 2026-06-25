@@ -42,7 +42,7 @@ namespace Froststrap.UI.ViewModels.Settings
             set => SetProperty(ref _accounts, value);
         }
 
-        private string _selectedAddMethod = "Local Cookie";
+        private string _selectedAddMethod = Strings.Menu_AccountSelector_Login_LocalCookie;
         public string SelectedAddMethod
         {
             get => _selectedAddMethod;
@@ -109,18 +109,18 @@ namespace Froststrap.UI.ViewModels.Settings
                 if (CurrentPresence == null) return "Offline";
                 return CurrentPresence.UserPresenceType switch
                 {
-                    0 => "Offline",
-                    1 => "Online (Roblox website)",
-                    2 => "In a Roblox game",
-                    3 => "In Roblox Studio",
-                    _ => "Unknown"
+                    0 => Strings.Menu_AccountSelector_Presence_Offline,
+                    1 => Strings.Menu_AccountSelector_Presence_Online,
+                    2 => Strings.Menu_AccountSelector_Presence_InGame,
+                    3 => Strings.Menu_AccountSelector_Presence_InStudio,
+                    _ => Strings.Common_Unknown
                 };
             }
         }
 
-        public List<string> AddMethods { get; } = ["Local Cookie", "Quick Sign In", "Manual", "Browser"];
+        public List<string> AddMethods { get; } = [Strings.Menu_AccountSelector_Login_LocalCookie, Strings.Menu_Dialog_QuickSignIn_Title, Strings.Common_Manual, Strings.Common_Browser];
 
-        public string CurrentAccountDisplayName => CurrentAccount == null ? "Not Logged In" : $"@{CurrentAccount.Username}";
+        public string CurrentAccountDisplayName => CurrentAccount == null ? Strings.Menu_AccountSelector_NotLoggedIn : $"@{CurrentAccount.Username}";
 
         public AccountSelectorViewModel()
         {
@@ -173,7 +173,7 @@ namespace Froststrap.UI.ViewModels.Settings
                 _accountManager.RemoveAccount(account);
                 App.Logger.WriteLine(LOG_IDENT, $"Removed expired/invalid account: {account.Username}");
 
-                await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => Frontend.ShowMessageBox($"Account '{account.Username}' has been removed because its cookie is invalid or expired."));
+                await Dispatcher.UIThread.InvokeAsync(() => Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, account.Username)));
             }
 
             if (invalidAccounts.Count > 0)
@@ -302,28 +302,28 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 AccountManagerAccount? newAccount = null;
 
-                switch (SelectedAddMethod)
+                if (SelectedAddMethod == Strings.Menu_Dialog_QuickSignIn_Title)
                 {
-                    case "Quick Sign In":
-                        {
-                            var dialog = new QuickSignCodeDialog();
-                            var cts = new CancellationTokenSource();
+                    var dialog = new QuickSignCodeDialog();
+                    var cts = new CancellationTokenSource();
 
-                            dialog.Closed += (_, _) => cts.Cancel();
-                            dialog.Show();
+                    dialog.Closed += (_, _) => cts.Cancel();
+                    dialog.Show();
 
-                            newAccount = await AccountManager.AddAccountByQuickSignInAsync(dialog, cts.Token);
-                            break;
-                        }
-                    case "Browser":
-                        newAccount = await _accountManager.AddAccountByBrowser();
-                        break;
-                    case "Manual":
-                        OnManualAddRequested?.Invoke();
-                        return;
-                    case "Local Cookie":
-                        newAccount = await ImportFromCookieManager();
-                        break;
+                    newAccount = await AccountManager.AddAccountByQuickSignInAsync(dialog, cts.Token);
+                }
+                else if (SelectedAddMethod == Strings.Common_Browser)
+                {
+                    newAccount = await _accountManager.AddAccountByBrowser();
+                }
+                else if (SelectedAddMethod == Strings.Common_Manual)
+                {
+                    OnManualAddRequested?.Invoke();
+                    return;
+                }
+                else if (SelectedAddMethod == Strings.Menu_AccountSelector_Login_LocalCookie)
+                {
+                    newAccount = await ImportFromCookieManager();
                 }
 
                 if (newAccount == null) return;
@@ -358,9 +358,7 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 _accountManager.SetActiveAccount(existing.UserId);
                 IsDropdownOpen = false;
-                await Frontend.ShowMessageBox(
-                    $"Account '@{existing.Username}' is already logged in.\nSwitched to it.",
-                    MessageBoxImage.Information);
+                await Frontend.ShowMessageBox(string.Format(Strings.Menu_AccountSelector_AccountRemoved, existing.Username), MessageBoxImage.Information);
                 return true;
             }
             return false;
@@ -378,11 +376,11 @@ namespace Froststrap.UI.ViewModels.Settings
             {
                 string error = cookieManager.State switch
                 {
-                    CookieState.NotAllowed => "Cookie access is disabled in settings.",
-                    CookieState.NotFound => "Roblox cookie file not found.",
-                    CookieState.Invalid => "Cookie found but is invalid or expired.",
-                    CookieState.Failed => "Failed to load cookie file.",
-                    _ => "Could not load Roblox cookie."
+                    CookieState.NotAllowed => Strings.Menu_CookieState_NotAllowed,
+                    CookieState.NotFound => Strings.Menu_CookieState_NotFound,
+                    CookieState.Invalid => Strings.Menu_CookieState_Invalid,
+                    CookieState.Failed => Strings.Menu_CookieState_Failed,
+                    _ => Strings.Menu_CookieState_CouldNotLoad
                 };
                 _ = Frontend.ShowMessageBox(error);
                 return null;

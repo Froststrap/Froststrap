@@ -16,7 +16,7 @@
 
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
         <TextBox x:Name="SearchTextBox"
-                 Watermark="Search up something and it may show up here...."
+                 Watermark="{x:Static resources:Strings.Menu_SearchBar_SearchSomething}"
                  Text="{Binding SearchQuery}"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center">
@@ -165,7 +165,7 @@
                                 </StackPanel>
                             </ScrollViewer>
 
-                            <TextBlock Text="No result found"
+                            <TextBlock Text="{x:Static resources:Strings.Common_NoResult}"
                                        IsVisible="{Binding !HasAnyResults}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"

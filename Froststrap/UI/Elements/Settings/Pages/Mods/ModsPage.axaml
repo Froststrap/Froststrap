@@ -5,6 +5,7 @@
              xmlns:models="using:Froststrap.Models"
              xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:Froststrap.UI.ViewModels.Settings.Mods"
+             xmlns:resources="using:Froststrap.Resources"
              xmlns:controls="using:Froststrap.UI.Elements.Controls"
              xmlns:conv="using:Avalonia.Data.Converters"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
@@ -24,40 +25,40 @@
 
             <StackPanel Grid.Row="0">
                 <Grid ColumnDefinitions="*,*,*">
-                    <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="Community Mods"
-                                         Icon="ShoppingStore" Description="Explore user-created mods."
+                    <controls:CardAction Grid.Column="0" Margin="0,0,4,0" Header="{x:Static resources:Strings.Menu_CommunityMods_Title}"
+                                         Icon="ShoppingStore" Description="{x:Static resources:Strings.Menu_CommunityMods_Description}"
                                          Command="{Binding OpenCommunityModsCommand}" />
-                    <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="Preset Mods"
-                                         Icon="BookOpen" Description="Official built-in mods."
+                    <controls:CardAction Grid.Column="1" Margin="2,0,2,0" Header="{x:Static resources:Strings.Menu_PresetMods_Title}"
+                                         Icon="BookOpen" Description="{x:Static resources:Strings.Menu_PresetMods_Description}"
                                          Command="{Binding OpenPresetModsCommand}" />
-                    <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="Mod Generator"
-                                         Icon="PaintBrush" Description="Generate mods easily with a single click."
+                    <controls:CardAction Grid.Column="2" Margin="4,0,0,0" Header="{x:Static resources:Strings.Menu_ModGenerator_Title}"
+                                         Icon="PaintBrush" Description="{x:Static resources:Strings.Menu_ModGenerator_Description}"
                                          Command="{Binding OpenModGeneratorCommand}" />
                 </Grid>
 
                 <Separator Margin="0,8" />
 
-                <ui:InfoBar Message="Import mods by dragging the mod or importing, mods with lower priority get applied last making it win conflicts with other mods."
+                <ui:InfoBar Message="{x:Static resources:Strings.Menu_Mods_InfoBar}"
                             Severity="Informational"
                             IsOpen="True"
                             Margin="0,4"
                             IsClosable="False" />
 
                 <controls:IconButton Icon="Add"
-                                     Content="Add new mod"
+                                     Content="{x:Static resources:Strings.Menu_Mods_AddNewMod}"
                                      HorizontalAlignment="Stretch"
                                      Command="{Binding AddModCommand}"
                                      Margin="0,4" />
 
                 <Grid ColumnDefinitions="*,*" Margin="0,4,0,0">
                     <controls:IconButton Icon="Folder"
-                                         Content="Import Folder"
+                                         Content="{x:Static resources:Strings.Menu_Mods_ImportFolder}"
                                          HorizontalAlignment="Stretch"
                                          Margin="0,0,4,0"
                                          Command="{Binding ImportFolderCommand}"
                                          CommandParameter="{Binding $self}" />
                     <controls:IconButton Icon="FolderZip"
-                                         Content="Import ZIP"
+                                         Content="{x:Static resources:Strings.Menu_Mods_ImportZIP}"
                                          HorizontalAlignment="Stretch"
                                          Margin="4,0,0,0"
                                          Grid.Column="1"
@@ -100,14 +101,12 @@
                                                              Icon="ArrowUp"
                                                              Margin="0,0,4,0"
                                                              VerticalAlignment="Center"
-                                                             ToolTip.Tip="Move up"
                                                              Command="{Binding ((vm:ModsViewModel)DataContext).MoveUpCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                              CommandParameter="{Binding}" />
                                         <controls:IconButton Grid.Row="0" Grid.Column="1"
                                                              Icon="ArrowDown"
                                                              Margin="0,0,4,0"
                                                              VerticalAlignment="Center"
-                                                             ToolTip.Tip="Move down"
                                                              Command="{Binding ((vm:ModsViewModel)DataContext).MoveDownCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                                              CommandParameter="{Binding}" />
 
@@ -116,10 +115,10 @@
                                                        FontWeight="Medium"
                                                        TextTrimming="CharacterEllipsis" />
                                             <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,2,0,0">
-                                                <TextBlock Text="{Binding Priority, StringFormat='{}Priority: {0}'}"
+                                                <TextBlock Text="{Binding PriorityDisplay}"
                                                            FontSize="11"
                                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
-                                                <TextBlock Text="{Binding FileCount, StringFormat='{}{0} Files'}"
+                                                <TextBlock Text="{Binding FileCountDisplay}"
                                                            FontSize="11"
                                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}" />
                                             </StackPanel>
@@ -150,14 +149,14 @@
 
                 <Border Grid.Column="1" Padding="8,0,0,0">
                     <StackPanel>
-                        <TextBlock Text="Selected mod actions" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <TextBlock Text="{x:Static resources:Strings.Menu_Mods_SelectedModAction}" FontWeight="SemiBold" Margin="0,0,0,8" />
 
                         <StackPanel IsEnabled="{Binding SelectedMod, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
                             <TextBox Watermark="New name"
                                      Text="{Binding NewName}"
                                      Margin="0,4" />
                             <controls:IconButton Icon="Edit"
-                                                 Content="Rename"
+                                                 Content="{x:Static resources:Strings.Common_Rename}"
                                                  Command="{Binding RenameModCommand}"
                                                  HorizontalAlignment="Stretch"
                                                  Margin="0,4" />
@@ -165,7 +164,7 @@
                             <Grid ColumnDefinitions="*,*" Margin="0,4">
                                 <controls:IconButton Grid.Column="0"
                                                      Icon="Delete"
-                                                     Content="Delete"
+                                                     Content="{x:Static resources:Strings.Common_Delete}"
                                                      Classes="Danger"
                                                      Command="{Binding DeleteModCommand}"
                                                      CommandParameter="{Binding SelectedMod}"
@@ -173,7 +172,7 @@
                                                      Margin="0,0,2,0" />
                                 <controls:IconButton Grid.Column="1"
                                                      Icon="Folder"
-                                                     Content="Open Folder"
+                                                     Content="{x:Static resources:Strings.Common_OpenFolder}"
                                                      Command="{Binding OpenModFolderCommand}"
                                                      CommandParameter="{Binding SelectedMod}"
                                                      HorizontalAlignment="Stretch"
@@ -186,7 +185,7 @@
 
             <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                   IsVisible="{Binding !HasMods}">
-                <TextBlock Text="No mods installed."
+                <TextBlock Text="{x:Static resources:Strings.Menu_Mods_NoneInstalled}"
                            FontSize="20"
                            Opacity="0.5"
                            FontWeight="Bold"
@@ -199,7 +198,7 @@
               IsVisible="{Binding IsDragOver}"
               Background="#88000000">
 
-            <TextBlock Text="📦 Drop to import Zip / Folder"
+            <TextBlock Text="{x:Static resources:Strings.Menu_Mods_DragOverlay}"
                        FontSize="20"
                        FontWeight="SemiBold"
                        HorizontalAlignment="Center"

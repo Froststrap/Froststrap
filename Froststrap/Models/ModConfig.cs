@@ -40,6 +40,9 @@ namespace Froststrap.Models
         [JsonIgnore]
         public int FileCount => GetFileCount();
 
+        public string FileCountDisplay => $"{FileCount} {Strings.Common_Files}";
+        public string PriorityDisplay => $"{Strings.Common_Priority}: {Priority}";
+
         private int GetFileCount()
         {
             if (string.IsNullOrEmpty(FolderName)) return 0;

@@ -82,7 +82,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (Directory.Exists(folderPath))
                 Utilities.ShellExecute(folderPath, select: true);
             else
-                _ = Frontend.ShowMessageBox($"The folder for '{mod.FolderName}' no longer exists.", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_FolderDosentExist, mod.FolderName), MessageBoxImage.Error, MessageBoxButton.OK);
         }
 
         [RelayCommand]
@@ -117,33 +117,10 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             OnPropertyChanged(nameof(HasMods));
         }
 
-        private void CheckAndRemoveMissingMods()
-        {
-            var toRemove = Modifications
-                .Where(m => !Directory.Exists(Path.Combine(Paths.Modifications, m.FolderName)))
-                .ToList();
-
-            if (toRemove.Count == 0)
-                return;
-
-            string names = string.Join("\n", toRemove.Select(m => $"• {m.FolderName}"));
-            _ = Frontend.ShowMessageBox(
-                $"The following mod folders no longer exist on disk and will be removed:\n\n{names}",
-                MessageBoxImage.Warning,
-                MessageBoxButton.OK);
-
-            foreach (var mod in toRemove)
-                Modifications.Remove(mod);
-
-            UpdatePriorities();
-            OnPropertyChanged(nameof(HasMods));
-        }
-
         private void LoadModifications()
         {
             var sortedMods = App.State.Prop.Mods.OrderBy(x => x.Priority).ToList();
             Modifications = new ObservableCollection<ModConfig>(sortedMods);
-            CheckAndRemoveMissingMods();
             SelectedMod = Modifications.FirstOrDefault();
         }
 
@@ -206,7 +183,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (Path.GetFullPath(modPath) == Path.GetFullPath(Paths.Modifications))
                 return;
 
-            var result = await Frontend.ShowMessageBox($"Delete '{mod.FolderName}' permanently?", MessageBoxImage.Warning, MessageBoxButton.YesNo);
+            var result = await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_DeleteMod, mod.FolderName), MessageBoxImage.Warning, MessageBoxButton.YesNo);
             if (result != MessageBoxResult.Yes) return;
 
             try
@@ -237,13 +214,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             string safeName = string.Join("_", newName.Split(Path.GetInvalidFileNameChars())).Trim();
             if (string.IsNullOrWhiteSpace(safeName))
             {
-                _ = Frontend.ShowMessageBox("Invalid folder name.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Strings.Menu_Mods_InvalidFolderName, MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
             if (Modifications.Any(m => m.FolderName.Equals(safeName, StringComparison.OrdinalIgnoreCase) && m != SelectedMod))
             {
-                _ = Frontend.ShowMessageBox($"A mod named '{safeName}' already exists.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_AlreadyExist, safeName), MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -288,13 +265,11 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (parameter is not Avalonia.Visual control)
             {
-                await Frontend.ShowMessageBox("Unable to get the source control.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
             if (TopLevel.GetTopLevel(control) is not TopLevel topLevel)
             {
-                await Frontend.ShowMessageBox("TopLevel not available.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -310,13 +285,11 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             if (parameter is not Avalonia.Visual control)
             {
-                await Frontend.ShowMessageBox("Unable to get the source control.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
             if (TopLevel.GetTopLevel(control) is not TopLevel topLevel)
             {
-                await Frontend.ShowMessageBox("TopLevel not available.", MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -390,7 +363,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 }
                 else
                 {
-                    await Frontend.ShowMessageBox($"Unsupported file type or path: {path}", MessageBoxImage.Warning, MessageBoxButton.OK);
+                    await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_UnsupportedFile, path), MessageBoxImage.Warning, MessageBoxButton.OK);
                 }
             }
         }
@@ -401,7 +374,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             if (modRoot == null)
             {
                 await Frontend.ShowMessageBox(
-                    "Selected source does not contain a valid mod structure.\nIt must contain at least one of the following folders: content, ExtraContent, PlatformContent.",
+                    Strings.Menu_Mods_InvalidModFolders,
                     MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
@@ -443,7 +416,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             UpdatePriorities();
             OnPropertyChanged(nameof(HasMods));
 
-            await Frontend.ShowMessageBox($"Mod '{newFolderName}' imported successfully.", MessageBoxImage.Information, MessageBoxButton.OK);
+            await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_Imported, newFolderName), MessageBoxImage.Information, MessageBoxButton.OK);
         }
     }
 

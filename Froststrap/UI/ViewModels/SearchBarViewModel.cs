@@ -13,7 +13,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using FluentAvalonia.UI.Controls;
 using Froststrap.Integrations;
-using Froststrap.Models.APIs;
 using Froststrap.UI.Elements.Settings;
 using System.Collections.ObjectModel;
 
@@ -423,8 +422,8 @@ namespace Froststrap.UI.ViewModels
             });
 
             MainWindow.ShowGlobalNotification(
-            "Joining Game",
-            $"Joining {content.Name} using quick play.",
+            Strings.Menu_SearchBar_JoiningGame,
+            string.Format(Strings.Menu_SearchBar_JoiningName, content.Name),
             InfoBarSeverity.Success,
             5000,
             FluentIcons.Common.Symbol.Globe
@@ -440,8 +439,8 @@ namespace Froststrap.UI.ViewModels
             IsSearchFlyoutOpen = false;
 
             MainWindow.ShowGlobalNotification(
-                "Joining Game",
-                $"Auto mode: Finding best region for you...",
+                Strings.Menu_SearchBar_JoiningGame,
+                Strings.Menu_SearchBar_AutoJoin,
                 InfoBarSeverity.Informational,
                 5000,
                 FluentIcons.Common.Symbol.Globe
@@ -462,8 +461,8 @@ namespace Froststrap.UI.ViewModels
                 if (success)
                 {
                     MainWindow.ShowGlobalNotification(
-                        "Server Found",
-                        "Joining best server...",
+                        Strings.Menu_SearchBar_ServerFound,
+                        Strings.Menu_SearchBar_JoiningBest,
                         InfoBarSeverity.Success,
                         3000,
                         FluentIcons.Common.Symbol.Checkmark
@@ -472,8 +471,8 @@ namespace Froststrap.UI.ViewModels
                 else
                 {
                     MainWindow.ShowGlobalNotification(
-                        "Not Found",
-                        "Could not find a suitable server.",
+                        Strings.Common_NotFound,
+                        Strings.Menu_SearchBar_NoSuitableServer,
                         InfoBarSeverity.Warning,
                         5000,
                         FluentIcons.Common.Symbol.Warning
@@ -484,8 +483,8 @@ namespace Froststrap.UI.ViewModels
             {
                 App.Logger.WriteLine("SearchBarViewModel::RegionJoinGame", $"Exception: {ex.Message}");
                 MainWindow.ShowGlobalNotification(
-                    "Error",
-                    $"Failed to join game: {ex.Message}",
+                    Strings.Common_Error,
+                    string.Format(Strings.Menu_SearchBar_JoinError, ex.Message),
                     InfoBarSeverity.Error,
                     5000,
                     FluentIcons.Common.Symbol.AccessibilityError

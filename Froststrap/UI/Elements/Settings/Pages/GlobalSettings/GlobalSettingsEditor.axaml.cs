@@ -103,18 +103,18 @@ namespace Froststrap.UI.Elements.Settings.Pages.GlobalSettings
 
             if (entry.IsVector)
             {
-                if (header == "Vector X")
+                if (header == Strings.Menu_GBSEditor_VectorX)
                 {
                     entry.VectorX = newText;
                     App.GlobalSettings.Document?.XPathSelectElement($"{dynamicPath}/X")?.SetValue(newText);
                 }
-                else if (header == "Vector Y")
+                else if (header == Strings.Menu_GBSEditor_VectorY)
                 {
                     entry.VectorY = newText;
                     App.GlobalSettings.Document?.XPathSelectElement($"{dynamicPath}/Y")?.SetValue(newText);
                 }
             }
-            else if (header == "Value")
+            else if (header == Strings.Common_Value)
             {
                 entry.Value = newText;
                 App.GlobalSettings.Document?.XPathSelectElement(dynamicPath)?.SetValue(newText);
