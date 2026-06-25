@@ -74,10 +74,35 @@ namespace Froststrap.UI.ViewModels.Settings
 
         public static List<string> Languages => Locale.GetLanguages();
 
-        public static string SelectedLanguage
+        public string SelectedLanguage
         {
-            get => Locale.SupportedLocales[App.Settings.Prop.Locale];
-            set => App.Settings.Prop.Locale = Locale.GetIdentifierFromName(value);
+            get
+            {
+                string identifier = App.Settings.Prop.Locale;
+                if (identifier == "nil")
+                    return Strings.Common_SystemDefault;
+
+                return Locale.SupportedLocales.TryGetValue(identifier, out var value)
+                    ? value
+                    : Strings.Common_SystemDefault;
+            }
+            set
+            {
+                string? identifier = Locale.SupportedLocales.FirstOrDefault(x => x.Value == value).Key;
+
+                if (identifier == null && value == Strings.Common_SystemDefault)
+                    identifier = "nil";
+                else if (identifier == null)
+                    identifier = "nil";
+
+                if (App.Settings.Prop.Locale != identifier)
+                {
+                    App.Settings.Prop.Locale = identifier;
+                    OnPropertyChanged(nameof(SelectedLanguage));
+
+                    Locale.Set(identifier);
+                }
+            }
         }
 
         public ObservableCollection<BootstrapperIconEntry> Icons { get; set; } = [];
