@@ -1,9 +1,11 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Avalonia;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
@@ -59,6 +61,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ICommand ImportFolderCommand => new AsyncRelayCommand<object>(ImportFolderAsync);
         public ICommand ImportZipCommand => new AsyncRelayCommand<object>(ImportZipAsync);
         public ICommand RenameModCommand => new RelayCommand(RenameMod);
+        public ICommand ExportModCommand => new AsyncRelayCommand<ModConfig>(ExportModAsync);
 
         public ModsViewModel()
             : this(new DefaultModsDialogService())
@@ -245,7 +248,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         }
 
 
-        private static readonly HashSet<string> RequiredModFolders = [ "content", "ExtraContent", "PlatformContent" ];
+        private static readonly HashSet<string> RequiredModFolders = ["content", "ExtraContent", "PlatformContent"];
 
         private static string? ValidateModStructure(string rootDir)
         {
@@ -298,7 +301,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 {
                     AllowMultiple = true,
                     Title = "Select Mod ZIP Archive",
-                    FileTypeFilter = [ new FilePickerFileType("Zip Files") { Patterns = [ "*.zip" ] } ]
+                    FileTypeFilter = [new FilePickerFileType("Zip Files") { Patterns = ["*.zip"] }]
                 });
             if (files.Count == 0) return;
 
@@ -417,6 +420,64 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             OnPropertyChanged(nameof(HasMods));
 
             await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_Imported, newFolderName), MessageBoxImage.Information, MessageBoxButton.OK);
+        }
+
+        private async Task ExportModAsync(ModConfig? mod)
+        {
+            if (mod == null || string.IsNullOrWhiteSpace(mod.FolderName))
+            {
+                await Frontend.ShowMessageBox("Please select a mod to export.", MessageBoxImage.Warning);
+                return;
+            }
+
+            string modPath = Path.Combine(Paths.Modifications, mod.FolderName);
+            if (!Directory.Exists(modPath))
+            {
+                await Frontend.ShowMessageBox($"Mod folder '{mod.FolderName}' does not exist.", MessageBoxImage.Error);
+                return;
+            }
+
+            Window? mainWindow = null;
+
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                mainWindow = desktop.MainWindow;
+
+            if (mainWindow == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop2)
+                mainWindow = desktop2.Windows.FirstOrDefault(w => w.IsActive) as Window;
+
+            if (mainWindow == null)
+                return;
+
+            var file = await mainWindow.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+            {
+                Title = "Export Mod",
+                SuggestedFileName = $"{mod.FolderName}.zip",
+                DefaultExtension = ".zip",
+                FileTypeChoices =
+                [
+                    new FilePickerFileType("Zip Archive") { Patterns = ["*.zip"] }
+                ]
+            });
+
+            if (file == null) return;
+
+            try
+            {
+                await Task.Run(() =>
+                {
+                    if (File.Exists(file.Path.LocalPath))
+                        File.Delete(file.Path.LocalPath);
+
+                    System.IO.Compression.ZipFile.CreateFromDirectory(modPath, file.Path.LocalPath);
+                });
+
+                await Frontend.ShowMessageBox($"Mod '{mod.FolderName}' exported successfully!", MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::ExportMod", ex.Message);
+                await Frontend.ShowMessageBox($"Failed to export mod: {ex.Message}", MessageBoxImage.Error);
+            }
         }
     }
 

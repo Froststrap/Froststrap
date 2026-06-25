@@ -160,6 +160,8 @@
                                                  Command="{Binding RenameModCommand}"
                                                  HorizontalAlignment="Stretch"
                                                  Margin="0,4" />
+                            <controls:IconButton Command="{Binding ExportModCommand}" CommandParameter="{Binding SelectedMod}"
+                                                 Content="{x:Static resources:Strings.Common_Export}" Icon="ArrowExport" Margin="0,4" />
 
                             <Grid ColumnDefinitions="*,*" Margin="0,4">
                                 <controls:IconButton Grid.Column="0"
