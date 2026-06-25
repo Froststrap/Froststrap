@@ -923,6 +923,95 @@ namespace Froststrap
             return null;
         }
 
+        private static async Task ApplyFastFlagsBasedOnPlaceId(long placeId, string contentDirectory)
+        {
+            const string LOG_IDENT = "Bootstrapper::ApplyFastFlagsBasedOnPlaceId";
+
+            if (placeId <= 0)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "Invalid place ID, skipping FastFlag application.");
+                return;
+            }
+
+            if (!App.Settings.Prop.UseFastFlagManager)
+            {
+                App.Logger.WriteLine(LOG_IDENT, "FastFlag manager is disabled in settings.");
+                return;
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"Checking for FastFlag profile matching place ID: {placeId}");
+
+            foreach (var kvp in App.Settings.Prop.ProfilePlaceIds)
+            {
+                string profileName = kvp.Key;
+                List<string> placeIds = kvp.Value;
+
+                if (placeIds.Contains(placeId.ToString()))
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Found matching profile '{profileName}' for place ID {placeId}");
+
+                    try
+                    {
+                        App.FastFlags.LoadProfile(profileName, clearFlags: true);
+
+                        string profilesDirectory = Paths.SavedFlagProfiles;
+                        string profilePath = Path.Combine(profilesDirectory, profileName);
+
+                        if (!File.Exists(profilePath))
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Profile file '{profileName}' not found at {profilePath}");
+                            return;
+                        }
+
+                        string profileJson = File.ReadAllText(profilePath);
+                        var flags = JsonSerializer.Deserialize<Dictionary<string, object>>(profileJson);
+
+                        if (flags == null || flags.Count == 0)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, $"Profile '{profileName}' is empty or invalid");
+                            return;
+                        }
+
+                        string clientSettingsDir = Path.Combine(contentDirectory, "ClientSettings");
+                        Directory.CreateDirectory(clientSettingsDir);
+                        string destPath = Path.Combine(clientSettingsDir, "ClientAppSettings.json");
+
+                        Dictionary<string, object> existingSettings = [];
+                        if (File.Exists(destPath))
+                        {
+                            try
+                            {
+                                string existingJson = File.ReadAllText(destPath);
+                                existingSettings = JsonSerializer.Deserialize<Dictionary<string, object>>(existingJson) ?? [];
+                            }
+                            catch (Exception ex)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, $"Failed to read existing ClientAppSettings.json: {ex.Message}");
+                            }
+                        }
+
+                        foreach (var flag in flags)
+                        {
+                            existingSettings[flag.Key] = flag.Value;
+                        }
+
+                        string mergedJson = JsonSerializer.Serialize(existingSettings, _indentedJsonOptions);
+                        await File.WriteAllTextAsync(destPath, mergedJson);
+
+                        App.Logger.WriteLine(LOG_IDENT, $"Successfully applied FastFlag profile '{profileName}' for place ID {placeId} ({flags.Count} flags)");
+                        App.Logger.WriteLine(LOG_IDENT, $"Updated versions folder: {destPath}");
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Failed to apply FastFlag profile '{profileName}': {ex.Message}");
+                    }
+                }
+            }
+
+            App.Logger.WriteLine(LOG_IDENT, $"No FastFlag profile found for place ID {placeId}");
+        }
+
         private async Task StartRoblox()
         {
             const string LOG_IDENT = "Bootstrapper::StartRoblox";
@@ -934,80 +1023,97 @@ namespace Froststrap
                 if (_joinData.JoinType == GameJoinType.Unknown)
                     App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
 
-                App.Logger.WriteLine(LOG_IDENT, $"Join origin: {_joinData.JoinOrigin}");
+                App.Logger.WriteLine(LOG_IDENT, $"Join Type: {_joinData.JoinType}");
+                App.Logger.WriteLine(LOG_IDENT, $"Join Origin: {_joinData.JoinOrigin ?? "null"}");
+                App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
+                App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
 
-                bool isFollowUser = false;
-
-                // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
-                // idk why they dont use it when the user is following a friend, but ok
-                if (App.Settings.Prop.EnableBetterMatchmaking &&
-                    (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+                if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
                 {
-                    App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, showing dialog");
-
-                    var result = await Frontend.ShowMessageBox(
-                        String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
-                        MessageBoxImage.Question,
-                        MessageBoxButton.YesNo
-                    );
-
-                    if (result == MessageBoxResult.Yes)
-                        isFollowUser = true;
+                    string contentDirectory = OperatingSystem.IsMacOS()
+                        ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                        : _latestVersionDirectory;
+                    await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
                 }
 
-                string? serverid = null;
-                bool matchmakingCancelled = false;
-
-                _matchmakingInProgress = true;
-                _skipMatchmaking = false;
-                _matchmakingCts = new CancellationTokenSource();
-
-                Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
-
-                try
+                bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
+                if (isRobloxUri)
+                    App.Logger.WriteLine(LOG_IDENT, "Joining through roblox:// URI - skipping Better Matchmaking");
+                else
                 {
+                    bool isFollowUser = false;
+
+                    // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
+                    // idk why they dont use it when the user is following a friend, but ok
                     if (App.Settings.Prop.EnableBetterMatchmaking &&
-                        _joinData.JoinType == GameJoinType.RequestGame &&
-                        _joinData.PlaceId != null &&
-                        !isFollowUser)
+                        (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
                     {
-                        if (_skipMatchmaking)
+                        App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, showing dialog");
+
+                        var result = await Frontend.ShowMessageBox(
+                            String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                            MessageBoxImage.Question,
+                            MessageBoxButton.YesNo
+                        );
+
+                        if (result == MessageBoxResult.Yes)
+                            isFollowUser = true;
+                    }
+
+                    string? serverid = null;
+                    bool matchmakingCancelled = false;
+
+                    _matchmakingInProgress = true;
+                    _skipMatchmaking = false;
+                    _matchmakingCts = new CancellationTokenSource();
+
+                    Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
+
+                    try
+                    {
+                        if (App.Settings.Prop.EnableBetterMatchmaking &&
+                            _joinData.JoinType == GameJoinType.RequestGame &&
+                            _joinData.PlaceId != null &&
+                            !isFollowUser)
                         {
-                            App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
-                            matchmakingCancelled = true;
-                        }
-                        else
-                        {
-                            serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                            if (_skipMatchmaking)
+                            {
+                                App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
+                                matchmakingCancelled = true;
+                            }
+                            else
+                            {
+                                serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                            }
                         }
                     }
-                }
-                catch (OperationCanceledException)
-                {
-                    App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
-                    matchmakingCancelled = true;
-                }
-                catch (HttpRequestException ex)
-                {
-                    _ = Frontend.ShowConnectivityDialog(
-                        String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                        Strings.Dialog_Connectivity_MatchmakingFailed,
-                        MessageBoxImage.Warning,
-                        ex
-                    );
-                }
-                finally
-                {
-                    Dialog?.CancelButtonText = Strings.Common_Cancel;
-                    _matchmakingInProgress = false;
-                    _matchmakingCts?.Dispose();
-                    _matchmakingCts = null;
-                }
+                    catch (OperationCanceledException)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
+                        matchmakingCancelled = true;
+                    }
+                    catch (HttpRequestException ex)
+                    {
+                        _ = Frontend.ShowConnectivityDialog(
+                            String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                            Strings.Dialog_Connectivity_MatchmakingFailed,
+                            MessageBoxImage.Warning,
+                            ex
+                        );
+                    }
+                    finally
+                    {
+                        Dialog?.CancelButtonText = Strings.Common_Cancel;
+                        _matchmakingInProgress = false;
+                        _matchmakingCts?.Dispose();
+                        _matchmakingCts = null;
+                    }
 
-                if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
-                {
-                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-                    _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                    if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
+                    {
+                        string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+                        _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                    }
                 }
 
                 if (!Deployment.IsDefaultRobloxDomain && string.IsNullOrEmpty(_launchCommandLine))
@@ -1123,80 +1229,97 @@ namespace Froststrap
             if (_joinData.JoinType == GameJoinType.Unknown)
                 App.Logger.WriteLine(LOG_IDENT, "Unable to get join data");
 
-            App.Logger.WriteLine(LOG_IDENT, $"Join origin: {_joinData.JoinOrigin}");
+            App.Logger.WriteLine(LOG_IDENT, $"Join Type: {_joinData.JoinType}");
+            App.Logger.WriteLine(LOG_IDENT, $"Join Origin: {_joinData.JoinOrigin ?? "null"}");
+            App.Logger.WriteLine(LOG_IDENT, $"Place ID: {_joinData.PlaceId?.ToString() ?? "null"}");
+            App.Logger.WriteLine(LOG_IDENT, $"Job ID: {_joinData.JobId ?? "null"}");
 
-            bool isFollowUser = false;
-
-            // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
-            // idk why they dont use it when the user is following a friend, but ok
-            if (App.Settings.Prop.EnableBetterMatchmaking &&
-                (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
+            if (_joinData.PlaceId.HasValue && _joinData.PlaceId.Value > 0)
             {
-                App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend — showing dialog");
-
-                var result = await Frontend.ShowMessageBox(
-                    String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
-                    MessageBoxImage.Question,
-                    MessageBoxButton.YesNo
-                );
-
-                if (result == MessageBoxResult.Yes)
-                    isFollowUser = true;
+                string contentDirectory = OperatingSystem.IsMacOS()
+                    ? Path.Combine(_latestVersionDirectory, AppData.ExecutableName, "Contents", "Resources")
+                    : _latestVersionDirectory;
+                await ApplyFastFlagsBasedOnPlaceId(_joinData.PlaceId.Value, contentDirectory);
             }
 
-            string? serverid = null;
-            bool matchmakingCancelled = false;
-
-            _matchmakingInProgress = true;
-            _skipMatchmaking = false;
-            _matchmakingCts = new CancellationTokenSource();
-
-            Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
-
-            try
+            bool isRobloxUri = _launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal);
+            if (isRobloxUri)
+                App.Logger.WriteLine(LOG_IDENT, "Joining through roblox:// URI - skipping Better Matchmaking");
+            else
             {
+                bool isFollowUser = false;
+
+                // _joinData.JoinType == GameJoinType.RequestFollowUser just doesnt work at all
+                // idk why they dont use it when the user is following a friend, but ok
                 if (App.Settings.Prop.EnableBetterMatchmaking &&
-                    _joinData.JoinType == GameJoinType.RequestGame &&
-                    _joinData.PlaceId != null &&
-                    !isFollowUser)
+                    (_joinData.JoinOrigin == "friendServerListJoin" || _joinData.JoinOrigin == "placesListInHomePage"))
                 {
-                    if (_skipMatchmaking)
+                    App.Logger.WriteLine(LOG_IDENT, "User is trying to join a friend, showing dialog");
+
+                    var result = await Frontend.ShowMessageBox(
+                        String.Format(Strings.Menu_Bootstrapper_Experimental_BetterMatchmaking_FollowUser),
+                        MessageBoxImage.Question,
+                        MessageBoxButton.YesNo
+                    );
+
+                    if (result == MessageBoxResult.Yes)
+                        isFollowUser = true;
+                }
+
+                string? serverid = null;
+                bool matchmakingCancelled = false;
+
+                _matchmakingInProgress = true;
+                _skipMatchmaking = false;
+                _matchmakingCts = new CancellationTokenSource();
+
+                Dialog?.CancelButtonText = Strings.Bootstrapper_CancelButton_Skip;
+
+                try
+                {
+                    if (App.Settings.Prop.EnableBetterMatchmaking &&
+                        _joinData.JoinType == GameJoinType.RequestGame &&
+                        _joinData.PlaceId != null &&
+                        !isFollowUser)
                     {
-                        App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
-                        matchmakingCancelled = true;
-                    }
-                    else
-                    {
-                        serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                        if (_skipMatchmaking)
+                        {
+                            App.Logger.WriteLine(LOG_IDENT, "Matchmaking was skipped due to user cancellation.");
+                            matchmakingCancelled = true;
+                        }
+                        else
+                        {
+                            serverid = await GetBetterMatchmakingServerID(_matchmakingCts.Token);
+                        }
                     }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
-                matchmakingCancelled = true;
-            }
-            catch (HttpRequestException ex)
-            {
-                _ = Frontend.ShowConnectivityDialog(
-                    String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
-                    Strings.Dialog_Connectivity_MatchmakingFailed,
-                    MessageBoxImage.Warning,
-                    ex
-                );
-            }
-            finally
-            {
-                Dialog?.CancelButtonText = Strings.Common_Cancel;
-                _matchmakingInProgress = false;
-                _matchmakingCts?.Dispose();
-                _matchmakingCts = null;
-            }
+                catch (OperationCanceledException)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, "Better Matchmaking was Skipped, joining original server.");
+                    matchmakingCancelled = true;
+                }
+                catch (HttpRequestException ex)
+                {
+                    _ = Frontend.ShowConnectivityDialog(
+                        String.Format(Strings.Dialog_Connectivity_UnableToConnect, "rovalra.com"),
+                        Strings.Dialog_Connectivity_MatchmakingFailed,
+                        MessageBoxImage.Warning,
+                        ex
+                    );
+                }
+                finally
+                {
+                    Dialog?.CancelButtonText = Strings.Common_Cancel;
+                    _matchmakingInProgress = false;
+                    _matchmakingCts?.Dispose();
+                    _matchmakingCts = null;
+                }
 
-            if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
-            {
-                string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
-                _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                if (!matchmakingCancelled && !string.IsNullOrEmpty(serverid) && _joinData.PlaceId is not null)
+                {
+                    string placeLauncherUrl = UrlBuilder.BuildPlacelauncherUrl((long)_joinData.PlaceId, serverid);
+                    _launchCommandLine = _launchCommandLine.Replace(_joinData.PlaceLauncherUrl, HttpUtility.UrlEncode(placeLauncherUrl));
+                }
             }
 
             SetStatus(Strings.Bootstrapper_Status_StartingSober);
@@ -4468,92 +4591,92 @@ Windows Registry Editor Version 5.00
             }
         }
 
-		private async Task<bool> ExtractPackage(Package package, List<string>? files = null)
-		{
-			const string LOG_IDENT = "Bootstrapper::ExtractPackage";
-			int attempts = 0;
-			const int maxAttempts = 3;
+        private async Task<bool> ExtractPackage(Package package, List<string>? files = null)
+        {
+            const string LOG_IDENT = "Bootstrapper::ExtractPackage";
+            int attempts = 0;
+            const int maxAttempts = 3;
 
-			while (attempts < maxAttempts)
-			{
-				try
-				{
-					attempts++;
+            while (attempts < maxAttempts)
+            {
+                try
+                {
+                    attempts++;
 
-					string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
-					if (packageDir is null)
-					{
-						App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} not found in package map, skipping.");
-						return true;
-					}
+                    string? packageDir = PackageDirectoryMap.GetValueOrDefault(package.Name);
+                    if (packageDir is null)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"WARNING: {package.Name} not found in package map, skipping.");
+                        return true;
+                    }
 
-					string targetFolder = Path.Combine(_latestVersionDirectory, packageDir);
-					Directory.CreateDirectory(targetFolder);
+                    string targetFolder = Path.Combine(_latestVersionDirectory, packageDir);
+                    Directory.CreateDirectory(targetFolder);
 
-					if (files != null && files.Count > 0)
-					{
-						foreach (string relativePath in files)
-						{
-							string fullPath = Path.Combine(targetFolder, relativePath);
-							if (File.Exists(fullPath))
-								File.SetAttributes(fullPath, FileAttributes.Normal);
-						}
-					}
-					else
-					{
-						if (Directory.Exists(targetFolder))
-						{
-							foreach (string file in Directory.GetFiles(targetFolder, "*", SearchOption.AllDirectories))
-								File.SetAttributes(file, FileAttributes.Normal);
-						}
-					}
+                    if (files != null && files.Count > 0)
+                    {
+                        foreach (string relativePath in files)
+                        {
+                            string fullPath = Path.Combine(targetFolder, relativePath);
+                            if (File.Exists(fullPath))
+                                File.SetAttributes(fullPath, FileAttributes.Normal);
+                        }
+                    }
+                    else
+                    {
+                        if (Directory.Exists(targetFolder))
+                        {
+                            foreach (string file in Directory.GetFiles(targetFolder, "*", SearchOption.AllDirectories))
+                                File.SetAttributes(file, FileAttributes.Normal);
+                        }
+                    }
 
-					string? fileFilter = null;
-					if (files != null && files.Count > 0)
-					{
-						var regexList = new List<string>();
-						foreach (string file in files)
-							regexList.Add("^" + Regex.Escape(file) + "$");
-						fileFilter = string.Join(';', regexList);
-					}
+                    string? fileFilter = null;
+                    if (files != null && files.Count > 0)
+                    {
+                        var regexList = new List<string>();
+                        foreach (string file in files)
+                            regexList.Add("^" + Regex.Escape(file) + "$");
+                        fileFilter = string.Join(';', regexList);
+                    }
 
-					App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
-					var fastZip = new FastZip(_fastZipEvents);
-					fastZip.ExtractZip(package.DownloadPath, targetFolder, fileFilter);
-					App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
-					return true;
-				}
-				catch (Exception ex)
-				{
-					App.Logger.WriteLine(LOG_IDENT, $"Extraction failed on attempt {attempts}: {ex.Message}");
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracting {package.Name} (Attempt {attempts}/{maxAttempts})...");
+                    var fastZip = new FastZip(_fastZipEvents);
+                    fastZip.ExtractZip(package.DownloadPath, targetFolder, fileFilter);
+                    App.Logger.WriteLine(LOG_IDENT, $"Finished extracting {package.Name}");
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    App.Logger.WriteLine(LOG_IDENT, $"Extraction failed on attempt {attempts}: {ex.Message}");
 
-					if (ex.Message.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
-					{
-						App.Logger.WriteLine(LOG_IDENT, $"Ignoring non‑critical extraction failure for font file.");
-						return true;
-					}
+                    if (ex.Message.EndsWith(".ttf", StringComparison.OrdinalIgnoreCase))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, $"Ignoring non‑critical extraction failure for font file.");
+                        return true;
+                    }
 
-					if (File.Exists(package.DownloadPath))
-					{
-						App.Logger.WriteLine(LOG_IDENT, "Deleting corrupted package for retry...");
-						File.Delete(package.DownloadPath);
-					}
+                    if (File.Exists(package.DownloadPath))
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Deleting corrupted package for retry...");
+                        File.Delete(package.DownloadPath);
+                    }
 
-					if (attempts >= maxAttempts)
-					{
-						App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Giving up.");
-						return false;
-					}
+                    if (attempts >= maxAttempts)
+                    {
+                        App.Logger.WriteLine(LOG_IDENT, "Max extraction attempts reached. Giving up.");
+                        return false;
+                    }
 
-					App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
-					SetStatus(string.Format(Strings.Bootstrapper_Status_RetryingPackage, package.Name));
-					await Task.Delay(1000);
-					await DownloadPackage(package);
-				}
-			}
+                    App.Logger.WriteLine(LOG_IDENT, "Retrying download...");
+                    SetStatus(string.Format(Strings.Bootstrapper_Status_RetryingPackage, package.Name));
+                    await Task.Delay(1000);
+                    await DownloadPackage(package);
+                }
+            }
 
-			return false;
-		}
-		#endregion
-	}
+            return false;
+        }
+        #endregion
+    }
 }

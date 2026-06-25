@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Froststrap.UI.Elements.Base;
+using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace Froststrap.UI.Elements.Dialogs
@@ -12,7 +13,8 @@ namespace Froststrap.UI.Elements.Dialogs
     {
         public MessageBoxResult Result = MessageBoxResult.Cancel;
 
-        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true  };
+        private static readonly JsonSerializerOptions _jsonOptions = new() { WriteIndented = true };
+        private ObservableCollection<string> _placeIds = [];
 
         public FlagProfilesDialog()
         {
@@ -25,11 +27,13 @@ namespace Froststrap.UI.Elements.Dialogs
 
             LoadProfile.SelectionChanged += (s, e) => UpdateUiState();
             LoadPresetProfile.SelectionChanged += (s, e) => UpdateUiState();
+            PlaceProfile.SelectionChanged += (s, e) => UpdatePlaceIdsUiState();
         }
 
         private void LoadProfiles()
         {
             LoadProfile.Items.Clear();
+            PlaceProfile.Items.Clear();
 
             string profilesDirectory = Paths.SavedFlagProfiles;
 
@@ -42,11 +46,12 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 string ProfileName = Path.GetFileName(rawProfileName);
                 LoadProfile.Items.Add(ProfileName);
+                PlaceProfile.Items.Add(ProfileName);
             }
 
             LoadProfileEmptyText.IsVisible = LoadProfile.Items.Count == 0;
 
-            RenamePanel.IsVisible = LoadProfile.Items.Count == 0;
+            RenamePanel.IsVisible = LoadProfile.Items.Count > 0;
 
             RenameTextBox.Text = string.Empty;
             RenameTextBox.IsEnabled = false;
@@ -73,11 +78,109 @@ namespace Froststrap.UI.Elements.Dialogs
             UpdateUiState();
         }
 
+        private void PlaceProfile_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdatePlaceIdsUiState();
+        }
+
+        private void UpdatePlaceIdsUiState()
+        {
+            if (PlaceProfile.SelectedItem is not string selectedProfile)
+            {
+                _placeIds = [];
+                PlaceIdsListBox.ItemsSource = null;
+                AddPlaceButton.IsEnabled = false;
+                RemovePlaceButton.IsEnabled = false;
+                PlaceIdInfoText.Text = Strings.Menu_FlagProfiles_SelectProfile;
+                return;
+            }
+
+            if (App.Settings.Prop.ProfilePlaceIds.TryGetValue(selectedProfile, out var placeIds))
+            {
+                _placeIds = new ObservableCollection<string>(placeIds);
+            }
+            else
+            {
+                _placeIds = [];
+            }
+
+            PlaceIdsListBox.ItemsSource = _placeIds;
+            AddPlaceButton.IsEnabled = true;
+            RemovePlaceButton.IsEnabled = false;
+            PlaceIdInfoText.Text = string.Format(Strings.Menu_FlagProfiles_ManagingPlaceIds, selectedProfile, _placeIds.Count);
+        }
+
+        private void AddPlaceButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (PlaceProfile.SelectedItem is not string selectedProfile)
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileFirst, MessageBoxImage.Warning, MessageBoxButton.OK);
+                return;
+            }
+
+            string placeId = NewPlaceIdTextBox.Text?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(placeId))
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_EnterPlaceId, MessageBoxImage.Warning, MessageBoxButton.OK);
+                return;
+            }
+
+            if (!Regex.IsMatch(placeId, @"^\d+$"))
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_PlaceIdNumeric, MessageBoxImage.Warning, MessageBoxButton.OK);
+                return;
+            }
+
+            if (_placeIds.Contains(placeId))
+            {
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_PlaceIdExists, MessageBoxImage.Warning, MessageBoxButton.OK);
+                return;
+            }
+
+            _placeIds.Add(placeId);
+            NewPlaceIdTextBox.Text = string.Empty;
+            SavePlaceIds(selectedProfile);
+            UpdatePlaceIdsUiState();
+        }
+
+        private void RemovePlaceButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (PlaceIdsListBox.SelectedItem is not string selectedPlaceId)
+                return;
+
+            if (PlaceProfile.SelectedItem is not string selectedProfile)
+                return;
+
+            _placeIds.Remove(selectedPlaceId);
+            SavePlaceIds(selectedProfile);
+            UpdatePlaceIdsUiState();
+        }
+
+        private void SavePlaceIds(string profileName)
+        {
+            if (_placeIds.Count > 0)
+            {
+                App.Settings.Prop.ProfilePlaceIds[profileName] = [.. _placeIds];
+            }
+            else
+            {
+                App.Settings.Prop.ProfilePlaceIds.Remove(profileName);
+            }
+
+            App.Settings.SaveSetting("ProfilePlaceIds");
+        }
+
+        private void PlaceIdsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RemovePlaceButton.IsEnabled = PlaceIdsListBox.SelectedItem != null;
+        }
+
         private void RenameButton_Click(object sender, RoutedEventArgs e)
         {
             if (LoadProfile.SelectedItem is not string oldProfileName)
             {
-                _ = Frontend.ShowMessageBox("Please select a profile to rename.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileRename, MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -85,7 +188,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (string.IsNullOrWhiteSpace(newName))
             {
-                _ = Frontend.ShowMessageBox("New profile name cannot be empty.", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_NameCannotBeEmpty, MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -93,7 +196,7 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 if (newName.Contains(c))
                 {
-                    _ = Frontend.ShowMessageBox($"Profile name contains invalid character '{c}'.", MessageBoxImage.Error, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_InvalidCharacter, c), MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
             }
@@ -104,19 +207,28 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (File.Exists(newPath))
             {
-                _ = Frontend.ShowMessageBox("A profile with that name already exists.", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_ProfileExists, MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
             try
             {
                 File.Move(oldPath, newPath);
+
+                if (App.Settings.Prop.ProfilePlaceIds.TryGetValue(oldProfileName, out var placeIds))
+                {
+                    App.Settings.Prop.ProfilePlaceIds.Remove(oldProfileName);
+                    App.Settings.Prop.ProfilePlaceIds[newName] = placeIds;
+                    App.Settings.SaveSetting("ProfilePlaceIds");
+                }
+
                 LoadProfiles();
                 LoadProfile.SelectedItem = newName;
+                PlaceProfile.SelectedItem = newName;
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox($"Failed to rename profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_RenameFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -124,7 +236,7 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             if (LoadProfile.SelectedItem is not string selectedProfile)
             {
-                _ = Frontend.ShowMessageBox("Please select a profile to copy.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileCopy, MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -133,7 +245,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (!File.Exists(profilePath))
             {
-                _ = Frontend.ShowMessageBox("Selected profile file not found.", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_ProfileNotFound, MessageBoxImage.Error, MessageBoxButton.OK);
                 return;
             }
 
@@ -144,7 +256,7 @@ namespace Froststrap.UI.Elements.Dialogs
 
                 if (flags == null)
                 {
-                    _ = Frontend.ShowMessageBox("Failed to parse the selected profile.", MessageBoxImage.Error, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_ParseFailed, MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
 
@@ -196,16 +308,15 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox($"Failed to copy profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_CopyFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
-
 
         private void UpdateButton_Click(object sender, RoutedEventArgs e)
         {
             if (LoadProfile.SelectedItem is not string selectedProfile)
             {
-                _ = Frontend.ShowMessageBox("Please select a profile to update.", MessageBoxImage.Warning, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_SelectProfileUpdate, MessageBoxImage.Warning, MessageBoxButton.OK);
                 return;
             }
 
@@ -214,7 +325,7 @@ namespace Froststrap.UI.Elements.Dialogs
                 var currentFlags = App.FastFlags.Prop;
                 if (currentFlags == null)
                 {
-                    _ = Frontend.ShowMessageBox("Failed to get current FastFlags.", MessageBoxImage.Error, MessageBoxButton.OK);
+                    _ = Frontend.ShowMessageBox(Strings.Menu_FlagProfiles_GetFlagsFailed, MessageBoxImage.Error, MessageBoxButton.OK);
                     return;
                 }
 
@@ -230,7 +341,7 @@ namespace Froststrap.UI.Elements.Dialogs
             }
             catch (Exception ex)
             {
-                _ = Frontend.ShowMessageBox($"Failed to update profile:\n{ex.Message}", MessageBoxImage.Error, MessageBoxButton.OK);
+                _ = Frontend.ShowMessageBox(string.Format(Strings.Menu_FlagProfiles_UpdateFailed, ex.Message), MessageBoxImage.Error, MessageBoxButton.OK);
             }
         }
 
@@ -274,6 +385,10 @@ namespace Froststrap.UI.Elements.Dialogs
             {
                 OkButton.IsEnabled = LoadPresetProfile.SelectedItem != null;
             }
+            else if (index == 3)
+            {
+                OkButton.IsEnabled = true;
+            }
         }
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
@@ -292,12 +407,13 @@ namespace Froststrap.UI.Elements.Dialogs
                         App.FastFlags.LoadProfile(selectedProfile, clearFlags: ClearFlags.IsChecked == true);
                     }
                     break;
-
                 case 2: // Preset Flags tab
                     if (LoadPresetProfile.SelectedItem is string selectedPreset)
                     {
                         App.FastFlags.LoadPresetProfile(selectedPreset, clearFlags: true);
                     }
+                    break;
+                case 3:
                     break;
             }
 
@@ -311,6 +427,9 @@ namespace Froststrap.UI.Elements.Dialogs
 
             if (string.IsNullOrEmpty(ProfileName))
                 return;
+
+            App.Settings.Prop.ProfilePlaceIds.Remove(ProfileName);
+            App.Settings.SaveSetting("ProfilePlaceIds");
 
             await FastFlagManager.DeleteProfile(ProfileName);
             LoadProfiles();

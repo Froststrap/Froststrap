@@ -4969,11 +4969,209 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Profiles Found.
+        ///   Looks up a localized string similar to Failed to copy profile:\n{0}.
+        /// </summary>
+        public static string Menu_FlagProfiles_CopyFailed {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.CopyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Selected.
+        /// </summary>
+        public static string Menu_FlagProfiles_DeleteSelected {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.DeleteSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please enter a place ID..
+        /// </summary>
+        public static string Menu_FlagProfiles_EnterPlaceId {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.EnterPlaceId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to get current FastFlags..
+        /// </summary>
+        public static string Menu_FlagProfiles_GetFlagsFailed {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.GetFlagsFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile name contains invalid character &apos;{0}&apos;..
+        /// </summary>
+        public static string Menu_FlagProfiles_InvalidCharacter {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.InvalidCharacter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Managing place IDs for: {0} ({1} IDs).
+        /// </summary>
+        public static string Menu_FlagProfiles_ManagingPlaceIds {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.ManagingPlaceIds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New profile name cannot be empty..
+        /// </summary>
+        public static string Menu_FlagProfiles_NameCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.NameCannotBeEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Profiles Found..
         /// </summary>
         public static string Menu_FlagProfiles_NoProfileFound {
             get {
                 return ResourceManager.GetString("Menu.FlagProfiles.NoProfileFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to parse the selected profile..
+        /// </summary>
+        public static string Menu_FlagProfiles_ParseFailed {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.ParseFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This place ID is already added to the profile..
+        /// </summary>
+        public static string Menu_FlagProfiles_PlaceIdExists {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.PlaceIdExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place ID must be interger..
+        /// </summary>
+        public static string Menu_FlagProfiles_PlaceIdNumeric {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.PlaceIdNumeric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Place IDs.
+        /// </summary>
+        public static string Menu_FlagProfiles_PlaceIdsTab {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.PlaceIdsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter Place ID (e.g., 123456789).
+        /// </summary>
+        public static string Menu_FlagProfiles_PlaceIdWatermark {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.PlaceIdWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A profile with that name already exists..
+        /// </summary>
+        public static string Menu_FlagProfiles_ProfileExists {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.ProfileExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected profile file not found..
+        /// </summary>
+        public static string Menu_FlagProfiles_ProfileNotFound {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.ProfileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove Selected.
+        /// </summary>
+        public static string Menu_FlagProfiles_RemoveSelected {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.RemoveSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rename profile:\n{0}.
+        /// </summary>
+        public static string Menu_FlagProfiles_RenameFailed {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.RenameFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a profile to manage place IDs.
+        /// </summary>
+        public static string Menu_FlagProfiles_SelectProfile {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.SelectProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a profile to copy..
+        /// </summary>
+        public static string Menu_FlagProfiles_SelectProfileCopy {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.SelectProfileCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a profile first..
+        /// </summary>
+        public static string Menu_FlagProfiles_SelectProfileFirst {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.SelectProfileFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select a profile to manage its place IDs:.
+        /// </summary>
+        public static string Menu_FlagProfiles_SelectProfileLabel {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.SelectProfileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a profile to rename..
+        /// </summary>
+        public static string Menu_FlagProfiles_SelectProfileRename {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.SelectProfileRename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a profile to update..
+        /// </summary>
+        public static string Menu_FlagProfiles_SelectProfileUpdate {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.SelectProfileUpdate", resourceCulture);
             }
         }
         
@@ -4983,6 +5181,15 @@ namespace Froststrap.Resources {
         public static string Menu_FlagProfiles_Title {
             get {
                 return ResourceManager.GetString("Menu.FlagProfiles.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update profile:\n{0}.
+        /// </summary>
+        public static string Menu_FlagProfiles_UpdateFailed {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.UpdateFailed", resourceCulture);
             }
         }
         

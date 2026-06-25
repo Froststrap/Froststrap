@@ -3,18 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:ic="using:FluentIcons.Avalonia.Fluent"
              xmlns:model="clr-namespace:Froststrap.Models"
-			 xmlns:resources="using:Froststrap.Resources"
+             xmlns:resources="using:Froststrap.Resources"
              xmlns:local="clr-namespace:Froststrap.UI.Elements.Settings.Pages.GlobalSettings"
              x:DataType="local:GlobalSettingsEditor">
 
     <Grid RowDefinitions="Auto,*" Margin="14">
-        <Grid Grid.Row="0" Height="40" Margin="0,0,0,10">
-            <TextBox Name="SearchTextBox" 
-                     VerticalContentAlignment="Center" 
-                     Watermark="Search settings..." 
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <TextBox Name="SearchTextBox"
+                     VerticalContentAlignment="Center"
+                     Watermark="Search settings..."
                      TextChanged="SearchTextBox_TextChanged">
                 <TextBox.InnerLeftContent>
-                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
+                    <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="16" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                 </TextBox.InnerLeftContent>
             </TextBox>
         </Grid>

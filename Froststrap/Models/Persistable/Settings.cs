@@ -44,6 +44,7 @@ namespace Froststrap.Models.Persistable
 
         // FastFlag Editor/Settings
         public bool UseFastFlagManager { get; set; } = true;
+        public Dictionary<string, List<string>> ProfilePlaceIds { get; set; } = [];
 
         // Appearance Page
         public BootstrapperStyle BootstrapperStyle { get; set; } = BootstrapperStyle.FluentAeroDialog;

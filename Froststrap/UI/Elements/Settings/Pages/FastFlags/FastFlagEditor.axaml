@@ -54,14 +54,13 @@
                            FontSize="12"
                            Text="{x:Static resources:Strings.Menu_FastFlagEditor_TotalFlags}" />
 
-                <Grid Grid.Row="1" Height="40">
+                <Grid Grid.Row="1">
                     <TextBox Name="SearchTextBox"
-                             Height="40"
                              VerticalContentAlignment="Center"
                              Watermark="{x:Static resources:Strings.Common_Search}"
                              TextChanged="SearchTextBox_TextChanged">
                         <TextBox.InnerLeftContent>
-                            <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
+                            <ic:SymbolIcon Foreground="{DynamicResource TextFillColorPrimaryBrush}" FontSize="16" Symbol="Search" Margin="10,0,0,0" VerticalAlignment="Center" />
                         </TextBox.InnerLeftContent>
                     </TextBox>
 

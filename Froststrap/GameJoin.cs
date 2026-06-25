@@ -38,8 +38,50 @@ namespace Froststrap
 
             GameJoinData joinData = new();
 
-            if (!launchCommandLine.StartsWith("roblox-player:", StringComparison.Ordinal))
+            if (!launchCommandLine.StartsWith("roblox-player:", StringComparison.Ordinal) &&
+                !launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal))
                 return joinData;
+
+            if (launchCommandLine.StartsWith("roblox://", StringComparison.Ordinal))
+            {
+                App.Logger.WriteLine(LOG_IDENT, $"Processing roblox:// URI: {launchCommandLine}");
+
+                var placeIdMatch = Regex.Match(launchCommandLine, @"placeId=([0-9]+)");
+                if (placeIdMatch.Success)
+                {
+                    _ = long.TryParse(placeIdMatch.Groups[1].Value, out long placeId);
+                    if (placeId > 0)
+                    {
+                        joinData.JoinType = GameJoinType.RequestGame;
+                        joinData.PlaceId = placeId;
+                        joinData.PlaceLauncherUrl = launchCommandLine;
+                        App.Logger.WriteLine(LOG_IDENT, $"Extracted place ID from roblox:// URI: {placeId}");
+                    }
+                }
+
+                var jobIdMatch = Regex.Match(launchCommandLine, @"gameInstanceId=([a-zA-Z0-9-]+)");
+                if (jobIdMatch.Success)
+                {
+                    joinData.JobId = jobIdMatch.Groups[1].Value;
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracted job ID from roblox:// URI: {joinData.JobId}");
+                }
+
+                var accessCodeMatch = Regex.Match(launchCommandLine, @"accessCode=([a-zA-Z0-9-]+)");
+                if (accessCodeMatch.Success)
+                {
+                    joinData.AccessCode = accessCodeMatch.Groups[1].Value;
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracted access code from roblox:// URI: {joinData.AccessCode}");
+                }
+
+                var originMatch = Regex.Match(launchCommandLine, @"joinAttemptOrigin=([a-zA-Z0-9-]+)");
+                if (originMatch.Success)
+                {
+                    joinData.JoinOrigin = originMatch.Groups[1].Value;
+                    App.Logger.WriteLine(LOG_IDENT, $"Extracted join origin from roblox:// URI: {joinData.JoinOrigin}");
+                }
+
+                return joinData;
+            }
 
             Match urlMatch = Regex.Match(launchCommandLine, placelauncherPattern);
             if (!urlMatch.Success || urlMatch.Groups.Count != 3)
