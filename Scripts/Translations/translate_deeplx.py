@@ -82,6 +82,31 @@ class DeepLXTranslator:
         print(f"Cache file: {self.cache_file}")
         print(f"Languages to translate: {len(self.languages)}")
     
+    def _escape_xml(self, text: str) -> str:
+        """Escape XML special characters in text without double-escaping."""
+        if not text:
+            return text
+        
+        text = text.replace('&amp;', '\x00AMP\x00')
+        text = text.replace('&lt;', '\x00LT\x00')
+        text = text.replace('&gt;', '\x00GT\x00')
+        text = text.replace('&quot;', '\x00QUOT\x00')
+        text = text.replace('&apos;', '\x00APOS\x00')
+        
+        text = text.replace('&', '&amp;')
+        text = text.replace('<', '&lt;')
+        text = text.replace('>', '&gt;')
+        text = text.replace('"', '&quot;')
+        text = text.replace("'", '&apos;')
+        
+        text = text.replace('\x00AMP\x00', '&amp;')
+        text = text.replace('\x00LT\x00', '&lt;')
+        text = text.replace('\x00GT\x00', '&gt;')
+        text = text.replace('\x00QUOT\x00', '&quot;')
+        text = text.replace('\x00APOS\x00', '&apos;')
+        
+        return text
+    
     def _load_cache(self) -> Dict:
         if self.cache_file.exists():
             try:
@@ -315,11 +340,15 @@ class DeepLXTranslator:
             if value is None:
                 continue
             
+            value_text = value.text if value.text else ""
+            value_text = self._escape_xml(value_text)
+            
             content += f'  <data name="{name}" xml:space="preserve">\n'
-            content += f'    <value>{value.text}</value>\n'
+            content += f'    <value>{value_text}</value>\n'
             
             if comment is not None and comment.text:
-                comment_text = comment.text.replace('&', '&amp;')
+                comment_text = comment.text
+                comment_text = self._escape_xml(comment_text)
                 content += f'    <comment>{comment_text}</comment>\n'
             
             content += '  </data>\n'
@@ -391,7 +420,7 @@ class DeepLXTranslator:
             
             data = ET.SubElement(root, "data", {"name": key, "xml:space": "preserve"})
             value_elem = ET.SubElement(data, "value")
-            value_elem.text = translated
+            value_elem.text = self._escape_xml(translated)
             
             base_tree = ET.parse(self.base_file)
             base_root = base_tree.getroot()
@@ -400,7 +429,7 @@ class DeepLXTranslator:
                 comment = base_data.find("comment")
                 if comment is not None and comment.text:
                     comment_elem = ET.SubElement(data, "comment")
-                    comment_elem.text = comment.text
+                    comment_elem.text = self._escape_xml(comment.text)
         
         data_elements = root.findall(".//data")
         formatted_content = self.format_resx_file(data_elements, base_header)
