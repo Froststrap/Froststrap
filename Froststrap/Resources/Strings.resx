@@ -1876,7 +1876,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Bands</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>The higher the number, the higher quality but it takes longer, Max is 64, Default is 8.</value>
+    <value>The higher the number, the higher quality but it takes longer, Max is 512, Default is 32.</value>
   </data>
   <data name="Common.Remove" xml:space="preserve">
     <value>Remove</value>

@@ -6554,7 +6554,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The higher the number, the higher quality but it takes longer, Max is 64, Default is 8..
+        ///   Looks up a localized string similar to The higher the number, the higher quality but it takes longer, Max is 512, Default is 32..
         /// </summary>
         public static string Menu_ModGenerator_BandInfo {
             get {

@@ -177,14 +177,14 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             set => SetProperty(ref _robloxIconImagePath, value);
         }
 
-        private int _gradientBands = 8;
+        private int _gradientBands = 32;
         public int GradientBands
         {
             get => _gradientBands;
             set
             {
-                if (value < 0) value = 0;
-                if (value > 64) value = 64;
+                if (value < 8) value = 8;
+                if (value > 512) value = 512;
                 if (SetProperty(ref _gradientBands, value))
                 {
                     GenerateModCommand.NotifyCanExecuteChanged();
