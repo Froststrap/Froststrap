@@ -1266,13 +1266,13 @@ Lai sāktu, noklikšķiniet uz „Pievienot kontu” augšā</value>
     <value>Neizdevās ielādēt Roblox sīkfailu.</value>
   </data>
   <data name="Menu.CookieState.Failed" xml:space="preserve">
-    <value>Neizdevās ielādēt sīkdatņu failu.</value>
+    <value>Neizdevās ielādēt sīkdatnes failu.</value>
   </data>
   <data name="Menu.CookieState.Invalid" xml:space="preserve">
-    <value>Sīkfails atrasts, taču tas ir nederīgs vai tā derīguma termiņš ir beidzies.</value>
+    <value>Sīkfails ir atrasts, taču tas ir nederīgs vai tā derīguma termiņš ir beidzies.</value>
   </data>
   <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
-    <value>Sīkdatņu piekļuve ir atspējota iestatījumos.</value>
+    <value>Iestatījumos ir atspējota piekļuve sīkdatnēm.</value>
   </data>
   <data name="Menu.CookieState.NotFound" xml:space="preserve">
     <value>Roblox sīkdatnes fails nav atrasts.</value>

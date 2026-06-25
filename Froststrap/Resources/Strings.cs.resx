@@ -335,7 +335,7 @@ Chcete přepnout na výchozí kanál ({1})?</value>
     <value>Hra</value>
   </data>
   <data name="Common.Generate" xml:space="preserve">
-    <value>Vytvořit</value>
+    <value>Vygenerovat</value>
   </data>
   <data name="Common.GlyphPreview" xml:space="preserve">
     <value>Náhled glyfu</value>
@@ -989,7 +989,7 @@ Opravdu chcete pokračovat?</value>
     <value>Přidat účet</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
-    <value>Účet „@{0}“ je již přihlášen.\nBylo přepnuto na tento účet.</value>
+    <value>Účet „@{0}“ je již přihlášen.\nBylo provedeno přepnutí na tento účet.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
     <value>Nebyly přidány žádné účty
@@ -1728,13 +1728,13 @@ Další informace:
     <value>Importovat složku</value>
   </data>
   <data name="Menu.Mods.ImportZIP" xml:space="preserve">
-    <value>Načíst ZIP</value>
+    <value>Importovat ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
     <value>Modul „{0}“ byl úspěšně importován.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>Moduly můžete importovat přetažením nebo pomocí importu; moduly s nižší prioritou se aplikují jako poslední, což zabraňuje konfliktům s jinými moduly.</value>
+    <value>Moduly můžete importovat přetažením nebo pomocí funkce importu; moduly s nižší prioritou se aplikují jako poslední, což zabraňuje konfliktům s jinými moduly.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>Neplatný název složky.</value>

@@ -1620,7 +1620,7 @@
     <value>請輸入一個餅乾。</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.1" xml:space="preserve">
-    <value>在瀏覽器中開啟 Roblox.com 並登入</value>
+    <value>請在瀏覽器中開啟 Roblox.com 並登入</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
     <value>按下 F12 鍵以開啟開發者工具</value>
@@ -1704,7 +1704,7 @@
     <value>包裝……</value>
   </data>
   <data name="Menu.ModGenerator.ReadyToGenerate" xml:space="preserve">
-    <value>準備好要生成模組了嗎</value>
+    <value>準備好生成模組了嗎</value>
   </data>
   <data name="Menu.ModGenerator.RecoloringFonts" xml:space="preserve">
     <value>重新設定字型顏色...</value>

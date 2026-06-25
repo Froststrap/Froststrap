@@ -1187,7 +1187,7 @@ Klik hierboven op 'Account toevoegen' om aan de slag te gaan</value>
     <value>Ontdek door gebruikers gemaakte mods.</value>
   </data>
   <data name="Menu.CommunityMods.Misc" xml:space="preserve">
-    <value>Diverse modificaties</value>
+    <value>Diverse mods</value>
   </data>
   <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
     <value>Mod '{0}' is succesvol geïnstalleerd!</value>

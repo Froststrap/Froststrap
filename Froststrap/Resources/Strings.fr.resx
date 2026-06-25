@@ -1730,7 +1730,7 @@ Plus d'informations :
     <value>Aucun mod n'est installé.</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
-    <value>Action du mod sélectionnée</value>
+    <value>Action du mod sélectionné</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
     <value>Mes mods</value>

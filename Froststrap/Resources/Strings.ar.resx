@@ -1656,7 +1656,7 @@
     <value>الصق القيمة في المربع أعلاه</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>"ملف تعريف الارتباط غير صالح. يرجى التحقق منه ومحاولة الدخول مرة أخرى.</value>
+    <value>"ملف تعريف الارتباط غير صالح. يرجى التحقق من ذلك ومحاولة مرة أخرى.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>الصق ملف تعريف الارتباط .ROBLOSECURITY الخاص بك</value>
@@ -1728,7 +1728,7 @@
     <value>إعادة تلوين الصور...</value>
   </data>
   <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
-    <value>رمز Roblox (اختياري)</value>
+    <value>أيقونة Roblox (اختياري)</value>
   </data>
   <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
     <value>تم الحفظ في {0}</value>
@@ -1773,10 +1773,10 @@
     <value>استيراد ملف ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
-    <value>تم استيراد التعديل «{0}» بنجاح.</value>
+    <value>تم استيراد المود «{0}» بنجاح.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>يمكنك استيراد التعديلات عن طريق سحب التعديل أو استيراده، حيث يتم تطبيق التعديلات ذات الأولوية الأقل في النهاية، مما يجعلها تتغلب على التضارب مع التعديلات الأخرى.</value>
+    <value>يمكنك استيراد التعديلات عن طريق سحب التعديل أو استيراده، حيث يتم تطبيق التعديلات ذات الأولوية الأقل في النهاية، مما يجعلها تفوز في حالات التعارض مع التعديلات الأخرى.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>اسم المجلد غير صالح.</value>

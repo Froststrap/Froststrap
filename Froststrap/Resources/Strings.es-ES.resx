@@ -1215,7 +1215,7 @@ Haz clic en «Añadir cuenta» arriba para empezar</value>
     <value>Editor de avatares</value>
   </data>
   <data name="Menu.CommunityMods.ColorMods" xml:space="preserve">
-    <value>Mods de color</value>
+    <value>Modificaciones de color</value>
   </data>
   <data name="Menu.CommunityMods.Description" xml:space="preserve">
     <value>Explora los mods creados por los usuarios.</value>

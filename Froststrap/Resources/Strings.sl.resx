@@ -1260,7 +1260,7 @@ Kliknite »Dodaj račun« zgoraj, da začnete</value>
     <value>Piškotka Roblox ni bilo mogoče naložiti.</value>
   </data>
   <data name="Menu.CookieState.Failed" xml:space="preserve">
-    <value>Naložitev datoteke s piškotki ni uspela.</value>
+    <value>Prenos datoteke s piškotki ni uspel.</value>
   </data>
   <data name="Menu.CookieState.Invalid" xml:space="preserve">
     <value>Piškotek je bil najden, vendar je neveljaven ali je potekel.</value>
@@ -1722,7 +1722,7 @@ Več informacij:
     <value>Mod z imenom »{0}« že obstaja.</value>
   </data>
   <data name="Menu.Mods.DeleteMod" xml:space="preserve">
-    <value>Ali želite '{0}' trajno izbrisati?</value>
+    <value>Ali želite »{0}« trajno izbrisati?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Upravljanje in uporaba modifikacij datotek v igralnem odjemalcu Roblox.</value>
@@ -1749,7 +1749,7 @@ Več informacij:
     <value>Neveljavno ime mape.</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
-    <value>Izbrani vir ne vsebuje veljavne strukture mod-a.\nVsebovati mora vsaj eno od naslednjih map: content, ExtraContent, PlatformContent.</value>
+    <value>Izbrani vir ne vsebuje veljavne strukture mod.\nVsebovati mora vsaj eno od naslednjih map: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Ni nameščenih modifikacij.</value>

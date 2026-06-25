@@ -1239,7 +1239,7 @@ Klik 'Tambahkan Akun' di atas untuk memulai</value>
     <value>Tidak ada data aktivitas yang tersedia.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>Bergabunglah dengan Best Region (Otomatis)</value>
+    <value>Bergabunglah dengan Best Region (Otomotif)</value>
   </data>
   <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
     <value>Tidak dapat memuat cookie Roblox.</value>
@@ -1316,7 +1316,7 @@ Informasi lebih lanjut:
     <value>Wah, tempat ini kosong sekali! Bagaimana kalau ditambahkan FastFlag?</value>
   </data>
   <data name="Menu.FastFlagEditor.NoInvalid" xml:space="preserve">
-    <value>Tidak terdeteksi FastFlags yang tidak valid.</value>
+    <value>Tidak terdeteksi adanya FastFlags yang tidak valid.</value>
   </data>
   <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
     <value>'{0}' tidak ada dalam daftar putih Roblox dan tidak akan berfungsi.\n\nMau menghapusnya sekarang?</value>
@@ -1710,7 +1710,7 @@ Informasi lebih lanjut:
     <value>📦 Seret dan lepas untuk mengimpor berkas ZIP / folder</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
-    <value>Folder untuk '{0}' tidak ada lagi.</value>
+    <value>Folder untuk '{0}' sudah tidak ada lagi.</value>
   </data>
   <data name="Menu.Mods.ImportFolder" xml:space="preserve">
     <value>Impor Folder</value>
@@ -1722,7 +1722,7 @@ Informasi lebih lanjut:
     <value>Mod '{0}' telah berhasil diimpor.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>Impor mod dengan menyeret mod tersebut atau melalui fitur impor; mod dengan prioritas lebih rendah akan diterapkan terakhir sehingga dapat mengatasi konflik dengan mod lain.</value>
+    <value>Impor mod dengan menyeret mod tersebut atau melalui fitur impor; mod dengan prioritas lebih rendah akan diterapkan terakhir, sehingga dapat mengatasi konflik dengan mod lain.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>Nama Folder Tidak Sah.</value>
@@ -1833,7 +1833,7 @@ Informasi lebih lanjut:
     <value>Gunakan Latar Belakang Editor Avatar Lama</value>
   </data>
   <data name="Menu.PresetMods.Title" xml:space="preserve">
-    <value>Modifikasi Bawaan</value>
+    <value>Modifikasi Pra-setel</value>
   </data>
   <data name="Menu.QuickPlay.Description" xml:space="preserve">
     <value>Kembali ke permainan yang baru saja kamu mainkan.</value>
