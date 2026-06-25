@@ -54,6 +54,8 @@ namespace Froststrap.UI.Elements.Settings
 
             LoadState();
 
+            LoadNavigationPaneState();
+
             App.RemoteData.Subscribe((_, _) => Dispatcher.UIThread.Post(() =>
             {
                 var data = App.RemoteData.Prop;
@@ -756,6 +758,14 @@ namespace Froststrap.UI.Elements.Settings
             }
         }
 
+        private void LoadNavigationPaneState()
+        {
+            var navView = this.FindControl<NavigationView>("NavView");
+            if (navView == null) return;
+
+            navView.IsPaneOpen = App.State.Prop.IsNavigationPaneOpen;
+        }
+
         #region Event Handlers
 
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -764,6 +774,13 @@ namespace Froststrap.UI.Elements.Settings
             State.Height = this.Height;
             State.Left = this.Position.X;
             State.Top = this.Position.Y;
+
+            var navView = this.FindControl<NavigationView>("NavView");
+            if (navView != null)
+            {
+                App.State.Prop.IsNavigationPaneOpen = navView.IsPaneOpen;
+                App.State.SaveSetting("IsNavigationPaneOpen");
+            }
 
             SaveCurrentPage();
         }
