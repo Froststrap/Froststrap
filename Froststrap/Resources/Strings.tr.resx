@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -128,7 +128,7 @@
     <value>Sunucu konumu sorgulanamadı. Oyunlara çok hızlı bir şekilde katılıyor olabilirsiniz.</value>
   </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
-    <value>Roblox artık Windows 7 veya 8.1'i desteklemiyor. Roblox'a oynamaya devam etmek için lütfen Windows 10 veya daha yeni bir sürüme geçin.</value>
+    <value>Roblox artık Windows 7 veya 8.1&apos;i desteklemiyor. Roblox&apos;a oynamaya devam etmek için lütfen Windows 10 veya daha yeni bir sürüme geçin.</value>
   </data>
   <data name="Boostrapper.Dialog.UnauthorizedChannel" xml:space="preserve">
     <value>Şu anda bulunduğunuz kanal ({0}) artık genel kullanıma kapatılmıştır. Artık varsayılan kanalda ({1}) olacaksınız.</value>
@@ -137,33 +137,27 @@
     <value>Froststrap, {0} sürümüne otomatik olarak güncellenemedi. Lütfen web sitesinden programı indirip çalıştırarak manuel olarak güncelleyin.</value>
   </data>
   <data name="Bootstrapper.Bootstrapper.Dialog.PromptChannelChange" xml:space="preserve">
-    <value>Roblox, kanalınızı {0} olarak ayarlamaya çalışıyor; ancak şu anda tercih ettiğiniz kanal {1}'dir.
+    <value>Roblox, kanalınızı {0} olarak ayarlamaya çalışıyor; ancak şu anda tercih ettiğiniz kanal {1}&apos;dir.
 
 
 Tercih ettiğiniz kanalı {0} olarak değiştirmek ister misiniz?</value>
+  </data>
+  <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
+    <value>Atla</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox şu anda çalışıyor; başka bir örnek başlatırsanız mevcut örnek kapanacaktır. Yine de başlatmak istediğinizden emin misiniz?</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>Şu anda bulunduğunuz kanal ({0}) güncel değil ve artık güncelleme almıyor gibi görünüyor.\n
+    <value>Şu anda bulunduğunuz kanal ({0}) güncel değil ve artık güncelleme almıyor gibi görünüyor.
 Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
     <value>İstemci eksik olduğu için yükseltme işlemleri devre dışı bırakıldı.
     Sorunların önlenmesi amacıyla yükseltme işlemleri devam edecektir.</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
-    <value>Hangi sunuculara bağlanacağınızı Froststrap'in belirlemesine izin verin. Size en yakın olan sunucuya öncelik verir.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
-    <value>Görünüşe göre bir arkadaşın şu anda bu oyunu oynuyor. Ona katılmak ister misin?</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
-    <value>BetterMatchmaking'i etkinleştir</value>
-  </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Bazı içerikler eksik olabilir. Bu sorunu gidermek için ayarlardan Roblox'u yeniden yüklemeyi zorlayın.</value>
+    <value>Bazı içerikler eksik olabilir. Bu sorunu gidermek için ayarlardan Roblox&apos;u yeniden yüklemeyi zorlayın.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Tüm dosyalar başarıyla çıkarılmadı</value>
@@ -178,7 +172,7 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
     <value>Tüm değişiklikler uygulanamadı</value>
   </data>
   <data name="Bootstrapper.NotEnoughSpace" xml:space="preserve">
-    <value>Froststrap'ta Roblox'u indirip yüklemek için yeterli disk alanı bulunmuyor. Lütfen biraz disk alanı boşaltın ve tekrar deneyin.</value>
+    <value>Froststrap&apos;ta Roblox&apos;u indirip yüklemek için yeterli disk alanı bulunmuyor. Lütfen biraz disk alanı boşaltın ve tekrar deneyin.</value>
   </data>
   <data name="Bootstrapper.Status.ApplyingModifications" xml:space="preserve">
     <value>Roblox modifikasyonları uygulanıyor...</value>
@@ -186,20 +180,68 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
     <value>Roblox Yükseltmesini İptal Etme.</value>
   </data>
+  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
+    <value>Bağımlılıkların kontrol edilmesi</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
+    <value>Flatpak kurulumunu kontrol ediliyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
+    <value>Güncellemeleri kontrol etme</value>
+  </data>
+  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
+    <value>Vulkan katmanı derleniyor...</value>
+  </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
     <value>{product} yapılandırılıyor...</value>
   </data>
   <data name="Bootstrapper.Status.Connecting" xml:space="preserve">
-    <value>Roblox'a bağlanılıyor...</value>
+    <value>Roblox&apos;a bağlanılıyor...</value>
   </data>
   <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
     <value>İndirme</value>
   </data>
+  <data name="Bootstrapper.Status.DownloadingDXVK" xml:space="preserve">
+    <value>DXVK indiriliyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
+    <value>DXVK-Sarek indiriliyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingUpdate" xml:space="preserve">
+    <value>{0} güncellemesini indiriliyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWebView2" xml:space="preserve">
+    <value>WebView2 indiriliyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
+    <value>Wine indiriliyor...</value>
+  </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
     <value>Çıkarma</value>
   </data>
+  <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
+    <value>DXVK dosyası çıkarılıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
+    <value>DXVK-Sarek çıkarılıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
+    <value>Şarap Çıkarılıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.FindingTopRegions" xml:space="preserve">
+    <value>En iyi {0} bölge aranıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
+    <value>Wine önekini başlatılıyor...</value>
+  </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
     <value>{product} kuruluyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
+    <value>Sober&apos;ı yükleme...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
+    <value>{0} güncellemesi yükleniyor...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
     <value>WebView2 yükleniyor, lütfen bekleyin...</value>
@@ -207,9 +249,45 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>sol</value>
   </data>
+  <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
+    <value>{0} için yeniden deneme...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
+    <value>Yakındaki sunucular aranıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingServers" xml:space="preserve">
+    <value>{0}&apos;da sunucular aranıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
+    <value>DXVK kuruluyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
+    <value>Sunucu araması atlanıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.SoberUpdateComplete" xml:space="preserve">
+    <value>Aklı başında güncelleme tamamlandı.</value>
+  </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
     <value>{product} başlatılıyor...</value>
-    <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
+    <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
+  </data>
+  <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
+    <value>Ayık Bir Başlangıç...</value>
+  </data>
+  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
+    <value>Wine ile Roblox Studio&apos;yu başlatmak...</value>
+  </data>
+  <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
+    <value>WebView2 {0} kaldırılıyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSober" xml:space="preserve">
+    <value>Sober güncelleniyor...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberBasic" xml:space="preserve">
+    <value>Sober güncelleniyor ({0}/{1})...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberProgress" xml:space="preserve">
+    <value>Sober Güncelleniyor ({0}/{1}): {2}%</value>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>{product} güncelleniyor...</value>
@@ -226,13 +304,13 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
     <value>Stil önizlemesi - Kapatmak için İptal’e tıklayın</value>
-    <comment>Text for style previews that use text button that says "Cancel"</comment>
+    <comment>Text for style previews that use text button that says &quot;Cancel&quot;</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
     <value>Froststrap başarıyla kaldırıldı</value>
   </data>
   <data name="Bootstrapper.Uninstall.RobloxRunning" xml:space="preserve">
-    <value>Roblox şu anda çalışıyor, ancak Froststrap'ı kaldırmadan önce kapatılması gerekiyor. Roblox'u şimdi kapatmak ister misiniz?</value>
+    <value>Roblox şu anda çalışıyor, ancak Froststrap&apos;ı kaldırmadan önce kapatılması gerekiyor. Roblox&apos;u şimdi kapatmak ister misiniz?</value>
   </data>
   <data name="Bootstrapper.WMFNotFound" xml:space="preserve">
     <value>Roblox, Windows Media Foundation bileşenlerinin kullanılmasını gerektirir. Görünüşe göre bu bileşenler bilgisayarınızda bulunmuyor; bunun nedeni muhtemelen Windows’un N sürümünü kullanıyor olmanızdır. Lütfen önce bu bileşenleri yükleyin, ardından Roblox’u başlatın.</value>
@@ -326,10 +404,7 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>Dışa Aktar</value>
-    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FastFlags" xml:space="preserve">
-    <value>Hızlı Bayrak Düzenleyici</value>
+    <comment>Currently used under the &quot;Froststrap&quot; settings tab for the button to export diagnostic data</comment>
   </data>
   <data name="Common.Files" xml:space="preserve">
     <value>Dosyalar</value>
@@ -488,7 +563,7 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
     <value>Evet</value>
   </data>
   <data name="ContextMenu.CloseRoblox" xml:space="preserve">
-    <value>Roblox'u kapat</value>
+    <value>Roblox&apos;u kapat</value>
   </data>
   <data name="ContextMenu.CopyDeeplinkInvite" xml:space="preserve">
     <value>Davet deeplinkini kopyala</value>
@@ -559,10 +634,10 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Özel Tema {0}</value>
-    <comment>{0} is a string (e.g. '1', '1-1234')</comment>
+    <comment>{0} is a string (e.g. &apos;1&apos;, &apos;1-1234&apos;)</comment>
   </data>
   <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
-    <value>Değişiklikleri {0}'a kaydetmek ister misiniz?</value>
+    <value>Değişiklikleri {0}&apos;a kaydetmek ister misiniz?</value>
   </data>
   <data name="CustomTheme.Editor.Errors.PreviewFailed" xml:space="preserve">
     <value>Tema önizlemesi yapılamadı: {0}</value>
@@ -570,17 +645,11 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
   <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
     <value>Tema Dizinini Aç</value>
   </data>
-  <data name="CustomTheme.Editor.Preview" xml:space="preserve">
-    <value>Önizleme</value>
-  </data>
-  <data name="CustomTheme.Editor.Save" xml:space="preserve">
-    <value>Kaydet</value>
-  </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Temanız kaydedildi!</value>
   </data>
   <data name="CustomTheme.Editor.Title" xml:space="preserve">
-    <value>"{0}" dosyasını düzenleme</value>
+    <value>&quot;{0}&quot; dosyasını düzenleme</value>
   </data>
   <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
     <value>Özel iletişim kutusu zaten başlatılmıştır</value>
@@ -590,7 +659,7 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the URI scheme (e.g. http)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeConversionError" xml:space="preserve">
-    <value>{0}'da geçersiz bir {1} var: {2}</value>
+    <value>{0}&apos;da geçersiz bir {1} var: {2}</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text), {2} is the error reason</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeInvalidType" xml:space="preserve">
@@ -614,11 +683,11 @@ Varsayılan kanala ({1}) geçmek ister misiniz?</value>
     <comment>{0} is the element name (e.g. Button), {1} is the attribute name (e.g. Text)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMustBeLargerThanMin" xml:space="preserve">
-    <value>{0}.{1}, {2}'den büyük olmalıdır</value>
+    <value>{0}.{1}, {2}&apos;den büyük olmalıdır</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeMustBeSmallerThanMax" xml:space="preserve">
-    <value>{0}.{1}, {2}'den küçük olmalıdır</value>
+    <value>{0}.{1}, {2}&apos;den küçük olmalıdır</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is a number</comment>
   </data>
   <data name="CustomTheme.Errors.ElementAttributeParseError" xml:space="preserve">
@@ -662,7 +731,7 @@ Varsayılan olarak {1} kullanılacak.</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
-    <value>{0} Bilinmiyor {1} '{2}'</value>
+    <value>{0} Bilinmiyor {1} &apos;{2}&apos;</value>
     <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
@@ -700,7 +769,7 @@ Varsayılan olarak {1} kullanılacak.</value>
     <value>Lütfen kaldırma işleminin tamamlanmasını bekleyin.</value>
   </data>
   <data name="Dialog.Bloxshade.Setting" xml:space="preserve">
-    <value>Froststrap artık Bloxshade'i desteklemiyor.
+    <value>Froststrap artık Bloxshade&apos;i desteklemiyor.
 Daha fazla bilgi için Bloxshade Discord sunucusuna katılın.</value>
   </data>
   <data name="Dialog.Bloxshade.ThankYou" xml:space="preserve">
@@ -710,7 +779,7 @@ Daha fazla bilgi için Bloxshade Discord sunucusuna katılın.</value>
     <value>Froststrap, Masaüstü ve Başlat Menüsü için kısayollar oluşturamadı. Bunları daha sonra ayarlar üzerinden oluşturmayı deneyin.</value>
   </data>
   <data name="Dialog.Connectivity.BadConnection" xml:space="preserve">
-    <value>Bağlantı kurulamadı; bu durum muhtemelen internet bağlantınızın zayıf olduğunu veya bir güvenlik duvarı engellemesi olduğunu gösteriyor. Bağlantınızda bir sorun yoksa, lütfen antivirüs programınızın Froststrap'i engellemediğinden emin olun.</value>
+    <value>Bağlantı kurulamadı; bu durum muhtemelen internet bağlantınızın zayıf olduğunu veya bir güvenlik duvarı engellemesi olduğunu gösteriyor. Bağlantınızda bir sorun yoksa, lütfen antivirüs programınızın Froststrap&apos;i engellemediğinden emin olun.</value>
   </data>
   <data name="Dialog.Connectivity.MatchmakingFailed" xml:space="preserve">
     <value>Bu oturumda BetterMatchmaking devre dışı bırakılacaktır.</value>
@@ -719,10 +788,10 @@ Daha fazla bilgi için Bloxshade Discord sunucusuna katılın.</value>
     <value>Daha fazla bilgi:</value>
   </data>
   <data name="Dialog.Connectivity.RobloxDown" xml:space="preserve">
-    <value>Roblox şu anda hizmet dışı olabilir. Daha fazla bilgi için {0}'a bakın.</value>
+    <value>Roblox şu anda hizmet dışı olabilir. Daha fazla bilgi için {0}&apos;a bakın.</value>
   </data>
   <data name="Dialog.Connectivity.RobloxUpgradeNeeded" xml:space="preserve">
-    <value>Roblox'un yüklenmesi veya güncellenmesi gerektiğinden, Froststrap devam edemiyor.</value>
+    <value>Roblox&apos;un yüklenmesi veya güncellenmesi gerektiğinden, Froststrap devam edemiyor.</value>
   </data>
   <data name="Dialog.Connectivity.RobloxUpgradeSkip" xml:space="preserve">
     <value>Bu sürümde Roblox’ta güncelleme kontrolü yapılmayacak ve modlardaki değişiklikler uygulanmayacaktır.</value>
@@ -738,7 +807,7 @@ Daha fazla bilgi için Bloxshade Discord sunucusuna katılın.</value>
     <comment>{0} is the name of a service (i.e. Roblox, GitHub)</comment>
   </data>
   <data name="Dialog.Connectivity.UnableToDownload" xml:space="preserve">
-    <value>Froststrap, Roblox'u indiremiyor</value>
+    <value>Froststrap, Roblox&apos;u indiremiyor</value>
   </data>
   <data name="Dialog.Connectivity.UnableToDownloadReason" xml:space="preserve">
     <value>Roblox şu anda indirilemiyor. Daha fazla bilgi için lütfen aşağıdaki yardım sayfasını okuyun: {0}</value>
@@ -759,16 +828,13 @@ Eğer giderilmemişse, lütfen bu istisnayı, oluşturulan günlük dosyasının
     <value>Öncelikle [Froststrap Wiki]({0}) sayfasını kontrol ederek bu sorunun daha önce bir düzeltmeyle giderilip giderilmediğine bakın.
 
 Eğer giderilmemişse, lütfen bu istisnayı bu fork’un bakım ekibine bildirin. Bu, resmi olmayan bir derleme olduğu için lütfen bunu Froststrap’ın GitHub sorunlarına bildirmeyin.</value>
-    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
+    <comment>&quot;fork&quot; in general means &quot;a variation of&quot; or &quot;a different version of&quot;. You can alternatively write the first sentence as &quot;...to the maintainers of this version.&quot;</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
     <value>Hata bildir</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
     <value>Froststrap İstisnası</value>
-  </data>
-  <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>Sürüm {0}</value>
   </data>
   <data name="Dialog.IconLoadFailed" xml:space="preserve">
     <value>Seçilen bootstrapper simgesi yüklenemedi.
@@ -792,13 +858,37 @@ Bazı metinler tercih ettiğiniz dile çevrilmemiş olabilir.</value>
   <data name="Dialog.PlayerError.HelpInformation" xml:space="preserve">
     <value>Bu sorunun neden ortaya çıkabileceği ve nasıl çözülebileceği hakkında bilgi için lütfen [bu yardım makalesini]({0}) okuyun.
 
-Roblox'un [orijinal başlatıcıyla]({1}) çalışıp çalışmadığını kontrol edin. Çalışmıyorsa, bu bir Froststrap sorunu değildir. Çalışıyorsa, yardım makalesine bakın.</value>
+Roblox&apos;un [orijinal başlatıcıyla]({1}) çalışıp çalışmadığını kontrol edin. Çalışmıyorsa, bu bir Froststrap sorunu değildir. Çalışıyorsa, yardım makalesine bakın.</value>
   </data>
   <data name="Dialog.RegistryWriteError" xml:space="preserve">
-    <value>Froststrap, Windows Kayıt Defteri'ne yazamıyor. Muhtemelen bir antivirüs programı müdahale ederek sorunlara neden oluyor. Lütfen Froststrap'ın çalışmasını engelleyebilecek herhangi bir şey olup olmadığını kontrol edin.</value>
+    <value>Froststrap, Windows Kayıt Defteri&apos;ne yazamıyor. Muhtemelen bir antivirüs programı müdahale ederek sorunlara neden oluyor. Lütfen Froststrap&apos;ın çalışmasını engelleyebilecek herhangi bir şey olup olmadığını kontrol edin.</value>
+  </data>
+  <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
+    <value>Degrade</value>
+  </data>
+  <data name="Enums.BackgroundMode.Image" xml:space="preserve">
+    <value>Görseller</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Fill" xml:space="preserve">
+    <value>Doldur</value>
+  </data>
+  <data name="Enums.BackgroundStretch.None" xml:space="preserve">
+    <value>Yok</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Uniform" xml:space="preserve">
+    <value>Üniforma</value>
+  </data>
+  <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
+    <value>Doldurulacak Form</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
+    <value>2015 yılının başları</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
+    <value>Froststrap (Klasik)</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
-    <value>2015'in sonları</value>
+    <value>2015&apos;in sonları</value>
   </data>
   <data name="Enums.BootstrapperStyle.ByfronDialog" xml:space="preserve">
     <value>Sahte Byfron (~2023)</value>
@@ -857,6 +947,18 @@ Roblox'un [orijinal başlatıcıyla]({1}) çalışıp çalışmadığını kontr
   <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
     <value>Basit</value>
   </data>
+  <data name="Enums.CycleFrequency.Days" xml:space="preserve">
+    <value>Günler</value>
+  </data>
+  <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
+    <value>Her Lansman</value>
+  </data>
+  <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
+    <value>Çalışma Saatleri</value>
+  </data>
+  <data name="Enums.CycleFrequency.Minutes" xml:space="preserve">
+    <value>Tutanak</value>
+  </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
     <value>Varsayılan (Twemoji)</value>
   </data>
@@ -875,6 +977,102 @@ Roblox'un [orijinal başlatıcıyla]({1}) çalışıp çalışmadığını kontr
   <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
     <value>Seviye 3 (En yüksek)</value>
   </data>
+  <data name="Enums.FontSize.x1" xml:space="preserve">
+    <value>Küçük</value>
+  </data>
+  <data name="Enums.FontSize.x2" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="Enums.FontSize.x3" xml:space="preserve">
+    <value>Büyük</value>
+  </data>
+  <data name="Enums.FontSize.x4" xml:space="preserve">
+    <value>Ekstra Büyük</value>
+  </data>
+  <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
+    <value>Kare</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
+    <value>Normalin Üstünde</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
+    <value>Normalin Altında</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
+    <value>Yüksek</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
+    <value>Düşük</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
+    <value>Gerçek Zamanlı</value>
+  </data>
+  <data name="Enums.QualityLevel.Level1" xml:space="preserve">
+    <value>Seviye 1</value>
+  </data>
+  <data name="Enums.QualityLevel.Level10" xml:space="preserve">
+    <value>Seviye 10</value>
+  </data>
+  <data name="Enums.QualityLevel.Level11" xml:space="preserve">
+    <value>Seviye 11</value>
+  </data>
+  <data name="Enums.QualityLevel.Level12" xml:space="preserve">
+    <value>12. Seviye</value>
+  </data>
+  <data name="Enums.QualityLevel.Level13" xml:space="preserve">
+    <value>13. Seviye</value>
+  </data>
+  <data name="Enums.QualityLevel.Level14" xml:space="preserve">
+    <value>Seviye 14</value>
+  </data>
+  <data name="Enums.QualityLevel.Level15" xml:space="preserve">
+    <value>Seviye 15</value>
+  </data>
+  <data name="Enums.QualityLevel.Level16" xml:space="preserve">
+    <value>Seviye 16</value>
+  </data>
+  <data name="Enums.QualityLevel.Level17" xml:space="preserve">
+    <value>17. Seviye</value>
+  </data>
+  <data name="Enums.QualityLevel.Level18" xml:space="preserve">
+    <value>18. Seviye</value>
+  </data>
+  <data name="Enums.QualityLevel.Level19" xml:space="preserve">
+    <value>Seviye 19</value>
+  </data>
+  <data name="Enums.QualityLevel.Level2" xml:space="preserve">
+    <value>Seviye 2</value>
+  </data>
+  <data name="Enums.QualityLevel.Level20" xml:space="preserve">
+    <value>Seviye 20</value>
+  </data>
+  <data name="Enums.QualityLevel.Level21" xml:space="preserve">
+    <value>Seviye 21</value>
+  </data>
+  <data name="Enums.QualityLevel.Level3" xml:space="preserve">
+    <value>Seviye 3</value>
+  </data>
+  <data name="Enums.QualityLevel.Level4" xml:space="preserve">
+    <value>Seviye 4</value>
+  </data>
+  <data name="Enums.QualityLevel.Level5" xml:space="preserve">
+    <value>Seviye 5</value>
+  </data>
+  <data name="Enums.QualityLevel.Level6" xml:space="preserve">
+    <value>Seviye 6</value>
+  </data>
+  <data name="Enums.QualityLevel.Level7" xml:space="preserve">
+    <value>7. Seviye</value>
+  </data>
+  <data name="Enums.QualityLevel.Level8" xml:space="preserve">
+    <value>Seviye 8</value>
+  </data>
+  <data name="Enums.QualityLevel.Level9" xml:space="preserve">
+    <value>Seviye 9</value>
+  </data>
+  <data name="Enums.RenderingMode.Default" xml:space="preserve">
+    <value>Direct3D11 (Varsayılan)</value>
+  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>Özel sunucu</value>
   </data>
@@ -883,6 +1081,18 @@ Roblox'un [orijinal başlatıcıyla]({1}) çalışıp çalışmadığını kontr
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
     <value>Ayrılmış sunucu</value>
+  </data>
+  <data name="Enums.TextureQuality.Default" xml:space="preserve">
+    <value>Yüksek (Varsayılan)</value>
+  </data>
+  <data name="Enums.TextureQuality.Low" xml:space="preserve">
+    <value>Düşük</value>
+  </data>
+  <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
+    <value>En düşük</value>
+  </data>
+  <data name="Enums.TextureQuality.Medium" xml:space="preserve">
+    <value>Orta</value>
   </data>
   <data name="Enums.Theme.Blue" xml:space="preserve">
     <value>Mavi</value>
@@ -905,9 +1115,18 @@ Roblox'un [orijinal başlatıcıyla]({1}) çalışıp çalışmadığını kontr
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Mor</value>
   </data>
+  <data name="Enums.TrayDoubleClickAction.GameHistory" xml:space="preserve">
+    <value>Oyun Geçmişi</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.None" xml:space="preserve">
+    <value>Yok</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
+    <value>Sunucu Bilgileri</value>
+  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>ZIP arşivi</value>
-    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. &quot;Zip archive (*.zip)&quot;</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
     <value>Froststrap, v{0} sürümüne yükseltildi</value>
@@ -922,19 +1141,19 @@ Sorunlar ortaya çıkabilir ve ayarlarınız değişebilir. Yeniden yüklemeniz 
 Devam etmek istediğinizden emin misiniz?</value>
   </data>
   <data name="JsonManager.FastFlagsLoadFailed" xml:space="preserve">
-    <value>Fast Flags'larınız yüklenemedi. Varsayılan ayarlara sıfırlandılar.</value>
+    <value>Fast Flags&apos;larınız yüklenemedi. Varsayılan ayarlara sıfırlandılar.</value>
   </data>
   <data name="JsonManager.SettingsLoadFailed" xml:space="preserve">
     <value>Ayarlarınız yüklenemedi. Varsayılan yapılandırmaya sıfırlandılar.</value>
   </data>
   <data name="LaunchMenu.LaunchRoblox" xml:space="preserve">
-    <value>Roblox'u başlat</value>
+    <value>Roblox&apos;u başlat</value>
   </data>
   <data name="LaunchMenu.LaunchRobloxStudio" xml:space="preserve">
-    <value>Roblox Studio'yu başlat</value>
+    <value>Roblox Studio&apos;yu başlat</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
-    <value>Froststrap, '{0}' konumundaki klasöre yazamadığı için bu başlatma işlemi için herhangi bir günlük dosyası oluşturulmayacaktır</value>
+    <value>Froststrap, &apos;{0}&apos; konumundaki klasöre yazamadığı için bu başlatma işlemi için herhangi bir günlük dosyası oluşturulmayacaktır</value>
   </data>
   <data name="Menu.About.BuildInfo" xml:space="preserve">
     <value>Yapım Bilgileri</value>
@@ -947,9 +1166,6 @@ Devam etmek istediğinizden emin misiniz?</value>
   </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
     <value>Kod</value>
-  </data>
-  <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
-    <value>Katkıda Bulunanlar</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>Bunlar, Froststrap ve Froststrap’a önemli katkılarda bulunarak bu projelerin bugünkü halini almalarını sağlayan tüm kişilerdir.</value>
@@ -969,9 +1185,6 @@ Devam etmek istediğinizden emin misiniz?</value>
   <data name="Menu.About.HelpInformation" xml:space="preserve">
     <value>Yardım ve Bilgi</value>
   </data>
-  <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>Lisanslar</value>
-  </data>
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Apache Lisansı 2.0</value>
   </data>
@@ -986,16 +1199,17 @@ Devam etmek istediğinizden emin misiniz?</value>
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
     <value>Sürüm {0}</value>
-    <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+    <comment>{0} is replaced with the version, i.e. &quot;Version 2.8.0&quot;</comment>
   </data>
   <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
-    <value>'{0}' hesabı, çerezi geçersiz veya süresi dolmuş olduğu için kaldırılmıştır.</value>
+    <value>&apos;{0}&apos; hesabı, çerezi geçersiz veya süresi dolmuş olduğu için kaldırılmıştır.</value>
   </data>
   <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
     <value>Hesap Ekle</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
-    <value>'@{0}' hesabı zaten oturum açmış durumda.\nBu hesaba geçildi.</value>
+    <value>&apos;@{0}&apos; hesabı zaten oturum açmış durumda.
+Bu hesaba geçildi.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
     <value>Eklenen hesap yok
@@ -1011,7 +1225,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Bir Roblox oyununda</value>
   </data>
   <data name="Menu.AccountSelector.Presence.InStudio" xml:space="preserve">
-    <value>Roblox Studio'da</value>
+    <value>Roblox Studio&apos;da</value>
   </data>
   <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
     <value>Çevrimdışı</value>
@@ -1025,11 +1239,11 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
     <value>Froststrap halihazırda çalışıyor</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
+    <value>Arka Plan Modu:</value>
+  </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Froststrap’ın önyükleyicisini çok çeşitli seçenekler kullanarak özelleştirin.</value>
-  </data>
-  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
-    <value>Kendi Kendine Başlayan Girişimci</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>Froststrap temalarını ön ayarlarla kolayca özelleştirin ya da kendi benzersiz görünümünüzü yaratın.</value>
@@ -1043,18 +1257,6 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Özel tema seçilmedi.</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>Diğer çeşitli özelleştirilebilir önyükleyici seçeneklerini yapılandırın.</value>
-  </data>
-  <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>Kişiselleştirme</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>16px ile 128px arası boyutlara sahip, çok boyutlu bir .ico dosyası olmalıdır. Kullanmak için Simge ayarını 'Özel' olarak belirleyin.</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>Özel Simge</value>
-  </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
     <value>Bootstrapper’ın başlığı olarak görüntülenen metin.</value>
   </data>
@@ -1062,13 +1264,19 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Başlık</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
-    <value>Froststrap'ın nasıl görüneceğini ayarlayın.</value>
+    <value>Froststrap&apos;ın nasıl görüneceğini ayarlayın.</value>
+  </data>
+  <data name="Menu.Appearance.Frequency" xml:space="preserve">
+    <value>Sıklık:</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
-    <value>Froststrap'ın hangi simgeyi kullanacağını seçin.</value>
+    <value>Froststrap&apos;ın hangi simgeyi kullanacağını seçin.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>Simge</value>
+  </data>
+  <data name="Menu.Appearance.Interval" xml:space="preserve">
+    <value>Aralık:</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Değişikliklerin yürürlüğe girmesi için yeniden başlatma gerekiyor. Bazı metinler tercih edilen dile çevrilmemiş olabilir.</value>
@@ -1082,8 +1290,23 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Kendi Kendine Başlayanların Tarzı</value>
   </data>
+  <data name="Menu.Appearance.Opacity" xml:space="preserve">
+    <value>Opaklık:</value>
+  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Önizleme</value>
+  </data>
+  <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
+    <value>Varsayılana Sıfırla</value>
+  </data>
+  <data name="Menu.Appearance.StretchMode" xml:space="preserve">
+    <value>Esneme Modu:</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Description" xml:space="preserve">
+    <value>Özel temaları otomatik olarak sırayla görüntüle.</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
+    <value>Tema: Bisiklet</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Görünüm</value>
@@ -1104,10 +1327,10 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Froststrap, Roblox başlatıldığında kendisini otomatik olarak kontrol eder ve kararlı bir sürüme günceller.</value>
   </data>
   <data name="Menu.Behaviour.AutoUpdate.Title" xml:space="preserve">
-    <value>Froststrap'ı Otomatik Olarak Güncelle</value>
+    <value>Froststrap&apos;ı Otomatik Olarak Güncelle</value>
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Description" xml:space="preserve">
-    <value>Beklemek yerine Roblox'u arka planda güncelleyin. Yavaş ağ bağlantıları için önerilmez. Bu özelliğin çalışması için en az 3 GB boş depolama alanı gereklidir.</value>
+    <value>Beklemek yerine Roblox&apos;u arka planda güncelleyin. Yavaş ağ bağlantıları için önerilmez. Bu özelliğin çalışması için en az 3 GB boş depolama alanı gereklidir.</value>
   </data>
   <data name="Menu.Behaviour.BackgroundUpdates.Title" xml:space="preserve">
     <value>Arka Plan Güncellemeleri</value>
@@ -1125,7 +1348,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Örnek Başlatma Onayı</value>
   </data>
   <data name="Menu.Behaviour.Description" xml:space="preserve">
-    <value>Roblox başlatılırken Froststrap'ın ne yapması gerektiğini ayarlayın.</value>
+    <value>Roblox başlatılırken Froststrap&apos;ın ne yapması gerektiğini ayarlayın.</value>
   </data>
   <data name="Menu.Behaviour.ForceRobloxReinstall.Description" xml:space="preserve">
     <value>Roblox, bir sonraki başlatmada temiz bir kurulumla açılacaktır.</value>
@@ -1141,6 +1364,18 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
   </data>
   <data name="Menu.Behaviour.Title" xml:space="preserve">
     <value>Kendi Kendine Başlayan Girişimci</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
+    <value>Kaydedilmiş dahili Roblox uygulama ayarlarını yapılandırın.</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Title" xml:space="preserve">
+    <value>Uygulama Depolama Ayarları</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
+    <value>Kontrol edilecek bölge sayısını seçin; bu, sistem en uygun bölgelerinizi bulamadığında yardımcı olur.</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
+    <value>En İyi Bölgelere Göre Miktarlar</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Yer açmak için eski verileri otomatik olarak siler. İlk olarak Fishstrap tarafından geliştirilmiştir.</value>
@@ -1171,6 +1406,51 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
     <value>Günlükler Menüsü</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>Hangi sunuculara bağlanacağınızı Froststrap&apos;in belirlemesine izin verin. Size en yakın olan sunucuya öncelik verir.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>Görünüşe göre bir arkadaşın şu anda bu oyunu oynuyor. Ona katılmak ister misin?</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>BetterMatchmaking&apos;i etkinleştir</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
+    <value>Kontrol edilecek sunucu sayısını seçin; sayı ne kadar fazla olursa, işlem o kadar uzun sürebilir.</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
+    <value>Sunucu Kontrolü için Maksimum Miktar</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
+    <value>Katılmak istediğiniz belirli bir bölgeyi seçin ya da mevcut en iyi seçeneği bulmak için “Otomatik” seçeneğini kullanın.</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Title" xml:space="preserve">
+    <value>Tercih Edilen Bölge</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
+    <value>Roblox&apos;un görsel temasını değiştirir.</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
+    <value>Roblox Uygulama Teması</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
+    <value>Oynat düğmesi aracılığıyla oyuna katılırken daha küçük sunuculara katılın.</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
+    <value>Daha Küçük Sunuculara Katılın</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
+    <value>Bilgisayarınızı başlattığınızda Roblox uygulamasını otomatik olarak başlatın.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
+    <value>Başlangıçta Çalıştırma</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
+    <value>Uygulamayı tamamen kapatmak yerine sistem tepsisine gönderir.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
+    <value>Tepsiye Küçült</value>
   </data>
   <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
     <value>Ayarları Dışa Aktar</value>
@@ -1206,7 +1486,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Bu özellik devre dışı bırakıldığında, Roblox istemcisi daha yeni sürümlere güncellenmez.</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Description" xml:space="preserve">
-    <value>Sürüm-xxx'ten BinaryType tabanlı kurulum dizinlerine geçiş; bu değişiklik yalnızca Linux'taki Studio'yu etkiler.</value>
+    <value>Sürüm-xxx&apos;ten BinaryType tabanlı kurulum dizinlerine geçiş; bu değişiklik yalnızca Linux&apos;taki Studio&apos;yu etkiler.</value>
   </data>
   <data name="Menu.Channel.StaticDirectory.Title" xml:space="preserve">
     <value>Statik dizin</value>
@@ -1239,16 +1519,16 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Çeşitli Modlar</value>
   </data>
   <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
-    <value>'{0}' modunun kurulumu başarıyla tamamlandı!</value>
+    <value>&apos;{0}&apos; modunu başarıyla yüklediniz!</value>
   </data>
   <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
-    <value>Mevcut '{0}' modunu üzerine yazmak istiyor musunuz?</value>
+    <value>Mevcut &apos;{0}&apos; modunu üzerine yazmak istiyor musunuz?</value>
   </data>
   <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
     <value>Modları ara...</value>
   </data>
   <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
-    <value>'{0}' teması yüklendi ve uygulandı!</value>
+    <value>&apos;{0}&apos; teması yüklendi ve uygulandı!</value>
   </data>
   <data name="Menu.CommunityMods.Themes" xml:space="preserve">
     <value>Özel Temalar</value>
@@ -1278,13 +1558,62 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Çerez bulundu, ancak geçersiz ya da süresi dolmuş.</value>
   </data>
   <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
-    <value>Ayarlar'da çerez erişimi devre dışı bırakılmıştır.</value>
+    <value>Ayarlar&apos;da çerez erişimi devre dışı bırakılmıştır.</value>
   </data>
   <data name="Menu.CookieState.NotFound" xml:space="preserve">
     <value>Roblox çerez dosyası bulunamadı.</value>
   </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
+    <value>Froststrap, Roblox başlatıldığında kendisini otomatik olarak kontrol eder ve bir test sürümüne günceller.</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
+    <value>Ön Sürümlere İlişkin Güncelleme</value>
+  </data>
+  <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
+    <value>Sober&apos;ı Otomatik Olarak Güncelle</value>
+  </data>
+  <data name="Menu.Deployment.Channel.Description" xml:space="preserve">
+    <value>Dağıtım kanalını seçin; ne yaptığınızı tam olarak bilmiyorsanız bu ayarı değiştirmeyin.</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Bu kanal güncelliğini yitirmiştir ve muhtemelen artık güncellenmemektedir. Lütfen başka bir kanal kullanın.</value>
+  </data>
+  <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
+    <value>Geçersiz bir alan adı girdiniz
+Ne yaptığınızı bilmiyorsanız lütfen bu ayarla uğraşmayın</value>
+  </data>
+  <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
+    <value>Kanal verileri yüklenemedi.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
+    <value>Üst kısımdaki arama çubuğunu kullanarak oyunları arayın.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
+    <value>Oyun Arama</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Description" xml:space="preserve">
+    <value>İndirme işlemi için kullanılacak iş parçacığı sayısını belirtin. Yalnızca Linux üzerinde çalışan Studio sürümlerini etkiler.</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
+    <value>Çoklu İş Parçacıklı İndirme</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
+    <value>Roblox Studio’nun en son sürüm yerine belirli bir sürüm hash’ini yüklemesini ve kullanmasını zorunlu kılın.</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
+    <value>Studio Sürümünü Geçersiz Kıl</value>
+  </data>
+  <data name="Menu.Deployment.PlayerChannel.Title" xml:space="preserve">
+    <value>Oyuncu Kanalı</value>
+  </data>
+  <data name="Menu.Deployment.StudioChannel.Title" xml:space="preserve">
+    <value>Stüdyo Kanalı</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
+    <value>Roblox Studio sürüm GUID’sini girin (örn. version-xxxxxxxxxxxxxxxx). Yalnızca Studio’nun başlatılması için geçerlidir.</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
+    <value>Sürüm Hash Değeri</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
     <value>Hızlı Giriş</value>
@@ -1346,13 +1675,8 @@ Daha fazla bilgi:
     <value>Geçersiz FastFlags tespit edilmedi.</value>
   </data>
   <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
-    <value>'{0}', Roblox izin listesinde yer almıyor ve çalışmayacaktır.\n\nŞimdi silmek ister misiniz?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
-    <value>Bayrak Profilleri</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>Arama</value>
+    <value>&apos;{0}&apos;, Roblox izin listesinde yer almıyor ve çalışmayacaktır.
+Şimdi silmek ister misiniz?</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Önceden Ayarlanmış Bayrakları Göster</value>
@@ -1366,9 +1690,6 @@ Daha fazla bilgi:
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
     <value>Bazı Roblox FastFlags’ın beyaz listeye alınmasının ardından, kullanım için geriye kalanlar yalnızca şunlardır.</value>
   </data>
-  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
-    <value>Mevcut bayrakları kaydet</value>
-  </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Roblox motorunun belirli parametrelerinin ve özelliklerinin nasıl yapılandırılacağını kontrol edin.</value>
   </data>
@@ -1380,10 +1701,10 @@ Daha fazla bilgi:
     <value>Bu seçeneği devre dışı bırakmak, burada yapılandırılan hiçbir ayarın Roblox’a uygulanmamasını sağlayacaktır.</value>
   </data>
   <data name="Menu.FastFlags.ManagerEnabled.Title" xml:space="preserve">
-    <value>Froststrap'ın FastFlags'i yönetmesine izin ver</value>
+    <value>Froststrap&apos;ın FastFlags&apos;i yönetmesine izin ver</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Description" xml:space="preserve">
-    <value>Roblox, Windows'ta ekranınızın nasıl ölçeklendirildiğine bağlı olarak görüntü kalitenizi düşürür.</value>
+    <value>Roblox, Windows&apos;ta ekranınızın nasıl ölçeklendirildiğine bağlı olarak görüntü kalitenizi düşürür.</value>
   </data>
   <data name="Menu.FastFlags.Presets.FixDisplayScaling.Title" xml:space="preserve">
     <value>Ekran Ölçeklendirmeyle Görüntü Kalitesini Koruyun</value>
@@ -1419,7 +1740,7 @@ Daha fazla bilgi:
     <value>Performansı artırmak için önceden hesaplanmış gölgeleri devre dışı bırakır, ancak bazı oyunlarda ışıklandırma sorunlarına yol açabilir.</value>
   </data>
   <data name="Menu.FastFlags.Presets.PauseVoxelizer.Title" xml:space="preserve">
-    <value>Voxelizer'ı Duraklat</value>
+    <value>Voxelizer&apos;ı Duraklat</value>
   </data>
   <data name="Menu.FastFlags.Presets.RemoveGrass.Description" xml:space="preserve">
     <value>Roblox’un varsayılan çim dokularını kaldırır. Not: Bu ayar, tek tek oyunlarda kullanılan özel çim dokularını etkilemez.</value>
@@ -1446,10 +1767,7 @@ Daha fazla bilgi:
     <value>FastFlag Ayarları</value>
   </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
-    <value>FFlag'leri Temizle</value>
-  </data>
-  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
-    <value>Hızlı bayrak profillerini kaydedin ve yükleyin.</value>
+    <value>FFlag&apos;leri Temizle</value>
   </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
     <value>Profil Bulunamadı</value>
@@ -1466,11 +1784,167 @@ Daha fazla bilgi:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Salt Okunur Olarak Ayarla</value>
   </data>
+  <data name="Menu.GBSEditor.Title" xml:space="preserve">
+    <value>Genel Ayarlar Düzenleyicisi</value>
+  </data>
   <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
     <value>Y vektörü</value>
   </data>
+  <data name="Menu.GlobalSettings.Accessibility.Title" xml:space="preserve">
+    <value>Erişilebilirlik ve Diğer Konular</value>
+  </data>
+  <data name="Menu.GlobalSettings.AudioSettings.Title" xml:space="preserve">
+    <value>Ses Ayarları</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Fail" xml:space="preserve">
+    <value>Ayarlar dışa aktarılamadı. Roblox&apos;un çalışmadığından emin olun ve tekrar deneyin.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Success" xml:space="preserve">
+    <value>Ayarlar {0} konumuna başarıyla aktarıldı</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Description" xml:space="preserve">
+    <value>Birinci şahıs bakış açısı için X ve Y hassasiyeti.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Title" xml:space="preserve">
+    <value>1. Şahıs Hassasiyeti</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Description" xml:space="preserve">
+    <value>Özel bir FPS sınırı belirleyin. Varsayılan değer için -1&apos;i kullanın.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Title" xml:space="preserve">
+    <value>Kare Hızı Sınırı</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Description" xml:space="preserve">
+    <value>Roblox&apos;u tam ekran modunda başlatın.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Title" xml:space="preserve">
+    <value>Tam ekran</value>
+  </data>
+  <data name="Menu.GlobalSettings.GraphicsSettings.Title" xml:space="preserve">
+    <value>Grafik Ayarları</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
+    <value>Kontrol cihazının titreşim şiddeti.</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
+    <value>Haptik Güç</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Confirmation" xml:space="preserve">
+    <value>Bu işlem, mevcut tüm Genel ayarlarınızı içe aktarılanlarla değiştirecektir. Devam etmek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
+    <value>Ayarlar içe aktarılamadı. Roblox&apos;un çalışmadığından emin olun ve tekrar deneyin.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
+    <value>Seçilen dosya, geçerli bir GBS ayar dosyası gibi görünmüyor.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
+    <value>Seçilen dosya geçerli bir XML dosyası değildir.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Success" xml:space="preserve">
+    <value>Ayarlar başarıyla içe aktarıldı!</value>
+  </data>
+  <data name="Menu.GlobalSettings.InputSettings.Title" xml:space="preserve">
+    <value>Giriş Ayarları</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Description" xml:space="preserve">
+    <value>Kameranın Y eksenini ters çevir.</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Title" xml:space="preserve">
+    <value>Y&apos;yi ters çevir</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
+    <value>Küresel hacim seviyesi.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
+    <value>Ana Ses Seviyesi</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Description" xml:space="preserve">
+    <value>Daha yüksek MSAA seviyelerini etkinleştirir.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Title" xml:space="preserve">
+    <value>En Yüksek Kalite</value>
+  </data>
+  <data name="Menu.GlobalSettings.OpenRobloxFolder" xml:space="preserve">
+    <value>Roblox Klasörünü Aç</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Description" xml:space="preserve">
+    <value>Parti ses modu için ses seviyesi.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Title" xml:space="preserve">
+    <value>Parti Hacmi</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
+    <value>Performans katmanını göster.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
+    <value>Perf İstatistikleri</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
+    <value>Esc tuşuyla Oyuncu Listesi’ni kare ve normal kullanıcı arayüzü arasında değiştirin.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
+    <value>Oyuncu Listesi Düzeni</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
+    <value>Kullanıcı arayüzü animasyonlarını azaltır.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
+    <value>Hareket Kısıtlılığı</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
+    <value>Genel kamera hassasiyeti.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
+    <value>Hassasiyet</value>
+  </data>
+  <data name="Menu.GlobalSettings.ShiftLock.Description" xml:space="preserve">
+    <value>Shiftlock&apos;u otomatik olarak etkinleştirin.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Description" xml:space="preserve">
+    <value>Oyuna katılımdaki kalite seviyesi.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
+    <value>Başlangıç Kalitesi</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
+    <value>Roblox Studio için ses seviyesi.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
+    <value>Hacim Çalışması</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
+    <value>Tercih edilen ekran metin boyutu.</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
+    <value>Metin Boyutu</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
+    <value>Üçüncü şahıs bakış açısı için X ve Y hassasiyeti.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
+    <value>3. Şahıs Duyarlılığı</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Genel Ayarlar</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Description" xml:space="preserve">
+    <value>Kullanıcı arayüzü öğelerinin saydamlığını ayarlayın.</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Title" xml:space="preserve">
+    <value>Kullanıcı Arayüzü Şeffaflığı</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
+    <value>Sanal Gerçeklik desteğini etkinleştirin.</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
+    <value>VR Modu</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Description" xml:space="preserve">
+    <value>Ekran vinyet efektini etkinleştirin veya devre dışı bırakın.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Title" xml:space="preserve">
+    <value>Küçük resim</value>
   </data>
   <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
     <value>Tüm genel ayarlarınızı buradan yönetebilirsiniz.</value>
@@ -1483,6 +1957,12 @@ Daha fazla bilgi:
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
     <value>Etkinliğe Katılmaya İzin Ver</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
+    <value>20 dakikalık bir bağlantı kesintisi veya ağ hatasının ardından aynı sunucuya otomatik olarak yeniden bağlanır.</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
+    <value>Otomatik Yeniden Katılma</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
     <value>Roblox’un belirli yerleşik özelliklerini etkinleştirir veya devre dışı bırakır.</value>
@@ -1556,8 +2036,20 @@ Daha fazla bilgi:
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
     <value>Çift Tıklama Eylemi</value>
   </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Description" xml:space="preserve">
+    <value>Açık olan komut dosyasına göre küçük resmi değiştirir.</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Title" xml:space="preserve">
+    <value>Dinamik Küçük Resim</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Description" xml:space="preserve">
+    <value>Komut dosyasının türünü, adını ve satır sayısını gösterir.</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Title" xml:space="preserve">
+    <value>Düzenleme Bilgileri</value>
+  </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
-    <value>Froststrap'ın hangi Roblox oyununu oynadığınızı algılamasını sağlar. Bazı özellikler için bu gerekli olabilir.</value>
+    <value>Froststrap&apos;ın hangi Roblox oyununu oynadığınızı algılamasını sağlar. Bazı özellikler için bu gerekli olabilir.</value>
   </data>
   <data name="Menu.Integrations.EnableActivityTracking.Title" xml:space="preserve">
     <value>Etkinlik Takibini Etkinleştir</value>
@@ -1573,6 +2065,18 @@ Daha fazla bilgi:
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Oyun Geçmişi Menüsü</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Description" xml:space="preserve">
+    <value>Roblox oyununun başlık çubuğunu ve görev çubuğu simgesini otomatik olarak mevcut oyunun simgesiyle değiştir.</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Title" xml:space="preserve">
+    <value>Simge Değişikliği</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Description" xml:space="preserve">
+    <value>Üzerinde çalıştığınız oyuna katılmak için küçük bir düğme ekler.</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
+    <value>Katıl Düğmesi</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Bir oyunda veya Studio alanında bulunduğunuz sırada toplam oyun sürenizi ve mevcut oturum sürenizi gösterir.</value>
@@ -1601,8 +2105,138 @@ Daha fazla bilgi:
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
     <value>Oyun Etkinliğini Göster</value>
   </data>
+  <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
+    <value>Bir oyunu test ederken RPC&apos;nizde küçük bir oynatma simgesi gösterir.</value>
+  </data>
+  <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
+    <value>Testleri Göster</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Description" xml:space="preserve">
+    <value>Başlatıldığında Discord etkinliğiniz olarak Roblox Studio&apos;yu gösterir.</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Title" xml:space="preserve">
+    <value>Studio Etkinliğini Göster</value>
+  </data>
+  <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
+    <value>Bu, yaptığınız işlemleri kaydedecek özel olarak geliştirilmiş bir Froststrap eklentisi ekleyerek çalışır.
+Eklentiyi yüklemek istiyor musunuz?</value>
+  </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
     <value>Entegrasyonlar</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
+    <value>Roblox&apos;un başlık çubuğundaki başlığı oyunun adına değiştirir.</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
+    <value>Başlık Değişikliği</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Description" xml:space="preserve">
+    <value>Mevcut çalışma alanınızın adını gösterir.</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Title" xml:space="preserve">
+    <value>Çalışma Alanı Bilgileri</value>
+  </data>
+  <data name="Menu.LinuxSettings.AddVariable" xml:space="preserve">
+    <value>+ Değişken Ekle</value>
+  </data>
+  <data name="Menu.LinuxSettings.AdvancedWineSettings" xml:space="preserve">
+    <value>Gelişmiş Şarap Ayarları</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
+    <value>Sober’ın Steam Deck veya benzeri oyun kumandaları aracılığıyla kumanda girişlerini talep etmesine ve yakalamasına olanak tanır.</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
+    <value>Oyun kumandası iznini ver</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Description" xml:space="preserve">
+    <value>Wine/DXVK ayrıntılı günlük kaydı ve konsol çıktısını etkinleştir.</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Title" xml:space="preserve">
+    <value>Hata Ayıklama Modu</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
+    <value>Signals, Feral Interactive’in GameMode optimizasyon arka plan programı, oyun başlatma süreçleri sırasında devreye girer.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
+    <value>GameMode&apos;u etkinleştir</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
+    <value>Arayüz öğelerini işlerken, platformun kendi yüksek DPI ölçeklendirme seçeneklerini kullanır.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
+    <value>HiDPI Ekran Ölçeklendirme Desteği</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Description" xml:space="preserve">
+    <value>Wine’a aktarılan ek ortam değişkenleri.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Title" xml:space="preserve">
+    <value>Ortam Değişkenleri</value>
+  </data>
+  <data name="Menu.LinuxSettings.FailedToStartWineCfg" xml:space="preserve">
+    <value>winecfg başlatılamadı: {0}</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
+    <value>Yerel Vulkan alt sistemlerini geçersiz kılar ve bunun yerine eski OpenGL düzen boru hattına geri döner.</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
+    <value>OpenGL ile Oluşturmayı Zorla</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
+    <value>Mevcut ise sistem optimizasyonlarını uygulayın (gamemoded gereklidir).</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
+    <value>Oyun Modu</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
+    <value>Wine altında Studio için görüntüleme arka ucunu seçin.</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
+    <value>Grafik İşleyici</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
+    <value>Studio komutunu sarın (örn. gamescope -- %komut%)</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
+    <value>Başlatıcı Komutu</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherPlaceholder" xml:space="preserve">
+    <value>gamescope -- %komut%</value>
+  </data>
+  <data name="Menu.LinuxSettings.ResolutionPlaceholder" xml:space="preserve">
+    <value>örn. 1920x1080</value>
+  </data>
+  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
+    <value>Linux Ayarları</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Description" xml:space="preserve">
+    <value>Dokunmatik ekran donanımı için davranış yönetimi profillerini etkinleştirir veya devre dışı bırakır.</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
+    <value>Dokunmatik Giriş Modu</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
+    <value>Masaüstü arayüz bağlamında modern TV/Konsol istemcisi düzen panosu sistemini zorunlu kılar.</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
+    <value>Konsol Deneyimini Kullanma</value>
+  </data>
+  <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
+    <value>Değişken</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
+    <value>Her örnek için ayrı bir pencere oluşturun</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
+    <value>Sanal Masaüstleri</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
+    <value>Belirli kullanıcı arayüzü öğeleri ve oturum açma işlemleri için kullanılır</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
+    <value>Web Sayfaları</value>
+  </data>
+  <data name="Menu.LinuxSettings.WineBinaryNotFound" xml:space="preserve">
+    <value>Wine ikili dosyası bulunamadı. Lütfen Wine&apos;ın kurulu olduğundan emin olun.</value>
   </data>
   <data name="Menu.Load" xml:space="preserve">
     <value>Yükle</value>
@@ -1623,7 +2257,7 @@ Daha fazla bilgi:
     <value>“Çerezler” seçeneğini genişletin ve “https://www.roblox.com” seçeneğini seçin</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
-    <value>'ROBLOSECURITY' çerezini bulun</value>
+    <value>&apos;ROBLOSECURITY&apos; çerezini bulun</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
     <value>“Değer” sütununa çift tıklayın ve kopyalayın</value>
@@ -1632,7 +2266,7 @@ Daha fazla bilgi:
     <value>Değeri yukarıdaki kutuya yapıştırın</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>"Geçersiz çerez. Lütfen kontrol edip tekrar deneyin.</value>
+    <value>Çerez geçersiz. Lütfen kontrol edip tekrar deneyin.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>.ROBLOSECURITY çerezinizi yapıştırın</value>
@@ -1641,7 +2275,7 @@ Daha fazla bilgi:
     <value>Manuel Oturum Açma</value>
   </data>
   <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
-    <value>Durak Ekle</value>
+    <value>Renk Ekle</value>
   </data>
   <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
     <value>Değişiklikler başarıyla uygulandı ({0} dosya).</value>
@@ -1656,7 +2290,7 @@ Daha fazla bilgi:
     <value>Shiftlock’a Başvur</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Sayı ne kadar yüksekse, kalite o kadar yüksek olur ancak işlem süresi de o kadar uzar; maksimum değer 64, varsayılan değer ise 8’dir.</value>
+    <value>Sayı ne kadar yüksekse, kalite o kadar yüksek olur ancak işlem süresi de o kadar uzar. Maksimum değer 64, varsayılan değer ise 8’dir.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Mod oluşturma işlemi iptal edildi.</value>
@@ -1674,9 +2308,9 @@ Daha fazla bilgi:
     <value>Tek bir tıklamayla modları kolayca oluşturun.</value>
   </data>
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
-    <value>"Renk Oyna" Simgesi</value>
+    <value>&quot;Renk Oyna&quot; Simgesi</value>
   </data>
-  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+  <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
     <value>Gerekli öğeler indiriliyor...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
@@ -1707,7 +2341,7 @@ Daha fazla bilgi:
     <value>Roblox Simgesi (İsteğe bağlı)</value>
   </data>
   <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
-    <value>{0}'a kaydedildi</value>
+    <value>{0}&apos;a kaydedildi</value>
   </data>
   <data name="Menu.ModGenerator.Starting" xml:space="preserve">
     <value>Mod oluşturma işlemi başlıyor...</value>
@@ -1728,10 +2362,10 @@ Daha fazla bilgi:
     <value>Yeni Mod Ekle</value>
   </data>
   <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
-    <value>'{0}' adlı bir mod zaten mevcut.</value>
+    <value>&apos;{0}&apos; adlı bir mod zaten mevcut.</value>
   </data>
   <data name="Menu.Mods.DeleteMod" xml:space="preserve">
-    <value>'{0}' öğesini kalıcı olarak silmek istiyor musunuz?</value>
+    <value>&apos;{0}&apos; öğesini kalıcı olarak silmek istiyor musunuz?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
     <value>Roblox Oyun İstemcisi’ndeki dosya modlarını yönetin ve uygulayın.</value>
@@ -1740,7 +2374,7 @@ Daha fazla bilgi:
     <value>📦 Zip dosyasını / klasörü içe aktarmak için buraya sürükleyin</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
-    <value>'{0}' için olan klasör artık mevcut değil.</value>
+    <value>&apos;{0}&apos; için olan klasör artık mevcut değil.</value>
   </data>
   <data name="Menu.Mods.ImportFolder" xml:space="preserve">
     <value>Klasörü İçe Aktar</value>
@@ -1749,7 +2383,7 @@ Daha fazla bilgi:
     <value>ZIP dosyasını içe aktar</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
-    <value>'{0}' modunu başarıyla içe aktarıldı.</value>
+    <value>&apos;{0}&apos; modunu başarıyla içe aktarıldı.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
     <value>Modları sürükleyerek veya içe aktararak yükleyin; önceliği daha düşük olan modlar en son uygulanır, böylece diğer modlarla olan çakışmaları önler.</value>
@@ -1758,7 +2392,8 @@ Daha fazla bilgi:
     <value>Geçersiz klasör adı.</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
-    <value>Seçilen kaynak geçerli bir mod yapısı içermiyor.\nAşağıdaki klasörlerden en az birini içermelidir: content, ExtraContent, PlatformContent.</value>
+    <value>Seçilen kaynak, geçerli bir mod yapısı içermiyor.
+Aşağıdaki klasörlerden en az birini içermesi gerekir: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Yüklü mod yok.</value>
@@ -1771,6 +2406,21 @@ Daha fazla bilgi:
   </data>
   <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
     <value>Desteklenmeyen dosya türü veya yol: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Apply" xml:space="preserve">
+    <value>Set&apos;i Uygula</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Export" xml:space="preserve">
+    <value>Dışa Aktarma Seti</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Fetch" xml:space="preserve">
+    <value>Getir-Getir</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Import" xml:space="preserve">
+    <value>İçe Aktarma Kümesi</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.None" xml:space="preserve">
+    <value>Seçili bir Özel İmleç Seti yok.</value>
   </data>
   <data name="Menu.PresetMods.Description" xml:space="preserve">
     <value>Resmi yerleşik modlar.</value>
@@ -1791,7 +2441,7 @@ Daha fazla bilgi:
     <value>İmleci seçin...</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomCursor.Description" xml:space="preserve">
-    <value>Roblox'ta kendi fare imleçlerinizi kullanın.</value>
+    <value>Roblox&apos;ta kendi fare imleçlerinizi kullanın.</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomCursor.Remove" xml:space="preserve">
     <value>Özel İmleci Kaldır</value>
@@ -1821,7 +2471,7 @@ Daha fazla bilgi:
     <value>Yazı Tipini Seç...</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomFont.Description" xml:space="preserve">
-    <value>Roblox'ta seçilen özel yazı tipini ayarlar.</value>
+    <value>Roblox&apos;ta seçilen özel yazı tipini ayarlar.</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomFont.Remove" xml:space="preserve">
     <value>Uygulanan Yazı Tipini Kaldır</value>
@@ -1830,19 +2480,22 @@ Daha fazla bilgi:
     <value>Özel Oyun Yazı Tipi</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Choose" xml:space="preserve">
-    <value>ShiftLock'u seçin...</value>
+    <value>ShiftLock&apos;u seçin...</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Description" xml:space="preserve">
     <value>Roblox’ta kendi Shiftlock’unu kullan.</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Remove" xml:space="preserve">
-    <value>Özel Shiftlock'u Kaldır</value>
+    <value>Özel Shiftlock&apos;u Kaldır</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Özel Shiftlock</value>
   </data>
+  <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
+    <value>Ön Ayar Modları Klasörünü Aç</value>
+  </data>
   <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
-    <value>Roblox'un hangi tür emojileri kullanmasını istediğinizi seçin.</value>
+    <value>Roblox&apos;un hangi tür emojileri kullanmasını istediğinizi seçin.</value>
   </data>
   <data name="Menu.PresetMods.Presets.EmojiType.Error" xml:space="preserve">
     <value>Emoji modu şu anda uygulanamıyor.</value>
@@ -1857,7 +2510,7 @@ Daha fazla bilgi:
     <value>Fare İmleci</value>
   </data>
   <data name="Menu.PresetMods.Presets.OldAvatarEditor.Description" xml:space="preserve">
-    <value>2020'den önce Roblox uygulamasında kullanılan eski avatar düzenleyici arka planını geri getirin.</value>
+    <value>2020&apos;den önce Roblox uygulamasında kullanılan eski avatar düzenleyici arka planını geri getirin.</value>
   </data>
   <data name="Menu.PresetMods.Presets.OldAvatarEditor.Title" xml:space="preserve">
     <value>Eski Avatar Düzenleyicisi Arka Planını Kullan</value>
@@ -1865,11 +2518,98 @@ Daha fazla bilgi:
   <data name="Menu.PresetMods.Title" xml:space="preserve">
     <value>Önceden Ayarlanmış Modlar</value>
   </data>
+  <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
+    <value>Hesap yöneticisi şu anda müsait değil.</value>
+  </data>
+  <data name="Menu.QuickPlay.Active" xml:space="preserve">
+    <value>Etkin</value>
+  </data>
+  <data name="Menu.QuickPlay.AvailableSubplaces" xml:space="preserve">
+    <value>Mevcut Alt Yerler</value>
+  </data>
+  <data name="Menu.QuickPlay.CheckingServers" xml:space="preserve">
+    <value>Sunucular kontrol ediliyor...</value>
+  </data>
   <data name="Menu.QuickPlay.Description" xml:space="preserve">
     <value>Son oynadığınız oyunlara geri dönün.</value>
   </data>
+  <data name="Menu.QuickPlay.FetchingGameInfo" xml:space="preserve">
+    <value>Oyun bilgilerini alma</value>
+  </data>
+  <data name="Menu.QuickPlay.FindingBestServer" xml:space="preserve">
+    <value>Bölgeniz için en uygun sunucu aranıyor...</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinBestRegion" xml:space="preserve">
+    <value>Best Region&apos;a Katılın</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinGame" xml:space="preserve">
+    <value>Oyuna Katıl</value>
+  </data>
+  <data name="Menu.QuickPlay.Latest" xml:space="preserve">
+    <value>En son</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingPrivateServers" xml:space="preserve">
+    <value>Özel sunucular yükleniyor...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingRecentGames" xml:space="preserve">
+    <value>Son oynanan oyunlar yükleniyor...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingServers" xml:space="preserve">
+    <value>Sunucular yükleniyor...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingSubplaces" xml:space="preserve">
+    <value>Alt yerler yükleniyor...</value>
+  </data>
+  <data name="Menu.QuickPlay.NoPrivateServersFound" xml:space="preserve">
+    <value>Özel sunucu bulunamadı</value>
+  </data>
+  <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
+    <value>Uygun bir sunucu bulunamadı.</value>
+  </data>
+  <data name="Menu.QuickPlay.Players" xml:space="preserve">
+    <value>oyuncular</value>
+  </data>
+  <data name="Menu.QuickPlay.PleaseSelectAccount" xml:space="preserve">
+    <value>Lütfen önce bir hesap seçin.</value>
+  </data>
+  <data name="Menu.QuickPlay.PrivateServers" xml:space="preserve">
+    <value>Özel Sunucular</value>
+  </data>
+  <data name="Menu.QuickPlay.RejoinLastServer" xml:space="preserve">
+    <value>Son Sunucuya Yeniden Katıl</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxAPI" xml:space="preserve">
+    <value>Roblox API&apos;si</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxServers" xml:space="preserve">
+    <value>Roblox Sunucuları</value>
+  </data>
+  <data name="Menu.QuickPlay.SessionHistory" xml:space="preserve">
+    <value>Oturum Geçmişi</value>
+  </data>
   <data name="Menu.QuickPlay.Title" xml:space="preserve">
     <value>Hızlı Oynat</value>
+  </data>
+  <data name="Menu.QuickPlay.Tracked" xml:space="preserve">
+    <value>Takip edilen</value>
+  </data>
+  <data name="Menu.QuickPlay.TrackedServers" xml:space="preserve">
+    <value>İzlenen Sunucular ({0})</value>
+  </data>
+  <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
+    <value>Kimlik doğrulaması yapılamadı. Lütfen tekrar giriş yapın.</value>
+  </data>
+  <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
+    <value>Bilinmeyen Oyun</value>
+  </data>
+  <data name="Menu.QuickPlay.ViewSubplaces" xml:space="preserve">
+    <value>Alt yerleri görüntüle</value>
+  </data>
+  <data name="Menu.QuickPlay.VisitPage" xml:space="preserve">
+    <value>Sayfayı Ziyaret Et</value>
+  </data>
+  <data name="Menu.QuickPlay.Visits" xml:space="preserve">
+    <value>Ziyaretler</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Giriş İptal Edildi.</value>
@@ -1878,7 +2618,7 @@ Daha fazla bilgi:
     <value>Giriş işlemi tamamlandı! Kapatılıyor...</value>
   </data>
   <data name="Menu.QuickSignIn.Instruction" xml:space="preserve">
-    <value>Bu kodu kopyalayın ve [Hızlı Giriş Sayfası]({0})'ya yapıştırın.</value>
+    <value>Bu kodu kopyalayın ve [Hızlı Giriş Sayfası]({0})&apos;ya yapıştırın.</value>
   </data>
   <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
     <value>Cihaz bağlandı - oturum açma işlemi onaylanıyor...</value>
@@ -1887,16 +2627,62 @@ Daha fazla bilgi:
     <value>Oturum açma süresi doldu.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
-    <value>Hızlı Oturum Açma işlemi bekleniyor...\nOturum açma işlemi tamamlandığında uygulama bu pencereyi kapatacaktır.</value>
+    <value>Hızlı Oturum Açma işlemi bekleniyor...
+Oturum açma işlemi tamamlandığında uygulama bu pencereyi kapatacaktır.</value>
+  </data>
+  <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
+    <value>Sunucuları görüntülemek için bir Yer Kimliği girin ve “Ara” düğmesine tıklayın.</value>
+  </data>
+  <data name="Menu.RegionSelector.FailedToLoadDatacenters" xml:space="preserve">
+    <value>Veri merkezleri yüklenemedi.</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Yer Kimliğini veya Oyun Adını girin...</value>
   </data>
+  <data name="Menu.RegionSelector.ID" xml:space="preserve">
+    <value>Tanımlayıcı: {0}</value>
+  </data>
+  <data name="Menu.RegionSelector.Join" xml:space="preserve">
+    <value>Katıl</value>
+  </data>
+  <data name="Menu.RegionSelector.LargeServers" xml:space="preserve">
+    <value>Büyük Sunucular</value>
+  </data>
   <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
     <value>Daha Fazlasını Yükle</value>
   </data>
+  <data name="Menu.RegionSelector.LoadedRegions" xml:space="preserve">
+    <value>{0} bölge yüklendi.</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
+    <value>Veri merkezleri yükleniyor...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
+    <value>Kullanmak için hesap yöneticisi aracılığıyla oturum açın, “Froststrap Hesap İzni”ni etkinleştirin ya da bunu Discord sunucumuza bildirin.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
+    <value>Herhangi bir genel sunucu bulunamadı.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoServersForRegion" xml:space="preserve">
+    <value>Belirtilen bölge için hiçbir sunucu bulunamadı.</value>
+  </data>
+  <data name="Menu.RegionSelector.Players" xml:space="preserve">
+    <value>Oyuncular</value>
+  </data>
+  <data name="Menu.RegionSelector.PleaseSelectRegion" xml:space="preserve">
+    <value>Lütfen önce bir bölge seçin.</value>
+  </data>
   <data name="Menu.RegionSelector.Region" xml:space="preserve">
     <value>Bölge:</value>
+  </data>
+  <data name="Menu.RegionSelector.RegionHeader" xml:space="preserve">
+    <value>Bölge</value>
+  </data>
+  <data name="Menu.RegionSelector.SearchingServers" xml:space="preserve">
+    <value>Sunucular aranıyor...</value>
+  </data>
+  <data name="Menu.RegionSelector.SmallServers" xml:space="preserve">
+    <value>Küçük Sunucular</value>
   </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Bölge Seçici</value>
@@ -1940,11 +2726,14 @@ Daha fazla bilgi:
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>Bu sayede, belirli oyunlara hızlıca katılmanızı sağlayan kısayollar oluşturabilirsiniz.</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
-    <value>Oyun Kısayolları</value>
+  <data name="Menu.Shortcuts.CreateShortcut" xml:space="preserve">
+    <value>Kısayol Oluştur</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
-    <value>Froststrap'ın nasıl kolayca başlatılabileceğini ayarlayın.</value>
+    <value>Froststrap&apos;ın nasıl kolayca başlatılabileceğini ayarlayın.</value>
+  </data>
+  <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
+    <value>Kısayol oluşturulurken hata oluştu.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
     <value>Kısayollarınızda Froststrap’ın Roblox simgelerini kullanmanıza olanak tanır. [Nasıl yapılacağını öğrenin.]({0})</value>
@@ -1958,18 +2747,57 @@ Daha fazla bilgi:
   <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
     <value>İşlev</value>
   </data>
+  <data name="Menu.Shortcuts.Game" xml:space="preserve">
+    <value>Oyun {0}</value>
+  </data>
+  <data name="Menu.Shortcuts.GameShortcut.Title" xml:space="preserve">
+    <value>Oyun Kısayolları</value>
+  </data>
   <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
     <value>Aşağıda, çok seçenekli Başlat Menüsünü açan kısayollar yer almaktadır.</value>
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Genel</value>
   </data>
-  <data name="Menu.SoberSettings.Title" xml:space="preserve">
-    <value>Ayık Ortamlar</value>
+  <data name="Menu.Shortcuts.NoGameSelected" xml:space="preserve">
+    <value>Seçilen Oyun Yok</value>
+  </data>
+  <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
+    <value>Özel Erişim Kodu</value>
+  </data>
+  <data name="Menu.Shortcuts.Processing" xml:space="preserve">
+    <value>İşleniyor...</value>
+  </data>
+  <data name="Menu.Shortcuts.Ready" xml:space="preserve">
+    <value>Hazır</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyToCreate" xml:space="preserve">
+    <value>Yaratmaya hazır mısınız?</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyWithManualId" xml:space="preserve">
+    <value>Manuel kimlik bilgisiyle hazır.</value>
+  </data>
+  <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
+    <value>Oyun Ara</value>
+  </data>
+  <data name="Menu.Shortcuts.SelectGameFirst" xml:space="preserve">
+    <value>Önce bir oyun seçin.</value>
+  </data>
+  <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
+    <value>Sunucu Örneği Kimliği</value>
+  </data>
+  <data name="Menu.Shortcuts.ShortcutCreated" xml:space="preserve">
+    <value>Kısayol oluşturuldu!</value>
+  </data>
+  <data name="Menu.Shortcuts.UpdatingPreview" xml:space="preserve">
+    <value>Önizleme güncelleniyor...</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Test Modu</value>
     <comment>See the prompt for more context</comment>
+  </data>
+  <data name="Menu.TestMode.Description" xml:space="preserve">
+    <value>Roblox başlatıldığında ayarlar penceresini otomatik olarak gizle ve Roblox kapatıldığında yeniden aç.</value>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
     <value>Test Modu, ayarlarınızın Roblox’u nasıl etkilediğini adım adım test etmenizi kolaylaştırır. 
@@ -1983,7 +2811,7 @@ Test Modu’nu etkinleştirmek ister misiniz?</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Simgeler</value>
-    <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+    <comment>Name of the folder that gets created according to the &quot;create shortcut icons&quot; option. Ensure that it is a valid folder name.</comment>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Bunlar, Froststrap’ın kurulduğu yerde saklanacak ve yeniden kurulumda otomatik olarak geri yüklenecektir.</value>
@@ -1996,12 +2824,12 @@ Test Modu’nu etkinleştirmek ister misiniz?</value>
 
 Roblox ile ilgili sorunlar yaşadığınız için kaldırma veya yeniden yükleme işlemi yapıyorsanız, önce [bu yardım sayfasını]({0}) okuyun.
 
-Kaldırma işlemi, tüm kalıntıları tam olarak temizleyemeyebilir; bu nedenle, Froststrap'ın yüklü olduğu konumda kalan dosyaları manuel olarak temizlemeniz gerekebilir.
+Kaldırma işlemi, tüm kalıntıları tam olarak temizleyemeyebilir; bu nedenle, Froststrap&apos;ın yüklü olduğu konumda kalan dosyaları manuel olarak temizlemeniz gerekebilir.
 
-Froststrap, "{1}" konumuna yüklenmiştir.</value>
+Froststrap, &quot;{1}&quot; konumuna yüklenmiştir.</value>
   </data>
   <data name="Uninstaller.Title" xml:space="preserve">
-    <value>Froststrap'ı kaldır</value>
+    <value>Froststrap&apos;ı kaldır</value>
   </data>
   <data name="Uninstaller.Uninstall" xml:space="preserve">
     <value>Kaldır</value>
