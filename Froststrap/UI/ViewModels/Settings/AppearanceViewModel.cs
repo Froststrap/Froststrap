@@ -92,8 +92,8 @@ namespace Froststrap.UI.ViewModels.Settings
 
                 if (identifier == null && value == Strings.Common_SystemDefault)
                     identifier = "nil";
-                else if (identifier == null)
-                    identifier = "nil";
+
+                identifier ??= "nil";
 
                 if (App.Settings.Prop.Locale != identifier)
                 {

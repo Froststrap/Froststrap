@@ -19,38 +19,36 @@ namespace Froststrap
             { "nil", Strings.Common_SystemDefault },
             { "en", "English" },
             { "en-US", "English (United States)" },
-            { "sq", "Albanian" }, // Albanian
             { "ar", "العربية" }, // Arabic
             { "bg", "Български" }, // Bulgarian
-            { "bn", "বাংলা" }, // Bengali
-            { "bs", "Bosanski" }, // Bosnian
             { "cs", "Čeština" }, // Czech
-            { "de", "Deutsch" }, // German
             { "da", "Dansk" }, // Danish
-            { "es-ES", "Español" }, // Spanish
+            { "de", "Deutsch" }, // German
             { "el", "Ελληνικά" }, // Greek
+            { "es-ES", "Español" }, // Spanish
+            { "et", "Eesti" }, // Estonian
             { "fi", "Suomi" }, // Finnish
             { "fr", "Français" }, // French
-            { "he", "עברית‎" }, // Hebrew
-            { "hi", "Hindi (Latin)" }, // Hindi
             { "hu", "Magyar" }, // Hungarian
             { "id", "Bahasa Indonesia" }, // Indonesian
             { "it", "Italiano" }, // Italian
             { "ja", "日本語" }, // Japanese
             { "ko", "한국어" }, // Korean
             { "lt", "Lietuvių" }, // Lithuanian
+            { "lv", "Latviešu" }, // Latvian
             { "nl", "Nederlands" }, // Dutch
-            { "no", "Bokmål" }, // Norwegian
             { "pl", "Polski" }, // Polish
             { "pt-BR", "Português (Brasil)" }, // Portuguese, Brazilian
+            { "pt-PT", "Português (Portugal)" }, // Portuguese, Portugal
             { "ro", "Română" }, // Romanian
             { "ru", "Русский" }, // Russian
+            { "sk", "Slovenčina" }, // Slovak
+            { "sl", "Slovenščina" }, // Slovenian
             { "sv-SE", "Svenska" }, // Swedish
             { "tr", "Türkçe" }, // Turkish
             { "uk", "Українська" }, // Ukrainian
             { "vi", "Tiếng Việt" }, // Vietnamese
             { "zh-CN", "中文 (简体)" }, // Chinese Simplified
-            { "zh-HK", "中文 (廣東話)" }, // Chinese Traditional, Hong Kong
             { "zh-TW", "中文 (繁體)" } // Chinese Traditional
         };
 
