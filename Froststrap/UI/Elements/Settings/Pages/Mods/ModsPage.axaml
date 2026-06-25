@@ -163,6 +163,13 @@
                             <controls:IconButton Command="{Binding ExportModCommand}" CommandParameter="{Binding SelectedMod}"
                                                  Content="{x:Static resources:Strings.Common_Export}" Icon="ArrowExport" Margin="0,4" />
 
+                            <controls:IconButton Icon="Text"
+                                                 Content="Preview Font"
+                                                 Command="{Binding TogglePreviewCommand}"
+                                                 HorizontalAlignment="Stretch"
+                                                 Margin="0,4"
+                                                 IsVisible="{Binding HasFontPreview}" />
+
                             <Grid ColumnDefinitions="*,*" Margin="0,4">
                                 <controls:IconButton Grid.Column="0"
                                                      Icon="Delete"
@@ -195,6 +202,122 @@
                            VerticalAlignment="Center" />
             </Grid>
         </Grid>
+
+        <Border IsVisible="{Binding IsPreviewOpen}"
+                Background="#CC000000"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                ZIndex="1000"
+                Opacity="1">
+
+            <Border.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.3" />
+                </Transitions>
+            </Border.Transitions>
+
+            <Grid HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  MaxWidth="800"
+                  MaxHeight="600">
+
+                <Border Background="{DynamicResource LayerFillColorDefaultBrush}"
+                        CornerRadius="12"
+                        Padding="20"
+                        BorderThickness="1"
+                        BorderBrush="{DynamicResource ControlStrokeColorDefault}">
+
+                    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                                <TextBlock Text="{x:Static resources:Strings.Menu_Mods_Preview_Font_Preview}"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                                <TextBlock Text="{Binding PreviewStatus}"
+                                           FontSize="12"
+                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Command="{Binding TogglePreviewCommand}"
+                                    Content="✕"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    FontSize="20"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    Cursor="Hand" />
+                        </Grid>
+
+                        <Separator Grid.Row="1" Margin="0,12" />
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,12" HorizontalAlignment="Center" Spacing="12">
+                            <TextBlock Text="{x:Static resources:Strings.Menu_Mods_Preview_FontVariant}"
+                                       VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                            <ComboBox ItemsSource="{Binding FontVariants}"
+                                      SelectedItem="{Binding SelectedFontVariant}"
+                                      MinWidth="120"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+
+                        <ScrollViewer Grid.Row="3"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      IsEnabled="{Binding !IsLoadingPreview}">
+
+                            <Grid IsEnabled="{Binding !IsLoadingPreview}">
+                                <Grid IsVisible="{Binding IsLoadingPreview}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <StackPanel>
+                                        <ProgressBar IsIndeterminate="True"
+                                                     Width="200"
+                                                     Height="4" />
+                                        <TextBlock Text="{x:Static resources:Strings.Menu_Mods_Preview_Loading_Glyphs}"
+                                                   FontSize="14"
+                                                   Margin="0,8,0,0"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+                                    </StackPanel>
+                                </Grid>
+
+                                <ItemsControl ItemsSource="{Binding PreviewGlyphItems}"
+                                              IsVisible="{Binding !IsLoadingPreview, FallbackValue=True}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel HorizontalAlignment="Center" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Margin="4"
+                                                    Padding="8"
+                                                    Width="56"
+                                                    Height="56"
+                                                    Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4">
+                                                <Viewbox Stretch="Uniform">
+                                                    <Path Data="{Binding Data}"
+                                                          Fill="{Binding Brush}"
+                                                          Margin="0,0,10,8"/>
+                                                </Viewbox>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
+                        </ScrollViewer>
+
+                        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,12,0,0" HorizontalAlignment="Center">
+                            <Button Content="{x:Static resources:Strings.Common_Close}"
+                                    Command="{Binding TogglePreviewCommand}"
+                                    Padding="20,8"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
 
         <Grid IsHitTestVisible="False"
               IsVisible="{Binding IsDragOver}"

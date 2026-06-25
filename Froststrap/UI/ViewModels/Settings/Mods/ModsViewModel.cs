@@ -1,11 +1,14 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.Input;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using Avalonia;
+using FontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.ViewModels.Settings.Mods
 {
@@ -30,6 +33,13 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
                 {
                     NewName = value?.FolderName ?? string.Empty;
                     OnPropertyChanged(nameof(HasMods));
+
+                    CheckFontPreviewAvailability(value);
+
+                    if (IsPreviewOpen)
+                    {
+                        IsPreviewOpen = false;
+                    }
                 }
             }
         }
@@ -46,6 +56,102 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         {
             get => _isDragOver;
             set => SetProperty(ref _isDragOver, value);
+        }
+
+        private ObservableCollection<GlyphItem> _previewGlyphItems = [];
+        public ObservableCollection<GlyphItem> PreviewGlyphItems
+        {
+            get => _previewGlyphItems;
+            set => SetProperty(ref _previewGlyphItems, value);
+        }
+
+        private ObservableCollection<string> _fontVariants = [];
+        public ObservableCollection<string> FontVariants
+        {
+            get => _fontVariants;
+            set => SetProperty(ref _fontVariants, value);
+        }
+
+        private bool _isLoadingPreview = false;
+        public bool IsLoadingPreview
+        {
+            get => _isLoadingPreview;
+            set => SetProperty(ref _isLoadingPreview, value);
+        }
+
+        private string _previewStatus = string.Empty;
+        public string PreviewStatus
+        {
+            get => _previewStatus;
+            set => SetProperty(ref _previewStatus, value);
+        }
+
+        private bool _isPreviewOpen = false;
+        public bool IsPreviewOpen
+        {
+            get => _isPreviewOpen;
+            set => SetProperty(ref _isPreviewOpen, value);
+        }
+
+        private bool _hasFontPreview = false;
+        public bool HasFontPreview
+        {
+            get => _hasFontPreview;
+            set => SetProperty(ref _hasFontPreview, value);
+        }
+
+        private bool _isFilledFont = false;
+        public bool IsFilledFont
+        {
+            get => _isFilledFont;
+            set => SetProperty(ref _isFilledFont, value);
+        }
+
+        private string _selectedFontVariant = "Regular";
+        public string SelectedFontVariant
+        {
+            get => _selectedFontVariant;
+            set
+            {
+                if (SetProperty(ref _selectedFontVariant, value))
+                {
+                    _currentFontVariant = value;
+                    IsFilledFont = value.Equals("Filled", StringComparison.OrdinalIgnoreCase);
+
+                    if (IsPreviewOpen && SelectedMod != null && _currentBrush != null)
+                    {
+                        _ = LoadGlyphsWithColorAsync(_currentBrush, _currentFontVariant);
+                    }
+                }
+            }
+        }
+
+        private string _currentFontVariant = "Regular";
+        private IBrush? _currentBrush;
+
+        private Geometry? _regularPreviewData;
+        public Geometry? RegularPreviewData
+        {
+            get => _regularPreviewData;
+            set => SetProperty(ref _regularPreviewData, value);
+        }
+
+        private Geometry? _filledPreviewData;
+        public Geometry? FilledPreviewData
+        {
+            get => _filledPreviewData;
+            set => SetProperty(ref _filledPreviewData, value);
+        }
+
+        public ICommand TogglePreviewCommand => new RelayCommand(TogglePreview);
+
+        private void TogglePreview()
+        {
+            IsPreviewOpen = !IsPreviewOpen;
+            if (IsPreviewOpen && SelectedMod != null)
+            {
+                _ = LoadModFontPreviewAsync(SelectedMod);
+            }
         }
 
         public bool HasMods => Modifications.Count > 0;
@@ -71,7 +177,12 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         public ModsViewModel(IModsDialogService dialogService)
         {
             _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+
+            FontVariants = ["Regular", "Filled"];
+            SelectedFontVariant = "Regular";
+
             LoadModifications();
+            _ = LoadTogglePreviewGlyphsAsync();
         }
 
         public ICommand OpenModGeneratorCommand => new AsyncRelayCommand(async () => await _dialogService.OpenModGeneratorAsync());
@@ -125,6 +236,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             var sortedMods = App.State.Prop.Mods.OrderBy(x => x.Priority).ToList();
             Modifications = new ObservableCollection<ModConfig>(sortedMods);
             SelectedMod = Modifications.FirstOrDefault();
+            CheckFontPreviewAvailability(SelectedMod);
         }
 
         public static void CopyDirectory(string sourceDir, string destDir, bool overwrite)
@@ -419,6 +531,8 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             UpdatePriorities();
             OnPropertyChanged(nameof(HasMods));
 
+            CheckFontPreviewAvailability(newMod);
+
             await Frontend.ShowMessageBox(string.Format(Strings.Menu_Mods_Imported, newFolderName), MessageBoxImage.Information, MessageBoxButton.OK);
         }
 
@@ -477,6 +591,284 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 App.Logger.WriteLine("ModsViewModel::ExportMod", ex.Message);
                 await Frontend.ShowMessageBox($"Failed to export mod: {ex.Message}", MessageBoxImage.Error);
+            }
+        }
+
+        private async Task LoadTogglePreviewGlyphsAsync()
+        {
+            try
+            {
+                var regularFont = new FontFamily("avares://Froststrap/Resources/Fonts#BuilderIcons-Regular");
+                var regularTypeface = new Typeface(regularFont);
+                var regularText = char.ConvertFromUtf32(0xF101);
+                var regularFt = new FormattedText(regularText, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, regularTypeface, 20, Brushes.White);
+                RegularPreviewData = regularFt.BuildGeometry(new Point(0, 0));
+
+                var filledFont = new FontFamily("avares://Froststrap/Resources/Fonts#BuilderIcons-Filled");
+                var filledTypeface = new Typeface(filledFont);
+                var filledText = char.ConvertFromUtf32(0xF101);
+                var filledFt = new FormattedText(filledText, CultureInfo.CurrentCulture, FlowDirection.LeftToRight, filledTypeface, 20, Brushes.White);
+                FilledPreviewData = filledFt.BuildGeometry(new Point(0, 0));
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::LoadTogglePreviewGlyphs", ex.Message);
+            }
+        }
+
+        private async Task LoadModFontPreviewAsync(ModConfig mod)
+        {
+            if (mod == null || string.IsNullOrWhiteSpace(mod.FolderName))
+            {
+                PreviewGlyphItems = [];
+                return;
+            }
+
+            IsLoadingPreview = true;
+            PreviewStatus = Strings.Menu_Mods_Preview_Loading;
+            PreviewGlyphItems = [];
+
+            try
+            {
+                IBrush? brush = await GetColorFromInfoJsonAsync(mod);
+
+                if (brush == null)
+                {
+                    PreviewStatus = Strings.Menu_Mods_Preview_NoColor;
+                    IsLoadingPreview = false;
+                    HasFontPreview = false;
+                    return;
+                }
+
+                _currentBrush = brush;
+                _currentFontVariant = IsFilledFont ? "Filled" : "Regular";
+
+                string modPath = Path.Combine(Paths.Modifications, mod.FolderName);
+                string builderIconsPath = Path.Combine(modPath, "ExtraContent", "LuaPackages", "Packages", "_Index", "BuilderIcons", "BuilderIcons");
+
+                if (Directory.Exists(builderIconsPath))
+                {
+                    string jsonPath = Path.Combine(builderIconsPath, "BuilderIcons.json");
+                    if (File.Exists(jsonPath))
+                    {
+                        try
+                        {
+                            var json = File.ReadAllText(jsonPath);
+                            var doc = JsonDocument.Parse(json);
+                            if (doc.RootElement.TryGetProperty("faces", out var facesElement))
+                            {
+                                foreach (var face in facesElement.EnumerateArray())
+                                {
+                                    if (face.TryGetProperty("name", out var nameElement))
+                                    {
+                                        string name = nameElement.GetString() ?? "";
+                                        if (name.Contains("Bold", StringComparison.OrdinalIgnoreCase) ||
+                                            name.Contains("Filled", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            IsFilledFont = true;
+                                            _currentFontVariant = "Filled";
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        catch { /* Use default Regular */ }
+                    }
+                }
+
+                PreviewStatus = string.Format(Strings.Menu_Mods_Preview_LoadingFont, _currentFontVariant);
+                await LoadGlyphsWithColorAsync(brush, _currentFontVariant);
+                PreviewStatus = Strings.Menu_Mods_Preview_Loaded;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::LoadModFontPreview", ex.Message);
+                PreviewStatus = string.Format(Strings.Menu_Mods_Preview_Failed, ex.Message);
+                PreviewGlyphItems = [];
+            }
+            finally
+            {
+                IsLoadingPreview = false;
+            }
+        }
+
+        private static async Task<IBrush?> GetColorFromInfoJsonAsync(ModConfig mod)
+        {
+            string infoPath = Path.Combine(Paths.Modifications, mod.FolderName, "info.json");
+            if (!File.Exists(infoPath))
+                return null;
+
+            try
+            {
+                var json = await File.ReadAllTextAsync(infoPath);
+                var doc = JsonDocument.Parse(json);
+
+                if (!doc.RootElement.TryGetProperty("ColorsUsed", out var colorsElement))
+                    return null;
+
+                if (colorsElement.TryGetProperty("SolidColor", out var solidElement))
+                {
+                    string hex = solidElement.GetString() ?? "";
+                    if (!string.IsNullOrEmpty(hex) && Color.TryParse(hex, out var color))
+                    {
+                        return new SolidColorBrush(color);
+                    }
+                }
+
+                if (colorsElement.TryGetProperty("GradientStops", out var stopsElement))
+                {
+                    var stops = new Avalonia.Media.GradientStops();
+                    foreach (var stop in stopsElement.EnumerateArray())
+                    {
+                        double offset = stop.GetProperty("Offset").GetDouble();
+                        string colorHex = stop.GetProperty("Color").GetString() ?? "#FFFFFF";
+                        if (Color.TryParse(colorHex, out var color))
+                        {
+                            stops.Add(new GradientStop(color, offset));
+                        }
+                    }
+
+                    if (stops.Count >= 2)
+                    {
+                        double angle = 90;
+                        if (colorsElement.TryGetProperty("Angle", out var angleElement))
+                        {
+                            angle = angleElement.GetDouble();
+                        }
+
+                        var gradientBrush = new LinearGradientBrush { GradientStops = stops };
+
+                        double angleRad = angle * Math.PI / 180.0;
+                        double dx = Math.Sin(angleRad);
+                        double dy = -Math.Cos(angleRad);
+                        double len = Math.Sqrt(dx * dx + dy * dy);
+                        if (len > 0)
+                        {
+                            dx /= len;
+                            dy /= len;
+                        }
+                        gradientBrush.StartPoint = new RelativePoint(0.5 - dx / 2, 0.5 - dy / 2, RelativeUnit.Relative);
+                        gradientBrush.EndPoint = new RelativePoint(0.5 + dx / 2, 0.5 + dy / 2, RelativeUnit.Relative);
+
+                        return gradientBrush;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::GetColorFromInfoJson", ex.Message);
+            }
+
+            return null;
+        }
+
+        private async Task LoadGlyphsWithColorAsync(IBrush brush, string fontVariant)
+        {
+            var glyphItems = new ObservableCollection<GlyphItem>();
+
+            try
+            {
+                string resourceKey = fontVariant.Equals("Filled", StringComparison.OrdinalIgnoreCase)
+                    ? "BuilderIconsFilled"
+                    : "BuilderIconsRegular";
+
+                FontFamily? fontFamily = null;
+                if (Application.Current?.Resources.TryGetResource(resourceKey, null, out object? resource) == true)
+                    fontFamily = resource as FontFamily;
+
+                if (fontFamily == null)
+                {
+                    fontFamily = fontVariant.Equals("Filled", StringComparison.OrdinalIgnoreCase)
+                        ? new FontFamily("avares://Froststrap/Resources/Fonts#BuilderIcons-Filled")
+                        : new FontFamily("avares://Froststrap/Resources/Fonts#BuilderIcons-Regular");
+                }
+
+                var typeface = new Typeface(fontFamily);
+
+                var characterCodes = Enumerable.Range(0xF101, 100).ToList();
+
+                foreach (var characterCode in characterCodes)
+                {
+                    string text = char.ConvertFromUtf32(characterCode);
+
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    {
+                        try
+                        {
+                            var ft = new FormattedText(
+                                text,
+                                CultureInfo.CurrentCulture,
+                                FlowDirection.LeftToRight,
+                                typeface,
+                                40,
+                                brush);
+
+                            var geometry = ft.BuildGeometry(new Point(0, 0));
+                            if (geometry == null || geometry.Bounds.Width < 1) return;
+
+                            var bounds = geometry.Bounds;
+                            var translate = new TranslateTransform(
+                                (50 - bounds.Width) / 2 - bounds.X,
+                                (50 - bounds.Height) / 2 - bounds.Y
+                            );
+                            geometry.Transform = translate;
+
+                            glyphItems.Add(new GlyphItem
+                            {
+                                Data = geometry,
+                                Brush = brush
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Logger?.WriteLine("ModsViewModel::LoadGlyphsWithColor", $"Glyph Error: {ex.Message}");
+                        }
+                    });
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    PreviewGlyphItems = glyphItems;
+                });
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::LoadGlyphsWithColor", ex.Message);
+                throw;
+            }
+        }
+
+        private void CheckFontPreviewAvailability(ModConfig? mod)
+        {
+            HasFontPreview = false;
+
+            if (mod == null || string.IsNullOrWhiteSpace(mod.FolderName))
+                return;
+
+            try
+            {
+                string modPath = Path.Combine(Paths.Modifications, mod.FolderName);
+
+                string infoPath = Path.Combine(modPath, "info.json");
+                if (!File.Exists(infoPath))
+                    return;
+
+                var json = File.ReadAllText(infoPath);
+                var doc = JsonDocument.Parse(json);
+
+                if (!doc.RootElement.TryGetProperty("ColorsUsed", out var colorsElement))
+                    return;
+
+                bool hasColor = colorsElement.TryGetProperty("SolidColor", out _) ||
+                               colorsElement.TryGetProperty("GradientStops", out _);
+
+                HasFontPreview = hasColor;
+            }
+            catch (Exception ex)
+            {
+                App.Logger.WriteLine("ModsViewModel::CheckFontPreviewAvailability", ex.Message);
+                HasFontPreview = false;
             }
         }
     }

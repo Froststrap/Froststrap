@@ -6788,7 +6788,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage and apply file mods to the Roblox Game Client..
+        ///   Looks up a localized string similar to Manage and apply file mods..
         /// </summary>
         public static string Menu_Mods_Description {
             get {
@@ -6875,6 +6875,78 @@ namespace Froststrap.Resources {
         public static string Menu_Mods_NoneInstalled {
             get {
                 return ResourceManager.GetString("Menu.Mods.NoneInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load preview: {0}.
+        /// </summary>
+        public static string Menu_Mods_Preview_Failed {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font Preview.
+        /// </summary>
+        public static string Menu_Mods_Preview_Font_Preview {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.Font.Preview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font Variant:.
+        /// </summary>
+        public static string Menu_Mods_Preview_FontVariant {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.FontVariant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview loaded.
+        /// </summary>
+        public static string Menu_Mods_Preview_Loaded {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.Loaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading font preview....
+        /// </summary>
+        public static string Menu_Mods_Preview_Loading {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading glyphs....
+        /// </summary>
+        public static string Menu_Mods_Preview_Loading_Glyphs {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.Loading.Glyphs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading font: {0}....
+        /// </summary>
+        public static string Menu_Mods_Preview_LoadingFont {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.LoadingFont", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No color information found in this mod.
+        /// </summary>
+        public static string Menu_Mods_Preview_NoColor {
+            get {
+                return ResourceManager.GetString("Menu.Mods.Preview.NoColor", resourceCulture);
             }
         }
         

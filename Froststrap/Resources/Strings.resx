@@ -844,7 +844,7 @@ More information:
     <value>Integrations</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Manage and apply file mods to the Roblox Game Client.</value>
+    <value>Manage and apply file mods.</value>
   </data>
   <data name="Menu.PresetMods.Misc.CustomFont.Choose" xml:space="preserve">
     <value>Choose Font...</value>
@@ -2878,5 +2878,29 @@ Would you like to switch your preferred channel to {0}?</value>
   </data>
   <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
     <value>Retrying {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Loading font preview...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Loading font: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Preview loaded</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>No color information found in this mod</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Failed to load preview: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Font Preview</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Loading glyphs...</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Font Variant:</value>
   </data>
 </root>
