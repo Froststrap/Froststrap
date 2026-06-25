@@ -130,7 +130,7 @@
                                                       VerticalAlignment="Center" />
 
                                         <ComboBox Grid.Row="0" Grid.Column="4"
-                                                  MinWidth="80"
+                                                  Width="125"
                                                   Margin="4,0,0,0"
                                                   ItemsSource="{x:Static vm:ModsViewModel.TargetOptions}"
                                                   SelectedItem="{Binding Target}"
