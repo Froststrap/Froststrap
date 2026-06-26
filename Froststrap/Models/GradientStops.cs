@@ -25,7 +25,7 @@ namespace Froststrap.Models
             {
                 var cleaned = string.IsNullOrWhiteSpace(value)
                     ? value
-                    : new string(value.Where(c => !char.IsWhiteSpace(c)).ToArray());
+                    : string.Concat(value.Where(c => !char.IsWhiteSpace(c)));
 
                 if (_color != cleaned)
                 {

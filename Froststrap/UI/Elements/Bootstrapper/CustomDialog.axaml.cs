@@ -1,6 +1,5 @@
-using AnimatedImage.Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media.Imaging;
+using AnimatedImage.Avalonia;
 using Froststrap.UI.Elements.Bootstrapper.Base;
 using Froststrap.UI.ViewModels.Bootstrapper;
 
@@ -26,21 +25,16 @@ namespace Froststrap.UI.Elements.Bootstrapper
 
         private void CustomDialog_Closing(object? sender, WindowClosingEventArgs e)
         {
-            CleanupAnimatedImages();
-        }
-
-        public static void CleanupAnimatedImages()
-        {
-            foreach (var image in _animatedImages.ToList())
+            foreach (var image in _animatedImages)
             {
-                var bitmap = image.Source as Bitmap;
-                image.Source = null;
-                bitmap?.Dispose();
+                var animatedSource = image.GetValue(ImageBehavior.AnimatedSourceProperty);
+                if (animatedSource is AnimatedImageSourceStream streamSource && streamSource.StreamSource is MemoryStream ms)
+                {
+                    ms.Dispose();
+                }
+                image.ClearValue(ImageBehavior.AnimatedSourceProperty);
             }
             _animatedImages.Clear();
-
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
 
         #region UI Elements Overrides

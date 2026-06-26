@@ -8,8 +8,8 @@
         <Setter Property="Height" Value="48" /> 
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="Auto, *, Auto" 
-                      Height="{TemplateBinding Height}" 
+                <Grid ColumnDefinitions="Auto, *, Auto"
+                      Height="{TemplateBinding Height}"
                       Background="{TemplateBinding Background}">
 
                     <StackPanel Grid.Column="0" Name="PART_LeftPanel" Orientation="Horizontal" IsHitTestVisible="False">
@@ -29,27 +29,27 @@
 
                     <Panel Grid.Column="1">
                         <Panel Name="PART_DragLayer" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
-                        
+
                         <ContentPresenter Content="{TemplateBinding Content}"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Center" />
                     </Panel>
 
                     <StackPanel Grid.Column="2" Name="PART_RightPanel" Orientation="Horizontal" VerticalAlignment="Stretch">
-                        <controls:IconButton Name="PART_MinimizeButton" 
-                                           Classes="TitleBarButton" 
-                                           Icon="Subtract" 
-                                           IsVisible="{TemplateBinding ShowMinimize}"/>
+                        <controls:IconButton Name="PART_MinimizeButton"
+                                             Classes="TitleBarButton"
+                                             Icon="Subtract"
+                                             IsVisible="{TemplateBinding ShowMinimize}"/>
 
-                        <controls:IconButton Name="PART_MaximizeButton" 
-                                           Classes="TitleBarButton" 
-                                           IsVisible="{TemplateBinding ShowMaximize}" 
-                                           Icon="FullScreenMaximize"/>
+                        <controls:IconButton Name="PART_MaximizeButton"
+                                             Classes="TitleBarButton"
+                                             IsVisible="{TemplateBinding ShowMaximize}"
+                                             Icon="FullScreenMaximize"/>
 
-                        <controls:IconButton Name="PART_CloseButton" 
-                                           Classes="TitleBarButton Close" 
-                                           Icon="Dismiss" 
-                                           IsVisible="{TemplateBinding ShowClose}"/>
+                        <controls:IconButton Name="PART_CloseButton"
+                                             Classes="TitleBarButton Close"
+                                             Icon="Dismiss"
+                                             IsVisible="{TemplateBinding ShowClose}"/>
                     </StackPanel>
                 </Grid>
             </ControlTemplate>
@@ -70,7 +70,7 @@
     </Style>
 
     <Style Selector="controls|IconButton.TitleBarButton.Close:pointerover /template/ Border#PART_LayoutRoot">
-        <Setter Property="Background" Value="#C42B1C" /> 
+        <Setter Property="Background" Value="#C42B1C" />
     </Style>
 
 

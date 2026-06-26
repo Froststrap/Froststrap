@@ -74,7 +74,7 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
             {
                 var cleaned = string.IsNullOrWhiteSpace(value)
                     ? value
-                    : new string(value.Where(c => !char.IsWhiteSpace(c)).ToArray());
+                    : string.Concat(value.Where(c => !char.IsWhiteSpace(c)));
 
                 if (SetProperty(ref _solidColorHex, cleaned))
                     GenerateModCommand.NotifyCanExecuteChanged();
