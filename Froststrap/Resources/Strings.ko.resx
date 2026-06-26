@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -142,25 +142,19 @@
 
 기본 채널을 {0}으로 변경하시겠습니까?</value>
   </data>
+  <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
+    <value>건너뛰기</value>
+  </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>현재 Roblox가 실행 중이며, 다른 인스턴스를 실행하면 현재 실행 중인 인스턴스가 종료됩니다. 그래도 실행하시겠습니까?</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>현재 시청 중인 채널({0})은 최신 정보가 아니며, 더 이상 업데이트를 받지 않는 것으로 보입니다.\n
+    <value>현재 시청 중인 채널({0})은 최신 정보가 아니며, 더 이상 업데이트되지 않는 것으로 보입니다.
 기본 채널({1})로 전환하시겠습니까?</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
     <value>클라이언트가 없어 업그레이드가 비활성화되었습니다.
     문제를 방지하기 위해 업그레이드는 계속 진행됩니다.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
-    <value>어떤 서버에 접속할지 Froststrap이 결정하도록 하세요. 사용자와의 거리가 가장 가까운 서버를 우선적으로 선택합니다.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
-    <value>지금 친구 한 명이 이 게임을 하고 있는 것 같네요. 함께 플레이하시겠어요?</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
-    <value>BetterMatchmaking 활성화</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
     <value>일부 콘텐츠가 누락되었을 수 있습니다. 이 문제를 해결하려면 설정에서 Roblox를 강제로 재설치하세요.</value>
@@ -186,6 +180,18 @@
   <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
     <value>Roblox 업그레이드 취소.</value>
   </data>
+  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
+    <value>의존성 확인</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
+    <value>Flatpak 설치 확인 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
+    <value>업데이트 확인 중</value>
+  </data>
+  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
+    <value>Vulkan 레이어 컴파일 중...</value>
+  </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
     <value>{product} 설정 중...</value>
   </data>
@@ -195,11 +201,47 @@
   <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
     <value>다운로드 중</value>
   </data>
+  <data name="Bootstrapper.Status.DownloadingDXVK" xml:space="preserve">
+    <value>DXVK 다운로드 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
+    <value>DXVK-Sarek 다운로드 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingUpdate" xml:space="preserve">
+    <value>업데이트 {0} 다운로드 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWebView2" xml:space="preserve">
+    <value>WebView2 다운로드 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
+    <value>Wine 다운로드 중...</value>
+  </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
     <value>추출</value>
   </data>
+  <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
+    <value>DXVK 추출 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
+    <value>DXVK-Sarek 추출 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
+    <value>와인 추출 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.FindingTopRegions" xml:space="preserve">
+    <value>상위 {0} 개 지역 검색 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
+    <value>Wine 접두사 초기화 중...</value>
+  </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
     <value>{product} 설치 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
+    <value>Sober 설치 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
+    <value>업데이트 {0} 설치 중...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
     <value>WebView2를 설치 중입니다. 잠시만 기다려 주세요...</value>
@@ -207,9 +249,45 @@
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>왼쪽</value>
   </data>
+  <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
+    <value>{0}을 다시 시도 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
+    <value>주변 서버를 검색 중입니다...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingServers" xml:space="preserve">
+    <value>{0}에서 서버를 검색 중입니다...</value>
+  </data>
+  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
+    <value>DXVK 설정 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
+    <value>서버 검색 건너뛰기...</value>
+  </data>
+  <data name="Bootstrapper.Status.SoberUpdateComplete" xml:space="preserve">
+    <value>술이 깬 상태에서의 업데이트 완료.</value>
+  </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
     <value>{product} 시작 중...</value>
-    <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
+    <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
+  </data>
+  <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
+    <value>술 없이 시작하기...</value>
+  </data>
+  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
+    <value>Wine을 사용하여 Roblox Studio 실행하기...</value>
+  </data>
+  <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
+    <value>WebView2 {0} 제거 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSober" xml:space="preserve">
+    <value>Sober 업데이트 중...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberBasic" xml:space="preserve">
+    <value>Sober 업데이트 중 ({0}/{1})...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberProgress" xml:space="preserve">
+    <value>Sober 업데이트 중 ({0}/{1}): {2}%</value>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>{product} 업그레이드 중...</value>
@@ -226,7 +304,7 @@
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
     <value>스타일 미리 보기 - ‘취소’를 클릭하여 닫으세요</value>
-    <comment>Text for style previews that use text button that says "Cancel"</comment>
+    <comment>Text for style previews that use text button that says &quot;Cancel&quot;</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
     <value>Froststrap이 성공적으로 제거되었습니다.</value>
@@ -326,10 +404,7 @@
   </data>
   <data name="Common.Export" xml:space="preserve">
     <value>내보내기</value>
-    <comment>Currently used under the "Froststrap" settings tab for the button to export diagnostic data</comment>
-  </data>
-  <data name="Common.FastFlags" xml:space="preserve">
-    <value>빠른 깃발 편집기</value>
+    <comment>Currently used under the &quot;Froststrap&quot; settings tab for the button to export diagnostic data</comment>
   </data>
   <data name="Common.Files" xml:space="preserve">
     <value>파일</value>
@@ -559,7 +634,7 @@
   </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>사용자 지정 테마 {0}</value>
-    <comment>{0} is a string (e.g. '1', '1-1234')</comment>
+    <comment>{0} is a string (e.g. &apos;1&apos;, &apos;1-1234&apos;)</comment>
   </data>
   <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
     <value>{0}에 변경 사항을 저장하시겠습니까?</value>
@@ -570,17 +645,11 @@
   <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
     <value>테마 디렉터리 열기</value>
   </data>
-  <data name="CustomTheme.Editor.Preview" xml:space="preserve">
-    <value>미리 보기</value>
-  </data>
-  <data name="CustomTheme.Editor.Save" xml:space="preserve">
-    <value>저장</value>
-  </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>테마가 저장되었습니다!</value>
   </data>
   <data name="CustomTheme.Editor.Title" xml:space="preserve">
-    <value>"{0}" 편집</value>
+    <value>&quot;{0}&quot; 편집</value>
   </data>
   <data name="CustomTheme.Errors.DialogAlreadyInitialised" xml:space="preserve">
     <value>사용자 정의 대화 상자가 이미 초기화되었습니다.</value>
@@ -662,7 +731,7 @@
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
-    <value>{0} 알 수 없음 {1} '{2}'</value>
+    <value>{0} 알 수 없음 {1} &apos;{2}&apos;</value>
     <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
@@ -694,7 +763,7 @@
     <value>{0}에서 더 많은 맞춤형 부트스트래퍼 예제를 확인해 보세요.</value>
   </data>
   <data name="Dialog.AddFastFlag.Title" xml:space="preserve">
-    <value>'빠른' 플래그 추가</value>
+    <value>&apos;빠른&apos; 플래그 추가</value>
   </data>
   <data name="Dialog.AlreadyRunning.Uninstaller" xml:space="preserve">
     <value>제거 작업이 완료될 때까지 잠시 기다려 주십시오.</value>
@@ -759,16 +828,13 @@
     <value>먼저 [Froststrap 위키]({0})를 확인하여 이 문제가 이미 수정되었는지 확인해 주세요.
 
 아직 수정되지 않았다면, 이 예외를 이 포크의 관리자에게 보고해 주세요. 이 빌드는 비공식 빌드이므로 Froststrap의 GitHub 이슈에 보고하지 마세요.</value>
-    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
+    <comment>&quot;fork&quot; in general means &quot;a variation of&quot; or &quot;a different version of&quot;. You can alternatively write the first sentence as &quot;...to the maintainers of this version.&quot;</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
     <value>예외 보고</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
     <value>Froststrap 예외</value>
-  </data>
-  <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>버전 {0}</value>
   </data>
   <data name="Dialog.IconLoadFailed" xml:space="preserve">
     <value>선택한 부트스트랩 아이콘을 불러올 수 없습니다.
@@ -796,6 +862,30 @@
   </data>
   <data name="Dialog.RegistryWriteError" xml:space="preserve">
     <value>Froststrap이 Windows 레지스트리에 쓰기 작업을 수행할 수 없습니다. 바이러스 백신 프로그램이 간섭하여 문제를 일으키고 있을 가능성이 높습니다. Froststrap의 작동을 제한할 만한 요소가 없는지 확인해 주시기 바랍니다.</value>
+  </data>
+  <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
+    <value>그라디언트</value>
+  </data>
+  <data name="Enums.BackgroundMode.Image" xml:space="preserve">
+    <value>이미지</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Fill" xml:space="preserve">
+    <value>채우기</value>
+  </data>
+  <data name="Enums.BackgroundStretch.None" xml:space="preserve">
+    <value>없음</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Uniform" xml:space="preserve">
+    <value>제복</value>
+  </data>
+  <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
+    <value>채용 예정 직책</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
+    <value>2015년 초</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
+    <value>프로스트스트랩 (클래식)</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015년 말</value>
@@ -860,6 +950,18 @@
   <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
     <value>간단한</value>
   </data>
+  <data name="Enums.CycleFrequency.Days" xml:space="preserve">
+    <value>일</value>
+  </data>
+  <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
+    <value>모든 출시</value>
+  </data>
+  <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
+    <value>운영 시간</value>
+  </data>
+  <data name="Enums.CycleFrequency.Minutes" xml:space="preserve">
+    <value>회의록</value>
+  </data>
   <data name="Enums.EmojiType.Catmoji" xml:space="preserve">
     <value>캣모지</value>
   </data>
@@ -881,6 +983,108 @@
   <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
     <value>3단계 (최고 수준)</value>
   </data>
+  <data name="Enums.FontSize.x1" xml:space="preserve">
+    <value>작은</value>
+  </data>
+  <data name="Enums.FontSize.x2" xml:space="preserve">
+    <value>중간</value>
+  </data>
+  <data name="Enums.FontSize.x3" xml:space="preserve">
+    <value>대형</value>
+  </data>
+  <data name="Enums.FontSize.x4" xml:space="preserve">
+    <value>엑스트라 라지</value>
+  </data>
+  <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
+    <value>사각형</value>
+  </data>
+  <data name="Enums.PlayerListLayOut.x1" xml:space="preserve">
+    <value>일반</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
+    <value>평년보다 높음</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
+    <value>평균 이하</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
+    <value>높음</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
+    <value>낮음</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
+    <value>일반</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
+    <value>실시간</value>
+  </data>
+  <data name="Enums.QualityLevel.Level1" xml:space="preserve">
+    <value>1단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level10" xml:space="preserve">
+    <value>10단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level11" xml:space="preserve">
+    <value>11단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level12" xml:space="preserve">
+    <value>12단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level13" xml:space="preserve">
+    <value>13단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level14" xml:space="preserve">
+    <value>14단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level15" xml:space="preserve">
+    <value>15단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level16" xml:space="preserve">
+    <value>16단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level17" xml:space="preserve">
+    <value>17단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level18" xml:space="preserve">
+    <value>18단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level19" xml:space="preserve">
+    <value>19단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level2" xml:space="preserve">
+    <value>2단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level20" xml:space="preserve">
+    <value>20레벨</value>
+  </data>
+  <data name="Enums.QualityLevel.Level21" xml:space="preserve">
+    <value>21단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level3" xml:space="preserve">
+    <value>3단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level4" xml:space="preserve">
+    <value>4단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level5" xml:space="preserve">
+    <value>5단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level6" xml:space="preserve">
+    <value>6단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level7" xml:space="preserve">
+    <value>7단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level8" xml:space="preserve">
+    <value>8단계</value>
+  </data>
+  <data name="Enums.QualityLevel.Level9" xml:space="preserve">
+    <value>9단계</value>
+  </data>
+  <data name="Enums.RenderingMode.Default" xml:space="preserve">
+    <value>Direct3D 11 (기본값)</value>
+  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>사설 서버</value>
   </data>
@@ -889,6 +1093,18 @@
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
     <value>전용 서버</value>
+  </data>
+  <data name="Enums.TextureQuality.Default" xml:space="preserve">
+    <value>높음 (기본값)</value>
+  </data>
+  <data name="Enums.TextureQuality.Low" xml:space="preserve">
+    <value>낮음</value>
+  </data>
+  <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
+    <value>최저</value>
+  </data>
+  <data name="Enums.TextureQuality.Medium" xml:space="preserve">
+    <value>중간</value>
   </data>
   <data name="Enums.Theme.Blue" xml:space="preserve">
     <value>파랑</value>
@@ -914,9 +1130,18 @@
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>보라색</value>
   </data>
+  <data name="Enums.TrayDoubleClickAction.GameHistory" xml:space="preserve">
+    <value>게임 기록</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.None" xml:space="preserve">
+    <value>없음</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
+    <value>서버 정보</value>
+  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>ZIP 압축 파일</value>
-    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. &quot;Zip archive (*.zip)&quot;</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
     <value>Froststrap이 v{0}으로 업데이트되었습니다.</value>
@@ -943,7 +1168,7 @@
     <value>Roblox Studio 실행하기</value>
   </data>
   <data name="Logger.NoWriteMode" xml:space="preserve">
-    <value>Froststrap이 '{0}' 폴더에 파일을 쓸 수 없으므로, 이번 실행에 대해서는 로그 파일이 작성되지 않습니다.</value>
+    <value>Froststrap이 &apos;{0}&apos; 폴더에 파일을 쓸 수 없으므로, 이번 실행에 대해서는 로그 파일이 작성되지 않습니다.</value>
   </data>
   <data name="Menu.About.BuildInfo" xml:space="preserve">
     <value>빌드 정보</value>
@@ -959,9 +1184,6 @@
   </data>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
     <value>코드</value>
-  </data>
-  <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
-    <value>기여자</value>
   </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>다음은 Froststrap과 Froststrap에 주목할 만한 공헌을 하여, 이 프로젝트들을 오늘날의 모습으로 만들어낸 모든 분들입니다.</value>
@@ -981,9 +1203,6 @@
   <data name="Menu.About.HelpInformation" xml:space="preserve">
     <value>도움말 및 정보</value>
   </data>
-  <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>라이선스</value>
-  </data>
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>아파치 라이선스 2.0</value>
   </data>
@@ -998,16 +1217,17 @@
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
     <value>버전 {0}</value>
-    <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+    <comment>{0} is replaced with the version, i.e. &quot;Version 2.8.0&quot;</comment>
   </data>
   <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
-    <value>'{0}' 계정은 쿠키가 유효하지 않거나 만료되었기 때문에 삭제되었습니다.</value>
+    <value>&apos;{0}&apos; 계정은 쿠키가 유효하지 않거나 만료되었기 때문에 삭제되었습니다.</value>
   </data>
   <data name="Menu.AccountSelector.AddAccount" xml:space="preserve">
     <value>계정 추가</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
-    <value>'@{0}' 계정이 이미 로그인되어 있습니다.\n해당 계정으로 전환했습니다.</value>
+    <value>&apos;@{0}&apos; 계정이 이미 로그인되어 있습니다.
+해당 계정으로 전환했습니다.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
     <value>계정이 추가되지 않았습니다.
@@ -1037,11 +1257,11 @@
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
     <value>Froststrap이 이미 실행 중입니다</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
+    <value>백그라운드 모드:</value>
+  </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>다양한 옵션을 활용하여 Froststrap의 부트스트래퍼를 사용자 정의하세요.</value>
-  </data>
-  <data name="Menu.Appearance.Bootstrapper.Title" xml:space="preserve">
-    <value>부트스트래퍼</value>
   </data>
   <data name="Menu.Appearance.Custom.Theme.Description" xml:space="preserve">
     <value>프리셋을 사용하여 Froststrap 테마를 간편하게 맞춤 설정하거나 나만의 독특한 디자인을 만들어 보세요.</value>
@@ -1055,18 +1275,6 @@
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>사용자 정의 테마가 선택되지 않았습니다.</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>기타 다양한 사용자 지정 가능한 부트스트래퍼 옵션을 구성합니다.</value>
-  </data>
-  <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>사용자 지정</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>16px에서 128px 크기의 여러 크기로 구성된 .ico 파일이어야 합니다. 이 아이콘을 사용하려면 아이콘 설정을 '사용자 지정'으로 지정하세요.</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>사용자 정의 아이콘</value>
-  </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
     <value>부트스트래퍼의 제목으로 표시되는 텍스트입니다.</value>
   </data>
@@ -1076,11 +1284,17 @@
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Froststrap의 외관을 설정합니다.</value>
   </data>
+  <data name="Menu.Appearance.Frequency" xml:space="preserve">
+    <value>빈도:</value>
+  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Froststrap에서 사용할 아이콘을 선택하세요.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>아이콘</value>
+  </data>
+  <data name="Menu.Appearance.Interval" xml:space="preserve">
+    <value>범위:</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>변경 사항을 적용하려면 다시 시작해야 합니다. 일부 텍스트는 선호하는 언어로 번역되지 않을 수 있습니다.</value>
@@ -1094,8 +1308,23 @@
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>부트스트래퍼 스타일</value>
   </data>
+  <data name="Menu.Appearance.Opacity" xml:space="preserve">
+    <value>불투명도:</value>
+  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>미리 보기</value>
+  </data>
+  <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
+    <value>기본값으로 재설정</value>
+  </data>
+  <data name="Menu.Appearance.StretchMode" xml:space="preserve">
+    <value>스트레치 모드:</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Description" xml:space="preserve">
+    <value>사용자 지정 테마를 자동으로 순환합니다.</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
+    <value>테마 사이클링</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>외관</value>
@@ -1154,6 +1383,18 @@
   <data name="Menu.Behaviour.Title" xml:space="preserve">
     <value>부트스트래퍼</value>
   </data>
+  <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
+    <value>저장된 Roblox 내부 애플리케이션 설정을 구성합니다.</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Title" xml:space="preserve">
+    <value>앱 저장소 설정</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
+    <value>확인할 지역 수를 선택하세요. 최적의 지역을 찾을 수 없을 때 도움이 됩니다.</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
+    <value>지역별 최고 금액</value>
+  </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>공간을 확보하기 위해 오래된 데이터를 자동으로 삭제합니다. 원래 Fishstrap이 제작했습니다.</value>
   </data>
@@ -1183,6 +1424,51 @@
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
     <value>로그 메뉴</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>어떤 서버에 접속할지 Froststrap이 결정하도록 하세요. 사용자와의 거리가 가장 가까운 서버를 우선적으로 선택합니다.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>지금 친구 한 명이 이 게임을 하고 있는 것 같네요. 함께 플레이하시겠어요?</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>BetterMatchmaking 활성화</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
+    <value>확인할 서버 수를 선택하세요. 서버 수가 많을수록 처리 시간이 더 오래 걸릴 수 있습니다.</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
+    <value>서버당 최대 확인 금액</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
+    <value>참여할 특정 지역을 선택하거나, ‘자동’으로 설정하여 이용 가능한 최적의 지역을 선택하도록 하세요.</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Title" xml:space="preserve">
+    <value>선호 지역</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
+    <value>Roblox의 시각적 테마를 변경합니다.</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
+    <value>Roblox 앱 테마</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
+    <value>‘플레이’ 버튼을 통해 접속할 때는 규모가 작은 서버에 참여하세요.</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
+    <value>소규모 서버에 참여하세요</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
+    <value>PC를 시작할 때 Roblox 앱을 자동으로 실행합니다.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
+    <value>스타트업에서 출시하기</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
+    <value>앱을 완전히 종료하는 대신 시스템 트레이로 보냅니다.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
+    <value>트레이로 최소화</value>
   </data>
   <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
     <value>내보내기 설정</value>
@@ -1251,16 +1537,16 @@
     <value>기타 모드</value>
   </data>
   <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
-    <value>'{0}' 모드가 성공적으로 설치되었습니다!</value>
+    <value>&apos;{0}&apos; 모드가 성공적으로 설치되었습니다!</value>
   </data>
   <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
-    <value>기존 모드 '{0}'을 덮어쓰시겠습니까?</value>
+    <value>기존 모드 &apos;{0}&apos;을 덮어쓰시겠습니까?</value>
   </data>
   <data name="Menu.CommunityMods.SearchMods" xml:space="preserve">
     <value>모드 검색...</value>
   </data>
   <data name="Menu.CommunityMods.ThemeInstalled" xml:space="preserve">
-    <value>테마 '{0}'이 설치 및 적용되었습니다!</value>
+    <value>테마 &apos;{0}&apos;이 설치 및 적용되었습니다!</value>
   </data>
   <data name="Menu.CommunityMods.Themes" xml:space="preserve">
     <value>사용자 정의 테마</value>
@@ -1295,8 +1581,57 @@
   <data name="Menu.CookieState.NotFound" xml:space="preserve">
     <value>Roblox 쿠키 파일을 찾을 수 없습니다.</value>
   </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
+    <value>Froststrap은 Roblox를 실행할 때 자동으로 테스트 버전을 확인하고 해당 버전으로 업데이트됩니다.</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
+    <value>프리 릴리스 업데이트</value>
+  </data>
+  <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
+    <value>Sober 자동 업데이트</value>
+  </data>
+  <data name="Menu.Deployment.Channel.Description" xml:space="preserve">
+    <value>배포 채널을 선택하세요. 무엇을 하는지 확실히 알지 못하는 한 변경하지 마세요.</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>이 채널은 최신 정보가 아니며, 더 이상 업데이트되지 않을 가능성이 높습니다. 다른 채널을 이용해 주시기 바랍니다.</value>
+  </data>
+  <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
+    <value>유효하지 않은 도메인을 입력하셨습니다.
+무슨 일인지 잘 모르신다면 이 설정을 함부로 건드리지 마세요.</value>
+  </data>
+  <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
+    <value>채널 데이터를 불러오지 못했습니다.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
+    <value>상단의 검색창을 사용하여 게임을 검색하세요.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
+    <value>게임 검색</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Description" xml:space="preserve">
+    <value>다운로드에 사용되는 스레드 수를 지정합니다. 이 설정은 리눅스 기반 스튜디오에만 적용됩니다.</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
+    <value>다중 스레드 다운로드</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
+    <value>Roblox Studio가 최신 버전이 아닌 특정 버전 해시를 설치하고 사용하도록 강제합니다.</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
+    <value>Override Studio 버전</value>
+  </data>
+  <data name="Menu.Deployment.PlayerChannel.Title" xml:space="preserve">
+    <value>플레이어 채널</value>
+  </data>
+  <data name="Menu.Deployment.StudioChannel.Title" xml:space="preserve">
+    <value>스튜디오 채널</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
+    <value>Roblox Studio 버전 GUID(예: version-xxxxxxxxxxxxxxxx)를 입력하세요. Studio 실행 시에만 적용됩니다.</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
+    <value>버전 해시</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
     <value>빠른 로그인</value>
@@ -1358,13 +1693,8 @@
     <value>잘못된 FastFlags가 감지되지 않았습니다.</value>
   </data>
   <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
-    <value>'{0}'은 Roblox 허용 목록에 포함되어 있지 않아 작동하지 않습니다.\n\n지금 삭제하시겠습니까?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
-    <value>국기 프로필</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>검색</value>
+    <value>&apos;{0}&apos;은 Roblox 허용 목록에 포함되어 있지 않아 작동하지 않습니다.
+지금 삭제하시겠습니까?</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>사전 설정 플래그 표시</value>
@@ -1377,9 +1707,6 @@
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
     <value>일부 Roblox FastFlags가 허용 목록에 추가된 이후, 현재 사용할 수 있는 것은 다음 항목들뿐입니다.</value>
-  </data>
-  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
-    <value>현재 플래그 저장</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Roblox 엔진의 특정 매개변수 및 기능이 어떻게 구성되는지 제어합니다.</value>
@@ -1460,14 +1787,80 @@
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FFlag 지우기</value>
   </data>
-  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
-    <value>플래그 프로필을 빠르게 저장하고 불러옵니다.</value>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>프로필 복사에 실패했습니다:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>선택 항목 삭제</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>장소 ID를 입력해 주세요.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>현재 FastFlags를 가져오는 데 실패했습니다.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>프로필 이름에 &apos;{0}&apos;이라는 유효하지 않은 문자가 포함되어 있습니다.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>다음에 대한 장소 ID 관리: {0} ({1}개의 ID)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>새 프로필 이름은 비워둘 수 없습니다.</value>
   </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
     <value>프로필이 없습니다.</value>
   </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>선택한 프로필을 구문 분석하는 데 실패했습니다.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>이 장소 ID는 이미 프로필에 추가되어 있습니다.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>장소 ID는 정수여야 합니다.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>장소 ID를 입력하세요(예: 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>장소 ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>해당 이름의 프로필이 이미 존재합니다.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>선택한 프로필 파일을 찾을 수 없습니다.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>선택 항목 제거</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>프로필 이름을 변경하는 데 실패했습니다:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>장소 ID를 관리할 프로필을 선택하세요</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>복사할 프로필을 선택해 주세요.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>먼저 프로필을 선택해 주세요.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>프로필을 선택하여 해당 프로필의 장소 ID를 관리하세요:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>이름을 변경할 프로필을 선택해 주세요.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>업데이트할 프로필을 선택해 주세요.</value>
+  </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Fast Flag 프로필</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>프로필 업데이트에 실패했습니다:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>편리한 메뉴를 통해 게임 내 설정을 변경하세요.</value>
@@ -1478,14 +1871,170 @@
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>읽기 전용으로 설정</value>
   </data>
+  <data name="Menu.GBSEditor.Title" xml:space="preserve">
+    <value>전역 설정 편집기</value>
+  </data>
   <data name="Menu.GBSEditor.VectorX" xml:space="preserve">
     <value>벡터 X</value>
   </data>
   <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
     <value>Y 벡터</value>
   </data>
+  <data name="Menu.GlobalSettings.Accessibility.Title" xml:space="preserve">
+    <value>접근성 및 기타</value>
+  </data>
+  <data name="Menu.GlobalSettings.AudioSettings.Title" xml:space="preserve">
+    <value>오디오 설정</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Fail" xml:space="preserve">
+    <value>설정 내보내기에 실패했습니다. Roblox가 실행 중이 아닌지 확인한 후 다시 시도해 주세요.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Success" xml:space="preserve">
+    <value>설정이 {0}으로 성공적으로 내보내졌습니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Description" xml:space="preserve">
+    <value>1인칭 시점의 X축 및 Y축 감도.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Title" xml:space="preserve">
+    <value>1인칭 감도</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Description" xml:space="preserve">
+    <value>사용자 지정 FPS 상한값을 설정합니다. 기본값을 사용하려면 -1을 입력하세요.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Title" xml:space="preserve">
+    <value>프레임 속도 제한</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Description" xml:space="preserve">
+    <value>Roblox를 전체 화면 모드로 실행하세요.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Title" xml:space="preserve">
+    <value>전체 화면</value>
+  </data>
+  <data name="Menu.GlobalSettings.GraphicsSettings.Title" xml:space="preserve">
+    <value>그래픽 설정</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
+    <value>컨트롤러 진동 강도.</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
+    <value>햅틱 강도</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Confirmation" xml:space="preserve">
+    <value>이렇게 하면 현재 모든 글로벌 설정이 가져온 설정으로 대체됩니다. 계속하시겠습니까?</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
+    <value>설정 가져오기에 실패했습니다. Roblox가 실행 중이 아닌지 확인한 후 다시 시도해 주세요.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
+    <value>선택한 파일은 유효한 GBS 설정 파일로 보이지 않습니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
+    <value>선택한 파일은 유효한 XML 파일이 아닙니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Success" xml:space="preserve">
+    <value>설정이 성공적으로 가져왔습니다!</value>
+  </data>
+  <data name="Menu.GlobalSettings.InputSettings.Title" xml:space="preserve">
+    <value>입력 설정</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Description" xml:space="preserve">
+    <value>카메라의 Y축을 반전합니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Title" xml:space="preserve">
+    <value>Y 반전</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
+    <value>전 세계 물량 수준.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
+    <value>마스터 볼륨</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Description" xml:space="preserve">
+    <value>더 높은 MSAA 수준을 활성화합니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Title" xml:space="preserve">
+    <value>최고 품질</value>
+  </data>
+  <data name="Menu.GlobalSettings.OpenRobloxFolder" xml:space="preserve">
+    <value>Roblox 폴더 열기</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Description" xml:space="preserve">
+    <value>파티 음성 모드의 볼륨.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Title" xml:space="preserve">
+    <value>파티 볼륨</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
+    <value>성능 오버레이 표시.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
+    <value>퍼펙트 통계</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
+    <value>esc 키를 눌러 플레이어 목록을 정사각형 UI와 일반 UI 간에 전환합니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
+    <value>선수 명단 레이아웃</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
+    <value>UI 애니메이션을 줄입니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
+    <value>운동 감소</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
+    <value>전역 카메라 감도.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
+    <value>민감도</value>
+  </data>
+  <data name="Menu.GlobalSettings.ShiftLock.Description" xml:space="preserve">
+    <value>ShiftLock을 자동으로 활성화합니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Description" xml:space="preserve">
+    <value>게임 참여 시 품질 수준.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
+    <value>시작 품질</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
+    <value>Roblox Studio용 볼륨.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
+    <value>스튜디오 볼륨</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
+    <value>선호하는 표시 텍스트 크기.</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
+    <value>글자 크기</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
+    <value>3인칭 시점의 X축 및 Y축 감도.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
+    <value>3인칭 감도</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>전역 설정</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Description" xml:space="preserve">
+    <value>UI 요소의 투명도를 조정합니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Title" xml:space="preserve">
+    <value>UI 투명도</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
+    <value>가상 현실(VR) 지원을 활성화합니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
+    <value>VR 모드</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Description" xml:space="preserve">
+    <value>화면의 비네트 효과를 켜거나 끕니다.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Title" xml:space="preserve">
+    <value>썸네일</value>
   </data>
   <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
     <value>여기에서 모든 글로벌 설정을 관리할 수 있습니다.</value>
@@ -1498,6 +2047,12 @@
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
     <value>활동 참여 허용</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
+    <value>20분 동안 연결이 끊기거나 네트워크 오류가 발생한 후 자동으로 동일한 서버에 다시 접속합니다.</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
+    <value>자동 재접속</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
     <value>Roblox의 특정 기본 기능을 켜거나 끕니다.</value>
@@ -1571,6 +2126,18 @@
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
     <value>더블 클릭 동작</value>
   </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Description" xml:space="preserve">
+    <value>열려 있는 스크립트에 따라 썸네일을 변경합니다.</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Title" xml:space="preserve">
+    <value>동적 썸네일</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Description" xml:space="preserve">
+    <value>스크립트 유형, 스크립트 이름 및 스크립트의 줄 수를 표시합니다.</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Title" xml:space="preserve">
+    <value>편집 정보</value>
+  </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
     <value>Froststrap이 사용자가 플레이 중인 Roblox 게임을 감지할 수 있게 합니다. 일부 기능을 사용하려면 이 권한이 필요할 수 있습니다.</value>
   </data>
@@ -1578,7 +2145,7 @@
     <value>활동 추적 활성화</value>
   </data>
   <data name="Menu.Integrations.FroststrapRPC.Description" xml:space="preserve">
-    <value>이 기능을 활성화하면 앱이 실행 중일 때 디스코드 프로필에 사용자 지정 'Playing Froststrap' RPC가 표시됩니다.</value>
+    <value>이 기능을 활성화하면 앱이 실행 중일 때 디스코드 프로필에 사용자 지정 &apos;Playing Froststrap&apos; RPC가 표시됩니다.</value>
   </data>
   <data name="Menu.Integrations.GameHistory.Description" xml:space="preserve">
     <value>이번 세션에서 플레이한 게임을 표시하고, 해당 게임에 다시 참여할 수 있게 해줍니다.</value>
@@ -1588,6 +2155,18 @@
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>게임 기록 메뉴</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Description" xml:space="preserve">
+    <value>Roblox 게임의 제목 표시줄과 작업 표시줄 아이콘을 현재 게임 아이콘으로 자동으로 변경합니다.</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Title" xml:space="preserve">
+    <value>아이콘 변경</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Description" xml:space="preserve">
+    <value>현재 진행 중인 게임에 참여할 수 있는 작은 버튼을 추가합니다.</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
+    <value>가입 버튼</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>게임이나 스튜디오 공간에 있을 때 총 플레이 시간과 현재 세션 시간을 표시합니다.</value>
@@ -1616,8 +2195,135 @@
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
     <value>게임 활동 보기</value>
   </data>
+  <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
+    <value>게임을 테스트할 때 RPC에 작은 재생 아이콘이 표시됩니다.</value>
+  </data>
+  <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
+    <value>테스트 표시</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Description" xml:space="preserve">
+    <value>실행 시 디스코드 활동으로 ‘Roblox Studio’가 표시됩니다.</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Title" xml:space="preserve">
+    <value>디스플레이 스튜디오 활동</value>
+  </data>
+  <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
+    <value>이 기능은 사용자의 활동을 기록하는 맞춤형 Froststrap 플러그인을 추가하여 작동합니다.
+플러그인을 설치하시겠습니까?</value>
+  </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
     <value>연동 기능</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
+    <value>Roblox 제목 표시줄의 제목을 게임 이름으로 변경합니다.</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
+    <value>제목 변경</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Description" xml:space="preserve">
+    <value>현재 작업 공간의 이름을 표시합니다.</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Title" xml:space="preserve">
+    <value>작업 공간 정보</value>
+  </data>
+  <data name="Menu.LinuxSettings.AddVariable" xml:space="preserve">
+    <value>+ 변수 추가</value>
+  </data>
+  <data name="Menu.LinuxSettings.AdvancedWineSettings" xml:space="preserve">
+    <value>와인 고급 설정</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
+    <value>Sober가 Steam Deck이나 이와 유사한 컨트롤러를 통해 컨트롤러 입력을 요청하고 캡처할 수 있게 해줍니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
+    <value>게임패드 사용 권한 허용</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Description" xml:space="preserve">
+    <value>Wine/DXVK의 상세 로깅 및 콘솔 출력을 활성화합니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Title" xml:space="preserve">
+    <value>디버그 모드</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
+    <value>Signals는 Feral Interactive의 GameMode 최적화 데몬이 게임 실행 파이프라인 중에 호크(hook)를 적용합니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
+    <value>게임 모드 활성화</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
+    <value>인터페이스 요소를 렌더링할 때 기본 고해상도(High DPI) 플랫폼 스케일링 옵션을 강제 적용합니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
+    <value>HiDPI 디스플레이 스케일링 지원</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Description" xml:space="preserve">
+    <value>Wine에 전달된 추가 환경 변수.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Title" xml:space="preserve">
+    <value>환경 변수</value>
+  </data>
+  <data name="Menu.LinuxSettings.FailedToStartWineCfg" xml:space="preserve">
+    <value>winecfg를 시작할 수 없습니다: {0}</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
+    <value>네이티브 Vulkan 하위 시스템을 재정의하여, 대신 레거시 OpenGL 레이아웃 파이프라인으로 대체합니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
+    <value>OpenGL 레거시 렌더링 강제 적용</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
+    <value>가능한 경우 시스템 최적화를 적용하세요 (gamemoded 필요).</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
+    <value>게임 모드</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
+    <value>Wine에서 Studio의 렌더링 백엔드를 선택하십시오.</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
+    <value>그래픽 렌더러</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
+    <value>Studio 명령을 감싸세요 (예: gamescope -- %command%)</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
+    <value>런처 명령어</value>
+  </data>
+  <data name="Menu.LinuxSettings.ResolutionPlaceholder" xml:space="preserve">
+    <value>예: 1920x1080</value>
+  </data>
+  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
+    <value>리눅스 설정</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Description" xml:space="preserve">
+    <value>터치 지원 디스플레이 하드웨어에 대한 동작 처리 프로필을 활성화하거나 비활성화합니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
+    <value>터치 입력 모드</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
+    <value>데스크톱 인터페이스 컨텍스트에 현대식 TV/콘솔 클라이언트 레이아웃 대시보드 시스템을 강제로 적용합니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
+    <value>콘솔 사용 환경</value>
+  </data>
+  <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
+    <value>변수</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
+    <value>각 인스턴스마다 독립된 창을 생성합니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
+    <value>가상 데스크톱</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
+    <value>특정 UI 요소 및 로그인에 사용됩니다.</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
+    <value>웹 페이지</value>
+  </data>
+  <data name="Menu.LinuxSettings.WineBinaryNotFound" xml:space="preserve">
+    <value>Wine 실행 파일이 없습니다. Wine이 설치되어 있는지 확인해 주세요.</value>
   </data>
   <data name="Menu.Load" xml:space="preserve">
     <value>로드</value>
@@ -1632,22 +2338,22 @@
     <value>F12 키를 눌러 개발자 도구를 엽니다.</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
-    <value>'애플리케이션' 탭(Chrome) 또는 '저장소' 탭(Firefox)을 클릭하세요.</value>
+    <value>&apos;애플리케이션&apos; 탭(Chrome) 또는 &apos;저장소&apos; 탭(Firefox)을 클릭하세요.</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.4" xml:space="preserve">
-    <value>'쿠키'를 펼친 다음 'https://www.roblox.com'를 선택하세요.</value>
+    <value>&apos;쿠키&apos;를 펼친 다음 &apos;https://www.roblox.com&apos;를 선택하세요.</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.5" xml:space="preserve">
-    <value>'ROBLOSECURITY' 쿠키를 찾으세요</value>
+    <value>&apos;ROBLOSECURITY&apos; 쿠키를 찾으세요</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.6" xml:space="preserve">
-    <value>'값' 열을 두 번 클릭한 다음 복사하세요</value>
+    <value>&apos;값&apos; 열을 두 번 클릭한 다음 복사하세요</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
     <value>위의 입력란에 값을 붙여넣으세요</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>"쿠키가 유효하지 않습니다. 확인 후 다시 시도해 주세요.</value>
+    <value>쿠키가 유효하지 않습니다. 확인 후 다시 시도해 주세요.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>.ROBLOSECURITY 쿠키를 붙여넣으세요</value>
@@ -1656,7 +2362,7 @@
     <value>수동 로그인</value>
   </data>
   <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
-    <value>중지 추가</value>
+    <value>색상 추가</value>
   </data>
   <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
     <value>수정 사항이 성공적으로 적용되었습니다 ({0}개 파일).</value>
@@ -1671,7 +2377,7 @@
     <value>Shiftlock에 지원하기</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>숫자가 높을수록 품질은 좋아지지만 처리 시간이 더 오래 걸립니다. 최대값은 64이며, 기본값은 8입니다.</value>
+    <value>숫자가 높을수록 품질은 좋아지지만 처리 시간이 더 오래 걸립니다. 최대값은 512이며, 기본값은 32입니다.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>모드 생성이 취소되었습니다.</value>
@@ -1691,7 +2397,7 @@
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
     <value>색상 변경 금지 아이콘</value>
   </data>
-  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+  <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
     <value>필요한 리소스를 다운로드 중입니다...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
@@ -1743,19 +2449,19 @@
     <value>새 모드 추가</value>
   </data>
   <data name="Menu.Mods.AlreadyExist" xml:space="preserve">
-    <value>'{0}'이라는 이름의 모드가 이미 존재합니다.</value>
+    <value>&apos;{0}&apos;이라는 이름의 모드가 이미 존재합니다.</value>
   </data>
   <data name="Menu.Mods.DeleteMod" xml:space="preserve">
-    <value>'{0}'을 영구적으로 삭제하시겠습니까?</value>
+    <value>&apos;{0}&apos;을 영구적으로 삭제하시겠습니까?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Roblox 게임 클라이언트에 파일 모드를 관리하고 적용합니다.</value>
+    <value>파일 수정 사항을 관리하고 적용합니다.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Zip 파일/폴더를 드래그하여 가져오기</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
-    <value>'{0}' 폴더가 더 이상 존재하지 않습니다.</value>
+    <value>&apos;{0}&apos; 폴더가 더 이상 존재하지 않습니다.</value>
   </data>
   <data name="Menu.Mods.ImportFolder" xml:space="preserve">
     <value>폴더 가져오기</value>
@@ -1764,7 +2470,7 @@
     <value>ZIP 파일 가져오기</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
-    <value>'{0}' 모드가 성공적으로 가져왔습니다.</value>
+    <value>&apos;{0}&apos; 모드가 성공적으로 가져왔습니다.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
     <value>모드를 드래그하거나 가져오기 기능을 통해 모드를 가져오면, 우선순위가 낮은 모드는 마지막에 적용되므로 다른 모드와의 충돌을 피할 수 있습니다.</value>
@@ -1773,10 +2479,35 @@
     <value>폴더 이름이 올바르지 않습니다.</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
-    <value>선택한 소스에는 유효한 모드 구조가 포함되어 있지 않습니다.\n다음 폴더 중 하나 이상(content, ExtraContent, PlatformContent)이 포함되어 있어야 합니다.</value>
+    <value>선택한 소스에는 유효한 모드 구조가 포함되어 있지 않습니다.
+다음 폴더 중 하나 이상이 포함되어 있어야 합니다: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>설치된 모드가 없습니다.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>미리보기를 불러오지 못했습니다: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>글꼴 미리보기</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>글꼴 변형:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>미리보기 로드됨</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>글꼴 미리보기 불러오는 중...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>글리프 불러오는 중...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>글꼴 불러오는 중: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>이 모드에서 색상 정보를 찾을 수 없습니다.</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>선택된 모드 동작</value>
@@ -1786,6 +2517,21 @@
   </data>
   <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
     <value>지원되지 않는 파일 형식 또는 경로: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Apply" xml:space="preserve">
+    <value>세트 적용</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Export" xml:space="preserve">
+    <value>내보내기 세트</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Fetch" xml:space="preserve">
+    <value>가져오기 설정</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Import" xml:space="preserve">
+    <value>가져오기 세트</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.None" xml:space="preserve">
+    <value>사용자 정의 커서 세트가 선택되지 않았습니다.</value>
   </data>
   <data name="Menu.PresetMods.Description" xml:space="preserve">
     <value>공식 내장 모드.</value>
@@ -1856,6 +2602,9 @@
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>맞춤형 시프트락</value>
   </data>
+  <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
+    <value>프리셋 모드 폴더 열기</value>
+  </data>
   <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Roblox에서 사용할 이모티콘 유형을 선택하세요.</value>
   </data>
@@ -1880,11 +2629,95 @@
   <data name="Menu.PresetMods.Title" xml:space="preserve">
     <value>사전 설정 모드</value>
   </data>
+  <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
+    <value>담당자가 현재 부재중입니다.</value>
+  </data>
+  <data name="Menu.QuickPlay.Active" xml:space="preserve">
+    <value>활성</value>
+  </data>
+  <data name="Menu.QuickPlay.AvailableSubplaces" xml:space="preserve">
+    <value>사용 가능한 하위 위치</value>
+  </data>
+  <data name="Menu.QuickPlay.CheckingServers" xml:space="preserve">
+    <value>서버 확인 중...</value>
+  </data>
   <data name="Menu.QuickPlay.Description" xml:space="preserve">
     <value>최근에 플레이했던 게임으로 다시 돌아가세요.</value>
   </data>
+  <data name="Menu.QuickPlay.FetchingGameInfo" xml:space="preserve">
+    <value>게임 정보 가져오기</value>
+  </data>
+  <data name="Menu.QuickPlay.FindingBestServer" xml:space="preserve">
+    <value>귀하의 지역에 가장 적합한 서버를 찾고 있습니다...</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinBestRegion" xml:space="preserve">
+    <value>베스트 리전에 가입하세요</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinGame" xml:space="preserve">
+    <value>게임에 참여하세요</value>
+  </data>
+  <data name="Menu.QuickPlay.Latest" xml:space="preserve">
+    <value>최신</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingPrivateServers" xml:space="preserve">
+    <value>개인 서버 불러오는 중...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingRecentGames" xml:space="preserve">
+    <value>최근 게임 불러오는 중...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingServers" xml:space="preserve">
+    <value>서버 불러오는 중...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingSubplaces" xml:space="preserve">
+    <value>하위 장소를 불러오는 중...</value>
+  </data>
+  <data name="Menu.QuickPlay.NoPrivateServersFound" xml:space="preserve">
+    <value>개인 서버가 없습니다.</value>
+  </data>
+  <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
+    <value>적합한 서버를 찾을 수 없습니다.</value>
+  </data>
+  <data name="Menu.QuickPlay.Players" xml:space="preserve">
+    <value>선수들</value>
+  </data>
+  <data name="Menu.QuickPlay.PleaseSelectAccount" xml:space="preserve">
+    <value>먼저 계정을 선택해 주세요.</value>
+  </data>
+  <data name="Menu.QuickPlay.PrivateServers" xml:space="preserve">
+    <value>개인 서버</value>
+  </data>
+  <data name="Menu.QuickPlay.RejoinLastServer" xml:space="preserve">
+    <value>마지막 서버에 다시 접속하기</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxServers" xml:space="preserve">
+    <value>Roblox 서버</value>
+  </data>
+  <data name="Menu.QuickPlay.SessionHistory" xml:space="preserve">
+    <value>세션 내역</value>
+  </data>
   <data name="Menu.QuickPlay.Title" xml:space="preserve">
     <value>빠른 플레이</value>
+  </data>
+  <data name="Menu.QuickPlay.Tracked" xml:space="preserve">
+    <value>추적됨</value>
+  </data>
+  <data name="Menu.QuickPlay.TrackedServers" xml:space="preserve">
+    <value>추적 대상 서버 ({0})</value>
+  </data>
+  <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
+    <value>인증에 실패했습니다. 다시 로그인해 주세요.</value>
+  </data>
+  <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
+    <value>알 수 없는 게임</value>
+  </data>
+  <data name="Menu.QuickPlay.ViewSubplaces" xml:space="preserve">
+    <value>하위 장소 보기</value>
+  </data>
+  <data name="Menu.QuickPlay.VisitPage" xml:space="preserve">
+    <value>페이지 방문하기</value>
+  </data>
+  <data name="Menu.QuickPlay.Visits" xml:space="preserve">
+    <value>방문 횟수</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>로그인이 취소되었습니다.</value>
@@ -1902,19 +2735,65 @@
     <value>로그인 시간 초과되었습니다.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
-    <value>빠른 로그인 중...\n로그인이 완료되면 앱에서 이 창을 닫습니다.</value>
+    <value>빠른 로그인 중...
+로그인이 완료되면 앱에서 이 창을 닫습니다.</value>
+  </data>
+  <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
+    <value>장소 ID를 입력하고 ‘검색’을 클릭하면 서버를 확인할 수 있습니다.</value>
+  </data>
+  <data name="Menu.RegionSelector.FailedToLoadDatacenters" xml:space="preserve">
+    <value>데이터센터를 불러오는 데 실패했습니다.</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>장소 ID 또는 게임 이름을 입력하세요...</value>
   </data>
+  <data name="Menu.RegionSelector.ID" xml:space="preserve">
+    <value>식별자: {0}</value>
+  </data>
+  <data name="Menu.RegionSelector.Join" xml:space="preserve">
+    <value>참여하기</value>
+  </data>
+  <data name="Menu.RegionSelector.LargeServers" xml:space="preserve">
+    <value>대용량 서버</value>
+  </data>
   <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
     <value>더 보기</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadedRegions" xml:space="preserve">
+    <value>{0}개 지역을 불러왔습니다.</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
+    <value>데이터센터 불러오는 중...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
+    <value>계정 관리자를 통해 로그인하거나 ‘Froststrap 계정 권한’을 활성화하거나, 당사 디스코드 서버에 이 문제를 신고하여 이용하시기 바랍니다.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
+    <value>공개 서버가 없습니다.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoServersForRegion" xml:space="preserve">
+    <value>지정된 지역에 해당하는 서버가 없습니다.</value>
+  </data>
+  <data name="Menu.RegionSelector.Players" xml:space="preserve">
+    <value>선수들</value>
+  </data>
+  <data name="Menu.RegionSelector.PleaseSelectRegion" xml:space="preserve">
+    <value>먼저 지역을 선택해 주세요.</value>
   </data>
   <data name="Menu.RegionSelector.Region" xml:space="preserve">
     <value>지역:</value>
   </data>
+  <data name="Menu.RegionSelector.RegionHeader" xml:space="preserve">
+    <value>지역</value>
+  </data>
+  <data name="Menu.RegionSelector.SearchingServers" xml:space="preserve">
+    <value>서버 검색 중...</value>
+  </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>서버 크기:</value>
+  </data>
+  <data name="Menu.RegionSelector.SmallServers" xml:space="preserve">
+    <value>소형 서버</value>
   </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>지역 선택기</value>
@@ -1958,11 +2837,14 @@
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>이를 통해 특정 게임에 빠르게 참여할 수 있는 바로가기를 만들 수 있습니다.</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
-    <value>게임 단축키</value>
+  <data name="Menu.Shortcuts.CreateShortcut" xml:space="preserve">
+    <value>바로가기 만들기</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
     <value>Froststrap을 손쉽게 실행할 수 있도록 설정합니다.</value>
+  </data>
+  <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
+    <value>바로 가기 생성 중 오류가 발생했습니다.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
     <value>바로 가기에 Froststrap의 다양한 Roblox 아이콘을 사용할 수 있습니다. [사용 방법 보기.]({0})</value>
@@ -1976,18 +2858,57 @@
   <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
     <value>함수</value>
   </data>
+  <data name="Menu.Shortcuts.Game" xml:space="preserve">
+    <value>게임 {0}</value>
+  </data>
+  <data name="Menu.Shortcuts.GameShortcut.Title" xml:space="preserve">
+    <value>게임 단축키</value>
+  </data>
   <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
     <value>다음은 다중 선택 실행 메뉴를 표시하는 단축키입니다.</value>
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>일반</value>
   </data>
-  <data name="Menu.SoberSettings.Title" xml:space="preserve">
-    <value>절제된 환경</value>
+  <data name="Menu.Shortcuts.NoGameSelected" xml:space="preserve">
+    <value>선택된 게임이 없습니다</value>
+  </data>
+  <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
+    <value>개인용 액세스 코드</value>
+  </data>
+  <data name="Menu.Shortcuts.Processing" xml:space="preserve">
+    <value>처리 중...</value>
+  </data>
+  <data name="Menu.Shortcuts.Ready" xml:space="preserve">
+    <value>준비됨</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyToCreate" xml:space="preserve">
+    <value>만들 준비가 되셨나요?</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyWithManualId" xml:space="preserve">
+    <value>수동 ID 준비 완료.</value>
+  </data>
+  <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
+    <value>게임 검색하기</value>
+  </data>
+  <data name="Menu.Shortcuts.SelectGameFirst" xml:space="preserve">
+    <value>먼저 게임을 선택하세요.</value>
+  </data>
+  <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
+    <value>서버 인스턴스 ID</value>
+  </data>
+  <data name="Menu.Shortcuts.ShortcutCreated" xml:space="preserve">
+    <value>바로가기가 생성되었습니다!</value>
+  </data>
+  <data name="Menu.Shortcuts.UpdatingPreview" xml:space="preserve">
+    <value>미리보기 업데이트 중...</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>테스트 모드</value>
     <comment>See the prompt for more context</comment>
+  </data>
+  <data name="Menu.TestMode.Description" xml:space="preserve">
+    <value>Roblox를 실행할 때 설정 창을 자동으로 숨기고, Roblox가 종료되면 다시 표시합니다.</value>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
     <value>테스트 모드를 사용하면 설정이 Roblox에 어떤 영향을 미치는지 반복적으로 테스트하기가 더 쉬워집니다.
@@ -2001,7 +2922,7 @@
   </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>아이콘</value>
-    <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+    <comment>Name of the folder that gets created according to the &quot;create shortcut icons&quot; option. Ensure that it is a valid folder name.</comment>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>이 파일들은 Froststrap이 설치되었던 위치에 보관되며, 재설치 시 자동으로 복원됩니다.</value>
@@ -2016,7 +2937,7 @@ Roblox 사용 중 문제가 발생하여 제거하거나 재설치하려는 경�
 
 제거 과정만으로는 모든 파일이 완전히 삭제되지 않을 수 있으므로, Froststrap이 설치되었던 위치에서 남아 있는 파일을 수동으로 정리해야 할 수도 있습니다.
 
-Froststrap은 "{1}"에 설치되었습니다.</value>
+Froststrap은 &quot;{1}&quot;에 설치되었습니다.</value>
   </data>
   <data name="Uninstaller.Title" xml:space="preserve">
     <value>Froststrap 제거</value>
