@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -142,28 +142,22 @@
 
 Dorești să-ți schimbi canalul preferat la {0}?</value>
   </data>
+  <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
+    <value>Sari peste</value>
+  </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox rulează în prezent, iar lansarea unei alte instanțe va duce la închiderea acestuia. Ești sigur că vrei să continui cu lansarea?</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>Canalul pe care vă aflați în prezent ({0}) este învechit și se pare că nu mai primește actualizări.\n
+    <value>Canalul pe care vă aflați în prezent ({0}) este învechit și se pare că nu mai primește actualizări.
 Doriți să treceți la canalul implicit ({1})?</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
     <value>Actualizările au fost dezactivate din cauza lipsei clientului.
     Pentru a evita apariția unor probleme, procesul de actualizare va continua.</value>
   </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
-    <value>Lasă Froststrap să decidă la ce servere te conectezi. Acesta acordă prioritate serverului situat la cea mai mică distanță față de tine.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
-    <value>Se pare că un prieten joacă acest joc chiar acum. Vrei să te alături lui?</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
-    <value>Activează funcția BetterMatchmaking</value>
-  </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțați reinstalarea Roblox din setări.</value>
+    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțează reinstalarea Roblox din setări.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Nu s-au putut extrage toate fișierele</value>
@@ -186,6 +180,18 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
     <value>Anularea upgrade-ului Roblox.</value>
   </data>
+  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
+    <value>Verificarea dependențelor</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
+    <value>Se verifică instalarea Flatpak...</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
+    <value>Verificarea actualizărilor</value>
+  </data>
+  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
+    <value>Se compilează stratul Vulkan...</value>
+  </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
     <value>Se configurează {product}...</value>
   </data>
@@ -195,11 +201,47 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
     <value>Descărcare</value>
   </data>
+  <data name="Bootstrapper.Status.DownloadingDXVK" xml:space="preserve">
+    <value>Se descarcă DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
+    <value>Se descarcă DXVK-Sarek...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingUpdate" xml:space="preserve">
+    <value>Se descarcă actualizarea {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWebView2" xml:space="preserve">
+    <value>Se descarcă WebView2...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
+    <value>Se descarcă Wine...</value>
+  </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
     <value>Extragerea</value>
   </data>
+  <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
+    <value>Se extrage DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
+    <value>Se extrage DXVK-Sarek...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
+    <value>Se extrage vinul...</value>
+  </data>
+  <data name="Bootstrapper.Status.FindingTopRegions" xml:space="preserve">
+    <value>Se caută cele mai bune {0} regiuni...</value>
+  </data>
+  <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
+    <value>Se inițializează prefixul Wine...</value>
+  </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
     <value>Se instalează {product}...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
+    <value>Instalarea Sober...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
+    <value>Se instalează actualizarea {0}...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
     <value>Se instalează WebView2, vă rugăm să așteptați...</value>
@@ -207,9 +249,45 @@ Doriți să treceți la canalul implicit ({1})?</value>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>stânga</value>
   </data>
+  <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
+    <value>Se încearcă din nou {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
+    <value>Se caută servere din apropiere...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingServers" xml:space="preserve">
+    <value>Se caută servere în {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
+    <value>Se inițializează DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
+    <value>Se omite căutarea serverului...</value>
+  </data>
+  <data name="Bootstrapper.Status.SoberUpdateComplete" xml:space="preserve">
+    <value>Actualizarea „Sober” s-a încheiat.</value>
+  </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
     <value>Se pornește {product}...</value>
-    <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
+    <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
+  </data>
+  <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
+    <value>Începând cu sobrietatea...</value>
+  </data>
+  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
+    <value>Pornirea Roblox Studio cu Wine...</value>
+  </data>
+  <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
+    <value>Se dezinstalează WebView2 {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSober" xml:space="preserve">
+    <value>Se actualizează Sober...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberBasic" xml:space="preserve">
+    <value>Se actualizează Sober ({0}/{1})...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberProgress" xml:space="preserve">
+    <value>Actualizare Sober ({0}/{1}): {2}%</value>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>Se actualizează {product}...</value>
@@ -226,7 +304,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
     <value>Previzualizare stil – Faceți clic pe „Anulare” pentru a închide</value>
-    <comment>Text for style previews that use text button that says "Cancel"</comment>
+    <comment>Text for style previews that use text button that says &quot;Cancel&quot;</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
     <value>Froststrap a fost dezinstalat cu succes</value>
@@ -320,9 +398,6 @@ Doriți să treceți la canalul implicit ({1})?</value>
   </data>
   <data name="Common.Error" xml:space="preserve">
     <value>Eroare</value>
-  </data>
-  <data name="Common.FastFlags" xml:space="preserve">
-    <value>Editor rapid de steaguri</value>
   </data>
   <data name="Common.Files" xml:space="preserve">
     <value>Fișiere</value>
@@ -540,7 +615,7 @@ Timp de funcționare: {1}</value>
   </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Tema personalizată {0}</value>
-    <comment>{0} is a string (e.g. '1', '1-1234')</comment>
+    <comment>{0} is a string (e.g. &apos;1&apos;, &apos;1-1234&apos;)</comment>
   </data>
   <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
     <value>Doriți să salvați modificările la {0}?</value>
@@ -550,12 +625,6 @@ Timp de funcționare: {1}</value>
   </data>
   <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
     <value>Deschide directorul de teme</value>
-  </data>
-  <data name="CustomTheme.Editor.Preview" xml:space="preserve">
-    <value>Previzualizare</value>
-  </data>
-  <data name="CustomTheme.Editor.Save" xml:space="preserve">
-    <value>Salvare</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Tema ta a fost salvată!</value>
@@ -611,7 +680,7 @@ Timp de funcționare: {1}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
-    <value>{0} nu poate avea un element de tip {1}</value>
+    <value>{0} nu poate avea un copil de tip {1}</value>
     <comment>{0} and {1} are element names (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
@@ -740,16 +809,13 @@ Dacă nu, vă rugăm să raportați această excepție printr-o [problemă pe Gi
     <value>Verificați mai întâi [Froststrap Wiki]({0}) pentru a vedea dacă această problemă a fost deja rezolvată.
 
 Dacă nu, vă rugăm să raportați această excepție administratorilor acestui fork. NU raportați această problemă în secțiunea de probleme de pe GitHub a proiectului Froststrap, deoarece aceasta este o versiune neoficială.</value>
-    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
+    <comment>&quot;fork&quot; in general means &quot;a variation of&quot; or &quot;a different version of&quot;. You can alternatively write the first sentence as &quot;...to the maintainers of this version.&quot;</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
     <value>Raportează o excepție</value>
   </data>
   <data name="Dialog.Exception.Title" xml:space="preserve">
     <value>Excepție Froststrap</value>
-  </data>
-  <data name="Dialog.Exception.Version" xml:space="preserve">
-    <value>Versiunea {0}</value>
   </data>
   <data name="Dialog.IconLoadFailed" xml:space="preserve">
     <value>Nu s-a putut încărca pictograma bootstrapper-ului selectată.
@@ -777,6 +843,30 @@ Verifică dacă Roblox funcționează cu [lansatorul original]({1}). Dacă nu fu
   </data>
   <data name="Dialog.RegistryWriteError" xml:space="preserve">
     <value>Froststrap nu poate scrie în Registrul Windows. Este posibil ca un program antivirus să interfereze și să provoace probleme. Vă rugăm să verificați dacă nu există nimic care ar putea restricționa funcționarea Froststrap.</value>
+  </data>
+  <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
+    <value>Gradienți</value>
+  </data>
+  <data name="Enums.BackgroundMode.Image" xml:space="preserve">
+    <value>Imagini</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Fill" xml:space="preserve">
+    <value>Umpleți</value>
+  </data>
+  <data name="Enums.BackgroundStretch.None" xml:space="preserve">
+    <value>Niciuna</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Uniform" xml:space="preserve">
+    <value>Uniformă</value>
+  </data>
+  <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
+    <value>Uniformă de completat</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
+    <value>La începutul anului 2015</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
+    <value>Froststrap (Clasic)</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>La sfârșitul anului 2015</value>
@@ -838,6 +928,18 @@ Verifică dacă Roblox funcționează cu [lansatorul original]({1}). Dacă nu fu
   <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
     <value>Simplu</value>
   </data>
+  <data name="Enums.CycleFrequency.Days" xml:space="preserve">
+    <value>Zile</value>
+  </data>
+  <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
+    <value>Fiecare lansare</value>
+  </data>
+  <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
+    <value>Program</value>
+  </data>
+  <data name="Enums.CycleFrequency.Minutes" xml:space="preserve">
+    <value>Proces-verbal</value>
+  </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
     <value>Implicit (Twemoji)</value>
   </data>
@@ -856,6 +958,102 @@ Verifică dacă Roblox funcționează cu [lansatorul original]({1}). Dacă nu fu
   <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
     <value>Nivelul 3 (cel mai înalt)</value>
   </data>
+  <data name="Enums.FontSize.x1" xml:space="preserve">
+    <value>Mic</value>
+  </data>
+  <data name="Enums.FontSize.x2" xml:space="preserve">
+    <value>Mediu</value>
+  </data>
+  <data name="Enums.FontSize.x3" xml:space="preserve">
+    <value>Mare</value>
+  </data>
+  <data name="Enums.FontSize.x4" xml:space="preserve">
+    <value>Extra mare</value>
+  </data>
+  <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
+    <value>Pătrat</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
+    <value>Peste normal</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
+    <value>Sub nivelul normal</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
+    <value>Ridicat</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
+    <value>Scăzut</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
+    <value>În timp real</value>
+  </data>
+  <data name="Enums.QualityLevel.Level1" xml:space="preserve">
+    <value>Nivelul 1</value>
+  </data>
+  <data name="Enums.QualityLevel.Level10" xml:space="preserve">
+    <value>Nivelul 10</value>
+  </data>
+  <data name="Enums.QualityLevel.Level11" xml:space="preserve">
+    <value>Nivelul 11</value>
+  </data>
+  <data name="Enums.QualityLevel.Level12" xml:space="preserve">
+    <value>Nivelul 12</value>
+  </data>
+  <data name="Enums.QualityLevel.Level13" xml:space="preserve">
+    <value>Nivelul 13</value>
+  </data>
+  <data name="Enums.QualityLevel.Level14" xml:space="preserve">
+    <value>Nivelul 14</value>
+  </data>
+  <data name="Enums.QualityLevel.Level15" xml:space="preserve">
+    <value>Nivelul 15</value>
+  </data>
+  <data name="Enums.QualityLevel.Level16" xml:space="preserve">
+    <value>Nivelul 16</value>
+  </data>
+  <data name="Enums.QualityLevel.Level17" xml:space="preserve">
+    <value>Nivelul 17</value>
+  </data>
+  <data name="Enums.QualityLevel.Level18" xml:space="preserve">
+    <value>Nivelul 18</value>
+  </data>
+  <data name="Enums.QualityLevel.Level19" xml:space="preserve">
+    <value>Nivelul 19</value>
+  </data>
+  <data name="Enums.QualityLevel.Level2" xml:space="preserve">
+    <value>Nivelul 2</value>
+  </data>
+  <data name="Enums.QualityLevel.Level20" xml:space="preserve">
+    <value>Nivelul 20</value>
+  </data>
+  <data name="Enums.QualityLevel.Level21" xml:space="preserve">
+    <value>Nivelul 21</value>
+  </data>
+  <data name="Enums.QualityLevel.Level3" xml:space="preserve">
+    <value>Nivelul 3</value>
+  </data>
+  <data name="Enums.QualityLevel.Level4" xml:space="preserve">
+    <value>Nivelul 4</value>
+  </data>
+  <data name="Enums.QualityLevel.Level5" xml:space="preserve">
+    <value>Nivelul 5</value>
+  </data>
+  <data name="Enums.QualityLevel.Level6" xml:space="preserve">
+    <value>Nivelul 6</value>
+  </data>
+  <data name="Enums.QualityLevel.Level7" xml:space="preserve">
+    <value>Nivelul 7</value>
+  </data>
+  <data name="Enums.QualityLevel.Level8" xml:space="preserve">
+    <value>Nivelul 8</value>
+  </data>
+  <data name="Enums.QualityLevel.Level9" xml:space="preserve">
+    <value>Nivelul 9</value>
+  </data>
+  <data name="Enums.RenderingMode.Default" xml:space="preserve">
+    <value>Direct3D11 (implicit)</value>
+  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>Server privat</value>
   </data>
@@ -864,6 +1062,18 @@ Verifică dacă Roblox funcționează cu [lansatorul original]({1}). Dacă nu fu
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
     <value>Server rezervat</value>
+  </data>
+  <data name="Enums.TextureQuality.Default" xml:space="preserve">
+    <value>Ridicat (implicit)</value>
+  </data>
+  <data name="Enums.TextureQuality.Low" xml:space="preserve">
+    <value>Scăzut</value>
+  </data>
+  <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
+    <value>Cel mai mic</value>
+  </data>
+  <data name="Enums.TextureQuality.Medium" xml:space="preserve">
+    <value>Mediu</value>
   </data>
   <data name="Enums.Theme.Blue" xml:space="preserve">
     <value>Albastru</value>
@@ -886,9 +1096,18 @@ Verifică dacă Roblox funcționează cu [lansatorul original]({1}). Dacă nu fu
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Violet</value>
   </data>
+  <data name="Enums.TrayDoubleClickAction.GameHistory" xml:space="preserve">
+    <value>Istoric jocuri</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.None" xml:space="preserve">
+    <value>Niciuna</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
+    <value>Informații despre server</value>
+  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>Arhivă ZIP</value>
-    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. &quot;Zip archive (*.zip)&quot;</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
     <value>Froststrap a fost actualizat la versiunea v{0}</value>
@@ -932,9 +1151,6 @@ Sunteți sigur că doriți să continuați?</value>
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
     <value>Cod</value>
   </data>
-  <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
-    <value>Colaboratori</value>
-  </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>Aceștia sunt toți cei care au adus contribuții notabile la Froststrap și Froststrap, transformându-le în ceea ce sunt astăzi.</value>
   </data>
@@ -953,9 +1169,6 @@ Sunteți sigur că doriți să continuați?</value>
   <data name="Menu.About.HelpInformation" xml:space="preserve">
     <value>Ajutor și informații</value>
   </data>
-  <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>Licențe</value>
-  </data>
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Licența Apache 2.0</value>
   </data>
@@ -970,7 +1183,7 @@ Sunteți sigur că doriți să continuați?</value>
   </data>
   <data name="Menu.About.Version" xml:space="preserve">
     <value>Versiunea {0}</value>
-    <comment>{0} is replaced with the version, i.e. "Version 2.8.0"</comment>
+    <comment>{0} is replaced with the version, i.e. &quot;Version 2.8.0&quot;</comment>
   </data>
   <data name="Menu.AccountSelector.AccountRemoved" xml:space="preserve">
     <value>Contul „{0}” a fost eliminat deoarece cookie-ul său este nevalid sau a expirat.</value>
@@ -979,7 +1192,8 @@ Sunteți sigur că doriți să continuați?</value>
     <value>Adăugare cont</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
-    <value>Contul „@{0}” este deja conectat.\nS-a trecut la acesta.</value>
+    <value>Contul „@{0}” este deja conectat.
+S-a trecut la acesta.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
     <value>Nu s-au adăugat conturi
@@ -1006,6 +1220,9 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
     <value>Froststrap rulează deja</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
+    <value>Modul de fundal:</value>
+  </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Personalizați programul de inițializare al Froststrap folosind o gamă largă de opțiuni.</value>
   </data>
@@ -1021,18 +1238,6 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Nu a fost selectată nicio temă personalizată.</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>Configurați alte opțiuni diverse personalizabile ale programului de inițializare.</value>
-  </data>
-  <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>Personalizare</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>Trebuie să fie un fișier .ico cu mai multe dimensiuni, cu dimensiuni cuprinse între 16px și 128px. Setați opțiunea „Icoană” la „Personalizată” pentru a o utiliza.</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>Pictogramă personalizată</value>
-  </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
     <value>Textul care apare ca titlu al programului de inițializare.</value>
   </data>
@@ -1041,6 +1246,9 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
   </data>
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Configurează aspectul Froststrap.</value>
+  </data>
+  <data name="Menu.Appearance.Frequency" xml:space="preserve">
+    <value>Frecvență:</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Alege pictograma pe care ar trebui să o folosească Froststrap.</value>
@@ -1060,8 +1268,23 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Stilul „Bootstrapper”</value>
   </data>
+  <data name="Menu.Appearance.Opacity" xml:space="preserve">
+    <value>Opacitate:</value>
+  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Previzualizare</value>
+  </data>
+  <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
+    <value>Restaurare la setările implicite</value>
+  </data>
+  <data name="Menu.Appearance.StretchMode" xml:space="preserve">
+    <value>Modul de întindere:</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Description" xml:space="preserve">
+    <value>Rotește automat temele personalizate.</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
+    <value>Ciclism tematic</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Aspect</value>
@@ -1117,6 +1340,18 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
     <value>Prioritatea proceselor în Roblox</value>
   </data>
+  <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
+    <value>Configurează setările interne ale aplicației Roblox salvate.</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Title" xml:space="preserve">
+    <value>Setări de stocare a aplicațiilor</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
+    <value>Selectează numărul de regiuni pe care dorești să le verifici; acest lucru te ajută în cazul în care nu se găsesc cele mai potrivite regiuni pentru tine.</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
+    <value>Cele mai bune sume pe regiune</value>
+  </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Șterge automat datele vechi pentru a elibera spațiu. Creat inițial de Fishstrap.</value>
   </data>
@@ -1143,6 +1378,51 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
     <value>Meniul „Jurnale”</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>Lasă Froststrap să decidă la ce servere te conectezi. Acesta acordă prioritate serverului situat la cea mai mică distanță față de tine.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>Se pare că un prieten joacă acest joc chiar acum. Vrei să te alături lui?</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>Activează funcția BetterMatchmaking</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
+    <value>Alegeți numărul de servere pe care doriți să le verificați; cu cât sunt mai multe, cu atât poate dura mai mult.</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
+    <value>Suma maximă verificată de server</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
+    <value>Alege o regiune anume la care dorești să te alături sau lasă opțiunea pe „Auto” pentru a beneficia de cea mai bună opțiune disponibilă.</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Title" xml:space="preserve">
+    <value>Regiunea preferată</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
+    <value>Modifică tema vizuală pentru Roblox.</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
+    <value>Tema aplicației Roblox</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
+    <value>Alegeți servere mai mici atunci când vă conectați folosind butonul „Play”.</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
+    <value>Alătură-te serverelor mai mici</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
+    <value>Pornește automat aplicația Roblox la pornirea computerului.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
+    <value>Lansare la Startup</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
+    <value>Trimite aplicația în bara de sistem, în loc să o închidă complet.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
+    <value>Minimizează în bara de sistem</value>
   </data>
   <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
     <value>Setări de export</value>
@@ -1252,8 +1532,57 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
   <data name="Menu.CookieState.NotFound" xml:space="preserve">
     <value>Fișierul cookie Roblox nu a fost găsit.</value>
   </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
+    <value>Froststrap se va verifica automat și se va actualiza la o versiune de testare la lansarea Roblox.</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
+    <value>Actualizare privind versiunile preliminare</value>
+  </data>
+  <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
+    <value>Actualizare automată a aplicației Sober</value>
+  </data>
+  <data name="Menu.Deployment.Channel.Description" xml:space="preserve">
+    <value>Alegeți canalul de implementare. Nu modificați această setare decât dacă știți exact ce faceți.</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Acest canal este învechit și, probabil, nu mai este actualizat. Vă rugăm să utilizați un alt canal.</value>
+  </data>
+  <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
+    <value>Ați introdus un domeniu nevalid
+Vă rugăm să nu modificați această setare dacă nu știți ce faceți</value>
+  </data>
+  <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
+    <value>Nu s-au putut încărca datele canalului.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
+    <value>Caută jocuri folosind bara de căutare din partea de sus.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
+    <value>Căutare jocuri</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Description" xml:space="preserve">
+    <value>Specificați numărul de fire utilizate pentru descărcare. Această setare afectează doar Studio pe Linux.</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
+    <value>Descărcare multi-thread</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
+    <value>Forțează Roblox Studio să instaleze și să utilizeze un hash al unei versiuni specifice, în loc de cea mai recentă.</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
+    <value>Versiunea Override Studio</value>
+  </data>
+  <data name="Menu.Deployment.PlayerChannel.Title" xml:space="preserve">
+    <value>Canalul jucătorului</value>
+  </data>
+  <data name="Menu.Deployment.StudioChannel.Title" xml:space="preserve">
+    <value>Canalul Studio</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
+    <value>Introduceți GUID-ul versiunii Roblox Studio (de exemplu, version-xxxxxxxxxxxxxxxx). Se aplică numai la lansările din Studio.</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
+    <value>Hash-ul versiunii</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
     <value>Autentificare rapidă</value>
@@ -1312,13 +1641,8 @@ Mai multe informații:
     <value>Nu s-au detectat FastFlags nevalide.</value>
   </data>
   <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
-    <value>„{0}” nu se află pe lista de permisiuni Roblox și nu va funcționa.\n\nVrei să îl elimini acum?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
-    <value>Profiluri de steaguri</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>Căutare</value>
+    <value>„{0}” nu se află pe lista de permisiuni Roblox și nu va funcționa.
+Vrei să îl elimini acum?</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Afișează marcajele presetate</value>
@@ -1331,9 +1655,6 @@ Mai multe informații:
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
     <value>După includerea pe lista albă a unor FastFlags din Roblox, acestea sunt singurele care mai sunt disponibile pentru utilizare.</value>
-  </data>
-  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
-    <value>Salvează setările curente</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlează modul în care sunt configurați anumiți parametri și funcții ale motorului Roblox.</value>
@@ -1370,7 +1691,7 @@ Mai multe informații:
     <value>Detalii despre plasă</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
-    <value>Nivelurile mai ridicate de MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
+    <value>Nivelurile mai ridicate ale MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Calitatea anti-aliasingului (MSAA)</value>
@@ -1414,9 +1735,6 @@ Mai multe informații:
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Șterge FFlags</value>
   </data>
-  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
-    <value>Salvați și încărcați rapid profilurile de steaguri.</value>
-  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
     <value>Nu s-au găsit profiluri</value>
   </data>
@@ -1432,11 +1750,167 @@ Mai multe informații:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Setați ca „Doar citire”</value>
   </data>
+  <data name="Menu.GBSEditor.Title" xml:space="preserve">
+    <value>Editorul de setări globale</value>
+  </data>
   <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
     <value>Vectorul Y</value>
   </data>
+  <data name="Menu.GlobalSettings.Accessibility.Title" xml:space="preserve">
+    <value>Accesibilitate și diverse</value>
+  </data>
+  <data name="Menu.GlobalSettings.AudioSettings.Title" xml:space="preserve">
+    <value>Setări audio</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Fail" xml:space="preserve">
+    <value>Nu s-au putut exporta setările. Asigură-te că Roblox nu rulează și încearcă din nou.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Success" xml:space="preserve">
+    <value>Setările au fost exportate cu succes în {0}</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Description" xml:space="preserve">
+    <value>Sensibilitatea axelor X și Y pentru perspectiva la persoana întâi.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Title" xml:space="preserve">
+    <value>Sensibilitatea la prima persoană</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Description" xml:space="preserve">
+    <value>Setați o limită personalizată pentru FPS. Folosiți -1 pentru valoarea implicită.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Title" xml:space="preserve">
+    <value>Limita ratei de cadre</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Description" xml:space="preserve">
+    <value>Pornește Roblox în modul ecran complet.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Title" xml:space="preserve">
+    <value>Ecran complet</value>
+  </data>
+  <data name="Menu.GlobalSettings.GraphicsSettings.Title" xml:space="preserve">
+    <value>Setări grafice</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
+    <value>Intensitatea vibrațiilor controlerului.</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
+    <value>Forța haptică</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Confirmation" xml:space="preserve">
+    <value>Această acțiune va înlocui toate setările globale actuale cu cele importate. Ești sigur că vrei să continui?</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
+    <value>Importul setărilor a eșuat. Asigură-te că Roblox nu rulează și încearcă din nou.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
+    <value>Fișierul selectat nu pare a fi un fișier valid de setări GBS.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
+    <value>Fișierul selectat nu este un fișier XML valid.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Success" xml:space="preserve">
+    <value>Setările au fost importate cu succes!</value>
+  </data>
+  <data name="Menu.GlobalSettings.InputSettings.Title" xml:space="preserve">
+    <value>Setări de intrare</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Description" xml:space="preserve">
+    <value>Inversează axa Y a camerei.</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Title" xml:space="preserve">
+    <value>Inversare Y</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
+    <value>Nivelul global al volumului.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
+    <value>Volum principal</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Description" xml:space="preserve">
+    <value>Permite utilizarea unor niveluri mai ridicate de MSAA.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Title" xml:space="preserve">
+    <value>Calitate maximă</value>
+  </data>
+  <data name="Menu.GlobalSettings.OpenRobloxFolder" xml:space="preserve">
+    <value>Deschide folderul Roblox</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Description" xml:space="preserve">
+    <value>Volumul pentru modul „voce de petrecere”.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Title" xml:space="preserve">
+    <value>Volumul petrecerii</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
+    <value>Afișează fereastra de performanță.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
+    <value>Statistici Perf</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
+    <value>Comută afișarea listei de jucători din meniul „esc” între interfața pătrată și cea normală.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
+    <value>Structura listei de jucători</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
+    <value>Reduce animațiile din interfața utilizatorului.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
+    <value>Mișcare redusă</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
+    <value>Sensibilitatea globală a camerei.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
+    <value>Sensibilitate</value>
+  </data>
+  <data name="Menu.GlobalSettings.ShiftLock.Description" xml:space="preserve">
+    <value>Activează automat funcția „shiftlock”.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Description" xml:space="preserve">
+    <value>Nivelul de calitate la intrarea în joc.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
+    <value>Calitatea inițială</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
+    <value>Volum pentru Roblox Studio.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
+    <value>Volumul studiului</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
+    <value>Dimensiunea preferată a textului afișat.</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
+    <value>Dimensiunea textului</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
+    <value>Sensibilitatea pe axele X și Y pentru perspectiva la persoana a treia.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
+    <value>Sensibilitatea la persoana a treia</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Setări generale</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Description" xml:space="preserve">
+    <value>Reglați transparența elementelor interfeței utilizatorului.</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Title" xml:space="preserve">
+    <value>Transparența interfeței utilizatorului</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
+    <value>Activați suportul pentru realitatea virtuală.</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
+    <value>Modul VR</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Description" xml:space="preserve">
+    <value>Activează sau dezactivează efectul de vignetă al ecranului.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Title" xml:space="preserve">
+    <value>Miniatură</value>
   </data>
   <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
     <value>Aici poți gestiona toate setările generale.</value>
@@ -1449,6 +1923,12 @@ Mai multe informații:
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
     <value>Permite participarea la activități</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
+    <value>Se reconectează automat la același server după o deconectare de 20 de minute sau o eroare de rețea.</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
+    <value>Reîntoarcere automată</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
     <value>Activează sau dezactivează anumite funcții integrate ale Roblox.</value>
@@ -1522,6 +2002,18 @@ Mai multe informații:
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
     <value>Acțiune la dublu clic</value>
   </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Description" xml:space="preserve">
+    <value>Modifică miniatura în funcție de scriptul pe care îl ai deschis.</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Title" xml:space="preserve">
+    <value>Miniatură dinamică</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Description" xml:space="preserve">
+    <value>Afișează tipul scriptului, numele scriptului și numărul de linii din script.</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Title" xml:space="preserve">
+    <value>Informații despre editare</value>
+  </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
     <value>Permite aplicației Froststrap să detecteze ce joc Roblox joci. Anumite funcții pot necesita acest lucru.</value>
   </data>
@@ -1539,6 +2031,18 @@ Mai multe informații:
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Meniul Istoric jocuri</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Description" xml:space="preserve">
+    <value>Schimbă automat pictograma din bara de titlu a jocului Roblox și cea din bara de activități cu pictograma jocului curent.</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Title" xml:space="preserve">
+    <value>Schimbarea pictogramei</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Description" xml:space="preserve">
+    <value>Adaugă un buton mic pentru a te alătura jocului la care lucrezi.</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
+    <value>Butonul „Alătură-te”</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Afișează durata totală de joc și durata sesiunii curente atunci când te afli într-un joc sau într-un loc din Studio.</value>
@@ -1567,8 +2071,138 @@ Mai multe informații:
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
     <value>Afișează activitatea din joc</value>
   </data>
+  <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
+    <value>Afișează o mică pictogramă de redare în RPC atunci când testezi un joc.</value>
+  </data>
+  <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
+    <value>Afișare testare</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Description" xml:space="preserve">
+    <value>Afișează „Roblox Studio” ca activitate pe Discord la lansare.</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Title" xml:space="preserve">
+    <value>Afișare activitate Studio</value>
+  </data>
+  <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
+    <value>Acest lucru se realizează prin adăugarea unui plugin Froststrap creat special, care va înregistra activitățile tale.
+Dorești să instalezi pluginul?</value>
+  </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
     <value>Integrări</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
+    <value>Modifică titlul din bara de titlu Roblox cu numele jocului.</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
+    <value>Modificare titlu</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Description" xml:space="preserve">
+    <value>Afișează numele spațiului de lucru curent.</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Title" xml:space="preserve">
+    <value>Informații despre spațiul de lucru</value>
+  </data>
+  <data name="Menu.LinuxSettings.AddVariable" xml:space="preserve">
+    <value>+ Adăugare variabilă</value>
+  </data>
+  <data name="Menu.LinuxSettings.AdvancedWineSettings" xml:space="preserve">
+    <value>Setări avansate pentru vin</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
+    <value>Permite aplicației Sober să solicite și să înregistreze comenzile de la controler prin intermediul Steam Deck sau al unor controlere similare.</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
+    <value>Acordă permisiunea pentru gamepad</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Description" xml:space="preserve">
+    <value>Activează jurnalizarea detaliată Wine/DXVK și afișarea mesajelor pe consolă.</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Title" xml:space="preserve">
+    <value>Modul de depanare</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
+    <value>Daemonul de optimizare GameMode al Signals Feral Interactive se integrează în procesele de lansare a jocurilor.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
+    <value>Activează GameMode</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
+    <value>Forțează utilizarea opțiunilor native de scalare a platformei cu DPI ridicat la redarea elementelor de interfață.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
+    <value>Suport pentru scalarea afișajului HiDPI</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Description" xml:space="preserve">
+    <value>Variabile de mediu suplimentare transmise către Wine.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Title" xml:space="preserve">
+    <value>Variabile de mediu</value>
+  </data>
+  <data name="Menu.LinuxSettings.FailedToStartWineCfg" xml:space="preserve">
+    <value>Nu s-a putut porni winecfg: {0}</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
+    <value>Suprascrie subsistemele native Vulkan pentru a recurge în schimb la pipeline-ul de dispunere OpenGL de generație anterioară.</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
+    <value>Forțează redarea OpenGL în modul Legacy</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
+    <value>Aplică optimizările de sistem, dacă sunt disponibile (necesită gamemoded).</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
+    <value>Modul de joc</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
+    <value>Selectați motorul de redare pentru Studio în cadrul Wine.</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
+    <value>Motor de randare grafică</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
+    <value>Încadrați comanda Studio (de exemplu, gamescope -- %comandă%)</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
+    <value>Comandă pentru programul de lansare</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherPlaceholder" xml:space="preserve">
+    <value>gamescope -- %comandă%</value>
+  </data>
+  <data name="Menu.LinuxSettings.ResolutionPlaceholder" xml:space="preserve">
+    <value>de exemplu, 1920x1080</value>
+  </data>
+  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
+    <value>Setări Linux</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Description" xml:space="preserve">
+    <value>Activează sau dezactivează profilurile de gestionare a comportamentului pentru dispozitivele cu ecran tactil.</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
+    <value>Modul de introducere prin atingere</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
+    <value>Forțează utilizarea sistemului modern de tablouri de bord pentru clienții TV/console în locul interfeței de desktop.</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
+    <value>Experiența de utilizare a consolei</value>
+  </data>
+  <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
+    <value>Variabilă</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
+    <value>Creează o fereastră separată pentru fiecare instanță</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
+    <value>Desktopuri virtuale</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
+    <value>Se utilizează pentru anumite elemente ale interfeței utilizatorului și pentru autentificare</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
+    <value>Pagini web</value>
+  </data>
+  <data name="Menu.LinuxSettings.WineBinaryNotFound" xml:space="preserve">
+    <value>Nu s-a găsit fișierul binar Wine. Asigurați-vă că Wine este instalat.</value>
   </data>
   <data name="Menu.Load" xml:space="preserve">
     <value>Încărcare</value>
@@ -1598,7 +2232,7 @@ Mai multe informații:
     <value>Lipiți valoarea în caseta de mai sus</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>„Cookie-ul nu este valid. Vă rugăm să verificați și să încercați din nou.”</value>
+    <value>Cookie-ul nu este valid. Vă rugăm să verificați și să încercați din nou.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>Lipiți cookie-ul .ROBLOSECURITY</value>
@@ -1607,7 +2241,7 @@ Mai multe informații:
     <value>Autentificare manuală</value>
   </data>
   <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
-    <value>Adăugare oprire</value>
+    <value>Adaugă culoare</value>
   </data>
   <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
     <value>Modificările au fost aplicate cu succes ({0} fișiere).</value>
@@ -1642,7 +2276,7 @@ Mai multe informații:
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
     <value>Pictogramă „Fără joc de culori”</value>
   </data>
-  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+  <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
     <value>Se descarcă resursele necesare...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
@@ -1703,7 +2337,7 @@ Mai multe informații:
     <value>Gestionați și aplicați modificările de fișiere la clientul de joc Roblox.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
-    <value>📦 Trageți pentru a importa fișiere ZIP / foldere</value>
+    <value>📦 Trageți pentru a importa fișiere ZIP / dosare</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
     <value>Dosarul pentru „{0}” nu mai există.</value>
@@ -1721,7 +2355,8 @@ Mai multe informații:
     <value>Numele folderului este incorect.</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
-    <value>Sursa selectată nu conține o structură mod validă.\nAceasta trebuie să conțină cel puțin unul dintre următoarele foldere: content, ExtraContent, PlatformContent.</value>
+    <value>Sursa selectată nu conține o structură mod validă.
+Aceasta trebuie să conțină cel puțin unul dintre următoarele foldere: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nu sunt instalate moduri.</value>
@@ -1734,6 +2369,21 @@ Mai multe informații:
   </data>
   <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
     <value>Tip de fișier sau cale neacceptată: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Apply" xml:space="preserve">
+    <value>Aplică setul</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Export" xml:space="preserve">
+    <value>Set de export</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Fetch" xml:space="preserve">
+    <value>Preluare Setare</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Import" xml:space="preserve">
+    <value>Set de import</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.None" xml:space="preserve">
+    <value>Nu este selectat niciun set de cursoare personalizat.</value>
   </data>
   <data name="Menu.PresetMods.Description" xml:space="preserve">
     <value>Moduri oficiale integrate.</value>
@@ -1804,6 +2454,9 @@ Mai multe informații:
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Shiftlock personalizat</value>
   </data>
+  <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
+    <value>Deschide folderul „Preset Mods”</value>
+  </data>
   <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Alege ce tip de emoji ar trebui să folosească Roblox.</value>
   </data>
@@ -1828,11 +2481,98 @@ Mai multe informații:
   <data name="Menu.PresetMods.Title" xml:space="preserve">
     <value>Modificări prestabilite</value>
   </data>
+  <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
+    <value>Responsabilul de cont nu este disponibil.</value>
+  </data>
+  <data name="Menu.QuickPlay.Active" xml:space="preserve">
+    <value>Activ</value>
+  </data>
+  <data name="Menu.QuickPlay.AvailableSubplaces" xml:space="preserve">
+    <value>Sublocuri disponibile</value>
+  </data>
+  <data name="Menu.QuickPlay.CheckingServers" xml:space="preserve">
+    <value>Se verifică serverele...</value>
+  </data>
   <data name="Menu.QuickPlay.Description" xml:space="preserve">
     <value>Revino la jocurile pe care le-ai jucat recent.</value>
   </data>
+  <data name="Menu.QuickPlay.FetchingGameInfo" xml:space="preserve">
+    <value>Preluarea informațiilor despre joc</value>
+  </data>
+  <data name="Menu.QuickPlay.FindingBestServer" xml:space="preserve">
+    <value>Se caută cel mai bun server pentru regiunea ta...</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinBestRegion" xml:space="preserve">
+    <value>Alătură-te Best Region</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinGame" xml:space="preserve">
+    <value>Alătură-te jocului</value>
+  </data>
+  <data name="Menu.QuickPlay.Latest" xml:space="preserve">
+    <value>Ultimele noutăți</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingPrivateServers" xml:space="preserve">
+    <value>Se încarcă serverele private...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingRecentGames" xml:space="preserve">
+    <value>Se încarcă jocurile recente...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingServers" xml:space="preserve">
+    <value>Se încarcă serverele...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingSubplaces" xml:space="preserve">
+    <value>Se încarcă sublocuri...</value>
+  </data>
+  <data name="Menu.QuickPlay.NoPrivateServersFound" xml:space="preserve">
+    <value>Nu s-au găsit servere private</value>
+  </data>
+  <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
+    <value>Nu s-a găsit niciun server adecvat.</value>
+  </data>
+  <data name="Menu.QuickPlay.Players" xml:space="preserve">
+    <value>jucători</value>
+  </data>
+  <data name="Menu.QuickPlay.PleaseSelectAccount" xml:space="preserve">
+    <value>Vă rugăm să selectați mai întâi un cont.</value>
+  </data>
+  <data name="Menu.QuickPlay.PrivateServers" xml:space="preserve">
+    <value>Servere private</value>
+  </data>
+  <data name="Menu.QuickPlay.RejoinLastServer" xml:space="preserve">
+    <value>Revino pe ultimul server</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxAPI" xml:space="preserve">
+    <value>API-ul Roblox</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxServers" xml:space="preserve">
+    <value>Servere Roblox</value>
+  </data>
+  <data name="Menu.QuickPlay.SessionHistory" xml:space="preserve">
+    <value>Istoric sesiuni</value>
+  </data>
   <data name="Menu.QuickPlay.Title" xml:space="preserve">
     <value>Joc rapid</value>
+  </data>
+  <data name="Menu.QuickPlay.Tracked" xml:space="preserve">
+    <value>Urmărit</value>
+  </data>
+  <data name="Menu.QuickPlay.TrackedServers" xml:space="preserve">
+    <value>Servere cu monitorizare ({0})</value>
+  </data>
+  <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
+    <value>Nu s-a putut efectua autentificarea. Vă rugăm să vă autentificați din nou.</value>
+  </data>
+  <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
+    <value>Joc necunoscut</value>
+  </data>
+  <data name="Menu.QuickPlay.ViewSubplaces" xml:space="preserve">
+    <value>Vizualizare sublocuri</value>
+  </data>
+  <data name="Menu.QuickPlay.VisitPage" xml:space="preserve">
+    <value>Vizitează pagina</value>
+  </data>
+  <data name="Menu.QuickPlay.Visits" xml:space="preserve">
+    <value>Vizite</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Autentificarea a fost anulată.</value>
@@ -1850,19 +2590,65 @@ Mai multe informații:
     <value>A expirat timpul de așteptare pentru autentificare.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
-    <value>Se așteaptă autentificarea rapidă...\nAplicația va închide această fereastră după finalizarea autentificării.</value>
+    <value>Se așteaptă autentificarea rapidă...
+Aplicația va închide această fereastră după finalizarea autentificării.</value>
+  </data>
+  <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
+    <value>Introduceți un ID de locație și faceți clic pe „Căutare” pentru a vizualiza serverele.</value>
+  </data>
+  <data name="Menu.RegionSelector.FailedToLoadDatacenters" xml:space="preserve">
+    <value>Nu s-au putut încărca centrele de date.</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Introduceți ID-ul locației sau numele jocului...</value>
   </data>
+  <data name="Menu.RegionSelector.ID" xml:space="preserve">
+    <value>Identificator: {0}</value>
+  </data>
+  <data name="Menu.RegionSelector.Join" xml:space="preserve">
+    <value>Alătură-te</value>
+  </data>
+  <data name="Menu.RegionSelector.LargeServers" xml:space="preserve">
+    <value>Servere de mari dimensiuni</value>
+  </data>
   <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
     <value>Afișează mai multe</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadedRegions" xml:space="preserve">
+    <value>S-au încărcat {0} regiuni.</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
+    <value>Se încarcă centrele de date...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
+    <value>Conectează-te folosind Managerul de conturi, activează opțiunea „Froststrap Account Permission” sau raportează această problemă pe serverul nostru Discord pentru a putea utiliza funcția.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
+    <value>Nu s-au găsit servere publice.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoServersForRegion" xml:space="preserve">
+    <value>Nu s-au găsit servere pentru regiunea specificată.</value>
+  </data>
+  <data name="Menu.RegionSelector.Players" xml:space="preserve">
+    <value>Jucători</value>
+  </data>
+  <data name="Menu.RegionSelector.PleaseSelectRegion" xml:space="preserve">
+    <value>Vă rugăm să selectați mai întâi o regiune.</value>
   </data>
   <data name="Menu.RegionSelector.Region" xml:space="preserve">
     <value>Regiune:</value>
   </data>
+  <data name="Menu.RegionSelector.RegionHeader" xml:space="preserve">
+    <value>Regiune</value>
+  </data>
+  <data name="Menu.RegionSelector.SearchingServers" xml:space="preserve">
+    <value>Se caută servere...</value>
+  </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Dimensiunea serverului:</value>
+  </data>
+  <data name="Menu.RegionSelector.SmallServers" xml:space="preserve">
+    <value>Servere mici</value>
   </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Selector de regiune</value>
@@ -1906,11 +2692,14 @@ Mai multe informații:
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>Astfel, poți crea comenzi rapide care îți permit să te alături rapid anumitor jocuri.</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
-    <value>Comenzi rapide pentru joc</value>
+  <data name="Menu.Shortcuts.CreateShortcut" xml:space="preserve">
+    <value>Creează o comandă rapidă</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
     <value>Configurați modul în care Froststrap poate fi lansat cu ușurință.</value>
+  </data>
+  <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
+    <value>A apărut o eroare la crearea comenzii rapide.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
     <value>Îți permite să folosești gama de pictograme Roblox de la Froststrap pentru comenzile tale rapide. [Află cum.]({0})</value>
@@ -1924,18 +2713,57 @@ Mai multe informații:
   <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
     <value>Funcție</value>
   </data>
+  <data name="Menu.Shortcuts.Game" xml:space="preserve">
+    <value>Jocul {0}</value>
+  </data>
+  <data name="Menu.Shortcuts.GameShortcut.Title" xml:space="preserve">
+    <value>Comenzi rapide pentru joc</value>
+  </data>
   <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
     <value>Acestea sunt comenzile rapide care afișează meniul de lansare cu opțiuni multiple.</value>
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Generalități</value>
   </data>
-  <data name="Menu.SoberSettings.Title" xml:space="preserve">
-    <value>Setări de moderație</value>
+  <data name="Menu.Shortcuts.NoGameSelected" xml:space="preserve">
+    <value>Nu a fost selectat niciun joc</value>
+  </data>
+  <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
+    <value>Cod de acces privat</value>
+  </data>
+  <data name="Menu.Shortcuts.Processing" xml:space="preserve">
+    <value>Se procesează...</value>
+  </data>
+  <data name="Menu.Shortcuts.Ready" xml:space="preserve">
+    <value>Gata</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyToCreate" xml:space="preserve">
+    <value>Gata să creezi</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyWithManualId" xml:space="preserve">
+    <value>Gata, cu ID-ul din manual.</value>
+  </data>
+  <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
+    <value>Căutare joc</value>
+  </data>
+  <data name="Menu.Shortcuts.SelectGameFirst" xml:space="preserve">
+    <value>Alege mai întâi un joc.</value>
+  </data>
+  <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
+    <value>ID-ul instanței de server</value>
+  </data>
+  <data name="Menu.Shortcuts.ShortcutCreated" xml:space="preserve">
+    <value>S-a creat o comandă rapidă!</value>
+  </data>
+  <data name="Menu.Shortcuts.UpdatingPreview" xml:space="preserve">
+    <value>Se actualizează previzualizarea...</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Modul de testare</value>
     <comment>See the prompt for more context</comment>
+  </data>
+  <data name="Menu.TestMode.Description" xml:space="preserve">
+    <value>Ascunde automat fereastra de setări la lansarea Roblox și afișeaz-o din nou la închiderea Roblox.</value>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
     <value>Modul de testare îți permite să verifici mai ușor, în mod iterativ, cum afectează setările tale funcționarea Roblox. 
@@ -1949,7 +2777,7 @@ Dorești să activezi Modul de testare?</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Icoane</value>
-    <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+    <comment>Name of the folder that gets created according to the &quot;create shortcut icons&quot; option. Ensure that it is a valid folder name.</comment>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>Acestea vor fi păstrate în locul în care a fost instalat Froststrap și vor fi restaurate automat la o reinstalare.</value>

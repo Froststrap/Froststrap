@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -142,25 +142,19 @@
 
 Vill du byta din förvalda kanal till {0}?</value>
   </data>
+  <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
+    <value>Hoppa över</value>
+  </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox körs just nu, och om du startar en ny instans kommer den nuvarande att stängas. Är du säker på att du vill fortsätta?</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>Den kanal du befinner dig på just nu ({0}) är inaktuell och verkar inte längre få uppdateringar.\n
+    <value>Den kanal du befinner dig på just nu ({0}) är inaktuell och verkar inte längre uppdateras.
 Vill du byta till standardkanalen ({1})?</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
     <value>Uppgraderingarna inaktiverades på grund av att klienten saknades.
     För att undvika problem kommer uppgraderingen att fortsätta.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
-    <value>Låt Froststrap bestämma vilka servrar du ska ansluta dig till. Programmet prioriterar den server som ligger närmast dig.</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
-    <value>Det verkar som att en vän spelar det här spelet just nu. Vill du spela med?</value>
-  </data>
-  <data name="Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
-    <value>Aktivera BetterMatchmaking</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
     <value>Vissa delar av innehållet kan saknas. Försök att åtgärda detta genom att tvinga fram en ominstallation av Roblox i inställningarna.</value>
@@ -186,6 +180,18 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Bootstrapper.Status.CancelUpgrade" xml:space="preserve">
     <value>Avbryta uppgraderingen av Roblox.</value>
   </data>
+  <data name="Bootstrapper.Status.CheckingDependencies" xml:space="preserve">
+    <value>Kontroll av beroenden</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
+    <value>Kontrollerar Flatpak-installationen...</value>
+  </data>
+  <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
+    <value>Söker efter uppdateringar</value>
+  </data>
+  <data name="Bootstrapper.Status.CompilingVulkanLayer" xml:space="preserve">
+    <value>Kompilerar Vulkan-lager...</value>
+  </data>
   <data name="Bootstrapper.Status.Configuring" xml:space="preserve">
     <value>Konfigurerar {product}...</value>
   </data>
@@ -195,11 +201,47 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Bootstrapper.Status.Downloading" xml:space="preserve">
     <value>Hämtar</value>
   </data>
+  <data name="Bootstrapper.Status.DownloadingDXVK" xml:space="preserve">
+    <value>Hämtar DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingDXVKSarek" xml:space="preserve">
+    <value>Hämtar DXVK-Sarek...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingUpdate" xml:space="preserve">
+    <value>Hämtar uppdatering {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWebView2" xml:space="preserve">
+    <value>Hämtar WebView2...</value>
+  </data>
+  <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
+    <value>Hämtar Wine...</value>
+  </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
     <value>Utdrag</value>
   </data>
+  <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
+    <value>Hämtar DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
+    <value>Hämtar DXVK-Sarek...</value>
+  </data>
+  <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
+    <value>Hämtar vin...</value>
+  </data>
+  <data name="Bootstrapper.Status.FindingTopRegions" xml:space="preserve">
+    <value>Söker efter de bästa {0} regionerna...</value>
+  </data>
+  <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
+    <value>Initierar Wine-prefix...</value>
+  </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
     <value>Installerar {product}...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
+    <value>Installera Sober...</value>
+  </data>
+  <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
+    <value>Installerar uppdatering {0}...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingWebView2" xml:space="preserve">
     <value>WebView2 installeras, vänta...</value>
@@ -207,9 +249,45 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Bootstrapper.Status.PackagesLeft" xml:space="preserve">
     <value>vänster</value>
   </data>
+  <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
+    <value>Försöker igen med {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
+    <value>Söker efter servrar i närheten...</value>
+  </data>
+  <data name="Bootstrapper.Status.SearchingServers" xml:space="preserve">
+    <value>Söker efter servrar i {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
+    <value>Startar DXVK...</value>
+  </data>
+  <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
+    <value>Hoppar över serversökningen...</value>
+  </data>
+  <data name="Bootstrapper.Status.SoberUpdateComplete" xml:space="preserve">
+    <value>Uppdateringen av Sober är klar.</value>
+  </data>
   <data name="Bootstrapper.Status.Starting" xml:space="preserve">
     <value>Startar {product}...</value>
-    <comment>"Starting Roblox" or "Starting Roblox Studio"</comment>
+    <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
+  </data>
+  <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
+    <value>Att börja nykter...</value>
+  </data>
+  <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
+    <value>Starta Roblox Studio med Wine...</value>
+  </data>
+  <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
+    <value>Avinstallerar WebView2 {0}...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSober" xml:space="preserve">
+    <value>Uppdaterar Sober...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberBasic" xml:space="preserve">
+    <value>Uppdaterar Sober ({0}/{1})...</value>
+  </data>
+  <data name="Bootstrapper.Status.UpdatingSoberProgress" xml:space="preserve">
+    <value>Uppdaterar Sober ({0}/{1}): {2} %</value>
   </data>
   <data name="Bootstrapper.Status.Upgrading" xml:space="preserve">
     <value>Uppgraderar {product}...</value>
@@ -226,7 +304,7 @@ Vill du byta till standardkanalen ({1})?</value>
   </data>
   <data name="Bootstrapper.StylePreview.TextCancel" xml:space="preserve">
     <value>Förhandsgranskning av stil – Klicka på Avbryt för att stänga</value>
-    <comment>Text for style previews that use text button that says "Cancel"</comment>
+    <comment>Text for style previews that use text button that says &quot;Cancel&quot;</comment>
   </data>
   <data name="Bootstrapper.SuccessfullyUninstalled" xml:space="preserve">
     <value>Froststrap har avinstallerats utan problem</value>
@@ -318,9 +396,6 @@ Vill du byta till standardkanalen ({1})?</value>
   <data name="Common.Error" xml:space="preserve">
     <value>Fel</value>
   </data>
-  <data name="Common.FastFlags" xml:space="preserve">
-    <value>Snabb flaggredigerare</value>
-  </data>
   <data name="Common.Files" xml:space="preserve">
     <value>Filer</value>
   </data>
@@ -334,7 +409,7 @@ Vill du byta till standardkanalen ({1})?</value>
     <value>Förhandsgranskning av tecken</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Hex-kod</value>
+    <value>Hexkod</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importera</value>
@@ -543,7 +618,7 @@ Driftstid: {1}</value>
   </data>
   <data name="CustomTheme.DefaultName" xml:space="preserve">
     <value>Anpassat tema {0}</value>
-    <comment>{0} is a string (e.g. '1', '1-1234')</comment>
+    <comment>{0} is a string (e.g. &apos;1&apos;, &apos;1-1234&apos;)</comment>
   </data>
   <data name="CustomTheme.Editor.ConfirmSave" xml:space="preserve">
     <value>Ska ändringarna sparas i {0}?</value>
@@ -553,12 +628,6 @@ Driftstid: {1}</value>
   </data>
   <data name="CustomTheme.Editor.OpenThemeDirectory" xml:space="preserve">
     <value>Öppna temakatalogen</value>
-  </data>
-  <data name="CustomTheme.Editor.Preview" xml:space="preserve">
-    <value>Förhandsgranskning</value>
-  </data>
-  <data name="CustomTheme.Editor.Save" xml:space="preserve">
-    <value>Spara</value>
   </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Ditt tema har sparats!</value>
@@ -646,7 +715,7 @@ Standardvärdet är {1}.</value>
     <comment>{0} is the element name (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.UnknownEnumValue" xml:space="preserve">
-    <value>{0} Okänt {1} '{2}'</value>
+    <value>{0} Okänt {1} &apos;{2}&apos;</value>
     <comment>{0} is the element name (e.g. Button), {1} is the enum name (e.g. WindowCornerType), {2} is the value</comment>
   </data>
   <data name="CustomTheme.Errors.VersionNotNumber" xml:space="preserve">
@@ -743,7 +812,7 @@ Om inte, vänligen rapportera detta undantag via ett [GitHub-ärende]({1}) tills
     <value>Kolla först på [Froststrap Wiki]({0}) för att se om det redan finns en lösning på detta problem.
 
 Om inte, vänligen rapportera detta undantag till ansvariga för denna fork. Rapportera INTE detta till Froststraps GitHub-ärenden, eftersom detta är en inofficiell version.</value>
-    <comment>"fork" in general means "a variation of" or "a different version of". You can alternatively write the first sentence as "...to the maintainers of this version."</comment>
+    <comment>&quot;fork&quot; in general means &quot;a variation of&quot; or &quot;a different version of&quot;. You can alternatively write the first sentence as &quot;...to the maintainers of this version.&quot;</comment>
   </data>
   <data name="Dialog.Exception.Report" xml:space="preserve">
     <value>Rapportera undantag</value>
@@ -777,6 +846,24 @@ Kontrollera om Roblox fungerar med [den ursprungliga startprogrammet]({1}). Om d
   </data>
   <data name="Dialog.RegistryWriteError" xml:space="preserve">
     <value>Froststrap kan inte skriva till Windows-registret. Det är troligt att ett antivirusprogram stör och orsakar problem. Kontrollera gärna att det inte finns något som begränsar Froststraps funktion.</value>
+  </data>
+  <data name="Enums.BackgroundMode.Gradient" xml:space="preserve">
+    <value>Gradienter</value>
+  </data>
+  <data name="Enums.BackgroundMode.Image" xml:space="preserve">
+    <value>Bilder</value>
+  </data>
+  <data name="Enums.BackgroundStretch.Fill" xml:space="preserve">
+    <value>Fyll</value>
+  </data>
+  <data name="Enums.BackgroundStretch.None" xml:space="preserve">
+    <value>Inget</value>
+  </data>
+  <data name="Enums.BackgroundStretch.UniformToFill" xml:space="preserve">
+    <value>Ledigt tjänst som uniformspersonal</value>
+  </data>
+  <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
+    <value>I början av 2015</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>I slutet av 2015</value>
@@ -835,6 +922,18 @@ Kontrollera om Roblox fungerar med [den ursprungliga startprogrammet]({1}). Om d
   <data name="Enums.CustomThemeTemplate.Simple" xml:space="preserve">
     <value>Enkelt</value>
   </data>
+  <data name="Enums.CycleFrequency.Days" xml:space="preserve">
+    <value>Dagar</value>
+  </data>
+  <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
+    <value>Varje lansering</value>
+  </data>
+  <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
+    <value>Öppettider</value>
+  </data>
+  <data name="Enums.CycleFrequency.Minutes" xml:space="preserve">
+    <value>Protokoll</value>
+  </data>
   <data name="Enums.EmojiType.Default" xml:space="preserve">
     <value>Standard (Twemoji)</value>
   </data>
@@ -850,6 +949,99 @@ Kontrollera om Roblox fungerar med [den ursprungliga startprogrammet]({1}). Om d
   <data name="Enums.FlagPresets.TextureQuality.Level3" xml:space="preserve">
     <value>Nivå 3 (högsta)</value>
   </data>
+  <data name="Enums.FontSize.x1" xml:space="preserve">
+    <value>Liten</value>
+  </data>
+  <data name="Enums.FontSize.x3" xml:space="preserve">
+    <value>Stor</value>
+  </data>
+  <data name="Enums.FontSize.x4" xml:space="preserve">
+    <value>Extra stor</value>
+  </data>
+  <data name="Enums.PlayerListLayOut.x0" xml:space="preserve">
+    <value>Kvadrat</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
+    <value>Över det normala</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
+    <value>Under det normala</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.High" xml:space="preserve">
+    <value>Hög</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
+    <value>Låg</value>
+  </data>
+  <data name="Enums.ProcessPriorityOption.RealTime" xml:space="preserve">
+    <value>Realtid</value>
+  </data>
+  <data name="Enums.QualityLevel.Level1" xml:space="preserve">
+    <value>Nivå 1</value>
+  </data>
+  <data name="Enums.QualityLevel.Level10" xml:space="preserve">
+    <value>Nivå 10</value>
+  </data>
+  <data name="Enums.QualityLevel.Level11" xml:space="preserve">
+    <value>Nivå 11</value>
+  </data>
+  <data name="Enums.QualityLevel.Level12" xml:space="preserve">
+    <value>Nivå 12</value>
+  </data>
+  <data name="Enums.QualityLevel.Level13" xml:space="preserve">
+    <value>Nivå 13</value>
+  </data>
+  <data name="Enums.QualityLevel.Level14" xml:space="preserve">
+    <value>Nivå 14</value>
+  </data>
+  <data name="Enums.QualityLevel.Level15" xml:space="preserve">
+    <value>Nivå 15</value>
+  </data>
+  <data name="Enums.QualityLevel.Level16" xml:space="preserve">
+    <value>Nivå 16</value>
+  </data>
+  <data name="Enums.QualityLevel.Level17" xml:space="preserve">
+    <value>Nivå 17</value>
+  </data>
+  <data name="Enums.QualityLevel.Level18" xml:space="preserve">
+    <value>Nivå 18</value>
+  </data>
+  <data name="Enums.QualityLevel.Level19" xml:space="preserve">
+    <value>Nivå 19</value>
+  </data>
+  <data name="Enums.QualityLevel.Level2" xml:space="preserve">
+    <value>Nivå 2</value>
+  </data>
+  <data name="Enums.QualityLevel.Level20" xml:space="preserve">
+    <value>Nivå 20</value>
+  </data>
+  <data name="Enums.QualityLevel.Level21" xml:space="preserve">
+    <value>Nivå 21</value>
+  </data>
+  <data name="Enums.QualityLevel.Level3" xml:space="preserve">
+    <value>Nivå 3</value>
+  </data>
+  <data name="Enums.QualityLevel.Level4" xml:space="preserve">
+    <value>Nivå 4</value>
+  </data>
+  <data name="Enums.QualityLevel.Level5" xml:space="preserve">
+    <value>Nivå 5</value>
+  </data>
+  <data name="Enums.QualityLevel.Level6" xml:space="preserve">
+    <value>Nivå 6</value>
+  </data>
+  <data name="Enums.QualityLevel.Level7" xml:space="preserve">
+    <value>Nivå 7</value>
+  </data>
+  <data name="Enums.QualityLevel.Level8" xml:space="preserve">
+    <value>Nivå 8</value>
+  </data>
+  <data name="Enums.QualityLevel.Level9" xml:space="preserve">
+    <value>Nivå 9</value>
+  </data>
+  <data name="Enums.RenderingMode.Default" xml:space="preserve">
+    <value>Direct3D11 (standard)</value>
+  </data>
   <data name="Enums.ServerType.Private" xml:space="preserve">
     <value>Privat server</value>
   </data>
@@ -858,6 +1050,15 @@ Kontrollera om Roblox fungerar med [den ursprungliga startprogrammet]({1}). Om d
   </data>
   <data name="Enums.ServerType.Reserved" xml:space="preserve">
     <value>Reserverad server</value>
+  </data>
+  <data name="Enums.TextureQuality.Default" xml:space="preserve">
+    <value>Hög (standard)</value>
+  </data>
+  <data name="Enums.TextureQuality.Low" xml:space="preserve">
+    <value>Låg</value>
+  </data>
+  <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
+    <value>Lägst</value>
   </data>
   <data name="Enums.Theme.Blue" xml:space="preserve">
     <value>Blå</value>
@@ -877,9 +1078,18 @@ Kontrollera om Roblox fungerar med [den ursprungliga startprogrammet]({1}). Om d
   <data name="Enums.Theme.Purple" xml:space="preserve">
     <value>Lila</value>
   </data>
+  <data name="Enums.TrayDoubleClickAction.GameHistory" xml:space="preserve">
+    <value>Spelhistorik</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.None" xml:space="preserve">
+    <value>Inget</value>
+  </data>
+  <data name="Enums.TrayDoubleClickAction.ServerInfo" xml:space="preserve">
+    <value>Serverinformation</value>
+  </data>
   <data name="FileTypes.ZipArchive" xml:space="preserve">
     <value>Zip-arkiv</value>
-    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. "Zip archive (*.zip)"</comment>
+    <comment>Shown in the save file dialog, where the file type selection dropdown is, e.g. &quot;Zip archive (*.zip)&quot;</comment>
   </data>
   <data name="InstallChecker.Updated" xml:space="preserve">
     <value>Froststrap har uppgraderats till version {0}</value>
@@ -923,9 +1133,6 @@ Det kan uppstå problem och dina inställningar kan ändras. Vi rekommenderar at
   <data name="Menu.About.Contributors.Code" xml:space="preserve">
     <value>Kod</value>
   </data>
-  <data name="Menu.About.Contributors.Contributors" xml:space="preserve">
-    <value>Medverkande</value>
-  </data>
   <data name="Menu.About.Contributors.Description" xml:space="preserve">
     <value>Här är alla de personer som har bidragit på ett betydande sätt till Froststrap och Froststrap och format dem till vad de är idag.</value>
   </data>
@@ -943,9 +1150,6 @@ Det kan uppstå problem och dina inställningar kan ändras. Vi rekommenderar at
   </data>
   <data name="Menu.About.HelpInformation" xml:space="preserve">
     <value>Hjälp och information</value>
-  </data>
-  <data name="Menu.About.Licenses" xml:space="preserve">
-    <value>Licenser</value>
   </data>
   <data name="Menu.About.Licenses.Apache" xml:space="preserve">
     <value>Apache-licens 2.0</value>
@@ -966,7 +1170,8 @@ Det kan uppstå problem och dina inställningar kan ändras. Vi rekommenderar at
     <value>Lägg till konto</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
-    <value>Konton '@{0}' är redan inloggat.\nHar bytt till det.</value>
+    <value>Konton &apos;@{0}&apos; är redan inloggat.
+Har bytt till det.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
     <value>Inga konton har lagts till
@@ -993,6 +1198,9 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
   <data name="Menu.AlreadyRunning.Title" xml:space="preserve">
     <value>Froststrap är redan igång</value>
   </data>
+  <data name="Menu.Appearance.BackgroundMode" xml:space="preserve">
+    <value>Bakgrundsläge:</value>
+  </data>
   <data name="Menu.Appearance.Bootstrapper.Description" xml:space="preserve">
     <value>Anpassa Froststraps bootstrapper med hjälp av ett stort antal olika alternativ.</value>
   </data>
@@ -1008,18 +1216,6 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
   <data name="Menu.Appearance.CustomThemes.NoneSelected" xml:space="preserve">
     <value>Inget anpassat tema har valts.</value>
   </data>
-  <data name="Menu.Appearance.Customisation.Description" xml:space="preserve">
-    <value>Konfigurera övriga anpassningsbara alternativ för bootstrappern.</value>
-  </data>
-  <data name="Menu.Appearance.Customisation.Title" xml:space="preserve">
-    <value>Anpassning</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Description" xml:space="preserve">
-    <value>Det måste vara en .ico-fil med flera storlekar, från 16px till 128px. Ställ in ikonen på ”Anpassad” för att använda den.</value>
-  </data>
-  <data name="Menu.Appearance.CustomisationIcon.Title" xml:space="preserve">
-    <value>Anpassad ikon</value>
-  </data>
   <data name="Menu.Appearance.CustomisationTitle.Description" xml:space="preserve">
     <value>Den text som visas som titel på bootstrappern.</value>
   </data>
@@ -1029,11 +1225,17 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
   <data name="Menu.Appearance.Description" xml:space="preserve">
     <value>Ställ in hur Froststrap ska se ut.</value>
   </data>
+  <data name="Menu.Appearance.Frequency" xml:space="preserve">
+    <value>Frekvens:</value>
+  </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Välj vilken ikon Froststrap ska använda.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>Ikon</value>
+  </data>
+  <data name="Menu.Appearance.Interval" xml:space="preserve">
+    <value>Intervall:</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>En omstart krävs för att ändringarna ska träda i kraft. Vissa textdelar kanske inte översätts till det valda språket.</value>
@@ -1047,8 +1249,23 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
   <data name="Menu.Appearance.Launcher.Title" xml:space="preserve">
     <value>Bootstrapper-stil</value>
   </data>
+  <data name="Menu.Appearance.Opacity" xml:space="preserve">
+    <value>Opacitet:</value>
+  </data>
   <data name="Menu.Appearance.Preview" xml:space="preserve">
     <value>Förhandsgranskning</value>
+  </data>
+  <data name="Menu.Appearance.ResetDefault" xml:space="preserve">
+    <value>Återställ till standardinställningar</value>
+  </data>
+  <data name="Menu.Appearance.StretchMode" xml:space="preserve">
+    <value>Stretch-läge:</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Description" xml:space="preserve">
+    <value>Växla automatiskt mellan anpassade teman.</value>
+  </data>
+  <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
+    <value>Tema: Cykling</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Utseende</value>
@@ -1104,6 +1321,18 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
   <data name="Menu.Behaviour.ProcessPriority.Title" xml:space="preserve">
     <value>Processprioritet i Roblox</value>
   </data>
+  <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
+    <value>Konfigurera de lagrade interna inställningarna för Roblox-applikationen.</value>
+  </data>
+  <data name="Menu.Bootstrapper.AppStorage.Title" xml:space="preserve">
+    <value>Inställningar för appens lagringsutrymme</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
+    <value>Välj hur många regioner som ska sökas igenom – det kan vara till hjälp om systemet inte hittar dina bästa regioner.</value>
+  </data>
+  <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
+    <value>Bästa regionbelopp</value>
+  </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Rensar automatiskt bort gamla data för att frigöra utrymme. Ursprungligen skapad av Fishstrap.</value>
   </data>
@@ -1130,6 +1359,51 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
   </data>
   <data name="Menu.Bootstrapper.Cleaner.Logs.Title" xml:space="preserve">
     <value>Menyn Loggar</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Description" xml:space="preserve">
+    <value>Låt Froststrap bestämma vilka servrar du ska ansluta dig till. Programmet prioriterar den server som ligger närmast dig.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.FollowUser" xml:space="preserve">
+    <value>Det verkar som att en vän spelar det här spelet just nu. Vill du spela med?</value>
+  </data>
+  <data name="Menu.Bootstrapper.Experimental.BetterMatchmaking.Title" xml:space="preserve">
+    <value>Aktivera BetterMatchmaking</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
+    <value>Välj hur många servrar som ska kontrolleras – ju fler, desto längre tid kan det ta.</value>
+  </data>
+  <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
+    <value>Maximalt belopp för serverkontroll</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
+    <value>Välj en specifik region som du vill ansluta till, eller låt inställningen stå på ”Auto” för att få den bästa tillgängliga.</value>
+  </data>
+  <data name="Menu.Bootstrapper.PreferredRegion.Title" xml:space="preserve">
+    <value>Önskad region</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
+    <value>Ändrar det visuella temat för Roblox.</value>
+  </data>
+  <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
+    <value>Roblox-appens tema</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
+    <value>Anslut till mindre servrar när du ansluter via spelknappen.</value>
+  </data>
+  <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
+    <value>Gå med i Smaller Servers</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
+    <value>Starta Roblox-appen automatiskt när du startar din dator.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
+    <value>Lansering vid uppstart</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
+    <value>Flyttar appen till systemfältet istället för att stänga den helt.</value>
+  </data>
+  <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
+    <value>Minimera till aktivitetsfältet</value>
   </data>
   <data name="Menu.BottomButtons.ExportSettings" xml:space="preserve">
     <value>Exportinställningar</value>
@@ -1195,7 +1469,7 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
     <value>Övriga modifikationer</value>
   </data>
   <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
-    <value>Mod '{0}' har installerats!</value>
+    <value>Mod &apos;{0}&apos; har installerats!</value>
   </data>
   <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
     <value>Ska den befintliga moden ”{0}” skrivas över?</value>
@@ -1239,8 +1513,54 @@ Klicka på ”Lägg till konto” ovan för att komma igång</value>
   <data name="Menu.CookieState.NotFound" xml:space="preserve">
     <value>Roblox-cookiefilen hittades inte.</value>
   </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
+    <value>Froststrap kontrollerar automatiskt och uppdaterar sig själv till en testversion när Roblox startas.</value>
+  </data>
+  <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
+    <value>Uppdatering av förhandsversioner</value>
+  </data>
+  <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
+    <value>Uppdatera Sober automatiskt</value>
+  </data>
+  <data name="Menu.Deployment.Channel.Description" xml:space="preserve">
+    <value>Välj distributionskanal. Ändra inte inställningen om du inte vet vad du gör.</value>
+  </data>
   <data name="Menu.Deployment.Channel.OutOfDate" xml:space="preserve">
     <value>Den här kanalen är föråldrad och uppdateras troligen inte längre. Använd gärna en annan kanal.</value>
+  </data>
+  <data name="Menu.Deployment.DomainValidation" xml:space="preserve">
+    <value>Du har angett en ogiltig domän
+Rör inte detta om du inte vet vad du gör</value>
+  </data>
+  <data name="Menu.Deployment.FailedToLoadChannelData" xml:space="preserve">
+    <value>Det gick inte att ladda kanaldata.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Description" xml:space="preserve">
+    <value>Sök efter spel med hjälp av sökfältet högst upp.</value>
+  </data>
+  <data name="Menu.Deployment.GameSearch.Title" xml:space="preserve">
+    <value>Spelsökning</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Description" xml:space="preserve">
+    <value>Ange hur många trådar som ska användas vid nedladdning. Gäller endast Studio på Linux.</value>
+  </data>
+  <data name="Menu.Deployment.MultiThread.Title" xml:space="preserve">
+    <value>Nedladdning med flera trådar</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
+    <value>Tvinga Roblox Studio att installera och använda en specifik versions-hash istället för den senaste.</value>
+  </data>
+  <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
+    <value>Åsidosätt Studio-versionen</value>
+  </data>
+  <data name="Menu.Deployment.PlayerChannel.Title" xml:space="preserve">
+    <value>Spelarens kanal</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
+    <value>Ange GUID-koden för Roblox Studio-versionen (t.ex. version-xxxxxxxxxxxxxxxx). Gäller endast när Studio startas.</value>
+  </data>
+  <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
+    <value>Versionshash</value>
   </data>
   <data name="Menu.Dialog.QuickSignIn.Title" xml:space="preserve">
     <value>Snabb inloggning</value>
@@ -1302,13 +1622,8 @@ Mer information:
     <value>Inga ogiltiga FastFlags har upptäckts.</value>
   </data>
   <data name="Menu.FastFlagEditor.NotInWhiteList" xml:space="preserve">
-    <value>'{0}' finns inte med på Roblox tillåtna lista och kommer inte att fungera.\n\nVill du ta bort det nu?</value>
-  </data>
-  <data name="Menu.FastFlagEditor.ProfilesDescription" xml:space="preserve">
-    <value>Flaggprofiler</value>
-  </data>
-  <data name="Menu.FastFlagEditor.Search" xml:space="preserve">
-    <value>Sök</value>
+    <value>&apos;{0}&apos; finns inte med på Roblox tillåtna lista och kommer inte att fungera.
+Vill du ta bort det nu?</value>
   </data>
   <data name="Menu.FastFlagEditor.ShowPresetFlags" xml:space="preserve">
     <value>Visa förinställda flaggor</value>
@@ -1318,9 +1633,6 @@ Mer information:
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
     <value>Efter att vissa Roblox FastFlags har lagts till på vitlistan är dessa de enda som fortfarande är tillgängliga för användning.</value>
-  </data>
-  <data name="Menu.FastFlagProfiles.Save" xml:space="preserve">
-    <value>Spara aktuella flaggor</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Styr hur vissa parametrar och funktioner i Roblox-motorn ska konfigureras.</value>
@@ -1401,9 +1713,6 @@ Mer information:
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Rensa FFlags</value>
   </data>
-  <data name="Menu.FlagProfiles.Description" xml:space="preserve">
-    <value>Spara och ladda snabba flaggprofiler.</value>
-  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
     <value>Inga profiler hittades</value>
   </data>
@@ -1419,11 +1728,164 @@ Mer information:
   <data name="Menu.GBSEditor.ReadOnly.Title" xml:space="preserve">
     <value>Ställ in som skrivskyddad</value>
   </data>
+  <data name="Menu.GBSEditor.Title" xml:space="preserve">
+    <value>Redigerare för globala inställningar</value>
+  </data>
   <data name="Menu.GBSEditor.VectorY" xml:space="preserve">
     <value>Y-vektorn</value>
   </data>
+  <data name="Menu.GlobalSettings.Accessibility.Title" xml:space="preserve">
+    <value>Tillgänglighet och övrigt</value>
+  </data>
+  <data name="Menu.GlobalSettings.AudioSettings.Title" xml:space="preserve">
+    <value>Ljudinställningar</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Fail" xml:space="preserve">
+    <value>Det gick inte att exportera inställningarna. Se till att Roblox inte körs och försök igen.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Export.Success" xml:space="preserve">
+    <value>Inställningarna har exporterats till {0}</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Description" xml:space="preserve">
+    <value>Känslighet för X och Y i förstapersonsperspektiv.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FirstPersonSensitivity.Title" xml:space="preserve">
+    <value>Känslighet i förstapersonsperspektiv</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Description" xml:space="preserve">
+    <value>Ställ in en anpassad FPS-gräns. Använd -1 för standardvärdet.</value>
+  </data>
+  <data name="Menu.GlobalSettings.FramerateLimit.Title" xml:space="preserve">
+    <value>Begränsning av bildfrekvens</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Description" xml:space="preserve">
+    <value>Starta Roblox i helskärmsläge.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Fullscreen.Title" xml:space="preserve">
+    <value>Helskärm</value>
+  </data>
+  <data name="Menu.GlobalSettings.GraphicsSettings.Title" xml:space="preserve">
+    <value>Grafikinställningar</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
+    <value>Reglering av vibrationsstyrkan.</value>
+  </data>
+  <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
+    <value>Haptisk styrka</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Confirmation" xml:space="preserve">
+    <value>Detta kommer att ersätta alla dina nuvarande globala inställningar med de importerade. Är du säker på att du vill fortsätta?</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
+    <value>Det gick inte att importera inställningarna. Se till att Roblox inte körs och försök igen.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
+    <value>Den valda filen verkar inte vara en giltig GBS-inställningsfil.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
+    <value>Den valda filen är inte en giltig XML-fil.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Import.Success" xml:space="preserve">
+    <value>Inställningarna har importerats!</value>
+  </data>
+  <data name="Menu.GlobalSettings.InputSettings.Title" xml:space="preserve">
+    <value>Inmatningsinställningar</value>
+  </data>
+  <data name="Menu.GlobalSettings.InvertY.Description" xml:space="preserve">
+    <value>Vänd kamerans Y-axel.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
+    <value>Global volymnivå.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
+    <value>Huvudvolym</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Description" xml:space="preserve">
+    <value>Aktiverar högre MSAA-nivåer.</value>
+  </data>
+  <data name="Menu.GlobalSettings.MaxQuality.Title" xml:space="preserve">
+    <value>Högsta kvalitet</value>
+  </data>
+  <data name="Menu.GlobalSettings.OpenRobloxFolder" xml:space="preserve">
+    <value>Öppna Roblox-mappen</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Description" xml:space="preserve">
+    <value>Volym för partyröstläge.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PartyVolume.Title" xml:space="preserve">
+    <value>Festvolym</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
+    <value>Visa prestandaöverlägg.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
+    <value>Perf-statistik</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
+    <value>Växla mellan fyrkantigt och normalt gränssnitt för esc-spelarlistan.</value>
+  </data>
+  <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
+    <value>Spelarlistans layout</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
+    <value>Minskar antalet animeringar i användargränssnittet.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
+    <value>Begränsad rörelseförmåga</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
+    <value>Kamerans känslighet i hela bildområdet.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
+    <value>Känslighet</value>
+  </data>
+  <data name="Menu.GlobalSettings.ShiftLock.Description" xml:space="preserve">
+    <value>Aktivera ShiftLock automatiskt.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Description" xml:space="preserve">
+    <value>Kvalitetsnivå vid anslutning till spelet.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StartQuality.Title" xml:space="preserve">
+    <value>Startkvalitet</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Description" xml:space="preserve">
+    <value>Volym för Roblox Studio.</value>
+  </data>
+  <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
+    <value>Volymstudie</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
+    <value>Önskad textstorlek på skärmen.</value>
+  </data>
+  <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
+    <value>Textstorlek</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
+    <value>X- och Y-känslighet för tredje person.</value>
+  </data>
+  <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Title" xml:space="preserve">
+    <value>Känslighet i tredje person</value>
+  </data>
   <data name="Menu.GlobalSettings.Title" xml:space="preserve">
     <value>Globala inställningar</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Description" xml:space="preserve">
+    <value>Justera transparensen för gränssnittselementen.</value>
+  </data>
+  <data name="Menu.GlobalSettings.UITransparency.Title" xml:space="preserve">
+    <value>UI-transparens</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Description" xml:space="preserve">
+    <value>Aktivera stöd för virtuell verklighet.</value>
+  </data>
+  <data name="Menu.GlobalSettings.VRMode.Title" xml:space="preserve">
+    <value>VR-läge</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Description" xml:space="preserve">
+    <value>Aktivera eller inaktivera vinjetteffekten på skärmen.</value>
+  </data>
+  <data name="Menu.GlobalSettings.Vignette.Title" xml:space="preserve">
+    <value>Miniatyrbild</value>
   </data>
   <data name="Menu.GlobalSettingsEditor.Description" xml:space="preserve">
     <value>Här kan du hantera alla dina globala inställningar.</value>
@@ -1436,6 +1898,12 @@ Mer information:
   </data>
   <data name="Menu.Integrations.AllowActivityJoining.Title" xml:space="preserve">
     <value>Tillåt deltagande i aktiviteter</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
+    <value>Ansluter automatiskt till samma server igen efter en avbrottstid på 20 minuter eller ett nätverksfel.</value>
+  </data>
+  <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
+    <value>Automatisk återanslutning</value>
   </data>
   <data name="Menu.Integrations.BlockCardExpander.Description" xml:space="preserve">
     <value>Aktiverar eller inaktiverar vissa inbyggda Roblox-funktioner.</value>
@@ -1509,6 +1977,18 @@ Mer information:
   <data name="Menu.Integrations.DoubleClickAction.Title" xml:space="preserve">
     <value>Dubbelklick-åtgärd</value>
   </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Description" xml:space="preserve">
+    <value>Ändrar miniatyrbilden beroende på vilket skript du har öppet.</value>
+  </data>
+  <data name="Menu.Integrations.DynamicThumbnail.Title" xml:space="preserve">
+    <value>Dynamisk miniatyrbild</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Description" xml:space="preserve">
+    <value>Visar skripttyp, skriptnamn och antalet rader i skriptet.</value>
+  </data>
+  <data name="Menu.Integrations.EditingInfo.Title" xml:space="preserve">
+    <value>Redigeringsinformation</value>
+  </data>
   <data name="Menu.Integrations.EnableActivityTracking.Description" xml:space="preserve">
     <value>Gör det möjligt för Froststrap att identifiera vilket Roblox-spel du spelar. Vissa funktioner kan kräva detta.</value>
   </data>
@@ -1526,6 +2006,18 @@ Mer information:
   </data>
   <data name="Menu.Integrations.GameHistoryMenu.Title" xml:space="preserve">
     <value>Menyn för spelhistorik</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Description" xml:space="preserve">
+    <value>Ändra automatiskt titelraden och ikonen i aktivitetsfältet i Roblox-spelet till ikonen för det aktuella spelet.</value>
+  </data>
+  <data name="Menu.Integrations.IconChange.Title" xml:space="preserve">
+    <value>Ändring av ikon</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Description" xml:space="preserve">
+    <value>Lägger till en liten knapp för att gå med i det spel du håller på med.</value>
+  </data>
+  <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
+    <value>Knappen ”Gå med”</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Visar din totala speltid och den aktuella sessionstiden när du befinner dig i ett spel eller på en plats i Studio.</value>
@@ -1554,8 +2046,138 @@ Mer information:
   <data name="Menu.Integrations.ShowGameActivity.Title" xml:space="preserve">
     <value>Visa spelaktivitet</value>
   </data>
+  <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
+    <value>Visar en liten spelikon i din RPC när du testar ett spel.</value>
+  </data>
+  <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
+    <value>Visa testning</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Description" xml:space="preserve">
+    <value>Visar Roblox Studio som din Discord-aktivitet när du startar programmet.</value>
+  </data>
+  <data name="Menu.Integrations.StudioActivity.Title" xml:space="preserve">
+    <value>Visa Studio-aktivitet</value>
+  </data>
+  <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
+    <value>Det här fungerar genom att man lägger till ett specialanpassat Froststrap-plugin som loggar vad du gör.
+Vill du installera pluginet?</value>
+  </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
     <value>Integrationer</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
+    <value>Ändrar titeln i Roblox-titelfältet till spelets namn.</value>
+  </data>
+  <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
+    <value>Ändring av titel</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Description" xml:space="preserve">
+    <value>Visar namnet på ditt aktuella arbetsområde.</value>
+  </data>
+  <data name="Menu.Integrations.WorkspaceInfo.Title" xml:space="preserve">
+    <value>Information om arbetsytan</value>
+  </data>
+  <data name="Menu.LinuxSettings.AddVariable" xml:space="preserve">
+    <value>+ Lägg till variabel</value>
+  </data>
+  <data name="Menu.LinuxSettings.AdvancedWineSettings" xml:space="preserve">
+    <value>Avancerade vininställningar</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
+    <value>Gör det möjligt för Sober att begära och registrera kommandon från en handkontroll via Steam Deck eller liknande handkontroller.</value>
+  </data>
+  <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
+    <value>Bevilja behörighet för spelkontroll</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Description" xml:space="preserve">
+    <value>Aktivera detaljerad loggning och konsolutmatning för Wine/DXVK.</value>
+  </data>
+  <data name="Menu.LinuxSettings.DebugMode.Title" xml:space="preserve">
+    <value>Felsökningsläge</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
+    <value>Signals, Feral Interactives optimeringsdaemon GameMode, kopplas in under spelets startprocess.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
+    <value>Aktivera GameMode</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Description" xml:space="preserve">
+    <value>Tvingar fram plattformens inbyggda skalningsalternativ för hög DPI vid rendering av gränssnittselement.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnableHiDpi.Title" xml:space="preserve">
+    <value>Stöd för skalning av HiDPI-skärmar</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Description" xml:space="preserve">
+    <value>Ytterligare miljövariabler som skickas till Wine.</value>
+  </data>
+  <data name="Menu.LinuxSettings.EnvironmentVariables.Title" xml:space="preserve">
+    <value>Miljövariabler</value>
+  </data>
+  <data name="Menu.LinuxSettings.FailedToStartWineCfg" xml:space="preserve">
+    <value>Det gick inte att starta winecfg: {0}</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
+    <value>Åsidosätter de inbyggda Vulkan-delsystemen för att istället använda den äldre OpenGL-layoutpipeline som fallback.</value>
+  </data>
+  <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
+    <value>Tvinga användning av Legacy OpenGL-rendering</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
+    <value>Genomför systemoptimeringar om sådana finns tillgängliga (kräver gamemoded).</value>
+  </data>
+  <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
+    <value>Spellägen</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
+    <value>Välj renderingsmodul för Studio i Wine.</value>
+  </data>
+  <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
+    <value>Grafikrenderare</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
+    <value>Omgärda Studio-kommandot (t.ex. gamescope -- %kommando%)</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherCommand.Title" xml:space="preserve">
+    <value>Startkommando</value>
+  </data>
+  <data name="Menu.LinuxSettings.LauncherPlaceholder" xml:space="preserve">
+    <value>gamescope -- %kommando%</value>
+  </data>
+  <data name="Menu.LinuxSettings.ResolutionPlaceholder" xml:space="preserve">
+    <value>t.ex. 1920x1080</value>
+  </data>
+  <data name="Menu.LinuxSettings.Title" xml:space="preserve">
+    <value>Linux-inställningar</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Description" xml:space="preserve">
+    <value>Aktiverar eller inaktiverar beteendeprofiler för pekskärmshårdvara.</value>
+  </data>
+  <data name="Menu.LinuxSettings.TouchInputMode.Title" xml:space="preserve">
+    <value>Läget för pekinmatning</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
+    <value>Tvingar fram det moderna layout- och instrumentpanelsystemet för TV- och konsolklienter framför skrivbordsgränssnittet.</value>
+  </data>
+  <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
+    <value>Använd konsolupplevelsen</value>
+  </data>
+  <data name="Menu.LinuxSettings.Variable" xml:space="preserve">
+    <value>Variabel</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Description" xml:space="preserve">
+    <value>Skapa ett separat fönster för varje instans</value>
+  </data>
+  <data name="Menu.LinuxSettings.VirtualDesktops.Title" xml:space="preserve">
+    <value>Virtuella skrivbord</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
+    <value>Används för vissa gränssnittselement och vid inloggning</value>
+  </data>
+  <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
+    <value>Webbsidor</value>
+  </data>
+  <data name="Menu.LinuxSettings.WineBinaryNotFound" xml:space="preserve">
+    <value>Wine-binärfilen hittades inte. Se till att Wine är installerat.</value>
   </data>
   <data name="Menu.Load" xml:space="preserve">
     <value>Ladda</value>
@@ -1585,7 +2207,7 @@ Mer information:
     <value>Klistra in värdet i rutan ovan</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
-    <value>"Ogiltig cookie. Kontrollera och försök igen.</value>
+    <value>Ogiltig cookie. Kontrollera och försök igen.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
     <value>Klistra in din .ROBLOSECURITY-cookie</value>
@@ -1594,7 +2216,7 @@ Mer information:
     <value>Manuell inloggning</value>
   </data>
   <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
-    <value>Lägg till stopp</value>
+    <value>Lägg till färg</value>
   </data>
   <data name="Menu.ModGenerator.AppliedModifications" xml:space="preserve">
     <value>Ändringarna har tillämpats ({0} filer).</value>
@@ -1629,7 +2251,7 @@ Mer information:
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
     <value>Ikon för ”Dont Color Play”</value>
   </data>
-  <data name="Menu.ModGenerator.Dwnnloading" xml:space="preserve">
+  <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
     <value>Hämtar nödvändiga resurser...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
@@ -1711,7 +2333,8 @@ Mer information:
     <value>Ogiltigt mappnamn.</value>
   </data>
   <data name="Menu.Mods.InvalidModFolders" xml:space="preserve">
-    <value>Den valda källan innehåller ingen giltig mod-struktur.\nDen måste innehålla minst en av följande mappar: content, ExtraContent, PlatformContent.</value>
+    <value>Den valda källan innehåller ingen giltig mod-struktur.
+Den måste innehålla minst en av följande mappar: content, ExtraContent, PlatformContent.</value>
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Inga modifikationer installerade.</value>
@@ -1720,10 +2343,25 @@ Mer information:
     <value>Valda mod-åtgärder</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Mina modifikationer</value>
+    <value>Mina mods</value>
   </data>
   <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
     <value>Filtyp eller sökväg som inte stöds: {0}</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Apply" xml:space="preserve">
+    <value>Använd uppsättningen</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Export" xml:space="preserve">
+    <value>Exportuppsättning</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Fetch" xml:space="preserve">
+    <value>Hämta-uppsättning</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.Import" xml:space="preserve">
+    <value>Importuppsättning</value>
+  </data>
+  <data name="Menu.PresetMods.CursorSet.None" xml:space="preserve">
+    <value>Ingen anpassad marköruppsättning har valts.</value>
   </data>
   <data name="Menu.PresetMods.Description" xml:space="preserve">
     <value>Officiella inbyggda mods.</value>
@@ -1794,6 +2432,9 @@ Mer information:
   <data name="Menu.PresetMods.Misc.CustomShiftLock.Title" xml:space="preserve">
     <value>Anpassad Shiftlock</value>
   </data>
+  <data name="Menu.PresetMods.OpenModsFolder" xml:space="preserve">
+    <value>Öppna mappen ”Preset Mods”</value>
+  </data>
   <data name="Menu.PresetMods.Presets.EmojiType.Description" xml:space="preserve">
     <value>Välj vilken typ av emoji Roblox ska använda.</value>
   </data>
@@ -1818,11 +2459,95 @@ Mer information:
   <data name="Menu.PresetMods.Title" xml:space="preserve">
     <value>Förinställda modifieringar</value>
   </data>
+  <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
+    <value>Kundansvarig är inte tillgänglig.</value>
+  </data>
+  <data name="Menu.QuickPlay.Active" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="Menu.QuickPlay.AvailableSubplaces" xml:space="preserve">
+    <value>Tillgängliga delplatser</value>
+  </data>
+  <data name="Menu.QuickPlay.CheckingServers" xml:space="preserve">
+    <value>Kontrollerar servrar...</value>
+  </data>
   <data name="Menu.QuickPlay.Description" xml:space="preserve">
     <value>Gå tillbaka till dina senaste spel.</value>
   </data>
+  <data name="Menu.QuickPlay.FetchingGameInfo" xml:space="preserve">
+    <value>Hämtar spelinformation</value>
+  </data>
+  <data name="Menu.QuickPlay.FindingBestServer" xml:space="preserve">
+    <value>Söker efter den bästa servern för din region...</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinBestRegion" xml:space="preserve">
+    <value>Gå med i Best Region</value>
+  </data>
+  <data name="Menu.QuickPlay.JoinGame" xml:space="preserve">
+    <value>Gå med i spelet</value>
+  </data>
+  <data name="Menu.QuickPlay.Latest" xml:space="preserve">
+    <value>Senaste</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingPrivateServers" xml:space="preserve">
+    <value>Laddar privata servrar...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingRecentGames" xml:space="preserve">
+    <value>Laddar de senaste matcherna...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingServers" xml:space="preserve">
+    <value>Laddar servrar...</value>
+  </data>
+  <data name="Menu.QuickPlay.LoadingSubplaces" xml:space="preserve">
+    <value>Laddar underplatser...</value>
+  </data>
+  <data name="Menu.QuickPlay.NoPrivateServersFound" xml:space="preserve">
+    <value>Inga privata servrar hittades</value>
+  </data>
+  <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
+    <value>Ingen lämplig server hittades.</value>
+  </data>
+  <data name="Menu.QuickPlay.Players" xml:space="preserve">
+    <value>spelare</value>
+  </data>
+  <data name="Menu.QuickPlay.PleaseSelectAccount" xml:space="preserve">
+    <value>Välj först ett konto.</value>
+  </data>
+  <data name="Menu.QuickPlay.PrivateServers" xml:space="preserve">
+    <value>Privata servrar</value>
+  </data>
+  <data name="Menu.QuickPlay.RejoinLastServer" xml:space="preserve">
+    <value>Gå tillbaka till senaste servern</value>
+  </data>
+  <data name="Menu.QuickPlay.RobloxServers" xml:space="preserve">
+    <value>Roblox-servrar</value>
+  </data>
+  <data name="Menu.QuickPlay.SessionHistory" xml:space="preserve">
+    <value>Sessionshistorik</value>
+  </data>
   <data name="Menu.QuickPlay.Title" xml:space="preserve">
     <value>Snabbspel</value>
+  </data>
+  <data name="Menu.QuickPlay.Tracked" xml:space="preserve">
+    <value>Spårad</value>
+  </data>
+  <data name="Menu.QuickPlay.TrackedServers" xml:space="preserve">
+    <value>Spårade servrar ({0})</value>
+  </data>
+  <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
+    <value>Det gick inte att verifiera dig. Logga in igen.</value>
+  </data>
+  <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
+    <value>Okänt spel</value>
+  </data>
+  <data name="Menu.QuickPlay.ViewSubplaces" xml:space="preserve">
+    <value>Visa underplatser</value>
+  </data>
+  <data name="Menu.QuickPlay.VisitPage" xml:space="preserve">
+    <value>Besök sidan</value>
+  </data>
+  <data name="Menu.QuickPlay.Visits" xml:space="preserve">
+    <value>Besök</value>
   </data>
   <data name="Menu.QuickSignIn.Cancelled" xml:space="preserve">
     <value>Inloggningen har avbrutits.</value>
@@ -1840,16 +2565,59 @@ Mer information:
     <value>Inloggningen har gått ut.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
-    <value>Väntar på snabb inloggning...\nAppen stänger detta fönster när inloggningen är klar.</value>
+    <value>Väntar på snabb inloggning...
+Appen stänger detta fönster när inloggningen är klar.</value>
+  </data>
+  <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
+    <value>Ange ett plats-ID och klicka på Sök för att visa servrarna.</value>
+  </data>
+  <data name="Menu.RegionSelector.FailedToLoadDatacenters" xml:space="preserve">
+    <value>Det gick inte att ladda datacenter.</value>
   </data>
   <data name="Menu.RegionSelector.FindGame" xml:space="preserve">
     <value>Ange plats-ID eller spelets namn...</value>
   </data>
+  <data name="Menu.RegionSelector.ID" xml:space="preserve">
+    <value>Identifierare: {0}</value>
+  </data>
+  <data name="Menu.RegionSelector.Join" xml:space="preserve">
+    <value>Gå med</value>
+  </data>
+  <data name="Menu.RegionSelector.LargeServers" xml:space="preserve">
+    <value>Stora servrar</value>
+  </data>
   <data name="Menu.RegionSelector.LoadMore" xml:space="preserve">
     <value>Ladda fler</value>
   </data>
+  <data name="Menu.RegionSelector.LoadedRegions" xml:space="preserve">
+    <value>{0} regioner har laddats.</value>
+  </data>
+  <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
+    <value>Laddar datacenter...</value>
+  </data>
+  <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
+    <value>Logga in via Account Manager, aktivera ”Froststrap Account Permission” eller rapportera detta till vår Discord-server för att kunna använda funktionen.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
+    <value>Inga offentliga servrar hittades.</value>
+  </data>
+  <data name="Menu.RegionSelector.NoServersForRegion" xml:space="preserve">
+    <value>Inga servrar hittades för den angivna regionen.</value>
+  </data>
+  <data name="Menu.RegionSelector.Players" xml:space="preserve">
+    <value>Spelare</value>
+  </data>
+  <data name="Menu.RegionSelector.PleaseSelectRegion" xml:space="preserve">
+    <value>Välj först en region.</value>
+  </data>
+  <data name="Menu.RegionSelector.SearchingServers" xml:space="preserve">
+    <value>Söker efter servrar...</value>
+  </data>
   <data name="Menu.RegionSelector.ServerSize" xml:space="preserve">
     <value>Serverstorlek:</value>
+  </data>
+  <data name="Menu.RegionSelector.SmallServers" xml:space="preserve">
+    <value>Små servrar</value>
   </data>
   <data name="Menu.RegionSelector.Title" xml:space="preserve">
     <value>Regionväljare</value>
@@ -1893,11 +2661,14 @@ Mer information:
   <data name="Menu.Shortcut.GameShortcut.Description" xml:space="preserve">
     <value>På så sätt kan du skapa genvägar som gör att du snabbt kan gå med i specifika spel.</value>
   </data>
-  <data name="Menu.Shortcut.GameShortcut.Title" xml:space="preserve">
-    <value>Spelgenvägar</value>
+  <data name="Menu.Shortcuts.CreateShortcut" xml:space="preserve">
+    <value>Skapa genväg</value>
   </data>
   <data name="Menu.Shortcuts.Description" xml:space="preserve">
     <value>Ställ in hur Froststrap enkelt kan startas.</value>
+  </data>
+  <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
+    <value>Fel vid skapandet av genvägen.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
     <value>Här kan du använda Froststraps utbud av Roblox-ikoner för dina genvägar. [Se hur.]({0})</value>
@@ -1911,18 +2682,57 @@ Mer information:
   <data name="Menu.Shortcuts.Function.Title" xml:space="preserve">
     <value>Funktion</value>
   </data>
+  <data name="Menu.Shortcuts.Game" xml:space="preserve">
+    <value>Spel {0}</value>
+  </data>
+  <data name="Menu.Shortcuts.GameShortcut.Title" xml:space="preserve">
+    <value>Spelgenvägar</value>
+  </data>
   <data name="Menu.Shortcuts.General.Description" xml:space="preserve">
     <value>Det här är de kortkommandon som öppnar startmenyn med flera alternativ.</value>
   </data>
   <data name="Menu.Shortcuts.General.Title" xml:space="preserve">
     <value>Allmänt</value>
   </data>
-  <data name="Menu.SoberSettings.Title" xml:space="preserve">
-    <value>Nykterhetsmiljöer</value>
+  <data name="Menu.Shortcuts.NoGameSelected" xml:space="preserve">
+    <value>Inget spel valt</value>
+  </data>
+  <data name="Menu.Shortcuts.PrivateAccessCode" xml:space="preserve">
+    <value>Privat åtkomstkod</value>
+  </data>
+  <data name="Menu.Shortcuts.Processing" xml:space="preserve">
+    <value>Bearbetar...</value>
+  </data>
+  <data name="Menu.Shortcuts.Ready" xml:space="preserve">
+    <value>Klar</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyToCreate" xml:space="preserve">
+    <value>Redo att skapa</value>
+  </data>
+  <data name="Menu.Shortcuts.ReadyWithManualId" xml:space="preserve">
+    <value>Redo med manuellt ID.</value>
+  </data>
+  <data name="Menu.Shortcuts.SearchForGame" xml:space="preserve">
+    <value>Sök efter ett spel</value>
+  </data>
+  <data name="Menu.Shortcuts.SelectGameFirst" xml:space="preserve">
+    <value>Välj först ett spel.</value>
+  </data>
+  <data name="Menu.Shortcuts.ServerInstanceId" xml:space="preserve">
+    <value>Serverinstans-ID</value>
+  </data>
+  <data name="Menu.Shortcuts.ShortcutCreated" xml:space="preserve">
+    <value>Genväg skapad!</value>
+  </data>
+  <data name="Menu.Shortcuts.UpdatingPreview" xml:space="preserve">
+    <value>Uppdaterar förhandsgranskning...</value>
   </data>
   <data name="Menu.TestMode" xml:space="preserve">
     <value>Testläge</value>
     <comment>See the prompt for more context</comment>
+  </data>
+  <data name="Menu.TestMode.Description" xml:space="preserve">
+    <value>Dölj inställningsfönstret automatiskt när Roblox startas och visa det igen när Roblox stängs.</value>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
     <value>Testläget gör det enklare att stegvis testa hur dina inställningar påverkar Roblox. 
@@ -1936,7 +2746,7 @@ Vill du aktivera testläget?</value>
   </data>
   <data name="Paths.Icons" xml:space="preserve">
     <value>Ikoner</value>
-    <comment>Name of the folder that gets created according to the "create shortcut icons" option. Ensure that it is a valid folder name.</comment>
+    <comment>Name of the folder that gets created according to the &quot;create shortcut icons&quot; option. Ensure that it is a valid folder name.</comment>
   </data>
   <data name="Uninstaller.KeepData.Description" xml:space="preserve">
     <value>De kommer att sparas på den plats där Froststrap installerades och återställs automatiskt vid en ny installation.</value>
@@ -1951,7 +2761,7 @@ Om du avinstallerar eller installerar om på grund av problem med Roblox bör du
 
 Avinstallationsprocessen kanske inte lyckas rensa bort alla spår helt, så du kan behöva rensa bort kvarvarande filer manuellt där Froststrap var installerat.
 
-Froststrap var installerat i "{1}".</value>
+Froststrap var installerat i &quot;{1}&quot;.</value>
   </data>
   <data name="Uninstaller.Title" xml:space="preserve">
     <value>Avinstallera Froststrap</value>
