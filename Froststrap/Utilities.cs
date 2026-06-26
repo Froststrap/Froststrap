@@ -300,7 +300,7 @@ namespace Froststrap
 
         public static void KillBackgroundUpdater()
         {
-            using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Bloxstrap-BackgroundUpdaterKillEvent");
+            using EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent");
             handle.Set();
         }
     }

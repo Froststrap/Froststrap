@@ -38,7 +38,7 @@ namespace Froststrap
         private const int DownloadBufferSize = 4096;
         private const int MaxDownloadAttempts = 5;
         private const string SoberFlatpakId = "org.vinegarhq.Sober";
-        private const string BackgroundUpdaterMutexName = "Bloxstrap-BackgroundUpdater";
+        private const string BackgroundUpdaterMutexName = "Froststrap-BackgroundUpdater";
         private const string WinePrefixDir = "wineprefix";
         private const string KombuchaRepoOwner = "vinegarhq";
         private const string KombuchaRepoName = "kombucha";
@@ -103,7 +103,7 @@ namespace Froststrap
 
         public IBootstrapperDialog? Dialog = null;
         public bool IsStudioLaunch => _launchMode != LaunchMode.Player;
-        public string MutexName { get; set; } = "Bloxstrap-Bootstrapper";
+        public string MutexName { get; set; } = "c-Bootstrapper";
 
         public bool QuitIfMutexExists { get; set; } = false;
 

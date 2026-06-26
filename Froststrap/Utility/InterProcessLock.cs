@@ -14,7 +14,7 @@ namespace Froststrap.Utility
 
         public InterProcessLock(string name, TimeSpan timeout)
         {
-            _lockName = "Bloxstrap-" + name;
+            _lockName = "Froststrap-" + name;
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {

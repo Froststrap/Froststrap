@@ -162,7 +162,7 @@ namespace Froststrap
             {
                 App.Logger.WriteLine(LOG_IDENT, "Found an already existing menu window");
 
-                using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Bloxstrap-ActivateSettingsEvent");
+                using var activateEvent = new EventWaitHandle(false, EventResetMode.AutoReset, "Froststrap-ActivateSettingsEvent");
                 activateEvent.Set();
 
                 App.Terminate();
@@ -319,7 +319,7 @@ namespace Froststrap
             App.Logger.WriteLine(LOG_IDENT, "Initializing bootstrapper");
             App.Bootstrapper = new Bootstrapper(LaunchMode.Player)
             {
-                MutexName = "Bloxstrap-BackgroundUpdater",
+                MutexName = "Froststrap-BackgroundUpdater",
                 QuitIfMutexExists = true
             };
 
@@ -328,7 +328,7 @@ namespace Froststrap
             Task.Run(() =>
             {
                 App.Logger.WriteLine(LOG_IDENT, "Started event waiter");
-                using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Bloxstrap-BackgroundUpdaterKillEvent"))
+                using (EventWaitHandle handle = new(false, EventResetMode.AutoReset, "Froststrap-BackgroundUpdaterKillEvent"))
                     handle.WaitOne();
 
                 App.Logger.WriteLine(LOG_IDENT, "Received close event, killing it all!");
