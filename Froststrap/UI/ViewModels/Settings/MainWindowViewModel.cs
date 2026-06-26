@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Froststrap.UI.ViewModels.Settings.FastFlags;
 using Froststrap.UI.ViewModels.Settings.GlobalSettings;
 using Froststrap.UI.ViewModels.Settings.Mods;
+using Froststrap.UI.Elements.Settings.Pages;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows.Input;
@@ -112,7 +113,15 @@ namespace Froststrap.UI.ViewModels.Settings
             NavigateToBehaviourCommand = new RelayCommand(() => Navigate("behaviour", Strings.Menu_Behaviour_Title, Strings.Menu_Behaviour_Description, new BehaviourViewModel()));
             NavigateToLinuxSettingsCommand = new RelayCommand(() => Navigate("linuxsettings", Strings.Menu_LinuxSettings_Title, null!, new LinuxSettingsViewModel()));
             NavigateToPresetModsCommand = new RelayCommand(() => Navigate("mods", Strings.Menu_PresetMods_Title, Strings.Menu_PresetMods_Description, new ModsPresetsViewModel()));
-            NavigateToFastFlagsCommand = new RelayCommand(() => Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, new FastFlagsViewModel()));
+            NavigateToFastFlagsCommand = new RelayCommand(() =>
+            {
+                var dialogService = new FastFlagsDialogService(this);
+                var viewModel = new FastFlagsViewModel(
+                    new DefaultFastFlagsService(),
+                    new DefaultSettingsService(),
+                    dialogService
+                );
+                Navigate("fastflags", Strings.Menu_FastFlags_Title, Strings.Menu_FastFlags_Description, viewModel);});
             NavigateToAppearanceCommand = new RelayCommand(() => Navigate("appearance", Strings.Menu_Appearance_Title, Strings.Menu_Appearance_Description, new AppearanceViewModel()));
             NavigateToRegionSelectorCommand = new RelayCommand(() => Navigate("regionselector", Strings.Menu_RegionSelector_Title, null!, new RegionSelectorViewModel()));
             NavigateToGlobalSettingsCommand = new RelayCommand(() => Navigate("globalsettings", Strings.Menu_GlobalSettings_Title, Strings.Menu_GBSEditor_Description, new GlobalSettingsViewModel()));
