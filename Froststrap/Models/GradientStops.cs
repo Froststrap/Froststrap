@@ -16,14 +16,22 @@ namespace Froststrap.Models
             }
         }
 
-        private string _color = "#000000";
+        private string _color = "#FFFFFF";
+
         public string Color
         {
             get => _color;
             set
             {
-                _color = value;
-                OnPropertyChanged(nameof(Color));
+                var cleaned = string.IsNullOrWhiteSpace(value)
+                    ? value
+                    : new string(value.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+                if (_color != cleaned)
+                {
+                    _color = cleaned;
+                    OnPropertyChanged();
+                }
             }
         }
     }

@@ -65,13 +65,18 @@ namespace Froststrap.UI.ViewModels.Settings.Mods
         #endregion
 
         #region Observable Properties
+
         private string _solidColorHex = "#FFFFFF";
         public string SolidColorHex
         {
             get => _solidColorHex;
             set
             {
-                if (SetProperty(ref _solidColorHex, value))
+                var cleaned = string.IsNullOrWhiteSpace(value)
+                    ? value
+                    : new string(value.Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+                if (SetProperty(ref _solidColorHex, cleaned))
                     GenerateModCommand.NotifyCanExecuteChanged();
             }
         }
