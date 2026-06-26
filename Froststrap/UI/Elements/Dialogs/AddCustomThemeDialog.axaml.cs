@@ -242,17 +242,29 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private static void MoveDirectory(string source, string dest)
         {
-            try
+            if (AreOnSameVolume(source, dest))
             {
-                Directory.Move(source, dest);
+                try
+                {
+                    Directory.Move(source, dest);
+                    return;
+                }
+                catch (IOException)
+                {
+                    // Fall through
+                }
             }
-            catch (IOException)
-            {
-                // Directory.Move fails across filesystem boundaries (tmpfs -> ext4 etc.).
-                // Fall back to recursive copy + delete.
-                CopyDirectory(source, dest);
-                Directory.Delete(source, true);
-            }
+
+            CopyDirectory(source, dest);
+            Directory.Delete(source, true);
+        }
+
+        private static bool AreOnSameVolume(string path1, string path2)
+        {
+            return string.Equals(
+                Path.GetPathRoot(path1),
+                Path.GetPathRoot(path2),
+                StringComparison.OrdinalIgnoreCase);
         }
 
         private static void CopyDirectory(string source, string dest)
