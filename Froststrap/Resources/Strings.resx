@@ -1293,6 +1293,9 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Custom Theme {0}</value>
     <comment>{0} is a string (e.g. '1', '1-1234')</comment>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Add Custom Theme</value>
+  </data>
   <data name="CustomTheme.Editor.Save.Success.Description" xml:space="preserve">
     <value>Your theme has been saved!</value>
   </data>

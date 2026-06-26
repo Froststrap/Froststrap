@@ -88,6 +88,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Custom Theme.
+        /// </summary>
+        public static string AddCustomTheme_Title {
+            get {
+                return ResourceManager.GetString("AddCustomTheme.Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Roblox no longer supports Windows 7 or 8.1. To continue playing Roblox, please upgrade to Windows 10 or newer..
         /// </summary>
         public static string App_OSDeprecation_Win7_81 {

@@ -10,7 +10,7 @@
                      CanResize="False"
                      WindowStartupLocation="CenterScreen">
 
-    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource ApplicationBackgroundColor}">
         <controls:TitleBar Grid.Row="0" Title="{x:Static resources:Strings.Dialog_AddFastFlag_Title}" ShowMaximize="False" Icon="avares://Froststrap/Froststrap.ico" />
 
         <Border Grid.Row="1"
@@ -21,7 +21,7 @@
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <TabControl x:Name="Tabs">
                 <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
-                    <StackPanel Spacing="12">
+                    <StackPanel Spacing="12" Margin="0,0,0,24">
                         <Separator Margin="-12,8,-12,8" />
                         <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
@@ -32,7 +32,7 @@
                                      Watermark="FFlagExample" />
                         </Grid>
 
-                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12" Margin="0,0,0,24">
+                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Value}" />
@@ -44,7 +44,7 @@
                 </TabItem>
 
                 <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
-                    <StackPanel Spacing="12">
+                    <StackPanel Spacing="12" Margin="0,0,0,24">
                         <Separator Margin="-12,8,-12,8" />
                         <TextBox x:Name="JsonTextBox"
                                  AcceptsReturn="True"
@@ -53,12 +53,13 @@
                                  MaxHeight="300"
                                  TextWrapping="Wrap"
                                  BorderThickness="0"
+                                 VerticalContentAlignment="Center"
                                  Watermark="{}{&#10;    &quot;FFlagDebugDisplayFPS&quot;: &quot;True&quot;&#10;}" />
 
-                        <Button Content="{x:Static resources:Strings.Common_ImportFromFile}"
-                                HorizontalAlignment="Stretch"
-                                Margin="0,0,0,24"
-                                Click="ImportButton_Click"/>
+                        <controls:IconButton Content="{x:Static resources:Strings.Common_ImportFromFile}"
+                                             Icon="DocumentText"
+                                             HorizontalAlignment="Stretch"
+                                             Click="ImportButton_Click"/>
                     </StackPanel>
                 </TabItem>
             </TabControl>
