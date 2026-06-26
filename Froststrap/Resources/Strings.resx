@@ -2975,4 +2975,13 @@ Would you like to switch your preferred channel to {0}?</value>
   <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
     <value>Failed to update profile:\n{0}</value>
   </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>No profiles found. Please create a profile first.</value>
+  </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Add Place ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Current Place IDs</value>
+  </data>
 </root>

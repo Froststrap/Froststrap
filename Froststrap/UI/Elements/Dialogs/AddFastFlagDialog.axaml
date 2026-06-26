@@ -20,10 +20,23 @@
                 BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                 Background="{DynamicResource ControlFillColorDefaultBrush}">
             <TabControl x:Name="Tabs">
+                <TabControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2" />
+                    </ItemsPanelTemplate>
+                </TabControl.ItemsPanel>
+
+                <TabControl.Styles>
+                    <Style Selector="TabItem">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                    </Style>
+                </TabControl.Styles>
+
                 <TabItem Header="{x:Static resources:Strings.Common_AddSingle}">
                     <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8,-12,8" />
-                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto" ColumnSpacing="12">
+                        <Separator Margin="-12,8" />
+                        <Grid ColumnDefinitions="75, *" RowDefinitions="Auto" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Name}" />
@@ -32,7 +45,7 @@
                                      Watermark="FFlagExample" />
                         </Grid>
 
-                        <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
+                        <Grid ColumnDefinitions="75, *" ColumnSpacing="12">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
                                        Text="{x:Static resources:Strings.Common_Value}" />
@@ -45,7 +58,7 @@
 
                 <TabItem Header="{x:Static resources:Strings.Common_ImportJson}">
                     <StackPanel Spacing="12" Margin="0,0,0,24">
-                        <Separator Margin="-12,8,-12,8" />
+                        <Separator Margin="-12,8" />
                         <TextBox x:Name="JsonTextBox"
                                  AcceptsReturn="True"
                                  AcceptsTab="True"

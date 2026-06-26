@@ -22,12 +22,23 @@ namespace Froststrap.UI.Elements.Dialogs
             LoadProfiles();
             LoadPresetProfiles();
 
-            Tabs.SelectionChanged += (s, e) => UpdateUiState();
+            Tabs.SelectedIndex = 2;
+
+            Tabs.SelectionChanged += (s, e) => OnTabSelectionChanged();
             SaveProfile.TextChanged += (s, e) => UpdateUiState();
 
             LoadProfile.SelectionChanged += (s, e) => UpdateUiState();
             LoadPresetProfile.SelectionChanged += (s, e) => UpdateUiState();
             PlaceProfile.SelectionChanged += (s, e) => UpdatePlaceIdsUiState();
+        }
+
+        private void OnTabSelectionChanged()
+        {
+            if (Tabs.SelectedIndex == 1 && PlaceProfile.Items.Count > 0 && PlaceProfile.SelectedItem == null)
+            {
+                PlaceProfile.SelectedItem = PlaceProfile.Items[0];
+            }
+            UpdateUiState();
         }
 
         private void LoadProfiles()
@@ -85,13 +96,32 @@ namespace Froststrap.UI.Elements.Dialogs
 
         private void UpdatePlaceIdsUiState()
         {
-            if (PlaceProfile.SelectedItem is not string selectedProfile)
+            bool hasProfiles = PlaceProfile.Items.Count > 0;
+            bool hasProfileSelected = PlaceProfile.SelectedItem is string;
+            string? selectedProfile = PlaceProfile.SelectedItem as string;
+
+            PlaceProfileGrid.IsVisible = hasProfiles;
+
+            PlaceIdsContent.IsVisible = hasProfileSelected;
+            PlaceProfileEmptyMessage.IsVisible = !hasProfiles || !hasProfileSelected;
+
+            if (!hasProfiles)
+            {
+                PlaceProfileEmptyMessage.Text = Strings.Menu_FlagProfiles_NoProfilesFound;
+            }
+            else if (!hasProfileSelected)
+            {
+                PlaceProfileEmptyMessage.Text = Strings.Menu_FlagProfiles_SelectProfileFirst;
+            }
+
+            if (!hasProfileSelected || string.IsNullOrEmpty(selectedProfile))
             {
                 _placeIds = [];
                 PlaceIdsListBox.ItemsSource = null;
                 AddPlaceButton.IsEnabled = false;
                 RemovePlaceButton.IsEnabled = false;
                 PlaceIdInfoText.Text = Strings.Menu_FlagProfiles_SelectProfile;
+                PlaceIdInfoText.IsVisible = true;
                 return;
             }
 
@@ -108,6 +138,7 @@ namespace Froststrap.UI.Elements.Dialogs
             AddPlaceButton.IsEnabled = true;
             RemovePlaceButton.IsEnabled = false;
             PlaceIdInfoText.Text = string.Format(Strings.Menu_FlagProfiles_ManagingPlaceIds, selectedProfile, _placeIds.Count);
+            PlaceIdInfoText.IsVisible = true;
         }
 
         private void AddPlaceButton_Click(object sender, RoutedEventArgs e)
@@ -367,27 +398,34 @@ namespace Froststrap.UI.Elements.Dialogs
 
             int index = Tabs.SelectedIndex;
 
-            bool isLoadTab = (index == 1);
-            ClearFlags.IsVisible = isLoadTab;
-            DeleteButton.IsVisible = isLoadTab;
+            ClearFlags.IsVisible = false;
+            DeleteButton.IsVisible = false;
+            RemovePlaceButton.IsVisible = false;
 
-            if (index == 0)
+            switch (index)
             {
-                OkButton.IsEnabled = !string.IsNullOrWhiteSpace(SaveProfile.Text);
-            }
-            else if (index == 1)
-            {
-                bool hasSelection = LoadProfile.SelectedItem != null;
-                OkButton.IsEnabled = hasSelection;
-                DeleteButton.IsEnabled = hasSelection;
-            }
-            else if (index == 2)
-            {
-                OkButton.IsEnabled = LoadPresetProfile.SelectedItem != null;
-            }
-            else if (index == 3)
-            {
-                OkButton.IsEnabled = true;
+                case 0: // Preset Flag Lists tab
+                    OkButton.IsEnabled = LoadPresetProfile.SelectedItem != null;
+                    break;
+
+                case 1: // Place IDs tab
+                    OkButton.IsEnabled = true;
+                    RemovePlaceButton.IsVisible = true;
+                    RemovePlaceButton.IsEnabled = PlaceIdsListBox.SelectedItem != null;
+                    UpdatePlaceIdsUiState();
+                    break;
+
+                case 2: // Save tab
+                    OkButton.IsEnabled = !string.IsNullOrWhiteSpace(SaveProfile.Text);
+                    break;
+
+                case 3: // Load tab
+                    bool hasSelection = LoadProfile.SelectedItem != null;
+                    OkButton.IsEnabled = hasSelection;
+                    DeleteButton.IsEnabled = hasSelection;
+                    ClearFlags.IsVisible = true;
+                    DeleteButton.IsVisible = true;
+                    break;
             }
         }
 
@@ -395,25 +433,25 @@ namespace Froststrap.UI.Elements.Dialogs
         {
             switch (Tabs.SelectedIndex)
             {
-                case 0: // Save tab
-                    if (!string.IsNullOrWhiteSpace(SaveProfile.Text))
-                    {
-                        App.FastFlags.SaveProfile(SaveProfile.Text);
-                    }
-                    break;
-                case 1: // Load tab
-                    if (LoadProfile.SelectedItem is string selectedProfile)
-                    {
-                        App.FastFlags.LoadProfile(selectedProfile, clearFlags: ClearFlags.IsChecked == true);
-                    }
-                    break;
-                case 2: // Preset Flags tab
+                case 0: // Preset Flag Lists tab
                     if (LoadPresetProfile.SelectedItem is string selectedPreset)
                     {
                         App.FastFlags.LoadPresetProfile(selectedPreset, clearFlags: true);
                     }
                     break;
-                case 3:
+                case 1: // Place IDs tab
+                    break;
+                case 2: // Save tab
+                    if (!string.IsNullOrWhiteSpace(SaveProfile.Text))
+                    {
+                        App.FastFlags.SaveProfile(SaveProfile.Text);
+                    }
+                    break;
+                case 3: // Load tab
+                    if (LoadProfile.SelectedItem is string selectedProfile)
+                    {
+                        App.FastFlags.LoadProfile(selectedProfile, clearFlags: ClearFlags.IsChecked == true);
+                    }
                     break;
             }
 

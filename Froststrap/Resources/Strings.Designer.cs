@@ -4969,6 +4969,15 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Place ID.
+        /// </summary>
+        public static string Menu_FlagProfiles_AddPlaceId {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.AddPlaceId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear FFlags.
         /// </summary>
         public static string Menu_FlagProfiles_ClearFlags {
@@ -4983,6 +4992,15 @@ namespace Froststrap.Resources {
         public static string Menu_FlagProfiles_CopyFailed {
             get {
                 return ResourceManager.GetString("Menu.FlagProfiles.CopyFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Place IDs.
+        /// </summary>
+        public static string Menu_FlagProfiles_CurrentPlaceIds {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.CurrentPlaceIds", resourceCulture);
             }
         }
         
@@ -5046,6 +5064,15 @@ namespace Froststrap.Resources {
         public static string Menu_FlagProfiles_NoProfileFound {
             get {
                 return ResourceManager.GetString("Menu.FlagProfiles.NoProfileFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No profiles found. Please create a profile first..
+        /// </summary>
+        public static string Menu_FlagProfiles_NoProfilesFound {
+            get {
+                return ResourceManager.GetString("Menu.FlagProfiles.NoProfilesFound", resourceCulture);
             }
         }
         
