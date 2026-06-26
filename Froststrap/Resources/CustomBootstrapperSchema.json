@@ -12,7 +12,6 @@
 				"HorizontalAlignment": "HorizontalAlignment",
 				"VerticalAlignment": "VerticalAlignment",
 				"RenderTransform": "Transform",
-				"LayoutTransform": "Transform",
 				"Opacity": "double",
 				"OpacityMask": "Brush",
 				"RenderTransformOrigin": "Point",
@@ -20,7 +19,8 @@
 				"Grid.Row": "int",
 				"Grid.RowSpan": "int",
 				"Grid.Column": "int",
-				"Grid.ColumnSpan": "int"
+				"Grid.ColumnSpan": "int",
+				"Effect": "Effect"
 			}
 		},
 		"Control": {
@@ -45,9 +45,7 @@
 				"Version": "int",
 				"Theme": "Theme",
 				"Title": "string",
-				"IgnoreTitleBarInset": "bool",
-				"ExtendClientAreaToDecorationsHint": "bool",
-				"WindowsBackdrop": "WindowsBackdrop"
+				"IgnoreTitleBarInset": "bool"
 			}
 		},
 		"TitleBar": {
@@ -80,9 +78,7 @@
 			"SuperClass": "RangeBase",
 			"IsCreatable": true,
 			"Attributes": {
-				"IsIndeterminate": "bool",
-				"CornerRadius": "CornerRadius",
-				"IndicatorCornerRadius": "CornerRadius"
+				"IsIndeterminate": "bool"
 			}
 		},
 		"ProgressRing": {
@@ -125,8 +121,7 @@
 				"Stretch": "Stretch",
 				"StretchDirection": "StretchDirection",
 				"Source": "ImageSource",
-				"IsAnimated": "bool",
-				"RepeatBehavior": "RepeatBehavior"
+				"IsAnimated": "bool"
 			}
 		},
 		"Grid": {
@@ -175,26 +170,20 @@
 			"IsCreatable": true,
 			"Attributes": {
 				"ScaleX": "double",
-				"ScaleY": "double",
-				"CenterX": "double",
-				"CenterY": "double"
+				"ScaleY": "double"
 			}
 		},
 		"SkewTransform": {
 			"IsCreatable": true,
 			"Attributes": {
 				"AngleX": "double",
-				"AngleY": "double",
-				"CenterX": "double",
-				"CenterY": "double"
+				"AngleY": "double"
 			}
 		},
 		"RotateTransform": {
 			"IsCreatable": true,
 			"Attributes": {
-				"Angle": "double",
-				"CenterX": "double",
-				"CenterY": "double"
+				"Angle": "double"
 			}
 		},
 		"TranslateTransform": {
@@ -225,10 +214,6 @@
 				"AlignmentY": "AlignmentY",
 				"Stretch": "Stretch",
 				"TileMode": "TileMode",
-				"ViewboxUnits": "BrushMappingMode",
-				"ViewportUnits": "BrushMappingMode",
-				"Viewbox": "Rect",
-				"Viewport": "Rect",
 				"ImageSource": "ImageSource"
 			}
 		},
@@ -257,12 +242,9 @@
 				"Fill": "Brush",
 				"Stroke": "Brush",
 				"Stretch": "Stretch",
-				"StrokeDashCap": "PenLineCap",
 				"StrokeDashOffset": "double",
-				"StrokeEndLineCap": "PenLineCap",
-				"StrokeLineJoin": "PenLineJoin",
+				"StrokeLineCap": "PenLineCap",
 				"StrokeMiterLimit": "double",
-				"StrokeStartLineCap": "PenLineCap",
 				"StrokeThickness": "double"
 			}
 		},
@@ -293,10 +275,16 @@
 			"IsCreatable": true,
 			"Attributes": {
 				"BlurRadius": "double",
-				"OffsetX": "double",
-				"OffsetY": "double",
+				"Direction": "double",
+				"ShadowDepth": "double",
 				"Opacity": "double",
 				"Color": "Color"
+			}
+		},
+		"BlurEffect": {
+			"IsCreatable": true,
+			"Attributes": {
+				"Radius": "double"
 			}
 		}
 	},
@@ -324,7 +312,8 @@
 		"Visibility": {
 			"Values": [
 				"Visible",
-				"Collapsed"
+				"Collapsed",
+				"Hidden"
 			]
 		},
 		"HorizontalAlignment": {
@@ -343,22 +332,15 @@
 				"Stretch"
 			]
 		},
-		"WindowsBackdrop": {
-			"Values": [
-				"Auto",
-				"Mica",
-				"Aero",
-				"Acrylic",
-				"Tabbed",
-				"None"
-			]
-		},
 		"Theme": {
 			"Values": [
 				"Default",
 				"Dark",
 				"Light"
 			]
+		},
+		"Effect": {
+			"CanHaveElement": true
 		},
 		"FontWeight": {
 			"Values": [
@@ -503,14 +485,6 @@
 			"Values": [
 				"Horizontal",
 				"Vertical"
-			]
-		},
-		"WindowCornerPreference": {
-			"Values": [
-				"Default",
-				"DoNotRound",
-				"Round",
-				"RoundSmall"
 			]
 		}
 	}

@@ -430,6 +430,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             dialog.RootTitleBar.Margin = new Thickness(0, 0, 0, 0);
 
             dialog.RootTitleBar.ShowMinimize = ParseXmlAttribute<bool>(xmlElement, "ShowMinimize", true);
+    	    dialog.RootTitleBar.ShowMaximize = ParseXmlAttribute<bool>(xmlElement, "ShowMaximize", false);
             dialog.RootTitleBar.ShowClose = ParseXmlAttribute<bool>(xmlElement, "ShowClose", true);
 
             string? title = xmlElement.Attribute("Title")?.Value ?? "Froststrap";
