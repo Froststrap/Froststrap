@@ -14,16 +14,24 @@ namespace Froststrap.UI.ViewModels.Bootstrapper
         public FluentDialogViewModel(IBootstrapperDialog dialog, bool aero, string version) : base(dialog)
         {
             WindowBackdropType = aero
-                ? [WindowTransparencyLevel.AcrylicBlur]
-                : [WindowTransparencyLevel.Mica, WindowTransparencyLevel.AcrylicBlur];
+                ? [WindowTransparencyLevel.AcrylicBlur, WindowTransparencyLevel.AcrylicBlur]
+                : [WindowTransparencyLevel.None];
+
+            var isLight = App.Settings.Prop.Theme.GetFinal() == Theme.Light;
 
             if (aero)
             {
-                byte alpha = 128;
-                var color = App.Settings.Prop.Theme.GetFinal() == Theme.Light ?
-                    Color.FromArgb(alpha, 225, 225, 225) :
-                    Color.FromArgb(alpha, 30, 30, 30);
-
+                byte alpha = 64;
+                var color = isLight
+                    ? Color.FromArgb(alpha, 225, 225, 225)
+                    : Color.FromArgb(alpha, 30, 30, 30);
+                BackgroundColourBrush = new SolidColorBrush(color);
+            }
+            else
+            {
+                var color = isLight
+                    ? Color.FromRgb(240, 240, 240)
+                    : Color.FromRgb(30, 30, 30);
                 BackgroundColourBrush = new SolidColorBrush(color);
             }
 
