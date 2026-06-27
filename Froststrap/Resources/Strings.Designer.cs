@@ -2247,7 +2247,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Froststrap (Classic).
+        ///   Looks up a localized string similar to Bloxstrap.
         /// </summary>
         public static string Enums_BootstrapperIcon_IconFroststrapClassic {
             get {
@@ -3485,7 +3485,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Frequency:.
+        ///   Looks up a localized string similar to Frequency.
         /// </summary>
         public static string Menu_Appearance_Frequency {
             get {
@@ -3512,7 +3512,7 @@ namespace Froststrap.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Interval:.
+        ///   Looks up a localized string similar to Interval.
         /// </summary>
         public static string Menu_Appearance_Interval {
             get {

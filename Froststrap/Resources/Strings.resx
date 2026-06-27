@@ -2014,10 +2014,10 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Automatically cycle custom themes.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frequency:</value>
+    <value>Frequency</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Interval:</value>
+    <value>Interval</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
     <value>Join Smaller Servers</value>
@@ -2754,7 +2754,7 @@ Would you like to switch your preferred channel to {0}?</value>
     <value>Early 2015</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Classic)</value>
+    <value>Bloxstrap</value>
   </data>
   <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
     <value>Every Launch</value>
