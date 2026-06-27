@@ -573,6 +573,9 @@ namespace Froststrap.UI.Elements.Bootstrapper
             image.Stretch = ParseXmlAttribute<Stretch>(xmlElement, "Stretch", Stretch.Uniform);
             image.StretchDirection = ParseXmlAttribute<StretchDirection>(xmlElement, "StretchDirection", StretchDirection.Both);
 
+            var interpolationMode = ParseXmlAttribute<BitmapInterpolationMode>(xmlElement, "BitmapInterpolationMode", BitmapInterpolationMode.HighQuality);
+            RenderOptions.SetBitmapInterpolationMode(image, interpolationMode);
+
             var imageData = GetImageSourceData(dialog, "Source", xmlElement);
 
             if (imageData.IsIcon)

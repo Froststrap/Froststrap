@@ -121,7 +121,8 @@
 				"Stretch": "Stretch",
 				"StretchDirection": "StretchDirection",
 				"Source": "ImageSource",
-				"IsAnimated": "bool"
+				"IsAnimated": "bool",
+        		"BitmapInterpolationMode": "BitmapInterpolationMode"
 			}
 		},
 		"Grid": {
@@ -323,6 +324,14 @@
 				"Right",
 				"Stretch"
 			]
+		},
+		"BitmapInterpolationMode": {
+    			"Values": [
+        			"Unspecified",
+        			"LowQuality",
+        			"MediumQuality",
+        			"HighQuality"
+    			]
 		},
 		"VerticalAlignment": {
 			"Values": [
