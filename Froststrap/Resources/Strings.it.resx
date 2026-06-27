@@ -869,9 +869,6 @@ Verifica se Roblox funziona con [il launcher originale]({1}). Se non funziona, i
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Inizio del 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Classico)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Fine del 2015</value>
   </data>
@@ -1215,9 +1212,6 @@ Clicca su &quot;Aggiungi account&quot; qui sopra per iniziare</value>
   <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
     <value>In un gioco di Roblox</value>
   </data>
-  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
-    <value>Non connesso</value>
-  </data>
   <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
     <value>Online (sito web di Roblox)</value>
   </data>
@@ -1255,7 +1249,7 @@ Clicca su &quot;Aggiungi account&quot; qui sopra per iniziare</value>
     <value>Configura l&apos;aspetto di Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frequenza:</value>
+    <value>Frequenza</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Scegli quale icona deve utilizzare Froststrap.</value>
@@ -1264,7 +1258,7 @@ Clicca su &quot;Aggiungi account&quot; qui sopra per iniziare</value>
     <value>Icona</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervallo:</value>
+    <value>Intervallo</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Per rendere effettive le modifiche è necessario un riavvio. È possibile che parte del testo non venga tradotto nella lingua preferita.</value>
@@ -1626,7 +1620,7 @@ Ci sono {0} definizioni di flag in conflitto:
     <value>Gestisci qui tutti i tuoi FastFlags.</value>
   </data>
   <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
-    <value>📦 Trascina per importare file JSON / TXT</value>
+    <value>📦 Trascina qui per importare file JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Esporta JSON</value>
@@ -1670,7 +1664,7 @@ Vuoi rimuoverlo adesso?</value>
     <value>Numero totale di bandiere</value>
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
-    <value>A seguito dell&apos;inserimento in whitelist di alcuni FastFlags di Roblox, questi sono gli unici ancora disponibili per l&apos;uso.</value>
+    <value>A seguito dell&apos;inserimento nella whitelist di alcuni FastFlags di Roblox, questi sono gli unici ancora disponibili per l&apos;uso.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlla come vengono configurati determinati parametri e funzionalità del motore di Roblox.</value>
@@ -2016,7 +2010,7 @@ Vuoi rimuoverlo adesso?</value>
     <value>Consenti l&apos;adesione alle attività</value>
   </data>
   <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
-    <value>Si riconnette automaticamente allo stesso server dopo una disconnessione di 20 minuti o un errore di rete.</value>
+    <value>Si riconnette automaticamente allo stesso server dopo una disconnessione o un errore di rete della durata di 20 minuti.</value>
   </data>
   <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
     <value>Ricongiungimento automatico</value>
@@ -2175,7 +2169,7 @@ Vuoi rimuoverlo adesso?</value>
     <value>Visualizza l&apos;attività di Studio</value>
   </data>
   <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
-    <value>Il funzionamento si basa sull&apos;aggiunta di un plugin Froststrap personalizzato che registrerà le tue azioni.
+    <value>Questo funziona aggiungendo un plugin Froststrap creato su misura che registrerà le tue azioni.
 Vuoi installare il plugin?</value>
   </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
@@ -2645,7 +2639,7 @@ Deve contenere almeno una delle seguenti cartelle: content, ExtraContent, Platfo
     <value>Non sono stati trovati server privati</value>
   </data>
   <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
-    <value>Non è stato trovato alcun server idoneo.</value>
+    <value>Non è stato trovato alcun server adatto.</value>
   </data>
   <data name="Menu.QuickPlay.Players" xml:space="preserve">
     <value>giocatori</value>

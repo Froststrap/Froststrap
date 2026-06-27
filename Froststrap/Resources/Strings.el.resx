@@ -235,7 +235,7 @@
     <value>Αναζήτηση των κορυφαίων {0} περιοχών...</value>
   </data>
   <data name="Bootstrapper.Status.InitializingWinePrefix" xml:space="preserve">
-    <value>Αρχικοποίηση του προθέματος Wine...</value>
+    <value>Εκκίνηση του προθέματος Wine...</value>
   </data>
   <data name="Bootstrapper.Status.Installing" xml:space="preserve">
     <value>Εγκατάσταση του {product}...</value>
@@ -262,7 +262,7 @@
     <value>Αναζήτηση διακομιστών στο {0}...</value>
   </data>
   <data name="Bootstrapper.Status.SettingUpDXVK" xml:space="preserve">
-    <value>Εκκίνηση του DXVK...</value>
+    <value>Εγκατάσταση του DXVK...</value>
   </data>
   <data name="Bootstrapper.Status.SkippingMatchmaking" xml:space="preserve">
     <value>Παράλειψη αναζήτησης διακομιστή...</value>
@@ -884,9 +884,6 @@
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Στις αρχές του 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Κλασική έκδοση)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Τέλη του 2015</value>
   </data>
@@ -1002,7 +999,7 @@
     <value>Υψηλό</value>
   </data>
   <data name="Enums.ProcessPriorityOption.Low" xml:space="preserve">
-    <value>Χαμηλό</value>
+    <value>Χαμηλή</value>
   </data>
   <data name="Enums.ProcessPriorityOption.Normal" xml:space="preserve">
     <value>Κανονικό</value>
@@ -1089,7 +1086,7 @@
     <value>Υψηλή (Προεπιλογή)</value>
   </data>
   <data name="Enums.TextureQuality.Low" xml:space="preserve">
-    <value>Χαμηλό</value>
+    <value>Χαμηλή</value>
   </data>
   <data name="Enums.TextureQuality.Lowest" xml:space="preserve">
     <value>Χαμηλότερο</value>
@@ -1273,7 +1270,7 @@
     <value>Ρυθμίστε την εμφάνιση του Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Συχνότητα:</value>
+    <value>Συχνότητα</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Επιλέξτε ποιο εικονίδιο θα πρέπει να χρησιμοποιεί το Froststrap.</value>
@@ -1282,7 +1279,7 @@
     <value>Εικονίδιο</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Διάστημα:</value>
+    <value>Διάστημα</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Για να εφαρμοστούν οι αλλαγές, απαιτείται επανεκκίνηση. Ενδέχεται κάποιο κείμενο να μην έχει μεταφραστεί στη γλώσσα της προτίμησής σας.</value>
@@ -1375,7 +1372,7 @@
     <value>Ρυθμίσεις αποθήκευσης εφαρμογών</value>
   </data>
   <data name="Menu.Bootstrapper.BestRegionAmount.Description" xml:space="preserve">
-    <value>Επιλέξτε τον αριθμό των περιοχών που θέλετε να ελέγξετε· αυτό βοηθάει σε περίπτωση που δεν μπορεί να εντοπίσει τις καλύτερες περιοχές για εσάς.</value>
+    <value>Επιλέξτε τον αριθμό των περιοχών που θέλετε να ελέγξετε· αυτό μπορεί να βοηθήσει αν το πρόγραμμα δεν καταφέρει να εντοπίσει τις καλύτερες περιοχές για εσάς.</value>
   </data>
   <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
     <value>Καλύτερα ποσά ανά περιοχή</value>
@@ -1447,7 +1444,7 @@
     <value>Αυτόματη εκκίνηση της εφαρμογής Roblox κατά την εκκίνηση του υπολογιστή σου.</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
-    <value>Εκκίνηση κατά τη δημιουργία της startup</value>
+    <value>Έναρξη λειτουργίας κατά τη φάση εκκίνησης</value>
   </data>
   <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
     <value>Μεταφέρει την εφαρμογή στη γραμμή εργασιών αντί να την κλείσει εντελώς.</value>
@@ -1570,7 +1567,7 @@
     <value>Το Froststrap θα ελέγχει αυτόματα και θα ενημερώνεται σε δοκιμαστική έκδοση κατά την εκκίνηση του Roblox.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
-    <value>Ενημέρωση για τις προ-κυκλοφορίες</value>
+    <value>Ενημέρωση σχετικά με τις προ-κυκλοφορίες</value>
   </data>
   <data name="Menu.Deployment.AutoUpdateSober" xml:space="preserve">
     <value>Αυτόματη ενημέρωση του Sober</value>
@@ -2344,7 +2341,7 @@
     <value>Κάντε διπλό κλικ στη στήλη «Τιμή» και αντιγράψτε την</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.7" xml:space="preserve">
-    <value>Επικολλήστε την τιμή στο πλαίσιο παραπάνω</value>
+    <value>Επικολλήστε την τιμή στο παραπάνω πλαίσιο</value>
   </data>
   <data name="Menu.ManualLogin.InvalidCookie" xml:space="preserve">
     <value>Το cookie δεν είναι έγκυρο. Παρακαλώ, ελέγξτε το και δοκιμάστε ξανά.</value>
@@ -2353,7 +2350,7 @@
     <value>Επικολλήστε το cookie .ROBLOSECURITY</value>
   </data>
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
-    <value>Σύνδεση με χειροκίνητη εισαγωγή</value>
+    <value>Σύνδεση με χειροκίνητη εισαγωγή στοιχείων</value>
   </data>
   <data name="Menu.ModGenerator.AddStop" xml:space="preserve">
     <value>Προσθήκη χρώματος</value>
@@ -2841,7 +2838,7 @@
     <value>Ρυθμίστε τον τρόπο με τον οποίο το Froststrap μπορεί να ξεκινήσει εύκολα.</value>
   </data>
   <data name="Menu.Shortcuts.ErrorCreatingShortcut" xml:space="preserve">
-    <value>Σφάλμα κατά τη δημιουργία της συντόμευσης.</value>
+    <value>Σφάλμα κατά τη δημιουργία συντόμευσης.</value>
   </data>
   <data name="Menu.Shortcuts.ExtractIcons.Description" xml:space="preserve">
     <value>Σας επιτρέπει να χρησιμοποιήσετε τη συλλογή εικονιδίων Roblox του Froststrap για τις συντομεύσεις σας. [Δείτε πώς.]({0})</value>

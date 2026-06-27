@@ -275,7 +275,7 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
     <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
   </data>
   <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
-    <value>Memulai Hidup Tanpa Alkohol...</value>
+    <value>Memulai Hidup Tanpa Minuman Keras...</value>
   </data>
   <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
     <value>Menjalankan Roblox Studio dengan Wine...</value>
@@ -413,7 +413,7 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
     <value>Pratinjau Glyph</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Kode Hexadesimal</value>
+    <value>Kode Hex</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Impor</value>
@@ -869,9 +869,6 @@ Coba periksa apakah Roblox dapat berjalan dengan [launcher aslinya]({1}). Jika t
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Awal tahun 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Klasik)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Akhir tahun 2015</value>
   </data>
@@ -997,6 +994,9 @@ Coba periksa apakah Roblox dapat berjalan dengan [launcher aslinya]({1}). Jika t
   </data>
   <data name="Enums.QualityLevel.Level4" xml:space="preserve">
     <value>Tingkat 4</value>
+  </data>
+  <data name="Enums.QualityLevel.Level6" xml:space="preserve">
+    <value>Tingkat 6</value>
   </data>
   <data name="Enums.RenderingMode.Default" xml:space="preserve">
     <value>Direct3D11 (Standar)</value>
@@ -1195,16 +1195,13 @@ Klik &apos;Tambahkan Akun&apos; di atas untuk memulai</value>
     <value>Atur tampilan Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Frekuensi:</value>
+    <value>Frekuensi</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Pilih ikon mana yang akan digunakan oleh Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Icon.Title" xml:space="preserve">
     <value>Ikon</value>
-  </data>
-  <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Rentang:</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Perlu dilakukan peluncuran ulang agar perubahan tersebut berlaku. Beberapa teks mungkin belum diterjemahkan ke dalam bahasa pilihan.</value>
@@ -2383,7 +2380,7 @@ Apakah Anda ingin menginstal plugin ini?</value>
     <value>Mod &apos;{0}&apos; telah berhasil diimpor.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>Impor mod dengan menyeret mod tersebut atau melalui fitur impor; mod dengan prioritas lebih rendah akan diterapkan terakhir, sehingga dapat mengatasi konflik dengan mod lain.</value>
+    <value>Impor mod dengan menyeret mod tersebut atau melalui fitur impor; mod dengan prioritas lebih rendah akan diterapkan terakhir sehingga dapat mengatasi konflik dengan mod lain.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>Nama Folder Tidak Sah.</value>
@@ -2537,7 +2534,7 @@ Sumber tersebut harus berisi setidaknya salah satu dari folder berikut: content,
     <value>Gunakan Latar Belakang Editor Avatar Lama</value>
   </data>
   <data name="Menu.PresetMods.Title" xml:space="preserve">
-    <value>Modifikasi Pra-setel</value>
+    <value>Modifikasi Bawaan</value>
   </data>
   <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
     <value>Manajer akun sedang tidak ada.</value>

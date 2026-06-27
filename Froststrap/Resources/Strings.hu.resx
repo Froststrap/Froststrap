@@ -880,9 +880,6 @@ Ellenőrizd, hogy a Roblox működik-e [az eredeti indítóprogrammal]({1}). Ha 
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015 eleje</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (klasszikus)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015 vége</value>
   </data>
@@ -947,7 +944,7 @@ Ellenőrizd, hogy a Roblox működik-e [az eredeti indítóprogrammal]({1}). Ha 
     <value>Napok</value>
   </data>
   <data name="Enums.CycleFrequency.EveryLaunch" xml:space="preserve">
-    <value>Minden termékbemutató</value>
+    <value>Minden indítás</value>
   </data>
   <data name="Enums.CycleFrequency.Hours" xml:space="preserve">
     <value>Nyitvatartási idő</value>
@@ -989,7 +986,7 @@ Ellenőrizd, hogy a Roblox működik-e [az eredeti indítóprogrammal]({1}). Ha 
     <value>Normál</value>
   </data>
   <data name="Enums.ProcessPriorityOption.AboveNormal" xml:space="preserve">
-    <value>A normál felett</value>
+    <value>A normál feletti</value>
   </data>
   <data name="Enums.ProcessPriorityOption.BelowNormal" xml:space="preserve">
     <value>A normál alatt</value>
@@ -1266,7 +1263,7 @@ Kattintson a fenti „Fiók hozzáadása” gombra a kezdéshez</value>
     <value>Állítsd be, hogyan jelenjen meg a Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Gyakoriság:</value>
+    <value>Frekvencia</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Válaszd ki, melyik ikont használja a Froststrap.</value>
@@ -1275,7 +1272,7 @@ Kattintson a fenti „Fiók hozzáadása” gombra a kezdéshez</value>
     <value>Ikon</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervallum:</value>
+    <value>Intervallum</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>A változtatások érvénybe lépéséhez újraindításra van szükség. Előfordulhat, hogy egyes szövegrészek nem kerülnek lefordításra a kívánt nyelvre.</value>
@@ -1560,7 +1557,7 @@ Kattintson a fenti „Fiók hozzáadása” gombra a kezdéshez</value>
     <value>A Roblox cookie-fájl nem található.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
-    <value>A Froststrap a Roblox indításakor automatikusan ellenőrzi a frissítéseket, és tesztverzióra frissíti magát.</value>
+    <value>A Froststrap a Roblox indításakor automatikusan ellenőrzi a rendszert, és tesztverzióra frissíti magát.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
     <value>Előzetes kiadások frissítése</value>
@@ -1910,7 +1907,7 @@ Most törölni szeretnéd?</value>
     <value>Ezzel a jelenlegi globális beállítások mindegyike az importált beállításokkal kerül felülírásra. Biztosan folytatni szeretné?</value>
   </data>
   <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
-    <value>A beállítások importálása nem sikerült. Győződj meg arról, hogy a Roblox nem fut, majd próbáld meg újra.</value>
+    <value>A beállítások importálása nem sikerült. Győződj meg róla, hogy a Roblox nem fut, majd próbáld meg újra.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
     <value>Úgy tűnik, hogy a kiválasztott fájl nem érvényes GBS-beállítási fájl.</value>
@@ -1958,13 +1955,13 @@ Most törölni szeretnéd?</value>
     <value>Perf statisztikák</value>
   </data>
   <data name="Menu.GlobalSettings.PlayerListLayout.Description" xml:space="preserve">
-    <value>Az esc gomb megnyomásával váltson a játékoslista négyzetes és normál felhasználói felülete között.</value>
+    <value>Az esc gomb megnyomásával válthat az esc lejátszási lista négyzetes és normál felhasználói felülete között.</value>
   </data>
   <data name="Menu.GlobalSettings.PlayerListLayout.Title" xml:space="preserve">
     <value>A játékosok listájának elrendezése</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Description" xml:space="preserve">
-    <value>Csökkenti a felhasználói felület animációinak számát.</value>
+    <value>Csökkenti a felhasználói felület animációit.</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
     <value>Mozgáscsökkentés</value>
@@ -1988,10 +1985,10 @@ Most törölni szeretnéd?</value>
     <value>Hangerő a Roblox Studio-ban.</value>
   </data>
   <data name="Menu.GlobalSettings.StudioVolume.Title" xml:space="preserve">
-    <value>Stúdió Volume</value>
+    <value>Stúdió mérete</value>
   </data>
   <data name="Menu.GlobalSettings.TextSize.Description" xml:space="preserve">
-    <value>A kívánt betűméret.</value>
+    <value>A kívánt szövegméret.</value>
   </data>
   <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
     <value>Betűméret</value>
@@ -2253,10 +2250,10 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>A winecfg indítása sikertelen: {0}</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Description" xml:space="preserve">
-    <value>Felülírja a natív Vulkan-alrendszereket, és helyette a régi OpenGL-elrendezési folyamatra vált át.</value>
+    <value>Felülírja a natív Vulkan alrendszereket, és helyette a régi OpenGL elrendezési folyamatra vált át.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>OpenGL-alapú renderelés kényszerítése</value>
+    <value>OpenGL-alapú megjelenítés kényszerítése</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Ha elérhető, hajtsd végre a rendszeroptimalizálásokat (ehhez a gamemoded szükséges).</value>
@@ -2268,7 +2265,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Válassza ki a Studio renderelő háttérprogramját a Wine alatt.</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
-    <value>Grafikus megjelenítő</value>
+    <value>Grafikus renderelő</value>
   </data>
   <data name="Menu.LinuxSettings.LauncherCommand.Description" xml:space="preserve">
     <value>A Studio parancs beágyazása (pl. gamescope -- %parancs%)</value>
@@ -2292,7 +2289,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Érintéses bevitel módja</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
-    <value>A modern TV/konzol-kliens elrendezésű irányítópult-rendszerét kényszeríti az asztali felület kontextusára.</value>
+    <value>A modern TV/konzol kliens elrendezésű irányítópult-rendszerét kényszeríti az asztali felület kontextusára.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
     <value>A konzol használata</value>
@@ -2307,7 +2304,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Virtuális asztalok</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
-    <value>Bizonyos felhasználói felületi elemekhez és a bejelentkezéshez használják</value>
+    <value>Bizonyos felhasználói felület-elemekhez és a bejelentkezéshez használják</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
     <value>Weboldalak</value>
@@ -2361,7 +2358,7 @@ Szeretnéd telepíteni a bővítményt?</value>
     <value>Alkalmazás a kurzorokra</value>
   </data>
   <data name="Menu.ModGenerator.ApplyEmoteWheel" xml:space="preserve">
-    <value>Hozzárendelés az emote-kerékhez</value>
+    <value>Hozzáadás az emote-kerékhez</value>
   </data>
   <data name="Menu.ModGenerator.ApplyShiftlock" xml:space="preserve">
     <value>Jelentkezz a Shiftlockhoz</value>
@@ -2813,7 +2810,7 @@ Az alkalmazás bezárja ezt az ablakot, amint a bejelentkezés befejeződött.</
     <value>Nem sikerült megfelelő szervert találni.</value>
   </data>
   <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
-    <value>Keress rá valamire, és lehet, hogy itt fog megjelenni...</value>
+    <value>Keress rá valamire, és lehet, hogy itt megjelenik...</value>
   </data>
   <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
     <value>Szerver megtalálva</value>

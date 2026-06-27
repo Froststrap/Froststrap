@@ -275,7 +275,7 @@ Vil du skifte til standardkanalen ({1})?</value>
     <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
   </data>
   <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
-    <value>At starte med at være ædru...</value>
+    <value>At starte på en ny start...</value>
   </data>
   <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
     <value>Sådan starter man Roblox Studio med Wine...</value>
@@ -1227,7 +1227,7 @@ Klik på »Tilføj konto« ovenfor for at komme i gang</value>
     <value>Indstil, hvordan Froststrap skal se ud.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Hyppighed:</value>
+    <value>Frekvens</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Vælg, hvilket ikon Froststrap skal bruge.</value>
@@ -1601,7 +1601,7 @@ Der er {0} konfliktende flagdefinitioner:
     <value>FastFlags er blevet eksporteret uden problemer.</value>
   </data>
   <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
-    <value>Indsæt venligst JSON- eller TXT-filer.</value>
+    <value>Du bedes indsende JSON- eller TXT-filer.</value>
   </data>
   <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
     <value>{0} er blevet fjernet, da de ikke står på tilladelseslisten.</value>
@@ -1910,7 +1910,7 @@ Skal det fjernes nu?</value>
     <value>Begrænset bevægelse</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
-    <value>Global kamerafølsomhed.</value>
+    <value>Kameraets generelle følsomhed.</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
     <value>Følsomhed</value>
@@ -2331,7 +2331,7 @@ Vil du installere pluginet?</value>
     <value>Henter nødvendige filer...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
-    <value>Udlæsning af filer...</value>
+    <value>Henter filer...</value>
   </data>
   <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
     <value>Det lykkedes ikke at indlæse forhåndsvisningsskrifttyper.</value>
@@ -2656,10 +2656,10 @@ Den skal indeholde mindst én af følgende mapper: content, ExtraContent, Platfo
     <value>Kopier denne kode og indsæt den på [siden til hurtig login]({0}).</value>
   </data>
   <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
-    <value>Enheden er tilknyttet – godkender login...</value>
+    <value>Enheden er tilknyttet – godkendelse af login i gang...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
-    <value>Der er gået for lang tid siden du loggede ind.</value>
+    <value>Tidsgrænsen for login er overskredet.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Venter på hurtig login...

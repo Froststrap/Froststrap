@@ -887,9 +887,6 @@
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>На початку 2015 року</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Класична версія)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Наприкінці 2015 року</value>
   </data>
@@ -1282,7 +1279,7 @@
     <value>Налаштуйте зовнішній вигляд Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Частота:</value>
+    <value>Частота</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Виберіть, яку іконку має використовувати Froststrap.</value>
@@ -1291,7 +1288,7 @@
     <value>Іконка</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Діапазон:</value>
+    <value>Інтервал</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Щоб зміни набули чинності, необхідно перезапустити систему. Деякі фрагменти тексту можуть бути не перекладені на обрану мову.</value>
@@ -1932,7 +1929,7 @@
     <value>Не вдалося імпортувати налаштування. Переконайтеся, що Roblox не запущено, і спробуйте ще раз.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
-    <value>Вибраний файл, схоже, не є дійсним файлом налаштувань GBS.</value>
+    <value>Вибраний файл, судячи з усього, не є дійсним файлом налаштувань GBS.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotXML" xml:space="preserve">
     <value>Вибраний файл не є дійсним XML-файлом.</value>
@@ -1950,7 +1947,7 @@
     <value>Інвертувати Y</value>
   </data>
   <data name="Menu.GlobalSettings.MasterVolume.Description" xml:space="preserve">
-    <value>Загальний обсяг.</value>
+    <value>Глобальний рівень обсягу.</value>
   </data>
   <data name="Menu.GlobalSettings.MasterVolume.Title" xml:space="preserve">
     <value>Загальна гучність</value>
@@ -2404,7 +2401,7 @@
     <value>Створюйте моди легко одним кліком.</value>
   </data>
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
-    <value>Значок «Не грати з кольорами»</value>
+    <value>Значок «Не грайся з кольорами»</value>
   </data>
   <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
     <value>Завантаження необхідних ресурсів...</value>
@@ -2434,7 +2431,7 @@
     <value>Зміна кольорів зображень...</value>
   </data>
   <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
-    <value>Іконка Roblox (за бажанням)</value>
+    <value>Іконка Roblox (не обов’язково)</value>
   </data>
   <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
     <value>Збережено в {0}</value>
@@ -2464,7 +2461,7 @@
     <value>Остаточно видалити «{0}»?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Керувати модифікаціями файлів та застосовувати їх.</value>
+    <value>Управління та застосування модифікацій файлів.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Перетягніть файл ZIP або папку, щоб імпортувати</value>
@@ -2741,14 +2738,14 @@
     <value>Скопіюйте цей код і вставте його на [сторінці швидкого входу]({0}).</value>
   </data>
   <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
-    <value>Пристрій підключено — підтвердження входу...</value>
+    <value>Пристрій підключено — затверджується вхід...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
     <value>Час очікування входу закінчився.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Очікування швидкого входу...
-Додаток закриє це вікно після завершення входу.</value>
+Після завершення входу додаток закриє це вікно.</value>
   </data>
   <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
     <value>Введіть ідентифікатор місця та натисніть «Пошук», щоб переглянути сервери.</value>
@@ -2817,7 +2814,7 @@
     <value>Зберегти</value>
   </data>
   <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
-    <value>Автоматичний режим: пошук оптимального регіону для вас...</value>
+    <value>Автоматичний режим: Пошук оптимального регіону для вас...</value>
   </data>
   <data name="Menu.SearchBar.JoinError" xml:space="preserve">
     <value>Не вдалося приєднатися до гри: {0}</value>

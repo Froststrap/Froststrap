@@ -146,13 +146,13 @@
 Kas soovid muuta oma eelistatud kanali {0}-ks?</value>
   </data>
   <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
-    <value>Vaheta</value>
+    <value>Vahelejätmine</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>Roblox on hetkel käivitatud ja uue instantsi käivitamine sulgeb selle. Kas soovid kindlasti käivitamist jätkata?</value>
   </data>
   <data name="Bootstrapper.Dialog.ChannelOutOfDate" xml:space="preserve">
-    <value>Kanal, millel te praegu viibite ({0}), on aegunud ja ilmselt ei saa see enam uuendusi.
+    <value>Kanal, millel te praegu viibite ({0}), on aegunud ja ilmselt ei saa enam uuendusi.
 Kas soovite minna üle vaikimisi kanalile ({1})?</value>
   </data>
   <data name="Bootstrapper.Dialog.NoUpgradeWithoutClient" xml:space="preserve">
@@ -419,7 +419,7 @@ Kas soovite minna üle vaikimisi kanalile ({1})?</value>
     <value>Sümboli eelvaade</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Kuusandkood</value>
+    <value>Kuusekood</value>
   </data>
   <data name="Common.ImportFromFile" xml:space="preserve">
     <value>Importimine failist</value>
@@ -881,9 +881,6 @@ Kontrollige, kas Roblox töötab [originaalse käivitajaga]({1}). Kui ei, siis e
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015. aasta algus</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (klassikaline)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015. aasta lõpp</value>
   </data>
@@ -1218,7 +1215,7 @@ Kas olete kindel, et soovite jätkata?</value>
 Vahetati sellele kontole.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
-    <value>Kontosid pole lisatud
+    <value>Kontoid pole lisatud
 Alustamiseks klõpsa ülal nuppu „Lisa konto”</value>
   </data>
   <data name="Menu.AccountSelector.Login.LocalCookie" xml:space="preserve">
@@ -1270,7 +1267,7 @@ Alustamiseks klõpsa ülal nuppu „Lisa konto”</value>
     <value>Määra kindlaks, kuidas Froststrap peaks välja nägema.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Sagedus:</value>
+    <value>Sagedus</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Vali, millist ikooni Froststrap peaks kasutama.</value>
@@ -1279,7 +1276,7 @@ Alustamiseks klõpsa ülal nuppu „Lisa konto”</value>
     <value>Ikoon</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Vahemik:</value>
+    <value>Vahemik</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Muudatuste jõustumiseks on vaja veebilehte uuesti käivitada. Mõned tekstid võivad jääda eelistatud keelde tõlkimata.</value>
@@ -1435,7 +1432,7 @@ Alustamiseks klõpsa ülal nuppu „Lisa konto”</value>
     <value>Roblox-rakenduse teema</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
-    <value>Kui liitud mängu nupu kaudu, vali väiksemad serverid.</value>
+    <value>Liitu väiksemate serveritega, kui ühined mängu nupu kaudu.</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
     <value>Liitu väiksemate serveritega</value>
@@ -1607,7 +1604,7 @@ Palun ärge seda muutke, kui te ei tea, mida teete</value>
     <value>Mängija kanal</value>
   </data>
   <data name="Menu.Deployment.VersionHash.Description" xml:space="preserve">
-    <value>Sisesta Roblox Studio versiooni GUID (nt version-xxxxxxxxxxxxxxxx). Kehtib ainult Studio käivitamisel.</value>
+    <value>Sisesta Roblox Studio versiooni GUID (nt version-xxxxxxxxxxxxxxxx). Kehtib ainult Studio käivitamise puhul.</value>
   </data>
   <data name="Menu.Deployment.VersionHash.Title" xml:space="preserve">
     <value>Versiooni hash</value>
@@ -2248,7 +2245,7 @@ Kas soovite pistikprogrammi paigaldada?</value>
     <value>Asendab Vulkani algsed alamsüsteemid, et kasutada selle asemel vana OpenGL-i paigutusprotsessi.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>Jõusta OpenGL-renderdamine</value>
+    <value>Sunni kasutama vana OpenGL-renderdamist</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Kohalda süsteemi optimeerimisi, kui need on saadaval (nõuab gamemoded-i).</value>
@@ -2380,7 +2377,7 @@ Kas soovite pistikprogrammi paigaldada?</value>
     <value>Ära värvi mängu ikooni</value>
   </data>
   <data name="Menu.ModGenerator.Downnloading" xml:space="preserve">
-    <value>Laaditakse vajalikke faile...</value>
+    <value>Laaditakse vajalikke ressursse...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
     <value>Failide väljavõtmine...</value>
@@ -2437,7 +2434,7 @@ Kas soovite pistikprogrammi paigaldada?</value>
     <value>Kas soovid &apos;{0}&apos; lõplikult kustutada?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Haldada ja rakendada failide muudatusi.</value>
+    <value>Haldada ja rakendada failide modifikatsioone.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Lohistage siia ZIP-faili või kausta importimiseks</value>
@@ -2486,7 +2483,7 @@ See peab sisaldama vähemalt ühte järgmistest kaustadest: content, ExtraConten
     <value>Sümboleid laaditakse...</value>
   </data>
   <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
-    <value>Fontide laadimine: {0}...</value>
+    <value>Font laaditakse: {0}...</value>
   </data>
   <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
     <value>Selles modis ei leitud värviandmeid</value>

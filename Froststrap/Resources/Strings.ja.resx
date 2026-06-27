@@ -278,7 +278,7 @@
     <value>酒を断って…</value>
   </data>
   <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
-    <value>Wineを使ってRoblox Studioを起動するには…</value>
+    <value>Wineを使ってRoblox Studioを起動するには...</value>
   </data>
   <data name="Bootstrapper.Status.UninstallingWebView2" xml:space="preserve">
     <value>WebView2 {0} をアンインストールしています...</value>
@@ -887,9 +887,6 @@
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015年初頭</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>フロストストラップ（クラシック）</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015年後半</value>
   </data>
@@ -1285,7 +1282,7 @@
     <value>Froststrapの外観を設定します。</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>頻度：</value>
+    <value>周波数</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Froststrap で使用するアイコンを選択してください。</value>
@@ -1294,7 +1291,7 @@
     <value>アイコン</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>範囲：</value>
+    <value>範囲</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>変更を反映させるには、再起動が必要です。一部のテキストが希望の言語に翻訳されていない場合があります。</value>
@@ -1456,7 +1453,7 @@
     <value>「プレイ」ボタンから参加する場合は、規模の小さいサーバーに参加してください。</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
-    <value>小規模サーバーに参加する</value>
+    <value>小規模なサーバーに参加する</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
     <value>PCの起動時に、Robloxアプリを自動的に起動します。</value>

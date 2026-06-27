@@ -217,7 +217,7 @@ Souhaitez-vous passer à la chaîne par défaut ({1}) ?</value>
     <value>Téléchargement de WebView2...</value>
   </data>
   <data name="Bootstrapper.Status.DownloadingWine" xml:space="preserve">
-    <value>Téléchargement de Wine...</value>
+    <value>Téléchargement de Wine…</value>
   </data>
   <data name="Bootstrapper.Status.Extracting" xml:space="preserve">
     <value>Extraction</value>
@@ -226,7 +226,7 @@ Souhaitez-vous passer à la chaîne par défaut ({1}) ?</value>
     <value>Extraction de DXVK...</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
-    <value>Extraction de DXVK-Sarek…</value>
+    <value>Extraction de DXVK-Sarek...</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingWine" xml:space="preserve">
     <value>Extraction du vin...</value>
@@ -869,9 +869,6 @@ Vérifiez si Roblox fonctionne avec [le lanceur d&apos;origine]({1}). Si ce n&ap
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>Début 2015</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Classique)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>Fin 2015</value>
   </data>
@@ -1242,7 +1239,7 @@ Cliquez sur « Ajouter un compte » ci-dessus pour commencer</value>
     <value>Configurez l&apos;apparence de Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Fréquence :</value>
+    <value>Fréquence</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Choisissez l&apos;icône que Froststrap doit utiliser.</value>
@@ -1251,7 +1248,7 @@ Cliquez sur « Ajouter un compte » ci-dessus pour commencer</value>
     <value>Icône</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Intervalle :</value>
+    <value>Intervalle</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Un redémarrage est nécessaire pour que les modifications prennent effet. Il se peut que certains passages ne soient pas traduits dans la langue de votre choix.</value>
@@ -1407,7 +1404,7 @@ Cliquez sur « Ajouter un compte » ci-dessus pour commencer</value>
     <value>Rejoignez des serveurs moins fréquentés lorsque vous vous connectez via le bouton « Jouer ».</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
-    <value>Rejoindre des serveurs plus petits</value>
+    <value>Rejoignez des serveurs plus petits</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
     <value>Lancer automatiquement l&apos;application Roblox au démarrage de votre PC.</value>
@@ -2452,7 +2449,7 @@ Elle doit contenir au moins l&apos;un des dossiers suivants : content, ExtraCont
     <value>Aucune information sur les couleurs n&apos;a été trouvée dans ce mod</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
-    <value>Action du mod sélectionné</value>
+    <value>Action du mod sélectionnée</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
     <value>Mes mods</value>
@@ -2681,7 +2678,7 @@ Elle doit contenir au moins l&apos;un des dossiers suivants : content, ExtraCont
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>En attente de la connexion rapide...
-L&apos;application fermera cette fenêtre une fois la connexion terminée.</value>
+L&apos;application fermera cette fenêtre une fois la connexion effectuée.</value>
   </data>
   <data name="Menu.RegionSelector.EnterPlaceId" xml:space="preserve">
     <value>Saisissez un identifiant de lieu, puis cliquez sur « Rechercher » pour afficher les serveurs.</value>
@@ -2708,7 +2705,7 @@ L&apos;application fermera cette fenêtre une fois la connexion terminée.</valu
     <value>{0} régions chargées.</value>
   </data>
   <data name="Menu.RegionSelector.LoadingDatacenters" xml:space="preserve">
-    <value>Chargement des centres de données…</value>
+    <value>Chargement des centres de données...</value>
   </data>
   <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
     <value>Connectez-vous via le gestionnaire de compte, activez l&apos;option « Autorisation de compte Froststrap » ou signalez-le sur notre serveur Discord pour pouvoir l&apos;utiliser.</value>
@@ -2750,7 +2747,7 @@ L&apos;application fermera cette fenêtre une fois la connexion terminée.</valu
     <value>Enregistrer</value>
   </data>
   <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
-    <value>Mode automatique : recherche de la région qui vous convient le mieux...</value>
+    <value>Mode automatique : recherche de la région la mieux adaptée à vos besoins...</value>
   </data>
   <data name="Menu.SearchBar.JoinError" xml:space="preserve">
     <value>Échec de la connexion à la partie : {0}</value>

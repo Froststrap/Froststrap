@@ -241,7 +241,7 @@
     <value>正在安装 {product}...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
-    <value>安装 Sober...</value>
+    <value>正在安装 Sober...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
     <value>正在安装更新 {0}...</value>
@@ -887,9 +887,6 @@
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015年初</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap（经典版）</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015年底</value>
   </data>
@@ -1285,7 +1282,7 @@
     <value>配置 Froststrap 的外观。</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>频率：</value>
+    <value>频率</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>选择 Froststrap 应使用的图标。</value>
@@ -1294,7 +1291,7 @@
     <value>图标</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>范围：</value>
+    <value>区间</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>需要重新启动才能使更改生效。部分文本可能未被翻译成首选语言。</value>
@@ -1986,7 +1983,7 @@
     <value>减少界面动画。</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
-    <value>运动受限</value>
+    <value>运动减少</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
     <value>全局相机灵敏度。</value>
@@ -2278,7 +2275,7 @@
     <value>强制使用 Legacy OpenGL 渲染</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
-    <value>如果可用，请应用系统优化（需要启用游戏模式）。</value>
+    <value>如果可用，请应用系统优化（需要 gamemoded）。</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
     <value>游戏模式</value>
@@ -2772,7 +2769,7 @@
     <value>正在加载数据中心...</value>
   </data>
   <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
-    <value>请通过账户管理器登录，或开启“Froststrap 账户权限”，或向我们的 Discord 服务器报告此问题以使用该功能。</value>
+    <value>请通过账户管理器登录，或开启“Froststrap 账户权限”，或向我们的 Discord 服务器报告此问题以启用该功能。</value>
   </data>
   <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
     <value>未找到任何公共服务器。</value>

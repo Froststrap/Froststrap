@@ -888,7 +888,7 @@
     <value>أوائل عام 2015</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>فروستستراب (الكلاسيكي)</value>
+    <value>بلوكستراب</value>
   </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>أواخر عام 2015</value>
@@ -1297,7 +1297,7 @@
     <value>تعيين الشكل الذي سيظهر به Froststrap.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>التكرار:</value>
+    <value>التردد</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>اختر الرمز الذي يجب أن يستخدمه Froststrap.</value>
@@ -1306,7 +1306,7 @@
     <value>أيقونة</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>الفترة:</value>
+    <value>الفاصل الزمني</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>يلزم إعادة التشغيل حتى تدخل التغييرات حيز التنفيذ. قد لا تتم ترجمة بعض النصوص إلى اللغة المفضلة.</value>
@@ -1336,7 +1336,7 @@
     <value>تبديل السمات المخصصة تلقائيًا.</value>
   </data>
   <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
-    <value>موضوع ركوب الدراجات</value>
+    <value>موضوع: ركوب الدراجات</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>المظهر</value>
@@ -1468,7 +1468,7 @@
     <value>انضم إلى الخوادم الأصغر حجمًا عند الانضمام عبر زر «اللعب».</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
-    <value>انضم إلى الخوادم الأصغر حجمًا</value>
+    <value>الانضمام إلى خوادم أصغر حجمًا</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
     <value>تشغيل تطبيق Roblox تلقائيًا عند بدء تشغيل جهاز الكمبيوتر الخاص بك.</value>
@@ -1576,7 +1576,7 @@
     <value>لا توجد بيانات نشاط متاحة.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>انضم إلى «أفضل منطقة» (تلقائي)</value>
+    <value>انضم إلى «أفضل منطقة» (السيارات)</value>
   </data>
   <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
     <value>تعذر تحميل ملف تعريف الارتباط الخاص بـ Roblox.</value>
@@ -1628,7 +1628,7 @@
     <value>التنزيل متعدد الخيوط</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
-    <value>إجبار Roblox Studio على تثبيت واستخدام رقم تجزئة إصدار معين بدلاً من أحدث إصدار.</value>
+    <value>إجبار Roblox Studio على تثبيت واستخدام رقم تجزئة إصدار محدد بدلاً من أحدث إصدار.</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
     <value>تجاوز إصدار الاستوديو</value>
@@ -1986,7 +1986,7 @@
     <value>حجم الحفلة</value>
   </data>
   <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
-    <value>عرض شريط الأداء.</value>
+    <value>عرض نافذة الأداء.</value>
   </data>
   <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
     <value>إحصائيات Perf</value>
@@ -2001,7 +2001,7 @@
     <value>يقلل من عدد الرسوم المتحركة في واجهة المستخدم.</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
-    <value>تقلص الحركة</value>
+    <value>حركة محدودة</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
     <value>حساسية الكاميرا الشاملة.</value>
@@ -2323,7 +2323,7 @@
     <value>وضع الإدخال باللمس</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
-    <value>يفرض نظام لوحة التحكم بتصميم عميل التلفزيون/وحدة التحكم الحديثة على سياق واجهة سطح المكتب.</value>
+    <value>يفرض نظام لوحة معلومات تخطيط عميل التلفزيون/وحدة التحكم الحديثة على سياق واجهة سطح المكتب.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
     <value>تجربة استخدام وحدة التحكم</value>
@@ -2446,7 +2446,7 @@
     <value>إعادة تلوين الصور...</value>
   </data>
   <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
-    <value>أيقونة Roblox (اختياري)</value>
+    <value>رمز Roblox (اختياري)</value>
   </data>
   <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
     <value>تم الحفظ في {0}</value>
@@ -2491,7 +2491,7 @@
     <value>استيراد ملف ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
-    <value>تم استيراد المود «{0}» بنجاح.</value>
+    <value>تم استيراد التعديل «{0}» بنجاح.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
     <value>يمكنك استيراد التعديلات عن طريق سحب التعديل أو استيراده، حيث يتم تطبيق التعديلات ذات الأولوية الأقل في النهاية، مما يجعلها تفوز في حالات التعارض مع التعديلات الأخرى.</value>

@@ -887,9 +887,6 @@ Roblox&apos;un [orijinal başlatıcıyla]({1}) çalışıp çalışmadığını 
   <data name="Enums.BootstrapperIcon.IconEarly2015" xml:space="preserve">
     <value>2015 yılının başları</value>
   </data>
-  <data name="Enums.BootstrapperIcon.IconFroststrapClassic" xml:space="preserve">
-    <value>Froststrap (Klasik)</value>
-  </data>
   <data name="Enums.BootstrapperIcon.IconLate2015" xml:space="preserve">
     <value>2015&apos;in sonları</value>
   </data>
@@ -1270,7 +1267,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Froststrap&apos;ın nasıl görüneceğini ayarlayın.</value>
   </data>
   <data name="Menu.Appearance.Frequency" xml:space="preserve">
-    <value>Sıklık:</value>
+    <value>Frekans</value>
   </data>
   <data name="Menu.Appearance.Icon.Description" xml:space="preserve">
     <value>Froststrap&apos;ın hangi simgeyi kullanacağını seçin.</value>
@@ -1279,7 +1276,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Simge</value>
   </data>
   <data name="Menu.Appearance.Interval" xml:space="preserve">
-    <value>Aralık:</value>
+    <value>Aralık</value>
   </data>
   <data name="Menu.Appearance.Language.Description" xml:space="preserve">
     <value>Değişikliklerin yürürlüğe girmesi için yeniden başlatma gerekiyor. Bazı metinler tercih edilen dile çevrilmemiş olabilir.</value>
@@ -1309,7 +1306,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Özel temaları otomatik olarak sırayla görüntüle.</value>
   </data>
   <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
-    <value>Bisiklet Teması</value>
+    <value>Tema: Bisiklet</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>Görünüm</value>
@@ -1432,13 +1429,13 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Tercih Edilen Bölge</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
-    <value>Roblox’un görsel temasını değiştirir.</value>
+    <value>Roblox&apos;un görsel temasını değiştirir.</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
     <value>Roblox Uygulama Teması</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
-    <value>&quot;Oyna&quot; düğmesi aracılığıyla oyuna katılırken daha küçük sunuculara katılın.</value>
+    <value>Oynat düğmesi aracılığıyla oyuna katılırken daha küçük sunuculara katılın.</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
     <value>Daha Küçük Sunuculara Katılın</value>
@@ -1522,7 +1519,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Çeşitli Modlar</value>
   </data>
   <data name="Menu.CommunityMods.ModInstalled" xml:space="preserve">
-    <value>&apos;{0}&apos; modunun kurulumu başarıyla tamamlandı!</value>
+    <value>&apos;{0}&apos; modunu başarıyla yüklediniz!</value>
   </data>
   <data name="Menu.CommunityMods.Overwrite" xml:space="preserve">
     <value>Mevcut &apos;{0}&apos; modunu üzerine yazmak istiyor musunuz?</value>
@@ -1567,7 +1564,7 @@ Başlamak için yukarıdaki “Hesap Ekle” seçeneğine tıklayın</value>
     <value>Roblox çerez dosyası bulunamadı.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Description" xml:space="preserve">
-    <value>Froststrap, Roblox başlatıldığında kendini otomatik olarak kontrol eder ve bir test sürümüne günceller.</value>
+    <value>Froststrap, Roblox başlatıldığında kendisini otomatik olarak kontrol eder ve bir test sürümüne günceller.</value>
   </data>
   <data name="Menu.Deployment.AutoPreReleaseUpdate.Title" xml:space="preserve">
     <value>Ön Sürümlere İlişkin Güncelleme</value>
@@ -2187,7 +2184,7 @@ Daha fazla bilgi:
     <value>Oyun Etkinliğini Göster</value>
   </data>
   <data name="Menu.Integrations.ShowTesting.Description" xml:space="preserve">
-    <value>Bir oyunu test ederken RPC&apos;nizde küçük bir oynat simgesi gösterir.</value>
+    <value>Bir oyunu test ederken RPC&apos;nizde küçük bir oynatma simgesi gösterir.</value>
   </data>
   <data name="Menu.Integrations.ShowTesting.Title" xml:space="preserve">
     <value>Testleri Göster</value>
@@ -2206,7 +2203,7 @@ Eklentiyi yüklemek istiyor musunuz?</value>
     <value>Entegrasyonlar</value>
   </data>
   <data name="Menu.Integrations.TitleChange.Description" xml:space="preserve">
-    <value>Roblox&apos;un başlık çubuğundaki başlığı oyunun adıyla değiştirir.</value>
+    <value>Roblox&apos;un başlık çubuğundaki başlığı oyunun adına değiştirir.</value>
   </data>
   <data name="Menu.Integrations.TitleChange.Title" xml:space="preserve">
     <value>Başlık Değişikliği</value>
@@ -2260,7 +2257,7 @@ Eklentiyi yüklemek istiyor musunuz?</value>
     <value>Yerel Vulkan alt sistemlerini geçersiz kılar ve bunun yerine eski OpenGL düzen boru hattına geri döner.</value>
   </data>
   <data name="Menu.LinuxSettings.ForceLegacyOpenGL.Title" xml:space="preserve">
-    <value>OpenGL Oluşturmayı Zorla</value>
+    <value>OpenGL ile Oluşturmayı Zorla</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
     <value>Mevcut ise sistem optimizasyonlarını uygulayın (gamemoded gereklidir).</value>
@@ -2449,7 +2446,7 @@ Eklentiyi yüklemek istiyor musunuz?</value>
     <value>&apos;{0}&apos; öğesini kalıcı olarak silmek istiyor musunuz?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Dosya modlarını yönetin ve uygulayın.</value>
+    <value>Dosya değişikliklerini yönetin ve uygulayın.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Zip dosyasını / klasörü içe aktarmak için buraya sürükleyin</value>
