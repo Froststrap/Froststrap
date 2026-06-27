@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Nepavyko nustatyti serverio vietos. Galbūt prisijungiate prie žaidimų per greitai.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Pridėti pasirinktą temą</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>„Roblox“ nebepritaikytas „Windows 7“ ar „Windows 8.1“ operacinėms sistemoms. Norėdami toliau žaisti „Roblox“, atnaujinkite operacinę sistemą į „Windows 10“ ar naujesnę versiją.</value>
   </data>
@@ -143,7 +146,7 @@
 Ar norite pakeisti numatytąjį kanalą į {0}?</value>
   </data>
   <data name="Bootstrapper.CancelButton.Skip" xml:space="preserve">
-    <value>Pereiti</value>
+    <value>Praleisti</value>
   </data>
   <data name="Bootstrapper.ConfirmLaunch" xml:space="preserve">
     <value>„Roblox“ šiuo metu veikia, o paleidus dar vieną instanciją ji bus uždaryta. Ar tikrai norite tęsti paleidimą?</value>
@@ -220,7 +223,7 @@ Ar norite pereiti prie numatytojo kanalo ({1})?</value>
     <value>Išgavimas</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingDXVK" xml:space="preserve">
-    <value>Išskaičiuojamas DXVK...</value>
+    <value>Išskaičiuojama DXVK...</value>
   </data>
   <data name="Bootstrapper.Status.ExtractingDXVKSarek" xml:space="preserve">
     <value>Išskiriama „DXVK-Sarek“...</value>
@@ -1396,7 +1399,7 @@ Norėdami pradėti, spustelėkite „Pridėti paskyrą“ viršuje</value>
     <value>Pasirinkite, kiek regionų reikia patikrinti – tai gali padėti, jei sistema negali rasti jums tinkamiausių regionų.</value>
   </data>
   <data name="Menu.Bootstrapper.BestRegionAmount.Title" xml:space="preserve">
-    <value>Geriausi regionų rodikliai</value>
+    <value>Geriausios sumos pagal regionus</value>
   </data>
   <data name="Menu.Bootstrapper.CleanUp.Description" xml:space="preserve">
     <value>Automatiškai ištrina senus duomenis, kad atlaisvintų vietos. Sukūrė Fishstrap.</value>
@@ -1787,14 +1790,92 @@ Ar norite jį pašalinti dabar?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>„FastFlag“ nustatymai</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Pridėti vietos ID</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Išvalyti FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Nepavyko nukopijuoti profilio:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Dabartiniai vietovių identifikatoriai</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Ištrinti pasirinktus</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Įveskite vietos identifikatorių.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nepavyko gauti dabartinių „FastFlags“ duomenų.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Profilio pavadinime yra neleistinas simbolis „{0}“.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Vietų ID tvarkymas: {0} ({1} ID)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Naujo profilio pavadinimas negali būti tuščias.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Profiliai nerasti</value>
+    <value>Profiliai nerasti.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Profiliai nerasti. Pirmiausia sukurkite profilį.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Nepavyko išanalizuoti pasirinktą profilį.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Šis vietos identifikatorius jau pridėtas prie profilio.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Vietos identifikatorius turi būti sveikasis skaičius.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Įveskite vietos ID (pvz., 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Vietovių identifikatoriai</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Profilis su tokiu pavadinimu jau egzistuoja.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Nerastas pasirinktas profilio failas.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Pašalinti pasirinktus</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Nepavyko pervardyti profilio:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Pasirinkite profilį, kad galėtumėte tvarkyti vietų identifikatorius</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Prašome pasirinkti profilį, kurį norite nukopijuoti.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Pirmiausia pasirinkite profilį.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Pasirinkite profilį, kad galėtumėte tvarkyti jo vietų ID:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Prašome pasirinkti profilį, kurio pavadinimą norite pakeisti.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Prašome pasirinkti profilį, kurį norite atnaujinti.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>„Fast Flag“ profiliai</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Nepavyko atnaujinti profilio:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Pakeiskite žaidimo nustatymus naudodamiesi patogiu meniu.</value>
@@ -2311,7 +2392,7 @@ Ar norite įdiegti šį įskiepį?</value>
     <value>Pateikti paraišką į „Shiftlock“</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Kuo didesnis skaičius, tuo geresnė kokybė, tačiau tai užtrunka ilgiau; didžiausia reikšmė yra 64, o numatytoji – 8.</value>
+    <value>Kuo didesnis skaičius, tuo geresnė kokybė, tačiau tai užtrunka ilgiau; didžiausia reikšmė yra 512, o numatytoji – 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Modų generavimas atšauktas.</value>
@@ -2389,7 +2470,7 @@ Ar norite įdiegti šį įskiepį?</value>
     <value>Ar norite visam laikui ištrinti „{0}“?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Valdykite ir taikykite failų modifikacijas „Roblox“ žaidimo klientui.</value>
+    <value>Valdyti ir taikyti failų modifikacijas.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Nupieškite, kad importuotumėte ZIP failą / aplanką</value>
@@ -2418,6 +2499,30 @@ Jame turi būti bent vienas iš šių aplankų: „content“, „ExtraContent�
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Modifikacijų neįdiegta.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Nepavyko įkelti peržiūros: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Šrifto peržiūra</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Šrifto variantas:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Peržiūra įkelta</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Įkeliama šrifto peržiūra...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Įkeliami simboliai...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Įkeliama šriftas: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Šiame modifikatoriuje nerasta jokios informacijos apie spalvas</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Pasirinkta modifikatoriaus veiksmas</value>

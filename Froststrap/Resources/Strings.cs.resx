@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Nepodařilo se zjistit umístění serveru. Možná se připojujete ke hrám příliš rychle.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Přidat vlastní motiv</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox již nepodporuje systémy Windows 7 ani 8.1. Chcete-li v hraní Robloxu pokračovat, proveďte prosím upgrade na Windows 10 nebo novější verzi.</value>
   </data>
@@ -325,7 +328,7 @@ Chcete přepnout na výchozí kanál ({1})?</value>
     <value>Přidat jednotlivý</value>
   </data>
   <data name="Common.All" xml:space="preserve">
-    <value>Vše</value>
+    <value>Všechny</value>
   </data>
   <data name="Common.Angle" xml:space="preserve">
     <value>Úhel</value>
@@ -1209,7 +1212,7 @@ Opravdu chcete pokračovat?</value>
   </data>
   <data name="Menu.AccountSelector.AlreadyLoggedIn" xml:space="preserve">
     <value>Účet „@{0}“ je již přihlášen.
-Přepnuto na tento účet.</value>
+Bylo přepnuto na tento účet.</value>
   </data>
   <data name="Menu.AccountSelector.AskToAddAccount" xml:space="preserve">
     <value>Nebyly přidány žádné účty
@@ -1408,7 +1411,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Zapnout funkci BetterMatchmaking</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
-    <value>Zvolte, kolik serverů chcete zkontrolovat – čím více jich bude, tím déle to může trvat.</value>
+    <value>Vyberte počet serverů, které chcete zkontrolovat – čím více jich bude, tím déle to může trvat.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
     <value>Maximální částka pro kontrolu serveru</value>
@@ -1420,7 +1423,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Preferovaný region</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Description" xml:space="preserve">
-    <value>Změní vizuální téma aplikace Roblox.</value>
+    <value>Změní vzhledové téma aplikace Roblox.</value>
   </data>
   <data name="Menu.Bootstrapper.RobloxTheme.Title" xml:space="preserve">
     <value>Téma aplikace Roblox</value>
@@ -1534,7 +1537,7 @@ Klikněte nahoře na „Přidat účet“ a můžete začít</value>
     <value>Pozorný pozorovatel</value>
   </data>
   <data name="Menu.ContextMenu.NoData" xml:space="preserve">
-    <value>Údaje o aktivitě nejsou k dispozici.</value>
+    <value>Nejsou k dispozici žádné údaje o aktivitě.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
     <value>Připojte se k Best Region (Auto)</value>
@@ -1751,14 +1754,92 @@ Chcete jej nyní odstranit?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Nastavení FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Přidat ID místa</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Vymazat FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Kopírování profilu se nezdařilo:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Aktuální identifikátory míst</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Odstranit vybrané</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Zadejte prosím ID místa.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nepodařilo se načíst aktuální FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Název profilu obsahuje neplatný znak „{0}“.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Správa identifikátorů míst pro: {0} ({1} identifikátorů)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Název nového profilu nesmí být prázdný.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Nebyly nalezeny žádné profily</value>
+    <value>Nebyly nalezeny žádné profily.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Nebyly nalezeny žádné profily. Nejprve si prosím vytvořte profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Nepodařilo se analyzovat vybraný profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Toto ID místa je již přidáno do profilu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>ID místa musí být celé číslo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Zadejte ID místa (např. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>ID míst</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Profil s tímto názvem již existuje.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Zvolený profilový soubor nebyl nalezen.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Odebrat vybrané</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Nepodařilo se přejmenovat profil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Vyberte profil pro správu ID míst</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Vyberte prosím profil, který chcete zkopírovat.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Nejprve prosím vyberte profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Vyberte profil, u kterého chcete spravovat ID míst:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Vyberte prosím profil, který chcete přejmenovat.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Vyberte prosím profil, který chcete aktualizovat.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profily Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Aktualizace profilu se nezdařila:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Nastavení ve hře můžete změnit v přehledném menu.</value>
@@ -1821,7 +1902,7 @@ Chcete jej nyní odstranit?</value>
     <value>Tímto krokem dojde k nahrazení všech vašich stávajících globálních nastavení importovanými. Opravdu chcete pokračovat?</value>
   </data>
   <data name="Menu.GlobalSettings.Import.Fail" xml:space="preserve">
-    <value>Import nastavení se nezdařil. Ujistěte se, že aplikace Roblox není spuštěná, a zkuste to znovu.</value>
+    <value>Import nastavení se nezdařil. Ujistěte se, že aplikace Roblox není spuštěna, a zkuste to znovu.</value>
   </data>
   <data name="Menu.GlobalSettings.Import.NotGBS" xml:space="preserve">
     <value>Zdá se, že vybraný soubor není platným souborem nastavení GBS.</value>
@@ -2125,7 +2206,7 @@ Chcete plugin nainstalovat?</value>
     <value>Pokročilá nastavení pro víno</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
-    <value>Umožňuje aplikaci Sober vyžádat si a zaznamenat vstupy z ovladače prostřednictvím Steam Deck nebo podobných ovladačů.</value>
+    <value>Umožňuje aplikaci Sober vyžádat si a zaznamenat vstupy z ovladačů, jako je Steam Deck nebo podobné ovladače.</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
     <value>Povolit oprávnění pro gamepad</value>
@@ -2212,7 +2293,7 @@ Chcete plugin nainstalovat?</value>
     <value>Virtuální pracovní plochy</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Description" xml:space="preserve">
-    <value>Používá se u některých prvků uživatelského rozhraní a při přihlášení</value>
+    <value>Používá se pro určité prvky uživatelského rozhraní a pro přihlášení</value>
   </data>
   <data name="Menu.LinuxSettings.WebPages.Title" xml:space="preserve">
     <value>Webové stránky</value>
@@ -2230,7 +2311,7 @@ Chcete plugin nainstalovat?</value>
     <value>Otevřete ve svém prohlížeči stránku Roblox.com a přihlaste se</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.2" xml:space="preserve">
-    <value>Stiskněte klávesu F12 a otevřete nástroje pro vývojáře</value>
+    <value>Stiskněte klávesu F12 a otevřete Nástroje pro vývojáře</value>
   </data>
   <data name="Menu.ManualLogin.Instruction.3" xml:space="preserve">
     <value>Klikněte na záložku „Aplikace“ (Chrome) nebo „Úložiště“ (Firefox)</value>
@@ -2251,7 +2332,7 @@ Chcete plugin nainstalovat?</value>
     <value>Neplatný soubor cookie. Zkontrolujte jej a zkuste to znovu.</value>
   </data>
   <data name="Menu.ManualLogin.PasteSecurity" xml:space="preserve">
-    <value>Vložte svůj soubor cookie s příponou .ROBLOSECURITY</value>
+    <value>Vložte svůj soubor cookie .ROBLOSECURITY</value>
   </data>
   <data name="Menu.ManualLogin.Title" xml:space="preserve">
     <value>Ruční přihlášení</value>
@@ -2272,7 +2353,7 @@ Chcete plugin nainstalovat?</value>
     <value>Přihlásit se do Shiftlocku</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Čím vyšší číslo, tím lepší kvalita, ale trvá to déle. Maximální hodnota je 64, výchozí hodnota je 8.</value>
+    <value>Čím vyšší číslo, tím lepší kvalita, ale trvá to déle. Maximální hodnota je 512, výchozí hodnota je 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Vytvoření modu bylo zrušeno.</value>
@@ -2350,7 +2431,7 @@ Chcete plugin nainstalovat?</value>
     <value>Chcete trvale smazat „{0}“?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Spravujte a aplikujte úpravy souborů na herního klienta Roblox.</value>
+    <value>Správa a použití úprav souborů.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Přetáhněte soubor ZIP nebo složku pro import</value>
@@ -2362,7 +2443,7 @@ Chcete plugin nainstalovat?</value>
     <value>Importovat složku</value>
   </data>
   <data name="Menu.Mods.ImportZIP" xml:space="preserve">
-    <value>Načíst ZIP</value>
+    <value>Importovat ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
     <value>Modul „{0}“ byl úspěšně importován.</value>
@@ -2379,6 +2460,30 @@ Musí obsahovat alespoň jednu z následujících složek: content, ExtraContent
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nejsou nainstalovány žádné mody.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Načtení náhledu se nezdařilo: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Náhled písma</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Varianta písma:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Náhled načten</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Načítá se náhled písma...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Načítání znaků...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Načítání písma: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>V tomto modu nebyly nalezeny žádné informace o barvách</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Vybraná akce modulu</value>

@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Não foi possível consultar a localização do servidor. Talvez estejas a entrar nos jogos demasiado depressa.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Adicionar tema personalizado</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>O Roblox já não é compatível com o Windows 7 nem com o 8.1. Para continuar a jogar o Roblox, atualize para o Windows 10 ou uma versão mais recente.</value>
   </data>
@@ -1399,7 +1402,7 @@ Clique em «Adicionar conta» acima para começar</value>
     <value>Ativar o BetterMatchmaking</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Description" xml:space="preserve">
-    <value>Selecione o número de servidores a verificar; quanto mais servidores, mais tempo poderá demorar.</value>
+    <value>Selecione o número de servidores a verificar; quanto mais forem, mais tempo poderá demorar.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
     <value>Valor máximo de verificação do servidor</value>
@@ -1667,7 +1670,7 @@ Queres removê-lo agora?</value>
     <value>Total de bandeiras</value>
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
-    <value>Na sequência da inclusão de alguns FastFlags do Roblox na lista de permissões, estes são os únicos que ainda estão disponíveis para utilização.</value>
+    <value>Na sequência da inclusão de alguns FastFlags do Roblox na lista de permissões, estes são os únicos que continuam disponíveis para utilização.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlar a forma como determinados parâmetros e funcionalidades do motor do Roblox são configurados.</value>
@@ -1745,14 +1748,92 @@ Queres removê-lo agora?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Definições do FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Adicionar ID do local</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Limpar FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Não foi possível copiar o perfil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>IDs de locais atuais</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Apagar os selecionados</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Introduza um ID de local.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Não foi possível obter os FastFlags atuais.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>O nome do perfil contém o caractere inválido «{0}».</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Gestão de IDs de locais para: {0} ({1} IDs)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>O nome do novo perfil não pode ficar em branco.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Não foram encontrados perfis</value>
+    <value>Não foram encontrados perfis.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Não foram encontrados perfis. Por favor, crie primeiro um perfil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Não foi possível analisar o perfil selecionado.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Este ID de local já foi adicionado ao perfil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>O ID do local deve ser um número inteiro.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Introduza o ID do local (por exemplo, 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Identificadores de localização</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Já existe um perfil com esse nome.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>O ficheiro de perfil selecionado não foi encontrado.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Remover os selecionados</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Não foi possível renomear o perfil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Selecione um perfil para gerir os IDs de localização</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Selecione um perfil para copiar.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Por favor, selecione primeiro um perfil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Selecione um perfil para gerir os seus IDs de localização:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Selecione um perfil para o qual pretenda alterar o nome.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Selecione um perfil para atualizar.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Perfis Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Não foi possível atualizar o perfil:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Altere as definições do jogo a partir de um menu prático.</value>
@@ -2269,7 +2350,7 @@ Quer instalar o plugin?</value>
     <value>Candidatar-se ao Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Quanto maior for o número, maior será a qualidade, mas demora mais tempo; o valor máximo é 64 e o valor predefinido é 8.</value>
+    <value>Quanto maior for o número, maior será a qualidade, mas demora mais tempo; o valor máximo é 512 e o valor predefinido é 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>A criação do mod foi cancelada.</value>
@@ -2347,7 +2428,7 @@ Quer instalar o plugin?</value>
     <value>Deseja eliminar «{0}» definitivamente?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Gerir e aplicar modificações aos ficheiros do Cliente do Jogo Roblox.</value>
+    <value>Gerir e aplicar modificações aos ficheiros.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Arrastar e soltar para importar ficheiros ZIP / pastas</value>
@@ -2376,6 +2457,30 @@ Deve conter, pelo menos, uma das seguintes pastas: content, ExtraContent, Platfo
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Não há mods instalados.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Não foi possível carregar a pré-visualização: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Pré-visualização da fonte</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Variante da fonte:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Pré-visualização carregada</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>A carregar pré-visualização da fonte...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>A carregar glifos...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>A carregar o tipo de letra: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Não foram encontradas informações sobre cores neste mod</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Ação do Mod selecionado</value>
@@ -2498,7 +2603,7 @@ Deve conter, pelo menos, uma das seguintes pastas: content, ExtraContent, Platfo
     <value>Modificações predefinidas</value>
   </data>
   <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
-    <value>O gestor de contas não está disponível.</value>
+    <value>O gestor de conta não está disponível.</value>
   </data>
   <data name="Menu.QuickPlay.Active" xml:space="preserve">
     <value>Ativo</value>

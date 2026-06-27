@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>تعذر الاستعلام عن موقع الخادم. ربما تكون تنضم إلى الألعاب بسرعة كبيرة.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>إضافة سمة مخصصة</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>لم يعد Roblox يدعم نظامي التشغيل Windows 7 أو 8.1. لمواصلة لعب Roblox، يرجى الترقية إلى Windows 10 أو إصدار أحدث.</value>
   </data>
@@ -1333,7 +1336,7 @@
     <value>تبديل السمات المخصصة تلقائيًا.</value>
   </data>
   <data name="Menu.Appearance.ThemeCycling.Title" xml:space="preserve">
-    <value>موضوع: ركوب الدراجات</value>
+    <value>موضوع ركوب الدراجات</value>
   </data>
   <data name="Menu.Appearance.Title" xml:space="preserve">
     <value>المظهر</value>
@@ -1465,7 +1468,7 @@
     <value>انضم إلى الخوادم الأصغر حجمًا عند الانضمام عبر زر «اللعب».</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
-    <value>الانضمام إلى خوادم أصغر حجمًا</value>
+    <value>انضم إلى الخوادم الأصغر حجمًا</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Description" xml:space="preserve">
     <value>تشغيل تطبيق Roblox تلقائيًا عند بدء تشغيل جهاز الكمبيوتر الخاص بك.</value>
@@ -1573,7 +1576,7 @@
     <value>لا توجد بيانات نشاط متاحة.</value>
   </data>
   <data name="Menu.ContextMenu.RegionJoin" xml:space="preserve">
-    <value>انضم إلى «أفضل منطقة» (السيارات)</value>
+    <value>انضم إلى «أفضل منطقة» (تلقائي)</value>
   </data>
   <data name="Menu.CookieState.CouldNotLoad" xml:space="preserve">
     <value>تعذر تحميل ملف تعريف الارتباط الخاص بـ Roblox.</value>
@@ -1625,7 +1628,7 @@
     <value>التنزيل متعدد الخيوط</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
-    <value>إجبار Roblox Studio على تثبيت واستخدام رقم تجزئة إصدار محدد بدلاً من أحدث إصدار.</value>
+    <value>إجبار Roblox Studio على تثبيت واستخدام رقم تجزئة إصدار معين بدلاً من أحدث إصدار.</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
     <value>تجاوز إصدار الاستوديو</value>
@@ -1793,14 +1796,92 @@
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>إعدادات FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>إضافة معرّف المكان</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>مسح FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>فشل نسخ الملف الشخصي:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>معرّفات المواقع الحالية</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>حذف المحدد</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>يرجى إدخال معرّف المكان.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>فشل الحصول على FastFlags الحالية.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>يحتوي اسم الملف الشخصي على حرف غير صالح هو &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>إدارة معرّفات المواقع لـ: {0} ({1} معرّفًا)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>لا يجوز أن يكون اسم الملف الشخصي الجديد فارغًا.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>لم يتم العثور على أي ملفات تعريف</value>
+    <value>لم يتم العثور على أي ملفات تعريف.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>لم يتم العثور على أي ملفات تعريف. يرجى إنشاء ملف تعريف أولاً.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>فشل تحليل الملف الشخصي المحدد.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>تمت إضافة معرّف المكان هذا إلى الملف الشخصي بالفعل.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>يجب أن يكون معرّف المكان عددًا صحيحًا.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>أدخل معرّف المكان (على سبيل المثال، 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>معرّفات المواقع</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>يوجد بالفعل حساب بهذا الاسم.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>لم يتم العثور على ملف الملف الشخصي المحدد.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>إزالة العناصر المحددة</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>فشل تغيير اسم الملف الشخصي:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>اختر ملفًا شخصيًّا لإدارة معرّفات الأماكن</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>يرجى اختيار ملف تعريف لنسخه.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>يرجى اختيار ملف تعريف أولاً.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>اختر ملف تعريف لإدارة معرّفات المواقع الخاصة به:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>يرجى اختيار ملف تعريف لإعادة تسميته.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>يرجى اختيار ملف تعريف لتحديثه.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>ملفات تعريف Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>فشل تحديث الملف الشخصي:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>يمكنك تغيير إعدادات اللعبة من خلال قائمة سهلة الاستخدام.</value>
@@ -1905,7 +1986,7 @@
     <value>حجم الحفلة</value>
   </data>
   <data name="Menu.GlobalSettings.PerfStats.Description" xml:space="preserve">
-    <value>عرض نافذة الأداء.</value>
+    <value>عرض شريط الأداء.</value>
   </data>
   <data name="Menu.GlobalSettings.PerfStats.Title" xml:space="preserve">
     <value>إحصائيات Perf</value>
@@ -1920,7 +2001,7 @@
     <value>يقلل من عدد الرسوم المتحركة في واجهة المستخدم.</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
-    <value>حركة محدودة</value>
+    <value>تقلص الحركة</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
     <value>حساسية الكاميرا الشاملة.</value>
@@ -2242,7 +2323,7 @@
     <value>وضع الإدخال باللمس</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Description" xml:space="preserve">
-    <value>يفرض نظام لوحة معلومات تخطيط عميل التلفزيون/وحدة التحكم الحديثة على سياق واجهة سطح المكتب.</value>
+    <value>يفرض نظام لوحة التحكم بتصميم عميل التلفزيون/وحدة التحكم الحديثة على سياق واجهة سطح المكتب.</value>
   </data>
   <data name="Menu.LinuxSettings.UseConsoleExperience.Title" xml:space="preserve">
     <value>تجربة استخدام وحدة التحكم</value>
@@ -2317,7 +2398,7 @@
     <value>تقدم بطلب للانضمام إلى Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>كلما ارتفع الرقم، زادت الجودة، لكن العملية تستغرق وقتًا أطول؛ الحد الأقصى هو 64، والقيمة الافتراضية هي 8.</value>
+    <value>كلما ارتفع الرقم، زادت الجودة، لكن العملية تستغرق وقتًا أطول؛ الحد الأقصى هو 512، والقيمة الافتراضية هي 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>تم إلغاء إنشاء التعديل.</value>
@@ -2365,7 +2446,7 @@
     <value>إعادة تلوين الصور...</value>
   </data>
   <data name="Menu.ModGenerator.RobloxIcon" xml:space="preserve">
-    <value>رمز Roblox (اختياري)</value>
+    <value>أيقونة Roblox (اختياري)</value>
   </data>
   <data name="Menu.ModGenerator.SavedTo" xml:space="preserve">
     <value>تم الحفظ في {0}</value>
@@ -2395,7 +2476,7 @@
     <value>هل تريد حذف «{0}» نهائيًا؟</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>إدارة تعديلات الملفات وتطبيقها على عميل لعبة Roblox.</value>
+    <value>إدارة تعديلات الملفات وتطبيقها.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 اسحب ملف ZIP أو مجلدًا لاستيراده</value>
@@ -2410,7 +2491,7 @@
     <value>استيراد ملف ZIP</value>
   </data>
   <data name="Menu.Mods.Imported" xml:space="preserve">
-    <value>تم استيراد التعديل «{0}» بنجاح.</value>
+    <value>تم استيراد المود «{0}» بنجاح.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
     <value>يمكنك استيراد التعديلات عن طريق سحب التعديل أو استيراده، حيث يتم تطبيق التعديلات ذات الأولوية الأقل في النهاية، مما يجعلها تفوز في حالات التعارض مع التعديلات الأخرى.</value>
@@ -2424,6 +2505,30 @@
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>لا توجد تعديلات مثبتة.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>فشل تحميل المعاينة: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>معاينة الخط</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>نوع الخط:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>تم تحميل المعاينة</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>جاري تحميل معاينة الخط...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>جاري تحميل الرموز...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>جاري تحميل الخط: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>لم يتم العثور على أي معلومات عن الألوان في هذا التعديل</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>إجراء معدل محدد</value>

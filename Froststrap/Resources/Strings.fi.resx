@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Palvelimen sijaintia ei voitu selvittää. Saatat liittyä peleihin liian nopeasti.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Lisää mukautettu teema</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox ei enää tue Windows 7:ää tai 8.1:tä. Jotta voit jatkaa Robloxin pelaamista, päivitä käyttöjärjestelmäsi Windows 10:een tai uudempaan versioon.</value>
   </data>
@@ -184,7 +187,7 @@ Haluatko siirtyä oletuskanavalle ({1})?</value>
     <value>Riippuvuuksien tarkistaminen</value>
   </data>
   <data name="Bootstrapper.Status.CheckingFlatpak" xml:space="preserve">
-    <value>Tarkistetaan Flatpakin asennusta...</value>
+    <value>Tarkistetaan Flatpak-asennusta...</value>
   </data>
   <data name="Bootstrapper.Status.CheckingUpdates" xml:space="preserve">
     <value>Päivitysten tarkistaminen</value>
@@ -1435,7 +1438,7 @@ Aloita napsauttamalla yläpuolella olevaa ”Lisää tili” -painiketta</value>
     <value>Käynnistys Startupissa</value>
   </data>
   <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
-    <value>Siirtää sovelluksen tehtäväpalkkiin sen sijaan, että sulkisi sen kokonaan.</value>
+    <value>Siirtää sovelluksen tehtäväpalkkiin sen sijaan, että se suljettaisiin kokonaan.</value>
   </data>
   <data name="Menu.Bootstrapper.Tray.Title" xml:space="preserve">
     <value>Pienennä tehtäväpalkkiin</value>
@@ -1676,7 +1679,7 @@ Haluatko poistaa sen nyt?</value>
     <value>Lippujen kokonaismäärä</value>
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
-    <value>Joidenkin Roblox FastFlags -komentojen lisäämisen sallittujen listalle jälkeen nämä ovat ainoat, joita voi edelleen käyttää.</value>
+    <value>Joidenkin Roblox FastFlags -komentojen sallimisen jälkeen nämä ovat ainoat, joita voi vielä käyttää.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Hallitse tiettyjen Roblox-moottorin parametrien ja ominaisuuksien asetuksia.</value>
@@ -1754,14 +1757,92 @@ Haluatko poistaa sen nyt?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag-asetukset</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Lisää paikkatunnus</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Tyhjennä FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Profiilin kopiointi epäonnistui:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Nykyiset paikkatunnukset</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Poista valitut</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Syötä paikan tunniste.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nykyisten FastFlags-tietojen hakeminen epäonnistui.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Profiilin nimessä on virheellinen merkki &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Paikkatunnisteiden hallinta: {0} ({1} tunnistetta)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Uuden profiilin nimi ei saa olla tyhjä.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Profiileja ei löytynyt</value>
+    <value>Profiileja ei löytynyt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Profiileja ei löytynyt. Luo ensin profiili.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Valitun profiilin jäsentäminen epäonnistui.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Tämä paikkatunnus on jo lisätty profiiliin.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Paikkatunnuksen on oltava kokonaisluku.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Syötä paikkatunnus (esim. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Paikkatunnukset</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Tällä nimellä on jo olemassa profiili.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Valittua profiilitiedostoa ei löytynyt.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Poista valitut</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Profiilin uudelleennimeäminen epäonnistui:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Valitse profiili paikkatunnisteiden hallitsemiseksi</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Valitse kopioitava profiili.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Valitse ensin profiili.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Valitse profiili, jonka paikkatunnisteita haluat hallita:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Valitse profiili, jonka nimen haluat muuttaa.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Valitse päivitettävä profiili.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Nopeat lippuprofiilit</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Profiilin päivitys epäonnistui:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Muokkaa pelin asetuksia kätevän valikon kautta.</value>
@@ -1797,7 +1878,7 @@ Haluatko poistaa sen nyt?</value>
     <value>Ensimmäisen persoonan herkkyys</value>
   </data>
   <data name="Menu.GlobalSettings.FramerateLimit.Description" xml:space="preserve">
-    <value>Määritä mukautettu FPS-raja. Käytä arvoa -1 oletusasetukseksi.</value>
+    <value>Määritä mukautettu FPS-rajoitus. Käytä arvoa -1 oletusasetukseksi.</value>
   </data>
   <data name="Menu.GlobalSettings.FramerateLimit.Title" xml:space="preserve">
     <value>Kuvataajuuden raja</value>
@@ -2275,7 +2356,7 @@ Haluatko asentaa laajennuksen?</value>
     <value>Hae Shiftlockiin</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Mitä suurempi luku, sitä parempi laatu, mutta käsittely kestää kauemmin. Suurin arvo on 64, oletusarvo on 8.</value>
+    <value>Mitä suurempi luku, sitä parempi laatu, mutta käsittely kestää kauemmin. Suurin arvo on 512, oletusarvo on 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Modin luominen peruutettu.</value>
@@ -2290,7 +2371,7 @@ Haluatko asentaa laajennuksen?</value>
     <value>Mukautettu spinner (valinnainen)</value>
   </data>
   <data name="Menu.ModGenerator.Description" xml:space="preserve">
-    <value>Luo modeja helposti yhdellä napsautuksella.</value>
+    <value>Luo modit helposti yhdellä napsautuksella.</value>
   </data>
   <data name="Menu.ModGenerator.DontColorPlay" xml:space="preserve">
     <value>Älä väritä -kuvake</value>
@@ -2353,13 +2434,13 @@ Haluatko asentaa laajennuksen?</value>
     <value>Haluatko poistaa &apos;{0}&apos; lopullisesti?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Hallitse ja asenna tiedostomuokkauksia Roblox-peliohjelmaan.</value>
+    <value>Hallitse ja asenna tiedostomuokkauksia.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Vedä ja pudota tuodaksesi ZIP-tiedoston tai kansion</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
-    <value>Kansiota ”{0}” ei enää ole olemassa.</value>
+    <value>Kansio ”{0}” ei ole enää olemassa.</value>
   </data>
   <data name="Menu.Mods.ImportFolder" xml:space="preserve">
     <value>Tuo kansio</value>
@@ -2371,7 +2452,7 @@ Haluatko asentaa laajennuksen?</value>
     <value>Mod &apos;{0}&apos; on tuotu onnistuneesti.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>Tuo modit vetämällä modia tai tuomalla ne; modit, joiden prioriteetti on alhaisempi, otetaan käyttöön viimeisenä, jolloin ne voittavat ristiriitatilanteet muiden modien kanssa.</value>
+    <value>Tuo modit vetämällä modia tai tuomalla ne; modit, joiden prioriteetti on alhaisempi, otetaan käyttöön viimeisenä, jolloin ne voittavat ristiriidat muiden modien kanssa.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>Kansion nimi on virheellinen.</value>
@@ -2382,6 +2463,30 @@ Sen on sisällettävä vähintään yksi seuraavista kansioista: content, ExtraC
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Modifikaatioita ei ole asennettu.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Esikatselun lataaminen epäonnistui: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Fontin esikatselu</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Fonttivariantti:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Esikatselu ladattu</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Fontin esikatselua ladataan...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Glyfien lataaminen...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Fonttia ladataan: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Tästä modista ei löytynyt väritietoja</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Valittu moduulin toiminto</value>
@@ -2582,7 +2687,7 @@ Sen on sisällettävä vähintään yksi seuraavista kansioista: content, ExtraC
     <value>Seurattavat palvelimet ({0})</value>
   </data>
   <data name="Menu.QuickPlay.UnableToAuthenticate" xml:space="preserve">
-    <value>Tunnistautumista ei voitu suorittaa. Kirjaudu sisään uudelleen.</value>
+    <value>Todentamista ei voitu suorittaa. Kirjaudu sisään uudelleen.</value>
   </data>
   <data name="Menu.QuickPlay.UnknownGame" xml:space="preserve">
     <value>Tuntematon peli</value>
@@ -2643,7 +2748,7 @@ Sovellus sulkee tämän ikkunan, kun tunnistautuminen on valmis.</value>
     <value>Ladataan tietokeskuksia...</value>
   </data>
   <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
-    <value>Kirjaudu sisään tilinhallinnan kautta, ota käyttöön ”Froststrap-tilin käyttöoikeudet” tai ilmoita asiasta Discord-palvelimellamme, jotta voit käyttää palvelua.</value>
+    <value>Kirjaudu sisään Account Managerin kautta, ota käyttöön ”Froststrap Account Permission” -toiminto tai ilmoita asiasta Discord-palvelimellamme, jotta voit käyttää palvelua.</value>
   </data>
   <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
     <value>Julkisia palvelimia ei löytynyt.</value>
@@ -2682,7 +2787,7 @@ Sovellus sulkee tämän ikkunan, kun tunnistautuminen on valmis.</value>
     <value>Tallenna</value>
   </data>
   <data name="Menu.SearchBar.AutoJoin" xml:space="preserve">
-    <value>Automaattitila: Etsitään sinulle sopivin alue...</value>
+    <value>Automaattitila: Etsitään sinulle parasta aluetta...</value>
   </data>
   <data name="Menu.SearchBar.JoinError" xml:space="preserve">
     <value>Peliin liittymistä ei onnistunut: {0}</value>

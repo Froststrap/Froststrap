@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Lokasi server tidak dapat diakses. Mungkin Anda bergabung ke dalam permainan terlalu cepat.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Tambahkan Tema Kustom</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox tidak lagi mendukung Windows 7 atau 8.1. Untuk terus bermain Roblox, silakan perbarui sistem operasi Anda ke Windows 10 atau versi yang lebih baru.</value>
   </data>
@@ -272,7 +275,7 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
     <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
   </data>
   <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
-    <value>Memulai Hidup Tanpa Minuman Keras...</value>
+    <value>Memulai Hidup Tanpa Alkohol...</value>
   </data>
   <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
     <value>Menjalankan Roblox Studio dengan Wine...</value>
@@ -410,7 +413,7 @@ Apakah Anda ingin beralih ke saluran default ({1})?</value>
     <value>Pratinjau Glyph</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Kode Hex</value>
+    <value>Kode Hexadesimal</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Impor</value>
@@ -1688,14 +1691,92 @@ Mau menghapusnya sekarang?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Pengaturan FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Tambahkan ID Tempat</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Hapus FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Gagal menyalin profil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>ID Lokasi Saat Ini</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Hapus yang Terpilih</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Silakan masukkan ID lokasi.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Gagal mengambil FastFlags terkini.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Nama profil mengandung karakter yang tidak sah &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Mengelola ID lokasi untuk: {0} ({1} ID)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Nama profil baru tidak boleh kosong.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Tidak Ditemukan Profil</value>
+    <value>Tidak ditemukan profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Tidak ditemukan profil. Silakan buat profil terlebih dahulu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Gagal mengurai profil yang dipilih.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>ID lokasi ini sudah ditambahkan ke profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>ID Lokasi harus berupa bilangan bulat.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Masukkan ID Tempat (misalnya, 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>ID Lokasi</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Profil dengan nama tersebut sudah ada.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Berkas profil yang dipilih tidak ditemukan.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Hapus yang Terpilih</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Gagal mengganti nama profil:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Pilih profil untuk mengelola ID lokasi</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Silakan pilih profil yang ingin Anda salin.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Silakan pilih profil terlebih dahulu.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Pilih profil untuk mengelola ID lokasinya:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Silakan pilih profil yang ingin Anda ubah namanya.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Silakan pilih profil yang akan diperbarui.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profil Bendera Cepat</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Gagal memperbarui profil:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Ubah pengaturan dalam game melalui menu yang praktis.</value>
@@ -2206,7 +2287,7 @@ Apakah Anda ingin menginstal plugin ini?</value>
     <value>Daftar ke Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Semakin tinggi angkanya, semakin tinggi kualitasnya, tetapi prosesnya memakan waktu lebih lama. Nilai maksimumnya adalah 64, sedangkan nilai defaultnya adalah 8.</value>
+    <value>Semakin tinggi angkanya, semakin tinggi kualitasnya, tetapi prosesnya memakan waktu lebih lama. Nilai maksimumnya adalah 512, sedangkan nilai defaultnya adalah 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Pembuatan mod dibatalkan.</value>
@@ -2284,7 +2365,7 @@ Apakah Anda ingin menginstal plugin ini?</value>
     <value>Apakah Anda ingin menghapus &apos;{0}&apos; secara permanen?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Mengelola dan menerapkan modifikasi berkas pada Klien Game Roblox.</value>
+    <value>Mengelola dan menerapkan modifikasi berkas.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Seret dan lepas untuk mengimpor berkas ZIP / folder</value>
@@ -2302,7 +2383,7 @@ Apakah Anda ingin menginstal plugin ini?</value>
     <value>Mod &apos;{0}&apos; telah berhasil diimpor.</value>
   </data>
   <data name="Menu.Mods.InfoBar" xml:space="preserve">
-    <value>Impor mod dengan menyeret mod tersebut atau melalui fitur impor; mod dengan prioritas lebih rendah akan diterapkan terakhir sehingga dapat mengatasi konflik dengan mod lain.</value>
+    <value>Impor mod dengan menyeret mod tersebut atau melalui fitur impor; mod dengan prioritas lebih rendah akan diterapkan terakhir, sehingga dapat mengatasi konflik dengan mod lain.</value>
   </data>
   <data name="Menu.Mods.InvalidFolderName" xml:space="preserve">
     <value>Nama Folder Tidak Sah.</value>
@@ -2313,6 +2394,30 @@ Sumber tersebut harus berisi setidaknya salah satu dari folder berikut: content,
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Tidak ada mod yang terpasang.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Gagal memuat pratinjau: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Pratinjau Font</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Varian Font:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Pratinjau telah dimuat</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Sedang memuat pratinjau font...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Sedang memuat glif...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Memuat font: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Tidak ditemukan informasi warna dalam mod ini</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Tindakan Mod yang Dipilih</value>
@@ -2432,7 +2537,7 @@ Sumber tersebut harus berisi setidaknya salah satu dari folder berikut: content,
     <value>Gunakan Latar Belakang Editor Avatar Lama</value>
   </data>
   <data name="Menu.PresetMods.Title" xml:space="preserve">
-    <value>Modifikasi Bawaan</value>
+    <value>Modifikasi Pra-setel</value>
   </data>
   <data name="Menu.QuickPlay.AccountManagerNotAvailable" xml:space="preserve">
     <value>Manajer akun sedang tidak ada.</value>

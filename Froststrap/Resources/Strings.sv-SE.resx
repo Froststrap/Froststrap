@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Det gick inte att hämta information om serverns plats. Du kanske ansluter dig till spel för snabbt.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Lägg till ett anpassat tema</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox stöder inte längre Windows 7 eller 8.1. För att kunna fortsätta spela Roblox måste du uppgradera till Windows 10 eller en nyare version.</value>
   </data>
@@ -409,7 +412,7 @@ Vill du byta till standardkanalen ({1})?</value>
     <value>Förhandsgranskning av tecken</value>
   </data>
   <data name="Common.HexCode" xml:space="preserve">
-    <value>Hexkod</value>
+    <value>Hex-kod</value>
   </data>
   <data name="Common.Import" xml:space="preserve">
     <value>Importera</value>
@@ -1548,7 +1551,7 @@ Rör inte detta om du inte vet vad du gör</value>
     <value>Nedladdning med flera trådar</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Description" xml:space="preserve">
-    <value>Tvinga Roblox Studio att installera och använda en specifik versions-hash istället för den senaste.</value>
+    <value>Tvinga Roblox Studio att installera och använda en specifik versionskod istället för den senaste.</value>
   </data>
   <data name="Menu.Deployment.OverrideHash.Title" xml:space="preserve">
     <value>Åsidosätt Studio-versionen</value>
@@ -1710,14 +1713,92 @@ Vill du ta bort det nu?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Inställningar för FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Lägg till plats-ID</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Rensa FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Det gick inte att kopiera profilen:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Aktuella plats-ID:n</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Ta bort valda</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Ange ett plats-ID.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Det gick inte att hämta aktuella FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Profilnamnet innehåller ett ogiltigt tecken: &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Hantera plats-ID:n för: {0} ({1} ID:n)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Det nya profilnamnet får inte vara tomt.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Inga profiler hittades</value>
+    <value>Inga profiler hittades.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Inga profiler hittades. Skapa först en profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Det gick inte att tolka den valda profilen.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Denna plats-ID har redan lagts till i profilen.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Plats-ID måste vara ett heltal.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Ange plats-ID (t.ex. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Plats-ID:n</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Det finns redan en profil med det namnet.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Den valda profilfilen hittades inte.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Ta bort det markerade</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Det gick inte att byta namn på profilen:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Välj en profil för att hantera plats-ID:n</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Välj en profil som du vill kopiera.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Välj först en profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Välj en profil för att hantera dess plats-ID:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Välj en profil som du vill byta namn på.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Välj en profil som du vill uppdatera.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profiler för snabba flaggor</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Det gick inte att uppdatera profilen:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Ändra inställningarna i spelet via ett smidigt menyval.</value>
@@ -2084,7 +2165,7 @@ Vill du installera pluginet?</value>
     <value>Avancerade vininställningar</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Description" xml:space="preserve">
-    <value>Gör det möjligt för Sober att begära och registrera kommandon från en handkontroll via Steam Deck eller liknande handkontroller.</value>
+    <value>Gör det möjligt för Sober att begära och registrera kommandon från styrenheter via Steam Deck eller liknande styrenheter.</value>
   </data>
   <data name="Menu.LinuxSettings.AllowGamepadPermission.Title" xml:space="preserve">
     <value>Bevilja behörighet för spelkontroll</value>
@@ -2231,7 +2312,7 @@ Vill du installera pluginet?</value>
     <value>Ansök till Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Ju högre siffra, desto bättre kvalitet, men det tar längre tid. Maxvärdet är 64, standardvärdet är 8.</value>
+    <value>Ju högre siffra, desto bättre kvalitet, men det tar längre tid. Maxvärdet är 512, standardvärdet är 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Modgenereringen har avbrutits.</value>
@@ -2309,7 +2390,7 @@ Vill du installera pluginet?</value>
     <value>Vill du radera ”{0}” permanent?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Hantera och tillämpa filändringar på Roblox-spelklienten.</value>
+    <value>Hantera och tillämpa filändringar.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Dra och släpp för att importera ZIP-fil/mapp</value>
@@ -2339,11 +2420,35 @@ Den måste innehålla minst en av följande mappar: content, ExtraContent, Platf
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Inga modifikationer installerade.</value>
   </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Det gick inte att ladda förhandsvisningen: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Förhandsgranskning av teckensnitt</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Teckensnittsvariant:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Förhandsvisning har laddats</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Laddar förhandsgranskning av typsnitt...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Laddar tecken...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Laddar typsnitt: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Ingen färginformation hittades i detta mod</value>
+  </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Valda mod-åtgärder</value>
   </data>
   <data name="Menu.Mods.Title" xml:space="preserve">
-    <value>Mina mods</value>
+    <value>Mina modifikationer</value>
   </data>
   <data name="Menu.Mods.UnsupportedFile" xml:space="preserve">
     <value>Filtyp eller sökväg som inte stöds: {0}</value>

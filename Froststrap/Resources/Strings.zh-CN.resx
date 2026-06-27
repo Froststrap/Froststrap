@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>无法查询服务器位置。您可能加入游戏的间隔时间过短。</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>添加自定义主题</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox 不再支持 Windows 7 或 8.1。如需继续游玩 Roblox，请升级至 Windows 10 或更高版本。</value>
   </data>
@@ -238,7 +241,7 @@
     <value>正在安装 {product}...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingSober" xml:space="preserve">
-    <value>正在安装 Sober...</value>
+    <value>安装 Sober...</value>
   </data>
   <data name="Bootstrapper.Status.InstallingUpdate" xml:space="preserve">
     <value>正在安装更新 {0}...</value>
@@ -1781,14 +1784,92 @@
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag 设置</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>添加地点 ID</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>清除 FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>复制配置文件失败：\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>当前位置 ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>删除所选内容</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>请输入地点 ID。</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>无法获取当前的 FastFlags。</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>个人资料名称中包含无效字符“{0}”。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>管理以下位置的 ID：{0}（{1} 个 ID）</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>新个人资料名称不能为空。</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>未找到个人资料</value>
+    <value>未找到个人资料。</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>未找到个人资料。请先创建个人资料。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>无法解析所选配置文件。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>该地点 ID 已添加到个人资料中。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>位置 ID 必须是整数。</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>输入地点 ID（例如：123456789）</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>地点ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>已经存在一个同名的个人资料。</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>找不到所选的配置文件。</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>取消选中</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>重命名配置文件失败：\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>选择一个配置文件来管理位置 ID</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>请选择一个配置文件进行复制。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>请先选择一个个人资料。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>选择一个配置文件以管理其位置 ID：</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>请选择一个配置文件进行重命名。</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>请选择一个个人资料进行更新。</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Fast Flag 配置文件</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>更新个人资料失败：\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>通过便捷的菜单更改游戏内设置。</value>
@@ -1905,7 +1986,7 @@
     <value>减少界面动画。</value>
   </data>
   <data name="Menu.GlobalSettings.ReducedMotion.Title" xml:space="preserve">
-    <value>运动减少</value>
+    <value>运动受限</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
     <value>全局相机灵敏度。</value>
@@ -2197,7 +2278,7 @@
     <value>强制使用 Legacy OpenGL 渲染</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Description" xml:space="preserve">
-    <value>如果可用，请应用系统优化（需要 gamemoded）。</value>
+    <value>如果可用，请应用系统优化（需要启用游戏模式）。</value>
   </data>
   <data name="Menu.LinuxSettings.GameMode.Title" xml:space="preserve">
     <value>游戏模式</value>
@@ -2302,7 +2383,7 @@
     <value>申请加入Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>数值越高，质量越好，但耗时越长，最大值为64，默认值为8。</value>
+    <value>数值越高，质量越好，但耗时也越长，最大值为512，默认值为32。</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>模组生成已取消。</value>
@@ -2380,7 +2461,7 @@
     <value>要永久删除“{0}”吗？</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>管理和应用 Roblox 游戏客户端的文件修改。</value>
+    <value>管理和应用文件修改。</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 拖放以导入 Zip 文件/文件夹</value>
@@ -2409,6 +2490,30 @@
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>未安装任何模组。</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>无法加载预览：{0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>字体预览</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>字体变体：</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>预览已加载</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>正在加载字体预览...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>正在加载字形...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>正在加载字体：{0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>未在此模组中找到颜色信息</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>选定的模组操作</value>
@@ -2667,7 +2772,7 @@
     <value>正在加载数据中心...</value>
   </data>
   <data name="Menu.RegionSelector.LoginRequired" xml:space="preserve">
-    <value>请通过账户管理器登录，或开启“Froststrap 账户权限”，或向我们的 Discord 服务器报告此问题以启用该功能。</value>
+    <value>请通过账户管理器登录，或开启“Froststrap 账户权限”，或向我们的 Discord 服务器报告此问题以使用该功能。</value>
   </data>
   <data name="Menu.RegionSelector.NoPublicServers" xml:space="preserve">
     <value>未找到任何公共服务器。</value>

@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Der Serverstandort konnte nicht abgefragt werden. Möglicherweise trittst du zu schnell Spielen bei.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Benutzerdefiniertes Design hinzufügen</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox wird unter Windows 7 und 8.1 nicht mehr unterstützt. Um Roblox weiterhin spielen zu können, führen Sie bitte ein Upgrade auf Windows 10 oder eine neuere Version durch.</value>
   </data>
@@ -1368,7 +1371,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Wählen Sie aus, wie viele Server überprüft werden sollen. Je mehr Server, desto länger kann der Vorgang dauern.</value>
   </data>
   <data name="Menu.Bootstrapper.MaxServerCheck.Title" xml:space="preserve">
-    <value>Maximaler Betrag für Serverüberprüfung</value>
+    <value>Maximaler Betrag für die Serverprüfung</value>
   </data>
   <data name="Menu.Bootstrapper.PreferredRegion.Description" xml:space="preserve">
     <value>Wählen Sie eine bestimmte Region aus, der Sie beitreten möchten, oder belassen Sie die Einstellung auf „Auto“, um die beste verfügbare Region zu erhalten.</value>
@@ -1392,7 +1395,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Die Roblox-App soll automatisch gestartet werden, wenn Sie Ihren PC hochfahren.</value>
   </data>
   <data name="Menu.Bootstrapper.Startup.Title" xml:space="preserve">
-    <value>Start bei der Unternehmensgründung</value>
+    <value>Beim Start starten</value>
   </data>
   <data name="Menu.Bootstrapper.Tray.Description" xml:space="preserve">
     <value>Die App wird in die Taskleiste minimiert, anstatt sie vollständig zu schließen.</value>
@@ -1449,7 +1452,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Farbe auswählen</value>
   </data>
   <data name="Menu.CommunityModInfo.Title" xml:space="preserve">
-    <value>Informationen zum Modell</value>
+    <value>Informationen zur Mode</value>
   </data>
   <data name="Menu.CommunityMods.AvatarEditor" xml:space="preserve">
     <value>Avatar-Editor</value>
@@ -1500,7 +1503,7 @@ Klicken Sie oben auf „Konto hinzufügen“, um loszulegen</value>
     <value>Die Cookie-Datei konnte nicht geladen werden.</value>
   </data>
   <data name="Menu.CookieState.Invalid" xml:space="preserve">
-    <value>Ein Cookie wurde gefunden, ist jedoch ungültig oder abgelaufen.</value>
+    <value>Das Cookie wurde gefunden, ist jedoch ungültig oder abgelaufen.</value>
   </data>
   <data name="Menu.CookieState.NotAllowed" xml:space="preserve">
     <value>Der Zugriff auf Cookies ist in den Einstellungen deaktiviert.</value>
@@ -1711,14 +1714,92 @@ Möchtest du es jetzt entfernen?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>FastFlag-Einstellungen</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Orts-ID hinzufügen</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>FF-Flags löschen</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Das Kopieren des Profils ist fehlgeschlagen:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Aktuelle Orts-IDs</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Ausgewählte löschen</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Bitte geben Sie eine Orts-ID ein.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Die aktuellen FastFlags konnten nicht abgerufen werden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Der Profilname enthält das ungültige Zeichen „{0}“.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Verwaltung von Orts-IDs für: {0} ({1} IDs)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Der Name des neuen Profils darf nicht leer sein.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Es wurden keine Profile gefunden</value>
+    <value>Es wurden keine Profile gefunden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Es wurden keine Profile gefunden. Bitte erstellen Sie zunächst ein Profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Das ausgewählte Profil konnte nicht analysiert werden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Diese Orts-ID ist bereits zum Profil hinzugefügt worden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Die Orts-ID muss eine ganze Zahl sein.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Geben Sie die Orts-ID ein (z. B. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Standort-IDs</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Ein Profil mit diesem Namen existiert bereits.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Die ausgewählte Profildatei wurde nicht gefunden.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Auswahl aufheben</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Das Umbenennen des Profils ist fehlgeschlagen:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Wählen Sie ein Profil aus, um Orts-IDs zu verwalten</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Bitte wählen Sie ein Profil aus, das Sie kopieren möchten.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Bitte wählen Sie zunächst ein Profil aus.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Wählen Sie ein Profil aus, um dessen Standort-IDs zu verwalten:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Bitte wählen Sie ein Profil aus, das Sie umbenennen möchten.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Bitte wählen Sie ein Profil aus, das Sie aktualisieren möchten.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Schnelle Flaggenprofile</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Das Profil konnte nicht aktualisiert werden:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Passen Sie die Spieleinstellungen über ein übersichtliches Menü an.</value>
@@ -1769,7 +1850,7 @@ Möchtest du es jetzt entfernen?</value>
     <value>Grafikeinstellungen</value>
   </data>
   <data name="Menu.GlobalSettings.HapticStrength.Description" xml:space="preserve">
-    <value>Einstellung der Vibrationsstärke des Controllers.</value>
+    <value>Vibrationsstärke des Controllers.</value>
   </data>
   <data name="Menu.GlobalSettings.HapticStrength.Title" xml:space="preserve">
     <value>Haptische Stärke</value>
@@ -1859,7 +1940,7 @@ Möchtest du es jetzt entfernen?</value>
     <value>Bevorzugte Textgröße für die Anzeige.</value>
   </data>
   <data name="Menu.GlobalSettings.TextSize.Title" xml:space="preserve">
-    <value>Textgröße</value>
+    <value>Schriftgröße</value>
   </data>
   <data name="Menu.GlobalSettings.ThirdPersonSensitivity.Description" xml:space="preserve">
     <value>X- und Y-Empfindlichkeit für die dritte Person.</value>
@@ -2018,7 +2099,7 @@ Möchtest du es jetzt entfernen?</value>
     <value>Fügt eine kleine Schaltfläche hinzu, über die du dem Spiel beitreten kannst, an dem du gerade arbeitest.</value>
   </data>
   <data name="Menu.Integrations.JoinButton.Title" xml:space="preserve">
-    <value>„Beitreten“-Schaltfläche</value>
+    <value>„Beitreten“-Button</value>
   </data>
   <data name="Menu.Integrations.PlaytimeCounter.Description" xml:space="preserve">
     <value>Zeigt deine Gesamtspielzeit und die aktuelle Sitzungsdauer an, während du dich in einem Spiel oder im Studio befindest.</value>
@@ -2130,7 +2211,7 @@ Möchten Sie das Plugin installieren?</value>
     <value>Spielmodus</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
-    <value>Wählen Sie das Rendering-Backend für Studio unter Wine aus.</value>
+    <value>Wählen Sie unter Wine das Rendering-Backend für Studio aus.</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
     <value>Grafikrenderer</value>
@@ -2229,7 +2310,7 @@ Möchten Sie das Plugin installieren?</value>
     <value>Bei Shiftlock bewerben</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Je höher die Zahl, desto besser die Qualität, aber desto länger dauert es. Der Höchstwert liegt bei 64, der Standardwert bei 8.</value>
+    <value>Je höher die Zahl, desto besser die Qualität, aber desto länger dauert es. Der Höchstwert liegt bei 512, der Standardwert bei 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Mod-Erstellung abgebrochen.</value>
@@ -2307,7 +2388,7 @@ Möchten Sie das Plugin installieren?</value>
     <value>„{0}“ endgültig löschen?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Dateimodifikationen für den Roblox-Spiel-Client verwalten und anwenden.</value>
+    <value>Dateimodifikationen verwalten und anwenden.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Zum Importieren eine ZIP-Datei oder einen Ordner hier ablegen</value>
@@ -2336,6 +2417,30 @@ Sie muss mindestens einen der folgenden Ordner enthalten: „content“, „Extr
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Es sind keine Mods installiert.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Vorschau konnte nicht geladen werden: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Schriftart-Vorschau</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Schriftartvariante:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Vorschau wurde geladen</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Schriftartvorschau wird geladen...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Glyphen werden geladen...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Schriftart wird geladen: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>In diesem Mod wurden keine Farbinformationen gefunden.</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Ausgewählte Mod-Aktion</value>
@@ -2648,7 +2753,7 @@ Die App schließt dieses Fenster, sobald die Anmeldung abgeschlossen ist.</value
     <value>Es konnte kein geeigneter Server gefunden werden.</value>
   </data>
   <data name="Menu.SearchBar.SearchSomething" xml:space="preserve">
-    <value>Such einfach mal nach etwas, und vielleicht taucht es hier auf...</value>
+    <value>Such mal nach etwas – vielleicht taucht es hier auf...</value>
   </data>
   <data name="Menu.SearchBar.ServerFound" xml:space="preserve">
     <value>Server gefunden</value>

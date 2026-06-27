@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Impossibile verificare la posizione del server. Forse ti stai collegando alle partite troppo rapidamente.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Aggiungi tema personalizzato</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox non supporta più Windows 7 né 8.1. Per continuare a giocare a Roblox, esegui l&apos;aggiornamento a Windows 10 o a una versione più recente.</value>
   </data>
@@ -1212,6 +1215,9 @@ Clicca su &quot;Aggiungi account&quot; qui sopra per iniziare</value>
   <data name="Menu.AccountSelector.Presence.InGame" xml:space="preserve">
     <value>In un gioco di Roblox</value>
   </data>
+  <data name="Menu.AccountSelector.Presence.Offline" xml:space="preserve">
+    <value>Non connesso</value>
+  </data>
   <data name="Menu.AccountSelector.Presence.Online" xml:space="preserve">
     <value>Online (sito web di Roblox)</value>
   </data>
@@ -1620,7 +1626,7 @@ Ci sono {0} definizioni di flag in conflitto:
     <value>Gestisci qui tutti i tuoi FastFlags.</value>
   </data>
   <data name="Menu.FastFlagEditor.DragOverlay" xml:space="preserve">
-    <value>📦 Trascina qui per importare file JSON / TXT</value>
+    <value>📦 Trascina per importare file JSON / TXT</value>
   </data>
   <data name="Menu.FastFlagEditor.ExportJson" xml:space="preserve">
     <value>Esporta JSON</value>
@@ -1664,7 +1670,7 @@ Vuoi rimuoverlo adesso?</value>
     <value>Numero totale di bandiere</value>
   </data>
   <data name="Menu.FastFlagEditor.WhiteList" xml:space="preserve">
-    <value>A seguito dell&apos;inserimento nella whitelist di alcuni FastFlags di Roblox, questi sono gli unici ancora disponibili per l&apos;uso.</value>
+    <value>A seguito dell&apos;inserimento in whitelist di alcuni FastFlags di Roblox, questi sono gli unici ancora disponibili per l&apos;uso.</value>
   </data>
   <data name="Menu.FastFlags.Description" xml:space="preserve">
     <value>Controlla come vengono configurati determinati parametri e funzionalità del motore di Roblox.</value>
@@ -1742,14 +1748,92 @@ Vuoi rimuoverlo adesso?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Impostazioni FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Aggiungi ID luogo</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Cancella FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Impossibile copiare il profilo:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>ID delle località attuali</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Elimina selezionati</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Inserisci un ID luogo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Impossibile recuperare i FastFlags attuali.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Il nome del profilo contiene un carattere non valido: &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Gestione degli ID dei luoghi per: {0} ({1} ID)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Il nome del nuovo profilo non può essere vuoto.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Nessun profilo trovato</value>
+    <value>Nessun profilo trovato.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Non sono stati trovati profili. Crea prima un profilo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Impossibile analizzare il profilo selezionato.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Questo ID luogo è già stato aggiunto al profilo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>L&apos;ID del luogo deve essere un numero intero.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Inserisci l&apos;ID del luogo (ad es., 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>ID dei luoghi</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Esiste già un profilo con quel nome.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Il file di profilo selezionato non è stato trovato.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Rimuovi selezione</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Impossibile rinominare il profilo:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Seleziona un profilo per gestire gli ID dei luoghi</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Seleziona un profilo da copiare.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Seleziona prima un profilo.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Seleziona un profilo per gestirne gli ID dei luoghi:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Seleziona un profilo da rinominare.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Seleziona un profilo da aggiornare.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profili Fast Flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Impossibile aggiornare il profilo:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Modifica le impostazioni di gioco da un pratico menu.</value>
@@ -1932,7 +2016,7 @@ Vuoi rimuoverlo adesso?</value>
     <value>Consenti l&apos;adesione alle attività</value>
   </data>
   <data name="Menu.Integrations.AutoRejoin.Description" xml:space="preserve">
-    <value>Si riconnette automaticamente allo stesso server dopo una disconnessione o un errore di rete della durata di 20 minuti.</value>
+    <value>Si riconnette automaticamente allo stesso server dopo una disconnessione di 20 minuti o un errore di rete.</value>
   </data>
   <data name="Menu.Integrations.AutoRejoin.Title" xml:space="preserve">
     <value>Ricongiungimento automatico</value>
@@ -2091,7 +2175,7 @@ Vuoi rimuoverlo adesso?</value>
     <value>Visualizza l&apos;attività di Studio</value>
   </data>
   <data name="Menu.Integrations.StudioRPC.PluginConfirmation" xml:space="preserve">
-    <value>Questo funziona aggiungendo un plugin Froststrap creato su misura che registrerà le tue azioni.
+    <value>Il funzionamento si basa sull&apos;aggiunta di un plugin Froststrap personalizzato che registrerà le tue azioni.
 Vuoi installare il plugin?</value>
   </data>
   <data name="Menu.Integrations.Title" xml:space="preserve">
@@ -2263,7 +2347,7 @@ Vuoi installare il plugin?</value>
     <value>Candidati su Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Più alto è il numero, maggiore è la qualità, ma ci vuole più tempo; il valore massimo è 64, quello predefinito è 8.</value>
+    <value>Più alto è il numero, maggiore è la qualità, ma ci vuole più tempo; il valore massimo è 512, quello predefinito è 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Creazione della mod annullata.</value>
@@ -2341,7 +2425,7 @@ Vuoi installare il plugin?</value>
     <value>Elimina definitivamente &apos;{0}&apos;?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Gestire e applicare le modifiche ai file del client di gioco Roblox.</value>
+    <value>Gestire e applicare le modifiche ai file.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Trascina per importare un file ZIP o una cartella</value>
@@ -2370,6 +2454,30 @@ Deve contenere almeno una delle seguenti cartelle: content, ExtraContent, Platfo
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Non ci sono mod installati.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Impossibile caricare l&apos;anteprima: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Anteprima del carattere</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Variante del carattere:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Anteprima caricata</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Caricamento dell&apos;anteprima del font in corso...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Caricamento dei glifi in corso...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Caricamento del font: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>In questa mod non sono state trovate informazioni sui colori</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Azione del mod selezionata</value>
@@ -2537,7 +2645,7 @@ Deve contenere almeno una delle seguenti cartelle: content, ExtraContent, Platfo
     <value>Non sono stati trovati server privati</value>
   </data>
   <data name="Menu.QuickPlay.NoSuitableServer" xml:space="preserve">
-    <value>Non è stato trovato alcun server adatto.</value>
+    <value>Non è stato trovato alcun server idoneo.</value>
   </data>
   <data name="Menu.QuickPlay.Players" xml:space="preserve">
     <value>giocatori</value>

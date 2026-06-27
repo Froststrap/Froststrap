@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Det var ikke muligt at hente oplysninger om serverens placering. Du deltager muligvis i spil for hurtigt.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Tilføj brugerdefineret tema</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox understøtter ikke længere Windows 7 eller 8.1. For at kunne fortsætte med at spille Roblox skal du opgradere til Windows 10 eller en nyere version.</value>
   </data>
@@ -272,7 +275,7 @@ Vil du skifte til standardkanalen ({1})?</value>
     <comment>&quot;Starting Roblox&quot; or &quot;Starting Roblox Studio&quot;</comment>
   </data>
   <data name="Bootstrapper.Status.StartingSober" xml:space="preserve">
-    <value>At starte på en ny start...</value>
+    <value>At starte med at være ædru...</value>
   </data>
   <data name="Bootstrapper.Status.StartingStudioWine" xml:space="preserve">
     <value>Sådan starter man Roblox Studio med Wine...</value>
@@ -1598,7 +1601,7 @@ Der er {0} konfliktende flagdefinitioner:
     <value>FastFlags er blevet eksporteret uden problemer.</value>
   </data>
   <data name="Menu.FastFlagEditor.FileExtensionWarning" xml:space="preserve">
-    <value>Du bedes indsende JSON- eller TXT-filer.</value>
+    <value>Indsæt venligst JSON- eller TXT-filer.</value>
   </data>
   <data name="Menu.FastFlagEditor.HaveBeenRemoved" xml:space="preserve">
     <value>{0} er blevet fjernet, da de ikke står på tilladelseslisten.</value>
@@ -1708,14 +1711,92 @@ Skal det fjernes nu?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Indstillinger for FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Tilføj sted-ID</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Ryd FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Det lykkedes ikke at kopiere profilen:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>Aktuelle sted-ID’er</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Slet det valgte</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Indtast venligst et sted-ID.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Det lykkedes ikke at hente de aktuelle FastFlags.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Profilnavnet indeholder et ugyldigt tegn: &apos;{0}&apos;.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Administration af sted-ID’er for: {0} ({1} ID’er)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Det nye profilnavn må ikke være tomt.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Der blev ikke fundet nogen profiler</value>
+    <value>Der blev ikke fundet nogen profiler.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Der blev ikke fundet nogen profiler. Opret venligst en profil først.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Det lykkedes ikke at analysere den valgte profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Dette sted-ID er allerede tilføjet til profilen.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>Placerings-ID’et skal være et heltal.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Indtast sted-ID (f.eks. 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>Steds-ID’er</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Der findes allerede en profil med det navn.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Den valgte profilfil blev ikke fundet.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Fjern det valgte</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Det lykkedes ikke at omdøbe profilen:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Vælg en profil for at administrere sted-ID’er</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Vælg venligst en profil, der skal kopieres.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Vælg venligst en profil først.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Vælg en profil for at administrere dens sted-ID’er:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Vælg venligst en profil, der skal omdøbes.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Vælg venligst en profil, der skal opdateres.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profiler for hurtige flag</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Det lykkedes ikke at opdatere profilen:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Du kan ændre indstillingerne i spillet via en praktisk menu.</value>
@@ -1829,7 +1910,7 @@ Skal det fjernes nu?</value>
     <value>Begrænset bevægelse</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Description" xml:space="preserve">
-    <value>Kameraets generelle følsomhed.</value>
+    <value>Global kamerafølsomhed.</value>
   </data>
   <data name="Menu.GlobalSettings.Sensitivity.Title" xml:space="preserve">
     <value>Følsomhed</value>
@@ -2226,7 +2307,7 @@ Vil du installere pluginet?</value>
     <value>Ansøg hos Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Jo højere tallet er, desto bedre er kvaliteten, men det tager længere tid. Det maksimale tal er 64, standardværdien er 8.</value>
+    <value>Jo højere tallet er, desto bedre er kvaliteten, men det tager længere tid. Det maksimale tal er 512, og standardværdien er 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Mod-generering afbrudt.</value>
@@ -2250,7 +2331,7 @@ Vil du installere pluginet?</value>
     <value>Henter nødvendige filer...</value>
   </data>
   <data name="Menu.ModGenerator.Extracting" xml:space="preserve">
-    <value>Henter filer...</value>
+    <value>Udlæsning af filer...</value>
   </data>
   <data name="Menu.ModGenerator.FailedPreview" xml:space="preserve">
     <value>Det lykkedes ikke at indlæse forhåndsvisningsskrifttyper.</value>
@@ -2301,7 +2382,7 @@ Vil du installere pluginet?</value>
     <value>Vil du slette &apos;{0}&apos; permanent?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Administrer og anvend filændringer til Roblox-spilklienten.</value>
+    <value>Administrer og anvend filændringer.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
     <value>📦 Træk og slip for at importere ZIP-fil/mappe</value>
@@ -2330,6 +2411,30 @@ Den skal indeholde mindst én af følgende mapper: content, ExtraContent, Platfo
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Der er ikke installeret nogen mods.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Det lykkedes ikke at indlæse forhåndsvisning: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Skrifttypeeksempel</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Skrifttypevariant:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Forhåndsvisning indlæst</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Indlæser forhåndsvisning af skrifttype...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Indlæser tegn...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Indlæser skrifttype: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Der blev ikke fundet nogen farveoplysninger i denne mod</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Valgt modulhandling</value>
@@ -2551,10 +2656,10 @@ Den skal indeholde mindst én af følgende mapper: content, ExtraContent, Platfo
     <value>Kopier denne kode og indsæt den på [siden til hurtig login]({0}).</value>
   </data>
   <data name="Menu.QuickSignIn.Linked" xml:space="preserve">
-    <value>Enheden er tilknyttet – godkendelse af login i gang...</value>
+    <value>Enheden er tilknyttet – godkender login...</value>
   </data>
   <data name="Menu.QuickSignIn.TimedOut" xml:space="preserve">
-    <value>Tidsgrænsen for login er overskredet.</value>
+    <value>Der er gået for lang tid siden du loggede ind.</value>
   </data>
   <data name="Menu.QuickSignIn.Waitting" xml:space="preserve">
     <value>Venter på hurtig login...

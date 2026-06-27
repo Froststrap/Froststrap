@@ -127,6 +127,9 @@
   <data name="ActivityWatcher.LocationQueryFailed" xml:space="preserve">
     <value>Nu s-a putut interoga locația serverului. Este posibil să te alături jocurilor prea repede.</value>
   </data>
+  <data name="AddCustomTheme.Title" xml:space="preserve">
+    <value>Adăugare temă personalizată</value>
+  </data>
   <data name="App.OSDeprecation.Win7_81" xml:space="preserve">
     <value>Roblox nu mai este compatibil cu Windows 7 sau 8.1. Pentru a continua să joci Roblox, te rugăm să treci la Windows 10 sau la o versiune mai recentă.</value>
   </data>
@@ -157,7 +160,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
     Pentru a evita apariția unor probleme, procesul de actualizare va continua.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Message" xml:space="preserve">
-    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțează reinstalarea Roblox din setări.</value>
+    <value>Este posibil ca unele conținuturi să lipsească. Pentru a remedia această problemă, forțați reinstalarea Roblox din setări.</value>
   </data>
   <data name="Bootstrapper.ExtractionFailed.Title" xml:space="preserve">
     <value>Nu s-au putut extrage toate fișierele</value>
@@ -250,7 +253,7 @@ Doriți să treceți la canalul implicit ({1})?</value>
     <value>stânga</value>
   </data>
   <data name="Bootstrapper.Status.RetryingPackage" xml:space="preserve">
-    <value>Se încearcă din nou {0}...</value>
+    <value>Se reîncearcă {0}...</value>
   </data>
   <data name="Bootstrapper.Status.SearchingNearbyServers" xml:space="preserve">
     <value>Se caută servere din apropiere...</value>
@@ -680,7 +683,7 @@ Timp de funcționare: {1}</value>
     <comment>{0}.{1} is the element &amp; attribute name (e.g. Button.Text), {2} is the type name (e.g. string)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementInvalidChild" xml:space="preserve">
-    <value>{0} nu poate avea un copil de tip {1}</value>
+    <value>{0} nu poate avea un element de tip {1}</value>
     <comment>{0} and {1} are element names (e.g. Button)</comment>
   </data>
   <data name="CustomTheme.Errors.ElementMultipleChildren" xml:space="preserve">
@@ -1341,7 +1344,7 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
     <value>Prioritatea proceselor în Roblox</value>
   </data>
   <data name="Menu.Bootstrapper.AppStorage.Description" xml:space="preserve">
-    <value>Configurează setările interne ale aplicației Roblox salvate.</value>
+    <value>Configurează setările interne ale aplicației Roblox stocate.</value>
   </data>
   <data name="Menu.Bootstrapper.AppStorage.Title" xml:space="preserve">
     <value>Setări de stocare a aplicațiilor</value>
@@ -1407,7 +1410,7 @@ Faceți clic pe „Adăugați un cont” mai sus pentru a începe</value>
     <value>Tema aplicației Roblox</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Description" xml:space="preserve">
-    <value>Alegeți servere mai mici atunci când vă conectați folosind butonul „Play”.</value>
+    <value>Alătură-te serverelor mai mici atunci când te conectezi folosind butonul „Play”.</value>
   </data>
   <data name="Menu.Bootstrapper.SmallerServer.Title" xml:space="preserve">
     <value>Alătură-te serverelor mai mici</value>
@@ -1691,7 +1694,7 @@ Vrei să îl elimini acum?</value>
     <value>Detalii despre plasă</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Description" xml:space="preserve">
-    <value>Nivelurile mai ridicate ale MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
+    <value>Nivelurile mai ridicate de MSAA reduc efectul de „margini zimțate”, dar pot afecta performanța.</value>
   </data>
   <data name="Menu.FastFlags.Presets.MSAA.Title" xml:space="preserve">
     <value>Calitatea anti-aliasingului (MSAA)</value>
@@ -1732,14 +1735,92 @@ Vrei să îl elimini acum?</value>
   <data name="Menu.FastFlags.Title" xml:space="preserve">
     <value>Setări FastFlag</value>
   </data>
+  <data name="Menu.FlagProfiles.AddPlaceId" xml:space="preserve">
+    <value>Adăugare ID locație</value>
+  </data>
   <data name="Menu.FlagProfiles.ClearFlags" xml:space="preserve">
     <value>Șterge FFlags</value>
   </data>
+  <data name="Menu.FlagProfiles.CopyFailed" xml:space="preserve">
+    <value>Nu s-a putut copia profilul:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.CurrentPlaceIds" xml:space="preserve">
+    <value>ID-urile locațiilor actuale</value>
+  </data>
+  <data name="Menu.FlagProfiles.DeleteSelected" xml:space="preserve">
+    <value>Șterge selecția</value>
+  </data>
+  <data name="Menu.FlagProfiles.EnterPlaceId" xml:space="preserve">
+    <value>Vă rugăm să introduceți un ID de locație.</value>
+  </data>
+  <data name="Menu.FlagProfiles.GetFlagsFailed" xml:space="preserve">
+    <value>Nu s-au putut obține FastFlags-urile actuale.</value>
+  </data>
+  <data name="Menu.FlagProfiles.InvalidCharacter" xml:space="preserve">
+    <value>Numele profilului conține un caracter nevalid: „{0}”.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ManagingPlaceIds" xml:space="preserve">
+    <value>Gestionarea ID-urilor locațiilor pentru: {0} ({1} ID-uri)</value>
+  </data>
+  <data name="Menu.FlagProfiles.NameCannotBeEmpty" xml:space="preserve">
+    <value>Numele noului profil nu poate fi gol.</value>
+  </data>
   <data name="Menu.FlagProfiles.NoProfileFound" xml:space="preserve">
-    <value>Nu s-au găsit profiluri</value>
+    <value>Nu s-au găsit profiluri.</value>
+  </data>
+  <data name="Menu.FlagProfiles.NoProfilesFound" xml:space="preserve">
+    <value>Nu s-au găsit profiluri. Vă rugăm să creați mai întâi un profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ParseFailed" xml:space="preserve">
+    <value>Nu s-a putut analiza profilul selectat.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdExists" xml:space="preserve">
+    <value>Acest ID de locație este deja adăugat la profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdNumeric" xml:space="preserve">
+    <value>ID-ul locației trebuie să fie un număr întreg.</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdWatermark" xml:space="preserve">
+    <value>Introduceți ID-ul locației (de exemplu, 123456789)</value>
+  </data>
+  <data name="Menu.FlagProfiles.PlaceIdsTab" xml:space="preserve">
+    <value>ID-uri de locație</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileExists" xml:space="preserve">
+    <value>Există deja un profil cu acest nume.</value>
+  </data>
+  <data name="Menu.FlagProfiles.ProfileNotFound" xml:space="preserve">
+    <value>Fișierul de profil selectat nu a fost găsit.</value>
+  </data>
+  <data name="Menu.FlagProfiles.RemoveSelected" xml:space="preserve">
+    <value>Elimină selecția</value>
+  </data>
+  <data name="Menu.FlagProfiles.RenameFailed" xml:space="preserve">
+    <value>Nu s-a putut redenumi profilul:\n{0}</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfile" xml:space="preserve">
+    <value>Selectați un profil pentru a gestiona ID-urile locațiilor</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileCopy" xml:space="preserve">
+    <value>Vă rugăm să selectați un profil pe care doriți să îl copiați.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileFirst" xml:space="preserve">
+    <value>Vă rugăm să selectați mai întâi un profil.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileLabel" xml:space="preserve">
+    <value>Selectați un profil pentru a gestiona ID-urile locațiilor sale:</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileRename" xml:space="preserve">
+    <value>Vă rugăm să selectați un profil pe care doriți să-l redenumiți.</value>
+  </data>
+  <data name="Menu.FlagProfiles.SelectProfileUpdate" xml:space="preserve">
+    <value>Vă rugăm să selectați un profil pe care doriți să îl actualizați.</value>
   </data>
   <data name="Menu.FlagProfiles.Title" xml:space="preserve">
     <value>Profiluri rapide ale steagurilor</value>
+  </data>
+  <data name="Menu.FlagProfiles.UpdateFailed" xml:space="preserve">
+    <value>Nu s-a putut actualiza profilul:\n{0}</value>
   </data>
   <data name="Menu.GBSEditor.Description" xml:space="preserve">
     <value>Modifică setările din joc dintr-un meniu ușor de folosit.</value>
@@ -2121,7 +2202,7 @@ Dorești să instalezi pluginul?</value>
     <value>Modul de depanare</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Description" xml:space="preserve">
-    <value>Daemonul de optimizare GameMode al Signals Feral Interactive se integrează în procesele de lansare a jocurilor.</value>
+    <value>Daemonul de optimizare GameMode al companiei Feral Interactive se integrează în procesele de lansare a jocurilor.</value>
   </data>
   <data name="Menu.LinuxSettings.EnableGameMode.Title" xml:space="preserve">
     <value>Activează GameMode</value>
@@ -2154,7 +2235,7 @@ Dorești să instalezi pluginul?</value>
     <value>Modul de joc</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Description" xml:space="preserve">
-    <value>Selectați motorul de redare pentru Studio în cadrul Wine.</value>
+    <value>Selectați motorul de randare pentru Studio în cadrul Wine.</value>
   </data>
   <data name="Menu.LinuxSettings.GraphicsRenderer.Title" xml:space="preserve">
     <value>Motor de randare grafică</value>
@@ -2202,7 +2283,7 @@ Dorești să instalezi pluginul?</value>
     <value>Pagini web</value>
   </data>
   <data name="Menu.LinuxSettings.WineBinaryNotFound" xml:space="preserve">
-    <value>Nu s-a găsit fișierul binar Wine. Asigurați-vă că Wine este instalat.</value>
+    <value>Fișierul binar Wine nu a fost găsit. Asigurați-vă că Wine este instalat.</value>
   </data>
   <data name="Menu.Load" xml:space="preserve">
     <value>Încărcare</value>
@@ -2256,7 +2337,7 @@ Dorești să instalezi pluginul?</value>
     <value>Aplică la Shiftlock</value>
   </data>
   <data name="Menu.ModGenerator.BandInfo" xml:space="preserve">
-    <value>Cu cât valoarea este mai mare, cu atât calitatea este mai bună, dar durează mai mult; valoarea maximă este 64, iar cea implicită este 8.</value>
+    <value>Cu cât valoarea este mai mare, cu atât calitatea este mai bună, dar durează mai mult; valoarea maximă este 512, iar cea implicită este 32.</value>
   </data>
   <data name="Menu.ModGenerator.Cancelled" xml:space="preserve">
     <value>Generarea modului a fost anulată.</value>
@@ -2334,10 +2415,10 @@ Dorești să instalezi pluginul?</value>
     <value>Doriți să ștergeți definitiv „{0}”?</value>
   </data>
   <data name="Menu.Mods.Description" xml:space="preserve">
-    <value>Gestionați și aplicați modificările de fișiere la clientul de joc Roblox.</value>
+    <value>Gestionați și aplicați modificările aduse fișierelor.</value>
   </data>
   <data name="Menu.Mods.DragOverlay" xml:space="preserve">
-    <value>📦 Trageți pentru a importa fișiere ZIP / dosare</value>
+    <value>📦 Trageți pentru a importa fișiere ZIP / foldere</value>
   </data>
   <data name="Menu.Mods.FolderDosentExist" xml:space="preserve">
     <value>Dosarul pentru „{0}” nu mai există.</value>
@@ -2360,6 +2441,30 @@ Aceasta trebuie să conțină cel puțin unul dintre următoarele foldere: conte
   </data>
   <data name="Menu.Mods.NoneInstalled" xml:space="preserve">
     <value>Nu sunt instalate moduri.</value>
+  </data>
+  <data name="Menu.Mods.Preview.Failed" xml:space="preserve">
+    <value>Nu s-a putut încărca previzualizarea: {0}</value>
+  </data>
+  <data name="Menu.Mods.Preview.Font.Preview" xml:space="preserve">
+    <value>Previzualizare font</value>
+  </data>
+  <data name="Menu.Mods.Preview.FontVariant" xml:space="preserve">
+    <value>Variantă de font:</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loaded" xml:space="preserve">
+    <value>Previzualizarea s-a încărcat</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading" xml:space="preserve">
+    <value>Se încarcă previzualizarea fontului...</value>
+  </data>
+  <data name="Menu.Mods.Preview.Loading.Glyphs" xml:space="preserve">
+    <value>Se încarcă glifele...</value>
+  </data>
+  <data name="Menu.Mods.Preview.LoadingFont" xml:space="preserve">
+    <value>Se încarcă fontul: {0}...</value>
+  </data>
+  <data name="Menu.Mods.Preview.NoColor" xml:space="preserve">
+    <value>Nu s-au găsit informații despre culori în acest mod</value>
   </data>
   <data name="Menu.Mods.SelectedModAction" xml:space="preserve">
     <value>Acțiune selectată în modul Mod</value>
@@ -2763,7 +2868,7 @@ Aplicația va închide această fereastră după finalizarea autentificării.</v
     <comment>See the prompt for more context</comment>
   </data>
   <data name="Menu.TestMode.Description" xml:space="preserve">
-    <value>Ascunde automat fereastra de setări la lansarea Roblox și afișeaz-o din nou la închiderea Roblox.</value>
+    <value>Ascunde automat fereastra de setări la lansarea Roblox și restabilește-o la închiderea Roblox.</value>
   </data>
   <data name="Menu.TestMode.Prompt" xml:space="preserve">
     <value>Modul de testare îți permite să verifici mai ușor, în mod iterativ, cum afectează setările tale funcționarea Roblox. 
