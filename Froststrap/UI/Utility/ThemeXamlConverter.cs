@@ -49,12 +49,6 @@ namespace Froststrap.UI.Utility
                 if (element.Attribute("WindowStyle")?.Value == "None")
                     element.SetAttributeValue("SystemDecorations", "None");
 
-                var allowTransparency = element.Attribute("AllowTransparency");
-                if (allowTransparency is not null)
-                {
-                    allowTransparency.Remove();
-                }
-
                 var insetAttr = element.Attribute("IgnoreTitleBarInset");
                 if (insetAttr != null)
                 {

@@ -130,8 +130,8 @@ namespace Froststrap.Integrations
         private static async Task DownloadModGeneratorInternalAsync()
         {
             var release = await GetLatestModGeneratorRelease();
-            if (release is null)
-                throw new Exception("Failed to fetch latest mod-generator release.");
+
+            _ = release ?? throw new Exception("Failed to fetch latest mod-generator release.");
 
             string assetName = GetModGeneratorAssetName();
             var asset = release.Assets?.FirstOrDefault(a => a.Name.Equals(assetName, StringComparison.OrdinalIgnoreCase));

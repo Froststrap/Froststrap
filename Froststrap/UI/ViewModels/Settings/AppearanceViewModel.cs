@@ -25,7 +25,7 @@ namespace Froststrap.UI.ViewModels.Settings
         private CustomThemeCycleSelectionWrapper? _selectedThemeWrapper;
 
         public ICommand PreviewBootstrapperCommand => new RelayCommand(PreviewBootstrapper);
-        public IAsyncRelayCommand<Control> BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(BrowseCustomIconLocation);
+        public IAsyncRelayCommand BrowseCustomIconLocationCommand => new AsyncRelayCommand<Control>(async c => await BrowseCustomIconLocation(c));
 
         public ICommand AddCustomThemeCommand => new RelayCommand<Control>(async c => await AddCustomTheme(c));
         public ICommand EditCustomThemeCommand => new RelayCommand<Control>(async c => await EditCustomTheme(c));

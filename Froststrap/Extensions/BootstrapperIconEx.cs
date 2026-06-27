@@ -5,6 +5,7 @@ namespace Froststrap.Extensions
 {
     static class BootstrapperIconEx
     {
+        //TODO: Fix custom
         public static IReadOnlyCollection<BootstrapperIcon> Selections =>
         [
             BootstrapperIcon.IconFroststrap,
@@ -17,7 +18,7 @@ namespace Froststrap.Extensions
             BootstrapperIcon.Icon2011,
             BootstrapperIcon.Icon2008,
             BootstrapperIcon.IconFroststrapClassic,
-            BootstrapperIcon.IconCustom
+            //BootstrapperIcon.IconCustom
         ];
 
         private static readonly Dictionary<BootstrapperIcon, Bitmap> _cache = [];

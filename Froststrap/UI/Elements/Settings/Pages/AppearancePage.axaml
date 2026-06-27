@@ -354,13 +354,13 @@
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
-                        <controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="Folder" ToolTip.Tip="{Binding CustomIconLocation, Mode=OneWay}" Command="{Binding BrowseCustomIconLocationCommand}" IsEnabled="{Binding IsCustomIconSelected}" />
+						<!--<controls:IconButton Grid.Column="1" Margin="4,0,0,0" Icon="Folder" ToolTip.Tip="{Binding CustomIconLocation, Mode=OneWay}" Command="{Binding BrowseCustomIconLocationCommand}" CommandParameter="{Binding $self}" IsEnabled="{Binding IsCustomIconSelected}" />-->
                     </Grid>
                 </controls:OptionControl>
 
-				<controls:OptionControl Header="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" Description="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}">
-					<TextBox Watermark="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
-				</controls:OptionControl>
+                <controls:OptionControl Header="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Title}" Description="{x:Static resources:Strings.Menu_Appearance_CustomisationTitle_Description}">
+                    <TextBox Watermark="Froststrap" Width="200" Text="{Binding Title, Mode=TwoWay}" />
+                </controls:OptionControl>
             </StackPanel>
         </ScrollViewer>
     </Grid>
