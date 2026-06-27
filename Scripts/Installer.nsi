@@ -19,7 +19,12 @@ Name "Froststrap"
   !define APP_VERSION "Unknown"
 !endif
 
-OutFile "${PUBLISH_DIR}\Froststrap-Setup.exe"
+!ifdef SELFCONTAINED
+  OutFile "..\build\Froststrap-SelfContained-Setup.exe"
+!else
+  OutFile "${PUBLISH_DIR}\Froststrap-Setup.exe"
+!endif
+
 Icon "..\Froststrap\Froststrap.ico"
 UninstallIcon "..\Froststrap\Froststrap.ico"
 InstallDir "$LOCALAPPDATA\Froststrap"

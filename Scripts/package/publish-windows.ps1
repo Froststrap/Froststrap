@@ -17,7 +17,6 @@ Copy-Item $PublishPath -Destination "./$BuildDir/"
 $Version = (git describe --tags --abbrev=0).TrimStart('v')
 & makensis /DPUBLISH_DIR="..\$BuildDir" /DAPP_VERSION="$Version" Scripts/Installer.nsi
 
-Move-Item "./$BuildDir/Froststrap-Setup.exe" "./$BuildDir/Froststrap-Setup.exe"
 Remove-Item "./$BuildDir/Froststrap.exe"
 
 Write-Host "Windows build complete: $BuildDir/Froststrap-Setup.exe" -ForegroundColor Green
