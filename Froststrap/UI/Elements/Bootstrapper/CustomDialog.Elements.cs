@@ -1,17 +1,15 @@
-﻿using Avalonia.Controls.Shapes;
-using System.Xml.Linq;
+﻿using AnimatedImage.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Layout;
-using Avalonia.Styling;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
-using AnimatedImage.Avalonia;
-using FontFamily = Avalonia.Media.FontFamily;
-
+using Avalonia.Styling;
 using Froststrap.UI.Elements.Controls;
+using System.Xml.Linq;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -360,9 +358,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
                 ApplyBrush_UIElement(dialog, templatedControl, "Background", TemplatedControl.BackgroundProperty, xmlElement);
                 ApplyBrush_UIElement(dialog, templatedControl, "BorderBrush", TemplatedControl.BorderBrushProperty, xmlElement);
 
-                string? fontFamily = GetFullPath(dialog, xmlElement.Attribute("FontFamily")?.Value);
-                if (fontFamily != null)
-                    templatedControl.FontFamily = new FontFamily(fontFamily);
+                ApplyFontFamily(dialog, templatedControl, xmlElement);
 
                 var fontSize = ParseXmlAttributeNullable<double>(xmlElement, "FontSize");
                 if (fontSize is double fs)
@@ -534,9 +530,7 @@ namespace Froststrap.UI.Elements.Bootstrapper
             if (textDecorations != null)
                 textBlock.TextDecorations = textDecorations;
 
-            string? fontFamily = GetFullPath(dialog, xmlElement.Attribute("FontFamily")?.Value);
-            if (fontFamily != null)
-                textBlock.FontFamily = new FontFamily(fontFamily);
+            ApplyFontFamily(dialog, textBlock, xmlElement);
 
             object? padding = GetThicknessFromXElement(xmlElement, "Padding");
             if (padding != null)

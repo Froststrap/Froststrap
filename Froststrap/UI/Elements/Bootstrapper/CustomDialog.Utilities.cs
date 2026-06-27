@@ -1,6 +1,7 @@
-﻿using System.Xml.Linq;
+﻿using Avalonia.Media;
 using Avalonia.Controls;
-using Avalonia.Media;
+using System.Xml.Linq;
+using FontFamily = Avalonia.Media.FontFamily;
 
 namespace Froststrap.UI.Elements.Bootstrapper
 {
@@ -244,6 +245,13 @@ namespace Froststrap.UI.Elements.Bootstrapper
                     tg.Children.Add(element);
             }
             uiElement.RenderTransform = tg;
+        }
+
+        private static void ApplyFontFamily(CustomDialog dialog, object target, XElement xmlElement)
+        {
+            string? fontFamilyRaw = xmlElement.Attribute("FontFamily")?.Value;
+            if (string.IsNullOrWhiteSpace(fontFamilyRaw))
+                return;
         }
     }
 }
